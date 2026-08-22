@@ -171,11 +171,18 @@ TFB_DisableSurfaceAlphaMod (SDL_Surface *surface)
 int
 TFB_GetColorKey (SDL_Surface *surface, Uint32 *key)
 {
-	if (!surface || !key)
+	/* Different versions of SDL2 seem to have different behavior
+	 * when SDL_GetColorKey fails. Some leave the key argument
+	 * untouched, while others zero it out. UQM code requires the
+	 * output variable to be untouched on failure, so we use a
+	 * local variable to stage it. */
+	Uint32 local_key;
+	if (!surface || !key || SDL_GetColorKey (surface, &local_key))
 	{
 		return -1;
 	}
-	return SDL_GetColorKey (surface, key);
+	*key = local_key;
+	return 0;
 }
 
 int
