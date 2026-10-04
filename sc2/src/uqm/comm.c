@@ -1171,7 +1171,7 @@ HailAlien (void)
 	ENCOUNTER_STATE ES;
 	FONT PlayerFont, OldFont;
 	MUSIC_REF SongRef = 0;
-	Color TextBack;
+	Color TextBack = { 0, 0, 0x84, 0 }; /* Create the old colorkey as a transparent version of itself */
 
 	pCurInputState = &ES;
 	memset (pCurInputState, 0, sizeof (*pCurInputState));
@@ -1204,15 +1204,12 @@ HailAlien (void)
 	// init subtitle cache context
 	TextCacheContext = CreateContext ("TextCacheContext");
 	TextCacheFrame = CaptureDrawable (
-			CreateDrawable (WANT_PIXMAP, SIS_SCREEN_WIDTH,
+			CreateDrawable (WANT_PIXMAP | WANT_ALPHA, SIS_SCREEN_WIDTH,
 			SIS_SCREEN_HEIGHT - SLIDER_Y - SLIDER_HEIGHT + 2, 1));
 	SetContext (TextCacheContext);
 	SetContextFGFrame (TextCacheFrame);
-	TextBack = BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x10), 0x00);
-			// Color key for the background.
 	SetContextBackGroundColor (TextBack);
 	ClearDrawable ();
-	SetFrameTransparentColor (TextCacheFrame, TextBack);
 
 	ES.phrase_buf[0] = '\0';
 
