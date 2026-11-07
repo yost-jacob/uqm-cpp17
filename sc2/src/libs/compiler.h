@@ -52,41 +52,58 @@ typedef UWORD    (*PUWORDFUNC) (void);
 typedef SWORD    (*PSWORDFUNC) (void);
 typedef DWORD    (*PDWORDFUNC) (void);
 
-#define MAKE_BYTE(lo, hi)   ((BYTE) (((BYTE) (hi) << (BYTE) 4) | (BYTE) (lo)))
-#define LONIBBLE(x)  ((BYTE) ((BYTE) (x) & (BYTE) 0x0F))
-#define HINIBBLE(x)  ((BYTE) ((BYTE) (x) >> (BYTE) 4))
-#define MAKE_WORD(lo, hi)   ((UWORD) ((BYTE) (hi) << 8) | (BYTE) (lo))
-#define LOBYTE(x)    ((BYTE) ((UWORD) (x)))
-#define HIBYTE(x)    ((BYTE) ((UWORD) (x) >> 8))
-#define MAKE_DWORD(lo, hi)  (((DWORD) (hi) << 16) | (UWORD) (lo))
-#define LOWORD(x)    ((UWORD) ((DWORD) (x)))
-#define HIWORD(x)    ((UWORD) ((DWORD) (x) >> 16))
+/* Each extraction evaluates its argument once. Conversions retain only the
+ * indicated low byte/word; signed inputs are converted modulo the input width.
+ * The temporary qualifier only bridges C99 inline and C++17 constexpr. */
+#ifdef __cplusplus
+#define UQM_VALUE_FUNCTION constexpr
+#else
+#define UQM_VALUE_FUNCTION inline
+#endif
 
+/* Return bits 0..3 of value; the input is narrowed to one byte first. */
+static UQM_VALUE_FUNCTION BYTE LONIBBLE(const BYTE value) { return value & 0x0f; }
+/* Return bits 4..7 of a byte. */
+static UQM_VALUE_FUNCTION BYTE HINIBBLE(const BYTE value) { return value >> 4; }
+/* Return bits 0..7 of a word. */
+static UQM_VALUE_FUNCTION BYTE LOBYTE(const UWORD value) { return (BYTE) value; }
+/* Return bits 8..15 of a word. */
+static UQM_VALUE_FUNCTION BYTE HIBYTE(const UWORD value) { return (BYTE) (value >> 8); }
+/* Return bits 0..15 of a double word. */
+static UQM_VALUE_FUNCTION UWORD LOWORD(const DWORD value) { return (UWORD) value; }
+/* Return bits 16..31 of a double word. */
+static UQM_VALUE_FUNCTION UWORD HIWORD(const DWORD value) { return (UWORD) (value >> 16); }
 
-// To be moved to port.h:
-// _ALIGNED_ANY specifies an alignment suitable for any type
-// _ALIGNED_ON specifies a caller-supplied alignment (should be a power of 2)
-#if defined(__GNUC__)
-#	define _PACKED __attribute__((packed))
-#	define _ALIGNED_ANY __attribute__((aligned))
-#	define _ALIGNED_ON(bytes) __attribute__((aligned(bytes)))
-#elif defined(_MSC_VER)
-#	define _ALIGNED_ANY
-//#	define _ALIGNED_ON(bytes) __declspec(align(bytes))
-			// __declspec(align(bytes)) expects a constant. 'sizeof (type)'
-			// will not do. This is something that needs some attention,
-			// once we find someone with a 64 bits Windows machine.
-			// Leaving it alone for now.
-#	define _PACKED
-#	define _ALIGNED_ON(bytes)
-#elif defined(__ARMCC__)
-#	define _PACKED __attribute__((packed))
-#	define _ALIGNED_ANY __attribute__((aligned))
-#	define _ALIGNED_ON(bytes) __attribute__((aligned(bytes)))
-#elif defined(__WINSCW__)
-#	define _PACKED
-#	define _ALIGNED_ANY
-#	define _ALIGNED_ON(bytes)
+#undef UQM_VALUE_FUNCTION
+
+#ifdef __cplusplus
+/* Combine byte-sized lo and hi at bit offsets 0 and 4, retaining eight bits.
+ * Callers normally pass nibbles; higher bits of lo are intentionally retained. */
+static constexpr BYTE MAKE_BYTE(const BYTE lo, const BYTE hi) {
+    return (BYTE) ((hi << 4) | lo);
+}
+/* Combine the low and high bytes into a 16-bit word. */
+static constexpr UWORD MAKE_WORD(const BYTE lo, const BYTE hi) {
+    return (UWORD) ((hi << 8) | lo);
+}
+/* Combine the low and high words into a 32-bit double word. */
+static constexpr DWORD MAKE_DWORD(const UWORD lo, const UWORD hi) {
+    return ((DWORD) hi << 16) | lo;
+}
+#else
+/* C99 requires expressions here: these three operations also appear in enum
+ * values and static resource initializers. Each argument is evaluated once. */
+#define MAKE_BYTE(lo, hi) ((BYTE) (((BYTE) (hi) << 4) | (BYTE) (lo)))
+#define MAKE_WORD(lo, hi) ((UWORD) ((BYTE) (hi) << 8) | (BYTE) (lo))
+#define MAKE_DWORD(lo, hi) (((DWORD) (hi) << 16) | (UWORD) (lo))
+#endif
+
+/* Preserve the maximum-alignment annotation used by shared ship structures.
+ * Packing and explicit-alignment macros had no callers and were removed. */
+#if defined(__GNUC__) || defined(__ARMCC__)
+#define _ALIGNED_ANY __attribute__((aligned))
+#else
+#define _ALIGNED_ANY
 #endif
 
 #if defined(__cplusplus)

@@ -25,18 +25,20 @@
 extern "C" {
 #endif
 
+/* Fixed constants below are shared enum values for C compatibility. Geometry
+ * macros that depend on ScreenWidth/ScreenHeight remain runtime expressions. */
 extern int ScreenWidth;
 extern int ScreenHeight;
 
 #define SCREEN_WIDTH ScreenWidth
 #define SCREEN_HEIGHT ScreenHeight
-#define SAFE_X 0
+enum { SAFE_X = 0 };
 		/* Left and right screen margin to be left unused */
-#define SAFE_Y 0
+enum { SAFE_Y = 0 };
 		/* Top and bottom screen margin to be left unused */
-#define SIS_ORG_X (7 + SAFE_X)
-#define SIS_ORG_Y (10 + SAFE_Y)
-#define STATUS_WIDTH 64
+enum { SIS_ORG_X = (7 + SAFE_X) };
+enum { SIS_ORG_Y = (10 + SAFE_Y) };
+enum { STATUS_WIDTH = 64 };
 		/* Width of the status "window" (the right part of the screen) */
 #define STATUS_HEIGHT (SCREEN_HEIGHT - (SAFE_Y * 2))
 		/* Height of the status "window" (the right part of the screen) */
@@ -49,36 +51,36 @@ extern int ScreenHeight;
 #define SIS_SCREEN_HEIGHT (SPACE_HEIGHT - 13)
 		/* Height of the usable part of the space "window" */
 #define RADAR_X (4 + (SCREEN_WIDTH - STATUS_WIDTH - SAFE_X))
-#define RADAR_WIDTH (STATUS_WIDTH - 8)
-#define RADAR_HEIGHT 53
+enum { RADAR_WIDTH = (STATUS_WIDTH - 8) };
+enum { RADAR_HEIGHT = 53 };
 #define RADAR_Y (SIS_ORG_Y + SIS_SCREEN_HEIGHT - RADAR_HEIGHT)
 
-#define SIS_TITLE_BOX_WIDTH    57
-#define SIS_TITLE_WIDTH        (SIS_TITLE_BOX_WIDTH - 2)
-#define SIS_TITLE_HEIGHT       8
-#define SIS_SPACER_BOX_WIDTH   12
+enum { SIS_TITLE_BOX_WIDTH = 57 };
+enum { SIS_TITLE_WIDTH = (SIS_TITLE_BOX_WIDTH - 2) };
+enum { SIS_TITLE_HEIGHT = 8 };
+enum { SIS_SPACER_BOX_WIDTH = 12 };
 #define SIS_MESSAGE_BOX_WIDTH  (SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH \
 			- SIS_SPACER_BOX_WIDTH)
 #define SIS_MESSAGE_WIDTH      (SIS_MESSAGE_BOX_WIDTH - 2)
-#define SIS_MESSAGE_HEIGHT     SIS_TITLE_HEIGHT
+enum { SIS_MESSAGE_HEIGHT = SIS_TITLE_HEIGHT };
 
-#define STATUS_MESSAGE_WIDTH   (STATUS_WIDTH - 4)
-#define STATUS_MESSAGE_HEIGHT  7
+enum { STATUS_MESSAGE_WIDTH = (STATUS_WIDTH - 4) };
+enum { STATUS_MESSAGE_HEIGHT = 7 };
 
-#define SHIP_NAME_WIDTH        (STATUS_WIDTH - 4)
-#define SHIP_NAME_HEIGHT       7
+enum { SHIP_NAME_WIDTH = (STATUS_WIDTH - 4) };
+enum { SHIP_NAME_HEIGHT = 7 };
 
-#define MAX_REDUCTION 3
-#define MAX_VIS_REDUCTION 2
-#define REDUCTION_SHIFT 1
-#define NUM_VIEWS (MAX_VIS_REDUCTION + 1)
+enum { MAX_REDUCTION = 3 };
+enum { MAX_VIS_REDUCTION = 2 };
+enum { REDUCTION_SHIFT = 1 };
+enum { NUM_VIEWS = (MAX_VIS_REDUCTION + 1) };
 
-#define ZOOM_SHIFT 8
-#define MAX_ZOOM_OUT (1 << (ZOOM_SHIFT + MAX_REDUCTION - 1))
+enum { ZOOM_SHIFT = 8 };
+enum { MAX_ZOOM_OUT = (1 << (ZOOM_SHIFT + MAX_REDUCTION - 1)) };
 
-#define ONE_SHIFT 2
-#define BACKGROUND_SHIFT 3
-#define SCALED_ONE (1 << ONE_SHIFT)
+enum { ONE_SHIFT = 2 };
+enum { BACKGROUND_SHIFT = 3 };
+enum { SCALED_ONE = (1 << ONE_SHIFT) };
 #define DISPLAY_TO_WORLD(x) ((x)<<ONE_SHIFT)
 #define WORLD_TO_DISPLAY(x) ((x)>>ONE_SHIFT)
 #define DISPLAY_ALIGN(x) ((COORD)(x)&~(SCALED_ONE-1))
@@ -94,8 +96,8 @@ extern int ScreenHeight;
 #define TRANSITION_HEIGHT \
 		(DISPLAY_TO_WORLD (SPACE_HEIGHT) << MAX_VIS_REDUCTION)
 		
-#define MAX_X_UNIVERSE 9999
-#define MAX_Y_UNIVERSE 9999
+enum { MAX_X_UNIVERSE = 9999 };
+enum { MAX_Y_UNIVERSE = 9999 };
 // Due to the added rounding error correction, the maximum logical X and Y
 // in Hyperspace cannot go past 999.94999, otherwise the values will be
 // rounded up to 1000.0. We do not want that so we subtract half a unit.
@@ -108,14 +110,14 @@ extern int ScreenHeight;
 		(UNIVERSE_TO_LOGY (-1) - (UNIVERSE_TO_LOGY (MAX_Y_UNIVERSE - 1) >> 1) \
 			- 1L)
 
-#define SPHERE_RADIUS_INCREMENT 11
+enum { SPHERE_RADIUS_INCREMENT = 11 };
 
-#define MAX_FLEET_STRENGTH (254 * SPHERE_RADIUS_INCREMENT)
+enum { MAX_FLEET_STRENGTH = (254 * SPHERE_RADIUS_INCREMENT) };
 
 // XXX: These corrected for the weird screen aspect ratio on DOS
 //   In part because of them, hyperflight is slower vertically
-#define UNIT_SCREEN_WIDTH 63
-#define UNIT_SCREEN_HEIGHT 50
+enum { UNIT_SCREEN_WIDTH = 63 };
+enum { UNIT_SCREEN_HEIGHT = 50 };
 
 // Bug #945: Simplified, these set the speed of SIS in Hyperspace and
 //   Quasispace. The ratio between UNIVERSE_UNITS_ and LOG_UNITS_ is
@@ -131,8 +133,8 @@ extern int ScreenHeight;
 #define UNIVERSE_UNITS_Y (((MAX_Y_UNIVERSE + 1) >> 4))
 #else
 // Original (and now broken) Hyperspace speed factors
-#define SECTOR_WIDTH 195
-#define SECTOR_HEIGHT 25
+enum { SECTOR_WIDTH = 195 };
+enum { SECTOR_HEIGHT = 25 };
 
 #define LOG_UNITS_X      ((SDWORD)(LOG_SPACE_WIDTH >> 4) * SECTOR_WIDTH)
 #define LOG_UNITS_Y      ((SDWORD)(LOG_SPACE_HEIGHT >> 4) * SECTOR_HEIGHT)
@@ -142,49 +144,46 @@ extern int ScreenHeight;
 
 #define ROUNDING_ERROR(div)  ((div) >> 1)
 
+/* Convert logical X to universe coordinates, rounding to the nearest unit.
+ * lx must be in the supported logical map range. */
 static inline COORD
-logxToUniverse (SDWORD lx)
+LOGX_TO_UNIVERSE (const SDWORD lx)
 {
 	return (COORD) ((lx * UNIVERSE_UNITS_X + ROUNDING_ERROR(LOG_UNITS_X))
 			/ LOG_UNITS_X);
 }
-#define LOGX_TO_UNIVERSE(lx) \
-		logxToUniverse (lx)
+/* Convert logical Y to the inverted universe Y axis, rounding as above. */
 static inline COORD
-logyToUniverse (SDWORD ly)
+LOGY_TO_UNIVERSE (const SDWORD ly)
 {
 	return (COORD) (MAX_Y_UNIVERSE -
 			((ly * UNIVERSE_UNITS_Y + ROUNDING_ERROR(LOG_UNITS_Y))
 			/ LOG_UNITS_Y));
 }
-#define LOGY_TO_UNIVERSE(ly) \
-		logyToUniverse (ly)
+/* Convert an X universe coordinate to logical units. ux is a map coordinate. */
 static inline SDWORD
-universeToLogx (COORD ux)
+UNIVERSE_TO_LOGX (const COORD ux)
 {
 	return (ux * LOG_UNITS_X + ROUNDING_ERROR(UNIVERSE_UNITS_X))
 			/ UNIVERSE_UNITS_X;
 }
-#define UNIVERSE_TO_LOGX(ux) \
-		universeToLogx (ux)
+/* Convert a Y universe coordinate to logical units on the inverted Y axis. */
 static inline SDWORD
-universeToLogy (COORD uy)
+UNIVERSE_TO_LOGY (const COORD uy)
 {
 	return ((MAX_Y_UNIVERSE - uy) * LOG_UNITS_Y
 			+ ROUNDING_ERROR(UNIVERSE_UNITS_Y))
 			/ UNIVERSE_UNITS_Y;
 }
-#define UNIVERSE_TO_LOGY(uy) \
-		universeToLogy (uy)
 
-#define CIRCLE_SHIFT 6
-#define FULL_CIRCLE (1 << CIRCLE_SHIFT)
-#define OCTANT_SHIFT (CIRCLE_SHIFT - 3) /* (1 << 3) == 8 */
-#define HALF_CIRCLE (FULL_CIRCLE >> 1)
-#define QUADRANT (FULL_CIRCLE >> 2)
-#define OCTANT (FULL_CIRCLE >> 3)
+enum { CIRCLE_SHIFT = 6 };
+enum { FULL_CIRCLE = (1 << CIRCLE_SHIFT) };
+enum { OCTANT_SHIFT = (CIRCLE_SHIFT - 3) };
+enum { HALF_CIRCLE = (FULL_CIRCLE >> 1) };
+enum { QUADRANT = (FULL_CIRCLE >> 2) };
+enum { OCTANT = (FULL_CIRCLE >> 3) };
 
-#define FACING_SHIFT 4
+enum { FACING_SHIFT = 4 };
 
 #define ANGLE_TO_FACING(a) (((a)+(1<<(CIRCLE_SHIFT-FACING_SHIFT-1))) \
 										>>(CIRCLE_SHIFT-FACING_SHIFT))
@@ -197,8 +196,8 @@ universeToLogy (COORD uy)
 				+ HALF_CIRCLE) / 360)
 #define ANGLE_TO_DEGREES(d) (NORMALIZE_ANGLE(d) * 360 / FULL_CIRCLE)
 
-#define SIN_SHIFT 14
-#define SIN_SCALE (1 << SIN_SHIFT)
+enum { SIN_SHIFT = 14 };
+enum { SIN_SCALE = (1 << SIN_SHIFT) };
 #define INT_ADJUST(x) ((x)<<SIN_SHIFT)
 #define FLT_ADJUST(x) (SIZE)((x)*SIN_SCALE)
 #define UNADJUST(x) (SIZE)((x)>>SIN_SHIFT)

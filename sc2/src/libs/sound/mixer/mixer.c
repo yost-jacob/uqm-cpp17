@@ -168,18 +168,18 @@ mixer_MixChannels (void *userdata, uint8 *stream, sint32 len)
 		if (mixer_chansize == 2)
 		{
 			/* check S16 clipping */
-			if (fullsamp > SINT16_MAX)
-				fullsamp = SINT16_MAX;
-			else if (fullsamp < SINT16_MIN)
-				fullsamp = SINT16_MIN;
+			if (fullsamp > INT16_MAX)
+				fullsamp = INT16_MAX;
+			else if (fullsamp < INT16_MIN)
+				fullsamp = INT16_MIN;
 		}
 		else
 		{
 			/* check S8 clipping */
-			if (fullsamp > SINT8_MAX)
-				fullsamp = SINT8_MAX;
-			else if (fullsamp < SINT8_MIN)
-				fullsamp = SINT8_MIN;
+			if (fullsamp > INT8_MAX)
+				fullsamp = INT8_MAX;
+			else if (fullsamp < INT8_MIN)
+				fullsamp = INT8_MIN;
 		}
 
 		mixer_PutSampleExt (stream, mixer_chansize, (sint32)fullsamp);
