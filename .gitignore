@@ -7,3 +7,6 @@ sc2/obj
 sc2/uqm-debug
 sc2/uqm-wrapper
 sc2/uqm
+/build-cmake/
+/cmake-build-*/
+/CMakeUserPresets.json
