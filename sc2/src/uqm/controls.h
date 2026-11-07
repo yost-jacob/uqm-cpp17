@@ -116,6 +116,8 @@ BOOLEAN WaitForAnyButtonUntil (BOOLEAN newButton, TimeCount timeOut,
 BOOLEAN WaitForNoInput (TimePeriod duration, BOOLEAN resetInput);
 BOOLEAN WaitForNoInputUntil (TimeCount timeOut, BOOLEAN resetInput);
 
+/* Display a modal message using the current graphics/input state. msg must be
+ * NUL-terminated and non-NULL; it is borrowed only for this call. */
 void DoPopupWindow(const char *msg);
 
 typedef void (InputFrameCallback) (void);

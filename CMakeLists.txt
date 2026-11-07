@@ -74,7 +74,8 @@ include(CTest)
 if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
     add_executable(uqm-build-tests tests/build.cpp tests/hash_tables.cpp
-        tests/hash_tables_c.c tests/memory_log.cpp
+        tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
+        tests/stringbank_c.c sc2/src/libs/resource/stringbank.cpp
         sc2/src/libs/math/random.c sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE

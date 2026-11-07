@@ -187,8 +187,10 @@ DoPopup (struct popup_state *self)
 void
 DoPopupWindow (const char *msg)
 {
+	enum { POPUP_LINE_CAPACITY = 30 };
+	/* Label lines borrow bank-owned copies for the duration of this popup. */
 	stringbank *bank = StringBank_Create ();
-	const char *lines[30];
+	const char *lines[POPUP_LINE_CAPACITY];
 	WIDGET_LABEL label;
 	STAMP s;
 	CONTEXT oldContext;
@@ -198,11 +200,6 @@ DoPopupWindow (const char *msg)
 	MENU_SOUND_FLAGS s0, s1;
 	InputFrameCallback *oldCallback;
 
-	if (!bank)
-	{
-		log_add (log_Fatal, "FATAL: Memory exhaustion when preparing popup window");
-		exit (EXIT_FAILURE);
-	}
 
 	label.tag = WIDGET_TYPE_LABEL;
 	label.parent = NULL;
@@ -211,7 +208,7 @@ DoPopupWindow (const char *msg)
 	label.draw = Widget_DrawLabel;
 	label.height = Widget_HeightLabel;
 	label.width = Widget_WidthFullScreen;
-	label.line_count = SplitString (msg, '\n', 30, lines, bank);
+	label.line_count = SplitString (msg, '\n', POPUP_LINE_CAPACITY, lines, bank);
 	label.lines = lines;
 
 	PauseFlash ();

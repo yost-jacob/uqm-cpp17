@@ -19,39 +19,39 @@
 #ifndef LIBS_RESOURCE_STRINGBANK_H_
 #define LIBS_RESOURCE_STRINGBANK_H_
 
-#ifdef SB_DEBUG
-#include <stdio.h>
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#define STRBANK_CHUNK_SIZE (1024 - sizeof (void *) - sizeof (int))
+typedef struct stringbank stringbank;
 
-typedef struct _stringbank_chunk {
-	char data[STRBANK_CHUNK_SIZE];
-	int len;
-	struct _stringbank_chunk *next;
-} stringbank;
+/* Owns immutable, deduplicated strings. Returned pointers remain valid through
+ * further insertions, until StringBank_Free; callers must not modify/free them.
+ * Callers must synchronize access. Allocation failure terminates the program;
+ * C++ exceptions never cross this interface. */
 
-/* Constructors and destructors */
-stringbank *StringBank_Create (void);
-void StringBank_Free (stringbank *bank);
+/* Create an empty bank. The caller owns it and must eventually free it. */
+stringbank *StringBank_Create(void);
 
-/* Put str or n chars after str into the string bank. */
-const char *StringBank_AddString (stringbank *bank, const char *str);
-const char *StringBank_AddSubstring (stringbank *bank, const char *str, unsigned int n);
+/* Destroy the bank and all its strings, invalidating returned pointers.
+ * NULL is allowed. Menu widgets must stop using their labels before this call. */
+void StringBank_Free(stringbank *bank);
 
-/* Put str or n chars after str into the string bank if it's not already
-   there.  Much slower. */
-const char *StringBank_AddOrFindString (stringbank *bank, const char *str);
-const char *StringBank_AddOrFindSubstring (stringbank *bank, const char *str, unsigned int n);
+/* Copy a NUL-terminated string into bank, or return the existing copy.
+ * bank/str must be non-NULL. The source may be changed/freed after return.
+ * Empty strings are supported; there is no fixed maximum string length. */
+const char *StringBank_AddOrFindString(stringbank *bank, const char *str);
 
-/* Split a string s into at most n substrings, separated by splitchar.
-   Pointers to these substrings will be stored in result; the
-   substrings themselves will be filed in the specified stringbank. */
-int SplitString (const char *s, char splitchar, int n, const char **result, stringbank *bank);
+/* Split NUL-terminated s on splitchar into at most capacity strings owned by bank.
+ * s/bank must be non-NULL; capacity must be nonnegative. result must have space
+ * for capacity pointers (NULL is allowed for capacity == 0). Return the number
+ * written, leaving unused slots untouched; zero capacity writes nothing.
+ * Preserve empty fields. The final slot holds the entire remaining suffix,
+ * including any delimiters. A NUL delimiter means no splitting. */
+int SplitString(const char *s, char splitchar, int capacity,
+        const char **result, stringbank *bank);
 
-#ifdef SB_DEBUG
-/* Print out a list of the contents of the string bank to the named stream. */
-void StringBank_Dump (stringbank *bank, FILE *s);
-#endif  /* SB_DEBUG */
-
-#endif  /* LIBS_RESOURCE_STRINGBANK_H_ */
+#ifdef __cplusplus
+}
+#endif
+#endif /* LIBS_RESOURCE_STRINGBANK_H_ */

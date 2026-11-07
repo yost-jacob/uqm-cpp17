@@ -101,7 +101,7 @@ set(UQM_SOURCES
     sc2/src/libs/resource/loadres.c
     sc2/src/libs/resource/propfile.c
     sc2/src/libs/resource/resinit.c
-    sc2/src/libs/resource/stringbank.c
+    sc2/src/libs/resource/stringbank.cpp
     sc2/src/libs/sound/audiocore.c
     sc2/src/libs/sound/decoders/aiffaud.c
     sc2/src/libs/sound/decoders/decoder.c
