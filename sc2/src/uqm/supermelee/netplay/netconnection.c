@@ -112,7 +112,7 @@ NetConnection_open(int player, const NetplayPeerOptions *options,
 	conn->state = NetState_unconnected;
 	conn->options = options;
 	conn->extra = extra;
-	PacketQueue_init(&conn->queue);
+	conn->queue = PacketQueue_create();
 
 	conn->connectCallback = connectCallback;
 	conn->closeCallback = closeCallback;
@@ -179,7 +179,7 @@ NetConnection_delete(NetConnection *conn) {
 		conn->stateData = NULL;
 	}
 	free(conn->readBuf);
-	PacketQueue_uninit(&conn->queue);
+	PacketQueue_delete(conn->queue);
 
 #ifdef NETPLAY_DEBUG_FILE
 	if (conn->debugFile != NULL) {

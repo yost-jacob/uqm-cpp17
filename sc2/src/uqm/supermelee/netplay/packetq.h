@@ -19,41 +19,36 @@
 #ifndef UQM_SUPERMELEE_NETPLAY_PACKETQ_H_
 #define UQM_SUPERMELEE_NETPLAY_PACKETQ_H_
 
-typedef struct PacketQueue PacketQueue;
-
-#include "packet.h"
-#include "types.h"
-
-#include <sys/types.h>
-
-#if defined(__cplusplus)
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct PacketQueueLink PacketQueueLink;
-struct PacketQueueLink {
-	PacketQueueLink *next;
-	Packet *packet;
-};
+typedef struct PacketQueue PacketQueue;
+typedef struct NetConnection NetConnection;
+typedef struct Packet Packet;
 
-struct PacketQueue {
-	size_t size;
-	PacketQueueLink *first;
-	PacketQueueLink **end;
+/* Create an empty owned FIFO queue. The connection must delete it exactly once.
+ * Allocation failure terminates without propagating C++ exceptions into C. */
+PacketQueue *PacketQueue_create(void);
 
-	// first points to the first entry in the queue
-	// end points to the location where the next message should be inserted.
-};
+/* Delete the queue and all packets it still owns. NULL is allowed. No operation
+ * may access this queue during or after deletion. */
+void PacketQueue_delete(PacketQueue *queue);
 
-void PacketQueue_init(PacketQueue *queue);
-void PacketQueue_uninit(PacketQueue *queue);
+/* Append packet to conn's queue, transferring exclusive ownership immediately.
+ * conn must be connected and own a live queue; packet must be non-NULL and
+ * releasable with Packet_delete. The caller must not reuse/delete packet.
+ * Callers must serialize queue operations; allocation failure is fatal. */
 void queuePacket(NetConnection *conn, Packet *packet);
+
+/* Send queued packets in FIFO order, deleting each only after sendPacket
+ * succeeds. Return 0 when drained, or -1 with sendPacket's errno unchanged.
+ * On any send error, retain the failed packet and all subsequent packets for
+ * retry or destruction. conn must be connected and own a live queue.
+ * Transport callbacks must not reenter or destroy this queue during sending. */
 int flushPacketQueue(NetConnection *conn);
 
-
-#if defined(__cplusplus)
+#ifdef __cplusplus
 }
 #endif
-
-#endif
-
+#endif /* UQM_SUPERMELEE_NETPLAY_PACKETQ_H_ */

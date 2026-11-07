@@ -598,6 +598,8 @@ use_library() {
 	TEMP_CFLAGS=`evalVar "LIB_${1}_CFLAGS"`
 	TEMP_LDFLAGS=`evalVar "LIB_${1}_LDFLAGS"`
 	CFLAGS="$CFLAGS $TEMP_CFLAGS"
+	# Library include paths and defines are needed by C++ sources as well.
+	CXXFLAGS="$CXXFLAGS $TEMP_CFLAGS"
 	LDFLAGS="$LDFLAGS $TEMP_LDFLAGS"
 	return 0
 }

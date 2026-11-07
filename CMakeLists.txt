@@ -76,7 +76,8 @@ if(BUILD_TESTING)
     add_executable(uqm-build-tests tests/build.cpp tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
         tests/stringbank_c.c tests/string_resources.cpp tests/value_types.cpp
-        tests/value_types_c.c
+        tests/value_types_c.c tests/packet_queue.cpp
+        sc2/src/uqm/supermelee/netplay/packetq.cpp
         sc2/src/libs/resource/stringbank.cpp sc2/src/libs/resource/loadres.c
         sc2/src/libs/strings/getstr.cpp sc2/src/libs/strings/strings.c
         sc2/src/libs/strings/unicode.c sc2/src/libs/memory/w_memlib.c
@@ -85,7 +86,7 @@ if(BUILD_TESTING)
     target_include_directories(uqm-build-tests PRIVATE
         "${CMAKE_CURRENT_BINARY_DIR}/generated" sc2/src)
     target_link_libraries(uqm-build-tests PRIVATE Boost::unit_test_framework PkgConfig::SDL2)
-    target_compile_definitions(uqm-build-tests PRIVATE BOOST_TEST_DYN_LINK)
+    target_compile_definitions(uqm-build-tests PRIVATE BOOST_TEST_DYN_LINK NETPLAY=NETPLAY_FULL)
     add_test(NAME uqm-c-cxx-interop COMMAND uqm-build-tests)
     add_test(NAME uqm-version COMMAND uqm --version)
     add_test(NAME uqm-help COMMAND uqm --help)

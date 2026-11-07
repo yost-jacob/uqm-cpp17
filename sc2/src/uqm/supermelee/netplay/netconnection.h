@@ -166,7 +166,8 @@ struct NetConnection {
 			// XXX: when is this cleaned up if a connection is broken?
 
 	const NetplayPeerOptions *options;
-	PacketQueue queue;
+	PacketQueue *queue;
+			// Exclusively owned; pending packets are released on connection deletion.
 #ifdef NETPLAY_STATISTICS
 	NetStatistics statistics;
 #endif
