@@ -76,7 +76,8 @@ if(BUILD_TESTING)
     add_executable(uqm-build-tests tests/build.cpp tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
         tests/stringbank_c.c tests/string_resources.cpp tests/value_types.cpp
-        tests/value_types_c.c tests/packet_queue.cpp
+        tests/value_types_c.c tests/packet_queue.cpp tests/alarms.cpp
+        sc2/src/libs/callback/alarm.cpp
         sc2/src/uqm/supermelee/netplay/packetq.cpp
         sc2/src/libs/resource/stringbank.cpp sc2/src/libs/resource/loadres.c
         sc2/src/libs/strings/getstr.cpp sc2/src/libs/strings/strings.c

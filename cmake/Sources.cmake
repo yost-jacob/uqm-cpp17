@@ -2,7 +2,7 @@
 # Explicit sources corresponding to the legacy Makeinfo files.
 # Keep both build descriptions in sync while the legacy build is supported.
 set(UQM_SOURCES
-    sc2/src/libs/callback/alarm.c
+    sc2/src/libs/callback/alarm.cpp
     sc2/src/libs/callback/async.c
     sc2/src/libs/callback/callback.c
     sc2/src/libs/decomp/lzdecode.c
@@ -51,7 +51,6 @@ set(UQM_SOURCES
     sc2/src/libs/graphics/tfb_draw.c
     sc2/src/libs/graphics/tfb_prim.c
     sc2/src/libs/graphics/widgets.c
-    sc2/src/libs/heap/heap.c
     sc2/src/libs/input/input_common.c
     sc2/src/libs/input/sdl/input.c
     sc2/src/libs/input/sdl/keynames.c
