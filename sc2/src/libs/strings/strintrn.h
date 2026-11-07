@@ -23,41 +23,60 @@
 #include <string.h>
 #include "libs/strlib.h"
 #include "libs/reslib.h"
-#include "stringhashtable.h"
 
-struct string_table_entry
-{
-	STRINGPTR data;
-	int length;  /* Internal NULs are allowed */
-	int index;
-	struct string_table *parent;
+#ifdef __cplusplus
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+// STRING is a borrowed handle. Data retains its exact encoded byte count,
+// including embedded/trailing NULs; an empty value has no backing C pointer.
+struct string_table_entry {
+    std::string data;
+    string_table *parent = nullptr;
+    size_t index = 0;
 };
 
-struct string_table
-{
-	unsigned short flags;
-	int size;
-	STRING_TABLE_ENTRY_DESC *strings;
-	StringHashTable_HashTable *nameIndex;
+// Each logical entry owns its metadata. The name handle preserves the legacy
+// lookup API: GetStringByName returns name bytes, not the dialog text handle.
+struct StringEntry {
+    string_table_entry text;
+    string_table_entry name;
+    std::string soundClip;
+    std::string timeStamp;
 };
 
-enum {
-    HAS_SOUND_CLIPS = 1 << 0,
-    HAS_TIMESTAMP = 1 << 1,
-    HAS_NAMEINDEX = 1 << 2
+struct string_table {
+    // Fixed after construction: resizing/moving a published table would
+    // invalidate borrowed handles and pointers. Only byte contents may change.
+    std::vector<StringEntry> entries;
+    std::unordered_map<std::string, STRING> nameIndex;
 };
+
+// Adopt complete entries, initialize stable handles and build the name index.
+// Duplicate names retain the first entry. Exceptions stay within C++ callers.
+std::unique_ptr<string_table> MakeStringTable(std::vector<StringEntry> entries);
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Allocate num_entries entries per enabled dataset; num_entries must be
- * nonnegative and flags must use the HAS_* values above. The caller owns the
- * returned table. Allocation failure is fatal. */
-STRING_TABLE AllocStringTable (int num_entries, int flags);
-/* Release all datasets and the name index; NULL is allowed. Borrowed entry
- * and text pointers must no longer be used after the table is freed. */
-void FreeStringTable (STRING_TABLE strtab);
+/* Allocate a fixed number of empty entries; num_entries must be nonnegative.
+ * Caller owns the result. Allocation failure is fatal. */
+STRING_TABLE AllocStringTable(int num_entries);
+/* Copy length bytes into an entry during construction. table and index must
+ * be valid; data may be NULL only for length == 0. Does not take ownership.
+ * Replacing bytes invalidates previously borrowed pointers to that value. */
+void SetStringTableEntry(STRING_TABLE table, COUNT index, const void *data,
+        size_t length);
+/* Release the table and all metadata; NULL is allowed. Invalidates every
+ * borrowed handle/pointer. External objects encoded in bytes are not freed. */
+void FreeStringTable(STRING_TABLE strtab);
+/* Resource-manager deleter for STRTAB, BINTAB and CONVERSATION payloads.
+ * Accepts NULL; releases the complete table rather than a raw allocation. */
+BOOLEAN FreeStringTableData(void *data);
 
 /* Read a text table from borrowed fp at its current position; length is the
  * byte range to read. Caller owns the returned table, or gets NULL if empty. */

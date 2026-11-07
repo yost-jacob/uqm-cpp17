@@ -23,7 +23,6 @@
 		// for GetStringAddress()
 #include "libs/strings/strintrn.h"
 		// for AllocStringTable(), FreeStringTable()
-#include "libs/memlib.h"
 #include <math.h>
 
 
@@ -46,7 +45,7 @@ PlayChannel (COUNT channel, SOUND snd, SoundPosition pos,
 	if (!snd_ptr)
 		return; // nothing to play
 
-	sample = *(TFB_SoundSample**) snd_ptr;
+	memcpy (&sample, snd_ptr, sizeof sample);
 
 	soundSource[channel].sample = sample;
 	soundSource[channel].positional_object = positional_object;
@@ -161,10 +160,9 @@ _GetSoundBankData (uio_Stream *fp, DWORD length)
 	int snd_ct, n;
 	DWORD opos;
 	char CurrentLine[1024], filename[1024];
-#define MAX_FX 256
-	TFB_SoundSample *sndfx[MAX_FX];
+	enum { MaxEffects = 256 };
+	TFB_SoundSample *sndfx[MaxEffects];
 	STRING_TABLE Snd;
-	STRING str;
 	int i;
 
 	(void) length;  // ignored
@@ -188,7 +186,7 @@ _GetSoundBankData (uio_Stream *fp, DWORD length)
 
 	snd_ct = 0;
 	while (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) &&
-			snd_ct < MAX_FX)
+			snd_ct < MaxEffects)
 	{
 		TFB_SoundSample* sample;
 		TFB_SoundDecoder* decoder;
@@ -233,23 +231,11 @@ _GetSoundBankData (uio_Stream *fp, DWORD length)
 	if (!snd_ct)
 		return NULL; // no sounds decoded
 
-	Snd = AllocStringTable (snd_ct, 0);
-	if (!Snd)
-	{	// Oops, have to delete everything now
-		while (snd_ct--)
-			TFB_DestroySoundSample (sndfx[snd_ct]);
-		
-		return NULL;
-	}
+	Snd = AllocStringTable (snd_ct);
 
 	// Populate the STRING_TABLE with ptrs to sample
-	for (i = 0, str = Snd->strings; i < snd_ct; ++i, ++str)
-	{
-		TFB_SoundSample **target = HMalloc (sizeof (sndfx[0]));
-		*target = sndfx[i];
-		str->data = (STRINGPTR)target;
-		str->length = sizeof (sndfx[0]);
-	}
+	for (i = 0; i < snd_ct; ++i)
+		SetStringTableEntry (Snd, i, &sndfx[i], sizeof sndfx[i]);
 
 	return Snd;
 }
@@ -259,15 +245,18 @@ _ReleaseSoundBankData (void *Snd)
 {
 	STRING_TABLE fxTab = Snd;
 	int index;
+	STRING first;
 	
 	if (!fxTab)
 		return FALSE;
 
-	for (index = 0; index < fxTab->size; ++index)
+	first = CaptureStringTable (fxTab);
+	for (index = 0; index < GetStringTableCount (first); ++index)
 	{
 		int i;
-		void **sptr = (void**)fxTab->strings[index].data;
-		TFB_SoundSample *sample = (TFB_SoundSample*)*sptr;
+		TFB_SoundSample *sample;
+		memcpy (&sample, GetStringAddress (SetAbsStringTableIndex (first, index)),
+				sizeof sample);
 
 		// Check all sources and see if we are currently playing this sample
 		for (i = 0; i < NUM_SOUNDSOURCES; ++i)
@@ -283,7 +272,7 @@ _ReleaseSoundBankData (void *Snd)
 			SoundDecoder_Free (sample->decoder);
 		sample->decoder = NULL;
 		TFB_DestroySoundSample (sample);
-		// sptr will be deleted by FreeStringTable() below
+		// The table owns the encoded pointer bytes, not the sample.
 	}
 	
 	FreeStringTable (fxTab);

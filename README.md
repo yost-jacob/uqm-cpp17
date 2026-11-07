@@ -37,8 +37,8 @@ For another content location, configure with
 This task provides a development build; installable packages are not yet defined.
 
 Tests include Boost.Test checks that call the existing C API from C++17,
-hash-table ownership/growth/iteration checks, memory-debugger bookkeeping,
-plus executable version/help smoke checks. To build only the game without
+hash-table and memory-debugger checks, string-table loading and ownership,
+packet queues, alarm scheduling, and executable version/help smoke checks. To build only the game without
 Boost, configure with `-DBUILD_TESTING=OFF`.
 
 In CLion on Linux, open the repository root and select the `debug` or `release`
@@ -67,3 +67,18 @@ the appropriate legacy `Makeinfo` until the legacy build is retired.
 For a runtime check, launch the game, navigate the main menu, enter Super-Melee
 and start a match, then exit. Audio hardware and interactive gameplay need
 manual verification on a desktop; the command-line tests do not cover them.
+
+## Remaining modernization priorities
+
+The resource string-table migration (priority 8) uses per-entry standard string
+storage and typed name lookup, retaining the C API and binary byte lengths.
+Continue incrementally with:
+
+9. Integer square root: replace the custom implementation with `std::sqrt` and
+   explicit integer conversion, preserving floor behavior where required.
+10. Random generators: evaluate `std::minstd_rand0` and value-owned contexts;
+    check seed coercion/restoration, planet generation and netplay state.
+11. Trigonometry and fixed-point macros: use standard math and typed functions,
+    retaining angle orientation, quantization, wrapping and the zero-vector sentinel.
+12. Pooled game queues: use typed fixed-capacity storage while preserving stable
+    handles, traversal order and gameplay limits such as pursuing encounters.

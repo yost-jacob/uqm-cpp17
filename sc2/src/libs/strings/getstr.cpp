@@ -18,523 +18,192 @@
 
 #include <array>
 #include <cassert>
+#include <cstring>
 #include <exception>
+#include <limits>
 #include <memory>
+#include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 #include "options.h"
 #include "strintrn.h"
-#include "libs/reslib.h"
 #include "libs/log.h"
 #include "libs/memlib.h"
 
 namespace {
 constexpr size_t MaxStrings = 2048;
 constexpr size_t LineCapacity = 1024;
-using Lengths = std::array<DWORD, MaxStrings>;
 using Stream = std::unique_ptr<uio_Stream, decltype(&res_CloseResFile)>;
-using StringTable = std::unique_ptr<STRING_TABLE_DESC, decltype(&FreeStringTable)>;
-using NameIndex = std::unique_ptr<StringHashTable_HashTable,
-        decltype(&StringHashTable_deleteHashTable)>;
+
+// Store a C string with its encoded terminator counted, as the legacy API
+// requires. Empty/absent datasets instead use an empty std::string.
+std::string terminated(std::string value) {
+    value.push_back('\0');
+    return value;
 }
 
-/* Decode num_dwords big-endian words in place; the array must be writable
- * and contain at least that many words. num_dwords must be positive. */
-static void
-dword_convert (DWORD *dword_array, COUNT num_dwords)
-{
-	BYTE *p = (BYTE*)dword_array;
-
-	do
-	{
-		*dword_array++ = (static_cast<DWORD>(p[0]) << 24)
-                | (static_cast<DWORD>(p[1]) << 16)
-                | (static_cast<DWORD>(p[2]) << 8) | p[3];
-		p += 4;
-	} while (--num_dwords);
+// Finish accumulated text, stripping only trailing line endings. A header
+// with no body stays absent; a blank body keeps its one-byte terminator.
+void finishText(StringEntry &entry) {
+    auto &text = entry.text.data;
+    if (text.empty())
+        return;
+    while (!text.empty() && (text.back() == '\n' || text.back() == '\r'))
+        text.pop_back();
+    text.push_back('\0');
 }
 
-/* Replace one table entry with an owned byte copy. index must be in range;
- * value must contain len bytes (nullptr is allowed only for len == 0). */
-static STRING
-set_strtab_entry (STRING_TABLE_DESC &strtab, const size_t index, const char *value,
-		const size_t len)
-{
-	STRING str = &strtab.strings[index];
-
-	if (str->data)
-	{
-		HFree (str->data);
-		str->data = nullptr;
-		str->length = 0;
-	}
-	if (len)
-	{
-		str->data = static_cast<char *>(HMalloc (len));
-		str->length = len;
-		memcpy (str->data, value, len);
-	}
-	return str;
+// Parse a borrowed header line. Name/token views refer to line and must be
+// copied before its next read. Delimiters match the existing resource syntax.
+std::pair<std::string_view, std::string_view> header(std::string_view line) {
+    const auto begin = line.find_first_not_of("()", 1);
+    if (begin == line.npos)
+        return {};
+    const auto end = line.find_first_of("()", begin);
+    const auto name = line.substr(begin, end == line.npos ? end : end - begin);
+    if (end == line.npos)
+        return {name, {}};
+    const auto token = line.find_first_not_of(" \t\r\n)", end + 1);
+    if (token == line.npos)
+        return {name, {}};
+    const auto tokenEnd = line.find_first_of(" \t\r\n)", token);
+    return {name, line.substr(token, tokenEnd == line.npos ? tokenEnd : tokenEnd - token)};
 }
 
-/* Copy count packed strings into a required table starting at firstIndex.
- * The sum of the first count lengths must fit data, and the destination range
- * must exist. Zero-length entries do not require backing bytes. */
-static void
-copy_strings_to_strtab (STRING_TABLE_DESC &strtab, const size_t firstIndex,
-		const size_t count, const std::vector<char> &data, const Lengths &lens)
-{
-	size_t stringI;
-	const char *off = data.data();
-
-	for (stringI = 0; stringI < count; stringI++)
-	{
-		set_strtab_entry(strtab, firstIndex + stringI,
-				off, lens[stringI]);
-		if (lens[stringI] != 0)
-			off += lens[stringI];
-	}
+// Parse text directly into complete entries, never packed parallel buffers.
+// fp is required and borrowed at its current position; length bounds the read.
+// Conversation mode retains names/clips; timestamp may be NULL. Any invalid
+// timestamp record disables all timestamps, preserving the existing fallback.
+std::vector<StringEntry> readEntries(uio_Stream *fp, const size_t length,
+        const bool conversation, const std::string &clipPrefix,
+        uio_Stream *timestamp) {
+    std::vector<StringEntry> entries;
+    std::array<char, LineCapacity> line{};
+    const auto origin = uio_ftell(fp);
+    bool timestampsValid = timestamp != nullptr;
+    while (uio_fgets(line.data(), line.size(), fp)) {
+        if (line[0] == '#') {
+            const auto [name, clip] = header(line.data());
+            if (!name.empty()) {
+                if (entries.size() == MaxStrings)
+                    break;
+                if (!entries.empty())
+                    finishText(entries.back());
+                entries.emplace_back();
+                auto &entry = entries.back();
+                if (conversation) {
+                    entry.name.data = terminated(std::string(name));
+                    if (!clip.empty())
+                        entry.soundClip = terminated(clipPrefix + std::string(clip));
+                    if (timestampsValid) {
+                        std::array<char, LineCapacity> stamp{};
+                        const auto read = uio_fgets(stamp.data(), stamp.size(), timestamp);
+                        const auto match = read && stamp[0] == '#'
+                                ? std::strstr(stamp.data(), entry.name.data.c_str()) : nullptr;
+                        if (!match) {
+                            log_add(log_Warning, "Invalid timestamp data for '%s'. Disabling timestamps",
+                                    entry.name.data.c_str());
+                            timestampsValid = false;
+                        } else {
+                            // Skip the matching name and its closing delimiter.
+                            auto value = match + name.size();
+                            if (*value)
+                                ++value;
+                            value += std::strspn(value, " \t\r\n");
+                            if (*value)
+                                entry.timeStamp = terminated(value);
+                        }
+                    }
+                }
+            }
+        } else if (!entries.empty()) {
+            entries.back().text.data += line.data();
+        }
+        const auto position = uio_ftell(fp);
+        if (position >= origin && static_cast<size_t>(position - origin) >= length)
+            break;
+    }
+    if (!entries.empty())
+        finishText(entries.back());
+    if (!timestampsValid)
+        for (auto &entry : entries)
+            entry.timeStamp.clear();
+    return entries;
+}
 }
 
 void
-_GetConversationData (const char *path, RESOURCE_DATA *resdata) try
-{
-	assert(path && resdata);
-	resdata->ptr = nullptr;
-	unsigned long dataLen;
-	StringTable result(nullptr, FreeStringTable);
-	int stringI;
-	size_t path_len;
-	DWORD opos;
-
-	std::vector<char> namedata;
-			// Contains the names (indexes) of the dialogs.
-	Lengths nlen{};
-			// Length of each of the names.
-	DWORD NameOffs;
-
-	std::vector<char> strdata;
-			// Contains the dialog strings.
-	Lengths slen{};
-			// Length of each of the dialog strings.
-	DWORD StringOffs;
-
-	std::vector<char> clipdata;
-			// Contains the file names of the speech files.
-	Lengths clen{};
-			// Length of each of the speech file names.
-	DWORD ClipOffs;
-
-	std::vector<char> ts_data;
-			// Contains the timestamp data for synching the text with the
-			// speech.
-	Lengths tslen{};
-			// Length of each of the timestamp strings.
-	DWORD TSOffs;
-
-	char CurrentLine[LineCapacity];
-	char paths[LineCapacity];
-	char *clip_path;
-	char *ts_path;
-
-	Stream fp(nullptr, res_CloseResFile);
-	Stream timestamp_fp(nullptr, res_CloseResFile);
-	NameIndex nameHashTable(nullptr, StringHashTable_deleteHashTable);
-			// Hash table of string names (such as "GLAD_WHEN_YOU_COME_BACK")
-			// to a STRING.
-
-	/* Parse out the conversation components. */
-	strncpy (paths, path, sizeof(paths) - 1);
-	paths[sizeof(paths) - 1] = '\0';
-	clip_path = strchr (paths, ':');
-	if (clip_path == nullptr)
-	{
-		ts_path = nullptr;
-	}
-	else
-	{
-		*clip_path = '\0';
-		clip_path++;
-
-		ts_path = strchr (clip_path, ':');
-		if (ts_path != nullptr)
-		{
-			*ts_path = '\0';
-			ts_path++;
-		}
-	}
-
-	fp.reset(res_OpenResFile (contentDir, paths, "rb"));
-	if (!fp)
-	{
-		log_add (log_Warning, "Warning: Can't open '%s'", paths);
-		resdata->ptr = nullptr;
-		return;
-	}
-
-	dataLen = LengthResFile (fp.get());
-	log_add (log_Info, "\t'%s' -- conversation phrases -- %lu bytes", paths,
-			dataLen);
-	if (clip_path)
-		log_add (log_Info, "\t'%s' -- voice clip directory", clip_path);
-	else
-		log_add (log_Info, "\tNo associated voice clips");
-	if (ts_path)
-		log_add (log_Info, "\t'%s' -- timestamps", ts_path);
-	else
-		log_add (log_Info, "\tNo associated timestamp file");
-
-	if (dataLen == 0)
-	{
-		log_add (log_Warning, "Warning: Trying to load empty file '%s'.",
-				path);
-		return;
-	}
-
-
-
-	nameHashTable.reset(StringHashTable_newHashTable());
-
-	path_len = clip_path ? strlen (clip_path) : 0;
-
-	if (ts_path)
-	{
-		timestamp_fp.reset(uio_fopen (contentDir, ts_path, "rb"));
-	}
-
-	opos = uio_ftell (fp.get());
-	stringI = -1;
-	NameOffs = 0;
-	StringOffs = 0;
-	ClipOffs = 0;
-	TSOffs = 0;
-	for (;;)
-	{
-		int l;
-
-		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp.get()) == nullptr)
-		{
-			// EOF or read error.
-			break;
-		}
-
-		if (stringI >= static_cast<int>(MaxStrings) - 1)
-		{
-			// Too many strings.
-			break;
-		}
-
-		if (CurrentLine[0] == '#')
-		{
-			// String header, of the following form:
-			//     #(GLAD_WHEN_YOU_COME_BACK) commander-000.ogg
-			char CopyLine[LineCapacity];
-			char *name;
-			char *ts;
-
-			strcpy (CopyLine, CurrentLine);
-			name = strtok (&CopyLine[1], "()");
-			if (name)
-			{
-				if (stringI >= 0)
-				{
-					while (slen[stringI] > 1 &&
-							(strdata[StringOffs - 2] == '\n' ||
-							strdata[StringOffs - 2] == '\r'))
-					{
-						--slen[stringI];
-						--StringOffs;
-						strdata[StringOffs - 1] = '\0';
-					}
-				}
-
-				slen[++stringI] = 0;
-
-				// Store the string name.
-				l = strlen (name) + 1;
-				namedata.resize(NameOffs + l);
-				strcpy (&namedata[NameOffs], name);
-				NameOffs += l;
-				nlen[stringI] = l;
-
-				// now lets check for timestamp data
-				if (timestamp_fp)
-				{
-					// We have a time stamp file.
-					char TimeStampLine[LineCapacity];
-					char *tsptr;
-					BOOLEAN ts_ok = FALSE;
-					if (uio_fgets (TimeStampLine, sizeof (TimeStampLine), timestamp_fp.get())
-							&& TimeStampLine[0] == '#')
-					{
-						// Line is of the following form:
-						//     #(GIVE_FUEL_AGAIN) 3304,3255
-						tslen[stringI] = 0;
-						tsptr = strstr (TimeStampLine, name);
-						if (tsptr)
-						{
-							tsptr += strlen(name) + 1;
-							ts_ok = TRUE;
-							while (! strcspn(tsptr," \t\r\n") && *tsptr)
-								tsptr++;
-							if (*tsptr)
-							{
-								l = strlen (tsptr) + 1;
-								ts_data.resize(TSOffs + l);
-
-								strcpy (&ts_data[TSOffs], tsptr);
-								TSOffs += l;
-								tslen[stringI] = l;
-							}
-						}
-					}
-					if (!ts_ok)
-					{
-						// timestamp data is invalid, remove all of it
-						log_add (log_Warning, "Invalid timestamp data "
-								"for '%s'.  Disabling timestamps", name);
-						ts_data.clear();
-						timestamp_fp.reset();
-						TSOffs = 0;
-					}
-				}
-				clen[stringI] = 0;
-				ts = strtok (nullptr, " \t\r\n)");
-				if (ts)
-				{
-					l = path_len + strlen (ts) + 1;
-					clipdata.resize(ClipOffs + l);
-
-					if (clip_path)
-						strcpy (&clipdata[ClipOffs], clip_path);
-					strcpy (&clipdata[ClipOffs + path_len], ts);
-					ClipOffs += l;
-					clen[stringI] = l;
-				}
-			}
-		}
-		else if (stringI >= 0)
-		{
-			char *s;
-			l = strlen (CurrentLine) + 1;
-
-			strdata.resize(StringOffs + l);
-
-			if (slen[stringI])
-			{
-				--slen[stringI];
-				--StringOffs;
-			}
-			s = &strdata[StringOffs];
-			slen[stringI] += l;
-			StringOffs += l;
-
-			strcpy (s, CurrentLine);
-		}
-
-		if ((int)uio_ftell (fp.get()) - (int)opos >= (int)dataLen)
-			break;
-	}
-	if (stringI >= 0)
-	{
-		while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n'
-				|| strdata[StringOffs - 2] == '\r'))
-		{
-			--slen[stringI];
-			--StringOffs;
-			strdata[StringOffs - 1] = '\0';
-		}
-	}
-
-	if (++stringI)
-	{
-		int flags = 0;
-		int stringCount = stringI;
-
-		if (ClipOffs)
-			flags |= HAS_SOUND_CLIPS;
-		if (TSOffs)
-			flags |= HAS_TIMESTAMP;
-		flags |= HAS_NAMEINDEX;
-
-		result.reset(AllocStringTable (stringCount, flags));
-		if (result)
-		{
-			// Copy all the gatherered data in a STRING_TABLE
-			STRING_TABLE_DESC *lpST = result.get();
-			STRING str;
-			stringI = 0;
-
-			// Store the dialog string.
-			copy_strings_to_strtab (
-					*lpST, stringI, stringCount, strdata, slen);
-			stringI += stringCount;
-
-			// Store the dialog names.
-			copy_strings_to_strtab (
-					*lpST, stringI, stringCount, namedata, nlen);
-			stringI += stringCount;
-
-			// Store sound clip file names.
-			if (lpST->flags & HAS_SOUND_CLIPS)
-			{
-				copy_strings_to_strtab (
-						*lpST, stringI, stringCount, clipdata, clen);
-				stringI += stringCount;
-			}
-
-			// Store time stamp data.
-			if (lpST->flags & HAS_TIMESTAMP)
-			{
-				copy_strings_to_strtab (
-						*lpST, stringI, stringCount, ts_data, tslen);
-				//stringI += stringCount;
-			}
-
-			// Store the STRING in the hash table indexed by the dialog
-			// name.
-			str = &lpST->strings[stringCount];
-			for (stringI = 0; stringI < stringCount; stringI++)
-			{
-				StringHashTable_add (nameHashTable.get(), str[stringI].data,
-						&str[stringI]);
-			}
-
-			lpST->nameIndex = nameHashTable.release();
-		}
-	}
-	resdata->ptr = result.release();
+_GetConversationData(const char *path, RESOURCE_DATA *resdata) try {
+    assert(path && resdata);
+    resdata->ptr = nullptr;
+    const std::string paths(path);
+    const auto first = paths.find(':');
+    const auto second = first == paths.npos ? paths.npos : paths.find(':', first + 1);
+    const auto filename = paths.substr(0, first);
+    const auto clipPrefix = first == paths.npos ? std::string{} :
+            paths.substr(first + 1, second == paths.npos ? second : second - first - 1);
+    const Stream fp(res_OpenResFile(contentDir, filename.c_str(), "rb"), res_CloseResFile);
+    if (!fp) {
+        log_add(log_Warning, "Warning: Can't open '%s'", filename.c_str());
+        return;
+    }
+    const auto length = LengthResFile(fp.get());
+    if (!length)
+        return;
+    const Stream timestamp(second == paths.npos ? nullptr :
+            uio_fopen(contentDir, paths.c_str() + second + 1, "rb"), res_CloseResFile);
+    auto entries = readEntries(fp.get(), length, true, clipPrefix, timestamp.get());
+    if (!entries.empty())
+        resdata->ptr = MakeStringTable(std::move(entries)).release();
 } catch (...) {
     std::terminate();
 }
 
 void *
-_GetStringData (uio_Stream *fp, DWORD length) try
-{
-	assert(fp);
-	StringTable result(nullptr, FreeStringTable);
-
-	int stringI;
-	DWORD opos;
-	Lengths slen{};
-	DWORD StringOffs;
-	char CurrentLine[LineCapacity];
-	std::vector<char> strdata;
-
-	opos = uio_ftell (fp);
-	stringI = -1;
-	StringOffs = 0;
-	for (;;)
-	{
-		int l;
-
-		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) == nullptr)
-		{
-			// EOF or read error.
-			break;
-		}
-
-		if (stringI >= static_cast<int>(MaxStrings) - 1)
-		{
-			// Too many strings.
-			break;
-		}
-
-		if (CurrentLine[0] == '#')
-		{
-			char CopyLine[LineCapacity];
-			char *s;
-
-			strcpy (CopyLine, CurrentLine);
-			s = strtok (&CopyLine[1], "()");
-			if (s)
-			{
-				if (stringI >= 0)
-				{
-					while (slen[stringI] > 1 &&
-							(strdata[StringOffs - 2] == '\n' ||
-							strdata[StringOffs - 2] == '\r'))
-					{
-						--slen[stringI];
-						--StringOffs;
-						strdata[StringOffs - 1] = '\0';
-					}
-				}
-
-				slen[++stringI] = 0;
-			}
-		}
-		else if (stringI >= 0)
-		{
-			char *s;
-			l = strlen (CurrentLine) + 1;
-
-			strdata.resize(StringOffs + l);
-
-			if (slen[stringI])
-			{
-				--slen[stringI];
-				--StringOffs;
-			}
-			s = &strdata[StringOffs];
-			slen[stringI] += l;
-			StringOffs += l;
-
-			strcpy (s, CurrentLine);
-		}
-
-		if ((int)uio_ftell (fp) - (int)opos >= (int)length)
-			break;
-	}
-	if (stringI >= 0)
-	{
-		while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n'
-				|| strdata[StringOffs - 2] == '\r'))
-		{
-			--slen[stringI];
-			--StringOffs;
-			strdata[StringOffs - 1] = '\0';
-		}
-	}
-
-	if (++stringI)
-	{
-		int flags = 0;
-		int stringCount = stringI;
-
-		result.reset(AllocStringTable (stringI, flags));
-		if (result)
-		{
-			STRING_TABLE_DESC *lpST = result.get();
-			copy_strings_to_strtab (*lpST, 0, stringCount, strdata, slen);
-		}
-	}
-	return result.release();
-} catch (...) {
-    std::terminate();
-}
-
-/* Decode a borrowed binary stream; the returned table belongs to the caller.
- * length is the encoded byte count. File-format interpretation is unchanged. */
-void *
-_GetBinaryTableData (uio_Stream *fp, DWORD length) try
-{
+_GetStringData(uio_Stream *fp, DWORD length) try {
     assert(fp);
+    auto entries = readEntries(fp, length, false, {}, nullptr);
+    return entries.empty() ? nullptr : MakeStringTable(std::move(entries)).release();
+} catch (...) {
+    std::terminate();
+}
+
+void *
+_GetBinaryTableData(uio_Stream *fp, DWORD length) try {
+    assert(fp);
+    // The legacy resource prefix is consumed by GetResourceData. Check bounds
+    // before interpreting word counts/offsets or copying arbitrary byte strings.
+    constexpr size_t WordBytes = sizeof(DWORD);
+    if (length < 3 * WordBytes)
+        return nullptr;
     const std::unique_ptr<void, decltype(&HFree)> data(GetResourceData(fp, length), HFree);
     if (!data)
         return nullptr;
-
-    DWORD *fileData = static_cast<DWORD *>(data.get());
-    dword_convert(fileData, 1);
-    StringTable table(AllocStringTable(fileData[0], 0), FreeStringTable);
-    const int size = table->size;
-    dword_convert(fileData + 1, size + 1);
-    const BYTE *stringptr = reinterpret_cast<const BYTE *>(fileData + 2 + size + fileData[1]);
-    for (int i = 0; i < size; ++i) {
-        set_strtab_entry(*table, i, reinterpret_cast<const char *>(stringptr), fileData[2 + i]);
-        stringptr += fileData[2 + i];
+    const auto bytes = static_cast<const unsigned char *>(data.get());
+    const size_t byteCount = length - WordBytes;
+    const auto word = [bytes](size_t index) {
+        const auto p = bytes + index * WordBytes;
+        return (static_cast<DWORD>(p[0]) << 24) | (static_cast<DWORD>(p[1]) << 16)
+                | (static_cast<DWORD>(p[2]) << 8) | p[3];
+    };
+    const size_t count = word(0);
+    if (count > std::numeric_limits<COUNT>::max() || count + 2 > byteCount / WordBytes)
+        return nullptr;
+    const size_t skip = word(1);
+    if (skip > byteCount / WordBytes - count - 2)
+        return nullptr;
+    size_t offset = (count + 2 + skip) * WordBytes;
+    std::vector<StringEntry> entries(count);
+    for (size_t i = 0; i < count; ++i) {
+        const size_t size = word(i + 2);
+        if (size > byteCount - offset)
+            return nullptr;
+        entries[i].text.data.assign(reinterpret_cast<const char *>(bytes + offset), size);
+        offset += size;
     }
-    return table.release();
+    return MakeStringTable(std::move(entries)).release();
 } catch (...) {
     std::terminate();
 }

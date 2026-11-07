@@ -6,7 +6,6 @@
 #include <type_traits>
 
 #include "libs/uio/charhashtable.h"
-#include "libs/strings/strintrn.h"
 
 extern "C" int hash_table_c_round_trip(void);
 
@@ -100,17 +99,6 @@ BOOST_AUTO_TEST_CASE(hash_table_growth_removal_and_unordered_iteration)
         BOOST_TEST((visited.count(key) != 0) == (i % 2 != 0));
         BOOST_TEST((CharHashTable_find(table.get(), key.c_str()) != nullptr) == (i % 2 != 0));
     }
-}
-
-BOOST_AUTO_TEST_CASE(string_index_preserves_entry_identity_after_name_storage_moves)
-{
-    STRING_TABLE_ENTRY_DESC entry{};
-    const auto table = makeTable();
-    std::string name = "conversation-name";
-    BOOST_REQUIRE(StringHashTable_add(table.get(), name.c_str(), &entry));
-    name.assign(8192, 'x');
-    BOOST_TEST(StringHashTable_find(table.get(), "conversation-name") == &entry);
-    BOOST_TEST(StringHashTable_find(table.get(), "absent") == nullptr);
 }
 
 BOOST_AUTO_TEST_CASE(hash_table_api_is_callable_from_c)
