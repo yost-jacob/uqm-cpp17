@@ -62,6 +62,10 @@ FreeStringTable (STRING_TABLE strtab)
 		return;
 	}
 
+	/* The name index owns key copies but borrows entries from this table.
+	 * Destroy it before releasing those entries and their backing strings. */
+	StringHashTable_deleteHashTable (strtab->nameIndex);
+
 	if (strtab->flags & HAS_SOUND_CLIPS)
 	{
 		multiplier++;

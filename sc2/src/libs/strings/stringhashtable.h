@@ -16,28 +16,43 @@
  *
  */
 
-#ifndef _STRINGHASHTABLE_H
-#define _STRINGHASHTABLE_H
+#ifndef LIBS_STRINGS_STRINGHASHTABLE_H_
+#define LIBS_STRINGS_STRINGHASHTABLE_H_
 
-// HashTable from 'char *' to STRING.
-// We don't actually copy the index, which means that the caller is
-// responsible for keeping them unchanged during the time that it is used in
-// the hash table.
+#include "libs/uio/charhashtable.h"
 
-#include "libs/strlib.h"
+typedef struct string_table_entry STRING_TABLE_ENTRY_DESC;
+typedef CharHashTable_HashTable StringHashTable_HashTable;
 
-#define HASHTABLE_(identifier) StringHashTable ## _ ## identifier
-typedef char HASHTABLE_(Key);
-typedef STRING_TABLE_ENTRY_DESC HASHTABLE_(Value);
-#define StringHashTable_HASH StringHashTable_hash
-#define StringHashTable_EQUAL StringHashTable_equal
-#define StringHashTable_COPY StringHashTable_copy
-#define StringHashTable_FREEKEY(hashTable, key) \
-		((void) (hashTable), (void) (key))
-#define StringHashTable_FREEVALUE(hashTable, value) \
-		((void) (hashTable), (void) (value))
+/* Typed name index for borrowed string-table entries. Keys are copied, so
+ * source name buffers may move after insertion. Entries must outlive the index.
+ * Allocation and synchronization contracts are those of CharHashTable. */
 
-#include "libs/uio/hashtable.h"
+/* Create an empty owned index; release it with deleteHashTable below. */
+static inline StringHashTable_HashTable *
+StringHashTable_newHashTable(void) {
+    return CharHashTable_newHashTable();
+}
 
+/* Add a NUL-terminated, non-NULL key and borrowed entry (which may be NULL).
+ * table is required; duplicates return false and leave the index unchanged. */
+static inline bool
+StringHashTable_add(StringHashTable_HashTable *table, const char *key,
+        STRING_TABLE_ENTRY_DESC *entry) {
+    return CharHashTable_add(table, key, entry);
+}
 
-#endif  /* _STRINGHASHTABLE_H */
+/* Look up a non-NULL key in a required, read-only index. Return a borrowed
+ * entry, or NULL when absent; the entry itself remains mutable. */
+static inline STRING_TABLE_ENTRY_DESC *
+StringHashTable_find(const StringHashTable_HashTable *table, const char *key) {
+    return (STRING_TABLE_ENTRY_DESC *) CharHashTable_find(table, key);
+}
+
+/* Delete the index and its key copies, leaving entries alive. NULL is allowed. */
+static inline void
+StringHashTable_deleteHashTable(StringHashTable_HashTable *table) {
+    CharHashTable_deleteHashTable(table);
+}
+
+#endif /* LIBS_STRINGS_STRINGHASHTABLE_H_ */

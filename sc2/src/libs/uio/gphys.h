@@ -29,42 +29,7 @@ typedef void *uio_GPDirExtra;
 typedef void *uio_GPFileExtra;
 #endif
 
-typedef struct CharHashTable_HashTable uio_GPDirEntries;
-
-#define uio_GPDirEntries_new() \
-		((uio_GPDirEntries *) CharHashTable_newHashTable(NULL, NULL, NULL, \
-		NULL, NULL, 0, 0.85, 0.9))
-#define uio_GPDirEntries_add(hashTable, name, item) \
-		CharHashTable_add((CharHashTable_HashTable *) hashTable, name, \
-		(void *) item)
-#define uio_GPDirEntries_remove(hashTable, name) \
-		CharHashTable_remove((CharHashTable_HashTable *) hashTable, name)
-#define uio_GPDirEntries_count(hashTable) \
-		CharHashTable_count((CharHashTable_HashTable *) hashTable)
-#define uio_GPDirEntries_find(hashTable, name) \
-		((uio_GPDirEntry *) CharHashTable_find( \
-		(CharHashTable_HashTable *) hashTable, name))
-#define uio_GPDirEntries_deleteHashTable(hashTable) \
-		CharHashTable_deleteHashTable((CharHashTable_HashTable *) hashTable)
-//#define uio_GPDirEntries_clear(hashTable)
-//		CharHashTable_clear((CharHashTable_HashTable *) hashTable)
-#define uio_GPDirEntries_getIterator(hashTable) \
-		((uio_GPDirEntries_Iterator *) CharHashTable_getIterator( \
-		(const CharHashTable_HashTable *) hashTable))
-#define uio_GPDirEntries_iteratorDone(iterator) \
-		CharHashTable_iteratorDone((const CharHashTable_Iterator *) iterator)
-#define uio_GPDirEntries_iteratorName(iterator) \
-		CharHashTable_iteratorKey((CharHashTable_Iterator *) iterator)
-#define uio_GPDirEntries_iteratorItem(iterator) \
-		((uio_GPDirEntry *) CharHashTable_iteratorValue( \
-		(CharHashTable_Iterator *) iterator))
-#define uio_GPDirEntries_iteratorNext(iterator) \
-		((uio_GPDirEntries_Iterator *) CharHashTable_iteratorNext( \
-		(CharHashTable_Iterator *) iterator))
-#define uio_GPDirEntries_freeIterator(iterator) \
-		CharHashTable_freeIterator(iterator)
-
-// 'forward' declarations
+// Directory entries borrow their items and own immutable copies of names.
 typedef struct uio_GPDirEntry uio_GPDirEntry;
 typedef struct uio_GPDir uio_GPDir;
 typedef struct uio_GPFile uio_GPFile;
@@ -72,7 +37,84 @@ typedef struct uio_GPRoot_Operations uio_GPRoot_Operations;
 typedef struct uio_GPRoot uio_GPRoot;
 
 #include "charhashtable.h"
+typedef CharHashTable_HashTable uio_GPDirEntries;
 typedef CharHashTable_Iterator uio_GPDirEntries_Iterator;
+
+/* Create an owned, empty directory index. Allocation failure is fatal. */
+static inline uio_GPDirEntries *
+uio_GPDirEntries_new(void) {
+    return CharHashTable_newHashTable();
+}
+
+/* Required entries/name; copy name and borrow item (which may be NULL).
+ * Return false for a duplicate name without replacing the old item. */
+static inline uio_bool
+uio_GPDirEntries_add(uio_GPDirEntries *entries, const char *name,
+        uio_GPDirEntry *item) {
+    return CharHashTable_add(entries, name, item);
+}
+
+/* Remove a required name from entries, returning whether it existed.
+ * The associated item remains alive. Both arguments must be non-NULL. */
+static inline uio_bool
+uio_GPDirEntries_remove(uio_GPDirEntries *entries, const char *name) {
+    return CharHashTable_remove(entries, name);
+}
+
+/* Count keys in the required, read-only index. */
+static inline size_t
+uio_GPDirEntries_count(const uio_GPDirEntries *entries) {
+    return CharHashTable_count(entries);
+}
+
+/* Borrow the named item or return NULL; entries/name must be non-NULL. */
+static inline uio_GPDirEntry *
+uio_GPDirEntries_find(const uio_GPDirEntries *entries, const char *name) {
+    return (uio_GPDirEntry *) CharHashTable_find(entries, name);
+}
+
+/* Release the index and names, leaving items alive. NULL is allowed. */
+static inline void
+uio_GPDirEntries_deleteHashTable(uio_GPDirEntries *entries) {
+    CharHashTable_deleteHashTable(entries);
+}
+
+/* Create an owned iterator over required entries. No mutation is permitted
+ * until iteration finishes; the index must outlive the iterator. */
+static inline uio_GPDirEntries_Iterator *
+uio_GPDirEntries_getIterator(const uio_GPDirEntries *entries) {
+    return CharHashTable_getIterator(entries);
+}
+
+/* Test a required iterator for exhaustion. Order is unspecified. */
+static inline uio_bool
+uio_GPDirEntries_iteratorDone(const uio_GPDirEntries_Iterator *iterator) {
+    return CharHashTable_iteratorDone(iterator);
+}
+
+/* Borrow the current immutable name. iterator must be non-NULL and not done. */
+static inline const char *
+uio_GPDirEntries_iteratorName(const uio_GPDirEntries_Iterator *iterator) {
+    return CharHashTable_iteratorKey(iterator);
+}
+
+/* Borrow the current item. iterator must be non-NULL and not done. */
+static inline uio_GPDirEntry *
+uio_GPDirEntries_iteratorItem(const uio_GPDirEntries_Iterator *iterator) {
+    return (uio_GPDirEntry *) CharHashTable_iteratorValue(iterator);
+}
+
+/* Advance a required, non-done iterator and return the same iterator. */
+static inline uio_GPDirEntries_Iterator *
+uio_GPDirEntries_iteratorNext(uio_GPDirEntries_Iterator *iterator) {
+    return CharHashTable_iteratorNext(iterator);
+}
+
+/* Release an owned iterator; NULL is allowed. The index is unchanged. */
+static inline void
+uio_GPDirEntries_freeIterator(uio_GPDirEntries_Iterator *iterator) {
+    CharHashTable_freeIterator(iterator);
+}
 
 #ifdef uio_INTERNAL_GPHYS
 typedef uio_GPDirEntries_Iterator *uio_NativeEntriesContext;

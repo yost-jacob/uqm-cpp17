@@ -1,5 +1,6 @@
 uqm_SUBDIRS="stdio"
-uqm_CFILES="charhashtable.c defaultfs.c fileblock.c fstypes.c gphys.c io.c
+uqm_CXXFILES="charhashtable.cpp"
+uqm_CFILES="defaultfs.c fileblock.c fstypes.c gphys.c io.c
 		ioaux.c match.c mount.c mounttree.c paths.c physical.c uiostream.c
 		uioutils.c utils.c"
 uqm_HFILES="charhashtable.h defaultfs.h fileblock.h fstypes.h getint.h
@@ -16,7 +17,7 @@ fi
 #fi
 
 if [ -n "$MEMDEBUG" ]; then
-	uqm_CFILES="$uqm_CFILES hashtable.c memdebug.c"
-	uqm_HFILES="$uqm_HFILES hashtable.h memdebug.h"
+	uqm_CXXFILES="$uqm_CXXFILES memdebug.cpp"
+	uqm_HFILES="$uqm_HFILES memdebug.h"
 fi
 

@@ -122,7 +122,6 @@ set(UQM_SOURCES
     sc2/src/libs/strings/getstr.c
     sc2/src/libs/strings/sfileins.c
     sc2/src/libs/strings/sresins.c
-    sc2/src/libs/strings/stringhashtable.c
     sc2/src/libs/strings/strings.c
     sc2/src/libs/strings/unicode.c
     sc2/src/libs/task/tasklib.c
@@ -130,7 +129,7 @@ set(UQM_SOURCES
     sc2/src/libs/threads/thrcommon.c
     sc2/src/libs/time/sdl/sdltime.c
     sc2/src/libs/time/timecommon.c
-    sc2/src/libs/uio/charhashtable.c
+    sc2/src/libs/uio/charhashtable.cpp
     sc2/src/libs/uio/debug.c
     sc2/src/libs/uio/defaultfs.c
     sc2/src/libs/uio/fileblock.c

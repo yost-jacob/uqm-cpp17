@@ -34,7 +34,7 @@
 //   use in #if preprocessing directives.
 // - A macro "__bool_true_false_are_defined", which expands to the integer
 //   constant 1, suitable for use in #if preprocessing directives.
-#ifndef __bool_true_false_are_defined
+#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined)
 #undef bool
 #undef false
 #undef true

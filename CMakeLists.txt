@@ -73,7 +73,10 @@ target_link_libraries(uqm PRIVATE PkgConfig::SDL2 PkgConfig::VORBIS PNG::PNG ZLI
 include(CTest)
 if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
-    add_executable(uqm-build-tests tests/build.cpp sc2/src/libs/math/random.c)
+    add_executable(uqm-build-tests tests/build.cpp tests/hash_tables.cpp
+        tests/hash_tables_c.c tests/memory_log.cpp
+        sc2/src/libs/math/random.c sc2/src/libs/uio/charhashtable.cpp
+        sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE
         "${CMAKE_CURRENT_BINARY_DIR}/generated" sc2/src)
     target_link_libraries(uqm-build-tests PRIVATE Boost::unit_test_framework)

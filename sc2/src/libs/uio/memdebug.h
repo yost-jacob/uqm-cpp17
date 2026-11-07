@@ -24,6 +24,10 @@
 #include <stdio.h>
 #include "uioport.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Important: if you add an item here, add it to uio_MemDebug_LogTypeInfo
 // too. The order should be the same.
 typedef enum {
@@ -56,33 +60,47 @@ typedef struct uio_MemDebug_LogTypeInfo {
 	const char *name;
 	uio_MemDebug_PrintFunction *printFunction;
 	int flags;
-#define uio_MemDebug_PRINT_ALLOC  0x1
-#define uio_MemDebug_PRINT_FREE   0x2
-#define uio_MemDebug_PRINT_REF    0x4
-#define uio_MemDebug_PRINT_UNREF  0x8
-#define uio_MemDebug_PRINT_ALL \
-		(uio_MemDebug_PRINT_ALLOC | uio_MemDebug_PRINT_FREE | \
-		uio_MemDebug_PRINT_REF | uio_MemDebug_PRINT_UNREF)
 } uio_MemDebug_LogTypeInfo;
+
+/* C-compatible constants: these flags never change at runtime. */
+enum {
+    uio_MemDebug_PRINT_ALLOC = 0x1,
+    uio_MemDebug_PRINT_FREE = 0x2,
+    uio_MemDebug_PRINT_REF = 0x4,
+    uio_MemDebug_PRINT_UNREF = 0x8,
+    uio_MemDebug_PRINT_ALL = uio_MemDebug_PRINT_ALLOC | uio_MemDebug_PRINT_FREE |
+            uio_MemDebug_PRINT_REF | uio_MemDebug_PRINT_UNREF
+};
 
 extern const uio_MemDebug_LogTypeInfo uio_MemDebug_logTypeInfo[];
 
-typedef struct uio_MemDebug_PointerInfo {
-	int pointerRef;
-			// Ref counter for the associated pointer, not the pointerInfo
-			// itself.
-} uio_MemDebug_PointerInfo;
+/* Callers must serialize access to these diagnostic logs. All addresses are
+ * borrowed; logging never allocates or releases the resources being tracked. */
 
+/* Start a fresh log; existing records are discarded without freeing resources. */
 void uio_MemDebug_init(void);
+/* Clear all records; tracked resources remain owned by their callers. */
 void uio_MemDebug_unInit(void);
+/* Register a borrowed, non-NULL address with count 1. type must be valid.
+ * Duplicate registrations leave its count unchanged; allocation failure is fatal. */
 void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void *ptr);
+/* Remove a registered address without freeing it. Invalid addresses are fatal. */
 void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void *ptr);
+/* Increment a registered address's diagnostic count. Invalid addresses are fatal. */
 void uio_MemDebug_logRef(uio_MemDebug_LogType type, void *ptr);
+/* Decrement a registered address's count; invalid addresses/underflow are fatal. */
 void uio_MemDebug_logUnref(uio_MemDebug_LogType type, void *ptr);
+/* Print a borrowed address using the given valid type; out must be non-NULL. */
 void uio_MemDebug_printPointer(FILE *out, uio_MemDebug_LogType type,
 		void *ptr);
+/* Print all live addresses for a valid type to non-NULL out; order is unspecified. */
 void uio_MemDebug_printPointersType(FILE *out, uio_MemDebug_LogType type);
+/* Print every resource type to non-NULL out. No log is modified. */
 void uio_MemDebug_printPointers(FILE *out);
+
+#ifdef __cplusplus
+}
+#endif
 
 #define uio_MemDebug_debugAlloc(type, pointer) \
 	uio_MemDebug_logAllocation(uio_MemDebug_LogType_ ## type, pointer)
