@@ -32,6 +32,7 @@
 #include "master.h"
 #include "controls.h"
 #include "starcon.h"
+#include "game_session_c.h"
 #include "clock.h"
 		// for GameClockTick()
 #include "hyper.h"
@@ -54,40 +55,6 @@ volatile int MainExited = FALSE;
 uint32 mainThreadId;
 extern uint32 SDL_ThreadID(void);
 #endif
-
-// Open or close the periodically occuring QuasiSpace portal.
-// It changes the appearant portal size when necessary.
-static void
-checkArilouGate (void)
-{
-	BYTE counter;
-
-	counter = GET_GAME_STATE (ARILOU_SPACE_COUNTER);
-	if (GET_GAME_STATE (ARILOU_SPACE) == OPENING)
-	{	// The portal is opening or fully open
-		if (counter < 9)
-			++counter;
-	}
-	else
-	{	// The portal is closing or fully closed
-		if (counter > 0)
-			--counter;
-	}
-	SET_GAME_STATE (ARILOU_SPACE_COUNTER, counter);
-}
-
-// Battle frame callback function.
-static void
-on_battle_frame (void)
-{
-	GameClockTick ();
-	checkArilouGate ();
-
-	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-		SeedUniverse ();
-
-	DrawAutoPilotMessage (FALSE);
-}
 
 static void
 BackgroundInitKernel (DWORD TimeOut)
@@ -209,104 +176,11 @@ while (--ac > 0)
 //	OpenJournal ();
 	while (StartGame ())
 	{
-		// Initialise a new game
-		if (!SetPlayerInputAll ()) {
-			log_add (log_Fatal, "Could not set player input.");
-			explode ();  // Does not return;
-		}
-		InitGameStructures ();
-		InitGameClock ();
-		AddInitialGameEvents();
-
-		do
-		{
-#ifdef DEBUG
-			if (debugHook != NULL)
-			{
-				void (*saveDebugHook) (void);
-				saveDebugHook = debugHook;
-				debugHook = NULL;
-						// No further debugHook calls unless the called
-						// function resets debugHook.
-				(*saveDebugHook) ();
-				continue;
-			}
-#endif
-			SetStatusMessageMode (SMM_DEFAULT);
-
-			if (!((GLOBAL (CurrentActivity) | NextActivity) & CHECK_LOAD))
-				ZeroVelocityComponents (&GLOBAL (velocity));
-					// not going into talking pet conversation
-			else if (GLOBAL (CurrentActivity) & CHECK_LOAD)
-				GLOBAL (CurrentActivity) = NextActivity;
-
-			if ((GLOBAL (CurrentActivity) & START_ENCOUNTER)
-					|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
-			{
-				if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 2
-						&& !GET_GAME_STATE (STARBASE_AVAILABLE))
-				{	/* BGD mode */
-					InstallBombAtEarth ();
-				}
-				else if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0
-						|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
-				{
-					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-					VisitStarBase ();
-				}
-				else
-				{
-					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-					RaceCommunication ();
-				}
-
-				if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-				{
-					GLOBAL (CurrentActivity) &= ~START_ENCOUNTER;
-					if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
-						GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-				}
-			}
-			else if (GLOBAL (CurrentActivity) & START_INTERPLANETARY)
-			{
-				GLOBAL (CurrentActivity) = MAKE_WORD (IN_INTERPLANETARY, 0);
-
-				DrawAutoPilotMessage (TRUE);
-				SetGameClockRate (INTERPLANETARY_CLOCK_RATE);
-				ExploreSolarSys ();
-			}
-			else
-			{
-				// Entering HyperSpace or QuasiSpace.
-				GLOBAL (CurrentActivity) = MAKE_WORD (IN_HYPERSPACE, 0);
-
-				DrawAutoPilotMessage (TRUE);
-				SetGameClockRate (HYPERSPACE_CLOCK_RATE);
-				Battle (&on_battle_frame);
-			}
-
-			SetFlashRect (NULL);
-
-			LastActivity = GLOBAL (CurrentActivity);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-					&& (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE
-							// if died for some reason
-					|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0))
-			{
-				if (GET_GAME_STATE (KOHR_AH_KILLED_ALL))
-					InitCommunication (BLACKURQ_CONVERSATION);
-						// surrendered to Ur-Quan
-				else if (GLOBAL (CurrentActivity) & CHECK_RESTART)
-					GLOBAL (CurrentActivity) &= ~CHECK_RESTART;
-				break;
-			}
-		} while (!(GLOBAL (CurrentActivity) & CHECK_ABORT));
-
-		StopSound ();
-		UninitGameClock ();
-		UninitGameStructures ();
-		ClearPlayerInputAll ();
+		UQM_SESSION_EXIT result = RunGameSession (-1);
+		while (result.kind == UQM_SESSION_LOAD)
+			result = RunGameSession ((int)result.slot);
+		if (result.kind == UQM_SESSION_SHUTDOWN)
+			break;
 	}
 //	CloseJournal ();
 

@@ -40,6 +40,8 @@ public:
     // Validate candidate personal state, identity and universe binding first.
     // A client cannot roll back shared nodes or replace the universe by loading
     // a player save. Online restoration/rewards require host authorization.
+    // Target persistence API only. Production menus request a slot and unwind;
+    // decoding runs at the outer session boundary, never beneath a live mode.
     void load(std::istream &source);
     void openNormalOrbit(World &world);
     void launchLander(World &world); // Reject when world.canLand() is false.

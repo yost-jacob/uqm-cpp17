@@ -1,136 +1,97 @@
-# Orbit entry, active visits, and replacement of a running session
+# Synchronous modes, menus, and load boundaries
 
-This is the next proposed wireframe, not a production implementation. The native
-World tree, EnergyBehavior hierarchy, discovery split and typed physical progress
-already run in the game. Generation and orbital story callbacks still use the C
-handler tables. Their migration needs an explicit visit-lifetime contract.
+The production dispatcher is now in `sc2/src/uqm/game_mode.*` and
+`gameplay_modes.cpp`. This replaces the earlier proposal to handle synchronous
+loads using session epochs and shared orbital policies. A load does not replace
+state underneath a running story handler.
 
-## The existing contract is hidden in control-flow flags
-
-[generate.h](../../../sc2/src/uqm/planets/generate.h) already calls out splitting
-physical calculation from graphics/music activation. A generateOrbital callback
-can calculate a planet, load terrain/resources, prepare NPC queues, start a
-conversation or battle, modify story state, and decide whether orbit was entered.
-
-[genchmmr.c](../../../sc2/src/uqm/planets/generate/genchmmr.c) demonstrates the
-lifetime issue: it starts Ilwrath communication, then checks CHECK_ABORT/CHECK_LOAD
-before clearing activity flags, rebuilding queues and restoring group records.
-Those cleanup operations must not run against a newly loaded campaign.
-[solarsys.c](../../../sc2/src/uqm/planets/solarsys.c) repeats this distinction when
-returning from orbit and ending interplanetary flight.
-
-Consequently a handler cannot assume that the World reference it started with,
-or the global queue address it previously used, still represents the same visit
-after UI returns. Normal runtime reconstruction can also invalidate World views
-without replacing the campaign. shared_ptr ownership of persistent state alone
-does not identify a valid continuation.
-
-## Proposed flow
-
-Keep conventional virtual WorldBehavior policies and a simple session runner.
-Policies decide the story action; the runner owns UI/resources and validates
-completion. EnergyBehavior remains the surface-interaction component.
+## Implemented control flow
 
 ```mermaid
 flowchart TD
-    Enter[Enter a world by stable WorldId] --> Prepare[WorldBehavior reads live state and selects an OrbitAction]
-    Prepare --> Visit[Capture session epoch, world ID, and policy lifetime]
-    Visit --> Kind{OrbitAction kind}
-    Kind -->|Normal orbit| Surface[Build physical surface/view only when needed]
-    Kind -->|Conversation or encounter| Encounter[Create visit-owned encounter resources]
-    Kind -->|Starbase or final battle| Special[Run the corresponding existing interface]
-    Surface --> Run[Run UI through the session adapter]
-    Encounter --> Run
-    Special --> Run
-    Run --> Same{Same session epoch and valid completion?}
-    Same -->|No| Drop[Release only resources owned by this visit]
-    Same -->|Yes| Complete[Policy handles typed completion using current state and stable IDs]
-    Complete --> Transition[Resume orbit, return to flight, leave system, or select follow-up]
+    App[Starcon2Main / title menu] --> Session[GameSession::runCampaign]
+    Session --> Init[Initialize campaign runtime; decode requested save here]
+    Init --> Dispatch[GameSession::run]
+    Dispatch --> Mode[Current GameMode::run]
+    Mode --> Subgame[Existing flight, system, encounter or starbase loop]
+    Subgame --> Menu[Game Options menu]
+    Menu -->|nullopt| Subgame
+    Menu -->|load, title or shutdown| Unwind[Return through nested C callers and cleanup]
+    Unwind --> Result[Mode returns SessionExit]
+    Mode -->|next unique_ptr GameMode| Dispatch
+    Result --> Destroy[Destroy current mode and campaign runtime]
+    Destroy --> App
+    App -->|load slot| Session
 ```
 
-Representative OrbitAction kinds are NormalOrbit, Conversation, Encounter,
-Starbase, FinalBattle and ReturnToFlight. An action carries explicit identifiers
-and the small encounter parameters it needs. The runner validates the relevant
-payload. It does not accept a captured lambda or arbitrary callback that can
-silently retain old state references.
+GameMode owns shared GameState lifetime and a checked PlayerId. Its synchronous
+run method returns `variant<unique_ptr<GameMode>, SessionExit>`. The dispatcher
+replaces the current mode only after run returns, so transitions do not accumulate
+stack frames. A successor must be non-null. Invalid transitions and native C++
+exceptions produce a Failed exit after the current mode is destroyed.
 
-The normal-orbit path generates surface details and activates resources lazily;
-a homeworld conversation should not require a lander surface first. Shared
-physical flags determine shielding/layout; personal flags affect this player's
-eligibility and story response. Live state is queried when selecting the action,
-not cached when the system was first constructed.
+Concrete adapters cover HyperSpace/QuasiSpace, solar-system exploration, encounters
+(including starbases and bomb installation), title-selected loading, and debug
+hooks. Existing orbital, lander, conversation and battle loops remain inside
+these adapters; they have not all become independent modes.
 
-## Lifetime and ownership recommendation
+The native Game Options entry returns `optional<SessionExit>`. nullopt means the
+menu closed normally and its caller can resume. A value must propagate outward.
+Save remains an ordinary menu action and does not destroy the running world.
 
-An active visit needs only a stable world ID, the originating session epoch and
-a behavior policy. It must not retain a borrowed World, PLANET_DESC, campaign
-record or global queue address across the UI call.
+## C compatibility and pending exits
 
-```mermaid
-classDiagram
-    GameSession o-- GameState : shared_ptr
-    GameSession *-- SessionRuntime : active UI and encounter resources
-    SolarSystem *-- World : unique_ptr
-    World *-- EnergyBehavior : unique_ptr
-    World o-- WorldBehavior : shared_ptr to const policy
-    OrbitVisit o-- WorldBehavior : same immutable policy
-    OrbitVisit *-- WorldId : copied identity
-    OrbitVisit *-- SessionEpoch : originating campaign attachment
-    SessionRuntime *-- OrbitVisit : active operation
-```
+C menus still use their existing input callbacks and Boolean return values.
+GameOptions translates the native optional into a session-owned pending exit and
+CHECK_LOAD/CHECK_ABORT unwind flags. Enclosing C loops perform their established
+cleanup and return. They do not decode another campaign while running.
 
-The recommended refinement is shared_ptr<const WorldBehavior> for an immutable
-orbital policy, retained by both its world and the active visit. This changes the
-earlier unique-policy sketch for a specific reason: a visit may legitimately
-outlive the runtime World view that selected it. Policy objects own configuration,
-not campaign progress or borrowed runtime pointers. Their methods receive the
-current session explicitly.
+The pending exit retains the selected save slot independently of flags that old
+callers clear or overwrite. Shutdown takes priority over failure, load and title;
+the first request wins at equal priority. Requests are gameplay-thread operations,
+not a thread-safe message queue. The dispatcher clears them when a run ends.
 
-EnergyBehavior stays uniquely owned: its interaction returns a value before UI
-runs, so it does not need a second owner. World and moon objects also remain
-uniquely owned. This does not require shared_ptr<World> or a shared scene graph.
+Selecting a load performs a read-only save-summary preflight. Actual LoadGame
+payload decoding happens in the next runCampaign call, after the previous mode,
+nested calls, clock, queues and campaign resources have been torn down. The
+process-lifetime GameState storage remains stable for legacy C pointers; the
+legacy initializer and decoder rebuild its payload in place.
 
-If exclusive ownership of orbital policies is preferred, an alternative is for
-each OrbitVisit to construct its own policy through the existing factory concept.
-That preserves unique_ptr at the cost of a fresh policy instance per visit. The
-choice should be settled before implementing the orbital hierarchy; no production
-ownership contract has been changed for this proposal.
+## Failures and remaining work
 
-## Session epoch and completion
+No exception is used to jump through C gameplay frames. C entry adapters catch
+native exceptions and translate them into flags/results. Native dispatcher errors
+are logged and return to the title menu. Destructors release resources; they do
+not publish gameplay progress.
 
-A SessionEpoch is a monotonically changing attachment identity. Advance it when a
-new game, load, universe transfer or abandoned/replaced session invalidates active
-operations. It is distinct from ordinary state revisions: a clock tick or quest
-flag change must not invalidate its own legitimate conversation completion.
+The legacy decoder is not transactional. Summary preflight catches unavailable
+or invalid summaries before unwinding. A later payload failure discards the fresh
+partial campaign and returns to title; it cannot resume the old campaign. A
+candidate-state decoder is separate future work, as is a new portable save schema.
 
-The application-owned GameSession controller survives in-place load. Its previous
-persistent/runtime attachment can be replaced. The runner compares the captured
-epoch before any post-UI story mutation. On mismatch or abort, it skips the old
-continuation and releases only visit-owned resources.
+## Next world-behavior migration
 
-On a valid return, the policy receives current state, a copied WorldId and a
-typed completion result. Any needed runtime World is looked up again by ID.
-Even an unchanged epoch does not make an old World reference safe after normal
-view reconstruction. Missing worlds or a changed location produce an explicit
-transition rather than dereferencing the previous view.
+WorldBehavior can retain the conventional unique_ptr ownership already sketched
+in world.hpp. Orbital action selection should read live campaign/world state and
+return typed data. An orbital runner owns its temporary encounter/UI resources
+and propagates session exits instead of resuming story completion after load.
+Existing C handlers still inspect unwind flags during this incremental migration.
+Their queue ownership must be audited before wrapping those resources in RAII.
 
-A Chmmr completion can inspect current bomb progress and request leaving the
-system. An encounter completion can choose normal orbit after guards are cleared.
-The runner performs that transition after the state operation, outside locks.
-No destructor publishes gameplay progress or clears whatever global queues happen
-to exist at destruction time.
+A shared immutable orbital policy or session epoch is not required to solve the
+current synchronous load path. If future asynchronous operations can outlive a
+session, give those operations an explicit cancellation/identity contract then.
+Networking, concurrent simulation and orbital handler conversion are not part of
+this dispatcher change.
 
-## Incremental implementation boundary
+## Verification
 
-1. Add the session epoch at actual new/load/attachment boundaries and retain the
-   current C behavior while testing stale-completion rejection.
-2. Give one ordinary orbital visit explicit runtime/resource ownership.
-3. Introduce default WorldBehavior selection and the typed action runner.
-4. Migrate one conversation/encounter path, including its completion and cleanup.
-5. Retire the corresponding function-table hooks only after all their callers use
-   the explicit context; move other generators incrementally.
+Boost.Test covers 10,001 flat transitions, successor destruction, slot zero,
+pending menu exits and shutdown priority, malformed exits, null successors,
+exception cleanup and dispatcher reuse. Debug/Release CTest, the legacy build,
+and the full AddressSanitizer/UndefinedBehaviorSanitizer suite pass.
 
-Encounter resources need a concrete owner before adopting RAII cleanup: copying
-legacy global queue handles into an owner would create duplicate ownership. This
-wireframe does not decide co-op encounter instancing or implement network commands.
-It addresses the existing single-player load/reentry contract first.
+A private-config GUI smoke test starts a new game at Sol, saves slot zero,
+cancels the load picker without leaving the campaign, accepts a load back into
+flight, and exits through the confirmation menu to title. This is a focused
+control-flow check, not a complete gameplay or corrupt-save compatibility audit.

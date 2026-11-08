@@ -210,6 +210,9 @@ set(UQM_SOURCES
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/game_state.cpp
+    sc2/src/uqm/game_mode.cpp
+    sc2/src/uqm/game_menu.cpp
+    sc2/src/uqm/gameplay_modes.cpp
     sc2/src/uqm/discovery_state.cpp
     sc2/src/uqm/discovery_state_c.cpp
     sc2/src/uqm/world_state.cpp

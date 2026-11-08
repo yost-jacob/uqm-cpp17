@@ -24,9 +24,11 @@ WorldBehavior generation/orbit hierarchy below remains a target.
 The sketches use a separate namespace and illustrate the destination; their
 signatures are not a second production API or a second live state store.
 
-The next architecture checkpoint is the [orbit-entry and active-visit wireframe](orbit-entry.md).
-It makes the existing CHECK_LOAD/abort continuation contract explicit and proposes
-policy/resource lifetimes before the C orbital handlers are moved into classes.
+The production [mode dispatcher and load boundary](orbit-entry.md) now unwind
+menus and synchronous gameplay before replacing campaign data. Native menus use
+optional exit results; C flags remain compatibility unwind signals. This replaces
+the earlier epoch/shared-policy proposal for synchronous loading. Orbital behavior
+conversion can proceed within that lifecycle contract.
 
 Start with [GameState](game_state.hpp), the storage boundary, and
 [PlayerEntity](player_entity.hpp), the complete personal state owner.

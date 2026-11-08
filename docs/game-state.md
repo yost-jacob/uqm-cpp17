@@ -173,7 +173,10 @@ concurrent whole-world restores.
 Aggregate restore tests exercise the compatibility contract; they do not replace
 an end-to-end gameplay save/load test.
 
-The next design boundary is [orbit entry and visit lifetime](design/solar-system/orbit-entry.md):
-a conversation/battle can return after a campaign load or runtime reconstruction.
-The proposal separates action selection, visit-owned resources, and epoch-checked
-completion before migrating the remaining C orbital handlers.
+The [mode dispatcher and load boundary](design/solar-system/orbit-entry.md) now
+run in production. GameSession owns a flat synchronous loop over unique_ptr
+GameMode objects. Native menus return optional session exits; C adapters preserve
+those requests while legacy calls unwind. Actual load decoding runs only after
+old runtime cleanup. The C payload decoder remains nontransactional: a deep decode
+failure returns to title rather than restoring the previous campaign. Remaining
+orbital handlers can migrate within this established control-flow contract.

@@ -17,6 +17,7 @@
  */
 
 #include "gameopt.h"
+#include "game_session_c.h"
 
 #include "build.h"
 #include "colors.h"
@@ -88,8 +89,8 @@ ConfirmSaveLoad (STAMP *MsgStamp)
 
 enum
 {
-	SAVE_GAME = 0,
-	LOAD_GAME,
+	SAVE_GAME = UQM_MENU_SAVE,
+	LOAD_GAME = UQM_MENU_LOAD,
 	QUIT_GAME,
 	SETTINGS,
 	EXIT_GAME_MENU,
@@ -1139,7 +1140,7 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 	else
 	{
 		ConfirmSaveLoad (pickState->saving ? &saveStamp : NULL);
-		success = LoadGame (gameIndex, NULL);
+		success = RequestGameSessionLoad (gameIndex);
 	}
 
 	// TODO: the same should be done for both save and load if we also
@@ -1154,8 +1155,8 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 	return success;
 }
 
-static BOOLEAN
-PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
+BOOLEAN
+LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 {
 	CONTEXT OldContext;
 	MENU_STATE MenuState;
@@ -1246,7 +1247,7 @@ PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
 	if (pickState.success && !saving)
-	{	// Load succeeded, signal up the chain
+	{	// Load requested; unwind before the session decodes it
 		GLOBAL (CurrentActivity) |= CHECK_LOAD;
 	}
 
@@ -1272,8 +1273,8 @@ PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 	return pickState.success;
 }
 
-static BOOLEAN
-DoGameOptions (MENU_STATE *pMS)
+BOOLEAN
+LegacyDoGameOptions (MENU_STATE *pMS)
 {
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		return FALSE;
@@ -1291,7 +1292,7 @@ DoGameOptions (MENU_STATE *pMS)
 			case SAVE_GAME:
 			case LOAD_GAME:
 				SetFlashRect (NULL);
-				if (PickGame (pMS->CurState == SAVE_GAME, FALSE))
+				if (LegacyPickGame (pMS->CurState == SAVE_GAME, FALSE))
 					return FALSE;
 				SetFlashRect (SFR_MENU_3DO);
 				break;
@@ -1309,39 +1310,4 @@ DoGameOptions (MENU_STATE *pMS)
 		DoMenuChooser (pMS, PM_SAVE_GAME);
 
 	return TRUE;
-}
-
-// Returns TRUE when the owner menu should continue
-BOOLEAN
-GameOptions (void)
-{
-	MENU_STATE MenuState;
-
-	memset (&MenuState, 0, sizeof MenuState);
-
-	if (LastActivity == CHECK_LOAD)
-	{	// Selected LOAD from main menu
-		BOOLEAN success;
-
-		DrawMenuStateStrings (PM_SAVE_GAME, LOAD_GAME);
-		success	= PickGame (FALSE, TRUE);
-		if (!success)
-		{	// Selected LOAD from main menu, and canceled
-			GLOBAL (CurrentActivity) |= CHECK_ABORT;
-		}
-		return FALSE;
-	}
-
-	MenuState.CurState = SAVE_GAME;
-	DrawMenuStateStrings (PM_SAVE_GAME, MenuState.CurState);
-
-	SetFlashRect (SFR_MENU_3DO);
-
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-	MenuState.InputFunc = DoGameOptions;
-	DoInput (&MenuState, TRUE);
-
-	SetFlashRect (NULL);
-
-	return !(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD));
 }

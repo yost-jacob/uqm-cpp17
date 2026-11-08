@@ -1,4 +1,4 @@
-uqm_CXXFILES="trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp energy_behavior.cpp world_c.cpp"
+uqm_CXXFILES="trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp energy_behavior.cpp world_c.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
 uqm_SUBDIRS="comm planets ships supermelee"
 uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		cnctdlg.c collide.c comm.c commanim.c commglue.c confirm.c credits.c
@@ -20,6 +20,6 @@ uqm_HFILES="battlecontrols.h battle.h build.h clock.h cnctdlg.h coderes.h
 		nameref.h oscill.h pickship.h process.h races.h resinst.h respkg.h
 		restart.h save.h settings.h setup.h setupmenu.h shipcont.h ship.h
 		sis.h sounds.h starbase.h starcon.h state.h status.h tactrans.h
-		starmap.h star_map.hpp game_state.hpp world_state.hpp world_types.hpp world.hpp energy_behavior.hpp world_c.h
+		starmap.h star_map.hpp game_state.hpp world_state.hpp world_types.hpp world.hpp energy_behavior.hpp world_c.h game_mode.hpp game_menu.hpp game_session_c.h
 		units.h uqmdebug.h util.h velocity.h weapon.h"
 

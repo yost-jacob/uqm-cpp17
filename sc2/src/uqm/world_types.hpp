@@ -11,6 +11,13 @@
 #include <vector>
 
 namespace uqm {
+struct PlayerId {
+    std::uint64_t value;
+    constexpr bool operator==(PlayerId other) const noexcept { return value == other.value; }
+    constexpr bool operator!=(PlayerId other) const noexcept { return !(*this == other); }
+};
+inline constexpr PlayerId SinglePlayerId{1};
+
 struct UniverseId {
     std::uint64_t value;
     constexpr bool operator==(UniverseId other) const noexcept { return value == other.value; }

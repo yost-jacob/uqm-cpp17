@@ -7,14 +7,9 @@
 #include <string>
 #include "world_state.hpp"
 #include "world_types.hpp"
+#include "game_mode.hpp"
 
 namespace uqm {
-struct PlayerId {
-    std::uint64_t value;
-    constexpr bool operator==(PlayerId other) const noexcept { return value == other.value; }
-    constexpr bool operator!=(PlayerId other) const noexcept { return !(*this == other); }
-};
-inline constexpr PlayerId SinglePlayerId{1};
 struct UserProfile { PlayerId id; std::string displayName; };
 
 // Copied values, never another mutable ship store. Fuel uses the existing game
@@ -149,6 +144,20 @@ class GameSession {
 public:
     // Reject null state (invalid_argument) and unknown player (out_of_range).
     GameSession(std::shared_ptr<GameState> state, PlayerId player);
+    ~GameSession();
+    GameSession(const GameSession &) = delete;
+    GameSession &operator=(const GameSession &) = delete;
+    // Flat synchronous dispatcher. Releases the current mode before returning.
+    // Null modes, invalid transitions and C++ exceptions become Failed exits.
+    SessionExit run(std::unique_ptr<GameMode> initialMode);
+    // Production lifecycle/legacy adapters; load only at an unwound boundary.
+    SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
+    // Transitional C menu mailbox. Native menus return the same optional result.
+    // Gameplay-thread only. Shutdown > failure > load > title; first slot wins.
+    void requestMenuExit(SessionExit exit);
+    void requestLoad(unsigned slot);
+    MenuResult menuExit() const;
+    std::shared_ptr<GameState> stateOwner() noexcept;
     PlayerId playerId() const noexcept;
     PlayerEntity &player();
     const PlayerEntity &player() const;
@@ -158,6 +167,9 @@ public:
 private:
     std::shared_ptr<GameState> state_;
     PlayerId player_;
+    std::unique_ptr<GameMode> currentMode_;
+    MenuResult pendingExit_;
+    bool running_ = false;
 };
 
 // Process-lifetime single-player session used by the C compatibility adapter.
