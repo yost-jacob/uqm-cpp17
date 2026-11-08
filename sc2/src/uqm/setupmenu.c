@@ -782,13 +782,17 @@ count_widgets (WIDGET **widgets)
 	return count;
 }
 
+/* Owns widget label copies until clean_up_widgets; widgets borrow pointers. */
 static stringbank *bank = NULL;
 static FRAME setup_frame = NULL;
 
+/* Build widgets from the loaded SetupTab, which must contain the expected
+ * menu/option counts. Label copies remain valid until clean_up_widgets. */
 static void
 init_widgets (void)
 {
-	const char *buffer[100], *str, *title;
+	enum { LABEL_BUFFER_CAPACITY = 100 };
+	const char *buffer[LABEL_BUFFER_CAPACITY], *str, *title;
 	int count, i, index;
 
 	if (bank == NULL)
@@ -811,7 +815,7 @@ init_widgets (void)
 
 	/* Menus */
 	title = StringBank_AddOrFindString (bank, GetStringAddress (SetAbsStringTableIndex (SetupTab, 0)));
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, 1)), '\n', 100, buffer, bank) != MENU_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, 1)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != MENU_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
 		log_add (log_Fatal, "PANIC: Incorrect number of Menu Subtitles");
@@ -842,7 +846,7 @@ init_widgets (void)
 	}
 		
 	/* Options */
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, 2)), '\n', 100, buffer, bank) != CHOICE_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, 2)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != CHOICE_COUNT)
 	{
 		log_add (log_Fatal, "PANIC: Incorrect number of Choice Options");
 		exit (EXIT_FAILURE);
@@ -878,7 +882,7 @@ init_widgets (void)
 			exit (EXIT_FAILURE);
 		}
 		str = GetStringAddress (SetAbsStringTableIndex (SetupTab, index++));
-		optcount = SplitString (str, '\n', 100, buffer, bank);
+		optcount = SplitString (str, '\n', LABEL_BUFFER_CAPACITY, buffer, bank);
 		choices[i].numopts = optcount;
 		choices[i].options = HMalloc (optcount * sizeof (CHOICE_OPTION));
 		for (j = 0; j < optcount; j++)
@@ -898,7 +902,7 @@ init_widgets (void)
 				exit (EXIT_FAILURE);
 			}
 			str = GetStringAddress (SetAbsStringTableIndex (SetupTab, index++));
-			tipcount = SplitString (str, '\n', 100, buffer, bank);			
+			tipcount = SplitString (str, '\n', LABEL_BUFFER_CAPACITY, buffer, bank);
 			if (tipcount > 3)
 			{
 				tipcount = 3;
@@ -931,7 +935,7 @@ init_widgets (void)
 		exit (EXIT_FAILURE);
 	}
 
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', 100, buffer, bank) != SLIDER_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != SLIDER_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
 		log_add (log_Fatal, "PANIC: Incorrect number of Slider Options");
@@ -972,7 +976,7 @@ init_widgets (void)
 			exit (EXIT_FAILURE);
 		}
 		str = GetStringAddress (SetAbsStringTableIndex (SetupTab, index++));
-		tipcount = SplitString (str, '\n', 100, buffer, bank);
+		tipcount = SplitString (str, '\n', LABEL_BUFFER_CAPACITY, buffer, bank);
 		if (tipcount > 3)
 		{
 			tipcount = 3;
@@ -990,7 +994,7 @@ init_widgets (void)
 		exit (EXIT_FAILURE);
 	}
 
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', 100, buffer, bank) != BUTTON_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != BUTTON_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
 		log_add (log_Fatal, "PANIC: Incorrect number of Button Options");
@@ -1022,7 +1026,7 @@ init_widgets (void)
 			exit (EXIT_FAILURE);
 		}
 		str = GetStringAddress (SetAbsStringTableIndex (SetupTab, index++));
-		tipcount = SplitString (str, '\n', 100, buffer, bank);
+		tipcount = SplitString (str, '\n', LABEL_BUFFER_CAPACITY, buffer, bank);
 		if (tipcount > 3)
 		{
 			tipcount = 3;
@@ -1040,7 +1044,7 @@ init_widgets (void)
 		exit (EXIT_FAILURE);
 	}
 
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', 100, buffer, bank) != LABEL_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != LABEL_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
 		log_add (log_Fatal, "PANIC: Incorrect number of Label Options");
@@ -1070,7 +1074,7 @@ init_widgets (void)
 			exit (EXIT_FAILURE);
 		}
 		str = GetStringAddress (SetAbsStringTableIndex (SetupTab, index++));
-		linecount = SplitString (str, '\n', 100, buffer, bank);
+		linecount = SplitString (str, '\n', LABEL_BUFFER_CAPACITY, buffer, bank);
 		labels[i].line_count = linecount;
 		labels[i].lines = (const char **)HMalloc(linecount * sizeof(const char *));
 		for (j = 0; j < linecount; j++)
@@ -1086,7 +1090,7 @@ init_widgets (void)
 		exit (EXIT_FAILURE);
 	}
 
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', 100, buffer, bank) != TEXTENTRY_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != TEXTENTRY_COUNT)
 	{
 		log_add (log_Fatal, "PANIC: Incorrect number of Text Entries");
 		exit (EXIT_FAILURE);
@@ -1114,7 +1118,7 @@ init_widgets (void)
 		exit (EXIT_FAILURE);
 	}
 
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', 100, buffer, bank) != TEXTENTRY_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != TEXTENTRY_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
 		log_add (log_Fatal, "PANIC: Incorrect number of Text Entries");
@@ -1134,7 +1138,7 @@ init_widgets (void)
 		exit (EXIT_FAILURE);
 	}
 
-	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', 100, buffer, bank) != CONTROLENTRY_COUNT)
+	if (SplitString (GetStringAddress (SetAbsStringTableIndex (SetupTab, index++)), '\n', LABEL_BUFFER_CAPACITY, buffer, bank) != CONTROLENTRY_COUNT)
 	{
 		log_add (log_Fatal, "PANIC: Incorrect number of Control Entries");
 		exit (EXIT_FAILURE);
@@ -1165,6 +1169,8 @@ init_widgets (void)
 	}
 }
 
+/* Release widget storage and label copies after widgets stop being displayed.
+ * No borrowed label pointer may be used after this function returns. */
 static void
 clean_up_widgets (void)
 {
