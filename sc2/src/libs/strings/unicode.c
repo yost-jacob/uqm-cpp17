@@ -272,9 +272,15 @@ utf8StringCopy (unsigned char *dst, size_t size, const unsigned char *src)
 	if (size == 0)
 		return 0;
 
-	strncpy ((char *) dst, (const char *) src, size);
-	dst[size - 1] = '\0';
-	
+	/* Preserve complete UTF-8 characters when a display buffer truncates text.
+	 * Keep the old zero-padding behavior for callers storing fixed-size fields. */
+	size_t count = 0;
+	while (count + 1 < size && src[count])
+		++count;
+	while (count > 0 && (src[count] & 0xc0) == 0x80)
+		--count;
+	memcpy (dst, src, count);
+	memset (dst + count, 0, size - count);
 	return dst;
 }
 

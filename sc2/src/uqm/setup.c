@@ -17,6 +17,7 @@
  */
 
 #include "setup.h"
+#include "starmap.h"
 
 #include "coderes.h"
 #include "controls.h"
@@ -138,6 +139,8 @@ LoadKernel (int argc, char *argv[])
 
 	/* Now load the rest of the addons, in order. */
 	prepareAddons (optAddons);
+	if (!LoadStarMap())
+		return FALSE;
 
 	{
 		COLORMAP ColorMapTab;

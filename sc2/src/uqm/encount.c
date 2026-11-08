@@ -317,7 +317,7 @@ InitEncounter (void)
 		t.CharCount = (COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += 12;
-		GetClusterName (CurStarDescPtr, buf);
+		GetClusterName (CurStarDescPtr, buf, sizeof(buf));
 		t.pStr = buf;
 		t.CharCount = (COUNT)~0;
 		font_DrawText (&t);

@@ -217,11 +217,11 @@ InitPlanetInfo (void)
 		STAR_DESC *pSD;
 
 		// Set record offsets for all stars to 0 (not present)
-		pSD = &star_array[0];
+		pSD = GetStar(0);
 		do
 		{
 			swrite_32 (fp, 0);
-			++pSD;
+			pSD = GetStar(GetStarIndex(pSD) + 1);
 		} while (pSD->star_pt.x <= MAX_X_UNIVERSE
 				&& pSD->star_pt.y <= MAX_Y_UNIVERSE);
 
@@ -253,7 +253,7 @@ GetPlanetInfo (void)
 		COUNT star_index, planet_index, moon_index;
 		DWORD offset;
 
-		star_index = (COUNT)(CurStarDescPtr - star_array);
+		star_index = (COUNT)(GetStarIndex(CurStarDescPtr));
 		planet_index = (COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
 				- pSolarSysState->PlanetDesc);
 		if (pSolarSysState->pOrbitalDesc->pPrevDesc == pSolarSysState->SunDesc)
@@ -298,7 +298,7 @@ PutPlanetInfo (void)
 		COUNT star_index, planet_index, moon_index;
 		DWORD offset;
 
-		star_index = (COUNT)(CurStarDescPtr - star_array);
+		star_index = (COUNT)(GetStarIndex(CurStarDescPtr));
 		planet_index = (COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
 				- pSolarSysState->PlanetDesc);
 		if (pSolarSysState->pOrbitalDesc->pPrevDesc == pSolarSysState->SunDesc)

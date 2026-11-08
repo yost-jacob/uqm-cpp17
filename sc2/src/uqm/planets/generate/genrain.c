@@ -84,12 +84,12 @@ GenerateRainbowWorld_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *wor
 				GET_GAME_STATE (RAINBOW_WORLD1));
 
 		which_rainbow = 0;
-		SDPtr = &star_array[0];
+		SDPtr = GetStar(0);
 		while (SDPtr != CurStarDescPtr)
 		{
 			if (SDPtr->Index == RAINBOW_DEFINED)
 				++which_rainbow;
-			++SDPtr;
+			SDPtr = GetStar(GetStarIndex(SDPtr) + 1);
 		}
 		rainbow_mask |= 1 << which_rainbow;
 		SET_GAME_STATE (RAINBOW_WORLD0, LOBYTE (rainbow_mask));

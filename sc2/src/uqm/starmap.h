@@ -25,14 +25,31 @@ extern "C" {
 #endif
 
 extern STAR_DESC *CurStarDescPtr;
-extern STAR_DESC *star_array;
+/* Load once from contentDir/base/starmap.json before any game session. Failure
+ * logs a diagnostic and returns FALSE. Names/descriptors live until shutdown. */
+BOOLEAN LoadStarMap(void);
+void FreeStarMap(void);
+/* Borrow a catalogue descriptor by its stable index (including sentinels).
+ * GetStarIndex requires a descriptor returned here/FindStar, never a copy. */
+STAR_DESC *GetStar(COUNT index);
+COUNT GetStarIndex(const STAR_DESC *star);
+/* Borrow NUL-terminated UTF-8 text owned by a catalogue StarDesc. */
+const char *GetStarPrefix(const STAR_DESC *star);
+const char *GetStarPostfix(const STAR_DESC *star);
+const char *GetQuasiSpaceName(void);
+/* C bridge for the class search; callers select the space explicitly. */
+STAR_DESC *FindStarInSpace(const STAR_DESC *last, const POINT *position,
+        SIZE xbounds, SIZE ybounds, bool quasispace);
 
-#define NUM_SOLAR_SYSTEMS 502
+enum { NUM_SOLAR_SYSTEMS = 502, NUM_QUASISPACE_LOCATIONS = 16,
+    QUASISPACE_FIRST = NUM_SOLAR_SYSTEMS + 1, STAR_CATALOGUE_SIZE = QUASISPACE_FIRST + NUM_QUASISPACE_LOCATIONS + 1 };
 
-extern STAR_DESC* FindStar (STAR_DESC *pLastStar, POINT *puniverse,
+extern STAR_DESC* FindStar (STAR_DESC *pLastStar, const POINT *puniverse,
 		SIZE xbounds, SIZE ybounds);
 
-extern void GetClusterName (const STAR_DESC *pSD, UNICODE buf[]);
+/* Copy a display name, truncating safely at a UTF-8 boundary. buf must have
+ * capacity bytes; zero capacity writes nothing. star must be a catalogue handle. */
+extern void GetClusterName(const STAR_DESC *star, UNICODE *buf, size_t capacity);
 
 #if defined(__cplusplus)
 }

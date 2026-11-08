@@ -130,6 +130,8 @@ struct star_desc
 	BYTE Index;
 	BYTE Prefix;
 	BYTE Postfix;
+	/* In-memory catalogue identity only; never serialized. */
+	COUNT catalogue_index;
 };
 
 struct node_info

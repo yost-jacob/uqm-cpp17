@@ -879,7 +879,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 				SET_GAME_STATE (ARILOU_SPACE_SIDE, QuasiState);
 				if (SDPtr)
 				{
-					GetClusterName (SDPtr, buf);
+					GetClusterName (SDPtr, buf, sizeof(buf));
 					starPt = SDPtr->star_pt;
 					break;
 				}

@@ -511,7 +511,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 	}
 
 #ifdef DEBUG_ORBITS
-	GetClusterName (CurStarDescPtr, buf);
+	GetClusterName (CurStarDescPtr, buf, sizeof(buf));
 	log_add (log_Debug, "cluster name = %s  color = %c type = %c", buf,
 			scolor[STAR_COLOR (CurStarDescPtr->Type)],
 			stype[STAR_TYPE (CurStarDescPtr->Type)]);

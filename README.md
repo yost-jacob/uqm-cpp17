@@ -11,7 +11,7 @@ Install dependencies (Ubuntu 22.04 or newer):
 ```sh
 sudo apt-get update
 sudo apt-get install build-essential cmake ninja-build pkg-config \
-    libsdl2-dev libpng-dev libvorbis-dev zlib1g-dev libboost-test-dev
+    libsdl2-dev libpng-dev libvorbis-dev zlib1g-dev libboost-test-dev nlohmann-json3-dev
 ```
 
 From the repository root:
@@ -92,3 +92,14 @@ explicitly initialize/release pools; save-slot previews swap ownership instead o
 copying an owning queue. External game resources still need their normal cleanup
 before a pool is destroyed. All twelve items in the initial priority list are
 implemented.
+
+## Data-driven star map
+
+The star catalogue and its prefix/postfix names are loaded at startup from
+[`sc2/content/base/starmap.json`](sc2/content/base/starmap.json). `StarMap` owns a
+vector of `StarDesc` objects, each with its own strings. Edit names and restart
+without rebuilding. Existing enum values, catalogue identities and saved star
+fields are retained. See [the editing and ownership guide](docs/starmap.md).
+
+JSON loading uses the header-only nlohmann/json library (`nlohmann-json3-dev` on
+Ubuntu), also required for the legacy build.

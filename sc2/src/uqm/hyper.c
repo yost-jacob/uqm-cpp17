@@ -483,7 +483,7 @@ InterplanetaryTransition (ELEMENT *ElementPtr)
 			COUNT index;
 			const POINT portal_pt[] = QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
 
-			index = CurStarDescPtr - &star_array[NUM_SOLAR_SYSTEMS + 1];
+			index = GetStarIndex(CurStarDescPtr) - QUASISPACE_FIRST;
 			GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (portal_pt[index].x);
 			GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (portal_pt[index].y);
 
