@@ -32,7 +32,7 @@ LoadMasterShipList (void (* YieldProcessing)(void))
 	COUNT num_entries;
 	SPECIES_ID s_id = ARILOU_ID;
 	num_entries = LAST_MELEE_ID - ARILOU_ID + 1;
-	InitQueue (&master_q, num_entries, sizeof (MASTER_SHIP_INFO));
+	InitQueue (&master_q, num_entries, QUEUE_MASTER_SHIP);
 	while (num_entries--)
 	{
 		HMASTERSHIP hBuiltShip;

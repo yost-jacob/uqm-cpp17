@@ -41,7 +41,7 @@
 #include <errno.h>
 
 
-static void dumpEventCallback (const EVENT *eventPtr, void *arg);
+static void dumpEventCallback (LINK *link, void *arg);
 
 static void starRecurse (STAR_DESC *star, void *arg);
 static void planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system,
@@ -238,10 +238,10 @@ eventName (BYTE func_index)
 }
 
 static void
-dumpEventCallback (const EVENT *eventPtr, void *arg)
+dumpEventCallback (LINK *link, void *arg)
 {
 	FILE *out = (FILE *) arg;
-	dumpEvent (out, eventPtr);
+	dumpEvent (out, (const EVENT *)link);
 }
 
 void
@@ -258,7 +258,7 @@ void
 dumpEvents (FILE *out)
 {
 	LockGameClock ();
-	ForAllEvents (dumpEventCallback, out);
+	ForAllLinks (&GLOBAL (GameClock.event_q), dumpEventCallback, out);
 	UnlockGameClock ();
 }
 

@@ -217,7 +217,7 @@ InitGameStructures (void)
 		num_ships = KOHR_AH_ID - s_id + 1
 				+ 2; /* Yehat Rebels and Ur-Quan probe */
 
-		InitQueue (&GLOBAL (avail_race_q), num_ships, sizeof (FLEET_INFO));
+		InitQueue (&GLOBAL (avail_race_q), num_ships, QUEUE_FLEET_INFO);
 		for (i = 0; i < num_ships; ++i)
 		{
 			SPECIES_ID ship_ref;
@@ -323,12 +323,12 @@ InitGameStructures (void)
 	GLOBAL_SIS (FuelOnBoard) = 10 * FUEL_TANK_SCALE;
 
 	InitQueue (&GLOBAL (built_ship_q),
-			MAX_BUILT_SHIPS, sizeof (SHIP_FRAGMENT));
+			MAX_BUILT_SHIPS, QUEUE_SHIP_FRAGMENT);
 	InitQueue (&GLOBAL (npc_built_ship_q), MAX_SHIPS_PER_SIDE,
-			sizeof (SHIP_FRAGMENT));
+			QUEUE_SHIP_FRAGMENT);
 	InitQueue (&GLOBAL (ip_group_q), MAX_BATTLE_GROUPS,
-			sizeof (IP_GROUP));
-	InitQueue (&GLOBAL (encounter_q), MAX_ENCOUNTERS, sizeof (ENCOUNTER));
+			QUEUE_IP_GROUP);
+	InitQueue (&GLOBAL (encounter_q), MAX_ENCOUNTERS, QUEUE_ENCOUNTER);
 
 	GLOBAL (CurrentActivity) = IN_INTERPLANETARY | START_INTERPLANETARY;
 

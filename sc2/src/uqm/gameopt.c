@@ -752,7 +752,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		COUNT i;
 		RECT OldRect;
 		TEXT t;
-		QUEUE player_q;
+		QUEUE player_q = {0};
 		CONTEXT OldContext;
 		SIS_STATE SaveSS;
 		UNICODE buf[256];
@@ -760,7 +760,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 
 		// Save the states because we will hack them
 		SaveSS = GlobData.SIS_state;
-		player_q = GLOBAL (built_ship_q);
+		SwapQueues (&player_q, &GLOBAL (built_ship_q));
 
 		OldContext = SetContext (StatusContext);
 		// Hack StatusContext so we can use standard SIS display funcs
@@ -776,7 +776,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		// Hack the states so that we can use standard SIS display funcs
 		GlobData.SIS_state = pSD->SS;
 		InitQueue (&GLOBAL (built_ship_q),
-				MAX_BUILT_SHIPS, sizeof (SHIP_FRAGMENT));
+				MAX_BUILT_SHIPS, QUEUE_SHIP_FRAGMENT);
 		for (i = 0; i < pSD->NumShips; ++i)
 			CloneShipFragment (pSD->ShipList[i], &GLOBAL (built_ship_q), 0);
 		DateToString (buf, sizeof buf,
@@ -929,7 +929,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		SetContext (OldContext);
 
 		// Restore the states because we hacked them
-		GLOBAL (built_ship_q) = player_q;
+		SwapQueues (&GLOBAL (built_ship_q), &player_q);
 		GlobData.SIS_state = SaveSS;
 	}
 

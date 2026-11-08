@@ -84,6 +84,11 @@ contexts. `std::minstd_rand0` was evaluated and differs from the original stream
 at draw 15 for seed 12345. Retaining the small shared unsigned recurrence avoids
 changing planet generation, seed restoration, and netplay checksums.
 
-Priority 12 remains: replace pooled intrusive game queues with typed fixed-capacity
-storage while preserving stable handles, traversal order and gameplay limits
-such as pursuing encounters.
+Game queues (priority 12) own fixed-size vectors of their eight concrete C game
+object types. Capacity never grows; the 16-encounter gameplay limit, stable
+handles, intrusive traversal order, and last-in first-out slot reuse are retained.
+Queue macros and the unused unbounded-storage variant are removed. C owners
+explicitly initialize/release pools; save-slot previews swap ownership instead of
+copying an owning queue. External game resources still need their normal cleanup
+before a pool is destroyed. All twelve items in the initial priority list are
+implemented.

@@ -197,7 +197,7 @@ set(UQM_SOURCES
     sc2/src/uqm/credits.c
     sc2/src/uqm/cyborg.c
     sc2/src/uqm/demo.c
-    sc2/src/uqm/displist.c
+    sc2/src/uqm/displist.cpp
     sc2/src/uqm/dummy.c
     sc2/src/uqm/encount.c
     sc2/src/uqm/flash.c

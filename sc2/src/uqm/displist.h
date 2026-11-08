@@ -19,113 +19,88 @@
 #ifndef UQM_DISPLIST_H_
 #define UQM_DISPLIST_H_
 
-#include <assert.h>
-#include "port.h"
+#include <string.h>
 #include "libs/compiler.h"
-#include "libs/memlib.h"
 
-#if defined(__cplusplus)
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-// Note that we MUST use the QUEUE_TABLE variant at this time, because
-// certain gameplay elements depend on it. Namely, the maximum number
-// of HyperSpace encounter globes chasing the player is defined by the
-// allocated size of the encounter_q. If switched to non-table variant,
-// the max number of encounters will be virtually unlimited the way the
-// code works now.
-#define QUEUE_TABLE
+typedef void *HLINK;
+/* Every supported C game object begins with these two handle fields. */
+typedef struct link { HLINK pred, succ; } LINK;
 
-typedef void* QUEUE_HANDLE;
+typedef enum {
+    QUEUE_ELEMENT, QUEUE_STARSHIP, QUEUE_SHIP_FRAGMENT, QUEUE_FLEET_INFO,
+    QUEUE_IP_GROUP, QUEUE_ENCOUNTER, QUEUE_EVENT, QUEUE_MASTER_SHIP
+} QueueKind;
 
-typedef UWORD OBJ_SIZE;
-typedef QUEUE_HANDLE HLINK;
-
-typedef struct link
-{
-	// Every queue element of any queue must have these
-	// two as the first members
-	HLINK pred;
-	HLINK succ;
-} LINK;
-
-typedef struct /* queue */
-{
-	HLINK head;
-	HLINK tail;
-#ifdef QUEUE_TABLE
-	BYTE  *pq_tab;
-	HLINK free_list;
-#endif
-	COUNT object_size;
-#ifdef QUEUE_TABLE
-	BYTE num_objects;
-#endif /* QUEUE_TABLE */
+typedef struct QueueStorage QueueStorage;
+/* Owns a fixed-capacity typed pool. Zero-initialize before first InitQueue;
+ * never copy an owning QUEUE. Use SwapQueues to transfer ownership. Callers
+ * serialize access and release external payload resources before UninitQueue. */
+typedef struct {
+    HLINK head, tail;
+    QueueStorage *storage;
+    COUNT object_size;
 } QUEUE;
 
-#ifdef QUEUE_TABLE
+/* Initialize an empty/zeroed queue with exactly capacity objects of kind.
+ * Capacity never grows: notably the encounter limit controls gameplay.
+ * Allocation failure terminates; zero capacity is valid. Returns TRUE. */
+BOOLEAN InitQueue(QUEUE *queue, COUNT capacity, QueueKind kind);
+/* Destroy the typed pool, invalidating all handles/pointers. Does not release
+ * external resources referenced by game objects. Empty queues are allowed. */
+BOOLEAN UninitQueue(QUEUE *queue);
+/* Return every slot to the pool in original order and empty the linked queue.
+ * Payload bytes stay intact; all previous reservations/links become invalid. */
+void ReinitQueue(QUEUE *queue);
+/* Swap complete ownership and order, preserving handles to both pools. Both
+ * arguments must point to initialized or zero-initialized queue descriptors. */
+void SwapQueues(QUEUE *left, QUEUE *right);
+/* Reserve an unlinked slot, returning NULL on exhaustion. Storage addresses
+ * stay stable until UninitQueue. Initial allocation order is ascending, and
+ * released slots are reused last-in first-out. Payload is not cleared. */
+HLINK AllocLink(QUEUE *queue);
+/* Return a reserved, unlinked, non-NULL slot to its owning pool. RemoveQueue
+ * first if linked. Never double-free or use a handle after releasing it. */
+void FreeLink(QUEUE *queue, HLINK link);
+/* Borrow a slot address; NULL returns NULL. A non-NULL handle must refer to an
+ * object boundary in this pool. Unlock validates the same contract; no pinning
+ * or synchronization is needed because published vectors never resize. */
+LINK *LockLink(const QUEUE *queue, HLINK link);
+void UnlockLink(const QUEUE *queue, HLINK link);
+/* Append a reserved unlinked slot, or insert it before ref (NULL appends).
+ * Both handles must belong to this queue, and ref must be linked when given. */
+void PutQueue(QUEUE *queue, HLINK link);
+void InsertQueue(QUEUE *queue, HLINK link, HLINK ref);
+/* Unlink a linked slot without releasing it. Saved successor/predecessor
+ * handles remain usable; callers may reinsert or FreeLink the removed slot. */
+void RemoveQueue(QUEUE *queue, HLINK link);
+COUNT CountLinks(const QUEUE *queue);
+/* Visit in link order, saving the successor before callback. callback must be
+ * non-NULL and may remove/free its current slot, but must keep its saved next
+ * slot alive. arg is borrowed and may be NULL. Callbacks must not throw. */
+void ForAllLinks(QUEUE *queue, void (*callback)(LINK *, void *), void *arg);
 
-extern HLINK AllocLink (QUEUE *pq);
-extern void FreeLink (QUEUE *pq, HLINK hLink);
-
-static inline LINK *
-LockLink (const QUEUE *pq, HLINK h)
-{
-	if (h) // Apparently, h==0 is OK
-	{	// Make sure the link is actually in our queue!
-		assert (pq->pq_tab && (BYTE*)h >= pq->pq_tab &&
-				(BYTE*)h < pq->pq_tab + pq->object_size * pq->num_objects);
-	}
-	return (LINK*)h;
+/* Read-only queue queries; the queue argument must be non-NULL. */
+static inline COUNT GetLinkSize(const QUEUE *queue) { return queue->object_size; }
+static inline HLINK GetHeadLink(const QUEUE *queue) { return queue->head; }
+static inline HLINK GetTailLink(const QUEUE *queue) { return queue->tail; }
+/* Read the common prefix of any supported object without aliasing its concrete
+ * type as LINK. object must point to a valid game object, never NULL. */
+static inline HLINK _GetPredLink(const void *object) {
+    HLINK result;
+    memcpy(&result, object, sizeof result);
+    return result;
+}
+static inline HLINK _GetSuccLink(const void *object) {
+    HLINK result;
+    memcpy(&result, (const unsigned char *)object + sizeof(HLINK), sizeof result);
+    return result;
 }
 
-static inline void
-UnlockLink (const QUEUE *pq, HLINK h)
-{
-	if (h) // Apparently, h==0 is OK
-	{	// Make sure the link is actually in our queue!
-		assert (pq->pq_tab && (BYTE*)h >= pq->pq_tab &&
-				(BYTE*)h < pq->pq_tab + pq->object_size * pq->num_objects);
-	}
-}
-
-#define GetFreeList(pq) (pq)->free_list
-#define SetFreeList(pq, h) (pq)->free_list = (h)
-#define AllocQueueTab(pq,n) \
-		((pq)->pq_tab = HMalloc (((COUNT)(pq)->object_size * \
-		(COUNT)((pq)->num_objects = (BYTE)(n)))))
-#define FreeQueueTab(pq) HFree ((pq)->pq_tab); (pq)->pq_tab = NULL
-#define SizeQueueTab(pq) (COUNT)((pq)->num_objects)
-#define GetLinkAddr(pq,i) (HLINK)((pq)->pq_tab + ((pq)->object_size * ((i) - 1)))
-#else /* !QUEUE_TABLE */
-#define AllocLink(pq)     (HLINK)HMalloc ((pq)->object_size)
-#define LockLink(pq, h)   ((LINK*)(h))
-#define UnlockLink(pq, h) ((void)(h))
-#define FreeLink(pq,h)    HFree (h)
-#endif /* QUEUE_TABLE */
-
-#define SetLinkSize(pq,s) ((pq)->object_size = (COUNT)(s))
-#define GetLinkSize(pq) (COUNT)((pq)->object_size)
-#define GetHeadLink(pq) ((pq)->head)
-#define SetHeadLink(pq,h) ((pq)->head = (h))
-#define GetTailLink(pq) ((pq)->tail)
-#define SetTailLink(pq,h) ((pq)->tail = (h))
-#define _GetPredLink(lpE) ((lpE)->pred)
-#define _SetPredLink(lpE,h) ((lpE)->pred = (h))
-#define _GetSuccLink(lpE) ((lpE)->succ)
-#define _SetSuccLink(lpE,h) ((lpE)->succ = (h))
-
-extern BOOLEAN InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size);
-extern BOOLEAN UninitQueue (QUEUE *pq);
-extern void ReinitQueue (QUEUE *pq);
-extern void PutQueue (QUEUE *pq, HLINK hLink);
-extern void InsertQueue (QUEUE *pq, HLINK hLink, HLINK hRefLink);
-extern void RemoveQueue (QUEUE *pq, HLINK hLink);
-extern COUNT CountLinks (QUEUE *pq);
-void ForAllLinks(QUEUE *pq, void (*callback)(LINK *, void *), void *arg);
-
-#if defined(__cplusplus)
+#ifdef __cplusplus
 }
 #endif
-
 #endif /* UQM_DISPLIST_H_ */
