@@ -345,3 +345,14 @@ BOOST_FIXTURE_TEST_CASE(star_map_content_loader_closes_files_and_exposes_c_names
     FreeStarMap();
     BOOST_TEST(CurStarDescPtr == nullptr);
 }
+
+extern "C" int discovery_state_c_round_trip(void);
+BOOST_FIXTURE_TEST_CASE(discoveries_import_legacy_reports_and_export_a_detached_save, ResourceFixture) {
+    FreeStarMap();
+    std::ifstream input(UQM_TEST_STARMAP_PATH);
+    BOOST_REQUIRE(input.good());
+    files["base/starmap.json"].assign(std::istreambuf_iterator<char>(input), {});
+    BOOST_REQUIRE(LoadStarMap() == TRUE);
+    BOOST_TEST(discovery_state_c_round_trip() == 1);
+    FreeStarMap();
+}

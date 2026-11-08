@@ -96,8 +96,18 @@ writes beyond EOF zero-fill gaps. Obsolete fixed capacity estimates and manual
 growth multipliers are deleted. Existing save/load continues to manage its
 original files and encoding.
 
-**The archive is still semantically mixed.** Androsynth energy bits encode
-personal report history, and encounter archives require their own scope audit.
+Androsynth discovery visits now live in the player's CampaignState, keyed by
+universe, star and planet/moon slots. The report sequence derives from distinct
+accepted visits; repeat visits award no additional report. GetPlanetInfo imports
+old upper energy bits once the generated layout is available, clears those bits
+from the live physical record, and the handler uses personal progress directly.
+Saving composes an immutable legacy-format copy, including a zero physical block
+if personal discovery preceded any physical collection. The shared archive is
+not modified during save. New/load campaigns clear personal discovery records;
+legacy imports never overwrite newer native progress on ordinary revisits.
+
+**Remaining archives are still semantically mixed.** Unvisited legacy report
+records remain opaque until import, and encounter archives require a scope audit.
 The new [discovery-state wireframe](design/solar-system/discovery-state.md)
 separates physical depletion, personal visits, and item possession. The raw archive
 must not become the multiplayer sharing policy merely because it has a shared

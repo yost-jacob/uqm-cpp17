@@ -21,6 +21,8 @@
 #include "../planets.h"
 #include "../scan.h"
 #include "../../globdata.h"
+#include "../../state.h"
+#include "../../starmap.h"
 #include "../../nameref.h"
 #include "../../resinst.h"
 #include "../../sounds.h"
@@ -77,8 +79,7 @@ GenerateAndrosynth_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world
 {
 	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
 	{
-		COUNT i;
-		COUNT visits = 0;
+        COUNT visits = PersonalDiscoveryCount ((COUNT)GetStarIndex(CurStarDescPtr), 1, -1);
 
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =
@@ -86,16 +87,8 @@ GenerateAndrosynth_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (
 				LoadStringTable (ANDROSYNTH_RUINS_STRTAB));
-		// Androsynth ruins are a special case. The DiscoveryString contains
-		// several lander reports which form a story. Each report is given
-		// when the player collides with a new city ruin. Ruins previously
-		// visited are marked in the upper 16 bits of ScanRetrieveMask, and
-		// the lower bits are cleared to keep the ruin nodes on the map.
-		for (i = 16; i < 32; ++i)
-		{
-			if (isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, i))
-				++visits;
-		}
+        // The site remains in the shared world. This player's accepted visits
+        // select the next report independently of physical retrieval masks.
 		if (visits >= GetStringTableCount (
 				solarSys->SysInfo.PlanetInfo.DiscoveryString))
 		{	// All the reports were already given
@@ -131,16 +124,8 @@ GenerateAndrosynth_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 {
 	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
 	{
-		PLANET_INFO *planetInfo = &solarSys->SysInfo.PlanetInfo;
-
-		// Ruins previously visited are marked in the upper 16 bits
-		if (isNodeRetrieved (planetInfo, ENERGY_SCAN, whichNode + 16))
-			return false; // already visited this ruin, do not remove
-
-		setNodeRetrieved (planetInfo, ENERGY_SCAN, whichNode + 16);
-		// We set the retrieved bit manually here and need to indicate
-		// the change to the solar system state functions
-		SET_GAME_STATE (PLANETARY_CHANGE, 1);
+        if (!VisitPersonalDiscovery ((COUNT)GetStarIndex(CurStarDescPtr), 1, -1, whichNode))
+            return false; // This player already visited; keep the physical site.
 
 		// Androsynth ruins have several lander reports which form a story
 		GenerateDefault_landerReportCycle (solarSys);

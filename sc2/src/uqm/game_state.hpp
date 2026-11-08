@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include "world_state.hpp"
+#include "discovery_state.hpp"
 
 namespace uqm {
 struct PlayerId {
@@ -61,6 +62,23 @@ public:
     void clear(StoryFlag flag);
     // Throws out_of_range above the field maximum, leaving all bits unchanged.
     void set(StoryCounter counter, unsigned value);
+    DiscoveryProgress discovery(const WorldId &world) const; // Empty if unknown.
+    // site must be 0..31. True only on the first accepted visit by this player.
+    // Acceptance records progress before report UI, preserving legacy behavior.
+    bool visitDiscovery(const WorldId &world, std::size_t site);
+    DiscoverySnapshot discoverySnapshot() const;
+    // Authoritative personal restore. Validate site/world policy at the caller;
+    // replaces progress and retains matching legacy-layout bindings.
+    void restoreDiscoveries(DiscoverySnapshot snapshot);
+    void clearDiscoveries() noexcept;
+    // Compatibility import is idempotent within a loaded campaign. Only the
+    // first binding imports old upper energy bits; revisits never overwrite
+    // newer personal progress. The adapter checks its layout before mutation.
+    void importLegacyDiscovery(LegacyDiscoveryLocation location, std::uint16_t visited);
+    // Detached native-word save copy, with this player's upper energy bits
+    // composed into registered worlds. Live physical bytes are never modified.
+    std::vector<std::uint32_t> legacyScanSnapshot(UniverseId universe,
+            const std::vector<std::uint8_t> &physicalArchive) const;
     template<StoryCounter Counter, unsigned Value>
     void set() {
         static_assert(Counter == StoryCounter::BombProgress
@@ -72,6 +90,8 @@ private:
     friend class PlayerEntity;
     explicit CampaignState(detail::PlayerStorage &storage) noexcept;
     detail::PlayerStorage &storage_;
+    DiscoverySnapshot discoveries_;
+    std::map<WorldId, LegacyDiscoveryLocation> legacyDiscoveries_;
 };
 
 // Owns the one authoritative legacy payload while C callers migrate. This still

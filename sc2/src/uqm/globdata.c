@@ -326,6 +326,7 @@ InitGlobData (void)
 	COUNT i;
 
 	i = GLOBAL (glob_flags);
+    ResetPersonalDiscoveries ();
 	memset (&GlobData, 0, sizeof (GlobData));
 	GLOBAL (glob_flags) = (BYTE)i;
 

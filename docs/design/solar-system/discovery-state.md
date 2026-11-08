@@ -1,8 +1,21 @@
 # Physical changes and personal discovery: additional wireframe
 
-This is a proposed refinement of the [world/campaign design](README.md), not an
-implemented gameplay change. It addresses a newly audited dependency that must be
-resolved before the legacy scan archive becomes a typed shared world store.
+The first production discovery split is implemented in
+[`discovery_state.hpp`](../../../sc2/src/uqm/discovery_state.hpp), the player's
+CampaignState, and the legacy planet-info adapter. Androsynth visits are personal
+records keyed by stable WorldId; the site remains physically present. A visit is
+recorded on acceptance before report UI, preserving existing behavior.
+
+Legacy import is deliberately on demand, once the generated layout identifies
+the report record. Unvisited records in an old checkpoint remain opaque until
+then. Once imported, the personal bits are removed from the live physical record.
+Saving composes a detached native-word copy with this player's report history in
+the original upper bits, without changing the world archive. Relative layout
+bindings survive save-block reordering and are cleared for a new/load campaign.
+No new on-disk chunk or save version is needed. An explicit export failure protects
+native discovery worlds that have no legacy layout from silently losing history.
+
+The broader classification below still guides remaining story/encounter work.
 
 ## The legacy scan mask mixes two meanings
 
@@ -15,8 +28,8 @@ report, and returns false from pickup so the object is not removed.
 Consequently, blindly treating all three 32-bit masks as shared depletion would
 make one player's report history affect everyone. A bit position does not tell
 us whether it means physical removal, personal knowledge, or a script-specific
-marker. The production WorldState currently owns the legacy archive unchanged;
-this preserves single-player behavior but is not yet a multiplayer schema.
+marker. The production adapter now splits these known report bits on first access.
+Other unclassified archive contents are not yet a multiplayer schema.
 
 Other examples reinforce the distinction:
 
@@ -91,9 +104,9 @@ flowchart TD
 
 For Androsynth ruins, repeated visits by the same player produce no new report.
 A different player can discover the same ruin independently. If display is
-interrupted, presentation retries must not award progress twice; whether a report
-is considered read on acceptance or after acknowledgement needs an explicit
-presentation policy before that handler migrates.
+interrupted, presentation retries must not award progress twice; the implemented policy records the visit on acceptance before presentation,
+matching legacy behavior. A later acknowledgement-based UI would need a separate
+pending-report state rather than repeating the discovery mutation.
 
 Callbacks and UI run after state mutations and outside locks. Save/checkpoint
 runs at an authoritative action boundary. A physical claim and personal reward

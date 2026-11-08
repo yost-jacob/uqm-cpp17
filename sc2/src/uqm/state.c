@@ -19,6 +19,7 @@
 #include "state.h"
 
 #include "starmap.h"
+#include "gendef.h"
 
 void
 InitPlanetInfo (void)
@@ -65,7 +66,8 @@ GetPlanetInfo (void)
 	if (fp)
 	{
 		COUNT star_index, planet_index, moon_index;
-		DWORD offset;
+		DWORD offset = 0;
+        DWORD system_offset;
 
 		star_index = (COUNT)(GetStarIndex(CurStarDescPtr));
 		planet_index = (COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
@@ -78,6 +80,8 @@ GetPlanetInfo (void)
 
 		SeekStateFile (fp, star_index * OFFSET_SIZE, SEEK_SET);
 		sread_32 (fp, &offset);
+
+        system_offset = offset;
 
 		if (offset)
 		{
@@ -95,6 +99,27 @@ GetPlanetInfo (void)
 			sread_a32 (fp, pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask,
 					NUM_SCAN_TYPES);
 		}
+
+        if (CurStarDescPtr->Index == ANDROSYNTH_DEFINED && planet_index == 1 && moon_index == 0)
+        {
+            DWORD relative = 0, records = 0;
+            COUNT i;
+            DWORD *energy = &pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN];
+            for (i = 0; i < pSolarSysState->SunDesc[0].NumPlanets; ++i)
+            {
+                if (i < planet_index)
+                    relative += pSolarSysState->PlanetDesc[i].NumPlanets + 1;
+                records += pSolarSysState->PlanetDesc[i].NumPlanets + 1;
+            }
+            ImportPersonalDiscovery (star_index, planet_index, -1,
+                    relative * NUM_SCAN_TYPES + ENERGY_SCAN, records * NUM_SCAN_TYPES, *energy);
+            *energy &= 0xffff;
+            if (system_offset)
+            {
+                SeekStateFile (fp, offset + ENERGY_SCAN * sizeof (DWORD), SEEK_SET);
+                swrite_32 (fp, *energy);
+            }
+        }
 
 		CloseStateFile (fp);
 	}

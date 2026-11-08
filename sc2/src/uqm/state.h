@@ -32,6 +32,24 @@ extern void UninitPlanetInfo (void);
 extern void GetPlanetInfo (void);
 extern void PutPlanetInfo (void);
 
+/* Personal discovery adapter. Slots are zero-based; moon == -1 is the planet.
+ * Import only known discovery worlds after layout generation. Relative word
+ * offsets describe the old archive, never identity. Reset on new/load campaign.
+ * Invalid identity/layout or failed mutation is fatal, matching legacy state. */
+void ResetPersonalDiscoveries (void);
+void ImportPersonalDiscovery (COUNT system, COUNT planet, int moon,
+        DWORD energyWord, DWORD systemWords, DWORD legacyEnergy);
+COUNT PersonalDiscoveryCount (COUNT system, COUNT planet, int moon);
+BOOLEAN VisitPersonalDiscovery (COUNT system, COUNT planet, int moon, COUNT site);
+
+/* Detached, immutable legacy save buffer. Capture can fail (NULL); release it
+ * after reading its native-endian DWORD values through the normal save encoder. */
+typedef struct PLANET_INFO_SNAPSHOT PLANET_INFO_SNAPSHOT;
+PLANET_INFO_SNAPSHOT *CapturePlanetInfoForSave (void);
+DWORD PlanetInfoSnapshotLength (const PLANET_INFO_SNAPSHOT *snapshot);
+const DWORD *PlanetInfoSnapshotData (const PLANET_INFO_SNAPSHOT *snapshot);
+void ReleasePlanetInfoSnapshot (PLANET_INFO_SNAPSHOT *snapshot);
+
 extern void InitGroupInfo (BOOLEAN FirstTime);
 extern void UninitGroupInfo (void);
 extern BOOLEAN GetGroupInfo (DWORD offset, BYTE which_group);

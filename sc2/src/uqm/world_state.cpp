@@ -73,6 +73,8 @@ GAME_STATE_FILE *OpenStateFile(int stateFile, const char *mode) {
             || (mode[0] != 'r' && mode[0] != 'w'))
         return nullptr;
     try {
+        if (stateFile == STARINFO_FILE && mode[0] == 'w')
+            ResetPersonalDiscoveries(); // New campaign or legacy checkpoint load.
         auto &file = uqm::detail::LegacyWorldAccess::file(uqm::gameSession().world(), stateFile);
         unsigned opens;
         {
@@ -114,6 +116,8 @@ void DeleteStateFile(int stateFile) {
             std::vector<std::uint8_t>().swap(file.data);
             file.cursor = 0;
         }
+        if (stateFile == STARINFO_FILE)
+            ResetPersonalDiscoveries();
         if (opens != 0)
             log_add(log_Warning, "State file %s open count is %u during delete()", file.name, opens);
     } catch (...) {}
