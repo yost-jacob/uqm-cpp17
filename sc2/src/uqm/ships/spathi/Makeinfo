@@ -1,2 +1,2 @@
 uqm_CXXFILES="spathi.cpp"
-uqm_HFILES="icode.h resinst.h spathi.h"
+uqm_HFILES="resinst.h"

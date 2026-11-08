@@ -1,2 +1,2 @@
 uqm_CXXFILES="sis_ship.cpp"
-uqm_HFILES="icode.h resinst.h sis_ship.h"
+uqm_HFILES="resinst.h"

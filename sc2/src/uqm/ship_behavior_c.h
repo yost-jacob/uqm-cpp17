@@ -10,11 +10,6 @@ void PreprocessShipBehavior(RACE_DESC *ship, ELEMENT *element);
 void PostprocessShipBehavior(RACE_DESC *ship, ELEMENT *element);
 // weapons points to six writable handles; unused slots are cleared.
 COUNT InitializeShipWeapon(RACE_DESC *ship, ELEMENT *element, HELEMENT weapons[6]);
-void FinishShipBehavior(RACE_DESC *ship);
-// Resource-handle adapters. handle is the opaque Ship owner, not its descriptor.
-RACE_DESC *GetShipBehaviorData(void *handle);
-// Destruction releases ownership only; finish publishes explicit legacy results.
-BOOLEAN DestroyShipBehavior(void *handle); // null is permitted.
 #ifdef __cplusplus
 }
 #endif

@@ -1,2 +1,2 @@
 uqm_CXXFILES="androsyn.cpp"
-uqm_HFILES="androsyn.h icode.h resinst.h"
+uqm_HFILES="resinst.h"

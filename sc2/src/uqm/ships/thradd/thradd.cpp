@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "thradd.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -114,7 +114,7 @@ static const RACE_DESC &thraddashDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -390,12 +390,9 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_thraddash (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeThraddashShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ThraddashShip>(thraddashDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("ThraddashShip");
-    return nullptr;
+	return std::make_unique<ThraddashShip>(thraddashDefinition());
 }

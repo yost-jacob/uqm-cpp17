@@ -1,2 +1,2 @@
 uqm_CXXFILES="pkunk.cpp"
-uqm_HFILES="icode.h pkunk.h resinst.h"
+uqm_HFILES="resinst.h"

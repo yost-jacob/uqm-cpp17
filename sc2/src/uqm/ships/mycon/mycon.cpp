@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "mycon.h"
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -105,7 +105,7 @@ static const RACE_DESC &myconDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -367,13 +367,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_mycon (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeMyconShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<MyconShip>(myconDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("MyconShip");
-    return nullptr;
+	return std::make_unique<MyconShip>(myconDefinition());
 }
 

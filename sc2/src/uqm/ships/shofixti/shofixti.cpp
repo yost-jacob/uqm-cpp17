@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "shofixti.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -110,7 +110,7 @@ static const RACE_DESC &shofixtiDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -461,8 +461,8 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_shofixti (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeShofixtiShip()
 {
 	// Build a per-instance definition, copied into the native owner.
 	RACE_DESC new_shofixti_desc;
@@ -516,9 +516,6 @@ init_shofixti (void) try
 		}
 	}
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ShofixtiShip>(new_shofixti_desc));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("ShofixtiShip");
-    return nullptr;
+	return std::make_unique<ShofixtiShip>(new_shofixti_desc);
 }
 

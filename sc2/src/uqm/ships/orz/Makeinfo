@@ -1,2 +1,2 @@
 uqm_CXXFILES="orz.cpp"
-uqm_HFILES="icode.h orz.h resinst.h"
+uqm_HFILES="orz.h resinst.h"

@@ -1,2 +1,2 @@
 uqm_CXXFILES="supox.cpp"
-uqm_HFILES="icode.h resinst.h supox.h"
+uqm_HFILES="resinst.h"

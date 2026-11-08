@@ -1,2 +1,2 @@
 uqm_CXXFILES="syreen.cpp"
-uqm_HFILES="icode.h resinst.h syreen.h"
+uqm_HFILES="resinst.h"

@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "chmmr.h"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -109,7 +109,7 @@ static const RACE_DESC &chmmrDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -781,13 +781,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_chmmr (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeChmmrShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ChmmrShip>(chmmrDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("ChmmrShip");
-    return nullptr;
+	return std::make_unique<ChmmrShip>(chmmrDefinition());
 }
 

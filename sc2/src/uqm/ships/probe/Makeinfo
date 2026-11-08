@@ -1,2 +1,2 @@
 uqm_CXXFILES="probe.cpp"
-uqm_HFILES="icode.h probe.h resinst.h"
+uqm_HFILES="resinst.h"

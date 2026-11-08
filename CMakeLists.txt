@@ -79,6 +79,7 @@ if(BUILD_TESTING)
         tests/game_state_c.c tests/world_state.cpp tests/world_state_c.c
         tests/ship_behavior.cpp tests/ship_behavior_c.c sc2/src/uqm/ship_behavior.cpp
         tests/ship_tuning.cpp sc2/src/uqm/ship_tuning.cpp
+        tests/ship_factory.cpp sc2/src/uqm/ship_factory.cpp sc2/src/uqm/loadship.cpp
         # Executable design prototype; deliberately excluded from UQM_SOURCES.
         tests/combat_ownership.cpp docs/design/combat/projectile.cpp
         tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp

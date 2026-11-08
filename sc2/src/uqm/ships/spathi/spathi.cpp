@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "spathi.h"
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -111,7 +111,7 @@ static const RACE_DESC &spathiDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -294,12 +294,9 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_spathi (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeSpathiShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SpathiShip>(spathiDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("SpathiShip");
-    return nullptr;
+	return std::make_unique<SpathiShip>(spathiDefinition());
 }

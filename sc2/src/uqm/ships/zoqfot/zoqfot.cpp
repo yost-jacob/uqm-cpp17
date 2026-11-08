@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "zoqfot.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
@@ -111,7 +111,7 @@ static const RACE_DESC &zoqfotpikDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -367,13 +367,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_zoqfotpik (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeZoqFotPikShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ZoqFotPikShip>(zoqfotpikDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("ZoqFotPikShip");
-    return nullptr;
+	return std::make_unique<ZoqFotPikShip>(zoqfotpikDefinition());
 }
 

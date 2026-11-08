@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "blackurq.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -121,7 +121,7 @@ static const RACE_DESC &black_urquanDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -560,12 +560,9 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_black_urquan (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeKohrAhShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<KohrAhShip>(black_urquanDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("KohrAhShip");
-    return nullptr;
+	return std::make_unique<KohrAhShip>(black_urquanDefinition());
 }

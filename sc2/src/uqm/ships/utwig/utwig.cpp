@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "utwig.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -109,7 +109,7 @@ static const RACE_DESC &utwigDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -370,13 +370,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_utwig (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeUtwigShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<UtwigShip>(utwigDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("UtwigShip");
-    return nullptr;
+	return std::make_unique<UtwigShip>(utwigDefinition());
 }
 

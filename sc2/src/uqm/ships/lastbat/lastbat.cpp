@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "lastbat.h"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -126,7 +126,7 @@ static const RACE_DESC &samatraDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -910,13 +910,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_samatra (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeSaMatraShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SaMatraShip>(samatraDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("SaMatraShip");
-    return nullptr;
+	return std::make_unique<SaMatraShip>(samatraDefinition());
 }
 

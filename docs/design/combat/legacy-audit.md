@@ -11,8 +11,9 @@ collision-timing or victory rule is intentionally changed.
 Before migration, [races.h](../../../sc2/src/uqm/races.h) combined characteristics,
 mutable crew/energy, resources, private data, AI and behavior pointers in RACE_DESC.
 Its four ship behavior callbacks now live in native classes; the cyborg callback
-and mixed legacy resource/data views remain as compatibility boundaries. [loadship.c](../../../sc2/src/uqm/loadship.c) loads graphics,
-strings, audio and code resources and invokes per-ship cleanup. These need separate
+and mixed legacy resource/data views remain as compatibility boundaries. [loadship.cpp](../../../sc2/src/uqm/loadship.cpp) loads graphics,
+strings and audio assets around a direct native factory and invokes explicit
+per-ship completion. The old code-resource layer is removed. These need separate
 native definition, instance, behavior/controller and asset ownership boundaries.
 
 [ship.c](../../../sc2/src/uqm/ship.c) provides common energy, cooldown, movement

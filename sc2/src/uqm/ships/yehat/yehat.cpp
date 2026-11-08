@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "yehat.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
@@ -105,7 +105,7 @@ static const RACE_DESC &yehatDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -363,12 +363,9 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_yehat (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeYehatShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<YehatShip>(yehatDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("YehatShip");
-    return nullptr;
+	return std::make_unique<YehatShip>(yehatDefinition());
 }

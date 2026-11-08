@@ -18,9 +18,9 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include <optional>
-#include "androsyn.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
@@ -112,7 +112,7 @@ static const RACE_DESC &androsynthDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -521,13 +521,10 @@ static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *dat
     static_cast<AndrosynthShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
 }
 
-RACE_DESC*
-init_androsynth (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeAndrosynthShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<AndrosynthShip>(androsynthDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("AndrosynthShip");
-    return nullptr;
+	return std::make_unique<AndrosynthShip>(androsynthDefinition());
 }
 

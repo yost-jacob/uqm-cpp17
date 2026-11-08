@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "druuge.h"
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -104,7 +104,7 @@ static const RACE_DESC &druugeDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -316,13 +316,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_druuge (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeDruugeShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<DruugeShip>(druugeDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("DruugeShip");
-    return nullptr;
+	return std::make_unique<DruugeShip>(druugeDefinition());
 }
 

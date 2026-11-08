@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "supox.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
@@ -105,7 +105,7 @@ static const RACE_DESC &supoxDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -279,13 +279,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_supox (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeSupoxShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SupoxShip>(supoxDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("SupoxShip");
-    return nullptr;
+	return std::make_unique<SupoxShip>(supoxDefinition());
 }
 

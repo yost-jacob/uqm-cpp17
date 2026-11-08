@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "urquan.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -114,7 +114,7 @@ static const RACE_DESC &urquanDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -545,13 +545,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_urquan (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeUrQuanShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanShip>(urquanDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("UrQuanShip");
-    return nullptr;
+	return std::make_unique<UrQuanShip>(urquanDefinition());
 }
 

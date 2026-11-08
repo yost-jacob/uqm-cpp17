@@ -2,6 +2,7 @@
 #include "uqm/ship_behavior_c.h"
 #include <boost/test/unit_test.hpp>
 #include <type_traits>
+#include <memory>
 
 extern "C" COUNT exercise_ship_behavior_from_c(RACE_DESC *, ELEMENT *, HELEMENT[6]);
 namespace {
@@ -40,8 +41,7 @@ BOOST_AUTO_TEST_CASE(native_ship_owns_an_independent_descriptor_with_stable_c_bu
     Calls firstCalls, secondCalls;
     auto first = std::make_unique<TestShip>(definition, firstCalls);
     auto second = std::make_unique<TestShip>(definition, secondCalls);
-    BOOST_TEST(first->legacyData().CodeRef == static_cast<Ship *>(first.get()));
-    BOOST_TEST(GetShipBehaviorData(first->legacyData().CodeRef) == &first->legacyData());
+    BOOST_TEST(first->legacyData().ship_owner == static_cast<Ship *>(first.get()));
     first->legacyData().ship_info.crew_level = 3;
     BOOST_TEST(second->legacyData().ship_info.crew_level == 5u);
     BOOST_TEST(definition.ship_info.crew_level == 5u);
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(c_ship_dispatch_reaches_native_overrides_and_clears_unused_
 {
     Calls calls;
     auto owner = std::make_unique<TestShip>(RACE_DESC{}, calls);
-    auto *descriptor = uqm::combat::releaseToLegacy(std::move(owner));
+    auto *descriptor = &owner->legacyData();
     ELEMENT element{};
     HELEMENT weapons[6];
     for (auto &weapon : weapons) weapon = descriptor;
@@ -65,8 +65,8 @@ BOOST_AUTO_TEST_CASE(c_ship_dispatch_reaches_native_overrides_and_clears_unused_
     BOOST_TEST(descriptor->ship_info.crew_level == 1u);
     BOOST_TEST(weapons[0] == &element);
     for (unsigned i = 1; i < 6; ++i) BOOST_TEST(weapons[i] == nullptr);
-    FinishShipBehavior(descriptor);
-    BOOST_TEST(DestroyShipBehavior(descriptor->CodeRef));
+    owner->finish();
+    owner.reset();
     BOOST_TEST(calls.finish == 1u);
     BOOST_TEST(calls.destroyed == 1u);
 }
@@ -93,8 +93,8 @@ BOOST_AUTO_TEST_CASE(ship_completion_is_idempotent_and_blocks_further_gameplay_h
         ELEMENT element{};
         WeaponSlots weapons;
         weapons.fill(&element);
-        FinishShipBehavior(&ship.legacyData());
-        FinishShipBehavior(&ship.legacyData());
+        ship.finish();
+        ship.finish();
         BOOST_TEST(calls.finish == 1u);
         ship.preprocess(element);
         ship.postprocess(element);
@@ -106,16 +106,13 @@ BOOST_AUTO_TEST_CASE(ship_completion_is_idempotent_and_blocks_further_gameplay_h
     }
     BOOST_TEST(calls.finish == 1u);
     BOOST_TEST(calls.destroyed == 1u);
-    BOOST_TEST(GetShipBehaviorData(nullptr) == nullptr);
-    BOOST_TEST(DestroyShipBehavior(nullptr));
 }
 
 BOOST_AUTO_TEST_CASE(abandoned_ship_resource_destruction_does_not_publish_a_campaign_result)
 {
     Calls calls;
     auto owner = std::make_unique<TestShip>(RACE_DESC{}, calls);
-    auto *descriptor = uqm::combat::releaseToLegacy(std::move(owner));
-    BOOST_TEST(DestroyShipBehavior(descriptor->CodeRef));
+    owner.reset();
     BOOST_TEST(calls.destroyed == 1u);
     BOOST_TEST(calls.finish == 0u);
 }

@@ -576,7 +576,6 @@ ORZ_FONT,comm.orz.font,uqm/comm/orz/resinst.h,FONTRES,base/fonts/orz.fon
 ORZ_CONVERSATION_PHRASES,comm.orz.dialogue,uqm/comm/orz/resinst.h,CONVERSATION,base/comm/orz/orz.txt
 ORZ_COLOR_MAP,comm.orz.colortable,uqm/comm/orz/resinst.h,BINTAB,base/comm/orz/orz.ct
 ORZ_PMAP_ANIM,comm.orz.graphics,uqm/comm/orz/resinst.h,GFXRES,base/comm/orz/orz.ani
-DRUUGE_CODE,ship.druuge.code,uqm/ships/druuge/icode.h,SHIP,5
 DRUUGE_VICTORY_SONG,ship.druuge.ditty,uqm/ships/druuge/resinst.h,MUSICRES,base/ships/druuge/mauler.mod
 DRUUGE_RACE_STRINGS,ship.druuge.text,uqm/ships/druuge/resinst.h,STRTAB,base/ships/druuge/mauler.txt
 DRUUGE_SHIP_SOUNDS,ship.druuge.sounds,uqm/ships/druuge/resinst.h,SNDRES,base/ships/druuge/mauler.snd
@@ -589,7 +588,6 @@ DRUUGE_CANNON_BIG_MASK_PMAP_ANIM,ship.druuge.graphics.cannon.large,uqm/ships/dru
 DRUUGE_CANNON_MED_MASK_PMAP_ANIM,ship.druuge.graphics.cannon.medium,uqm/ships/druuge/resinst.h,GFXRES,base/ships/druuge/cannon-med.ani
 DRUUGE_CANNON_SML_MASK_PMAP_ANIM,ship.druuge.graphics.cannon.small,uqm/ships/druuge/resinst.h,GFXRES,base/ships/druuge/cannon-sml.ani
 DRUUGE_CAPT_MASK_PMAP_ANIM,ship.druuge.graphics.captain,uqm/ships/druuge/resinst.h,GFXRES,base/ships/druuge/mauler-cap.ani
-SLYLANDRO_CODE,ship.slylandro.code,uqm/ships/slylandr/icode.h,SHIP,14
 SLYLANDRO_VICTORY_SONG,ship.slylandro.ditty,uqm/ships/slylandr/resinst.h,MUSICRES,base/ships/slylandro/probe.mod
 SLYLANDRO_RACE_STRINGS,ship.slylandro.text,uqm/ships/slylandr/resinst.h,STRTAB,base/ships/slylandro/probe.txt
 SLYLANDRO_SHIP_SOUNDS,ship.slylandro.sounds,uqm/ships/slylandr/resinst.h,SNDRES,base/ships/slylandro/probe.snd
@@ -599,7 +597,6 @@ SLYLANDRO_BIG_MASK_PMAP_ANIM,ship.slylandro.graphics.probe.large,uqm/ships/slyla
 SLYLANDRO_MED_MASK_PMAP_ANIM,ship.slylandro.graphics.probe.medium,uqm/ships/slylandr/resinst.h,GFXRES,base/ships/slylandro/probe-med.ani
 SLYLANDRO_SML_MASK_PMAP_ANIM,ship.slylandro.graphics.probe.small,uqm/ships/slylandr/resinst.h,GFXRES,base/ships/slylandro/probe-sml.ani
 SLYLANDRO_CAPTAIN_MASK_PMAP_ANIM,ship.slylandro.graphics.captain,uqm/ships/slylandr/resinst.h,GFXRES,base/ships/slylandro/probe-cap.ani
-UTWIG_CODE,ship.utwig.code,uqm/ships/utwig/icode.h,SHIP,21
 UTWIG_VICTORY_SONG,ship.utwig.ditty,uqm/ships/utwig/resinst.h,MUSICRES,base/ships/utwig/jugger.mod
 UTWIG_RACE_STRINGS,ship.utwig.text,uqm/ships/utwig/resinst.h,STRTAB,base/ships/utwig/jugger.txt
 UTWIG_SHIP_SOUNDS,ship.utwig.sounds,uqm/ships/utwig/resinst.h,SNDRES,base/ships/utwig/jugger.snd
@@ -612,7 +609,6 @@ LANCE_BIG_MASK_PMAP_ANIM,ship.utwig.graphics.lance.large,uqm/ships/utwig/resinst
 LANCE_MED_MASK_PMAP_ANIM,ship.utwig.graphics.lance.medium,uqm/ships/utwig/resinst.h,GFXRES,base/ships/utwig/lance-med.ani
 LANCE_SML_MASK_PMAP_ANIM,ship.utwig.graphics.lance.small,uqm/ships/utwig/resinst.h,GFXRES,base/ships/utwig/lance-sml.ani
 UTWIG_CAPTAIN_MASK_PMAP_ANIM,ship.utwig.graphics.captain,uqm/ships/utwig/resinst.h,GFXRES,base/ships/utwig/jugger-cap.ani
-URQUAN_CODE,ship.urquan.code,uqm/ships/urquan/icode.h,SHIP,20
 URQUAN_VICTORY_SONG,ship.urquan.ditty,uqm/ships/urquan/resinst.h,MUSICRES,base/ships/urquan/dreadnought.mod
 URQUAN_RACE_STRINGS,ship.urquan.text,uqm/ships/urquan/resinst.h,STRTAB,base/ships/urquan/dreadnought.txt
 URQUAN_SHIP_SOUNDS,ship.urquan.sounds,uqm/ships/urquan/resinst.h,SNDRES,base/ships/urquan/dreadnought.snd
@@ -628,7 +624,6 @@ FIGHTER_BIG_MASK_PMAP_ANIM,ship.urquan.graphics.fighter.large,uqm/ships/urquan/r
 FIGHTER_MED_MASK_PMAP_ANIM,ship.urquan.graphics.fighter.medium,uqm/ships/urquan/resinst.h,GFXRES,base/ships/urquan/fighter-med.ani
 FIGHTER_SML_MASK_PMAP_ANIM,ship.urquan.graphics.fighter.small,uqm/ships/urquan/resinst.h,GFXRES,base/ships/urquan/fighter-sml.ani
 URQUAN_CAPTAIN_MASK_PMAP_ANIM,ship.urquan.graphics.captain,uqm/ships/urquan/resinst.h,GFXRES,base/ships/urquan/dreadnought-cap.ani
-CHMMR_CODE,ship.chmmr.code,uqm/ships/chmmr/icode.h,SHIP,4
 CHMMR_VICTORY_SONG,ship.chmmr.ditty,uqm/ships/chmmr/resinst.h,MUSICRES,base/ships/chmmr/avatar.mod
 CHMMR_RACE_STRINGS,ship.chmmr.text,uqm/ships/chmmr/resinst.h,STRTAB,base/ships/chmmr/avatar.txt
 CHMMR_SHIP_SOUNDS,ship.chmmr.sounds,uqm/ships/chmmr/resinst.h,SNDRES,base/ships/chmmr/avatar.snd
@@ -644,7 +639,6 @@ SATELLITE_BIG_MASK_PMAP_ANIM,ship.chmmr.graphics.satellite.large,uqm/ships/chmmr
 SATELLITE_MED_MASK_PMAP_ANIM,ship.chmmr.graphics.satellite.medium,uqm/ships/chmmr/resinst.h,GFXRES,base/ships/chmmr/satellite-med.ani
 SATELLITE_SML_MASK_PMAP_ANIM,ship.chmmr.graphics.satellite.small,uqm/ships/chmmr/resinst.h,GFXRES,base/ships/chmmr/satellite-sml.ani
 CHMMR_CAPTAIN_MASK_PMAP_ANIM,ship.chmmr.graphics.captain,uqm/ships/chmmr/resinst.h,GFXRES,base/ships/chmmr/avatar-cap.ani
-MYCON_CODE,ship.mycon.code,uqm/ships/mycon/icode.h,SHIP,10
 MYCON_VICTORY_SONG,ship.mycon.ditty,uqm/ships/mycon/resinst.h,MUSICRES,base/ships/mycon/podship.mod
 MYCON_RACE_STRINGS,ship.mycon.text,uqm/ships/mycon/resinst.h,STRTAB,base/ships/mycon/podship.txt
 MYCON_SHIP_SOUNDS,ship.mycon.sounds,uqm/ships/mycon/resinst.h,SNDRES,base/ships/mycon/podship.snd
@@ -657,7 +651,6 @@ PLASMA_BIG_MASK_PMAP_ANIM,ship.mycon.graphics.plasma.large,uqm/ships/mycon/resin
 PLASMA_MED_MASK_PMAP_ANIM,ship.mycon.graphics.plasma.medium,uqm/ships/mycon/resinst.h,GFXRES,base/ships/mycon/plasma-med.ani
 PLASMA_SML_MASK_PMAP_ANIM,ship.mycon.graphics.plasma.small,uqm/ships/mycon/resinst.h,GFXRES,base/ships/mycon/plasma-sml.ani
 MYCON_CAPTAIN_MASK_PMAP_ANIM,ship.mycon.graphics.captain,uqm/ships/mycon/resinst.h,GFXRES,base/ships/mycon/podship-cap.ani
-SHOFIXTI_CODE,ship.shofixti.code,uqm/ships/shofixti/icode.h,SHIP,13
 SHOFIXTI_VICTORY_SONG,ship.shofixti.ditty,uqm/ships/shofixti/resinst.h,MUSICRES,base/ships/shofixti/scout.mod
 SHOFIXTI_RACE_STRINGS,ship.shofixti.text,uqm/ships/shofixti/resinst.h,STRTAB,base/ships/shofixti/scout.txt
 SHOFIXTI_SHIP_SOUNDS,ship.shofixti.sounds,uqm/ships/shofixti/resinst.h,SNDRES,base/ships/shofixti/scout.snd
@@ -677,7 +670,6 @@ OLDSHOF_CAPTAIN_MASK_PMAP_ANIM,ship.shofixti.graphics.oldcaptain,uqm/ships/shofi
 DART_BIG_MASK_PMAP_ANIM,ship.shofixti.graphics.missile.large,uqm/ships/shofixti/resinst.h,GFXRES,base/ships/shofixti/missile-big.ani
 DART_MED_MASK_PMAP_ANIM,ship.shofixti.graphics.missile.medium,uqm/ships/shofixti/resinst.h,GFXRES,base/ships/shofixti/missile-med.ani
 DART_SML_MASK_PMAP_ANIM,ship.shofixti.graphics.missile.small,uqm/ships/shofixti/resinst.h,GFXRES,base/ships/shofixti/missile-sml.ani
-KOHR_AH_CODE,ship.kohrah.code,uqm/ships/blackurq/icode.h,SHIP,2
 KOHR_AH_VICTORY_SONG,ship.kohrah.ditty,uqm/ships/blackurq/resinst.h,MUSICRES,base/ships/kohrah/marauder.mod
 KOHR_AH_RACE_STRINGS,ship.kohrah.text,uqm/ships/blackurq/resinst.h,STRTAB,base/ships/kohrah/marauder.txt
 KOHR_AH_SHIP_SOUNDS,ship.kohrah.sounds,uqm/ships/blackurq/resinst.h,SNDRES,base/ships/kohrah/marauder.snd
@@ -693,7 +685,6 @@ GAS_BIG_MASK_PMAP_ANIM,ship.kohrah.graphics.gas.large,uqm/ships/blackurq/resinst
 GAS_MED_MASK_PMAP_ANIM,ship.kohrah.graphics.gas.medium,uqm/ships/blackurq/resinst.h,GFXRES,base/ships/kohrah/gas-med.ani
 GAS_SML_MASK_PMAP_ANIM,ship.kohrah.graphics.gas.small,uqm/ships/blackurq/resinst.h,GFXRES,base/ships/kohrah/gas-sml.ani
 KOHR_AH_CAPTAIN_MASK_PMAP_ANIM,ship.kohrah.graphics.captain,uqm/ships/blackurq/resinst.h,GFXRES,base/ships/kohrah/marauder-cap.ani
-MELNORME_CODE,ship.melnorme.code,uqm/ships/melnorme/icode.h,SHIP,8
 MELNORME_VICTORY_SONG,ship.melnorme.ditty,uqm/ships/melnorme/resinst.h,MUSICRES,base/ships/melnorme/trader.mod
 MELNORME_RACE_STRINGS,ship.melnorme.text,uqm/ships/melnorme/resinst.h,STRTAB,base/ships/melnorme/trader.txt
 MELNORME_SHIP_SOUNDS,ship.melnorme.sounds,uqm/ships/melnorme/resinst.h,SNDRES,base/ships/melnorme/trader.snd
@@ -709,7 +700,6 @@ CONFUSE_BIG_MASK_PMAP_ANIM,ship.melnorme.graphics.confuse.large,uqm/ships/melnor
 CONFUSE_MED_MASK_PMAP_ANIM,ship.melnorme.graphics.confuse.medium,uqm/ships/melnorme/resinst.h,GFXRES,base/ships/melnorme/confuse-med.ani
 CONFUSE_SML_MASK_PMAP_ANIM,ship.melnorme.graphics.confuse.small,uqm/ships/melnorme/resinst.h,GFXRES,base/ships/melnorme/confuse-sml.ani
 MELNORME_CAPTAIN_MASK_PMAP_ANIM,ship.melnorme.graphics.captain,uqm/ships/melnorme/resinst.h,GFXRES,base/ships/melnorme/trader-cap.ani
-ZOQFOTPIK_CODE,ship.zoqfotpik.code,uqm/ships/zoqfot/icode.h,SHIP,24
 ZOQFOTPIK_VICTORY_SONG,ship.zoqfotpik.ditty,uqm/ships/zoqfot/resinst.h,MUSICRES,base/ships/zoqfotpik/stinger.mod
 ZOQFOTPIK_RACE_STRINGS,ship.zoqfotpik.text,uqm/ships/zoqfot/resinst.h,STRTAB,base/ships/zoqfotpik/stinger.txt
 ZOQFOTPIK_SHIP_SOUNDS,ship.zoqfotpik.sounds,uqm/ships/zoqfot/resinst.h,SNDRES,base/ships/zoqfotpik/stinger.snd
@@ -725,7 +715,6 @@ STINGER_BIG_MASK_PMAP_ANIM,ship.zoqfotpik.graphics.proboscis.large,uqm/ships/zoq
 STINGER_MED_MASK_PMAP_ANIM,ship.zoqfotpik.graphics.proboscis.medium,uqm/ships/zoqfot/resinst.h,GFXRES,base/ships/zoqfotpik/proboscis-med.ani
 STINGER_SML_MASK_PMAP_ANIM,ship.zoqfotpik.graphics.proboscis.small,uqm/ships/zoqfot/resinst.h,GFXRES,base/ships/zoqfotpik/proboscis-sml.ani
 ZOQFOTPIK_CAPTAIN_MASK_PMAP_ANIM,ship.zoqfotpik.graphics.captain,uqm/ships/zoqfot/resinst.h,GFXRES,base/ships/zoqfotpik/stinger-cap.ani
-VUX_CODE,ship.vux.code,uqm/ships/vux/icode.h,SHIP,22
 VUX_VICTORY_SONG,ship.vux.ditty,uqm/ships/vux/resinst.h,MUSICRES,base/ships/vux/intruder.mod
 VUX_RACE_STRINGS,ship.vux.text,uqm/ships/vux/resinst.h,STRTAB,base/ships/vux/intruder.txt
 VUX_SHIP_SOUNDS,ship.vux.sounds,uqm/ships/vux/resinst.h,SNDRES,base/ships/vux/intruder.snd
@@ -739,7 +728,6 @@ LIMPETS_MED_MASK_PMAP_ANIM,ship.vux.graphics.limpets.medium,uqm/ships/vux/resins
 LIMPETS_SML_MASK_PMAP_ANIM,ship.vux.graphics.limpets.small,uqm/ships/vux/resinst.h,GFXRES,base/ships/vux/limpets-sml.ani
 SLIME_MASK_PMAP_ANIM,ship.vux.graphics.slime,uqm/ships/vux/resinst.h,GFXRES,base/ships/vux/slime.ani
 VUX_CAPTAIN_MASK_PMAP_ANIM,ship.vux.graphics.captain,uqm/ships/vux/resinst.h,GFXRES,base/ships/vux/intruder-cap.ani
-ARILOU_CODE,ship.arilou.code,uqm/ships/arilou/icode.h,SHIP,1
 ARILOU_VICTORY_SONG,ship.arilou.ditty,uqm/ships/arilou/resinst.h,MUSICRES,base/ships/arilou/skiff.mod
 ARILOU_RACE_STRINGS,ship.arilou.text,uqm/ships/arilou/resinst.h,STRTAB,base/ships/arilou/skiff.txt
 ARILOU_SHIP_SOUNDS,ship.arilou.sounds,uqm/ships/arilou/resinst.h,SNDRES,base/ships/arilou/skiff.snd
@@ -752,7 +740,6 @@ WARP_BIG_MASK_PMAP_ANIM,ship.arilou.graphics.warp.large,uqm/ships/arilou/resinst
 WARP_MED_MASK_PMAP_ANIM,ship.arilou.graphics.warp.medium,uqm/ships/arilou/resinst.h,GFXRES,base/ships/arilou/warp-med.ani
 WARP_SML_MASK_PMAP_ANIM,ship.arilou.graphics.warp.small,uqm/ships/arilou/resinst.h,GFXRES,base/ships/arilou/warp-sml.ani
 ARILOU_CAPTAIN_MASK_PMAP_ANIM,ship.arilou.graphics.captain,uqm/ships/arilou/resinst.h,GFXRES,base/ships/arilou/skiff-cap.ani
-SPATHI_CODE,ship.spathi.code,uqm/ships/spathi/icode.h,SHIP,15
 SPATHI_VICTORY_SONG,ship.spathi.ditty,uqm/ships/spathi/resinst.h,MUSICRES,base/ships/spathi/eluder.mod
 SPATHI_RACE_STRINGS,ship.spathi.text,uqm/ships/spathi/resinst.h,STRTAB,base/ships/spathi/eluder.txt
 SPATHI_SHIP_SOUNDS,ship.spathi.sounds,uqm/ships/spathi/resinst.h,SNDRES,base/ships/spathi/eluder.snd
@@ -768,7 +755,6 @@ DISCRIM_BIG_MASK_PMAP_ANIM,ship.spathi.graphics.butt.large,uqm/ships/spathi/resi
 DISCRIM_MED_MASK_PMAP_ANIM,ship.spathi.graphics.butt.medium,uqm/ships/spathi/resinst.h,GFXRES,base/ships/spathi/butt-med.ani
 DISCRIM_SML_MASK_PMAP_ANIM,ship.spathi.graphics.butt.small,uqm/ships/spathi/resinst.h,GFXRES,base/ships/spathi/butt-sml.ani
 SPATHI_CAPTAIN_MASK_PMAP_ANIM,ship.spathi.graphics.captain,uqm/ships/spathi/resinst.h,GFXRES,base/ships/spathi/eluder-cap.ani
-PKUNK_CODE,ship.pkunk.code,uqm/ships/pkunk/icode.h,SHIP,12
 PKUNK_VICTORY_SONG,ship.pkunk.ditty,uqm/ships/pkunk/resinst.h,MUSICRES,base/ships/pkunk/fury.mod
 PKUNK_RACE_STRINGS,ship.pkunk.text,uqm/ships/pkunk/resinst.h,STRTAB,base/ships/pkunk/fury.txt
 PKUNK_SHIP_SOUNDS,ship.pkunk.sounds,uqm/ships/pkunk/resinst.h,SNDRES,base/ships/pkunk/fury.snd
@@ -781,7 +767,6 @@ BUG_BIG_MASK_PMAP_ANIM,ship.pkunk.graphics.bug.large,uqm/ships/pkunk/resinst.h,G
 BUG_MED_MASK_PMAP_ANIM,ship.pkunk.graphics.bug.medium,uqm/ships/pkunk/resinst.h,GFXRES,base/ships/pkunk/bug-med.ani
 BUG_SML_MASK_PMAP_ANIM,ship.pkunk.graphics.bug.small,uqm/ships/pkunk/resinst.h,GFXRES,base/ships/pkunk/bug-sml.ani
 PKUNK_CAPTAIN_MASK_PMAP_ANIM,ship.pkunk.graphics.captain,uqm/ships/pkunk/resinst.h,GFXRES,base/ships/pkunk/fury-cap.ani
-HUMAN_CODE,ship.earthling.code,uqm/ships/human/icode.h,SHIP,6
 HUMAN_VICTORY_SONG,ship.earthling.ditty,uqm/ships/human/resinst.h,MUSICRES,base/ships/human/cruiser.mod
 HUMAN_RACE_STRINGS,ship.earthling.text,uqm/ships/human/resinst.h,STRTAB,base/ships/human/cruiser.txt
 HUMAN_SHIP_SOUNDS,ship.earthling.sounds,uqm/ships/human/resinst.h,SNDRES,base/ships/human/cruiser.snd
@@ -794,7 +779,6 @@ SATURN_BIG_MASK_PMAP_ANIM,ship.earthling.graphics.saturn.large,uqm/ships/human/r
 SATURN_MED_MASK_PMAP_ANIM,ship.earthling.graphics.saturn.medium,uqm/ships/human/resinst.h,GFXRES,base/ships/human/saturn-med.ani
 SATURN_SML_MASK_PMAP_ANIM,ship.earthling.graphics.saturn.small,uqm/ships/human/resinst.h,GFXRES,base/ships/human/saturn-sml.ani
 HUMAN_CAPTAIN_MASK_PMAP_ANIM,ship.earthling.graphics.captain,uqm/ships/human/resinst.h,GFXRES,base/ships/human/cruiser-cap.ani
-UMGAH_CODE,ship.umgah.code,uqm/ships/umgah/icode.h,SHIP,19
 UMGAH_VICTORY_SONG,ship.umgah.ditty,uqm/ships/umgah/resinst.h,MUSICRES,base/ships/umgah/drone.mod
 UMGAH_RACE_STRINGS,ship.umgah.text,uqm/ships/umgah/resinst.h,STRTAB,base/ships/umgah/drone.txt
 UMGAH_SHIP_SOUNDS,ship.umgah.sounds,uqm/ships/umgah/resinst.h,SNDRES,base/ships/umgah/drone.snd
@@ -808,7 +792,6 @@ CONE_BIG_MASK_ANIM,ship.umgah.graphics.cone.large,uqm/ships/umgah/resinst.h,GFXR
 CONE_MED_MASK_ANIM,ship.umgah.graphics.cone.medium,uqm/ships/umgah/resinst.h,GFXRES,base/ships/umgah/cone-med.ani
 CONE_SML_MASK_ANIM,ship.umgah.graphics.cone.small,uqm/ships/umgah/resinst.h,GFXRES,base/ships/umgah/cone-sml.ani
 UMGAH_CAPTAIN_MASK_PMAP_ANIM,ship.umgah.graphics.captain,uqm/ships/umgah/resinst.h,GFXRES,base/ships/umgah/drone-cap.ani
-CHENJESU_CODE,ship.chenjesu.code,uqm/ships/chenjesu/icode.h,SHIP,3
 CHENJESU_VICTORY_SONG,ship.chenjesu.ditty,uqm/ships/chenjesu/resinst.h,MUSICRES,base/ships/chenjesu/broodhome.mod
 CHENJESU_RACE_STRINGS,ship.chenjesu.text,uqm/ships/chenjesu/resinst.h,STRTAB,base/ships/chenjesu/broodhome.txt
 CHENJESU_SHIP_SOUNDS,ship.chenjesu.sounds,uqm/ships/chenjesu/resinst.h,SNDRES,base/ships/chenjesu/broodhome.snd
@@ -824,7 +807,6 @@ DOGGY_BIG_MASK_PMAP_ANIM,ship.chenjesu.graphics.doggy.large,uqm/ships/chenjesu/r
 DOGGY_MED_MASK_PMAP_ANIM,ship.chenjesu.graphics.doggy.medium,uqm/ships/chenjesu/resinst.h,GFXRES,base/ships/chenjesu/doggy-med.ani
 DOGGY_SML_MASK_PMAP_ANIM,ship.chenjesu.graphics.doggy.small,uqm/ships/chenjesu/resinst.h,GFXRES,base/ships/chenjesu/doggy-sml.ani
 CHENJESU_CAPTAIN_MASK_PMAP_ANIM,ship.chenjesu.graphics.captain,uqm/ships/chenjesu/resinst.h,GFXRES,base/ships/chenjesu/broodhome-cap.ani
-SIS_CODE,ship.flagship.code,uqm/ships/sis_ship/icode.h,SHIP,26
 SIS_VICTORY_SONG,ship.flagship.ditty,uqm/ships/sis_ship/resinst.h,MUSICRES,base/ships/flagship/flagship.mod
 SIS_SHIP_SOUNDS,ship.flagship.sounds,uqm/ships/sis_ship/resinst.h,SNDRES,base/ships/flagship/flagship.snd
 SIS_ICON_MASK_PMAP_ANIM,ship.flagship.icons,uqm/ships/sis_ship/resinst.h,GFXRES,base/ships/flagship/flagship-icons.ani
@@ -836,7 +818,6 @@ BLASTER_MED_MASK_PMAP_ANIM,ship.flagship.graphics.blaster.medium,uqm/ships/sis_s
 BLASTER_SML_MASK_PMAP_ANIM,ship.flagship.graphics.blaster.small,uqm/ships/sis_ship/resinst.h,GFXRES,base/ships/flagship/blaster-sml.ani
 SIS_CAPTAIN_MASK_PMAP_ANIM,ship.flagship.graphics.captain,uqm/ships/sis_ship/resinst.h,GFXRES,base/ships/flagship/flagship-cap.ani
 SIS_HYPER_MASK_PMAP_ANIM,ship.flagship.graphics.hyperspace,uqm/ships/sis_ship/resinst.h,GFXRES,base/ships/flagship/hyperspace.ani
-ILWRATH_CODE,ship.ilwrath.code,uqm/ships/ilwrath/icode.h,SHIP,7
 ILWRATH_VICTORY_SONG,ship.ilwrath.ditty,uqm/ships/ilwrath/resinst.h,MUSICRES,base/ships/ilwrath/avenger.mod
 ILWRATH_RACE_STRINGS,ship.ilwrath.text,uqm/ships/ilwrath/resinst.h,STRTAB,base/ships/ilwrath/avenger.txt
 ILWRATH_SHIP_SOUNDS,ship.ilwrath.sounds,uqm/ships/ilwrath/resinst.h,SNDRES,base/ships/ilwrath/avenger.snd
@@ -849,7 +830,6 @@ FIRE_BIG_MASK_PMAP_ANIM,ship.ilwrath.graphics.fire.large,uqm/ships/ilwrath/resin
 FIRE_MED_MASK_PMAP_ANIM,ship.ilwrath.graphics.fire.medium,uqm/ships/ilwrath/resinst.h,GFXRES,base/ships/ilwrath/fire-med.ani
 FIRE_SML_MASK_PMAP_ANIM,ship.ilwrath.graphics.fire.small,uqm/ships/ilwrath/resinst.h,GFXRES,base/ships/ilwrath/fire-sml.ani
 ILWRATH_CAPTAIN_MASK_PMAP_ANIM,ship.ilwrath.graphics.captain,uqm/ships/ilwrath/resinst.h,GFXRES,base/ships/ilwrath/avenger-cap.ani
-SYREEN_CODE,ship.syreen.code,uqm/ships/syreen/icode.h,SHIP,17
 SYREEN_VICTORY_SONG,ship.syreen.ditty,uqm/ships/syreen/resinst.h,MUSICRES,base/ships/syreen/penetrator.mod
 SYREEN_RACE_STRINGS,ship.syreen.text,uqm/ships/syreen/resinst.h,STRTAB,base/ships/syreen/penetrator.txt
 SYREEN_SHIP_SOUNDS,ship.syreen.sounds,uqm/ships/syreen/resinst.h,SNDRES,base/ships/syreen/penetrator.snd
@@ -862,9 +842,7 @@ DAGGER_BIG_MASK_PMAP_ANIM,ship.syreen.graphics.dagger.large,uqm/ships/syreen/res
 DAGGER_MED_MASK_PMAP_ANIM,ship.syreen.graphics.dagger.medium,uqm/ships/syreen/resinst.h,GFXRES,base/ships/syreen/dagger-med.ani
 DAGGER_SML_MASK_PMAP_ANIM,ship.syreen.graphics.dagger.small,uqm/ships/syreen/resinst.h,GFXRES,base/ships/syreen/dagger-sml.ani
 SYREEN_CAPTAIN_MASK_PMAP_ANIM,ship.syreen.graphics.captain,uqm/ships/syreen/resinst.h,GFXRES,base/ships/syreen/penetrator-cap.ani
-URQUAN_DRONE_CODE,ship.drone.code,uqm/ships/probe/icode.h,SHIP,27
 URQUAN_DRONE_MICON_MASK_PMAP_ANIM,ship.drone.meleeicons,uqm/ships/probe/resinst.h,GFXRES,base/ships/drone/drone-meleeicons.ani
-MMRNMHRM_CODE,ship.mmrnmhrm.code,uqm/ships/mmrnmhrm/icode.h,SHIP,9
 MMRNMHRM_VICTORY_SONG,ship.mmrnmhrm.ditty,uqm/ships/mmrnmhrm/resinst.h,MUSICRES,base/ships/mmrnmhrm/xform.mod
 MMRNMHRM_RACE_STRINGS,ship.mmrnmhrm.text,uqm/ships/mmrnmhrm/resinst.h,STRTAB,base/ships/mmrnmhrm/xform.txt
 MMRNMHRM_SHIP_SOUNDS,ship.mmrnmhrm.sounds,uqm/ships/mmrnmhrm/resinst.h,SNDRES,base/ships/mmrnmhrm/xform.snd
@@ -880,7 +858,6 @@ YWING_BIG_MASK_PMAP_ANIM,ship.mmrnmhrm.graphics.ywing.large,uqm/ships/mmrnmhrm/r
 YWING_MED_MASK_PMAP_ANIM,ship.mmrnmhrm.graphics.ywing.medium,uqm/ships/mmrnmhrm/resinst.h,GFXRES,base/ships/mmrnmhrm/ywing-med.ani
 YWING_SML_MASK_PMAP_ANIM,ship.mmrnmhrm.graphics.ywing.small,uqm/ships/mmrnmhrm/resinst.h,GFXRES,base/ships/mmrnmhrm/ywing-sml.ani
 MMRNMHRM_CAPTAIN_MASK_PMAP_ANIM,ship.mmrnmhrm.graphics.captain,uqm/ships/mmrnmhrm/resinst.h,GFXRES,base/ships/mmrnmhrm/xform-cap.ani
-YEHAT_CODE,ship.yehat.code,uqm/ships/yehat/icode.h,SHIP,23
 YEHAT_VICTORY_SONG,ship.yehat.ditty,uqm/ships/yehat/resinst.h,MUSICRES,base/ships/yehat/terminator.mod
 YEHAT_RACE_STRINGS,ship.yehat.text,uqm/ships/yehat/resinst.h,STRTAB,base/ships/yehat/terminator.txt
 YEHAT_SHIP_SOUNDS,ship.yehat.sounds,uqm/ships/yehat/resinst.h,SNDRES,base/ships/yehat/terminator.snd
@@ -896,7 +873,6 @@ SHIELD_BIG_MASK_ANIM,ship.yehat.graphics.shield.large,uqm/ships/yehat/resinst.h,
 SHIELD_MED_MASK_ANIM,ship.yehat.graphics.shield.medium,uqm/ships/yehat/resinst.h,GFXRES,base/ships/yehat/shield-med.ani
 SHIELD_SML_MASK_ANIM,ship.yehat.graphics.shield.small,uqm/ships/yehat/resinst.h,GFXRES,base/ships/yehat/shield-sml.ani
 YEHAT_CAPTAIN_MASK_PMAP_ANIM,ship.yehat.graphics.captain,uqm/ships/yehat/resinst.h,GFXRES,base/ships/yehat/terminator-cap.ani
-SAMATRA_CODE,ship.samatra.code,uqm/ships/lastbat/icode.h,SHIP,25
 SAMATRA_VICTORY_SONG,ship.samatra.ditty,uqm/ships/lastbat/resinst.h,--,--
 SAMATRA_SHIP_SOUNDS,ship.samatra.sounds,uqm/ships/lastbat/resinst.h,SNDRES,base/ships/samatra/samatra.snd
 SAMATRA_BIG_MASK_ANIM,ship.samatra.graphics.samatra.large,uqm/ships/lastbat/resinst.h,GFXRES,base/ships/samatra/samatra-big.ani
@@ -909,7 +885,6 @@ GENERATOR_BIG_MASK_ANIM,ship.samatra.graphics.generator.large,uqm/ships/lastbat/
 GENERATOR_MED_MASK_PMAP_ANIM,ship.samatra.graphics.generator.medium,uqm/ships/lastbat/resinst.h,GFXRES,base/ships/samatra/generator-med.ani
 GENERATOR_SML_MASK_PMAP_ANIM,ship.samatra.graphics.generator.small,uqm/ships/lastbat/resinst.h,GFXRES,base/ships/samatra/generator-sml.ani
 SAMATRA_CAPTAIN_MASK_PMAP_ANIM,ship.samatra.graphics.captain,uqm/ships/lastbat/resinst.h,GFXRES,base/ships/samatra/samatra-cap.ani
-SUPOX_CODE,ship.supox.code,uqm/ships/supox/icode.h,SHIP,16
 SUPOX_VICTORY_SONG,ship.supox.ditty,uqm/ships/supox/resinst.h,MUSICRES,base/ships/supox/blade.mod
 SUPOX_RACE_STRINGS,ship.supox.text,uqm/ships/supox/resinst.h,STRTAB,base/ships/supox/blade.txt
 SUPOX_SHIP_SOUNDS,ship.supox.sounds,uqm/ships/supox/resinst.h,SNDRES,base/ships/supox/blade.snd
@@ -922,7 +897,6 @@ GOB_BIG_MASK_PMAP_ANIM,ship.supox.graphics.glob.large,uqm/ships/supox/resinst.h,
 GOB_MED_MASK_PMAP_ANIM,ship.supox.graphics.glob.medium,uqm/ships/supox/resinst.h,GFXRES,base/ships/supox/glob-med.ani
 GOB_SML_MASK_PMAP_ANIM,ship.supox.graphics.glob.small,uqm/ships/supox/resinst.h,GFXRES,base/ships/supox/glob-sml.ani
 SUPOX_CAPTAIN_MASK_PMAP_ANIM,ship.supox.graphics.captain,uqm/ships/supox/resinst.h,GFXRES,base/ships/supox/blade-cap.ani
-THRADDASH_CODE,ship.thraddash.code,uqm/ships/thradd/icode.h,SHIP,18
 THRADDASH_VICTORY_SONG,ship.thraddash.ditty,uqm/ships/thradd/resinst.h,MUSICRES,base/ships/thraddash/torch.mod
 THRADDASH_RACE_STRINGS,ship.thraddash.text,uqm/ships/thradd/resinst.h,STRTAB,base/ships/thraddash/torch.txt
 THRADDASH_SHIP_SOUNDS,ship.thraddash.sounds,uqm/ships/thradd/resinst.h,SNDRES,base/ships/thraddash/torch.snd
@@ -938,7 +912,6 @@ NAPALM_BIG_MASK_PMAP_ANIM,ship.thraddash.graphics.napalm.large,uqm/ships/thradd/
 NAPALM_MED_MASK_PMAP_ANIM,ship.thraddash.graphics.napalm.medium,uqm/ships/thradd/resinst.h,GFXRES,base/ships/thraddash/napalm-med.ani
 NAPALM_SML_MASK_PMAP_ANIM,ship.thraddash.graphics.napalm.small,uqm/ships/thradd/resinst.h,GFXRES,base/ships/thraddash/napalm-sml.ani
 THRADDASH_CAPTAIN_MASK_PMAP_ANIM,ship.thraddash.graphics.captain,uqm/ships/thradd/resinst.h,GFXRES,base/ships/thraddash/torch-cap.ani
-ANDROSYNTH_CODE,ship.androsynth.code,uqm/ships/androsyn/icode.h,SHIP,0
 ANDROSYNTH_VICTORY_SONG,ship.androsynth.ditty,uqm/ships/androsyn/resinst.h,MUSICRES,base/ships/androsynth/guardian.mod
 ANDROSYNTH_RACE_STRINGS,ship.androsynth.text,uqm/ships/androsyn/resinst.h,STRTAB,base/ships/androsynth/guardian.txt
 ANDROSYNTH_SHIP_SOUNDS,ship.androsynth.sounds,uqm/ships/androsyn/resinst.h,SNDRES,base/ships/androsynth/guardian.snd
@@ -954,7 +927,6 @@ BLAZER_BIG_MASK_PMAP_ANIM,ship.androsynth.graphics.blazer.large,uqm/ships/andros
 BLAZER_MED_MASK_PMAP_ANIM,ship.androsynth.graphics.blazer.medium,uqm/ships/androsyn/resinst.h,GFXRES,base/ships/androsynth/blazer-med.ani
 BLAZER_SML_MASK_PMAP_ANIM,ship.androsynth.graphics.blazer.small,uqm/ships/androsyn/resinst.h,GFXRES,base/ships/androsynth/blazer-sml.ani
 ANDROSYNTH_CAPT_MASK_PMAP_ANIM,ship.androsynth.graphics.captain,uqm/ships/androsyn/resinst.h,GFXRES,base/ships/androsynth/guardian-cap.ani
-ORZ_CODE,ship.orz.code,uqm/ships/orz/icode.h,SHIP,11
 ORZ_VICTORY_SONG,ship.orz.ditty,uqm/ships/orz/resinst.h,MUSICRES,base/ships/orz/nemesis.mod
 ORZ_RACE_STRINGS,ship.orz.text,uqm/ships/orz/resinst.h,STRTAB,base/ships/orz/nemesis.txt
 ORZ_SHIP_SOUNDS,ship.orz.sounds,uqm/ships/orz/resinst.h,SNDRES,base/ships/orz/nemesis.snd

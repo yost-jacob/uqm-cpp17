@@ -18,9 +18,9 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include <optional>
-#include "pkunk.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -110,7 +110,7 @@ static const RACE_DESC &pkunkDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -621,8 +621,8 @@ static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *dat
     static_cast<PkunkShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
 }
 
-RACE_DESC*
-init_pkunk (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makePkunkShip()
 {
 	// Build a per-instance definition, copied into the native owner.
 	RACE_DESC new_pkunk_desc;
@@ -637,8 +637,5 @@ init_pkunk (void) try
 			// that NetPlay is synchronised if one player played another
 			// game before playing against a networked opponent.
 
-	return uqm::combat::releaseToLegacy(std::make_unique<PkunkShip>(new_pkunk_desc));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("PkunkShip");
-    return nullptr;
+	return std::make_unique<PkunkShip>(new_pkunk_desc);
 }

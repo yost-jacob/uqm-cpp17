@@ -18,9 +18,9 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include <optional>
-#include "sis_ship.h"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -125,7 +125,7 @@ static const RACE_DESC &sisDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -910,8 +910,8 @@ static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *dat
     static_cast<Flagship &>(uqm::combat::shipFor(*descriptor)).setData(data);
 }
 
-RACE_DESC*
-init_sis (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeFlagship()
 {
 	COUNT i;
 	// Build a per-instance definition, copied into the native owner.
@@ -965,10 +965,7 @@ init_sis (void) try
 	
 	new_sis_desc.ship_info.energy_level = new_sis_desc.ship_info.max_energy;
 
-	return uqm::combat::releaseToLegacy(std::make_unique<Flagship>(new_sis_desc, inHQSpace()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("Flagship");
-    return nullptr;
+	return std::make_unique<Flagship>(new_sis_desc, inHQSpace());
 }
 
 static void

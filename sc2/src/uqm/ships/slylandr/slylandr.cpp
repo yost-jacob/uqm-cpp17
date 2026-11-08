@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "slylandr.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -103,7 +103,7 @@ static const RACE_DESC &slylandroDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -431,12 +431,9 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_slylandro (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeSlylandroShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SlylandroShip>(slylandroDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("SlylandroShip");
-    return nullptr;
+	return std::make_unique<SlylandroShip>(slylandroDefinition());
 }

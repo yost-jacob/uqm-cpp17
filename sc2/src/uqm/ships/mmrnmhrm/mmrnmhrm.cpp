@@ -18,9 +18,9 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include <optional>
-#include "mmrnmhrm.h"
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -117,7 +117,7 @@ static const RACE_DESC &mmrnmhrmDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -497,8 +497,8 @@ static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *dat
     static_cast<MmrnmhrmShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
 }
 
-RACE_DESC*
-init_mmrnmhrm (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeMmrnmhrmShip()
 {
 	// Build a per-instance definition, copied into the native owner.
 	RACE_DESC new_mmrnmhrm_desc;
@@ -520,9 +520,6 @@ init_mmrnmhrm (void) try
 
 	new_mmrnmhrm_desc.data = &otherwing_desc;
 
-	return uqm::combat::releaseToLegacy(std::make_unique<MmrnmhrmShip>(new_mmrnmhrm_desc));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("MmrnmhrmShip");
-    return nullptr;
+	return std::make_unique<MmrnmhrmShip>(new_mmrnmhrm_desc);
 }
 

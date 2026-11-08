@@ -18,7 +18,6 @@
 
 #include "globdata.h"
 
-#include "coderes.h"
 #include "encount.h"
 #include "starmap.h"
 #include "master.h"

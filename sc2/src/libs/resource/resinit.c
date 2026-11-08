@@ -29,7 +29,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 // XXX: we should not include anything from uqm/ inside libs/
-#include "uqm/coderes.h"
 
 static RESOURCE_INDEX
 allocResourceIndex (void) {
@@ -349,7 +348,6 @@ InitResourceSystem (void)
 	InstallStringTableResType ();
 	InstallAudioResTypes ();
 	InstallVideoResType ();
-	InstallCodeResType ();
 
 	return ndx;
 }

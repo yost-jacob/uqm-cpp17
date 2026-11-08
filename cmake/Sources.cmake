@@ -198,7 +198,6 @@ set(UQM_SOURCES
     sc2/src/uqm/cyborg.c
     sc2/src/uqm/demo.c
     sc2/src/uqm/displist.cpp
-    sc2/src/uqm/dummy.c
     sc2/src/uqm/encount.c
     sc2/src/uqm/flash.c
     sc2/src/uqm/fmv.c
@@ -212,6 +211,7 @@ set(UQM_SOURCES
     sc2/src/uqm/game_state.cpp
     sc2/src/uqm/ship_tuning.cpp
     sc2/src/uqm/ship_tuning_c.cpp
+    sc2/src/uqm/ship_factory.cpp
     sc2/src/uqm/ship_behavior.cpp
     sc2/src/uqm/game_mode.cpp
     sc2/src/uqm/game_menu.cpp
@@ -232,7 +232,7 @@ set(UQM_SOURCES
     sc2/src/uqm/ipdisp.c
     sc2/src/uqm/load.c
     sc2/src/uqm/load_legacy.c
-    sc2/src/uqm/loadship.c
+    sc2/src/uqm/loadship.cpp
     sc2/src/uqm/master.c
     sc2/src/uqm/menu.c
     sc2/src/uqm/misc.c

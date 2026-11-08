@@ -1,2 +1,2 @@
 uqm_CXXFILES="chenjesu.cpp"
-uqm_HFILES="chenjesu.h icode.h resinst.h"
+uqm_HFILES="resinst.h"

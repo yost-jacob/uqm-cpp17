@@ -10,11 +10,26 @@ existing algorithms instead of rewriting all weapons at once.
 
 ## Ownership and compatibility
 
-The legacy SHIP resource handle now refers to a native Ship owner. Its descriptor
-has a stable address inside that owner, and CodeRef identifies the owner rather
-than an HMalloc wrapper. Initializers construct with make_unique and transfer only
-at the C boundary; DestroyCodeRes routes through the matching native destructor.
-The old CODERES_STRUCT allocation and shallow descriptor copy are deleted.
+[createShip](../../../sc2/src/uqm/ship_factory.hpp) now switches directly on
+SPECIES_ID and returns unique_ptr<Ship>. Each concrete builder returns native
+ownership; there are no C init factories, code-resource names, numeric SHIP IDs,
+resource-handler registrations or capture/release handles in this path.
+
+load_ship is a C buffer implemented in C++. It holds the unique owner while
+loading existing image/audio/text resources, and releases it to the C gameplay
+layer only on success. RACE_DESC::ship_owner is the remaining opaque link needed
+by C behavior dispatch. free_ship reconstructs the native owner at that boundary.
+An asset-load rollback guard releases partially loaded resources without publishing
+campaign state. Existing selective icon/asset transfers remain supported.
+
+The former dummy.c, coderes.h, corecode.h, dummy.h, 28 icode.h files and 27
+init-only headers are deleted. Orz retains its two cross-ship C callback declarations.
+Generated resource records are removed from uqm.rmp and resources.csv together;
+legacy package recipes drop the corresponding obsolete code entries.
+
+Bundled content/addons do not remap ship code. Third-party SHIP record remapping
+no longer selects behavior; old records may be ignored with unknown-type warnings.
+Graphics, sound, text and JSON tuning overrides keep their existing paths.
 
 free_ship explicitly calls finish before releasing assets. finish is idempotent
 and blocks further gameplay hooks. Destructors release owned optional values
@@ -105,8 +120,10 @@ existing cleanup; there is no launch option or alternate runtime rule yet.
 ## Verification
 
 Boost.Test exercises genuine C-to-native dispatch, stable resource identity,
-independent mutable descriptors, cleared weapon slots, disabled/restored hooks,
-completion idempotence and destruction without campaign publication. The projectile prototype also
+independent mutable descriptors, complete species-to-builder mapping, cleared
+weapon slots, disabled/restored hooks,
+completion idempotence, partial-asset rollback, selective icon transfer, and
+destruction without campaign publication. The projectile prototype also
 checks default source-retirement removal without detonating the crystal.
 Full Debug/Release CMake/Ninja, legacy build and sanitizer results are recorded
 in the PR. GUI smoke testing is a focused resource/dispatch check, not an exhaustive

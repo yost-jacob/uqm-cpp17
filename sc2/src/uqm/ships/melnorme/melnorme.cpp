@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "melnorme.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -117,7 +117,7 @@ static const RACE_DESC &melnormeDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -665,13 +665,10 @@ void selectMelnormeWeapon(RACE_DESC &descriptor, MelnormeWeaponMode mode) noexce
 }
 } // namespace
 
-RACE_DESC*
-init_melnorme (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeMelnormeShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<MelnormeShip>(melnormeDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("MelnormeShip");
-    return nullptr;
+	return std::make_unique<MelnormeShip>(melnormeDefinition());
 }
 

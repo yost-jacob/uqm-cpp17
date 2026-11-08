@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "ilwrath.h"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -107,7 +107,7 @@ static const RACE_DESC &ilwrathDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -399,13 +399,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_ilwrath (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeIlwrathShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<IlwrathShip>(ilwrathDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("IlwrathShip");
-    return nullptr;
+	return std::make_unique<IlwrathShip>(ilwrathDefinition());
 }
 

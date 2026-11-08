@@ -20,7 +20,6 @@
 #include "setup.h"
 #include "starmap.h"
 
-#include "coderes.h"
 #include "controls.h"
 #include "options.h"
 #include "nameref.h"

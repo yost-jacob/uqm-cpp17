@@ -211,7 +211,7 @@ struct race_desc
 
 	void* data;  // Borrowed view of a concrete ship's optional private value.
 
-	void *CodeRef; // Opaque native Ship owner; never HFree or copy a live owner.
+	void *ship_owner; // Native Ship owner for the C dispatch buffer; never free or copy it.
 };
 
 #define SHIP_BASE_COMMON \

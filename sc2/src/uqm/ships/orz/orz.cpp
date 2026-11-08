@@ -18,6 +18,7 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include "orz.h"
 #include "resinst.h"
@@ -114,7 +115,7 @@ static const RACE_DESC &orzDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -1071,13 +1072,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_orz (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeOrzShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<OrzShip>(orzDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("OrzShip");
-    return nullptr;
+	return std::make_unique<OrzShip>(orzDefinition());
 }
 

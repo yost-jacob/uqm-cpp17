@@ -18,8 +18,8 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
-#include "vux.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -113,7 +113,7 @@ static const RACE_DESC &vuxDefinition() {
         },
 
         0,
-        0, /* CodeRef */
+        0, /* ship_owner */
     };
     return definition;
 }
@@ -386,13 +386,10 @@ private:
 };
 } // namespace
 
-RACE_DESC*
-init_vux (void) try
+std::unique_ptr<uqm::combat::Ship>
+uqm::combat::makeVuxShip()
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<VuxShip>(vuxDefinition()));
-} catch (...) {
-    uqm::combat::logShipCreationFailure("VuxShip");
-    return nullptr;
+	return std::make_unique<VuxShip>(vuxDefinition());
 }
 

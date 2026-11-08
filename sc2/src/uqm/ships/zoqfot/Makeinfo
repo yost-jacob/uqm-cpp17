@@ -1,2 +1,2 @@
 uqm_CXXFILES="zoqfot.cpp"
-uqm_HFILES="icode.h resinst.h zoqfot.h"
+uqm_HFILES="resinst.h"
