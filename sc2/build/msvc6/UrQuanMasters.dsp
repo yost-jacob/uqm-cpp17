@@ -3134,7 +3134,7 @@ SOURCE=..\..\src\uqm\demo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\uqm\displist.c
+SOURCE=..\..\src\uqm\displist.cpp
 # End Source File
 # Begin Source File
 

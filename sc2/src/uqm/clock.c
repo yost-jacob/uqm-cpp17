@@ -113,7 +113,7 @@ processClockDayEvents (void)
 BOOLEAN
 InitGameClock (void)
 {
-	if (!InitQueue (&GLOBAL (GameClock.event_q), NUM_EVENTS, sizeof (EVENT)))
+	if (!InitQueue (&GLOBAL (GameClock.event_q), NUM_EVENTS, QUEUE_EVENT))
 		return (FALSE);
 	clock_mutex = CreateMutex ("Clock Mutex", SYNC_CLASS_TOPLEVEL);
 	GLOBAL (GameClock.month_index) = 2;

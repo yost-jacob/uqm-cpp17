@@ -72,8 +72,6 @@ typedef enum
 #define FreeEvent(h) FreeLink (&GLOBAL (GameClock.event_q), (h))
 #define GetPredEvent(l) _GetPredLink (l)
 #define GetSuccEvent(l) _GetSuccLink (l)
-#define ForAllEvents(callback, arg) ForAllLinks(&GLOBAL (GameClock.event_q), \
-		(void (*)(LINK *, void *)) (callback), (arg))
 
 // Rates are in seconds per game day
 #define HYPERSPACE_CLOCK_RATE 5

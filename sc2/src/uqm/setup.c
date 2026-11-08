@@ -180,7 +180,7 @@ InitContexts (void)
 	if (OffScreenContext == NULL)
 		return FALSE;
 
-	if (!InitQueue (&disp_q, MAX_DISPLAY_ELEMENTS, sizeof (ELEMENT)))
+	if (!InitQueue (&disp_q, MAX_DISPLAY_ELEMENTS, QUEUE_ELEMENT))
 		return FALSE;
 
 	return TRUE;
@@ -192,7 +192,7 @@ InitKernel (void)
 	COUNT counter;
 
 	for (counter = 0; counter < NUM_PLAYERS; ++counter)
-		InitQueue (&race_q[counter], MAX_SHIPS_PER_SIDE, sizeof (STARSHIP));
+		InitQueue (&race_q[counter], MAX_SHIPS_PER_SIDE, QUEUE_STARSHIP);
 
 	StarConFont = LoadFont (STARCON_FONT);
 	if (StarConFont == NULL)

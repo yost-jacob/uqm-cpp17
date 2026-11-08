@@ -77,6 +77,7 @@ if(BUILD_TESTING)
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
         tests/stringbank_c.c tests/string_resources.cpp tests/string_tables_c.c
         tests/value_types.cpp tests/math.cpp tests/math_c.c
+        tests/game_queues.cpp tests/game_queues_c.c
         tests/value_types_c.c tests/packet_queue.cpp tests/alarms.cpp
         sc2/src/libs/callback/alarm.cpp
         sc2/src/uqm/supermelee/netplay/packetq.cpp
@@ -85,7 +86,8 @@ if(BUILD_TESTING)
         sc2/src/libs/strings/sresins.c sc2/src/libs/strings/sfileins.c
         sc2/src/libs/strings/unicode.c sc2/src/libs/memory/w_memlib.c
         sc2/src/libs/math/random.cpp sc2/src/libs/math/sqrt.cpp
-        sc2/src/uqm/trans.cpp sc2/src/libs/uio/charhashtable.cpp
+        sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp
+        sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE
         "${CMAKE_CURRENT_BINARY_DIR}/generated" sc2/src)
