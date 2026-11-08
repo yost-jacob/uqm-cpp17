@@ -21,6 +21,7 @@ struct uio_Stream {
 namespace {
 std::unordered_map<std::string, std::string> files;
 int liveStreams = 0;
+std::unordered_map<std::string, ResourceFreeFun *> registeredDeleters;
 using Table = std::unique_ptr<STRING_TABLE_DESC, decltype(&FreeStringTable)>;
 using Stream = std::unique_ptr<uio_Stream, decltype(&res_CloseResFile)>;
 
@@ -41,6 +42,22 @@ Table conversation(const char *path)
 
 extern "C" {
 uio_DirHandle *contentDir = nullptr;
+const char *_cur_resfile_name = nullptr;
+
+BOOLEAN InstallResTypeVectors(const char *type, ResourceLoadFun *,
+        ResourceFreeFun *freeFun, ResourceStringFun *) {
+    registeredDeleters[type] = freeFun;
+    return TRUE;
+}
+
+// Resource installation links these instance-lookup entry points; fixtures
+// load file bytes directly and never create a global resource index.
+void *res_GetResource(RESOURCE) { return nullptr; }
+void *res_DetachResource(RESOURCE) { return nullptr; }
+void *LoadResourceFromPath(const char *path, ResourceLoadFileFun *load) {
+    const Stream stream(res_OpenResFile(contentDir, path, "rb"), res_CloseResFile);
+    return stream ? load(stream.get(), LengthResFile(stream.get())) : nullptr;
+}
 
 // The loader's diagnostic output is irrelevant to fixture ownership checks.
 void log_add(log_Level, const char *, ...) {}
@@ -107,12 +124,18 @@ BOOST_FIXTURE_TEST_CASE(conversation_owns_all_datasets_and_closes_both_files, Re
     files["timestamps"] = "#(HELLO) 10,20\n#(BYE) 30\n";
     const auto table = conversation("dialog:voice/:timestamps");
     BOOST_REQUIRE(table);
-    BOOST_TEST(table->size == 2);
-    BOOST_TEST(std::string(table->strings[0].data) == "Hello\nthere");
-    BOOST_TEST(std::string(GetStringName(&table->strings[0])) == "HELLO");
-    BOOST_TEST(std::string(GetStringSoundClip(&table->strings[0])) == "voice/hello.ogg");
-    BOOST_TEST(std::string(GetStringTimeStamp(&table->strings[1])) == "30\n");
-    BOOST_TEST(GetStringByName(table.get(), "BYE") == &table->strings[3]);
+    const auto first = CaptureStringTable(table.get());
+    BOOST_TEST(GetStringTableCount(first) == 2u);
+    BOOST_TEST(std::string(GetStringAddress(first)) == "Hello\nthere");
+    BOOST_TEST(std::string(GetStringName(first)) == "HELLO");
+    BOOST_TEST(std::string(GetStringSoundClip(first)) == "voice/hello.ogg");
+    BOOST_TEST(std::string(GetStringTimeStamp(SetAbsStringTableIndex(first, 1))) == "30\n");
+    const auto named = GetStringByName(table.get(), "BYE");
+    BOOST_REQUIRE(named);
+    BOOST_TEST(GetStringTableIndex(named) == 3u);
+    BOOST_TEST(std::string(GetStringAddress(named)) == "BYE");
+    BOOST_TEST(SetRelStringTableIndex(named, 0) ==
+            SetAbsStringTableIndex(first, 1));
 }
 
 BOOST_FIXTURE_TEST_CASE(conversation_releases_missing_empty_and_headerless_inputs, ResourceFixture)
@@ -125,8 +148,9 @@ BOOST_FIXTURE_TEST_CASE(conversation_releases_missing_empty_and_headerless_input
     files["blank-entry"] = "#(EMPTY)\n";
     const auto table = conversation("blank-entry");
     BOOST_REQUIRE(table);
-    BOOST_TEST(table->strings[0].length == 0);
-    BOOST_TEST(table->strings[0].data == nullptr);
+    const auto first = CaptureStringTable(table.get());
+    BOOST_TEST(GetStringLengthBin(first) == 0u);
+    BOOST_TEST(GetStringAddress(first) == nullptr);
 }
 
 BOOST_FIXTURE_TEST_CASE(conversation_drops_incomplete_timestamps_and_keeps_text, ResourceFixture)
@@ -135,9 +159,10 @@ BOOST_FIXTURE_TEST_CASE(conversation_drops_incomplete_timestamps_and_keeps_text,
     files["timestamps"] = "#(FIRST) 10\n";
     const auto table = conversation("dialog::timestamps");
     BOOST_REQUIRE(table);
-    BOOST_TEST((table->flags & HAS_TIMESTAMP) == 0);
-    BOOST_TEST(std::string(table->strings[1].data) == "Second");
-    BOOST_TEST(GetStringTimeStamp(&table->strings[0]) == nullptr);
+    const auto first = CaptureStringTable(table.get());
+    BOOST_TEST(GetStringTimeStamp(SetAbsStringTableIndex(first, 1)) == nullptr);
+    BOOST_TEST(std::string(GetStringAddress(SetAbsStringTableIndex(first, 1))) == "Second");
+    BOOST_TEST(GetStringTimeStamp(first) == nullptr);
 }
 
 BOOST_FIXTURE_TEST_CASE(text_loader_borrows_its_stream_and_grows_temporary_storage, ResourceFixture)
@@ -155,8 +180,9 @@ BOOST_FIXTURE_TEST_CASE(text_loader_borrows_its_stream_and_grows_temporary_stora
     const Table table(static_cast<STRING_TABLE_DESC *>(_GetStringData(stream.get(), LengthResFile(stream.get()))), FreeStringTable);
     BOOST_TEST(liveStreams == 1);
     BOOST_REQUIRE(table);
-    BOOST_TEST(std::string(table->strings[0].data) == expected);
-    BOOST_TEST(std::string(table->strings[1].data) == "Second");
+    const auto first = CaptureStringTable(table.get());
+    BOOST_TEST(std::string(GetStringAddress(first)) == expected);
+    BOOST_TEST(std::string(GetStringAddress(SetAbsStringTableIndex(first, 1))) == "Second");
 }
 
 BOOST_FIXTURE_TEST_CASE(binary_loader_owns_temporary_bytes_and_preserves_embedded_nuls, ResourceFixture)
@@ -170,8 +196,130 @@ BOOST_FIXTURE_TEST_CASE(binary_loader_owns_temporary_bytes_and_preserves_embedde
     const Stream stream(res_OpenResFile(nullptr, "binary", "rb"), res_CloseResFile);
     const Table table(static_cast<STRING_TABLE_DESC *>(_GetBinaryTableData(stream.get(), bytes.size())), FreeStringTable);
     BOOST_REQUIRE(table);
-    BOOST_TEST(table->size == 2);
-    BOOST_TEST(std::string(table->strings[0].data, table->strings[0].length) == std::string("one\0", 4));
-    BOOST_TEST(std::string(table->strings[1].data, table->strings[1].length) == std::string("x\0y", 3));
+    const auto first = CaptureStringTable(table.get());
+    BOOST_TEST(GetStringTableCount(first) == 2u);
+    BOOST_TEST(std::string(GetStringAddress(first), GetStringLengthBin(first)) == std::string("one\0", 4));
+    BOOST_TEST(std::string(GetStringAddress(SetAbsStringTableIndex(first, 1)), GetStringLengthBin(SetAbsStringTableIndex(first, 1))) == std::string("x\0y", 3));
     BOOST_TEST(liveStreams == 1);
+}
+
+extern "C" int string_table_c_round_trip(void);
+
+BOOST_AUTO_TEST_CASE(string_table_c_api_and_pointer_bytes) {
+    BOOST_TEST(string_table_c_round_trip() == 1);
+}
+
+BOOST_FIXTURE_TEST_CASE(string_table_metadata_names_and_navigation, ResourceFixture) {
+    files["dialog"] = "#(DUPLICATE) first.ogg\nFirst\n#(DUPLICATE)\n\n#(LAST) last.ogg\nLast\n";
+    const auto table = conversation("dialog:voice/");
+    const auto first = CaptureStringTable(table.get());
+    BOOST_REQUIRE(first);
+    const auto last = SetAbsStringTableIndex(first, 2);
+    BOOST_TEST(GetStringTableCount(first) == 3u);
+    BOOST_TEST(SetAbsStringTableIndex(first, 7) == SetRelStringTableIndex(first, 1));
+    BOOST_TEST(SetRelStringTableIndex(first, -1) == last);
+    BOOST_TEST(SetRelStringTableIndex(first, -7) == last);
+    BOOST_TEST(SetRelStringTableIndex(last, 1) == first);
+    BOOST_TEST(ReleaseStringTable(last) == table.get());
+    const auto named = GetStringByName(table.get(), "DUPLICATE");
+    BOOST_REQUIRE(named);
+    BOOST_TEST(GetStringTableIndex(named) == 3u);
+    BOOST_TEST(SetRelStringTableIndex(named, 0) == first);
+    BOOST_TEST(std::string(GetStringSoundClip(named)) == "voice/first.ogg");
+    const auto blank = SetRelStringTableIndex(first, 1);
+    BOOST_TEST(GetStringLengthBin(blank) == 1u);
+    BOOST_TEST(GetStringLength(blank) == 0u);
+    BOOST_TEST(GetStringSoundClip(blank) == nullptr);
+    BOOST_TEST(GetStringTimeStamp(last) == nullptr);
+    BOOST_TEST(GetStringByName(table.get(), "absent") == nullptr);
+    // Keys are owned copies: the legacy mutable name view cannot corrupt the map.
+    GetStringAddress(named)[0] = 'X';
+    BOOST_TEST(GetStringByName(table.get(), "DUPLICATE") == named);
+    BOOST_TEST(std::string(GetStringAddress(first)) == "First");
+}
+
+BOOST_FIXTURE_TEST_CASE(string_table_utf8_binary_lengths_and_stable_views, ResourceFixture) {
+    files["text"] = "#(FIRST)\nA\xc2\xb0\n#(SECOND)\nSecond\n";
+    const Table table(LoadStringTableFile(nullptr, "text"), FreeStringTable);
+    BOOST_REQUIRE(table);
+    const auto first = CaptureStringTable(table.get());
+    const auto bytes = GetStringAddress(first);
+    BOOST_TEST(GetStringLength(first) == 2u);
+    BOOST_TEST(GetStringLengthBin(first) == 4u);
+    BOOST_TEST(GetStringName(first) == nullptr);
+    BOOST_TEST(GetStringByName(table.get(), "FIRST") == nullptr);
+    for (int i = 0; i < 100; ++i) {
+        BOOST_TEST(SetRelStringTableIndex(first, -2) == first);
+        BOOST_TEST(GetStringAddress(first) == bytes);
+    }
+    bytes[0] = 'B';
+    BOOST_TEST(std::string(GetStringAddress(first)) == "B\xc2\xb0");
+    BOOST_TEST(_cur_resfile_name == nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(string_table_empty_and_null_contracts) {
+    const Table table(AllocStringTable(0), FreeStringTable);
+    BOOST_TEST(CaptureStringTable(table.get()) == nullptr);
+    BOOST_TEST(GetStringByName(table.get(), "missing") == nullptr);
+    BOOST_TEST(SetAbsStringTableIndex(nullptr, 1) == nullptr);
+    BOOST_TEST(SetRelStringTableIndex(nullptr, -1) == nullptr);
+    BOOST_TEST(GetStringTableCount(nullptr) == 0u);
+    BOOST_TEST(GetStringLength(nullptr) == 0u);
+    BOOST_TEST(GetStringLengthBin(nullptr) == 0u);
+    BOOST_TEST(GetStringAddress(nullptr) == nullptr);
+    BOOST_TEST(GetStringName(nullptr) == nullptr);
+    BOOST_TEST(GetStringSoundClip(nullptr) == nullptr);
+    BOOST_TEST(GetStringTimeStamp(nullptr) == nullptr);
+    BOOST_TEST(GetStringByName(nullptr, "missing") == nullptr);
+    BOOST_TEST(DestroyStringTable(nullptr) == TRUE);
+}
+
+BOOST_FIXTURE_TEST_CASE(string_table_resource_types_destroy_complete_tables, ResourceFixture) {
+    registeredDeleters.clear();
+    BOOST_REQUIRE(InstallStringTableResType() == TRUE);
+    BOOST_REQUIRE(registeredDeleters.size() == 3u);
+    files["dialog"] = "#(ONE) one.ogg\nOne\n";
+    files["time"] = "#(ONE) 10\n";
+    for (const char *type : {"STRTAB", "BINTAB", "CONVERSATION"}) {
+        auto table = conversation("dialog:voice/:time");
+        const auto deleter = registeredDeleters.at(type);
+        BOOST_REQUIRE(deleter);
+        BOOST_TEST(deleter(table.release()) == TRUE);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(binary_table_rejects_truncated_counts_offsets_and_lengths, ResourceFixture) {
+    // Each fixture has a valid legacy prefix but inconsistent table metadata.
+    for (const auto &words : {std::vector<unsigned>{0xffffffffu, 100u, 0u},
+            {0xffffffffu, 0u, 100u}, {0xffffffffu, 1u, 0u, 10u}}) {
+        std::string bytes;
+        for (const auto word : words)
+            for (int shift = 24; shift >= 0; shift -= 8)
+                bytes += static_cast<char>((word >> shift) & 0xff);
+        files["bad"] = bytes;
+        const Stream stream(res_OpenResFile(nullptr, "bad", "rb"), res_CloseResFile);
+        const Table table(static_cast<STRING_TABLE>(_GetBinaryTableData(stream.get(), bytes.size())), FreeStringTable);
+        BOOST_TEST(!table);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(binary_table_preserves_empty_entries_and_word_offsets, ResourceFixture) {
+    std::string bytes;
+    for (const unsigned word : {0xffffffffu, 3u, 1u, 0u, 3u, 4u, 0xdeadbeefu})
+        for (int shift = 24; shift >= 0; shift -= 8)
+            bytes += static_cast<char>((word >> shift) & 0xff);
+    bytes.append("a\0bnext", 7);
+    files["binary"] = bytes;
+    const Stream stream(res_OpenResFile(nullptr, "binary", "rb"), res_CloseResFile);
+    const Table table(static_cast<STRING_TABLE>(_GetBinaryTableData(stream.get(), bytes.size())), FreeStringTable);
+    BOOST_REQUIRE(table);
+    const auto first = CaptureStringTable(table.get());
+    BOOST_TEST(GetStringTableCount(first) == 3u);
+    BOOST_TEST(GetStringAddress(first) == nullptr);
+    BOOST_TEST(GetStringLength(first) == 0u);
+    const auto second = SetRelStringTableIndex(first, 1);
+    BOOST_TEST(GetStringLengthBin(second) == 3u);
+    BOOST_TEST(std::string(GetStringAddress(second), 3) == std::string("a\0b", 3));
+    const auto third = SetRelStringTableIndex(first, -1);
+    BOOST_TEST(std::string(GetStringAddress(third), GetStringLengthBin(third)) == "next");
 }

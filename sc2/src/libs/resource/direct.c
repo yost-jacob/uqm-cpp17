@@ -17,7 +17,6 @@
  */
 
 #include "libs/strings/strintrn.h"
-#include "libs/memlib.h"
 #include "port.h"
 #include "libs/uio.h"
 #include <sys/stat.h>
@@ -31,8 +30,7 @@ LoadDirEntryTable (uio_DirHandle *dirHandle, const char *path,
 	COUNT i;
 	uio_DirHandle *dir;
 	STRING_TABLE StringTable;
-	STRING_TABLE_DESC *lpST;
-	STRING lpLastString;
+	COUNT entry;
 
 	dir = uio_openDirRelative (dirHandle, path, 0);
 	assert(dir != NULL);
@@ -69,29 +67,16 @@ LoadDirEntryTable (uio_DirHandle *dirHandle, const char *path,
 		return ((DIRENTRY_REF) 0);
 	}
 
-	StringTable = AllocStringTable (num_entries, 0);
-	lpST = StringTable;
-	if (lpST == 0)
-	{
-		FreeStringTable (StringTable);
-		uio_DirList_free(dirList);
-		return ((DIRENTRY_REF) 0);
-	}
-	lpST->size = num_entries;
-	lpLastString = lpST->strings;
+	StringTable = AllocStringTable (num_entries);
+	entry = 0;
 
 	for (i = 0; i < dirList->numNames; i++)
 	{
 		int size;
-		STRINGPTR target;
 		if (dirList->names[i] == NULL)
 			continue;
 		size = strlen (dirList->names[i]) + 1;
-		target = HMalloc (size);
-		memcpy (target, dirList->names[i], size);
-		lpLastString->data = target;
-		lpLastString->length = size;
-		lpLastString++;
+		SetStringTableEntry (StringTable, entry++, dirList->names[i], size);
 	}
 	
 	uio_DirList_free(dirList);

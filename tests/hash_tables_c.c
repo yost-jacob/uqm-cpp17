@@ -1,5 +1,4 @@
 #include "libs/uio/charhashtable.h"
-#include "libs/strings/stringhashtable.h"
 
 /* Exercise the exported C ABI with a stack-owned value and read-only lookup.
  * Return true only if insertion, lookup, iteration and removal all succeed. */

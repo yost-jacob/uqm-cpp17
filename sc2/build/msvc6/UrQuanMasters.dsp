@@ -887,7 +887,7 @@ SOURCE=..\..\src\libs\strings\sresins.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\libs\strings\strings.c
+SOURCE=..\..\src\libs\strings\strings.cpp
 # End Source File
 # Begin Source File
 

@@ -1,3 +1,3 @@
-uqm_CXXFILES="getstr.cpp"
-uqm_CFILES="sfileins.c sresins.c strings.c unicode.c"
-uqm_HFILES="stringhashtable.h strintrn.h"
+uqm_CXXFILES="getstr.cpp strings.cpp"
+uqm_CFILES="sfileins.c sresins.c unicode.c"
+uqm_HFILES="strintrn.h"

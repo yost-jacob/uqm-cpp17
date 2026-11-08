@@ -75,12 +75,14 @@ if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
     add_executable(uqm-build-tests tests/build.cpp tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
-        tests/stringbank_c.c tests/string_resources.cpp tests/value_types.cpp
+        tests/stringbank_c.c tests/string_resources.cpp tests/string_tables_c.c
+        tests/value_types.cpp
         tests/value_types_c.c tests/packet_queue.cpp tests/alarms.cpp
         sc2/src/libs/callback/alarm.cpp
         sc2/src/uqm/supermelee/netplay/packetq.cpp
         sc2/src/libs/resource/stringbank.cpp sc2/src/libs/resource/loadres.c
-        sc2/src/libs/strings/getstr.cpp sc2/src/libs/strings/strings.c
+        sc2/src/libs/strings/getstr.cpp sc2/src/libs/strings/strings.cpp
+        sc2/src/libs/strings/sresins.c sc2/src/libs/strings/sfileins.c
         sc2/src/libs/strings/unicode.c sc2/src/libs/memory/w_memlib.c
         sc2/src/libs/math/random.c sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)

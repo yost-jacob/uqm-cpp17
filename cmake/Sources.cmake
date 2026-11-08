@@ -120,7 +120,7 @@ set(UQM_SOURCES
     sc2/src/libs/strings/getstr.cpp
     sc2/src/libs/strings/sfileins.c
     sc2/src/libs/strings/sresins.c
-    sc2/src/libs/strings/strings.c
+    sc2/src/libs/strings/strings.cpp
     sc2/src/libs/strings/unicode.c
     sc2/src/libs/task/tasklib.c
     sc2/src/libs/threads/sdl/sdlthreads.c
