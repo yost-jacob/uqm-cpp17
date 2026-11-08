@@ -16,19 +16,14 @@ struct WorldSnapshot {
     std::vector<FleetProgress> fleets;
     WorldClock clock;
 };
-enum class PresenceArea { HyperSpace, QuasiSpace, SolarSystem, Orbit };
 // Public runtime projection only. Position units depend on area; system/world
 // identify the local coordinate frame. No cargo, quest flags or account secrets.
 struct PlayerPresence {
     PlayerId player;
     std::string displayName;
-    PresenceArea area;
-    std::optional<StarId> system;
-    std::optional<WorldId> world;
-    StarPosition position;
-    unsigned facing;
+    PlayerLocation location;
 };
-class CampaignState;
+class PlayerEntity;
 class StateActions;
 
 // ONE shared universe instance, not a planet object and not a player campaign.
@@ -65,8 +60,9 @@ private:
     std::unordered_map<PlayerId, PlayerPresence, PlayerIdHash> presence_;
 };
 
-// Trusted in-process coordinator: a pickup changes TWO owners. Lock campaign
-// and universe together with std::scoped_lock, not one lock followed by another.
+// Trusted in-process coordinator: a pickup changes TWO owners. Execute on the
+// authoritative simulation thread.
+// If worker mutation is added, lock the player and universe together.
 // Claim the shared node and award personal cargo as one atomic state operation;
 // no reward for an existing claim. Validate player, world, node and capacity.
 // Rewards are server-calculated; never accept arbitrary network rewards. Do not
@@ -75,7 +71,7 @@ private:
 // protocol instead: shared_ptr and mutex do not cross a process boundary.
 class StateActions {
 public:
-    static bool tryCollect(CampaignState &player, WorldState &universe,
+    static bool tryCollect(PlayerEntity &player, WorldState &universe,
             const WorldId &world, NodeId node, const PickupReward &reward);
 };
 } // namespace uqm::design

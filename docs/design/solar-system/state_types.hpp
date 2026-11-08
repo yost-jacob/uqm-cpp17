@@ -29,6 +29,15 @@ struct NodeId { NodeKind kind; std::size_t index; }; // index 0..31.
 struct WorldProgress {
     std::bitset<32> minerals, biologicals, energy;
 };
+enum class PresenceArea { HyperSpace, QuasiSpace, SolarSystem, Orbit };
+// Coordinate frame and accepted position. System/world must agree with area.
+struct PlayerLocation {
+    PresenceArea area = PresenceArea::HyperSpace;
+    std::optional<StarId> system;
+    std::optional<WorldId> world;
+    StarPosition position{};
+    unsigned facing = 0;
+};
 // Portable game identity/profile, not passwords, credentials or live sockets.
 struct UserProfile { PlayerId id; std::string displayName; };
 struct FlagshipState {

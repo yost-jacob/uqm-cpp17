@@ -76,7 +76,7 @@ public:
     bool collected(NodeId node) const;
     // Submit pickup through the authoritative interaction path. Resolve story
     // eligibility on the simulation thread, then atomically claim/reward through
-    // StateActions across session.campaign() and the universe. Never award twice
+    // StateActions across session.playerEntity() and the universe. Never award twice
     // or treat a local mask as authority.
     void collect(GameSession &session, NodeId node);
     // Merge only confirmed progress for self/children; never replace masks or
