@@ -108,7 +108,7 @@ GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
 	COUNT planetI;
 
 #define SOL_SEED 334241042L
-	RandomContext_SeedRandom (SysGenRNG, SOL_SEED);
+	RandomContext_SeedRandom (&SysGenRNG, SOL_SEED);
 
 	solarSys->SunDesc[0].NumPlanets = 9;
 	for (planetI = 0; planetI < 9; ++planetI)
@@ -118,7 +118,7 @@ GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
 		UWORD word_val;
 		PLANET_DESC *pCurDesc = &solarSys->PlanetDesc[planetI];
 
-		pCurDesc->rand_seed = RandomContext_Random (SysGenRNG);
+		pCurDesc->rand_seed = RandomContext_Random (&SysGenRNG);
 		rand_val = pCurDesc->rand_seed;
 		word_val = LOWORD (rand_val);
 		angle = NORMALIZE_ANGLE ((COUNT)HIBYTE (word_val));
@@ -209,7 +209,7 @@ GenerateSol_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 			solarSys->MoonDesc[1].data_index = SELENIC_WORLD;
 			solarSys->MoonDesc[1].radius = MIN_MOON_RADIUS
 					+ (MAX_MOONS - 1) * MOON_DELTA;
-			rand_val = RandomContext_Random (SysGenRNG);
+			rand_val = RandomContext_Random (&SysGenRNG);
 			angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 			solarSys->MoonDesc[1].location.x =
 					COSINE (angle, solarSys->MoonDesc[1].radius);
@@ -272,11 +272,11 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	}
 
 	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
 	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 	planetNr = planetIndex (solarSys, world);
 	if (worldIsPlanet (solarSys, world))

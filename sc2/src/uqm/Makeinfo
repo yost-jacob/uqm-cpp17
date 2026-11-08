@@ -1,3 +1,4 @@
+uqm_CXXFILES="trans.cpp"
 uqm_SUBDIRS="comm planets ships supermelee"
 uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		cnctdlg.c collide.c comm.c commanim.c commglue.c confirm.c credits.c
@@ -8,7 +9,7 @@ uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		loadship.c master.c menu.c misc.c oscill.c outfit.c pickship.c
 		plandata.c process.c restart.c save.c settings.c setup.c setupmenu.c
 		ship.c shipstat.c shipyard.c sis.c sounds.c starbase.c starcon.c
-		starmap.c state.c status.c tactrans.c trans.c uqmdebug.c util.c
+		starmap.c state.c status.c tactrans.c uqmdebug.c util.c
 		velocity.c weapon.c"
 uqm_HFILES="battlecontrols.h battle.h build.h clock.h cnctdlg.h coderes.h
 		collide.h colors.h commanim.h commglue.h comm.h cons_res.h controls.h

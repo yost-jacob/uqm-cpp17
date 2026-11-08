@@ -256,7 +256,7 @@ extern MUSIC_REF SpaceMusic;
 extern CONTEXT PlanetContext;
 
 // Random context used for all solar system, planets and surfaces generation
-extern RandomContext *SysGenRNG;
+extern RandomContext SysGenRNG;
 
 bool playerInSolarSystem (void);
 bool playerInPlanetOrbit (void);

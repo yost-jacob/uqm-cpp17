@@ -57,9 +57,8 @@ set(UQM_SOURCES
     sc2/src/libs/input/sdl/vcontrol.c
     sc2/src/libs/log/msgbox_stub.c
     sc2/src/libs/log/uqmlog.c
-    sc2/src/libs/math/random.c
-    sc2/src/libs/math/random2.c
-    sc2/src/libs/math/sqrt.c
+    sc2/src/libs/math/random.cpp
+    sc2/src/libs/math/sqrt.cpp
     sc2/src/libs/memory/w_memlib.c
     sc2/src/libs/mikmod/drv_nos.c
     sc2/src/libs/mikmod/load_it.c
@@ -342,7 +341,7 @@ set(UQM_SOURCES
     sc2/src/uqm/supermelee/netplay/proto/reset.c
     sc2/src/uqm/supermelee/pickmele.c
     sc2/src/uqm/tactrans.c
-    sc2/src/uqm/trans.c
+    sc2/src/uqm/trans.cpp
     sc2/src/uqm/uqmdebug.c
     sc2/src/uqm/util.c
     sc2/src/uqm/velocity.c

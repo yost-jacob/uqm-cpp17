@@ -95,7 +95,7 @@ static FRAME SolarSysFrame;
 static RECT scaleRect;
 		// system zooms in when the flagship enters this rect
 
-RandomContext *SysGenRNG;
+RandomContext SysGenRNG = {RandomDefaultSeed};
 
 #define DISPLAY_TO_LOC  (DISPLAY_FACTOR >> 1)
 
@@ -220,7 +220,7 @@ GenerateMoons (SOLARSYS_STATE *system, PLANET_DESC *planet)
 	COUNT facing;
 	PLANET_DESC *pMoonDesc;
 
-	RandomContext_SeedRandom (SysGenRNG, planet->rand_seed);
+	RandomContext_SeedRandom (&SysGenRNG, planet->rand_seed);
 
 	(*system->genFuncs->generateName) (system, planet);
 	(*system->genFuncs->generateMoons) (system, planet);
@@ -256,8 +256,7 @@ FreeIPData (void)
 	DestroyMusic (SpaceMusic);
 	SpaceMusic = 0;
 
-	RandomContext_Delete (SysGenRNG);
-	SysGenRNG = NULL;
+	RandomContext_SeedRandom (&SysGenRNG, RandomDefaultSeed);
 }
 
 void
@@ -278,10 +277,6 @@ LoadIPData (void)
 		SpaceMusic = LoadMusic (IP_MUSIC);
 	}
 
-	if (!SysGenRNG)
-	{
-		SysGenRNG = RandomContext_New ();
-	}
 }
 	
 
@@ -380,13 +375,13 @@ LoadSolarSys (void)
 		BUILD_COLOR (MAKE_RGB15_INIT (0x0F, 0x08, 0x00), 0x75),
 	};
 
-	RandomContext_SeedRandom (SysGenRNG, GetRandomSeedForStar (CurStarDescPtr));
+	RandomContext_SeedRandom (&SysGenRNG, GetRandomSeedForStar (CurStarDescPtr));
 
 	SunFrame = SetAbsFrameIndex (SunFrame, STAR_TYPE (CurStarDescPtr->Type));
 
 	pCurDesc = &pSolarSysState->SunDesc[0];
 	pCurDesc->pPrevDesc = 0;
-	pCurDesc->rand_seed = RandomContext_Random (SysGenRNG);
+	pCurDesc->rand_seed = RandomContext_Random (&SysGenRNG);
 
 	pCurDesc->data_index = STAR_TYPE (CurStarDescPtr->Type);
 	pCurDesc->location.x = 0;
@@ -1663,7 +1658,7 @@ CreateStarBackGround (void)
 
 	ClearDrawable ();
 
-	RandomContext_SeedRandom (SysGenRNG, GetRandomSeedForStar (CurStarDescPtr));
+	RandomContext_SeedRandom (&SysGenRNG, GetRandomSeedForStar (CurStarDescPtr));
 
 #define NUM_DIM_PIECES 8
 	s.frame = SpaceJunkFrame;
@@ -1672,7 +1667,7 @@ CreateStarBackGround (void)
 #define NUM_DIM_DRAWN 5
 		for (j = 0; j < NUM_DIM_DRAWN; ++j)
 		{
-			rand_val = RandomContext_Random (SysGenRNG);
+			rand_val = RandomContext_Random (&SysGenRNG);
 			s.origin.x = LOWORD (rand_val) % SIS_SCREEN_WIDTH;
 			s.origin.y = HIWORD (rand_val) % SIS_SCREEN_HEIGHT;
 
@@ -1686,7 +1681,7 @@ CreateStarBackGround (void)
 #define NUM_BRT_DRAWN 30
 		for (j = 0; j < NUM_BRT_DRAWN; ++j)
 		{
-			rand_val = RandomContext_Random (SysGenRNG);
+			rand_val = RandomContext_Random (&SysGenRNG);
 			s.origin.x = LOWORD (rand_val) % SIS_SCREEN_WIDTH;
 			s.origin.y = HIWORD (rand_val) % SIS_SCREEN_HEIGHT;
 

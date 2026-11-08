@@ -42,7 +42,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 	{
 		BYTE num_possible;
 
-		num_possible = LOBYTE (RandomContext_Random (SysGenRNG))
+		num_possible = LOBYTE (RandomContext_Random (&SysGenRNG))
 				% (DEPOSIT_QUANTITY (eptr->Density) + 1);
 		while (num_possible--)
 		{
@@ -51,7 +51,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 			COUNT deposit_quality_fine;
 			COUNT deposit_quality_gross;
 
-			deposit_quality_fine = (LOWORD (RandomContext_Random (SysGenRNG)) % 100)
+			deposit_quality_fine = (LOWORD (RandomContext_Random (&SysGenRNG)) % 100)
 					+ (
 					DEPOSIT_QUALITY (eptr->Density)
 					+ SysInfoPtr->StarSize
@@ -96,7 +96,7 @@ GenerateMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT whichDeposit,
 	NODE_INFO temp_info;
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
-	RandomContext_SeedRandom (SysGenRNG,
+	RandomContext_SeedRandom (&SysGenRNG,
 			SysInfoPtr->PlanetInfo.ScanSeed[MINERAL_SCAN]);
 	return CalcMineralDeposits (SysInfoPtr, whichDeposit, info);
 }
@@ -113,21 +113,21 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 #define MIN_LIFE_CHANCE 10
 		SIZE life_var;
 
-		life_var = RandomContext_Random (SysGenRNG) & 1023;
+		life_var = RandomContext_Random (&SysGenRNG) & 1023;
 		if (life_var < SysInfoPtr->PlanetInfo.LifeChance
 				|| (SysInfoPtr->PlanetInfo.LifeChance < MIN_LIFE_CHANCE
 				&& life_var < MIN_LIFE_CHANCE))
 		{
 			BYTE num_types;
 
-			num_types = 1 + LOBYTE (RandomContext_Random (SysGenRNG))
+			num_types = 1 + LOBYTE (RandomContext_Random (&SysGenRNG))
 					% MAX_LIFE_VARIATION;
 			do
 			{
 				BYTE index, num_creatures;
 				UWORD rand_val;
 
-				rand_val = RandomContext_Random (SysGenRNG);
+				rand_val = RandomContext_Random (&SysGenRNG);
 				index = LOBYTE (rand_val) % NUM_CREATURE_TYPES;
 				num_creatures = 1 + HIBYTE (rand_val) % 10;
 				do
@@ -167,7 +167,7 @@ GenerateLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT whichLife,
 	NODE_INFO temp_info;
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
-	RandomContext_SeedRandom (SysGenRNG,
+	RandomContext_SeedRandom (&SysGenRNG,
 			SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
 	return CalcLifeForms (SysInfoPtr, whichLife, info);
 }
@@ -191,7 +191,7 @@ GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const SBYTE *lifeTypes,
 	// kept this way to preserve the universe. That is done by preserving
 	// the order and number of Random() calls.
 
-	RandomContext_SeedRandom (SysGenRNG,
+	RandomContext_SeedRandom (&SysGenRNG,
 			SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
 
 	for (i = 0; lifeTypes[i] >= 0; ++i)
@@ -213,7 +213,7 @@ GenerateRandomLocation (POINT *loc)
 {
 	UWORD rand_val;
 
-	rand_val = RandomContext_Random (SysGenRNG);
+	rand_val = RandomContext_Random (&SysGenRNG);
 	loc->x = 8 + LOBYTE (rand_val) % (MAP_WIDTH - (8 << 1));
 	loc->y = 8 + HIBYTE (rand_val) % (MAP_HEIGHT - (8 << 1));
 }
@@ -232,7 +232,7 @@ GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, COUNT scan, COUNT numNodes,
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
 
-	RandomContext_SeedRandom (SysGenRNG,
+	RandomContext_SeedRandom (&SysGenRNG,
 			SysInfoPtr->PlanetInfo.ScanSeed[scan]);
 
 	for (i = 0; i < numNodes; ++i)

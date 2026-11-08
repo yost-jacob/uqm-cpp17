@@ -2047,12 +2047,6 @@ Melee (void)
 
 		MenuState.meleeSetup = MeleeSetup_new ();
 
-		MenuState.randomContext = RandomContext_New ();
-		RandomContext_SeedRandom (MenuState.randomContext,
-				GetTimeCounter ());
-				// Using the current time still leaves the random state a bit
-				// predictable, but it is good enough.
-
 #ifdef NETPLAY
 		{
 			COUNT player;
@@ -2093,8 +2087,6 @@ Melee (void)
 
 		UninitMeleeLoadState (&MenuState);
 
-		RandomContext_Delete (MenuState.randomContext);
-		
 		MeleeSetup_delete (MenuState.meleeSetup);
 
 		FlushInput ();

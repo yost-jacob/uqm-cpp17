@@ -102,7 +102,7 @@ GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 
 		solarSys->MoonDesc[0].data_index = PELLUCID_WORLD;
 		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS + MOON_DELTA;
-		angle = NORMALIZE_ANGLE (LOWORD (RandomContext_Random (SysGenRNG)));
+		angle = NORMALIZE_ANGLE (LOWORD (RandomContext_Random (&SysGenRNG)));
 		solarSys->MoonDesc[0].location.x =
 				COSINE (angle, solarSys->MoonDesc[0].radius);
 		solarSys->MoonDesc[0].location.y =
@@ -145,11 +145,11 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		}
 		
 		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-		rand_val = RandomContext_GetSeed (SysGenRNG);
+		rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 		GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL);
-		rand_val = RandomContext_GetSeed (SysGenRNG);
+		rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
 		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
@@ -182,11 +182,11 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	{
 		/* visiting Spathiwa */
 		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-		rand_val = RandomContext_GetSeed (SysGenRNG);
+		rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
 		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-		rand_val = RandomContext_GetSeed (SysGenRNG);
+		rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 

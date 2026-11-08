@@ -619,11 +619,7 @@ SOURCE=..\..\src\libs\log\uqmlog.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\libs\math\mthintrn.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\libs\math\random.c
+SOURCE=..\..\src\libs\math\random.cpp
 # End Source File
 # Begin Source File
 
@@ -631,11 +627,7 @@ SOURCE=..\..\src\libs\math\random.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\libs\math\random2.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\libs\math\sqrt.c
+SOURCE=..\..\src\libs\math\sqrt.cpp
 # End Source File
 # End Group
 # Begin Group "md5"
@@ -3510,7 +3502,7 @@ SOURCE=..\..\src\uqm\tactrans.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\uqm\trans.c
+SOURCE=..\..\src\uqm\trans.cpp
 # End Source File
 # Begin Source File
 

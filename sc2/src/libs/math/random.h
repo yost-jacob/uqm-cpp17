@@ -29,28 +29,37 @@
 #ifndef LIBS_MATH_RANDOM_H_
 #define LIBS_MATH_RANDOM_H_
 
-/* ----------------------------GLOBALS/EXTERNS---------------------------- */
+#include "libs/compiler.h"
 
-DWORD TFB_SeedRandom (DWORD seed);
-DWORD TFB_Random (void);
-
-
-typedef struct RandomContext RandomContext;
-
-#ifdef RANDOM2_INTERNAL
-struct RandomContext {
-	DWORD seed;
-};
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-RandomContext *RandomContext_New (void);
-void RandomContext_Delete (RandomContext *context);
-RandomContext *RandomContext_Copy (const RandomContext *source);
-DWORD RandomContext_Random (RandomContext *context);
-DWORD RandomContext_SeedRandom (RandomContext *context, DWORD new_seed);
-DWORD RandomContext_GetSeed (RandomContext *context);
+enum { RandomDefaultSeed = 12345 };
 
+/* Value-owned random stream, initialized with {RandomDefaultSeed}. Copying the
+ * value makes an independent stream at the same position. No heap ownership.
+ * Callers serialize access; mutate state only through the functions below. */
+typedef struct RandomContext {
+    DWORD seed;
+} RandomContext;
 
-#endif  /* LIBS_MATH_RANDOM_H_ */
+/* Advance a required initialized context and return its new uint32 state.
+ * Retains legacy unsigned arithmetic, not the std::minstd_rand0 sequence. */
+DWORD RandomContext_Random(RandomContext *context);
+/* Set a required context's state, returning the previous state for restoration.
+ * Zero becomes 1; values above 2147483647 have that modulus subtracted ONCE.
+ * Thus UINT32_MAX becomes 2147483648. Preserving this is part of the contract. */
+DWORD RandomContext_SeedRandom(RandomContext *context, DWORD seed);
+/* Read a required initialized context without advancing it. */
+DWORD RandomContext_GetSeed(const RandomContext *context);
 
+/* As above for the shared global stream, initially seeded with RandomDefaultSeed.
+ * TFB_SeedRandom returns the previous state; callers serialize both operations. */
+DWORD TFB_SeedRandom(DWORD seed);
+DWORD TFB_Random(void);
 
+#ifdef __cplusplus
+}
+#endif
+#endif /* LIBS_MATH_RANDOM_H_ */

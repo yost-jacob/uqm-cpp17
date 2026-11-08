@@ -842,7 +842,7 @@ DitherMap (SBYTE *DepthArray)
 	{
 		// Use up the random value byte by byte
 		if ((i & 3) == 0)
-			rand_val = RandomContext_Random (SysGenRNG);
+			rand_val = RandomContext_Random (&SysGenRNG);
 		else
 			rand_val >>= 8;
 
@@ -1066,7 +1066,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray)
 
 			intersect = FALSE;
 
-			rand_val = RandomContext_Random (SysGenRNG);
+			rand_val = RandomContext_Random (&SysGenRNG);
 			loword = LOWORD (rand_val);
 			hiword = HIWORD (rand_val);
 			switch (HIBYTE (hiword) & 31)
@@ -1094,7 +1094,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray)
 			if (pstorm_r->extent.height <= 4)
 				pstorm_r->extent.height += 4;
 
-			rand_val = RandomContext_Random (SysGenRNG);
+			rand_val = RandomContext_Random (&SysGenRNG);
 			loword = LOWORD (rand_val);
 			hiword = HIWORD (rand_val);
 
@@ -1183,7 +1183,7 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 	band_error = num_bands >> 1;
 	lpDst = DepthArray;
 
-	band_delta = ((LOWORD (RandomContext_Random (SysGenRNG))
+	band_delta = ((LOWORD (RandomContext_Random (&SysGenRNG))
 			& (NUM_BAND_COLORS - 1)) << RANGE_SHIFT)
 			+ (1 << (RANGE_SHIFT - 1));
 	last_y = next_y = 0;
@@ -1191,7 +1191,7 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 	{
 		COORD cur_y;
 
-		rand_val = RandomContext_Random (SysGenRNG);
+		rand_val = RandomContext_Random (&SysGenRNG);
 		loword = LOWORD (rand_val);
 		hiword = HIWORD (rand_val);
 
@@ -1232,7 +1232,7 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 				& (((1 << RANGE_SHIFT) * NUM_BAND_COLORS) - 1);
 	}
 
-	MakeStorms (4 + (RandomContext_Random (SysGenRNG) & 3) + 1, DepthArray);
+	MakeStorms (4 + (RandomContext_Random (&SysGenRNG) & 3) + 1, DepthArray);
 
 	DitherMap (DepthArray);
 }
@@ -1732,7 +1732,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
 	BOOLEAN shielded = (pPlanetDesc->data_index & PLANET_SHIELDED) != 0;
 
-	RandomContext_SeedRandom (SysGenRNG, pPlanetDesc->rand_seed);
+	RandomContext_SeedRandom (&SysGenRNG, pPlanetDesc->rand_seed);
 
 	TopoContext = CreateContext ("Plangen.TopoContext");
 	OldContext = SetContext (TopoContext);
@@ -1817,7 +1817,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 						RECT crater_r;
 						UWORD loword;
 				
-						loword = LOWORD (RandomContext_Random (SysGenRNG));
+						loword = LOWORD (RandomContext_Random (&SysGenRNG));
 						switch (HIBYTE (loword) & 31)
 						{
 							case 0:
@@ -1840,7 +1840,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 								break;
 						}
 					
-						loword = LOWORD (RandomContext_Random (SysGenRNG));
+						loword = LOWORD (RandomContext_Random (&SysGenRNG));
 						crater_r.extent.height = crater_r.extent.width;
 						crater_r.corner.x = HIBYTE (loword)
 								% (MAP_WIDTH - crater_r.extent.width);

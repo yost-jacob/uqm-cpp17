@@ -68,17 +68,22 @@ For a runtime check, launch the game, navigate the main menu, enter Super-Melee
 and start a match, then exit. Audio hardware and interactive gameplay need
 manual verification on a desktop; the command-line tests do not cover them.
 
-## Remaining modernization priorities
+## Modernization progress
 
-The resource string-table migration (priority 8) uses per-entry standard string
-storage and typed name lookup, retaining the C API and binary byte lengths.
-Continue incrementally with:
+Resource string tables (priority 8) use per-entry standard string storage and
+typed name lookup, retaining the C API and binary byte lengths.
 
-9. Integer square root: replace the custom implementation with `std::sqrt` and
-   explicit integer conversion, preserving floor behavior where required.
-10. Random generators: evaluate `std::minstd_rand0` and value-owned contexts;
-    check seed coercion/restoration, planet generation and netplay state.
-11. Trigonometry and fixed-point macros: use standard math and typed functions,
-    retaining angle orientation, quantization, wrapping and the zero-vector sentinel.
-12. Pooled game queues: use typed fixed-capacity storage while preserving stable
-    handles, traversal order and gameplay limits such as pursuing encounters.
+Math modernization (priorities 9–11) uses `std::sqrt`, `std::cos`, and
+`std::atan2`, with constexpr angle conversions available to C++ callers.
+Integer roots retain floor semantics. Projected components now round to nearest;
+angles still have 64 clockwise steps from up and 16 facings, and the zero-vector
+angle sentinel remains 64. Exact cardinal directions are preserved.
+
+The duplicated random generators share one implementation with value-owned
+contexts. `std::minstd_rand0` was evaluated and differs from the original stream
+at draw 15 for seed 12345. Retaining the small shared unsigned recurrence avoids
+changing planet generation, seed restoration, and netplay checksums.
+
+Priority 12 remains: replace pooled intrusive game queues with typed fixed-capacity
+storage while preserving stable handles, traversal order and gameplay limits
+such as pursuing encounters.

@@ -1,2 +1,2 @@
-uqm_CFILES="random.c random2.c sqrt.c"
-uqm_HFILES="mthintrn.h random.h"
+uqm_CXXFILES="random.cpp sqrt.cpp"
+uqm_HFILES="random.h"

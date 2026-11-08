@@ -185,30 +185,52 @@ enum { OCTANT = (FULL_CIRCLE >> 3) };
 
 enum { FACING_SHIFT = 4 };
 
-#define ANGLE_TO_FACING(a) (((a)+(1<<(CIRCLE_SHIFT-FACING_SHIFT-1))) \
-										>>(CIRCLE_SHIFT-FACING_SHIFT))
-#define FACING_TO_ANGLE(f) ((f)<<(CIRCLE_SHIFT-FACING_SHIFT))
+/* These pure conversions are constexpr in C++ and inline in C. Angles have
+ * 64 clockwise steps from up; facings have 16. Inputs may be negative. */
+#ifdef __cplusplus
+#define UQM_ANGLE_FUNCTION constexpr
+#else
+#define UQM_ANGLE_FUNCTION inline
+#endif
 
-#define NORMALIZE_ANGLE(a) ((COUNT)((a)&(FULL_CIRCLE-1)))
-#define NORMALIZE_FACING(f) ((COUNT)((f)&((1 << FACING_SHIFT)-1)))
+/* Wrap an angle or facing into its unsigned cyclic range. */
+static UQM_ANGLE_FUNCTION COUNT NORMALIZE_ANGLE(const SDWORD angle) {
+    return (COUNT) ((DWORD) angle & (FULL_CIRCLE - 1));
+}
+static UQM_ANGLE_FUNCTION COUNT NORMALIZE_FACING(const SDWORD facing) {
+    return (COUNT) ((DWORD) facing & ((1 << FACING_SHIFT) - 1));
+}
+/* Round to the nearest facing without wrapping: FULL_CIRCLE yields 16, used
+ * as a frame count. Angle must allow adding two without signed overflow. */
+static UQM_ANGLE_FUNCTION SDWORD ANGLE_TO_FACING(const SDWORD angle) {
+    return (angle + 2) >> (CIRCLE_SHIFT - FACING_SHIFT);
+}
+/* Convert a facing without wrapping; facing * 4 must fit SDWORD. */
+static UQM_ANGLE_FUNCTION SDWORD FACING_TO_ANGLE(const SDWORD facing) {
+    return facing * (1 << (CIRCLE_SHIFT - FACING_SHIFT));
+}
+/* Convert whole degrees after wrapping into 0..359. Retain the legacy positive
+ * degree quantization bias; negative degrees now wrap before quantization. */
+static UQM_ANGLE_FUNCTION COUNT DEGREES_TO_ANGLE(const SDWORD degrees) {
+    return NORMALIZE_ANGLE(((((degrees % 360) + 360) % 360) * FULL_CIRCLE
+            + HALF_CIRCLE) / 360);
+}
+/* Return whole degrees, truncating after normalizing the angle. */
+static UQM_ANGLE_FUNCTION COUNT ANGLE_TO_DEGREES(const SDWORD angle) {
+    return NORMALIZE_ANGLE(angle) * 360 / FULL_CIRCLE;
+}
+#undef UQM_ANGLE_FUNCTION
 
-#define DEGREES_TO_ANGLE(d) NORMALIZE_ANGLE((((d) % 360) * FULL_CIRCLE \
-				+ HALF_CIRCLE) / 360)
-#define ANGLE_TO_DEGREES(d) (NORMALIZE_ANGLE(d) * 360 / FULL_CIRCLE)
-
-enum { SIN_SHIFT = 14 };
-enum { SIN_SCALE = (1 << SIN_SHIFT) };
-#define INT_ADJUST(x) ((x)<<SIN_SHIFT)
-#define FLT_ADJUST(x) (SIZE)((x)*SIN_SCALE)
-#define UNADJUST(x) (SIZE)((x)>>SIN_SHIFT)
-#define ROUND(x,y) ((x)+((x)>=0?((y)>>1):-((y)>>1)))
-
-extern SIZE sinetab[];
-#define SINVAL(a) sinetab[NORMALIZE_ANGLE(a)]
-#define COSVAL(a) SINVAL((a)+QUADRANT)
-#define SINE(a,m) ((SIZE)((((long)SINVAL(a))*(long)(m))>>SIN_SHIFT))
-#define COSINE(a,m) SINE((a)+QUADRANT,m)
-extern COUNT ARCTAN (SIZE delta_x, SIZE delta_y);
+/* Project magnitude onto screen Y/X: angle zero points up, a quarter turn
+ * right. Any signed angle is wrapped. Components round to nearest integer;
+ * callers must choose magnitudes whose components fit the returned SIZE.
+ * Cardinal directions are exact, including zero components. */
+extern SIZE SINE(SDWORD angle, SDWORD magnitude);
+extern SIZE COSINE(SDWORD angle, SDWORD magnitude);
+/* Quantize a screen vector to its nearest clockwise angle from up. The zero
+ * vector returns FULL_CIRCLE (64), a sentinel distinct from every valid angle.
+ * All SIZE inputs, including INT16_MIN, are supported. */
+extern COUNT ARCTAN(SIZE delta_x, SIZE delta_y);
 
 #define WRAP_VAL(v,w) ((COUNT)((v)<0?((v)+(w)):((v)>=(w)?((v)-(w)):(v))))
 #define WRAP_X(x) WRAP_VAL(x,LOG_SPACE_WIDTH)
