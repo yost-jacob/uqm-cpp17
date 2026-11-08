@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "human.h"
 #include "resinst.h"
 
@@ -54,7 +55,7 @@
 #define SPECIAL_WAIT 9
 #define LASER_RANGE (UWORD)100
 
-static RACE_DESC human_desc =
+static const RACE_DESC human_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_WEAPON | POINT_DEFENSE,
@@ -117,10 +118,7 @@ static RACE_DESC human_desc =
 		LONG_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -344,17 +342,30 @@ human_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class EarthlingShip final : public uqm::combat::Ship {
+public:
+    explicit EarthlingShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = human_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        human_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_nuke(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_human (void)
+init_human (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	human_desc.postprocess_func = human_postprocess;
-	human_desc.init_weapon_func = initialize_nuke;
-	human_desc.cyborg_control.intelligence_func = human_intelligence;
-
-	RaceDescPtr = &human_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<EarthlingShip>(human_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("EarthlingShip");
+    return nullptr;
 }
 

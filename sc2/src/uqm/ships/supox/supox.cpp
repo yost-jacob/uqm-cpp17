@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "supox.h"
 #include "resinst.h"
 
@@ -49,7 +50,7 @@
 #define SPECIAL_WAIT 0
 		/* Unused except to initialize supox_desc.special_wait */
 
-static RACE_DESC supox_desc =
+static const RACE_DESC supox_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -112,10 +113,7 @@ static RACE_DESC supox_desc =
 		(MISSILE_SPEED * MISSILE_LIFE) >> 1,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -272,17 +270,30 @@ supox_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class SupoxShip final : public uqm::combat::Ship {
+public:
+    explicit SupoxShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = supox_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        supox_preprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_horn(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_supox (void)
+init_supox (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	supox_desc.preprocess_func = supox_preprocess;
-	supox_desc.init_weapon_func = initialize_horn;
-	supox_desc.cyborg_control.intelligence_func = supox_intelligence;
-
-	RaceDescPtr = &supox_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<SupoxShip>(supox_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("SupoxShip");
+    return nullptr;
 }
 

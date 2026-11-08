@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "vux.h"
 #include "resinst.h"
 
@@ -61,7 +62,7 @@
 		 * where SPACE_HEIGHT = SCREEN_HEIGHT - (SAFE_Y * 2)
 		 * But in reality this should be relative to the laser-range. */
 
-static RACE_DESC vux_desc =
+static const RACE_DESC vux_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_SPECIAL | IMMEDIATE_WEAPON,
@@ -124,14 +125,10 @@ static RACE_DESC vux_desc =
 		CLOSE_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
-
 
 static void
 limpet_preprocess (ELEMENT *ElementPtr)
@@ -377,22 +374,37 @@ vux_preprocess (ELEMENT *ElementPtr)
 			StarShipPtr->ShipFacing = facing;
 		}
 
-		StarShipPtr->RaceDescPtr->preprocess_func = 0;
+		uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).enablePreprocessing(false);
 	}
 }
 
+namespace {
+class VuxShip final : public uqm::combat::Ship {
+public:
+    explicit VuxShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = vux_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        vux_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        vux_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_horrific_laser(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_vux (void)
+init_vux (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	vux_desc.preprocess_func = vux_preprocess;
-	vux_desc.postprocess_func = vux_postprocess;
-	vux_desc.init_weapon_func = initialize_horrific_laser;
-	vux_desc.cyborg_control.intelligence_func = vux_intelligence;
-
-	RaceDescPtr = &vux_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<VuxShip>(vux_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("VuxShip");
+    return nullptr;
 }
 

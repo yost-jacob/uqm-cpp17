@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "shofixti.h"
 #include "resinst.h"
 
@@ -54,7 +55,7 @@
 // Full game: Tanaka/Katana's damaged ships
 #define NUM_LIMPETS 3
 
-static RACE_DESC shofixti_desc =
+static const RACE_DESC shofixti_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -117,10 +118,7 @@ static RACE_DESC shofixti_desc =
 		MISSILE_SPEED * MISSILE_LIFE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -453,16 +451,28 @@ shofixti_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
-RACE_DESC*
-init_shofixti (void)
-{
-	RACE_DESC *RaceDescPtr;
-	// The caller of this func will copy the struct
-	static RACE_DESC new_shofixti_desc;
+namespace {
+class ShofixtiShip final : public uqm::combat::Ship {
+public:
+    explicit ShofixtiShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = shofixti_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        shofixti_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_standard_missile(&element, weapons.data());
+    }
+};
+} // namespace
 
-	shofixti_desc.postprocess_func = shofixti_postprocess;
-	shofixti_desc.init_weapon_func = initialize_standard_missile;
-	shofixti_desc.cyborg_control.intelligence_func = shofixti_intelligence;
+RACE_DESC*
+init_shofixti (void) try
+{
+	// Build a per-instance definition, copied into the native owner.
+	RACE_DESC new_shofixti_desc;
 
 	new_shofixti_desc = shofixti_desc;
 	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
@@ -514,8 +524,9 @@ init_shofixti (void)
 		}
 	}
 
-	RaceDescPtr = &new_shofixti_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<ShofixtiShip>(new_shofixti_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("ShofixtiShip");
+    return nullptr;
 }
 

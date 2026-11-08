@@ -1,2 +1,2 @@
-uqm_CFILES="chmmr.c"
+uqm_CXXFILES="chmmr.cpp"
 uqm_HFILES="chmmr.h icode.h resinst.h"

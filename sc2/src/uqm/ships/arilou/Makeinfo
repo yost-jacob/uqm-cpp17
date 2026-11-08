@@ -1,2 +1,2 @@
-uqm_CFILES="arilou.c"
+uqm_CXXFILES="arilou.cpp"
 uqm_HFILES="arilou.h icode.h resinst.h"

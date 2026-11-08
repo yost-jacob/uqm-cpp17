@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "orz.h"
 #include "resinst.h"
 
@@ -61,7 +62,7 @@
 #define TURRET_OFFSET 14
 #define TURRET_WAIT 3
 
-static RACE_DESC orz_desc =
+static const RACE_DESC orz_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_SPECIAL,
@@ -124,10 +125,7 @@ static RACE_DESC orz_desc =
 		MISSILE_SPEED * MISSILE_LIFE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -1067,17 +1065,30 @@ orz_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class OrzShip final : public uqm::combat::Ship {
+public:
+    explicit OrzShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = orz_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        orz_preprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_turret_missile(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_orz (void)
+init_orz (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	orz_desc.preprocess_func = orz_preprocess;
-	orz_desc.init_weapon_func = initialize_turret_missile;
-	orz_desc.cyborg_control.intelligence_func = orz_intelligence;
-
-	RaceDescPtr = &orz_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<OrzShip>(orz_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("OrzShip");
+    return nullptr;
 }
 

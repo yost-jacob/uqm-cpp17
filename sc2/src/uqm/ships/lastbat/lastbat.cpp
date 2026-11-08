@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "lastbat.h"
 #include "resinst.h"
 
@@ -80,7 +81,7 @@
 #define GENERATOR_HITS 15
 #define MAX_GENERATORS 8
 
-static RACE_DESC samatra_desc =
+static const RACE_DESC samatra_desc =
 {
 	{ /* SHIP_INFO */
 		/* FIRES_FORE | */ IMMEDIATE_WEAPON | CREW_IMMUNE,
@@ -143,10 +144,7 @@ static RACE_DESC samatra_desc =
 		0,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -910,17 +908,33 @@ samatra_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class SaMatraShip final : public uqm::combat::Ship {
+public:
+    explicit SaMatraShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = samatra_intelligence;
+    }
+private:
+    // This special ship has no ordinary primary-weapon initializer.
+    COUNT createWeapons(ELEMENT &, uqm::combat::WeaponSlots &) noexcept override { return 0; }
+
+    void beforeMotion(ELEMENT &element) noexcept override {
+        samatra_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        samatra_postprocess(&element);
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_samatra (void)
+init_samatra (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	samatra_desc.preprocess_func = samatra_preprocess;
-	samatra_desc.postprocess_func = samatra_postprocess;
-	samatra_desc.cyborg_control.intelligence_func = samatra_intelligence;
-
-	RaceDescPtr = &samatra_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<SaMatraShip>(samatra_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("SaMatraShip");
+    return nullptr;
 }
 

@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "blackurq.h"
 #include "resinst.h"
 
@@ -65,7 +66,7 @@
 #define GAS_ALT_DAMAGE 50
 #define NUM_GAS_CLOUDS 16
 
-static RACE_DESC black_urquan_desc =
+static const RACE_DESC black_urquan_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -128,10 +129,7 @@ static RACE_DESC black_urquan_desc =
 		CLOSE_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -551,17 +549,32 @@ black_urquan_preprocess (ELEMENT *ElementPtr)
 		++StarShipPtr->weapon_counter;
 }
 
+namespace {
+class KohrAhShip final : public uqm::combat::Ship {
+public:
+    explicit KohrAhShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = black_urquan_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        black_urquan_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        black_urquan_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_buzzsaw(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_black_urquan (void)
+init_black_urquan (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	black_urquan_desc.preprocess_func = black_urquan_preprocess;
-	black_urquan_desc.postprocess_func = black_urquan_postprocess;
-	black_urquan_desc.init_weapon_func = initialize_buzzsaw;
-	black_urquan_desc.cyborg_control.intelligence_func = black_urquan_intelligence;
-
-	RaceDescPtr = &black_urquan_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<KohrAhShip>(black_urquan_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("KohrAhShip");
+    return nullptr;
 }

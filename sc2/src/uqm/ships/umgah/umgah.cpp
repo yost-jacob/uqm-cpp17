@@ -17,6 +17,8 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
+#include <optional>
 #include "umgah.h"
 #include "resinst.h"
 
@@ -48,7 +50,7 @@
 #define SPECIAL_WAIT 2
 #define JUMP_DIST DISPLAY_TO_WORLD (40)
 
-static RACE_DESC umgah_desc =
+static const RACE_DESC umgah_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | IMMEDIATE_WEAPON,
@@ -111,14 +113,10 @@ static RACE_DESC umgah_desc =
 		(LONG_RANGE_WEAPON << 2),
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
-
 
 // Private per-instance ship data
 typedef struct
@@ -133,31 +131,11 @@ typedef UMGAH_DATA CustomShipData_t;
 static CustomShipData_t *
 GetCustomShipData (RACE_DESC *pRaceDesc)
 {
-	return pRaceDesc->data;
+	return static_cast<CustomShipData_t *>(pRaceDesc->data);
 }
 
-// Set the race-specific data in a race desc
-// (Re)Allocates its own storage for the data.
-static void
-SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
-{
-	if (pRaceDesc->data == data) 
-		return;  // no-op
-
-	if (pRaceDesc->data) // Out with the old
-	{
-		HFree (pRaceDesc->data);
-		pRaceDesc->data = NULL;
-	}
-
-	if (data) // In with the new
-	{
-		CustomShipData_t* newData = HMalloc (sizeof (*data));
-		*newData = *data;
-		pRaceDesc->data = newData;
-	}
-}
-
+// Updates the concrete ship's optional value; no separate heap allocation.
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
 static void
 cone_preprocess (ELEMENT *ElementPtr)
@@ -416,19 +394,54 @@ uninit_umgah (RACE_DESC *pRaceDesc)
 	SetCustomShipData (pRaceDesc, NULL);
 }
 
-RACE_DESC*
-init_umgah (void)
+namespace {
+class UmgahShip final : public uqm::combat::Ship {
+public:
+    explicit UmgahShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = umgah_intelligence;
+        legacyData().data = nullptr;
+        if (definition.data) setData(static_cast<const CustomShipData_t *>(definition.data));
+    }
+    void setData(const CustomShipData_t *data) noexcept {
+        if (data == legacyData().data) return;
+        if (data) {
+            privateData_ = *data;
+            legacyData().data = &*privateData_;
+        } else {
+            privateData_.reset();
+            legacyData().data = nullptr;
+        }
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        umgah_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        umgah_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_cone(&element, weapons.data());
+    }
+    void onFinish() noexcept override {
+        uninit_umgah(&legacyData());
+    }
+    std::optional<CustomShipData_t> privateData_;
+};
+} // namespace
+
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data)
 {
-	RACE_DESC *RaceDescPtr;
+    static_cast<UmgahShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
+}
 
-	umgah_desc.uninit_func = uninit_umgah;
-	umgah_desc.preprocess_func = umgah_preprocess;
-	umgah_desc.postprocess_func = umgah_postprocess;
-	umgah_desc.init_weapon_func = initialize_cone;
-	umgah_desc.cyborg_control.intelligence_func = umgah_intelligence;
+RACE_DESC*
+init_umgah (void) try
+{
 
-	RaceDescPtr = &umgah_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<UmgahShip>(umgah_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("UmgahShip");
+    return nullptr;
 }
 

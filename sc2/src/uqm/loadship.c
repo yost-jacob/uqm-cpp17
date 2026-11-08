@@ -17,6 +17,7 @@
  */
 
 #include "build.h"
+#include "ship_behavior_c.h"
 #include "coderes.h"
 #include "corecode.h"
 #include "globdata.h"
@@ -170,8 +171,7 @@ void
 free_ship (RACE_DESC *raceDescPtr, BOOLEAN FreeIconData,
 		BOOLEAN FreeBattleData)
 {
-	if (raceDescPtr->uninit_func != NULL)
-		(*raceDescPtr->uninit_func) (raceDescPtr);
+	FinishShipBehavior (raceDescPtr);
 
 	if (FreeBattleData)
 	{

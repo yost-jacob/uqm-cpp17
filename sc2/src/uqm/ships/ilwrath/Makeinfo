@@ -1,2 +1,2 @@
-uqm_CFILES="ilwrath.c"
+uqm_CXXFILES="ilwrath.cpp"
 uqm_HFILES="icode.h ilwrath.h resinst.h"

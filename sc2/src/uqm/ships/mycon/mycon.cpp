@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "mycon.h"
 #include "resinst.h"
 
@@ -49,7 +50,7 @@
 #define SPECIAL_WAIT 0
 #define REGENERATION_AMOUNT 4
 
-static RACE_DESC mycon_desc =
+static const RACE_DESC mycon_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_WEAPON,
@@ -112,10 +113,7 @@ static RACE_DESC mycon_desc =
 		DISPLAY_TO_WORLD (800),
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -360,17 +358,30 @@ mycon_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class MyconShip final : public uqm::combat::Ship {
+public:
+    explicit MyconShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = mycon_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        mycon_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_plasma(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_mycon (void)
+init_mycon (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	mycon_desc.postprocess_func = mycon_postprocess;
-	mycon_desc.init_weapon_func = initialize_plasma;
-	mycon_desc.cyborg_control.intelligence_func = mycon_intelligence;
-
-	RaceDescPtr = &mycon_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<MyconShip>(mycon_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("MyconShip");
+    return nullptr;
 }
 

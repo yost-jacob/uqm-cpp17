@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "slylandr.h"
 #include "resinst.h"
 
@@ -48,7 +49,7 @@
 #define HARVEST_RANGE (208 * 3 / 8)
 		/* Was originally (SPACE_HEIGHT * 3 / 8) */
 
-static RACE_DESC slylandro_desc =
+static const RACE_DESC slylandro_desc =
 {
 	{ /* SHIP_INFO */
 		SEEKING_WEAPON | CREW_IMMUNE,
@@ -111,10 +112,7 @@ static RACE_DESC slylandro_desc =
 		CLOSE_RANGE_WEAPON << 1,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -422,17 +420,32 @@ slylandro_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class SlylandroShip final : public uqm::combat::Ship {
+public:
+    explicit SlylandroShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = slylandro_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        slylandro_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        slylandro_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_lightning(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_slylandro (void)
+init_slylandro (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	slylandro_desc.preprocess_func = slylandro_preprocess;
-	slylandro_desc.postprocess_func = slylandro_postprocess;
-	slylandro_desc.init_weapon_func = initialize_lightning;
-	slylandro_desc.cyborg_control.intelligence_func = slylandro_intelligence;
-
-	RaceDescPtr = &slylandro_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<SlylandroShip>(slylandro_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("SlylandroShip");
+    return nullptr;
 }

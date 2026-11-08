@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "syreen.h"
 #include "resinst.h"
 
@@ -50,7 +51,7 @@
 #define ABANDONER_RANGE 208 /* originally SPACE_HEIGHT */
 #define MAX_ABANDONERS 8
 
-static RACE_DESC syreen_desc =
+static const RACE_DESC syreen_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -113,10 +114,7 @@ static RACE_DESC syreen_desc =
 		(MISSILE_SPEED * MISSILE_LIFE * 2 / 3),
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -268,17 +266,30 @@ syreen_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class SyreenShip final : public uqm::combat::Ship {
+public:
+    explicit SyreenShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = syreen_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        syreen_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_dagger(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_syreen (void)
+init_syreen (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	syreen_desc.postprocess_func = syreen_postprocess;
-	syreen_desc.init_weapon_func = initialize_dagger;
-	syreen_desc.cyborg_control.intelligence_func = syreen_intelligence;
-
-	RaceDescPtr = &syreen_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<SyreenShip>(syreen_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("SyreenShip");
+    return nullptr;
 }
 

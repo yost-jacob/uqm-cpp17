@@ -17,6 +17,7 @@
  */
 
 #include "ship.h"
+#include "ship_behavior_c.h"
 
 #include "build.h"
 #include "collide.h"
@@ -190,8 +191,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			OldContext = SetContext (StatusContext);
 			DrawCaptainsWindow (StarShipPtr);
 			SetContext (OldContext);
-			if (RDPtr->preprocess_func)
-				(*RDPtr->preprocess_func) (ElementPtr);
+			PreprocessShipBehavior (RDPtr, ElementPtr);
 
 			// XXX: Hack: Pkunk sets hTarget!=0 when it reincarnates. In that
 			//   case there is no ship_transition() but a Phoenix transition
@@ -229,9 +229,8 @@ ship_preprocess (ELEMENT *ElementPtr)
 		DeltaEnergy (ElementPtr,
 				(SBYTE)RDPtr->characteristics.energy_regeneration);
 
-	if (RDPtr->preprocess_func)
 	{
-		(*RDPtr->preprocess_func) (ElementPtr);
+		PreprocessShipBehavior (RDPtr, ElementPtr);
 		cur_status_flags = StarShipPtr->cur_status_flags;
 	}
 
@@ -300,7 +299,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 		COUNT num_weapons;
 		HELEMENT Weapon[6];
 
-		num_weapons = (*RDPtr->init_weapon_func) (ElementPtr, Weapon);
+		num_weapons = InitializeShipWeapon (RDPtr, ElementPtr, Weapon);
 
 		if (num_weapons)
 		{
@@ -342,8 +341,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 	if (StarShipPtr->special_counter)
 		--StarShipPtr->special_counter;
 
-	if (RDPtr->postprocess_func)
-		(*RDPtr->postprocess_func) (ElementPtr);
+	PostprocessShipBehavior (RDPtr, ElementPtr);
 
 	if (LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 		PostProcessStatus (ElementPtr);

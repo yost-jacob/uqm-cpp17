@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "melnorme.h"
 #include "resinst.h"
 
@@ -56,7 +57,12 @@
 #define CMISSILE_DAMAGE 0
 #define CMISSILE_OFFSET 4
 
-static RACE_DESC melnorme_desc =
+namespace {
+enum class MelnormeWeaponMode { Primary, TestPrimary, Confusion };
+void selectMelnormeWeapon(RACE_DESC &, MelnormeWeaponMode) noexcept;
+}
+
+static const RACE_DESC melnorme_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -119,10 +125,7 @@ static RACE_DESC melnorme_desc =
 		PUMPUP_SPEED * PUMPUP_LIFE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -549,7 +552,7 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
 
-	StarShipPtr->RaceDescPtr->init_weapon_func = initialize_test_pump_up;
+	selectMelnormeWeapon(*StarShipPtr->RaceDescPtr, MelnormeWeaponMode::TestPrimary);
 	old_count = StarShipPtr->weapon_counter;
 
 	if (StarShipPtr->weapon_counter == WEAPON_WAIT)
@@ -590,7 +593,7 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 
 		old_input_state = StarShipPtr->ship_input_state;
 
-		StarShipPtr->RaceDescPtr->init_weapon_func = initialize_confusion;
+		selectMelnormeWeapon(*StarShipPtr->RaceDescPtr, MelnormeWeaponMode::Confusion);
 
 		++ShipPtr->turn_wait;
 		++ShipPtr->thrust_wait;
@@ -610,7 +613,7 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 
 	StarShipPtr->weapon_counter = old_count;
 
-	StarShipPtr->RaceDescPtr->init_weapon_func = initialize_pump_up;
+	selectMelnormeWeapon(*StarShipPtr->RaceDescPtr, MelnormeWeaponMode::Primary);
 }
 
 static void
@@ -642,17 +645,41 @@ melnorme_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class MelnormeShip final : public uqm::combat::Ship {
+public:
+    explicit MelnormeShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = melnorme_intelligence;
+    }
+    void setWeaponMode(MelnormeWeaponMode mode) noexcept { mode_ = mode; }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        melnorme_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        switch (mode_) {
+            case MelnormeWeaponMode::TestPrimary: return initialize_test_pump_up(&element, weapons.data());
+            case MelnormeWeaponMode::Confusion: return initialize_confusion(&element, weapons.data());
+            case MelnormeWeaponMode::Primary: return initialize_pump_up(&element, weapons.data());
+        }
+        return 0;
+    }
+    MelnormeWeaponMode mode_ = MelnormeWeaponMode::Primary;
+};
+void selectMelnormeWeapon(RACE_DESC &descriptor, MelnormeWeaponMode mode) noexcept {
+    auto &ship = static_cast<MelnormeShip &>(uqm::combat::shipFor(descriptor));
+    ship.setWeaponMode(mode);
+}
+} // namespace
+
 RACE_DESC*
-init_melnorme (void)
+init_melnorme (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	melnorme_desc.postprocess_func = melnorme_postprocess;
-	melnorme_desc.init_weapon_func = initialize_pump_up;
-	melnorme_desc.cyborg_control.intelligence_func = melnorme_intelligence;
-
-	RaceDescPtr = &melnorme_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<MelnormeShip>(melnorme_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("MelnormeShip");
+    return nullptr;
 }
 

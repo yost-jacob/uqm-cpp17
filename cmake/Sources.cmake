@@ -210,6 +210,7 @@ set(UQM_SOURCES
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/game_state.cpp
+    sc2/src/uqm/ship_behavior.cpp
     sc2/src/uqm/game_mode.cpp
     sc2/src/uqm/game_menu.cpp
     sc2/src/uqm/gameplay_modes.cpp
@@ -289,34 +290,34 @@ set(UQM_SOURCES
     sc2/src/uqm/setup.c
     sc2/src/uqm/setupmenu.c
     sc2/src/uqm/ship.c
-    sc2/src/uqm/ships/androsyn/androsyn.c
-    sc2/src/uqm/ships/arilou/arilou.c
-    sc2/src/uqm/ships/blackurq/blackurq.c
-    sc2/src/uqm/ships/chenjesu/chenjesu.c
-    sc2/src/uqm/ships/chmmr/chmmr.c
-    sc2/src/uqm/ships/druuge/druuge.c
-    sc2/src/uqm/ships/human/human.c
-    sc2/src/uqm/ships/ilwrath/ilwrath.c
-    sc2/src/uqm/ships/lastbat/lastbat.c
-    sc2/src/uqm/ships/melnorme/melnorme.c
-    sc2/src/uqm/ships/mmrnmhrm/mmrnmhrm.c
-    sc2/src/uqm/ships/mycon/mycon.c
-    sc2/src/uqm/ships/orz/orz.c
-    sc2/src/uqm/ships/pkunk/pkunk.c
-    sc2/src/uqm/ships/probe/probe.c
-    sc2/src/uqm/ships/shofixti/shofixti.c
-    sc2/src/uqm/ships/sis_ship/sis_ship.c
-    sc2/src/uqm/ships/slylandr/slylandr.c
-    sc2/src/uqm/ships/spathi/spathi.c
-    sc2/src/uqm/ships/supox/supox.c
-    sc2/src/uqm/ships/syreen/syreen.c
-    sc2/src/uqm/ships/thradd/thradd.c
-    sc2/src/uqm/ships/umgah/umgah.c
-    sc2/src/uqm/ships/urquan/urquan.c
-    sc2/src/uqm/ships/utwig/utwig.c
-    sc2/src/uqm/ships/vux/vux.c
-    sc2/src/uqm/ships/yehat/yehat.c
-    sc2/src/uqm/ships/zoqfot/zoqfot.c
+    sc2/src/uqm/ships/androsyn/androsyn.cpp
+    sc2/src/uqm/ships/arilou/arilou.cpp
+    sc2/src/uqm/ships/blackurq/blackurq.cpp
+    sc2/src/uqm/ships/chenjesu/chenjesu.cpp
+    sc2/src/uqm/ships/chmmr/chmmr.cpp
+    sc2/src/uqm/ships/druuge/druuge.cpp
+    sc2/src/uqm/ships/human/human.cpp
+    sc2/src/uqm/ships/ilwrath/ilwrath.cpp
+    sc2/src/uqm/ships/lastbat/lastbat.cpp
+    sc2/src/uqm/ships/melnorme/melnorme.cpp
+    sc2/src/uqm/ships/mmrnmhrm/mmrnmhrm.cpp
+    sc2/src/uqm/ships/mycon/mycon.cpp
+    sc2/src/uqm/ships/orz/orz.cpp
+    sc2/src/uqm/ships/pkunk/pkunk.cpp
+    sc2/src/uqm/ships/probe/probe.cpp
+    sc2/src/uqm/ships/shofixti/shofixti.cpp
+    sc2/src/uqm/ships/sis_ship/sis_ship.cpp
+    sc2/src/uqm/ships/slylandr/slylandr.cpp
+    sc2/src/uqm/ships/spathi/spathi.cpp
+    sc2/src/uqm/ships/supox/supox.cpp
+    sc2/src/uqm/ships/syreen/syreen.cpp
+    sc2/src/uqm/ships/thradd/thradd.cpp
+    sc2/src/uqm/ships/umgah/umgah.cpp
+    sc2/src/uqm/ships/urquan/urquan.cpp
+    sc2/src/uqm/ships/utwig/utwig.cpp
+    sc2/src/uqm/ships/vux/vux.cpp
+    sc2/src/uqm/ships/yehat/yehat.cpp
+    sc2/src/uqm/ships/zoqfot/zoqfot.cpp
     sc2/src/uqm/shipstat.c
     sc2/src/uqm/shipyard.c
     sc2/src/uqm/sis.c

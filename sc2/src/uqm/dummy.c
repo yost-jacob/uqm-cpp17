@@ -16,12 +16,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
- * This file seems to be a collection of functions that don't do
- * much.
- */
+// Legacy SHIP resource adapter. Opaque handles own native C++ ship objects.
 
 #include "dummy.h"
+#include "ship_behavior_c.h"
 
 #include "coderes.h"
 #include "globdata.h"
@@ -29,16 +27,8 @@
 
 #include "libs/compiler.h"
 #include "libs/log.h"
-#include "libs/memlib.h"
 
 #include <stdlib.h>
-#include <ctype.h>
-
-
-typedef struct
-{
-	RACE_DESC data _ALIGNED_ANY;
-} CODERES_STRUCT;
 
 typedef enum
 {
@@ -123,32 +113,16 @@ GetCodeResData (const char *ship_id, RESOURCE_DATA *resdata)
 	void *hData;
 
 	which_res = atoi (ship_id);
-	hData = HMalloc (sizeof (CODERES_STRUCT));
-	if (hData)
-	{
-		RaceDescInitFunc initFunc = CodeResToInitFunc (which_res);
-		RACE_DESC *RDPtr = (initFunc == NULL) ? NULL : (*initFunc)();
-		if (RDPtr == 0)
-		{
-			HFree (hData);
-			hData = 0;
-		}
-		else
-		{
-			CODERES_STRUCT *cs;
-
-			cs = (CODERES_STRUCT *) hData;
-			cs->data = *RDPtr;  // Structure assignment.
-		}
-	}
+	RaceDescInitFunc initFunc = CodeResToInitFunc (which_res);
+	RACE_DESC *descriptor = initFunc ? initFunc () : NULL;
+	hData = descriptor ? descriptor->CodeRef : NULL;
 	resdata->ptr = hData;
 }
 
 static BOOLEAN
 _ReleaseCodeResData (void *data)
 {
-	HFree (data);
-	return TRUE;
+	return DestroyShipBehavior (data);
 }
 
 BOOLEAN
@@ -157,7 +131,6 @@ InstallCodeResType ()
 	return (InstallResTypeVectors ("SHIP",
 			GetCodeResData, _ReleaseCodeResData, NULL));
 }
-
 
 void *
 LoadCodeResInstance (RESOURCE res)
@@ -171,19 +144,15 @@ LoadCodeResInstance (RESOURCE res)
 	return hData;
 }
 
-
 BOOLEAN
 DestroyCodeRes (void *hCode)
 {
-	HFree (hCode);
-	return TRUE;
+	return DestroyShipBehavior (hCode);
 }
-
 
 void*
 CaptureCodeRes (void *hCode, void *pData, void **ppLocData)
 {
-	CODERES_STRUCT *cs;
 
 	if (hCode == NULL)
 	{
@@ -191,13 +160,11 @@ CaptureCodeRes (void *hCode, void *pData, void **ppLocData)
 		return(NULL);
 	}
 
-	cs = (CODERES_STRUCT *) hCode;
-	*ppLocData = &cs->data;
+	*ppLocData = GetShipBehaviorData (hCode);
 
 	(void) pData;  /* Satisfying compiler (unused parameter) */
-	return cs;
+	return hCode;
 }
-
 
 void *
 ReleaseCodeRes (void *CodeRef)

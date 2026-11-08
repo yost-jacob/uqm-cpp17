@@ -17,6 +17,8 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
+#include <optional>
 #include "androsyn.h"
 #include "resinst.h"
 
@@ -54,7 +56,7 @@
 #define BLAZER_DAMAGE 3
 #define BLAZER_MASS 1
 
-static RACE_DESC androsynth_desc =
+static const RACE_DESC androsynth_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_WEAPON,
@@ -118,14 +120,10 @@ static RACE_DESC androsynth_desc =
 		LONG_RANGE_WEAPON >> 2,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
-
 
 // Private per-instance ship data
 typedef struct
@@ -140,30 +138,11 @@ typedef ANDROSYNTH_DATA CustomShipData_t;
 static CustomShipData_t *
 GetCustomShipData (RACE_DESC *pRaceDesc)
 {
-	return pRaceDesc->data;
+	return static_cast<CustomShipData_t *>(pRaceDesc->data);
 }
 
-// Set the race-specific data in a race desc
-// (Re)Allocates its own storage for the data.
-static void
-SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
-{
-	if (pRaceDesc->data == data) 
-		return;  // no-op
-
-	if (pRaceDesc->data) // Out with the old
-	{
-		HFree (pRaceDesc->data);
-		pRaceDesc->data = NULL;
-	}
-
-	if (data) // In with the new
-	{
-		CustomShipData_t* newData = HMalloc (sizeof (*data));
-		*newData = *data;
-		pRaceDesc->data = newData;
-	}
-}
+// Updates the concrete ship's optional value; no separate heap allocation.
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
 static void
 blazer_collision (ELEMENT *ElementPtr0, POINT *pPt0,
@@ -509,20 +488,54 @@ uninit_androsynth (RACE_DESC *pRaceDesc)
 	SetCustomShipData (pRaceDesc, NULL);
 }
 
+namespace {
+class AndrosynthShip final : public uqm::combat::Ship {
+public:
+    explicit AndrosynthShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = androsynth_intelligence;
+        legacyData().data = nullptr;
+        if (definition.data) setData(static_cast<const CustomShipData_t *>(definition.data));
+    }
+    void setData(const CustomShipData_t *data) noexcept {
+        if (data == legacyData().data) return;
+        if (data) {
+            privateData_ = *data;
+            legacyData().data = &*privateData_;
+        } else {
+            privateData_.reset();
+            legacyData().data = nullptr;
+        }
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        androsynth_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        androsynth_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_bubble(&element, weapons.data());
+    }
+    void onFinish() noexcept override {
+        uninit_androsynth(&legacyData());
+    }
+    std::optional<CustomShipData_t> privateData_;
+};
+} // namespace
+
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data)
+{
+    static_cast<AndrosynthShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
+}
 
 RACE_DESC*
-init_androsynth (void)
+init_androsynth (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	androsynth_desc.uninit_func = uninit_androsynth;
-	androsynth_desc.preprocess_func = androsynth_preprocess;
-	androsynth_desc.postprocess_func = androsynth_postprocess;
-	androsynth_desc.init_weapon_func = initialize_bubble;
-	androsynth_desc.cyborg_control.intelligence_func = androsynth_intelligence;
-
-	RaceDescPtr = &androsynth_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<AndrosynthShip>(androsynth_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("AndrosynthShip");
+    return nullptr;
 }
 

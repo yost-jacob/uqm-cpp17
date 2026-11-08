@@ -216,3 +216,19 @@ BOOST_AUTO_TEST_CASE(failed_detonation_cannot_run_the_effect_twice)
     BOOST_TEST(projectile.detonate().empty());
     BOOST_TEST(calls == 1u);
 }
+
+BOOST_AUTO_TEST_CASE(default_retirement_cleanup_removes_only_its_sources_projectiles_without_detonation)
+{
+    static_assert(!BattleRules::persistentProjectiles);
+    unsigned destroyed = 0;
+    auto source = heldFireShip(destroyed);
+    Projectile crystal(crystalState(),
+        std::make_unique<ChenjesuCrystalBehavior>(source, CrystalFragments{}));
+    crystal.retireSource({2, 7}); // Same serial in another battle is unrelated.
+    BOOST_TEST(crystal.active());
+    source.reset();
+    crystal.retireSource({1, 7});
+    BOOST_TEST(!crystal.active());
+    BOOST_TEST(destroyed == 1u);
+    BOOST_TEST(crystal.detonate().empty());
+}

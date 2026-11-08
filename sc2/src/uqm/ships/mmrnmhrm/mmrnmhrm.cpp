@@ -17,6 +17,8 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
+#include <optional>
 #include "mmrnmhrm.h"
 #include "resinst.h"
 
@@ -66,7 +68,7 @@
 #define SPECIAL_WAIT 0
 #define YWING_SPECIAL_WAIT 0
 
-static RACE_DESC mmrnmhrm_desc =
+static const RACE_DESC mmrnmhrm_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | IMMEDIATE_WEAPON,
@@ -129,10 +131,7 @@ static RACE_DESC mmrnmhrm_desc =
 		CLOSE_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -147,30 +146,11 @@ typedef MMRNMHRM_DATA CustomShipData_t;
 static CustomShipData_t *
 GetCustomShipData (RACE_DESC *pRaceDesc)
 {
-	return pRaceDesc->data;
+	return static_cast<CustomShipData_t *>(pRaceDesc->data);
 }
 
-// Set the race-specific data in a race desc
-// (Re)Allocates its own storage for the data.
-static void
-SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
-{
-	if (pRaceDesc->data == data) 
-		return;  // no-op
-
-	if (pRaceDesc->data) // Out with the old
-	{
-		HFree (pRaceDesc->data);
-		pRaceDesc->data = NULL;
-	}
-
-	if (data) // In with the new
-	{
-		CustomShipData_t* newData = HMalloc (sizeof (*data));
-		*newData = *data;
-		pRaceDesc->data = newData;
-	}
-}
+// Updates the concrete ship's optional value; no separate heap allocation.
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
 static void
 missile_preprocess (ELEMENT *ElementPtr)
@@ -490,19 +470,53 @@ uninit_mmrnmhrm (RACE_DESC *pRaceDesc)
 	SetCustomShipData (pRaceDesc, NULL);
 }
 
-RACE_DESC*
-init_mmrnmhrm (void)
-{
-	RACE_DESC *RaceDescPtr;
-	// The caller of this func will copy the struct
-	static RACE_DESC new_mmrnmhrm_desc;
-	MMRNMHRM_DATA otherwing_desc;
+namespace {
+class MmrnmhrmShip final : public uqm::combat::Ship {
+public:
+    explicit MmrnmhrmShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = mmrnmhrm_intelligence;
+        legacyData().data = nullptr;
+        if (definition.data) setData(static_cast<const CustomShipData_t *>(definition.data));
+    }
+    void setData(const CustomShipData_t *data) noexcept {
+        if (data == legacyData().data) return;
+        if (data) {
+            privateData_ = *data;
+            legacyData().data = &*privateData_;
+        } else {
+            privateData_.reset();
+            legacyData().data = nullptr;
+        }
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        mmrnmhrm_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        mmrnmhrm_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_dual_weapons(&element, weapons.data());
+    }
+    void onFinish() noexcept override {
+        uninit_mmrnmhrm(&legacyData());
+    }
+    std::optional<CustomShipData_t> privateData_;
+};
+} // namespace
 
-	mmrnmhrm_desc.uninit_func = uninit_mmrnmhrm;
-	mmrnmhrm_desc.preprocess_func = mmrnmhrm_preprocess;
-	mmrnmhrm_desc.postprocess_func = mmrnmhrm_postprocess;
-	mmrnmhrm_desc.init_weapon_func = initialize_dual_weapons;
-	mmrnmhrm_desc.cyborg_control.intelligence_func = mmrnmhrm_intelligence;
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data)
+{
+    static_cast<MmrnmhrmShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
+}
+
+RACE_DESC*
+init_mmrnmhrm (void) try
+{
+	// Build a per-instance definition, copied into the native owner.
+	RACE_DESC new_mmrnmhrm_desc;
+	MMRNMHRM_DATA otherwing_desc;
 
 	new_mmrnmhrm_desc = mmrnmhrm_desc;
 
@@ -518,10 +532,11 @@ init_mmrnmhrm (void)
 	otherwing_desc.special_wait = YWING_SPECIAL_WAIT;
 	otherwing_desc.ship_mass = SHIP_MASS;
 
-	SetCustomShipData (&new_mmrnmhrm_desc, &otherwing_desc);
+	new_mmrnmhrm_desc.data = &otherwing_desc;
 
-	RaceDescPtr = &new_mmrnmhrm_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<MmrnmhrmShip>(new_mmrnmhrm_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("MmrnmhrmShip");
+    return nullptr;
 }
 

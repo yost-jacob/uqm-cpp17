@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "spathi.h"
 #include "resinst.h"
 
@@ -54,7 +55,7 @@
 #define DISCRIMINATOR_OFFSET 4
 #define TRACK_WAIT 1
 
-static RACE_DESC spathi_desc =
+static const RACE_DESC spathi_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | FIRES_AFT | SEEKING_SPECIAL | DONT_CHASE,
@@ -117,10 +118,7 @@ static RACE_DESC spathi_desc =
 		MISSILE_RANGE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -286,16 +284,29 @@ spathi_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class SpathiShip final : public uqm::combat::Ship {
+public:
+    explicit SpathiShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = spathi_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        spathi_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_standard_missile(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_spathi (void)
+init_spathi (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	spathi_desc.postprocess_func = spathi_postprocess;
-	spathi_desc.init_weapon_func = initialize_standard_missile;
-	spathi_desc.cyborg_control.intelligence_func = spathi_intelligence;
-
-	RaceDescPtr = &spathi_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<SpathiShip>(spathi_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("SpathiShip");
+    return nullptr;
 }

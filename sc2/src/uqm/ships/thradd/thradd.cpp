@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "thradd.h"
 #include "resinst.h"
 
@@ -58,8 +59,7 @@
 		 * frames. */
 #define NUM_NAPALM_FADES 6
 
-
-static RACE_DESC thraddash_desc =
+static const RACE_DESC thraddash_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -122,10 +122,7 @@ static RACE_DESC thraddash_desc =
 		(MISSILE_SPEED * MISSILE_LIFE) >> 1,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -385,16 +382,29 @@ thraddash_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class ThraddashShip final : public uqm::combat::Ship {
+public:
+    explicit ThraddashShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = thraddash_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        thraddash_preprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_horn(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_thraddash (void)
+init_thraddash (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	thraddash_desc.preprocess_func = thraddash_preprocess;
-	thraddash_desc.init_weapon_func = initialize_horn;
-	thraddash_desc.cyborg_control.intelligence_func = thraddash_intelligence;
-
-	RaceDescPtr = &thraddash_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<ThraddashShip>(thraddash_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("ThraddashShip");
+    return nullptr;
 }

@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "utwig.h"
 #include "resinst.h"
 
@@ -54,7 +55,7 @@
 #define SPECIAL_ENERGY_COST 1
 #define SPECIAL_WAIT 12
 
-static RACE_DESC utwig_desc =
+static const RACE_DESC utwig_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | POINT_DEFENSE | SHIELD_DEFENSE,
@@ -117,10 +118,7 @@ static RACE_DESC utwig_desc =
 		CLOSE_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -364,17 +362,30 @@ utwig_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class UtwigShip final : public uqm::combat::Ship {
+public:
+    explicit UtwigShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = utwig_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        utwig_preprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_lance(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_utwig (void)
+init_utwig (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	utwig_desc.preprocess_func = utwig_preprocess;
-	utwig_desc.init_weapon_func = initialize_lance;
-	utwig_desc.cyborg_control.intelligence_func = utwig_intelligence;
-
-	RaceDescPtr = &utwig_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<UtwigShip>(utwig_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("UtwigShip");
+    return nullptr;
 }
 

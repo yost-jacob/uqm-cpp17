@@ -17,12 +17,12 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "ilwrath.h"
 #include "resinst.h"
 
 #include "uqm/colors.h"
 #include "uqm/globdata.h"
-
 
 // Core characteristics
 #define MAX_CREW 22
@@ -52,7 +52,7 @@
 #define SPECIAL_ENERGY_COST 3
 #define SPECIAL_WAIT 13
 
-static RACE_DESC ilwrath_desc =
+static const RACE_DESC ilwrath_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -115,10 +115,7 @@ static RACE_DESC ilwrath_desc =
 		CLOSE_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -242,7 +239,7 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 	if (GetPrimType (lpPrim) == STAMPFILL_PRIM)
 	{
 		Color color;
-		BOOLEAN weapon_discharge;
+		bool weapon_discharge;
 
 		color = GetPrimColor (lpPrim);
 		weapon_discharge = ((status_flags & WEAPON)
@@ -393,17 +390,30 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class IlwrathShip final : public uqm::combat::Ship {
+public:
+    explicit IlwrathShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = ilwrath_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        ilwrath_preprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_flame(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_ilwrath (void)
+init_ilwrath (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	ilwrath_desc.preprocess_func = ilwrath_preprocess;
-	ilwrath_desc.init_weapon_func = initialize_flame;
-	ilwrath_desc.cyborg_control.intelligence_func = ilwrath_intelligence;
-
-	RaceDescPtr = &ilwrath_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<IlwrathShip>(ilwrath_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("IlwrathShip");
+    return nullptr;
 }
 

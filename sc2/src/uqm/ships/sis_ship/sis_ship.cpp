@@ -17,6 +17,8 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
+#include <optional>
 #include "sis_ship.h"
 #include "resinst.h"
 
@@ -54,7 +56,6 @@
 		/* Turning jets decrease by 2 each */
 #define SHIP_MASS MAX_SHIP_MASS
 
-
 /* Primary weapon - energy cost and damage change at init time based on
  * the number and type of weapon modules installed. */
 
@@ -84,7 +85,6 @@
 #define SIS_HORZ_OFFSET 20
 		/* Used for side slot */
 
-
 /* Secondary weapon */
 #define SPECIAL_ENERGY_COST 0
 		/* Increased by 1 for each point defense module */
@@ -93,8 +93,7 @@
 #define LASER_RANGE (UWORD)100
 #define MAX_DEFENSE 8
 
-
-static RACE_DESC sis_desc =
+static const RACE_DESC sis_desc =
 {
 	{ /* SHIP_INFO */
 		0,
@@ -157,10 +156,7 @@ static RACE_DESC sis_desc =
 		BLASTER_SPEED * BLASTER_LIFE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -184,7 +180,6 @@ static void InitJetSlots (RACE_DESC *RaceDescPtr,
 		const BYTE *JetSlots);
 static void uninit_sis (RACE_DESC *pRaceDesc);
 
-
 // Local typedef
 typedef SIS_DATA CustomShipData_t;
 
@@ -192,30 +187,11 @@ typedef SIS_DATA CustomShipData_t;
 static CustomShipData_t *
 GetCustomShipData (RACE_DESC *pRaceDesc)
 {
-	return pRaceDesc->data;
+	return static_cast<CustomShipData_t *>(pRaceDesc->data);
 }
 
-// Set the race-specific data in a race desc
-// (Re)Allocates its own storage for the data.
-static void
-SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
-{
-	if (pRaceDesc->data == data)
-		return;  // no-op
-
-	if (pRaceDesc->data) // Out with the old
-	{
-		HFree (pRaceDesc->data);
-		pRaceDesc->data = NULL;
-	}
-
-	if (data) // In with the new
-	{
-		CustomShipData_t* newData = HMalloc (sizeof (*data));
-		*newData = *data;
-		pRaceDesc->data = newData;
-	}
-}
+// Updates the concrete ship's optional value; no separate heap allocation.
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
 static void
 sis_hyper_preprocess (ELEMENT *ElementPtr)
@@ -915,20 +891,60 @@ InitJetSlots (RACE_DESC *RaceDescPtr, const BYTE *JetSlots)
 	}
 }
 
-RACE_DESC*
-init_sis (void)
+namespace {
+class Flagship final : public uqm::combat::Ship {
+public:
+    explicit Flagship(const RACE_DESC &definition, bool hyperspace) noexcept
+        : Ship(definition), hyperspace_(hyperspace) {
+        if (!hyperspace_) legacyData().cyborg_control.intelligence_func = sis_intelligence;
+        legacyData().data = nullptr;
+        if (definition.data) setData(static_cast<const CustomShipData_t *>(definition.data));
+    }
+    void setData(const CustomShipData_t *data) noexcept {
+        if (data == legacyData().data) return;
+        if (data) {
+            privateData_ = *data;
+            legacyData().data = &*privateData_;
+        } else {
+            privateData_.reset();
+            legacyData().data = nullptr;
+        }
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        if (hyperspace_) sis_hyper_preprocess(&element);
+        else sis_battle_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        if (hyperspace_) sis_hyper_postprocess(&element);
+        else sis_battle_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return hyperspace_ ? 0 : initialize_blasters(&element, weapons.data());
+    }
+    void onFinish() noexcept override {
+        uninit_sis(&legacyData());
+    }
+    bool hyperspace_;
+    std::optional<CustomShipData_t> privateData_;
+};
+} // namespace
+
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data)
 {
-	RACE_DESC *RaceDescPtr;
+    static_cast<Flagship &>(uqm::combat::shipFor(*descriptor)).setData(data);
+}
+
+RACE_DESC*
+init_sis (void) try
+{
 	COUNT i;
-	// The caller of this func will copy the struct
-	static RACE_DESC new_sis_desc;
-	SIS_DATA empty_data;
-	memset (&empty_data, 0, sizeof (empty_data));
+	// Build a per-instance definition, copied into the native owner.
+	RACE_DESC new_sis_desc;
+	SIS_DATA empty_data{};
 
 	/* copy initial ship settings to new_sis_desc */
 	new_sis_desc = sis_desc;
-	
-	new_sis_desc.uninit_func = uninit_sis;
 
 	if (inHQSpace ())
 	{
@@ -945,23 +961,16 @@ init_sis (void)
 
 		new_sis_desc.ship_data.ship_rsc[0] = SIS_HYPER_MASK_PMAP_ANIM;
 
-		new_sis_desc.preprocess_func = sis_hyper_preprocess;
-		new_sis_desc.postprocess_func = sis_hyper_postprocess;
-
 		new_sis_desc.characteristics.max_thrust -= 4;
 	}
 	else
 	{
-		new_sis_desc.preprocess_func = sis_battle_preprocess;
-		new_sis_desc.postprocess_func = sis_battle_postprocess;
-		new_sis_desc.init_weapon_func = initialize_blasters;
-		new_sis_desc.cyborg_control.intelligence_func = sis_intelligence;
 
 		if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 3)
 			SET_GAME_STATE (BOMB_CARRIER, 1);
 	}
 
-	SetCustomShipData (&new_sis_desc, &empty_data);
+	new_sis_desc.data = &empty_data;
 	InitModuleSlots (&new_sis_desc, GLOBAL_SIS (ModuleSlots));
 	InitWeaponSlots (&new_sis_desc, GLOBAL_SIS (ModuleSlots));
 	InitDriveSlots (&new_sis_desc, GLOBAL_SIS (DriveSlots));
@@ -981,9 +990,10 @@ init_sis (void)
 	
 	new_sis_desc.ship_info.energy_level = new_sis_desc.ship_info.max_energy;
 
-	RaceDescPtr = &new_sis_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<Flagship>(new_sis_desc, inHQSpace()));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("Flagship");
+    return nullptr;
 }
 
 static void
@@ -998,5 +1008,4 @@ uninit_sis (RACE_DESC *pRaceDesc)
 
 	SetCustomShipData (pRaceDesc, NULL);
 }
-
 

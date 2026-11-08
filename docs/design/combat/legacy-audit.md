@@ -1,13 +1,17 @@
 # Legacy combat migration audit
 
 This audit identifies concrete constraints for the Battle/Ship/Projectile design.
-It does not change weapons, save formats, collision timing or victory rules.
+The [live ship migration](ship-migration.md) has now replaced the descriptor's
+four behavior callbacks and private-data allocators. The element/timing findings
+below still constrain the remaining Battle/projectile work. No weapon, save-format,
+collision-timing or victory rule is intentionally changed.
 
 ## Existing ownership is implicit
 
-[races.h](../../../sc2/src/uqm/races.h) combines characteristics, mutable crew and
-energy, resource IDs and loaded resources, private ship data, AI and function
-pointers in RACE_DESC. [loadship.c](../../../sc2/src/uqm/loadship.c) loads graphics,
+Before migration, [races.h](../../../sc2/src/uqm/races.h) combined characteristics,
+mutable crew/energy, resources, private data, AI and behavior pointers in RACE_DESC.
+Its four ship behavior callbacks now live in native classes; the cyborg callback
+and mixed legacy resource/data views remain as compatibility boundaries. [loadship.c](../../../sc2/src/uqm/loadship.c) loads graphics,
 strings, audio and code resources and invokes per-ship cleanup. These need separate
 native definition, instance, behavior/controller and asset ownership boundaries.
 
@@ -20,14 +24,14 @@ to movement/control state. Ability hooks need explicit simulation phases.
 
 | Existing implementation | Dependency and behavior | Migration consequence |
 |---|---|---|
-| [Chenjesu crystal](../../../sc2/src/uqm/ships/chenjesu/chenjesu.c) | crystal_preprocess reads source WEAPON every tick. Holding compensates lifetime decrement; release sets lifetime to one and installs crystal_postprocess, which spawns eight fragments. chenjesu_preprocess suppresses repeated shots while held. | CrystalBehavior can retain its source and read published controls. Preserve one active controlled crystal and release timing. |
+| [Chenjesu crystal](../../../sc2/src/uqm/ships/chenjesu/chenjesu.cpp) | crystal_preprocess reads source WEAPON every tick. Holding compensates lifetime decrement; release sets lifetime to one and installs crystal_postprocess, which spawns eight fragments. chenjesu_preprocess suppresses repeated shots while held. | CrystalBehavior can retain its source and read published controls. Preserve one active controlled crystal and release timing. |
 | Chenjesu collision | crystal_collision calls weapon_collision and installs sparkle animation on the blast. It does not itself call the fragment-spawning release callback. | Separate removal/contact from explicit release detonation. A native collision adapter must preserve the actual collision/postprocess interaction. |
 | Chenjesu DOGI | doggy_preprocess updates the launching ship's active-DOGI counter; death/collision also use its sound resources. | Use source-ID/weak access and separate asset lifetime; DOGIs must not become extra persistent strong owners of the crystal source. |
-| [Earthling missile](../../../sc2/src/uqm/ships/human/human.c) | nuke_preprocess tracks a target and accelerates toward a capped speed according to age. | No firing-control dependency in missile guidance. Copy its launch configuration; resolve targets by ID. Constant-speed prototype steering is not a complete port. |
-| [Kohr-Ah disc](../../../sc2/src/uqm/ships/blackurq/blackurq.c) | buzzsaw_preprocess reads source WEAPON. Releasing halves lifetime and switches to deceleration, then proximity tracking; spin_preprocess also reads source crew and updates a saw limit counter. | The earlier description as entirely fire-and-forget was incomplete. Keep release/owner interaction explicit; do not give several discs the crystal's sole-owner test. Audit their separate lifetime rule. |
-| [Ur-Quan fighter](../../../sc2/src/uqm/ships/urquan/urquan.c) | Fighters steer, collide, and interact with their carrier, rather than behaving as ordinary one-hit missiles. | Battle owns the entities, but return-to-carrier and crew effects need their own behavior contract. |
-| [Orz marine](../../../sc2/src/uqm/ships/orz/orz.c) | Marine/intruder logic references source and target ships, boarding state, counters and crew. | Do not force every persistent effect into a simple missile model. Preserve boarding and retirement effects explicitly. |
-| [Androsynth comet](../../../sc2/src/uqm/ships/androsyn/androsyn.c) | Ship hooks transform motion, collisions, controls and energy behavior. | The ship remains a multi-tick stateful object; an isolated special-fire function is insufficient. |
+| [Earthling missile](../../../sc2/src/uqm/ships/human/human.cpp) | nuke_preprocess tracks a target and accelerates toward a capped speed according to age. | No firing-control dependency in missile guidance. Copy its launch configuration; resolve targets by ID. Constant-speed prototype steering is not a complete port. |
+| [Kohr-Ah disc](../../../sc2/src/uqm/ships/blackurq/blackurq.cpp) | buzzsaw_preprocess reads source WEAPON. Releasing halves lifetime and switches to deceleration, then proximity tracking; spin_preprocess also reads source crew and updates a saw limit counter. | The earlier description as entirely fire-and-forget was incomplete. Keep release/owner interaction explicit; do not give several discs the crystal's sole-owner test. Audit their separate lifetime rule. |
+| [Ur-Quan fighter](../../../sc2/src/uqm/ships/urquan/urquan.cpp) | Fighters steer, collide, and interact with their carrier, rather than behaving as ordinary one-hit missiles. | Battle owns the entities, but return-to-carrier and crew effects need their own behavior contract. |
+| [Orz marine](../../../sc2/src/uqm/ships/orz/orz.cpp) | Marine/intruder logic references source and target ships, boarding state, counters and crew. | Do not force every persistent effect into a simple missile model. Preserve boarding and retirement effects explicitly. |
+| [Androsynth comet](../../../sc2/src/uqm/ships/androsyn/androsyn.cpp) | Ship hooks transform motion, collisions, controls and energy behavior. | The ship remains a multi-tick stateful object; an isolated special-fire function is insufficient. |
 
 These are representative stress cases, not an exhaustive audit of every ship.
 
@@ -54,7 +58,7 @@ effects can affect the opponent before cleanup. cleanup_dead_ship then disconnec
 owned elements and removes most of them, excluding the designated crew objects.
 The legacy contract does not wait indefinitely for every projectile to expire.
 
-[Pkunk reincarnation](../../../sc2/src/uqm/ships/pkunk/pkunk.c) intercepts death
+[Pkunk reincarnation](../../../sc2/src/uqm/ships/pkunk/pkunk.cpp) intercepts death
 callbacks, retains state through an explosion and reconstructs the ship. Zero crew
 is not sufficient to declare final retirement. Warping out has another outcome.
 Multiplayer readiness also coordinates the transition frame with the peer.
@@ -77,7 +81,7 @@ winner test or automatic source removal at zero crew.
 
 ## Campaign writeback and practical sequence
 
-[Flagship initialization](../../../sc2/src/uqm/ships/sis_ship/sis_ship.c) builds
+[Flagship initialization](../../../sc2/src/uqm/ships/sis_ship/sis_ship.cpp) builds
 configuration from module, drive and jet slots. It distinguishes hyperspace
 behavior from battle behavior and adjusts crew for the captain. uninit_sis writes
 crew back to campaign globals. Native constructors should receive a resolved

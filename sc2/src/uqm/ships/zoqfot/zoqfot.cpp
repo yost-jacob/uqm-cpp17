@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "zoqfot.h"
 #include "resinst.h"
 
@@ -56,7 +57,7 @@
 #define TONGUE_DAMAGE 12
 #define TONGUE_OFFSET 4
 
-static RACE_DESC zoqfotpik_desc =
+static const RACE_DESC zoqfotpik_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -119,10 +120,7 @@ static RACE_DESC zoqfotpik_desc =
 		MISSILE_RANGE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -361,17 +359,30 @@ zoqfotpik_postprocess (ELEMENT *ElementPtr)
 		spawn_tongue (ElementPtr);
 }
 
+namespace {
+class ZoqFotPikShip final : public uqm::combat::Ship {
+public:
+    explicit ZoqFotPikShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = zoqfotpik_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        zoqfotpik_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_spit(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_zoqfotpik (void)
+init_zoqfotpik (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	zoqfotpik_desc.postprocess_func = zoqfotpik_postprocess;
-	zoqfotpik_desc.init_weapon_func = initialize_spit;
-	zoqfotpik_desc.cyborg_control.intelligence_func = zoqfotpik_intelligence;
-
-	RaceDescPtr = &zoqfotpik_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<ZoqFotPikShip>(zoqfotpik_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("ZoqFotPikShip");
+    return nullptr;
 }
 

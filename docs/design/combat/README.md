@@ -6,6 +6,16 @@ executable ownership/motion prototype, exercised by Boost.Test. It is linked onl
 into the test executable, never the game. It is not a second combat engine or a
 claim that the legacy physics/collision pipeline has been migrated.
 
+## Live migration status
+
+All 28 ship implementations now compile as C++17 concrete classes derived from
+[`uqm::combat::Ship`](../../../sc2/src/uqm/ship_behavior.hpp). See the
+[production migration notes](ship-migration.md). They own mutable descriptors and
+private optional values while C adapters keep the current element, resource and
+AI machinery running. This is the production behavior boundary, not yet the full
+native Battle/Ship API sketched below. The existing death, ditty and fleet-selection
+engine remains authoritative.
+
 ## Ownership
 
 ```mermaid

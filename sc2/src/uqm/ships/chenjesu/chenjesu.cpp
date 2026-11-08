@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "chenjesu.h"
 #include "resinst.h"
 
@@ -66,7 +67,7 @@
 #define DOGGY_HITS 3
 #define DOGGY_MASS 4
 
-static RACE_DESC chenjesu_desc =
+static const RACE_DESC chenjesu_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_SPECIAL | SEEKING_WEAPON,
@@ -129,10 +130,7 @@ static RACE_DESC chenjesu_desc =
 		LONG_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -571,18 +569,33 @@ chenjesu_preprocess (ELEMENT *ElementPtr)
 		++StarShipPtr->weapon_counter;
 }
 
+namespace {
+class ChenjesuShip final : public uqm::combat::Ship {
+public:
+    explicit ChenjesuShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = chenjesu_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        chenjesu_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        chenjesu_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_crystal(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_chenjesu (void)
+init_chenjesu (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	chenjesu_desc.preprocess_func = chenjesu_preprocess;
-	chenjesu_desc.postprocess_func = chenjesu_postprocess;
-	chenjesu_desc.init_weapon_func = initialize_crystal;
-	chenjesu_desc.cyborg_control.intelligence_func = chenjesu_intelligence;
-
-	RaceDescPtr = &chenjesu_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<ChenjesuShip>(chenjesu_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("ChenjesuShip");
+    return nullptr;
 }
 

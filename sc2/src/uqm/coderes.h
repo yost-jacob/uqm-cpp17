@@ -31,10 +31,6 @@ extern void *CaptureCodeRes (void *hCode, void *pData, void **ppLocData);
 extern void *ReleaseCodeRes (void *CodeRef);
 extern BOOLEAN DestroyCodeRes (void *hCode);
 
-typedef struct
-{
-	UWORD size;
-} CODE_REF;
 
 #if defined(__cplusplus)
 }

@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "arilou.h"
 #include "resinst.h"
 
@@ -44,7 +45,7 @@
 #define SPECIAL_WAIT 2
 #define HYPER_LIFE 5
 
-static RACE_DESC arilou_desc =
+static const RACE_DESC arilou_desc =
 {
 	{ /* SHIP_INFO */
 		/* FIRES_FORE | */ IMMEDIATE_WEAPON,
@@ -107,10 +108,7 @@ static RACE_DESC arilou_desc =
 		LASER_RANGE >> 1,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -287,17 +285,30 @@ arilou_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class ArilouShip final : public uqm::combat::Ship {
+public:
+    explicit ArilouShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = arilou_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        arilou_preprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_autoaim_laser(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_arilou (void)
+init_arilou (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	arilou_desc.preprocess_func = arilou_preprocess;
-	arilou_desc.init_weapon_func = initialize_autoaim_laser;
-	arilou_desc.cyborg_control.intelligence_func = arilou_intelligence;
-
-	RaceDescPtr = &arilou_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<ArilouShip>(arilou_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("ArilouShip");
+    return nullptr;
 }
 

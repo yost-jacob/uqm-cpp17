@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "probe.h"
 #include "resinst.h"
 
@@ -35,7 +36,7 @@
 
 #define SHIP_MASS 0
 
-static RACE_DESC probe_desc =
+static const RACE_DESC probe_desc =
 {
 	{ /* SHIP_INFO */
 		0,
@@ -98,21 +99,30 @@ static RACE_DESC probe_desc =
 		0,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
 
+namespace {
+class UrQuanProbeShip final : public uqm::combat::Ship {
+public:
+    explicit UrQuanProbeShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {}
+private:
+    // This special ship has no ordinary primary-weapon initializer.
+    COUNT createWeapons(ELEMENT &, uqm::combat::WeaponSlots &) noexcept override { return 0; }
+
+};
+} // namespace
+
 RACE_DESC*
-init_probe (void)
+init_probe (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	RaceDescPtr = &probe_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanProbeShip>(probe_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("UrQuanProbeShip");
+    return nullptr;
 }
 

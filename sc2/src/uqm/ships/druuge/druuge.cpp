@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "druuge.h"
 #include "resinst.h"
 
@@ -48,7 +49,7 @@
 #define SPECIAL_ENERGY_COST 16
 #define SPECIAL_WAIT 30
 
-static RACE_DESC druuge_desc =
+static const RACE_DESC druuge_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE,
@@ -111,10 +112,7 @@ static RACE_DESC druuge_desc =
 		MISSILE_RANGE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -236,7 +234,6 @@ druuge_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			ShipPtr->thrust_wait = WEAPON_WAIT + 1;
 	}
 
-
 	if ((StarShipPtr->ship_input_state & WEAPON)
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level < WEAPON_ENERGY_COST
 			&& ShipPtr->crew_level > 1)
@@ -307,18 +304,33 @@ druuge_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class DruugeShip final : public uqm::combat::Ship {
+public:
+    explicit DruugeShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = druuge_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        druuge_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        druuge_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_cannon(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_druuge (void)
+init_druuge (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	druuge_desc.preprocess_func = druuge_preprocess;
-	druuge_desc.postprocess_func = druuge_postprocess;
-	druuge_desc.init_weapon_func = initialize_cannon;
-	druuge_desc.cyborg_control.intelligence_func = druuge_intelligence;
-
-	RaceDescPtr = &druuge_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<DruugeShip>(druuge_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("DruugeShip");
+    return nullptr;
 }
 

@@ -17,6 +17,8 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
+#include <optional>
 #include "pkunk.h"
 #include "resinst.h"
 
@@ -55,7 +57,7 @@
 #define TRANSITION_LIFE 1
 #define TRANSITION_SPEED DISPLAY_TO_WORLD (20)
 
-static RACE_DESC pkunk_desc =
+static const RACE_DESC pkunk_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | FIRES_LEFT | FIRES_RIGHT,
@@ -118,10 +120,7 @@ static RACE_DESC pkunk_desc =
 		CLOSE_RANGE_WEAPON + 1,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -143,30 +142,11 @@ typedef PKUNK_DATA CustomShipData_t;
 static CustomShipData_t *
 GetCustomShipData (RACE_DESC *pRaceDesc)
 {
-	return pRaceDesc->data;
+	return static_cast<CustomShipData_t *>(pRaceDesc->data);
 }
 
-// Set the race-specific data in a race desc
-// (Re)Allocates its own storage for the data.
-static void
-SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
-{
-	if (pRaceDesc->data == data) 
-		return;  // no-op
-
-	if (pRaceDesc->data) // Out with the old
-	{
-		HFree (pRaceDesc->data);
-		pRaceDesc->data = NULL;
-	}
-
-	if (data) // In with the new
-	{
-		CustomShipData_t* newData = HMalloc (sizeof (*data));
-		*newData = *data;
-		pRaceDesc->data = newData;
-	}
-}
+// Updates the concrete ship's optional value; no separate heap allocation.
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
 static void
 animate (ELEMENT *ElementPtr)
@@ -279,7 +259,7 @@ new_pkunk (ELEMENT *ElementPtr)
 	ElementPtr->death_func = PkunkData->saved_death_func;
 	// preprocess_func() is called during the phoenix transition and
 	// then cleared, so we need to restore it
-	StarShipPtr->RaceDescPtr->preprocess_func = pkunk_preprocess;
+	uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).enablePreprocessing(true);
 	StarShipPtr->RaceDescPtr->ship_info.crew_level = MAX_CREW;
 	StarShipPtr->RaceDescPtr->ship_info.energy_level = MAX_ENERGY;
 				/* fix vux impairment */
@@ -518,7 +498,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 		if (ElementPtr->hTarget == 0)
 		{
 			// A brand new ship is preprocessed only once
-			StarShipPtr->RaceDescPtr->preprocess_func = 0;
+			uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).enablePreprocessing(false);
 		}
 		else
 		{	// Start the reincarnation sequence
@@ -545,7 +525,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 		}
 	}
 
-	if (StarShipPtr->RaceDescPtr->preprocess_func)
+	if (uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).preprocessingEnabled())
 	{
 		StarShipPtr->cur_status_flags &=
 				~(LEFT | RIGHT | THRUST | WEAPON | SPECIAL);
@@ -566,7 +546,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->state_flags &= ~(NONSOLID | FINITE_LIFE);
 			ElementPtr->state_flags |= CHANGING;
 
-			StarShipPtr->RaceDescPtr->preprocess_func = 0;
+			uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).enablePreprocessing(false);
 		}
 	}
 }
@@ -610,31 +590,65 @@ uninit_pkunk (RACE_DESC *pRaceDesc)
 	SetCustomShipData (pRaceDesc, NULL);
 }
 
-RACE_DESC*
-init_pkunk (void)
-{
-	RACE_DESC *RaceDescPtr;
-	// The caller of this func will copy the struct
-	static RACE_DESC new_pkunk_desc;
-	PKUNK_DATA empty_data;
-	memset (&empty_data, 0, sizeof (empty_data));
+namespace {
+class PkunkShip final : public uqm::combat::Ship {
+public:
+    explicit PkunkShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = pkunk_intelligence;
+        legacyData().data = nullptr;
+        if (definition.data) setData(static_cast<const CustomShipData_t *>(definition.data));
+    }
+    void setData(const CustomShipData_t *data) noexcept {
+        if (data == legacyData().data) return;
+        if (data) {
+            privateData_ = *data;
+            legacyData().data = &*privateData_;
+        } else {
+            privateData_.reset();
+            legacyData().data = nullptr;
+        }
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        pkunk_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        pkunk_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_bug_missile(&element, weapons.data());
+    }
+    void onFinish() noexcept override {
+        uninit_pkunk(&legacyData());
+    }
+    std::optional<CustomShipData_t> privateData_;
+};
+} // namespace
 
-	pkunk_desc.uninit_func = uninit_pkunk;
-	pkunk_desc.preprocess_func = pkunk_preprocess;
-	pkunk_desc.postprocess_func = pkunk_postprocess;
-	pkunk_desc.init_weapon_func = initialize_bug_missile;
-	pkunk_desc.cyborg_control.intelligence_func = pkunk_intelligence;
+static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data)
+{
+    static_cast<PkunkShip &>(uqm::combat::shipFor(*descriptor)).setData(data);
+}
+
+RACE_DESC*
+init_pkunk (void) try
+{
+	// Build a per-instance definition, copied into the native owner.
+	RACE_DESC new_pkunk_desc;
+	PKUNK_DATA empty_data{};
 
 	/* copy initial ship settings to the new descriptor */
 	new_pkunk_desc = pkunk_desc;
-	SetCustomShipData (&new_pkunk_desc, &empty_data);
-
-	RaceDescPtr = &new_pkunk_desc;
+	new_pkunk_desc.data = &empty_data;
 
 	LastSound = 0;
 			// We need to reinitialise it at least each battle, to ensure
 			// that NetPlay is synchronised if one player played another
 			// game before playing against a networked opponent.
 
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<PkunkShip>(new_pkunk_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("PkunkShip");
+    return nullptr;
 }

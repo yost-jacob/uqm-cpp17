@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "urquan.h"
 #include "resinst.h"
 
@@ -58,7 +59,7 @@
 #define FIGHTER_WEAPON_WAIT 8
 #define FIGHTER_LASER_RANGE DISPLAY_TO_WORLD (40 + FIGHTER_OFFSET)
 
-static RACE_DESC urquan_desc =
+static const RACE_DESC urquan_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SEEKING_SPECIAL,
@@ -121,10 +122,7 @@ static RACE_DESC urquan_desc =
 		MISSILE_SPEED * MISSILE_LIFE,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -538,17 +536,30 @@ urquan_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class UrQuanShip final : public uqm::combat::Ship {
+public:
+    explicit UrQuanShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = urquan_intelligence;
+    }
+private:
+    void afterMotion(ELEMENT &element) noexcept override {
+        urquan_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_fusion(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_urquan (void)
+init_urquan (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	urquan_desc.postprocess_func = urquan_postprocess;
-	urquan_desc.init_weapon_func = initialize_fusion;
-	urquan_desc.cyborg_control.intelligence_func = urquan_intelligence;
-
-	RaceDescPtr = &urquan_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanShip>(urquan_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("UrQuanShip");
+    return nullptr;
 }
 

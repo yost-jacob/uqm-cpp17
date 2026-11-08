@@ -10,6 +10,9 @@
 // Declaration-only design sketch. Not linked into gameplay.
 namespace uqm::design::combat {
 using Tick = std::uint64_t;
+struct BattleRules {
+    static constexpr bool persistentProjectiles = false;
+};
 struct ShipId {
     std::uint64_t battle, serial;
     constexpr bool operator==(ShipId other) const noexcept {
@@ -171,6 +174,9 @@ public:
     std::vector<std::unique_ptr<Projectile>> step(const CombatView &view);
     std::vector<std::unique_ptr<Projectile>> detonate();
     void remove() noexcept; // Collision/teardown without detonation effects.
+    // Definitive source retirement removes its effects under stock rules.
+    // A compile-time rule, not a runtime setting or launch option.
+    void retireSource(ShipId source) noexcept;
 private:
     ProjectileState state_;
     std::unique_ptr<ProjectileBehavior> behavior_;

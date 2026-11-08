@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "ship_behavior_c.h"
 #include "colors.h"
 #include "collide.h"
 #include "element.h"
@@ -359,7 +360,7 @@ ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 
 	GetElementStarShip (&Ship, &StarShipPtr);
 	num_weapons =
-			(*StarShipPtr->RaceDescPtr->init_weapon_func) (&Ship, Weapon);
+			InitializeShipWeapon (StarShipPtr->RaceDescPtr, &Ship, Weapon);
 
 	if ((n = num_weapons))
 	{

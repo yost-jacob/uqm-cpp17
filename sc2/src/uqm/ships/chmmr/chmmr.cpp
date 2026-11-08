@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "chmmr.h"
 #include "resinst.h"
 
@@ -55,7 +56,7 @@
 #define DEFENSE_RANGE (UWORD)64
 #define DEFENSE_WAIT 2
 
-static RACE_DESC chmmr_desc =
+static const RACE_DESC chmmr_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | IMMEDIATE_WEAPON | SEEKING_SPECIAL | POINT_DEFENSE,
@@ -118,10 +119,7 @@ static RACE_DESC chmmr_desc =
 		CLOSE_RANGE_WEAPON,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -770,21 +768,36 @@ chmmr_preprocess (ELEMENT *ElementPtr)
 		PutElement (hSatellite);
 	}
 
-	StarShipPtr->RaceDescPtr->preprocess_func = 0;
+	uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).enablePreprocessing(false);
 }
 
+namespace {
+class ChmmrShip final : public uqm::combat::Ship {
+public:
+    explicit ChmmrShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = chmmr_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        chmmr_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        chmmr_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_megawatt_laser(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_chmmr (void)
+init_chmmr (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	chmmr_desc.preprocess_func = chmmr_preprocess;
-	chmmr_desc.postprocess_func = chmmr_postprocess;
-	chmmr_desc.init_weapon_func = initialize_megawatt_laser;
-	chmmr_desc.cyborg_control.intelligence_func = chmmr_intelligence;
-
-	RaceDescPtr = &chmmr_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<ChmmrShip>(chmmr_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("ChmmrShip");
+    return nullptr;
 }
 

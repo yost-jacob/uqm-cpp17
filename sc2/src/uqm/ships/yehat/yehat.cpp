@@ -17,6 +17,7 @@
  */
 
 #include "../ship.h"
+#include "uqm/ship_behavior.hpp"
 #include "yehat.h"
 #include "resinst.h"
 
@@ -49,7 +50,7 @@
 #define SPECIAL_WAIT 2
 #define SHIELD_LIFE 10
 
-static RACE_DESC yehat_desc =
+static const RACE_DESC yehat_desc =
 {
 	{ /* SHIP_INFO */
 		FIRES_FORE | SHIELD_DEFENSE,
@@ -112,10 +113,7 @@ static RACE_DESC yehat_desc =
 		MISSILE_SPEED * MISSILE_LIFE / 3,
 		NULL,
 	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
+
 	0,
 	0, /* CodeRef */
 };
@@ -353,17 +351,32 @@ yehat_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
+namespace {
+class YehatShip final : public uqm::combat::Ship {
+public:
+    explicit YehatShip(const RACE_DESC &definition) noexcept
+        : Ship(definition) {
+        legacyData().cyborg_control.intelligence_func = yehat_intelligence;
+    }
+private:
+    void beforeMotion(ELEMENT &element) noexcept override {
+        yehat_preprocess(&element);
+    }
+    void afterMotion(ELEMENT &element) noexcept override {
+        yehat_postprocess(&element);
+    }
+    COUNT createWeapons(ELEMENT &element, uqm::combat::WeaponSlots &weapons) noexcept override {
+        return initialize_standard_missiles(&element, weapons.data());
+    }
+};
+} // namespace
+
 RACE_DESC*
-init_yehat (void)
+init_yehat (void) try
 {
-	RACE_DESC *RaceDescPtr;
 
-	yehat_desc.preprocess_func = yehat_preprocess;
-	yehat_desc.postprocess_func = yehat_postprocess;
-	yehat_desc.init_weapon_func = initialize_standard_missiles;
-	yehat_desc.cyborg_control.intelligence_func = yehat_intelligence;
-
-	RaceDescPtr = &yehat_desc;
-
-	return (RaceDescPtr);
+	return uqm::combat::releaseToLegacy(std::make_unique<YehatShip>(yehat_desc));
+} catch (...) {
+    uqm::combat::logShipCreationFailure("YehatShip");
+    return nullptr;
 }

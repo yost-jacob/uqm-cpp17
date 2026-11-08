@@ -48,6 +48,11 @@ void Projectile::remove() noexcept {
     active_ = false;
     behavior_.reset(); // No detonation effects on collision removal or teardown.
 }
+void Projectile::retireSource(ShipId source) noexcept {
+    if constexpr (!BattleRules::persistentProjectiles) {
+        if (state_.source == source) remove();
+    }
+}
 ProjectileAction StraightFlight::update(ProjectileState &, const CombatView &) {
     return ProjectileAction::Continue;
 }

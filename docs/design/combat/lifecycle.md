@@ -25,8 +25,8 @@ stateDiagram-v2
 ```
 
 States describe simulation meaning. They do not prescribe new frame counts,
-probabilities, resource reloads or victory timing. The initial legacy adapter must
-preserve the existing rules and expose the resulting transitions.
+probabilities, resource reloads or victory timing. The live ship-class migration preserves the existing C transition engine.
+A future native Battle adapter must expose its resulting transitions.
 
 Zero crew disables ordinary control but does not itself release Battle's owner.
 Ships can still need transition processing, so beginTick/endTick apply while the
@@ -51,11 +51,26 @@ through their own asset ownership, not by keeping extra strong ship owners.
 
 Legacy cleanup sometimes removes source-owned effects directly. Removing a crystal
 before owner release suppresses its detonation; retaining it permits the count==1
-path on the next tick. The retirement adapter must apply the audited weapon rule.
+path on the next tick. BattleRules::persistentProjectiles is a compile-time flag, defaulting to false.
+Projectile::retireSource wraps cleanup in if constexpr and tests the stock removal
+path. It is currently a prototype rule; the live C cleanup remains unchanged.
+The retirement adapter must apply the audited weapon rule.
 These are explicit simulation operations, never side effects of a ship destructor.
 The prototype exercises both paths; it does not choose new gameplay timing.
 
 ## Round and fleet progression
+
+Resolve the initial loss, explosion and possible reincarnation before starting
+the victory ditty. Successful reincarnation resumes active combat without starting
+a victory sequence. At definitive retirement, stock rules clean up that source's
+remaining effects.
+
+Normal play uses the existing ditty completion/readiness gate (including its
+minimum-frame and netplay checks). Headless play uses a configured tick duration
+instead of requiring audio playback. Simulation continues during this interval,
+so an apparent winner can still die or collide with the planet. Recheck both sides
+afterward; resolve any newly pending explosion/reincarnation before choosing
+replacements. Keep active vessels and select replacements only for retired ones.
 
 Battle needs to distinguish an active exchange of fire, resolving loss/retreat,
 requesting a replacement ship, and final completion. These states belong to Battle
