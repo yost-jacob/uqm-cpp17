@@ -16,10 +16,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef LIBS_MATH_MTHINTRN_H_
-#define LIBS_MATH_MTHINTRN_H_
-
+#include <cmath>
 #include "libs/mathlib.h"
 
-#endif /* LIBS_MATH_MTHINTRN_H_ */
-
+COUNT square_root(const DWORD value) {
+    // Every uint32 value is exactly representable as double. Truncating its
+    // nonnegative square root gives the required integer floor (0..65535).
+    return static_cast<COUNT>(std::sqrt(static_cast<double>(value)));
+}

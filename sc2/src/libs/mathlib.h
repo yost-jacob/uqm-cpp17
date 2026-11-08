@@ -27,6 +27,8 @@ extern "C" {
 
 #include "math/random.h"
 
+/* Return floor(sqrt(value)) for every uint32 input, including zero. The result
+ * fits COUNT (0..65535); no signed input or floating-point state is retained. */
 extern COUNT square_root (DWORD value);
 
 #if defined(__cplusplus)

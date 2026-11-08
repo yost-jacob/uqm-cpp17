@@ -48,7 +48,7 @@ enum
 static UWORD
 CalcFromBase (UWORD base, UWORD variance)
 {
-	return base + LOWORD (RandomContext_Random (SysGenRNG)) % variance;
+	return base + LOWORD (RandomContext_Random (&SysGenRNG)) % variance;
 }
 
 static inline UWORD
@@ -211,7 +211,7 @@ CalcRotation (PLANET_INFO *PlanetInfoPtr)
 {
 	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
 		return CalcFromBase (80, 80);
-	else if (LOBYTE (RandomContext_Random (SysGenRNG)) % 10 == 0)
+	else if (LOBYTE (RandomContext_Random (&SysGenRNG)) % 10 == 0)
 		return CalcFromBase (50 * 240, 200 * 240);
 	else
 		return CalcFromBase (150, 150);
@@ -229,7 +229,7 @@ CalcTilt (void)
 	i = NUM_TOSSES;
 	do /* Using added Randomom values to give bell curve */
 	{
-		tilt += LOWORD (RandomContext_Random (SysGenRNG))
+		tilt += LOWORD (RandomContext_Random (&SysGenRNG))
 				% ((TILT_RANGE / NUM_TOSSES) + 1);
 	} while (--i);
 
@@ -360,7 +360,7 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, PLANET_DESC *pPlanetDesc)
 	assert ((pPlanetDesc->data_index & ~WORLD_TYPE_SPECIAL)
 			< NUMBER_OF_PLANET_TYPES);
 
-	RandomContext_SeedRandom (SysGenRNG, pPlanetDesc->rand_seed);
+	RandomContext_SeedRandom (&SysGenRNG, pPlanetDesc->rand_seed);
 
 	CalcSysInfo (SysInfoPtr);
 
@@ -425,7 +425,7 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, PLANET_DESC *pPlanetDesc)
 		}
 		SysInfoPtr->PlanetInfo.PlanetDensity +=
 				(SysInfoPtr->PlanetInfo.PlanetDensity / 20)
-				- (LOWORD (RandomContext_Random (SysGenRNG))
+				- (LOWORD (RandomContext_Random (&SysGenRNG))
 				% (SysInfoPtr->PlanetInfo.PlanetDensity / 10));
 
 		switch (PLANSIZE (SysInfoPtr->PlanetInfo.PlanDataPtr->Type))

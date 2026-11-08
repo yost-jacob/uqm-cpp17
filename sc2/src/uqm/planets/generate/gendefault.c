@@ -136,11 +136,11 @@ GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	sysInfo = &solarSys->SysInfo;
 
 	DoPlanetaryAnalysis (sysInfo, world);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 	sysInfo->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 	GenerateLifeForms (sysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	rand_val = RandomContext_GetSeed (&SysGenRNG);
 
 	sysInfo->PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
 	GenerateMineralDeposits (sysInfo, GENERATE_ALL, NULL);
@@ -298,7 +298,7 @@ GeneratePlanets (SOLARSYS_STATE *solarSys)
 		BYTE num_moons;
 		BYTE type;
 
-		rand_val = RandomContext_Random (SysGenRNG);
+		rand_val = RandomContext_Random (&SysGenRNG);
 		byte_val = LOBYTE (rand_val);
 
 		num_moons = 0;

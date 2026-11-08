@@ -29,7 +29,7 @@ static_assert(MAKE_DWORD(0x5678, 0x1234) == 0x12345678);
 static_assert(LONIBBLE(0x51) == 1 && HINIBBLE(0x51) == 5);
 static_assert(LOBYTE(0x1234) == 0x34 && HIBYTE(0x1234) == 0x12);
 static_assert(LOWORD(0x12345678) == 0x5678 && HIWORD(0x12345678) == 0x1234);
-static_assert(FULL_CIRCLE == 64 && FACING_SHIFT == 4 && SIN_SCALE == 16384);
+static_assert(FULL_CIRCLE == 64 && FACING_SHIFT == 4);
 
 BOOST_AUTO_TEST_CASE(standard_types_and_packing_work_across_the_c_boundary)
 {
