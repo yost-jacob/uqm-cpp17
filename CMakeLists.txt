@@ -17,6 +17,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(PkgConfig REQUIRED)
+find_package(Threads REQUIRED)
 pkg_check_modules(SDL2 REQUIRED IMPORTED_TARGET sdl2>=2.0.0)
 pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbisfile)
 find_package(PNG REQUIRED)
@@ -69,13 +70,14 @@ target_compile_definitions(uqm PRIVATE
     GFXMODULE_SDL SDL_DIR=SDL2 THREADLIB_SDL USE_INTERNAL_MIKMOD
     HAVE_JOYSTICK HAVE_ZIP=1 NETPLAY=NETPLAY_FULL USE_PLATFORM_ACCEL
     $<$<CONFIG:Debug>:DEBUG>)
-target_link_libraries(uqm PRIVATE PkgConfig::SDL2 PkgConfig::VORBIS PNG::PNG ZLIB::ZLIB nlohmann_json::nlohmann_json m)
+target_link_libraries(uqm PRIVATE PkgConfig::SDL2 PkgConfig::VORBIS PNG::PNG ZLIB::ZLIB nlohmann_json::nlohmann_json Threads::Threads m)
 
 include(CTest)
 if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
     add_executable(uqm-build-tests tests/build.cpp tests/game_state.cpp
-        tests/game_state_c.c tests/hash_tables.cpp
+        tests/game_state_c.c tests/world_state.cpp tests/world_state_c.c
+        tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
         tests/stringbank_c.c tests/string_resources.cpp tests/string_tables_c.c
         tests/value_types.cpp tests/math.cpp tests/math_c.c
@@ -90,12 +92,12 @@ if(BUILD_TESTING)
         sc2/src/libs/math/random.cpp sc2/src/libs/math/sqrt.cpp
         sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp sc2/src/uqm/star_map.cpp
         sc2/src/uqm/star_map_c.cpp sc2/src/uqm/game_state.cpp
-        sc2/src/uqm/game_state_bits.c
+        sc2/src/uqm/world_state.cpp sc2/src/uqm/game_state_bits.c
         sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE
         "${CMAKE_CURRENT_BINARY_DIR}/generated" sc2/src)
-    target_link_libraries(uqm-build-tests PRIVATE Boost::unit_test_framework PkgConfig::SDL2 nlohmann_json::nlohmann_json)
+    target_link_libraries(uqm-build-tests PRIVATE Boost::unit_test_framework PkgConfig::SDL2 nlohmann_json::nlohmann_json Threads::Threads)
     target_compile_definitions(uqm-build-tests PRIVATE BOOST_TEST_DYN_LINK NETPLAY=NETPLAY_FULL
         UQM_TEST_STARMAP_PATH="${CMAKE_CURRENT_SOURCE_DIR}/sc2/content/base/starmap.json")
     add_test(NAME uqm-c-cxx-interop COMMAND uqm-build-tests)

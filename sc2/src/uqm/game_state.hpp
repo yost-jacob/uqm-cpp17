@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include "world_state.hpp"
 
 namespace uqm {
 struct PlayerId {
@@ -104,14 +105,22 @@ private:
 // Access is simulation-thread confined; shared_ptr preserves lifetime only.
 class GameState {
 public:
-    explicit GameState(UserProfile profile);
+    explicit GameState(UserProfile profile); // Creates an independent universe.
+    // world must be non-null. Multiple states can share one universe while
+    // keeping separate player entities; the runtime still supports one player.
+    GameState(UserProfile profile, std::shared_ptr<WorldState> world);
     GameState(const GameState &) = delete;
     GameState &operator=(const GameState &) = delete;
     // Unknown IDs throw out_of_range. Borrow for one operation, not across load,
     // disconnect or later storage changes. No collection representation escapes.
     PlayerEntity &player(PlayerId id);
     const PlayerEntity &player(PlayerId id) const;
+    WorldState &world() noexcept;
+    const WorldState &world() const noexcept;
+    std::shared_ptr<WorldState> worldOwner() noexcept;
+    std::shared_ptr<const WorldState> worldOwner() const noexcept;
 private:
+    std::shared_ptr<WorldState> world_;
     PlayerEntity player_;
 };
 
@@ -123,6 +132,8 @@ public:
     PlayerId playerId() const noexcept;
     PlayerEntity &player();
     const PlayerEntity &player() const;
+    WorldState &world() noexcept;
+    const WorldState &world() const noexcept;
 private:
     std::shared_ptr<GameState> state_;
     PlayerId player_;

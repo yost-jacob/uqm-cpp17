@@ -3,6 +3,7 @@
 
 // Declaration-only, per-user state. Not part of the game build.
 #include <unordered_set>
+#include <unordered_map>
 #include "state_types.hpp"
 
 namespace uqm::design {
@@ -16,6 +17,9 @@ constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
         default: return 0;
     }
 }
+// Personal site history is distinct from shared depletion. Legacy energy masks
+// also encode these records; see discovery-state.md before migrating scan bits.
+struct DiscoveryProgress { std::bitset<32> visitedSites; };
 // Detached per-user save value; never an aggregate of every player's campaign.
 struct CampaignSnapshot {
     std::uint64_t revision = 0;
@@ -23,6 +27,7 @@ struct CampaignSnapshot {
     std::array<unsigned, static_cast<std::size_t>(StoryCounter::Count)> counters{};
     std::vector<FleetProgress> escorts;
     std::unordered_set<WorldId, WorldIdHash> visitedWorlds;
+    std::unordered_map<WorldId, DiscoveryProgress, WorldIdHash> discoveries;
     std::vector<ScheduledStoryEvent> personalEvents;
 };
 class StateActions;

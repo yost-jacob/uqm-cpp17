@@ -7,8 +7,15 @@ lookup, shared session ownership, a player-owned legacy payload, native ship and
 location values, and typed personal story access. See [implementation status and
 migration contracts](../../game-state.md).
 
+The production GameState now also owns a shared_ptr<WorldState> holding the
+legacy scan/NPC file buffers with vector storage and copied snapshots. These
+archives still contain some personal history. The new
+[physical changes versus personal discovery wireframe](discovery-state.md)
+explains the required semantic split before multiplayer sharing or typed world
+progress replaces the archive.
+
 The production layer deliberately retains the existing mixed GLOBDATA layout
-behind its C adapter. Shared-world extraction, new persistence snapshots,
+behind its C adapter. Full shared-world field extraction, typed persistence snapshots,
 world/behavior classes and networking described below are not implemented yet.
 The sketches use a separate namespace and illustrate the destination; their
 signatures are not a second production API or a second live state store.

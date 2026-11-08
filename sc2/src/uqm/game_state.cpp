@@ -108,7 +108,17 @@ void PlayerEntity::setCrew(std::uint16_t crew) noexcept { storage_->legacy.SIS_s
 CampaignState &PlayerEntity::campaign() noexcept { return campaign_; }
 const CampaignState &PlayerEntity::campaign() const noexcept { return campaign_; }
 
-GameState::GameState(UserProfile profile) : player_(std::move(profile)) {}
+GameState::GameState(UserProfile profile)
+    : GameState(std::move(profile), std::make_shared<WorldState>()) {}
+GameState::GameState(UserProfile profile, std::shared_ptr<WorldState> world)
+    : world_(std::move(world)), player_(std::move(profile)) {
+    if (!world_)
+        throw std::invalid_argument("game state requires world state");
+}
+WorldState &GameState::world() noexcept { return *world_; }
+const WorldState &GameState::world() const noexcept { return *world_; }
+std::shared_ptr<WorldState> GameState::worldOwner() noexcept { return world_; }
+std::shared_ptr<const WorldState> GameState::worldOwner() const noexcept { return world_; }
 PlayerEntity &GameState::player(PlayerId id) {
     if (id != player_.id())
         throw std::out_of_range("unknown player ID");
@@ -128,6 +138,8 @@ GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player)
 PlayerId GameSession::playerId() const noexcept { return player_; }
 PlayerEntity &GameSession::player() { return state_->player(player_); }
 const PlayerEntity &GameSession::player() const { return std::as_const(*state_).player(player_); }
+WorldState &GameSession::world() noexcept { return state_->world(); }
+const WorldState &GameSession::world() const noexcept { return std::as_const(*state_).world(); }
 GameSession &gameSession() {
     static GameSession session{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Player"}), SinglePlayerId};
     return session;

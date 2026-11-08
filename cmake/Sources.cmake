@@ -210,6 +210,7 @@ set(UQM_SOURCES
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/game_state.cpp
+    sc2/src/uqm/world_state.cpp
     sc2/src/uqm/game_state_bits.c
     sc2/src/uqm/gravity.c
     sc2/src/uqm/grpinfo.c
