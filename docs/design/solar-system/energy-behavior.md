@@ -35,7 +35,9 @@ legacy Androsynth sequence.
 
 Both return a small EnergyInteraction value: accepted, removeNode and an optional
 report index. This keeps UI callbacks and legacy save bits out of the policy.
-The caller supplies current physical retrieval status. Player mutation remains
+A world attached to a generated system also checks its current persistent energy
+bits, so a stale C view cannot re-award an already published artifact. The caller
+still commits accepted removal and reward. Player mutation remains
 simulation-thread confined. This is not yet a multi-player claim transaction.
 
 ## Active integration

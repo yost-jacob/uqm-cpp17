@@ -15,12 +15,18 @@ explains the required semantic split before multiplayer sharing or typed world
 progress replaces the archive.
 
 The production layer deliberately retains the existing mixed GLOBDATA layout
-behind its C adapter. Full shared-world field extraction, typed persistence snapshots and networking
+behind its C adapter. Typed physical WorldProgress access and generated-layout validation are now
+implemented behind the legacy format. Full story-field extraction, a new portable
+snapshot format and networking
 remain future work. Native World/SolarSystem runtime ownership and polymorphic
 [energy behaviors](energy-behavior.md) now run in the game; the broader
 WorldBehavior generation/orbit hierarchy below remains a target.
 The sketches use a separate namespace and illustrate the destination; their
 signatures are not a second production API or a second live state store.
+
+The next architecture checkpoint is the [orbit-entry and active-visit wireframe](orbit-entry.md).
+It makes the existing CHECK_LOAD/abort continuation contract explicit and proposes
+policy/resource lifetimes before the C orbital handlers are moved into classes.
 
 Start with [GameState](game_state.hpp), the storage boundary, and
 [PlayerEntity](player_entity.hpp), the complete personal state owner.

@@ -1,7 +1,7 @@
 # Physical changes and personal discovery: additional wireframe
 
 The first production discovery split is implemented in
-[`discovery_state.hpp`](../../../sc2/src/uqm/discovery_state.hpp), the player's
+[`world_types.hpp`](../../../sc2/src/uqm/world_types.hpp), the player's
 CampaignState, and the legacy planet-info adapter. Androsynth visits are personal
 records keyed by stable WorldId; the site remains physically present. A visit is
 recorded on acceptance before report UI, preserving existing behavior.

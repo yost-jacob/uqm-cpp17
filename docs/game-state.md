@@ -98,13 +98,14 @@ original files and encoding.
 
 Androsynth discovery visits now live in the player's CampaignState, keyed by
 universe, star and planet/moon slots. The report sequence derives from distinct
-accepted visits; repeat visits award no additional report. GetPlanetInfo imports
+accepted visits; repeat visits award no additional report. System construction imports
 old upper energy bits once the generated layout is available, clears those bits
 from the live physical record, and the handler uses personal progress directly.
 Saving composes an immutable legacy-format copy, including a zero physical block
 if personal discovery preceded any physical collection. The shared archive is
 not modified during save. New/load campaigns clear personal discovery records;
 legacy imports never overwrite newer native progress on ordinary revisits.
+Orbital reads also recheck imports after an in-place checkpoint load.
 
 **Remaining archives are still semantically mixed.** Unvisited legacy report
 records remain opaque until import, and encounter archives require a scope audit.
@@ -129,6 +130,27 @@ own no player progress. World definitions currently mirror generated metadata;
 shared physical transitions need refresh before native landing checks become
 authoritative gameplay decisions.
 
+## Typed physical progress
+
+WorldState now resolves WorldId plus generated SystemLayout into checked physical
+records. World and SolarSystem expose copied WorldProgress bitsets, explicit
+replacement for import/reset, and locked OR merges for permanent claims. Runtime
+worlds receive their layout when attached to a system; they keep no independently
+mutable progress cache. Planet/moon addressing and legacy archive bounds are
+validated in one native codec, behind the existing C entry points.
+
+The former state.c implementation and its offset/record macros are deleted.
+GetPlanetInfo/PutPlanetInfo are now small descriptor adapters. Accepted lander
+retrieval publishes its permanent bits immediately. This removes the deferred
+PLANETARY_CHANGE checks on leaving orbit or saving; the old packed bit remains
+reserved so existing save offsets do not move. An unused clear-node function is
+removed, and read-only scan helpers now accept const planet records.
+
+Merging physical bits does not award cargo or complete a multi-owner transaction.
+Legacy report import and C inventory/story updates remain authoritative simulation
+operations, and callbacks still execute outside world locks. Typed progress
+operations refuse to interleave with an open legacy scan-file cursor.
+
 ## Remaining migration
 
 The legacy record still mixes personal and shared state. Its temporary placement
@@ -138,8 +160,8 @@ represent players inhabiting a shared universe.
 
 Next, split semantic fields inside the legacy archives and GLOBDATA into shared
 world progress and personal storage while adapting save/load and C callers. Collection rewards need a coordinated
-personal/shared operation before multiple players can interact. The remaining generation/orbit behavior hierarchy, typed world-progress
-persistence, public presence, networking,
+personal/shared operation before multiple players can interact. The remaining generation/orbit behavior hierarchy, a portable player/world save
+schema, public presence, networking,
 and cross-process authority are not implemented by this change. Worker mutation
 would require a player synchronization boundary and snapshot-based access.
 
@@ -150,3 +172,8 @@ state-file I/O and native/C snapshot round trips, and coherent snapshots under
 concurrent whole-world restores.
 Aggregate restore tests exercise the compatibility contract; they do not replace
 an end-to-end gameplay save/load test.
+
+The next design boundary is [orbit entry and visit lifetime](design/solar-system/orbit-entry.md):
+a conversation/battle can return after a campaign load or runtime reconstruction.
+The proposal separates action selection, visit-owned resources, and epoch-checked
+completion before migrating the remaining C orbital handlers.
