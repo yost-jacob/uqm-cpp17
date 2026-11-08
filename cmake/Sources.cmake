@@ -195,7 +195,7 @@ set(UQM_SOURCES
     sc2/src/uqm/confirm.c
     sc2/src/uqm/cons_res.c
     sc2/src/uqm/credits.c
-    sc2/src/uqm/cyborg.c
+    sc2/src/uqm/cyborg.cpp
     sc2/src/uqm/demo.c
     sc2/src/uqm/displist.cpp
     sc2/src/uqm/encount.c
@@ -291,7 +291,7 @@ set(UQM_SOURCES
     sc2/src/uqm/settings.c
     sc2/src/uqm/setup.c
     sc2/src/uqm/setupmenu.c
-    sc2/src/uqm/ship.c
+    sc2/src/uqm/ship.cpp
     sc2/src/uqm/ships/androsyn/androsyn.cpp
     sc2/src/uqm/ships/arilou/arilou.cpp
     sc2/src/uqm/ships/blackurq/blackurq.cpp

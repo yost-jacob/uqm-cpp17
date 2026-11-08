@@ -9,7 +9,7 @@ namespace uqm::combat {
 using WeaponSlots = std::array<HELEMENT, 6>;
 
 // Production migration boundary. Each concrete ship owns its mutable descriptor;
-// the existing C element/asset/AI code borrows it through the buffer functions.
+// native execution/AI code dispatches directly; C element/asset code borrows it.
 // Native hooks take references; projectile callbacks remain in the element engine.
 class Ship {
 public:
@@ -20,8 +20,14 @@ public:
 
     RACE_DESC &legacyData() noexcept { return data_; }
     const RACE_DESC &legacyData() const noexcept { return data_; }
+    // element is a live ship element belonging to this behavior. Hooks may mutate
+    // it and the descriptor; finish() makes subsequent hooks inert.
     void preprocess(ELEMENT &element) noexcept;
     void postprocess(ELEMENT &element) noexcept;
+    // element is the live ship or an AI prediction copy with a valid STARSHIP
+    // association. Clears all slots, then returns the number of candidate slots
+    // (at most weapons.size()); individual handles may be null. The caller must
+    // enqueue real shots or free speculative shots through the element engine.
     COUNT initializeWeapon(ELEMENT &element, WeaponSlots &weapons) noexcept;
     // Explicit legacy completion before asset release; idempotent. Destructors
     // clean up owned values but never publish campaign results.

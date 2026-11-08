@@ -1,8 +1,9 @@
 # Production ship-class migration
 
 All 28 ship implementations now compile as C++17 and create concrete native
-classes. The game runs these classes through the C buffer in
-[ship_behavior_c.h](../../../sc2/src/uqm/ship_behavior_c.h). The common
+classes. Native [ship execution](../../../sc2/src/uqm/ship.cpp) and
+[cyborg prediction](../../../sc2/src/uqm/cyborg.cpp) call the virtual interface
+directly. The common
 [Ship interface](../../../sc2/src/uqm/ship_behavior.hpp) owns each mutable
 RACE_DESC and dispatches before-motion, after-motion, weapon and completion hooks.
 Ordinary procedural helpers stay in their ship's source file, preserving the
@@ -42,10 +43,11 @@ only a borrowed C view into those values. Initial setup uses local values and
 copies them into the new owner before returning; it cannot retain stack pointers.
 Static definition records are const, while mutable per-instance records are owned.
 
-Native hooks use references and std::array for the six weapon slots. C adapters
-translate their pointer/buffer contracts, clear unused output slots and retain
-existing C linkage. Existing C++ linkage errors exposed in netconnection.h were
-fixed; C input/render/network code still compiles as C.
+Native hooks use references and std::array for the six weapon slots. Ship execution
+and cyborg prediction use that array directly; initializeWeapon clears unused slots.
+The three former C dispatch wrappers and ship_behavior_c.h are deleted. Exported
+engine callbacks retain C linkage through ship.h, intel.h and element.h, so C
+input/render/network/element code still compiles and calls the same functions.
 
 ## Ship-specific cases
 
@@ -119,7 +121,7 @@ existing cleanup; there is no launch option or alternate runtime rule yet.
 
 ## Verification
 
-Boost.Test exercises genuine C-to-native dispatch, stable resource identity,
+Boost.Test exercises direct native dispatch, stable descriptor identity,
 independent mutable descriptors, complete species-to-builder mapping, cleared
 weapon slots, disabled/restored hooks,
 completion idempotence, partial-asset rollback, selective icon transfer, and

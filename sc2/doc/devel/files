@@ -8,7 +8,7 @@ comm.c         Handles communication with aliens.
 commglue.c     Helper functions for communication with aliens.
 confirm.c      Asks for confirmation on exit.
 credits.c      Shows the credits after a victory.
-cyborg.c       Handles combat AI.
+cyborg.cpp       Handles combat AI.
 debug.c        Debugging functions.
 demo.c         Code for demo mode and game journal.
 displist.c     Generic doubly linked list, which can keep its own pool
@@ -50,7 +50,7 @@ save.c         Saving of a game.
 settings.c     The back end of the game options.
 setup.c        Initialisations for key config, and loading of various
                resources.
-ship.c         Ship movement in combat.
+ship.cpp         Ship movement in combat.
 shipstat.c     Routines for showing information about ships in combat
                (name, crew, energy). (also status.c)
 shipyard.c     Things related to selection of your companion ships.

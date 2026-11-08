@@ -16,7 +16,7 @@ strings and audio assets around a direct native factory and invokes explicit
 per-ship completion. The old code-resource layer is removed. These need separate
 native definition, instance, behavior/controller and asset ownership boundaries.
 
-[ship.c](../../../sc2/src/uqm/ship.c) provides common energy, cooldown, movement
+[ship.cpp](../../../sc2/src/uqm/ship.cpp) provides common energy, cooldown, movement
 and firing logic around ship-specific preprocess/postprocess hooks. An interface
 with only firePrimary/useSpecial would miss ongoing transformations and changes
 to movement/control state. Ability hooks need explicit simulation phases.

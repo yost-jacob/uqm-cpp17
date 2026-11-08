@@ -1,6 +1,4 @@
 #include "ship_behavior.hpp"
-#include "ship_behavior_c.h"
-#include <algorithm>
 #include <cassert>
 
 namespace uqm::combat {
@@ -31,19 +29,4 @@ Ship &shipFor(RACE_DESC &descriptor) noexcept {
     assert(&ship.legacyData() == &descriptor);
     return ship;
 }
-}
-extern "C" void PreprocessShipBehavior(RACE_DESC *ship, ELEMENT *element) {
-    assert(ship && element);
-    uqm::combat::shipFor(*ship).preprocess(*element);
-}
-extern "C" void PostprocessShipBehavior(RACE_DESC *ship, ELEMENT *element) {
-    assert(ship && element);
-    uqm::combat::shipFor(*ship).postprocess(*element);
-}
-extern "C" COUNT InitializeShipWeapon(RACE_DESC *ship, ELEMENT *element, HELEMENT weapons[6]) {
-    assert(ship && element && weapons);
-    uqm::combat::WeaponSlots slots{};
-    const auto count = uqm::combat::shipFor(*ship).initializeWeapon(*element, slots);
-    std::copy(slots.begin(), slots.end(), weapons);
-    return count;
 }

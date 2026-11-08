@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "ship_behavior_c.h"
+#include "ship_behavior.hpp"
 #include "colors.h"
 #include "collide.h"
 #include "element.h"
@@ -343,7 +343,7 @@ ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 	SIZE delta_x, delta_y;
 	COUNT n, num_weapons;
 	ELEMENT Ship;
-	HELEMENT Weapon[6];
+	uqm::combat::WeaponSlots Weapon{};
 	STARSHIP *StarShipPtr;
 
 	if (OBJECT_CLOAKED (OtherPtr))
@@ -360,7 +360,7 @@ ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 
 	GetElementStarShip (&Ship, &StarShipPtr);
 	num_weapons =
-			InitializeShipWeapon (StarShipPtr->RaceDescPtr, &Ship, Weapon);
+			uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).initializeWeapon(Ship, Weapon);
 
 	if ((n = num_weapons))
 	{
@@ -368,7 +368,7 @@ ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 		//STARSHIP *StarShipPtr;
 		ELEMENT *EPtr;
 
-		WeaponPtr = &Weapon[0];
+		WeaponPtr = Weapon.data();
 		do
 		{
 			w = *WeaponPtr;
@@ -407,7 +407,7 @@ ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 		}
 	}
 
-	return (num_weapons > 0);
+	return num_weapons > 0 ? TRUE : FALSE;
 }
 
 void

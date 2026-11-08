@@ -54,6 +54,9 @@ extern BATTLE_INPUT_STATE tactical_intelligence (
 		ComputerInputContext *context, STARSHIP *StarShipPtr);
 extern void ship_intelligence (ELEMENT *ShipPtr,
 		EVALUATE_DESC *ObjectsOfConcern, COUNT ConcernCounter);
+/* Predict a hit using temporary projectiles, which are freed before return.
+ * Both elements must be live; ShipPtr must have a STARSHIP/native Ship association.
+ * margin_of_error is a world-coordinate tolerance. */
 extern BOOLEAN ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr,
 		COUNT margin_of_error);
 

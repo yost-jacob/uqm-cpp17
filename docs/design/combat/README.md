@@ -11,8 +11,9 @@ claim that the legacy physics/collision pipeline has been migrated.
 All 28 ship implementations now compile as C++17 concrete classes derived from
 [`uqm::combat::Ship`](../../../sc2/src/uqm/ship_behavior.hpp). See the
 [production migration notes](ship-migration.md). They own mutable descriptors and
-private optional values while C adapters keep the current element, resource and
-AI machinery running. This is the production behavior boundary, not yet the full
+private optional values. Ship execution and cyborg prediction dispatch directly
+in C++; C-compatible callbacks keep the current element and resource machinery
+running. This is the production behavior boundary, not yet the full
 native Battle/Ship API sketched below. The existing death, ditty and fleet-selection
 engine remains authoritative.
 

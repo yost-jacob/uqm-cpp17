@@ -1,10 +1,8 @@
 #include "uqm/ship_behavior.hpp"
-#include "uqm/ship_behavior_c.h"
 #include <boost/test/unit_test.hpp>
 #include <type_traits>
 #include <memory>
 
-extern "C" COUNT exercise_ship_behavior_from_c(RACE_DESC *, ELEMENT *, HELEMENT[6]);
 namespace {
 using uqm::combat::Ship;
 using uqm::combat::WeaponSlots;
@@ -47,15 +45,18 @@ BOOST_AUTO_TEST_CASE(native_ship_owns_an_independent_descriptor_with_stable_c_bu
     BOOST_TEST(definition.ship_info.crew_level == 5u);
     BOOST_TEST(&uqm::combat::shipFor(first->legacyData()) == static_cast<Ship *>(first.get()));
 }
-BOOST_AUTO_TEST_CASE(c_ship_dispatch_reaches_native_overrides_and_clears_unused_weapon_slots)
+BOOST_AUTO_TEST_CASE(native_ship_dispatch_reaches_overrides_and_clears_unused_weapon_slots)
 {
     Calls calls;
     auto owner = std::make_unique<TestShip>(RACE_DESC{}, calls);
     auto *descriptor = &owner->legacyData();
     ELEMENT element{};
-    HELEMENT weapons[6];
+    WeaponSlots weapons;
     for (auto &weapon : weapons) weapon = descriptor;
-    const auto count = exercise_ship_behavior_from_c(descriptor, &element, weapons);
+    auto &ship = uqm::combat::shipFor(*descriptor);
+    ship.preprocess(element);
+    ship.postprocess(element);
+    const auto count = ship.initializeWeapon(element, weapons);
     BOOST_TEST(count == 1u);
     BOOST_TEST(calls.before == 1u);
     BOOST_TEST(calls.after == 1u);

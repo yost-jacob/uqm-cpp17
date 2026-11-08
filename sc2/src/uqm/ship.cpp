@@ -17,7 +17,7 @@
  */
 
 #include "ship.h"
-#include "ship_behavior_c.h"
+#include "ship_behavior.hpp"
 
 #include "build.h"
 #include "collide.h"
@@ -191,7 +191,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			OldContext = SetContext (StatusContext);
 			DrawCaptainsWindow (StarShipPtr);
 			SetContext (OldContext);
-			PreprocessShipBehavior (RDPtr, ElementPtr);
+			uqm::combat::shipFor(*RDPtr).preprocess(*ElementPtr);
 
 			// XXX: Hack: Pkunk sets hTarget!=0 when it reincarnates. In that
 			//   case there is no ship_transition() but a Phoenix transition
@@ -230,7 +230,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 				(SBYTE)RDPtr->characteristics.energy_regeneration);
 
 	{
-		PreprocessShipBehavior (RDPtr, ElementPtr);
+		uqm::combat::shipFor(*RDPtr).preprocess(*ElementPtr);
 		cur_status_flags = StarShipPtr->cur_status_flags;
 	}
 
@@ -297,9 +297,9 @@ ship_postprocess (ELEMENT *ElementPtr)
 			-RDPtr->characteristics.weapon_energy_cost))
 	{
 		COUNT num_weapons;
-		HELEMENT Weapon[6];
+		uqm::combat::WeaponSlots Weapon{};
 
-		num_weapons = InitializeShipWeapon (RDPtr, ElementPtr, Weapon);
+		num_weapons = uqm::combat::shipFor(*RDPtr).initializeWeapon(*ElementPtr, Weapon);
 
 		if (num_weapons)
 		{
@@ -308,7 +308,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 			BOOLEAN played_sfx = FALSE;
 
 			GetElementStarShip (ElementPtr, &StarShipPtr);
-			WeaponPtr = &Weapon[0];
+			WeaponPtr = Weapon.data();
 			do
 			{
 				HELEMENT w;
@@ -341,7 +341,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 	if (StarShipPtr->special_counter)
 		--StarShipPtr->special_counter;
 
-	PostprocessShipBehavior (RDPtr, ElementPtr);
+	uqm::combat::shipFor(*RDPtr).postprocess(*ElementPtr);
 
 	if (LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 		PostProcessStatus (ElementPtr);
@@ -491,7 +491,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 		UnlockElement (hShip);
 	}
 
-	return (hShip != 0);
+	return hShip != nullptr ? TRUE : FALSE;
 }
 
 // Select a new ship and spawn it.
@@ -528,7 +528,7 @@ GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
 	if (LastStarShipPtr)
 		LastStarShipPtr->hShip = 0;
 
-	return (hBattleShip != 0);
+	return hBattleShip != nullptr ? TRUE : FALSE;
 }
 
 BOOLEAN
