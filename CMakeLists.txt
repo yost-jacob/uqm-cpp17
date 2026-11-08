@@ -88,6 +88,7 @@ if(BUILD_TESTING)
         sc2/src/libs/strings/unicode.c sc2/src/libs/memory/w_memlib.c
         sc2/src/libs/math/random.cpp sc2/src/libs/math/sqrt.cpp
         sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp sc2/src/uqm/star_map.cpp
+        sc2/src/uqm/star_map_c.cpp
         sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE

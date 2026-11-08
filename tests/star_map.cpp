@@ -22,37 +22,34 @@ std::unique_ptr<StarMap> load(const Json &document) {
 }
 static_assert(!std::is_copy_constructible_v<StarMap>);
 
-BOOST_AUTO_TEST_CASE(star_map_preserves_entire_legacy_catalogue_and_enums) {
+static_assert(std::is_same_v<decltype(std::declval<StarMap &>().at(StarId{0})), const StarDesc &>);
+static_assert(std::is_same_v<decltype(std::declval<const StarMap &>().find(
+        std::declval<const StarSearch &>())), std::vector<StarId>>);
+
+BOOST_AUTO_TEST_CASE(star_map_preserves_native_values_and_enums) {
     const auto map = load(source());
-    BOOST_TEST(map->size() == STAR_CATALOGUE_SIZE);
-    // Golden FNV1a of all 4,160 bytes in the original compiled starmap_array.
-    // Encode the same eight save fields; the new in-memory identity is excluded.
-    uint64_t hash = UINT64_C(14695981039346656037);
+    BOOST_TEST(map->stars().size() == 518u);
     int solCount = 0, melnormeCount = 0;
-    for (size_t i = 0; i < map->size(); ++i) {
-        const auto &star = map->at(i).descriptor();
-        BOOST_TEST(map->indexOf(star) == i);
-        const unsigned bytes[]{unsigned(star.star_pt.x) & 255, unsigned(star.star_pt.x) >> 8,
-            unsigned(star.star_pt.y) & 255, unsigned(star.star_pt.y) >> 8,
-            star.Type, star.Index, star.Prefix, star.Postfix};
-        for (const auto byte : bytes)
-            hash = (hash ^ byte) * UINT64_C(1099511628211);
-        if (star.Index == SOL_DEFINED) {
+    for (const auto &star : map->stars()) {
+        BOOST_TEST(&map->at(star.id()) == &star);
+        const auto &properties = star.properties();
+        if (properties.specialSystem == SOL_DEFINED) {
             ++solCount;
-            BOOST_TEST(map->at(i).name() == "Sol");
-            BOOST_TEST(star.star_pt.x == 1752);
-            BOOST_TEST(star.star_pt.y == 1450);
+            BOOST_TEST(star.name() == "Sol");
+            BOOST_TEST(star.position().x == 1752);
+            BOOST_TEST(star.position().y == 1450);
         }
-        if (star.Index >= MELNORME0_DEFINED && star.Index <= MELNORME8_DEFINED)
+        if (properties.specialSystem >= MELNORME0_DEFINED
+                && properties.specialSystem <= MELNORME8_DEFINED)
             ++melnormeCount;
     }
-    BOOST_TEST(hash == UINT64_C(0xb815f9d5b77cef91));
     BOOST_TEST(solCount == 1);
     BOOST_TEST(melnormeCount == 9);
-    BOOST_TEST(map->at(0).name() == "Zeta Serpentis");
-    BOOST_TEST(map->at(501).name() == "Microscopii");
-    BOOST_TEST(map->at(502).descriptor().star_pt.x == 19998);
-    BOOST_TEST(map->at(519).descriptor().star_pt.y == 19998);
+    BOOST_TEST(map->at(StarId{0}).name() == "Zeta Serpentis");
+    BOOST_TEST(map->at(StarId{501}).name() == "Microscopii");
+    BOOST_CHECK_THROW(map->at(StarId{502}), std::out_of_range);
+    BOOST_CHECK_THROW(map->at(StarId{519}), std::out_of_range);
+    BOOST_CHECK_THROW(map->at(StarId{99999}), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_CASE(star_map_owns_editable_utf8_text_without_a_game_string_catalogue) {
@@ -60,40 +57,39 @@ BOOST_AUTO_TEST_CASE(star_map_owns_editable_utf8_text_without_a_game_string_cata
     document["hyperspace"][0]["prefix"] = "Mega";
     document["hyperspace"][0]["postfix"] = "Butt Mountain °";
     const auto map = load(document);
-    document.clear(); // No JSON or shared text storage is borrowed by the stars.
-    BOOST_TEST(map->at(0).prefix() == "Mega");
-    BOOST_TEST(map->at(0).postfix() == "Butt Mountain °");
-    BOOST_TEST(map->at(0).name() == "Mega Butt Mountain °");
-    BOOST_TEST(map->at(0).descriptor().Postfix == 74u);
-    BOOST_TEST(map->at(1).name() == "Eta Giclas");
+    document.clear();
+    BOOST_TEST(map->at(StarId{0}).prefix() == "Mega");
+    BOOST_TEST(map->at(StarId{0}).postfix() == "Butt Mountain °");
+    BOOST_TEST(map->at(StarId{0}).name() == "Mega Butt Mountain °");
+    BOOST_TEST(map->at(StarId{0}).properties().postfixId == 74u);
+    BOOST_TEST(map->at(StarId{1}).name() == "Eta Giclas");
 }
 
-BOOST_AUTO_TEST_CASE(star_map_search_preserves_indices_spaces_and_inclusive_bounds) {
-    const auto map = load(source());
-    for (size_t i = 0; i < map->size(); ++i) {
-        if (i == NUM_SOLAR_SYSTEMS || i == STAR_CATALOGUE_SIZE - 1)
-            continue;
-        auto &star = map->at(i).descriptor();
-        BOOST_TEST(map->find(nullptr, star.star_pt, 0, 0, i >= QUASISPACE_FIRST) == &star);
+BOOST_AUTO_TEST_CASE(star_map_search_returns_owned_ids_with_typed_space_and_bounds) {
+    auto map = load(source());
+    for (const auto &star : map->stars()) {
+        const auto matches = map->find({star.space(), star.position(), 0, 0});
+        BOOST_REQUIRE(matches.size() == 1u);
+        BOOST_TEST(matches.front().value == star.id().value);
     }
-    const POINT anywhere{0, 0};
-    const STAR_DESC *last = nullptr;
-    size_t count = 0;
-    while ((last = map->find(last, anywhere, -1, -1, false))) {
-        BOOST_TEST(map->indexOf(*last) == count);
-        ++count;
-    }
-    BOOST_TEST(count == NUM_SOLAR_SYSTEMS);
-    count = 0;
-    while ((last = map->find(last, anywhere, -1, -1, true))) {
-        BOOST_TEST(map->indexOf(*last) == QUASISPACE_FIRST + count);
-        ++count;
-    }
-    BOOST_TEST(count == NUM_QUASISPACE_LOCATIONS);
-    POINT edge = map->at(0).descriptor().star_pt;
+    const auto hyper = map->find({StarSpace::HyperSpace, {0, 0}, std::nullopt, std::nullopt});
+    BOOST_TEST(hyper.size() == 502u);
+    for (size_t i = 0; i < hyper.size(); ++i)
+        BOOST_TEST(hyper[i].value == i);
+    const auto quasi = map->find({StarSpace::QuasiSpace, {0, 0}, std::nullopt, std::nullopt});
+    BOOST_TEST(quasi.size() == 16u);
+    for (size_t i = 0; i < quasi.size(); ++i)
+        BOOST_TEST(quasi[i].value == 503 + i);
+    auto edge = map->at(StarId{0}).position();
     edge.x -= 5;
-    BOOST_TEST(map->find(nullptr, edge, 5, 0, false) == &map->at(0).descriptor());
-    BOOST_TEST(map->find(nullptr, edge, 4, 0, false) == nullptr);
+    BOOST_TEST(map->find({StarSpace::HyperSpace, edge, 5, 0}).front().value == 0u);
+    BOOST_TEST(map->find({StarSpace::HyperSpace, edge, 4, 0}).empty());
+    BOOST_CHECK_THROW(map->find({StarSpace::HyperSpace, edge, -1, 0}), std::invalid_argument);
+    BOOST_CHECK_THROW(map->find({StarSpace::HyperSpace, edge, 0, -1}), std::invalid_argument);
+    BOOST_TEST(map->find({StarSpace::HyperSpace, {INT32_MIN, INT32_MAX}, 1, 1}).empty());
+    map.reset(); // IDs in a returned vector never point into the map.
+    BOOST_TEST(hyper.front().value == 0u);
+    BOOST_TEST(quasi.back().value == 518u);
 }
 
 BOOST_AUTO_TEST_CASE(star_map_coordinate_edits_do_not_require_reordering_saved_identities) {
@@ -101,9 +97,10 @@ BOOST_AUTO_TEST_CASE(star_map_coordinate_edits_do_not_require_reordering_saved_i
     document["hyperspace"][0]["x"] = 9999;
     document["hyperspace"][0]["y"] = 9999;
     const auto map = load(document);
-    const POINT position{9999, 9999};
-    BOOST_TEST(map->find(nullptr, position, 0, 0, false) == &map->at(0).descriptor());
-    BOOST_TEST(map->indexOf(map->at(1).descriptor()) == 1u);
+    const auto matches = map->find({StarSpace::HyperSpace, {9999, 9999}, 0, 0});
+    BOOST_REQUIRE(matches.size() == 1u);
+    BOOST_TEST(matches.front().value == 0u);
+    BOOST_TEST(map->at(StarId{1}).id().value == 1u);
 }
 
 BOOST_AUTO_TEST_CASE(star_map_rejects_invalid_records_and_preserves_index_contracts) {

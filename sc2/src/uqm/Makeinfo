@@ -1,4 +1,4 @@
-uqm_CXXFILES="trans.cpp displist.cpp star_map.cpp"
+uqm_CXXFILES="trans.cpp displist.cpp star_map.cpp star_map_c.cpp"
 uqm_SUBDIRS="comm planets ships supermelee"
 uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		cnctdlg.c collide.c comm.c commanim.c commglue.c confirm.c credits.c

@@ -3478,6 +3478,10 @@ SOURCE=..\..\src\uqm\star_map.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\uqm\star_map_c.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\uqm\starmap.h
 # End Source File
 # Begin Source File

@@ -51,7 +51,7 @@ override of `base/starmap.json`.
 - Keep record order and `catalogue_index` values unchanged. These identities
   index visited-star flags, scan records, encounter groups and portal endpoints.
 - HyperSpace indices are 0–501; QuasiSpace indices are 503–518. Sentinel slots
-  502 and 519 are inserted by the loader and do not appear in JSON.
+  502 and 519 are inserted by the C adapter and do not appear in JSON.
 - `x` and `y` are integers from 0 through 9999 in tenths of a map coordinate
   (1752 means 175.2). Coordinate edits need no reordering, but change procedural
   generation seeds and can affect compatibility with saves located at old coordinates.
@@ -71,19 +71,40 @@ parser's syntax error location. It never silently falls back to compiled data.
 
 ## Ownership and the C transition
 
-`StarMap` owns `std::vector<StarDesc>`. Each `StarDesc` owns its prefix, postfix
-and composed display name as `std::string`; it also contains the plain numeric
-`STAR_DESC` used by remaining C gameplay code. Nothing borrows text from the JSON
-parser or game-string resource.
+`StarMap` owns `std::vector<StarDesc>` containing the 518 real stars only.
+Each star owns unpacked properties, a typed `StarId` and `StarSpace`, a position,
+and its prefix/postfix/composed name as `std::string`. Nothing borrows parser or
+game-string storage. The public C++ header includes only standard C++ headers.
 
-The vector is populated before publication and never resized. `StarMap` cannot
-be copied or moved. Borrowed descriptors and text remain valid until shutdown.
-The C interface uses `GetStar`, `GetStarIndex` and name queries rather than raw
-array arithmetic, so the C descriptor's layout need not match the C++ vector's
-stride. Its additional in-memory catalogue identity is never serialized; the
-existing eight saved star fields remain unchanged.
+C++ lookup uses `const StarDesc& at(StarId)`, which throws `std::out_of_range`
+for unknown IDs. Access is read-only. Searches return an owned
+`std::vector<StarId>`, never raw pointers, null results or pointer cursors:
 
-The class searches in catalogue order using `std::find_if` over the selected
-space (at most 502 records). This avoids a second sorted index and allows edits
-to coordinates without changing persistent identities. The existing C `FindStar`
-wrapper selects HyperSpace or QuasiSpace from campaign state.
+```cpp
+const auto matches = map.find({
+    StarSpace::HyperSpace, {1752, 1450}, 5, 5
+});
+for (StarId id : matches) {
+    const StarDesc& star = map.at(id);
+    // Use star.name(), star.position(), star.properties(), ...
+}
+```
+
+A search radius of zero requires an exact coordinate. `std::nullopt` means an
+unbounded axis; negative C++ radii throw `std::invalid_argument`. An empty vector
+means no match. IDs in search results remain ordinary values after the map is
+destroyed. Star/name references require the owner to remain alive. The map
+cannot be copied or moved and never resizes its published storage.
+
+`star_map_c.cpp` owns the compatibility buffer of 520 plain `STAR_DESC` records.
+Only this adapter packs enum fields, inserts the two sentinels, maps C pointers
+and legacy indices, translates negative bounds/boolean space selection and
+copies strings into caller-owned buffers. It translates the C "last result"
+pointer to the next matching ID without exposing that convention on `StarMap`.
+C buffers are read-only snapshots; they do not own or mutate native star data.
+The extra in-memory catalogue index is never serialized; the eight saved fields
+remain unchanged. Names are borrowed through `.c_str()` only at this boundary.
+
+Searching scans the small native catalogue in ID order, avoiding another sorted
+index and permitting coordinate edits without changing persistent identities.
+The existing C `FindStar` wrapper selects the space from campaign state.

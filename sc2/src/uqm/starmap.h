@@ -29,7 +29,8 @@ extern STAR_DESC *CurStarDescPtr;
  * logs a diagnostic and returns FALSE. Names/descriptors live until shutdown. */
 BOOLEAN LoadStarMap(void);
 void FreeStarMap(void);
-/* Borrow a catalogue descriptor by its stable index (including sentinels).
+/* Borrow a read-only C compatibility descriptor by stable index (including
+ * sentinels); out-of-range indices return NULL. Do not modify this buffer.
  * GetStarIndex requires a descriptor returned here/FindStar, never a copy. */
 STAR_DESC *GetStar(COUNT index);
 COUNT GetStarIndex(const STAR_DESC *star);

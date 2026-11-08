@@ -17,18 +17,14 @@
  */
 
 #include <algorithm>
-#include <cassert>
-#include <exception>
-#include <memory>
-#include <sstream>
+#include <cstdint>
+#include <cstdlib>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
 #include <nlohmann/json.hpp>
 #include "star_map.hpp"
 #include "gendef.h"
-#include "options.h"
-#include "libs/log.h"
 
 namespace {
 using Json = nlohmann::json;
@@ -39,7 +35,6 @@ const std::unordered_map<std::string, int> StarColors{
     {"BLUE_BODY", BLUE_BODY}, {"GREEN_BODY", GREEN_BODY},
     {"ORANGE_BODY", ORANGE_BODY}, {"RED_BODY", RED_BODY},
     {"WHITE_BODY", WHITE_BODY}, {"YELLOW_BODY", YELLOW_BODY}};
-std::unique_ptr<StarMap> catalogue;
 
 // Read an integral JSON property without accepting float truncation or narrowing.
 int integer(const Json &record, const char *key, const int minimum, const int maximum) {
@@ -69,11 +64,12 @@ int enumeration(const Json &record, const char *key,
         throw std::runtime_error(std::string(key) + ": unknown value '" + name + "'");
     return found->second;
 }
-StarMap &map() { assert(catalogue); return *catalogue; }
 }
 
-StarDesc::StarDesc(STAR_DESC descriptor, std::string prefix, std::string postfix)
-    : descriptor_(descriptor), prefix_(std::move(prefix)), postfix_(std::move(postfix)),
+StarDesc::StarDesc(StarId id, StarSpace space, StarPosition position,
+        StarProperties properties, std::string prefix, std::string postfix)
+    : id_(id), space_(space), position_(position), properties_(properties),
+      prefix_(std::move(prefix)), postfix_(std::move(postfix)),
       name_(prefix_.empty() ? postfix_ : prefix_ + " " + postfix_) {
     if (name_.size() > 255)
         throw std::runtime_error("combined star name exceeds 255 bytes");
@@ -83,117 +79,62 @@ StarMap::StarMap(std::istream &input) {
     const auto root = Json::parse(input);
     integer(root, "schema_version", 1, 1);
     quasispaceName_ = displayText(root, "quasispace_name");
-    stars_.reserve(STAR_CATALOGUE_SIZE);
-    // Keep the legacy record order, including its sentinel gaps. It indexes
-    // scan state, visited-star flags, encounter groups and QuasiSpace portals.
-    for (const auto &space : {std::pair{"hyperspace", NUM_SOLAR_SYSTEMS},
-            {"quasispace", NUM_QUASISPACE_LOCATIONS}}) {
-        const auto &records = root.at(space.first);
-        if (!records.is_array() || records.size() != static_cast<size_t>(space.second))
-            throw std::runtime_error(std::string(space.first) + " has the wrong record count");
+    stars_.reserve(502 + 16);
+    // IDs are data identities, independent of vector positions. Preserve the
+    // established ranges so save records and portal destinations still agree.
+    struct Section { const char *key; std::size_t count, firstId; StarSpace space; };
+    for (const auto &section : {Section{"hyperspace", 502, 0, StarSpace::HyperSpace},
+            {"quasispace", 16, 503, StarSpace::QuasiSpace}}) {
+        const auto &records = root.at(section.key);
+        if (!records.is_array() || records.size() != section.count)
+            throw std::runtime_error(std::string(section.key) + " has the wrong record count");
         size_t row = 0;
         for (const auto &record : records) {
             try {
-                STAR_DESC descriptor{};
-                descriptor.catalogue_index = integer(record, "catalogue_index", 0, STAR_CATALOGUE_SIZE - 1);
-                if (descriptor.catalogue_index != stars_.size())
+                const StarId id{static_cast<size_t>(integer(record, "catalogue_index", 0, 518))};
+                if (id.value != section.firstId + row)
                     throw std::runtime_error("catalogue_index must retain its original position");
-                descriptor.star_pt.x = integer(record, "x", 0, MAX_X_UNIVERSE);
-                descriptor.star_pt.y = integer(record, "y", 0, MAX_Y_UNIVERSE);
-                const auto type = enumeration(record, "type", StarTypes);
-                const auto color = enumeration(record, "color", StarColors);
-                descriptor.Type = MAKE_STAR(type, color, integer(record, "owner", 0, STAR_OWNER_MASK));
-                descriptor.Index = integer(record, "special_system", 0, MYCON_TRAP_DEFINED);
-                descriptor.Prefix = integer(record, "prefix_id", 0, 14);
-                descriptor.Postfix = integer(record, "postfix_id", 0, 132);
+                const StarPosition position{integer(record, "x", 0, 9999),
+                        integer(record, "y", 0, 9999)};
+                const StarProperties properties{
+                    static_cast<StarType>(enumeration(record, "type", StarTypes)),
+                    static_cast<StarColor>(enumeration(record, "color", StarColors)),
+                    static_cast<unsigned>(integer(record, "owner", 0, 7)),
+                    static_cast<unsigned>(integer(record, "special_system", 0, MYCON_TRAP_DEFINED)),
+                    static_cast<unsigned>(integer(record, "prefix_id", 0, 14)),
+                    static_cast<unsigned>(integer(record, "postfix_id", 0, 132))};
                 auto prefix = displayText(record, "prefix"), postfix = displayText(record, "postfix");
                 if (postfix.empty())
                     throw std::runtime_error("postfix must not be empty");
-                stars_.emplace_back(descriptor, std::move(prefix), std::move(postfix));
+                stars_.emplace_back(id, section.space, position, properties,
+                        std::move(prefix), std::move(postfix));
             } catch (const std::exception &error) {
-                throw std::runtime_error(std::string(space.first) + "[" + std::to_string(row)
+                throw std::runtime_error(std::string(section.key) + "[" + std::to_string(row)
                         + "]: " + error.what());
             }
             ++row;
         }
-        STAR_DESC sentinel{};
-        sentinel.star_pt = {MAX_X_UNIVERSE * 2, MAX_Y_UNIVERSE * 2};
-        sentinel.catalogue_index = stars_.size();
-        stars_.emplace_back(sentinel, "", "");
+
     }
 }
 
-StarDesc &StarMap::at(const size_t index) noexcept {
-    assert(index < stars_.size());
-    return stars_[index];
+const StarDesc &StarMap::at(const StarId id) const {
+    const auto found = std::lower_bound(stars_.begin(), stars_.end(), id.value,
+            [](const StarDesc &star, std::size_t value) { return star.id().value < value; });
+    if (found == stars_.end() || found->id() != id)
+        throw std::out_of_range("unknown star ID: " + std::to_string(id.value));
+    return *found;
 }
-const StarDesc &StarMap::at(const size_t index) const noexcept {
-    assert(index < stars_.size());
-    return stars_[index];
-}
-size_t StarMap::indexOf(const STAR_DESC &descriptor) const noexcept {
-    const auto index = descriptor.catalogue_index;
-    assert(index < size() && &at(index).descriptor() == &descriptor);
-    return index;
-}
-STAR_DESC *StarMap::find(const STAR_DESC *last, const POINT &position,
-        const SIZE xbounds, const SIZE ybounds, const bool quasispace) noexcept {
-    const size_t first = quasispace ? QUASISPACE_FIRST : 0;
-    const size_t end = first + (quasispace ? NUM_QUASISPACE_LOCATIONS : NUM_SOLAR_SYSTEMS);
-    const auto start = last ? indexOf(*last) + 1 : first;
-    if (start < first || start >= end)
-        return nullptr;
-    // A bounded linear scan is simple for 502 stars and also permits coordinate
-    // edits without sorting/reordering persistent catalogue identities.
-    const auto found = std::find_if(stars_.begin() + start, stars_.begin() + end,
-            [&](const StarDesc &star) {
-        const auto &point = star.descriptor().star_pt;
-        return (xbounds < 0 || std::abs(int(point.x) - position.x) <= xbounds)
-                && (ybounds < 0 || std::abs(int(point.y) - position.y) <= ybounds);
-    });
-    return found == stars_.begin() + end ? nullptr : &found->descriptor();
-}
-
-extern "C" {
-STAR_DESC *CurStarDescPtr = nullptr;
-
-BOOLEAN LoadStarMap(void) {
-    assert(!catalogue);
-    try {
-        using Stream = std::unique_ptr<uio_Stream, decltype(&res_CloseResFile)>;
-        const Stream file(res_OpenResFile(contentDir, "base/starmap.json", "rb"), res_CloseResFile);
-        if (!file)
-            throw std::runtime_error("cannot open catalogue");
-        std::string bytes(LengthResFile(file.get()), '\0');
-        if (ReadResFile(bytes.data(), 1, bytes.size(), file.get()) != bytes.size())
-            throw std::runtime_error("could not read complete catalogue");
-        std::istringstream input(std::move(bytes));
-        catalogue = std::make_unique<StarMap>(input);
-        CurStarDescPtr = nullptr;
-        return TRUE;
-    } catch (const std::exception &error) {
-        log_add(log_Error, "base/starmap.json: %s", error.what());
-        return FALSE;
-    } catch (...) { std::terminate(); }
-}
-void FreeStarMap(void) { CurStarDescPtr = nullptr; catalogue.reset(); }
-STAR_DESC *GetStar(const COUNT index) { return &map().at(index).descriptor(); }
-COUNT GetStarIndex(const STAR_DESC *star) { assert(star); return map().indexOf(*star); }
-const char *GetStarPrefix(const STAR_DESC *star) {
-    return map().at(GetStarIndex(star)).prefix().c_str();
-}
-const char *GetStarPostfix(const STAR_DESC *star) {
-    return map().at(GetStarIndex(star)).postfix().c_str();
-}
-const char *GetQuasiSpaceName(void) { return map().quasispaceName().c_str(); }
-STAR_DESC *FindStarInSpace(const STAR_DESC *last, const POINT *position,
-        const SIZE xbounds, const SIZE ybounds, const bool quasispace) {
-    assert(position);
-    return map().find(last, *position, xbounds, ybounds, quasispace);
-}
-void GetClusterName(const STAR_DESC *star, UNICODE *buf, const size_t capacity) {
-    assert(star && (buf || capacity == 0));
-    if (capacity)
-        utf8StringCopy(buf, capacity, map().at(GetStarIndex(star)).name().c_str());
-}
+std::vector<StarId> StarMap::find(const StarSearch &search) const {
+    if ((search.xRadius && *search.xRadius < 0) || (search.yRadius && *search.yRadius < 0))
+        throw std::invalid_argument("star search radii must be nonnegative or nullopt");
+    std::vector<StarId> matches;
+    for (const auto &star : stars_) {
+        const auto &position = star.position();
+        if (star.space() == search.space
+                && (!search.xRadius || std::abs(int64_t(position.x) - search.center.x) <= *search.xRadius)
+                && (!search.yRadius || std::abs(int64_t(position.y) - search.center.y) <= *search.yRadius))
+            matches.push_back(star.id());
+    }
+    return matches;
 }
