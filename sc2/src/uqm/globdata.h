@@ -967,7 +967,11 @@ typedef struct
 	GAME_STATE Game_state;
 } GLOBDATA;
 
-extern GLOBDATA GlobData;
+/* Transitional C adapter: borrowed process-lifetime storage, reset in place.
+ * Keep sizeof/address/member expressions valid for legacy loaders and ship code.
+ * C++ gameplay should use game_state.hpp instead of this mutable buffer. */
+extern GLOBDATA *GetLegacyGlobData (void);
+#define GlobData (*GetLegacyGlobData ())
 #define GLOBAL(f) GlobData.Game_state.f
 #define GLOBAL_SIS(f) GlobData.SIS_state.f
 
@@ -998,13 +1002,13 @@ enum {
 
 //#define STATE_DEBUG
 
-extern BYTE getGameState (BYTE *state, int startBit, int endBit);
+extern BYTE getGameState (const BYTE *state, int startBit, int endBit);
 extern void setGameState (BYTE *state, int startBit, int endBit, BYTE val
 #ifdef STATE_DEBUG
 		, const char *name
 #endif
 		);
-extern void copyGameState (BYTE *dest, DWORD target, BYTE *src, DWORD begin, DWORD end);
+extern void copyGameState (BYTE *dest, DWORD target, const BYTE *src, DWORD begin, DWORD end);
 
 #define GET_GAME_STATE(SName) getGameState (GLOBAL(GameState), (SName), (END_##SName))
 #ifdef STATE_DEBUG
@@ -1015,7 +1019,7 @@ extern void copyGameState (BYTE *dest, DWORD target, BYTE *src, DWORD begin, DWO
 			setGameState (GLOBAL(GameState), (SName), (END_##SName), (val))
 #endif
 
-extern DWORD getGameState32 (BYTE *state, int startBit);
+extern DWORD getGameState32 (const BYTE *state, int startBit);
 extern void setGameState32 (BYTE *state, int startBit, DWORD val
 #ifdef STATE_DEBUG
 		, const char *name

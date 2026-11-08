@@ -1,10 +1,17 @@
 # Game state, player entities, and world behavior wireframe
 
-This is a **declaration-only C++17 design sketch**, not a gameplay implementation.
-It adds no production integration, threads, locking implementation or networking.
-Non-template methods intentionally have no definitions: syntax-check these headers,
-but do not link them into the game. Existing game sources and build manifests
-remain unchanged; no second state store runs alongside GlobData.
+The headers in this directory remain a **declaration-only target design**. Do
+not link them into the game. The first production step now lives in
+[`sc2/src/uqm/game_state.hpp`](../../../sc2/src/uqm/game_state.hpp): checked player
+lookup, shared session ownership, a player-owned legacy payload, native ship and
+location values, and typed personal story access. See [implementation status and
+migration contracts](../../game-state.md).
+
+The production layer deliberately retains the existing mixed GLOBDATA layout
+behind its C adapter. Shared-world extraction, new persistence snapshots,
+world/behavior classes and networking described below are not implemented yet.
+The sketches use a separate namespace and illustrate the destination; their
+signatures are not a second production API or a second live state store.
 
 Start with [GameState](game_state.hpp), the storage boundary, and
 [PlayerEntity](player_entity.hpp), the complete personal state owner.

@@ -74,7 +74,8 @@ target_link_libraries(uqm PRIVATE PkgConfig::SDL2 PkgConfig::VORBIS PNG::PNG ZLI
 include(CTest)
 if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
-    add_executable(uqm-build-tests tests/build.cpp tests/hash_tables.cpp
+    add_executable(uqm-build-tests tests/build.cpp tests/game_state.cpp
+        tests/game_state_c.c tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
         tests/stringbank_c.c tests/string_resources.cpp tests/string_tables_c.c
         tests/value_types.cpp tests/math.cpp tests/math_c.c
@@ -88,7 +89,8 @@ if(BUILD_TESTING)
         sc2/src/libs/strings/unicode.c sc2/src/libs/memory/w_memlib.c
         sc2/src/libs/math/random.cpp sc2/src/libs/math/sqrt.cpp
         sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp sc2/src/uqm/star_map.cpp
-        sc2/src/uqm/star_map_c.cpp
+        sc2/src/uqm/star_map_c.cpp sc2/src/uqm/game_state.cpp
+        sc2/src/uqm/game_state_bits.c
         sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE
