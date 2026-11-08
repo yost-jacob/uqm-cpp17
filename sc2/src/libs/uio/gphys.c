@@ -89,7 +89,7 @@ uio_GPDir_commitSubDir(uio_GPDir *gPDir, const char *dirName,
 		// New dir.
 		// reference to the subDir is passed along to the upDir,
 		// so subDir->ref should not be changed.
-		uio_GPDirEntries_add(gPDir->entries, dirName, subDir);
+		uio_GPDirEntries_add(gPDir->entries, dirName, (uio_GPDirEntry *) subDir);
 		subDir->flags &= ~uio_GPDir_DETACHED;
 		if (!(subDir->flags & uio_GPDir_PERSISTENT)) {
 			// Persistent dirs have an extra reference.

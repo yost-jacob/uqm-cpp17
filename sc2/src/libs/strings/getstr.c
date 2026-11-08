@@ -226,8 +226,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		goto err;
 	ts_data = NULL;
 
-	nameHashTable = StringHashTable_newHashTable(
-			NULL, NULL, NULL, NULL, NULL, 0, 0.85, 0.9);
+	nameHashTable = StringHashTable_newHashTable();
 	if (nameHashTable == NULL)
 		goto err;
 	

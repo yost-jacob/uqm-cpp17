@@ -1,7 +1,7 @@
 # UQM C++17 modernization
 
-The Ur-Quan Masters, with an incremental path to C++17. Existing game sources
-still compile as C; C++ sources compile as C++17 with the standard library.
+The Ur-Quan Masters, with an incremental path to C++17. Gameplay sources
+still compile as C; migrated utilities compile as C++17 with the standard library.
 The original build remains available in `sc2/`.
 
 ## Build on Ubuntu with CMake and Ninja
@@ -37,6 +37,7 @@ For another content location, configure with
 This task provides a development build; installable packages are not yet defined.
 
 Tests include Boost.Test checks that call the existing C API from C++17,
+hash-table ownership/growth/iteration checks, memory-debugger bookkeeping,
 plus executable version/help smoke checks. To build only the game without
 Boost, configure with `-DBUILD_TESTING=OFF`.
 
@@ -55,7 +56,10 @@ cd sc2
 ```
 
 Accept the default configuration for SDL2 and a Debug build. See `sc2/INSTALL`
-for other legacy options and platforms. CMake writes generated configuration
+for other legacy options. The legacy build also requires GCC with C++17 and
+the C++ standard library. For an existing legacy build, run
+`./build.sh uqm clean` and configure again after this source migration;
+old dependency files reference removed headers. CMake writes generated configuration
 and object files under `build-cmake/`, separately from the legacy files.
 When adding or removing source files, update both `cmake/Sources.cmake` and
 the appropriate legacy `Makeinfo` until the legacy build is retired.

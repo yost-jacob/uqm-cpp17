@@ -34,8 +34,7 @@
 static RESOURCE_INDEX
 allocResourceIndex (void) {
 	RESOURCE_INDEX ndx = HMalloc (sizeof (RESOURCE_INDEX_DESC));
-	ndx->map = CharHashTable_newHashTable (NULL, NULL, NULL, NULL, NULL,
-			0, 0.85, 0.9);
+	ndx->map = CharHashTable_newHashTable ();
 	return ndx;
 }
 
@@ -386,7 +385,7 @@ SaveResourceIndex (uio_DirHandle *dir, const char *rmpfile, const char *root, BO
 	for (it = CharHashTable_getIterator (_get_current_index_header ()->map);
 	     !CharHashTable_iteratorDone (it);
 	     it = CharHashTable_iteratorNext (it)) {
-		char *key = CharHashTable_iteratorKey (it);
+		const char *key = CharHashTable_iteratorKey (it);
 		if (!root || !strncmp (root, key, prefix_len)) {
 			ResourceDesc *value = CharHashTable_iteratorValue (it);
 			if (!value) {
