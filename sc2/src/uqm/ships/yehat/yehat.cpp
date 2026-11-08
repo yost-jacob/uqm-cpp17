@@ -18,105 +18,97 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "yehat.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 20
-#define MAX_ENERGY 10
-#define ENERGY_REGENERATION 2
-#define ENERGY_WAIT 6
-#define MAX_THRUST 30
-#define THRUST_INCREMENT 6
-#define THRUST_WAIT 2
-#define TURN_WAIT 2
-#define SHIP_MASS 3
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("yehat");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Twin Pulse Cannon
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 0
-#define YEHAT_OFFSET 16
-#define LAUNCH_OFFS DISPLAY_TO_WORLD (8)
-#define MISSILE_SPEED DISPLAY_TO_WORLD (20)
-#define MISSILE_LIFE 10
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
-#define MISSILE_OFFSET 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto YehatOffset = 16;
+constexpr auto LaunchOffs = DISPLAY_TO_WORLD (8);
+constexpr auto MissileOffset = 1;
+constexpr auto ShieldLife = 10;
 
-// Force Shield
-#define SPECIAL_ENERGY_COST 3
-#define SPECIAL_WAIT 2
-#define SHIELD_LIFE 10
+static const RACE_DESC &yehatDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | SHIELD_DEFENSE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            YEHAT_RACE_STRINGS,
+            YEHAT_ICON_MASK_PMAP_ANIM,
+            YEHAT_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            750 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                4970, 40,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                YEHAT_BIG_MASK_PMAP_ANIM,
+                YEHAT_MED_MASK_PMAP_ANIM,
+                YEHAT_SML_MASK_PMAP_ANIM,
+            },
+            {
+                YEHAT_CANNON_BIG_MASK_PMAP_ANIM,
+                YEHAT_CANNON_MED_MASK_PMAP_ANIM,
+                YEHAT_CANNON_SML_MASK_PMAP_ANIM,
+            },
+            {
+                SHIELD_BIG_MASK_ANIM,
+                SHIELD_MED_MASK_ANIM,
+                SHIELD_SML_MASK_ANIM,
+            },
+            {
+                YEHAT_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            YEHAT_VICTORY_SONG,
+            YEHAT_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileStats().speed * missileStats().lifetime / 3),
+            NULL,
+        },
 
-static const RACE_DESC yehat_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | SHIELD_DEFENSE,
-		23, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		YEHAT_RACE_STRINGS,
-		YEHAT_ICON_MASK_PMAP_ANIM,
-		YEHAT_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		750 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			4970, 40,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			YEHAT_BIG_MASK_PMAP_ANIM,
-			YEHAT_MED_MASK_PMAP_ANIM,
-			YEHAT_SML_MASK_PMAP_ANIM,
-		},
-		{
-			YEHAT_CANNON_BIG_MASK_PMAP_ANIM,
-			YEHAT_CANNON_MED_MASK_PMAP_ANIM,
-			YEHAT_CANNON_SML_MASK_PMAP_ANIM,
-		},
-		{
-			SHIELD_BIG_MASK_ANIM,
-			SHIELD_MED_MASK_ANIM,
-			SHIELD_SML_MASK_ANIM,
-		},
-		{
-			YEHAT_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		YEHAT_VICTORY_SONG,
-		YEHAT_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_SPEED * MISSILE_LIFE / 3,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT
 initialize_standard_missiles (ELEMENT *ShipPtr, HELEMENT MissileArray[])
@@ -130,16 +122,16 @@ initialize_standard_missiles (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = YEHAT_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = YehatOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 
-	offs_x = -SINE (FACING_TO_ANGLE (MissileBlock.face), LAUNCH_OFFS);
-	offs_y = COSINE (FACING_TO_ANGLE (MissileBlock.face), LAUNCH_OFFS);
+	offs_x = -SINE (FACING_TO_ANGLE (MissileBlock.face), LaunchOffs);
+	offs_y = COSINE (FACING_TO_ANGLE (MissileBlock.face), LaunchOffs);
 
 	MissileBlock.cx = ShipPtr->next.location.x + offs_x;
 	MissileBlock.cy = ShipPtr->next.location.y + offs_y;
@@ -254,7 +246,7 @@ yehat_postprocess (ELEMENT *ElementPtr)
 				ProcessSound (SetAbsSoundIndex (
 								/* YEHAT_SHIELD_ON */
 						StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
-				DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST);
+				DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost);
 			}
 		}
 
@@ -332,11 +324,11 @@ yehat_preprocess (ELEMENT *ElementPtr)
 		if ((StarShipPtr->cur_status_flags & SPECIAL)
 				&& StarShipPtr->special_counter == 0)
 		{
-			if (StarShipPtr->RaceDescPtr->ship_info.energy_level < SPECIAL_ENERGY_COST)
-				DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST); /* so text will flash */
+			if (StarShipPtr->RaceDescPtr->ship_info.energy_level < tuning().ship.specialEnergyCost)
+				DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost); /* so text will flash */
 			else
 			{
-				ElementPtr->life_span = SHIELD_LIFE + NORMAL_LIFE;
+				ElementPtr->life_span = ShieldLife + NORMAL_LIFE;
 
 				ElementPtr->next.image.farray = StarShipPtr->RaceDescPtr->ship_data.special;
 				ElementPtr->next.image.frame =
@@ -375,7 +367,7 @@ RACE_DESC*
 init_yehat (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<YehatShip>(yehat_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<YehatShip>(yehatDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("YehatShip");
     return nullptr;

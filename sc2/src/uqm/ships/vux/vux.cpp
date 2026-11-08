@@ -18,117 +18,105 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "vux.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 20
-#define MAX_ENERGY 40
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 8
-#define MAX_THRUST /* DISPLAY_TO_WORLD (5) */ 21
-#define THRUST_INCREMENT /* DISPLAY_TO_WORLD (2) */ 7
-#define THRUST_WAIT 4
-#define TURN_WAIT 6
-#define SHIP_MASS 6
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("vux");
+    return value;
+}
+static const uqm::combat::ProjectileStats &limpetStats() {
+    static const auto &value = tuning().projectile("limpet");
+    return value;
+}
 
-// Laser
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 0
-#define VUX_OFFSET 12
-#define LASER_BASE 150
-#define LASER_RANGE DISPLAY_TO_WORLD (LASER_BASE + VUX_OFFSET)
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto VuxOffset = 12;
+constexpr auto LaserBase = 150;
+constexpr auto LaserRange = DISPLAY_TO_WORLD (LaserBase + VuxOffset);
+constexpr auto LimpetOffset = 8;
+constexpr auto MinThrustIncrement = DISPLAY_TO_WORLD (1);
+constexpr auto WarpOffset = 46;
+constexpr auto MaxxEntryDist = DISPLAY_TO_WORLD ((LaserBase + VuxOffset + WarpOffset) << 1);
+constexpr auto MaxyEntryDist = DISPLAY_TO_WORLD ((LaserBase + VuxOffset + WarpOffset) << 1);
 
-// Limpet
-#define SPECIAL_ENERGY_COST 2
-#define SPECIAL_WAIT 7
-#define LIMPET_SPEED 25
-#define LIMPET_OFFSET 8
-#define LIMPET_LIFE 80
-#define LIMPET_HITS 1
-#define LIMPET_DAMAGE 0
-#define MIN_THRUST_INCREMENT DISPLAY_TO_WORLD (1)
+// WarpOffset extends the entry distance beyond the laser range. Entry distances remain
+// relative to the laser geometry, not the display resolution.
 
-// Aggressive Entry
-#define WARP_OFFSET 46
-		/* How far outside of the laser range can the ship warp in. */
-#define MAXX_ENTRY_DIST DISPLAY_TO_WORLD ((LASER_BASE + VUX_OFFSET + WARP_OFFSET) << 1)
-#define MAXY_ENTRY_DIST DISPLAY_TO_WORLD ((LASER_BASE + VUX_OFFSET + WARP_OFFSET) << 1)
-		/* Originally, the warp distance was:
-		 * DISPLAY_TO_WORLD (SPACE_HEIGHT << 1)
-		 * where SPACE_HEIGHT = SCREEN_HEIGHT - (SAFE_Y * 2)
-		 * But in reality this should be relative to the laser-range. */
+static const RACE_DESC &vuxDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | SEEKING_SPECIAL | IMMEDIATE_WEAPON,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            VUX_RACE_STRINGS,
+            VUX_ICON_MASK_PMAP_ANIM,
+            VUX_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            900 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                4412, 1558,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                VUX_BIG_MASK_PMAP_ANIM,
+                VUX_MED_MASK_PMAP_ANIM,
+                VUX_SML_MASK_PMAP_ANIM,
+            },
+            {
+                SLIME_MASK_PMAP_ANIM,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                LIMPETS_BIG_MASK_PMAP_ANIM,
+                LIMPETS_MED_MASK_PMAP_ANIM,
+                LIMPETS_SML_MASK_PMAP_ANIM,
+            },
+            {
+                VUX_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            VUX_VICTORY_SONG,
+            VUX_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(CLOSE_RANGE_WEAPON),
+            NULL,
+        },
 
-static const RACE_DESC vux_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | SEEKING_SPECIAL | IMMEDIATE_WEAPON,
-		12, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		VUX_RACE_STRINGS,
-		VUX_ICON_MASK_PMAP_ANIM,
-		VUX_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		900 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			4412, 1558,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			VUX_BIG_MASK_PMAP_ANIM,
-			VUX_MED_MASK_PMAP_ANIM,
-			VUX_SML_MASK_PMAP_ANIM,
-		},
-		{
-			SLIME_MASK_PMAP_ANIM,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			LIMPETS_BIG_MASK_PMAP_ANIM,
-			LIMPETS_MED_MASK_PMAP_ANIM,
-			LIMPETS_SML_MASK_PMAP_ANIM,
-		},
-		{
-			VUX_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		VUX_VICTORY_SONG,
-		VUX_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		CLOSE_RANGE_WEAPON,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 limpet_preprocess (ELEMENT *ElementPtr)
@@ -142,7 +130,7 @@ limpet_preprocess (ELEMENT *ElementPtr)
 	if ((delta_facing = TrackShip (ElementPtr, &facing)) > 0)
 	{
 		facing = orig_facing + delta_facing;
-		SetVelocityVector (&ElementPtr->velocity, LIMPET_SPEED, facing);
+		SetVelocityVector (&ElementPtr->velocity, limpetStats().speed, facing);
 	}
 	ElementPtr->next.image.frame =
 			 IncFrameIndex (ElementPtr->next.image.frame);
@@ -167,7 +155,7 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 			--RDPtr->characteristics.turn_wait;
 		if (++RDPtr->characteristics.thrust_wait == 0)
 			--RDPtr->characteristics.thrust_wait;
-		if (RDPtr->characteristics.thrust_increment <= MIN_THRUST_INCREMENT)
+		if (RDPtr->characteristics.thrust_increment <= MinThrustIncrement)
 		{
 			RDPtr->characteristics.max_thrust =
 					RDPtr->characteristics.thrust_increment << 1;
@@ -215,11 +203,11 @@ spawn_limpets (ELEMENT *ElementPtr)
 	MissileBlock.index = 0;
 	MissileBlock.sender = ElementPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = LIMPET_OFFSET;
-	MissileBlock.speed = LIMPET_SPEED;
-	MissileBlock.hit_points = LIMPET_HITS;
-	MissileBlock.damage = LIMPET_DAMAGE;
-	MissileBlock.life = LIMPET_LIFE;
+	MissileBlock.pixoffs = LimpetOffset;
+	MissileBlock.speed = limpetStats().speed;
+	MissileBlock.hit_points = limpetStats().hitPoints;
+	MissileBlock.damage = limpetStats().damage;
+	MissileBlock.life = limpetStats().lifetime;
 	MissileBlock.preprocess_func = limpet_preprocess;
 	MissileBlock.blast_offs = 0;
 
@@ -249,11 +237,11 @@ initialize_horrific_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 	LaserBlock.face = StarShipPtr->ShipFacing;
 	LaserBlock.cx = ShipPtr->next.location.x;
 	LaserBlock.cy = ShipPtr->next.location.y;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LASER_RANGE);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LASER_RANGE);
+	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
+	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
 	LaserBlock.sender = ShipPtr->playerNr;
 	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = VUX_OFFSET;
+	LaserBlock.pixoffs = VuxOffset;
 	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x0A), 0x0A);
 	LaserArray[0] = initialize_laser (&LaserBlock);
 
@@ -304,7 +292,7 @@ vux_postprocess (ELEMENT *ElementPtr)
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		ProcessSound (SetAbsSoundIndex (
 						/* LAUNCH_LIMPET */
@@ -339,12 +327,12 @@ vux_preprocess (ELEMENT *ElementPtr)
 
 				ElementPtr->current.location.x =
 						(OtherShipPtr->current.location.x -
-						(MAXX_ENTRY_DIST >> 1)) +
-						((COUNT)TFB_Random () % MAXX_ENTRY_DIST);
+						(MaxxEntryDist >> 1)) +
+						((COUNT)TFB_Random () % MaxxEntryDist);
 				ElementPtr->current.location.y =
 						(OtherShipPtr->current.location.y -
-						(MAXY_ENTRY_DIST >> 1)) +
-						((COUNT)TFB_Random () % MAXY_ENTRY_DIST);
+						(MaxyEntryDist >> 1)) +
+						((COUNT)TFB_Random () % MaxyEntryDist);
 				dx = OtherShipPtr->current.location.x -
 						ElementPtr->current.location.x;
 				dy = OtherShipPtr->current.location.y -
@@ -402,7 +390,7 @@ RACE_DESC*
 init_vux (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<VuxShip>(vux_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<VuxShip>(vuxDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("VuxShip");
     return nullptr;

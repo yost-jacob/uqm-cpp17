@@ -78,6 +78,7 @@ if(BUILD_TESTING)
     add_executable(uqm-build-tests tests/build.cpp tests/game_state.cpp tests/game_modes.cpp
         tests/game_state_c.c tests/world_state.cpp tests/world_state_c.c
         tests/ship_behavior.cpp tests/ship_behavior_c.c sc2/src/uqm/ship_behavior.cpp
+        tests/ship_tuning.cpp sc2/src/uqm/ship_tuning.cpp
         # Executable design prototype; deliberately excluded from UQM_SOURCES.
         tests/combat_ownership.cpp docs/design/combat/projectile.cpp
         tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp
@@ -106,7 +107,8 @@ if(BUILD_TESTING)
         "${CMAKE_CURRENT_BINARY_DIR}/generated" sc2/src)
     target_link_libraries(uqm-build-tests PRIVATE Boost::unit_test_framework PkgConfig::SDL2 nlohmann_json::nlohmann_json Threads::Threads)
     target_compile_definitions(uqm-build-tests PRIVATE BOOST_TEST_DYN_LINK NETPLAY=NETPLAY_FULL
-        UQM_TEST_STARMAP_PATH="${CMAKE_CURRENT_SOURCE_DIR}/sc2/content/base/starmap.json")
+        UQM_TEST_STARMAP_PATH="${CMAKE_CURRENT_SOURCE_DIR}/sc2/content/base/starmap.json"
+        UQM_TEST_SHIPS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/sc2/content/base/ships.json")
     add_test(NAME uqm-c-cxx-interop COMMAND uqm-build-tests)
     add_test(NAME uqm-version COMMAND uqm --version)
     add_test(NAME uqm-help COMMAND uqm --help)

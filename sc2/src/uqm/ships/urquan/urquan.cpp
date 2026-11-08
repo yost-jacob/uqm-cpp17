@@ -18,6 +18,7 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "urquan.h"
 #include "resinst.h"
 
@@ -25,107 +26,98 @@
 
 #include <stdlib.h>
 
-// Core characteristics
-#define MAX_CREW MAX_CREW_SIZE
-#define MAX_ENERGY MAX_ENERGY_SIZE
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 4
-#define MAX_THRUST 30
-#define THRUST_INCREMENT 6
-#define THRUST_WAIT 6
-#define TURN_WAIT 4
-#define SHIP_MASS 10
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("urquan");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Fusion blast
-#define WEAPON_ENERGY_COST 6
-#define WEAPON_WAIT 6
-#define MISSILE_SPEED DISPLAY_TO_WORLD (20)
-#define MISSILE_LIFE 20
-#define MISSILE_HITS 10
-#define MISSILE_DAMAGE 6
-#define MISSILE_OFFSET 8
-#define URQUAN_OFFSET 32
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto MissileOffset = 8;
+constexpr auto UrquanOffset = 32;
+constexpr auto FighterOffset = 4;
+constexpr auto FighterSpeed = DISPLAY_TO_WORLD (8);
+constexpr auto OneWayFlight = 125;
+constexpr auto TrackThreshold = 6;
+constexpr auto FighterLife = (OneWayFlight + OneWayFlight + 150);
+constexpr auto FighterHits = 1;
+constexpr auto FighterMass = 0;
+constexpr auto FighterWeaponWait = 8;
+constexpr auto FighterLaserRange = DISPLAY_TO_WORLD (40 + FighterOffset);
 
-// Fighters
-#define SPECIAL_ENERGY_COST 8
-#define SPECIAL_WAIT 9
-#define FIGHTER_OFFSET 4
-#define FIGHTER_SPEED DISPLAY_TO_WORLD (8)
-#define ONE_WAY_FLIGHT 125
-#define TRACK_THRESHOLD 6
-#define FIGHTER_LIFE (ONE_WAY_FLIGHT + ONE_WAY_FLIGHT + 150)
-#define FIGHTER_HITS 1
-#define FIGHTER_MASS 0
-#define FIGHTER_WEAPON_WAIT 8
-#define FIGHTER_LASER_RANGE DISPLAY_TO_WORLD (40 + FIGHTER_OFFSET)
+static const RACE_DESC &urquanDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | SEEKING_SPECIAL,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            URQUAN_RACE_STRINGS,
+            URQUAN_ICON_MASK_PMAP_ANIM,
+            URQUAN_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            2666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                5750, 6000,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                URQUAN_BIG_MASK_PMAP_ANIM,
+                URQUAN_MED_MASK_PMAP_ANIM,
+                URQUAN_SML_MASK_PMAP_ANIM,
+            },
+            {
+                FUSION_BIG_MASK_PMAP_ANIM,
+                FUSION_MED_MASK_PMAP_ANIM,
+                FUSION_SML_MASK_PMAP_ANIM,
+            },
+            {
+                FIGHTER_BIG_MASK_PMAP_ANIM,
+                FIGHTER_MED_MASK_PMAP_ANIM,
+                FIGHTER_SML_MASK_PMAP_ANIM,
+            },
+            {
+                URQUAN_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            URQUAN_VICTORY_SONG,
+            URQUAN_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileStats().speed * missileStats().lifetime),
+            NULL,
+        },
 
-static const RACE_DESC urquan_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | SEEKING_SPECIAL,
-		30, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		URQUAN_RACE_STRINGS,
-		URQUAN_ICON_MASK_PMAP_ANIM,
-		URQUAN_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		2666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			5750, 6000,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			URQUAN_BIG_MASK_PMAP_ANIM,
-			URQUAN_MED_MASK_PMAP_ANIM,
-			URQUAN_SML_MASK_PMAP_ANIM,
-		},
-		{
-			FUSION_BIG_MASK_PMAP_ANIM,
-			FUSION_MED_MASK_PMAP_ANIM,
-			FUSION_SML_MASK_PMAP_ANIM,
-		},
-		{
-			FIGHTER_BIG_MASK_PMAP_ANIM,
-			FIGHTER_MED_MASK_PMAP_ANIM,
-			FIGHTER_SML_MASK_PMAP_ANIM,
-		},
-		{
-			URQUAN_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		URQUAN_VICTORY_SONG,
-		URQUAN_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_SPEED * MISSILE_LIFE,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT
 initialize_fusion (ELEMENT *ShipPtr, HELEMENT FusionArray[])
@@ -140,13 +132,13 @@ initialize_fusion (ELEMENT *ShipPtr, HELEMENT FusionArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = URQUAN_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = UrquanOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	FusionArray[0] = initialize_missile (&MissileBlock);
 
 	return (1);
@@ -163,11 +155,11 @@ fighter_postprocess (ELEMENT *ElementPtr)
 	LaserBlock.cx = ElementPtr->next.location.x;
 	LaserBlock.cy = ElementPtr->next.location.y;
 	LaserBlock.face = ElementPtr->thrust_wait;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), FIGHTER_LASER_RANGE);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), FIGHTER_LASER_RANGE);
+	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), FighterLaserRange);
+	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), FighterLaserRange);
 	LaserBlock.sender = ElementPtr->playerNr;
 	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = FIGHTER_OFFSET;
+	LaserBlock.pixoffs = FighterOffset;
 	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
 	Laser = initialize_laser (&LaserBlock);
 	if (Laser)
@@ -186,7 +178,7 @@ fighter_postprocess (ELEMENT *ElementPtr)
 	}
 
 	ElementPtr->postprocess_func = 0;
-	ElementPtr->thrust_wait = FIGHTER_WEAPON_WAIT;
+	ElementPtr->thrust_wait = FighterWeaponWait;
 }
 
 static void
@@ -197,7 +189,7 @@ fighter_preprocess (ELEMENT *ElementPtr)
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 
 	++StarShipPtr->RaceDescPtr->characteristics.special_wait;
-	if (FIGHTER_LIFE - ElementPtr->life_span > TRACK_THRESHOLD
+	if (FighterLife - ElementPtr->life_span > TrackThreshold
 			&& !(ElementPtr->state_flags & CHANGING))
 	{
 		BOOLEAN Enroute;
@@ -214,7 +206,7 @@ fighter_preprocess (ELEMENT *ElementPtr)
 				GetFrameIndex (ElementPtr->current.image.frame);
 		if (((delta_y & 1) || ElementPtr->hTarget
 				|| TrackShip (ElementPtr, &facing) >= 0)
-				&& (delta_x == 0 || delta_y >= ONE_WAY_FLIGHT))
+				&& (delta_x == 0 || delta_y >= OneWayFlight))
 			ElementPtr->state_flags |= IGNORE_SIMILAR;
 		else if (delta_x)
 		{
@@ -257,10 +249,10 @@ fighter_preprocess (ELEMENT *ElementPtr)
 			delta_y = WRAP_DELTA_Y (delta_y);
 
 			if (ElementPtr->thrust_wait == 0
-					&& abs (delta_x) < FIGHTER_LASER_RANGE * 3 / 4
-					&& abs (delta_y) < FIGHTER_LASER_RANGE * 3 / 4
+					&& abs (delta_x) < FighterLaserRange * 3 / 4
+					&& abs (delta_y) < FighterLaserRange * 3 / 4
 					&& delta_x * delta_x + delta_y * delta_y <
-					(FIGHTER_LASER_RANGE * 3 / 4) * (FIGHTER_LASER_RANGE * 3 / 4))
+					(FighterLaserRange * 3 / 4) * (FighterLaserRange * 3 / 4))
 			{
 				ElementPtr->thrust_wait =
 						(BYTE)NORMALIZE_FACING (
@@ -298,7 +290,7 @@ fighter_preprocess (ELEMENT *ElementPtr)
 					ElementPtr->next.image.frame, facing
 					);
 		SetVelocityVector (
-				&ElementPtr->velocity, FIGHTER_SPEED, facing
+				&ElementPtr->velocity, FighterSpeed, facing
 				);
 	}
 }
@@ -355,7 +347,7 @@ fighter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 					SetAbsFrameIndex (FighterElementPtr->next.image.frame,
 					travel_facing);
 			SetVelocityVector (&FighterElementPtr->velocity,
-					FIGHTER_SPEED, travel_facing);
+					FighterSpeed, travel_facing);
 			UnlockElement (hFighterElement);
 
 			PutElement (hFighterElement);
@@ -415,13 +407,13 @@ spawn_fighters (ELEMENT *ElementPtr)
 
 		PutElement (hFighterElement);
 		LockElement (hFighterElement, &FighterElementPtr);
-		FighterElementPtr->hit_points = FIGHTER_HITS;
-		FighterElementPtr->mass_points = FIGHTER_MASS;
-		FighterElementPtr->thrust_wait = TRACK_THRESHOLD + 1;
+		FighterElementPtr->hit_points = FighterHits;
+		FighterElementPtr->mass_points = FighterMass;
+		FighterElementPtr->thrust_wait = TrackThreshold + 1;
 		FighterElementPtr->playerNr = ElementPtr->playerNr;
 		FighterElementPtr->state_flags = APPEARING | FINITE_LIFE
 				| CREW_OBJECT | IGNORE_SIMILAR;
-		FighterElementPtr->life_span = FIGHTER_LIFE;
+		FighterElementPtr->life_span = FighterLife;
 		SetPrimType (&(GLOBAL (DisplayArray))[FighterElementPtr->PrimIndex],
 				STAMP_PRIM);
 		{
@@ -447,9 +439,9 @@ spawn_fighters (ELEMENT *ElementPtr)
 			FighterElementPtr->current.location.y += delta_y - delta_x;
 		}
 		sx = COSINE (FACING_TO_ANGLE (fighter_facing),
-				WORLD_TO_VELOCITY (FIGHTER_SPEED));
+				WORLD_TO_VELOCITY (FighterSpeed));
 		sy = SINE (FACING_TO_ANGLE (fighter_facing),
-				WORLD_TO_VELOCITY (FIGHTER_SPEED));
+				WORLD_TO_VELOCITY (FighterSpeed));
 		SetVelocityComponents (&FighterElementPtr->velocity, sx, sy);
 		FighterElementPtr->current.location.x -= VELOCITY_TO_WORLD (sx);
 		FighterElementPtr->current.location.y -= VELOCITY_TO_WORLD (sy);
@@ -525,14 +517,14 @@ urquan_postprocess (ELEMENT *ElementPtr)
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 			&& ElementPtr->crew_level > 1
 			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		ProcessSound (SetAbsSoundIndex (
 						/* LAUNCH_FIGHTERS */
 				StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
 		spawn_fighters (ElementPtr);
 
-		StarShipPtr->special_counter = SPECIAL_WAIT;
+		StarShipPtr->special_counter = tuning().ship.specialWait;
 	}
 }
 
@@ -557,7 +549,7 @@ RACE_DESC*
 init_urquan (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanShip>(urquan_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanShip>(urquanDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("UrQuanShip");
     return nullptr;

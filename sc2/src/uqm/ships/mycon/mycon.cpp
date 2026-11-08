@@ -18,105 +18,97 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "mycon.h"
 #include "resinst.h"
 
-// Core characteristics
-#define MAX_CREW 20
-#define MAX_ENERGY 40
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 4
-#define MAX_THRUST /* DISPLAY_TO_WORLD (7) */ 27
-#define THRUST_INCREMENT /* DISPLAY_TO_WORLD (2) */ 9
-#define THRUST_WAIT 6
-#define TURN_WAIT 6
-#define SHIP_MASS 7
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("mycon");
+    return value;
+}
 
-// Plasmoid
-#define WEAPON_ENERGY_COST 20
-#define WEAPON_WAIT 5
-#define MYCON_OFFSET 24
-#define MISSILE_OFFSET 0
-#define NUM_PLASMAS 11
-#define NUM_GLOBALLS 8
-#define PLASMA_DURATION 13
-#define MISSILE_LIFE (NUM_PLASMAS * PLASMA_DURATION)
-#define MISSILE_SPEED DISPLAY_TO_WORLD (8)
-#define MISSILE_DAMAGE 10
-#define TRACK_WAIT 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto MyconOffset = 24;
+constexpr auto MissileOffset = 0;
+constexpr auto NumPlasmas = 11;
+constexpr auto NumGloballs = 8;
+constexpr auto PlasmaDuration = 13;
+constexpr auto MissileLife = (NumPlasmas * PlasmaDuration);
+constexpr auto MissileSpeed = DISPLAY_TO_WORLD (8);
+constexpr auto MissileDamage = 10;
+constexpr auto TrackWait = 1;
+constexpr auto RegenerationAmount = 4;
 
-// Regenerate
-#define SPECIAL_ENERGY_COST MAX_ENERGY
-#define SPECIAL_WAIT 0
-#define REGENERATION_AMOUNT 4
+static const RACE_DESC &myconDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | SEEKING_WEAPON,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            MYCON_RACE_STRINGS,
+            MYCON_ICON_MASK_PMAP_ANIM,
+            MYCON_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            1070 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                6392, 2200,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                MYCON_BIG_MASK_PMAP_ANIM,
+                MYCON_MED_MASK_PMAP_ANIM,
+                MYCON_SML_MASK_PMAP_ANIM,
+            },
+            {
+                PLASMA_BIG_MASK_PMAP_ANIM,
+                PLASMA_MED_MASK_PMAP_ANIM,
+                PLASMA_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                MYCON_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            MYCON_VICTORY_SONG,
+            MYCON_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(DISPLAY_TO_WORLD (800)),
+            NULL,
+        },
 
-static const RACE_DESC mycon_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | SEEKING_WEAPON,
-		21, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		MYCON_RACE_STRINGS,
-		MYCON_ICON_MASK_PMAP_ANIM,
-		MYCON_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		1070 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			6392, 2200,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			MYCON_BIG_MASK_PMAP_ANIM,
-			MYCON_MED_MASK_PMAP_ANIM,
-			MYCON_SML_MASK_PMAP_ANIM,
-		},
-		{
-			PLASMA_BIG_MASK_PMAP_ANIM,
-			PLASMA_MED_MASK_PMAP_ANIM,
-			PLASMA_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			MYCON_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		MYCON_VICTORY_SONG,
-		MYCON_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		DISPLAY_TO_WORLD (800),
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 plasma_preprocess (ELEMENT *ElementPtr)
@@ -124,13 +116,13 @@ plasma_preprocess (ELEMENT *ElementPtr)
 	COUNT plasma_index;
 
 	if (ElementPtr->mass_points > ElementPtr->hit_points)
-		ElementPtr->life_span = ElementPtr->hit_points * PLASMA_DURATION;
+		ElementPtr->life_span = ElementPtr->hit_points * PlasmaDuration;
 	else
 		ElementPtr->hit_points = (BYTE)((ElementPtr->life_span *
-				MISSILE_DAMAGE + (MISSILE_LIFE - 1)) / MISSILE_LIFE);
+				MissileDamage + (MissileLife - 1)) / MissileLife);
 	ElementPtr->mass_points = ElementPtr->hit_points;
-	plasma_index = NUM_PLASMAS - ((ElementPtr->life_span +
-			(PLASMA_DURATION - 1)) / PLASMA_DURATION);
+	plasma_index = NumPlasmas - ((ElementPtr->life_span +
+			(PlasmaDuration - 1)) / PlasmaDuration);
 	if (plasma_index != GetFrameIndex (ElementPtr->next.image.frame))
 	{
 		ElementPtr->next.image.frame =
@@ -150,9 +142,9 @@ plasma_preprocess (ELEMENT *ElementPtr)
 				));
 		if (TrackShip (ElementPtr, &facing) > 0)
 			SetVelocityVector (&ElementPtr->velocity,
-					MISSILE_SPEED, facing);
+					MissileSpeed, facing);
 
-		ElementPtr->turn_wait = TRACK_WAIT;
+		ElementPtr->turn_wait = TrackWait;
 	}
 }
 
@@ -208,8 +200,8 @@ plasma_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		BlastElementPtr->current.location = ElementPtr1->current.location;
 
 		if ((num_animations =
-				(old_mass * NUM_GLOBALLS +
-				(MISSILE_DAMAGE - 1)) / MISSILE_DAMAGE) == 0)
+				(old_mass * NumGloballs +
+				(MissileDamage - 1)) / MissileDamage) == 0)
 			num_animations = 1;
 
 		BlastElementPtr->thrust_wait = (BYTE)num_animations;
@@ -220,7 +212,7 @@ plasma_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		BlastElementPtr->current.image.farray = ElementPtr0->next.image.farray;
 		BlastElementPtr->current.image.frame =
 				SetAbsFrameIndex (BlastElementPtr->current.image.farray[0],
-				NUM_PLASMAS);
+				NumPlasmas);
 
 		UnlockElement (hBlastElement);
 	}
@@ -288,8 +280,8 @@ mycon_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = DISPLAY_TO_WORLD (800);
 		if (ShipPtr->crew_level < StarShipPtr->RaceDescPtr->ship_info.max_crew)
 		{
-			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = MISSILE_SPEED * MISSILE_LIFE;
-			if (StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
+			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = MissileSpeed * MissileLife;
+			if (StarShipPtr->RaceDescPtr->ship_info.energy_level >= tuning().ship.specialEnergyCost
 					&& !(StarShipPtr->ship_input_state & WEAPON))
 				StarShipPtr->ship_input_state |= SPECIAL;
 		}
@@ -310,13 +302,13 @@ initialize_plasma (ELEMENT *ShipPtr, HELEMENT PlasmaArray[])
 	MissileBlock.index = 0;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = 0;
-	MissileBlock.pixoffs = MYCON_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_DAMAGE;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = MyconOffset;
+	MissileBlock.speed = MissileSpeed;
+	MissileBlock.hit_points = MissileDamage;
+	MissileBlock.damage = MissileDamage;
+	MissileBlock.life = MissileLife;
 	MissileBlock.preprocess_func = plasma_preprocess;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	PlasmaArray[0] = initialize_missile (&MissileBlock);
 
 	if (PlasmaArray[0])
@@ -325,7 +317,7 @@ initialize_plasma (ELEMENT *ShipPtr, HELEMENT PlasmaArray[])
 
 		LockElement (PlasmaArray[0], &PlasmaPtr);
 		PlasmaPtr->collision_func = plasma_collision;
-		PlasmaPtr->turn_wait = TRACK_WAIT + 2;
+		PlasmaPtr->turn_wait = TrackWait + 2;
 		UnlockElement (PlasmaArray[0]);
 	}
 
@@ -341,14 +333,14 @@ mycon_postprocess (ELEMENT *ElementPtr)
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 			&& StarShipPtr->special_counter == 0
 			&& ElementPtr->crew_level != StarShipPtr->RaceDescPtr->ship_info.max_crew
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		SIZE add_crew;
 
 		ProcessSound (SetAbsSoundIndex (
 						/* GROW_NEW_CREW */
 				StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
-		if ((add_crew = REGENERATION_AMOUNT) >
+		if ((add_crew = RegenerationAmount) >
 				StarShipPtr->RaceDescPtr->ship_info.max_crew - ElementPtr->crew_level)
 			add_crew = StarShipPtr->RaceDescPtr->ship_info.max_crew - ElementPtr->crew_level;
 		DeltaCrew (ElementPtr, add_crew);
@@ -379,7 +371,7 @@ RACE_DESC*
 init_mycon (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<MyconShip>(mycon_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<MyconShip>(myconDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("MyconShip");
     return nullptr;

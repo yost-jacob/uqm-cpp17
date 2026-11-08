@@ -18,110 +18,101 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "utwig.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 20
-#define MAX_ENERGY 20
-#define ENERGY_REGENERATION 0
-#define ENERGY_WAIT 255
-#define MAX_THRUST 36
-#define THRUST_INCREMENT 6
-#define THRUST_WAIT 6
-#define TURN_WAIT 1
-#define SHIP_MASS 8
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("utwig");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Weapon
-#define WEAPON_ENERGY_COST 0
-#define WEAPON_WAIT 7
-#define UTWIG_OFFSET 9
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
-#define MISSILE_LIFE 10
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
-#define MISSILE_OFFSET 1
-#define LAUNCH_XOFFS0 DISPLAY_TO_WORLD (5)
-#define LAUNCH_YOFFS0 -DISPLAY_TO_WORLD (18)
-#define LAUNCH_XOFFS1 DISPLAY_TO_WORLD (13)
-#define LAUNCH_YOFFS1 -DISPLAY_TO_WORLD (9)
-#define LAUNCH_XOFFS2 DISPLAY_TO_WORLD (17)
-#define LAUNCH_YOFFS2 -DISPLAY_TO_WORLD (4)
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto MissileOffset = 1;
+constexpr auto LaunchXoffs0 = DISPLAY_TO_WORLD (5);
+constexpr auto LaunchYoffs0 = -DISPLAY_TO_WORLD (18);
+constexpr auto LaunchXoffs1 = DISPLAY_TO_WORLD (13);
+constexpr auto LaunchYoffs1 = -DISPLAY_TO_WORLD (9);
+constexpr auto LaunchXoffs2 = DISPLAY_TO_WORLD (17);
+constexpr auto LaunchYoffs2 = -DISPLAY_TO_WORLD (4);
 
-// Shield
-#define SPECIAL_ENERGY_COST 1
-#define SPECIAL_WAIT 12
+static const RACE_DESC &utwigDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | POINT_DEFENSE | SHIELD_DEFENSE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            static_cast<BYTE>(tuning().ship.maxEnergy >> 1), tuning().ship.maxEnergy,
+            UTWIG_RACE_STRINGS,
+            UTWIG_ICON_MASK_PMAP_ANIM,
+            UTWIG_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                8534, 8797,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                UTWIG_BIG_MASK_PMAP_ANIM,
+                UTWIG_MED_MASK_PMAP_ANIM,
+                UTWIG_SML_MASK_PMAP_ANIM,
+            },
+            {
+                LANCE_BIG_MASK_PMAP_ANIM,
+                LANCE_MED_MASK_PMAP_ANIM,
+                LANCE_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                UTWIG_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            UTWIG_VICTORY_SONG,
+            UTWIG_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(CLOSE_RANGE_WEAPON),
+            NULL,
+        },
 
-static const RACE_DESC utwig_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | POINT_DEFENSE | SHIELD_DEFENSE,
-		22, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY >> 1, MAX_ENERGY,
-		UTWIG_RACE_STRINGS,
-		UTWIG_ICON_MASK_PMAP_ANIM,
-		UTWIG_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			8534, 8797,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			UTWIG_BIG_MASK_PMAP_ANIM,
-			UTWIG_MED_MASK_PMAP_ANIM,
-			UTWIG_SML_MASK_PMAP_ANIM,
-		},
-		{
-			LANCE_BIG_MASK_PMAP_ANIM,
-			LANCE_MED_MASK_PMAP_ANIM,
-			LANCE_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			UTWIG_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		UTWIG_VICTORY_SONG,
-		UTWIG_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		CLOSE_RANGE_WEAPON,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT
 initialize_lance (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
@@ -135,12 +126,12 @@ initialize_lance (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	MissileBlock.pixoffs = 0;
 
 	for (i = 0; i < 3; ++i)
@@ -152,16 +143,16 @@ initialize_lance (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 		switch (i)
 		{
 			case 0:
-				cos0 = LAUNCH_XOFFS0;
-				sin0 = LAUNCH_YOFFS0;
+				cos0 = LaunchXoffs0;
+				sin0 = LaunchYoffs0;
 				break;
 			case 1:
-				cos0 = LAUNCH_XOFFS1;
-				sin0 = LAUNCH_YOFFS1;
+				cos0 = LaunchXoffs1;
+				sin0 = LaunchYoffs1;
 				break;
 			case 2:
-				cos0 = LAUNCH_XOFFS2;
-				sin0 = LAUNCH_YOFFS2;
+				cos0 = LaunchXoffs2;
+				sin0 = LaunchYoffs2;
 				break;
 		}
 		angle = FACING_TO_ANGLE (MissileBlock.face) + QUADRANT;
@@ -293,9 +284,9 @@ utwig_preprocess (ELEMENT *ElementPtr)
 
 	if (!(StarShipPtr->cur_status_flags & SPECIAL))
 		StarShipPtr->special_counter = 0;
-	else if (StarShipPtr->special_counter % (SPECIAL_WAIT >> 1) == 0)
+	else if (StarShipPtr->special_counter % (tuning().ship.specialWait >> 1) == 0)
 	{
-		if (!DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+		if (!DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 			StarShipPtr->RaceDescPtr->ship_info.ship_flags &=
 					~(POINT_DEFENSE | SHIELD_DEFENSE);
 		else if (StarShipPtr->special_counter == 0)
@@ -383,7 +374,7 @@ RACE_DESC*
 init_utwig (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<UtwigShip>(utwig_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<UtwigShip>(utwigDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("UtwigShip");
     return nullptr;

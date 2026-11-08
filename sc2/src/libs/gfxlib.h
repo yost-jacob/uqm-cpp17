@@ -88,10 +88,14 @@ sameColor(Color c1, Color c2)
 
 // Turn a 15 bits color into a 24-bits color.
 // r, g, and b are each 5-bits color components.
+#ifdef __cplusplus
+static constexpr Color
+#else
 static inline Color
+#endif
 colorFromRgb15 (BYTE r, BYTE g, BYTE b)
 {
-	Color c;
+    Color c = {0, 0, 0, 0};
 	c.r = CC5TO8 (r);
 	c.g = CC5TO8 (g);
 	c.b = CC5TO8 (b);

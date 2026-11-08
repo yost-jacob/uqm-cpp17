@@ -18,105 +18,97 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "supox.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 12
-#define MAX_ENERGY 16
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 4
-#define MAX_THRUST 40
-#define THRUST_INCREMENT 8
-#define THRUST_WAIT 0
-#define TURN_WAIT 1
-#define SHIP_MASS 4
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("supox");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Gob launcher
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 2
-#define SUPOX_OFFSET 23
-#define MISSILE_OFFSET 2
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
-#define MISSILE_LIFE 10
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto SupoxOffset = 23;
+constexpr auto MissileOffset = 2;
 
-// Lateral/reverse thrust
-#define SPECIAL_ENERGY_COST 1
-		/* Unused - uncomment below to enable. */
-#define SPECIAL_WAIT 0
-		/* Unused except to initialize supox_desc.special_wait */
+// The movement special does not consume the compatibility energy-cost/wait fields.
 
-static const RACE_DESC supox_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE,
-		16, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		SUPOX_RACE_STRINGS,
-		SUPOX_ICON_MASK_PMAP_ANIM,
-		SUPOX_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			7468, 9246,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			SUPOX_BIG_MASK_PMAP_ANIM,
-			SUPOX_MED_MASK_PMAP_ANIM,
-			SUPOX_SML_MASK_PMAP_ANIM,
-		},
-		{
-			GOB_BIG_MASK_PMAP_ANIM,
-			GOB_MED_MASK_PMAP_ANIM,
-			GOB_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			SUPOX_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		SUPOX_VICTORY_SONG,
-		SUPOX_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		(MISSILE_SPEED * MISSILE_LIFE) >> 1,
-		NULL,
-	},
+static const RACE_DESC &supoxDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            SUPOX_RACE_STRINGS,
+            SUPOX_ICON_MASK_PMAP_ANIM,
+            SUPOX_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                7468, 9246,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                SUPOX_BIG_MASK_PMAP_ANIM,
+                SUPOX_MED_MASK_PMAP_ANIM,
+                SUPOX_SML_MASK_PMAP_ANIM,
+            },
+            {
+                GOB_BIG_MASK_PMAP_ANIM,
+                GOB_MED_MASK_PMAP_ANIM,
+                GOB_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                SUPOX_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            SUPOX_VICTORY_SONG,
+            SUPOX_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint((missileStats().speed * missileStats().lifetime) >> 1),
+            NULL,
+        },
 
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 supox_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
@@ -196,13 +188,13 @@ initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = SUPOX_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = SupoxOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	HornArray[0] = initialize_missile (&MissileBlock);
 	return (1);
 }
@@ -291,7 +283,7 @@ RACE_DESC*
 init_supox (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SupoxShip>(supox_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<SupoxShip>(supoxDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("SupoxShip");
     return nullptr;

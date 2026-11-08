@@ -18,110 +18,103 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "spathi.h"
 #include "resinst.h"
 
-// Core characteristics
-#define MAX_CREW 30
-#define MAX_ENERGY 10
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 10
-#define MAX_THRUST 48
-#define THRUST_INCREMENT 12
-#define THRUST_WAIT 1
-#define TURN_WAIT 1
-#define SHIP_MASS 5
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("spathi");
+    return value;
+}
+static const uqm::combat::ProjectileStats &discriminatorStats() {
+    static const auto &value = tuning().projectile("discriminator");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Forward gun
-#define WEAPON_ENERGY_COST 2
-#define WEAPON_WAIT 0
-#define SPATHI_FORWARD_OFFSET 16
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
-#define MISSILE_LIFE 10
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
-#define MISSILE_OFFSET 1
-#define MISSILE_RANGE (MISSILE_SPEED * MISSILE_LIFE)
-		/* This is for the cyborg only. */
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto SpathiForwardOffset = 16;
+constexpr auto MissileOffset = 1;
+static auto missileRange() { return (missileStats().speed * missileStats().lifetime); }
+constexpr auto SpathiRearOffset = 20;
+constexpr auto DiscriminatorOffset = 4;
+constexpr auto TrackWait = 1;
 
-// B.U.T.T.
-#define SPECIAL_ENERGY_COST 3
-#define SPECIAL_WAIT 7
-#define SPATHI_REAR_OFFSET 20
-#define DISCRIMINATOR_SPEED DISPLAY_TO_WORLD (8)
-#define DISCRIMINATOR_LIFE 30
-#define DISCRIMINATOR_HITS 1
-#define DISCRIMINATOR_DAMAGE 2
-#define DISCRIMINATOR_OFFSET 4
-#define TRACK_WAIT 1
+// missileRange is an AI hint derived from the configured projectile.
 
-static const RACE_DESC spathi_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | FIRES_AFT | SEEKING_SPECIAL | DONT_CHASE,
-		18, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		SPATHI_RACE_STRINGS,
-		SPATHI_ICON_MASK_PMAP_ANIM,
-		SPATHI_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		1000 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			2549, 3600,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			SPATHI_BIG_MASK_PMAP_ANIM,
-			SPATHI_MED_MASK_PMAP_ANIM,
-			SPATHI_SML_MASK_PMAP_ANIM,
-		},
-		{
-			MISSILE_BIG_MASK_PMAP_ANIM,
-			MISSILE_MED_MASK_PMAP_ANIM,
-			MISSILE_SML_MASK_PMAP_ANIM,
-		},
-		{
-			DISCRIM_BIG_MASK_PMAP_ANIM,
-			DISCRIM_MED_MASK_PMAP_ANIM,
-			DISCRIM_SML_MASK_PMAP_ANIM,
-		},
-		{
-			SPATHI_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		SPATHI_VICTORY_SONG,
-		SPATHI_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_RANGE,
-		NULL,
-	},
+static const RACE_DESC &spathiDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | FIRES_AFT | SEEKING_SPECIAL | DONT_CHASE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            SPATHI_RACE_STRINGS,
+            SPATHI_ICON_MASK_PMAP_ANIM,
+            SPATHI_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            1000 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                2549, 3600,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                SPATHI_BIG_MASK_PMAP_ANIM,
+                SPATHI_MED_MASK_PMAP_ANIM,
+                SPATHI_SML_MASK_PMAP_ANIM,
+            },
+            {
+                MISSILE_BIG_MASK_PMAP_ANIM,
+                MISSILE_MED_MASK_PMAP_ANIM,
+                MISSILE_SML_MASK_PMAP_ANIM,
+            },
+            {
+                DISCRIM_BIG_MASK_PMAP_ANIM,
+                DISCRIM_MED_MASK_PMAP_ANIM,
+                DISCRIM_SML_MASK_PMAP_ANIM,
+            },
+            {
+                SPATHI_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            SPATHI_VICTORY_SONG,
+            SPATHI_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileRange()),
+            NULL,
+        },
 
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 butt_missile_preprocess (ELEMENT *ElementPtr)
@@ -141,10 +134,10 @@ butt_missile_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->state_flags |= CHANGING;
 	
 			SetVelocityVector (&ElementPtr->velocity,
-					DISCRIMINATOR_SPEED, facing);
+					discriminatorStats().speed, facing);
 		}
 
-		ElementPtr->turn_wait = TRACK_WAIT;
+		ElementPtr->turn_wait = TrackWait;
 	}
 }
 
@@ -164,20 +157,20 @@ spawn_butt_missile (ELEMENT *ShipPtr)
 			+ ANGLE_TO_FACING (HALF_CIRCLE));
 	ButtMissileBlock.sender = ShipPtr->playerNr;
 	ButtMissileBlock.flags = 0;
-	ButtMissileBlock.pixoffs = SPATHI_REAR_OFFSET;
-	ButtMissileBlock.speed = DISCRIMINATOR_SPEED;
-	ButtMissileBlock.hit_points = DISCRIMINATOR_HITS;
-	ButtMissileBlock.damage = DISCRIMINATOR_DAMAGE;
-	ButtMissileBlock.life = DISCRIMINATOR_LIFE;
+	ButtMissileBlock.pixoffs = SpathiRearOffset;
+	ButtMissileBlock.speed = discriminatorStats().speed;
+	ButtMissileBlock.hit_points = discriminatorStats().hitPoints;
+	ButtMissileBlock.damage = discriminatorStats().damage;
+	ButtMissileBlock.life = discriminatorStats().lifetime;
 	ButtMissileBlock.preprocess_func = butt_missile_preprocess;
-	ButtMissileBlock.blast_offs = DISCRIMINATOR_OFFSET;
+	ButtMissileBlock.blast_offs = DiscriminatorOffset;
 	ButtMissile = initialize_missile (&ButtMissileBlock);
 	if (ButtMissile)
 	{
 		ELEMENT *ButtPtr;
 
 		LockElement (ButtMissile, &ButtPtr);
-		ButtPtr->turn_wait = TRACK_WAIT;
+		ButtPtr->turn_wait = TrackWait;
 		SetElementStarShip (ButtPtr, StarShipPtr);
 
 		ProcessSound (SetAbsSoundIndex (
@@ -255,13 +248,13 @@ initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = SPATHI_FORWARD_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = SpathiForwardOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	MissileArray[0] = initialize_missile (&MissileBlock);
 
 	return (1);
@@ -275,7 +268,7 @@ spathi_postprocess (ELEMENT *ElementPtr)
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		spawn_butt_missile (ElementPtr);
 
@@ -305,7 +298,7 @@ RACE_DESC*
 init_spathi (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SpathiShip>(spathi_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<SpathiShip>(spathiDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("SpathiShip");
     return nullptr;

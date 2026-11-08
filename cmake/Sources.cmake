@@ -210,6 +210,8 @@ set(UQM_SOURCES
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/game_state.cpp
+    sc2/src/uqm/ship_tuning.cpp
+    sc2/src/uqm/ship_tuning_c.cpp
     sc2/src/uqm/ship_behavior.cpp
     sc2/src/uqm/game_mode.cpp
     sc2/src/uqm/game_menu.cpp

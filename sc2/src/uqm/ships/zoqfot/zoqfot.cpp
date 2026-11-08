@@ -18,112 +18,103 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "zoqfot.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 10
-#define MAX_ENERGY 10
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 4
-#define MAX_THRUST 40
-#define THRUST_INCREMENT 10
-#define THRUST_WAIT 0
-#define TURN_WAIT 1
-#define SHIP_MASS 5
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("zoqfot");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Main weapon
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 0
-#define ZOQFOTPIK_OFFSET 13
-#define MISSILE_OFFSET 0
-#define MISSILE_SPEED DISPLAY_TO_WORLD (10)
-		/* Used by the cyborg only. */
-#define MISSILE_LIFE 10
-#define MISSILE_RANGE (MISSILE_SPEED * MISSILE_LIFE)
-#define MISSILE_DAMAGE 1
-#define MISSILE_HITS 1
-#define SPIT_WAIT 2
-		/* Controls the main weapon color change animation's speed.
-		 * The animation advances one frame every SPIT_WAIT frames. */
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto ZoqfotpikOffset = 13;
+constexpr auto MissileOffset = 0;
+static auto missileRange() { return (missileStats().speed * missileStats().lifetime); }
+constexpr auto SpitWait = 2;
+constexpr auto TongueSpeed = 0;
+constexpr auto TongueHits = 1;
+constexpr auto TongueDamage = 12;
+constexpr auto TongueOffset = 4;
 
-// Tongue
-#define SPECIAL_ENERGY_COST (MAX_ENERGY * 3 / 4)
-#define SPECIAL_WAIT 6
-#define TONGUE_SPEED 0
-#define TONGUE_HITS 1
-#define TONGUE_DAMAGE 12
-#define TONGUE_OFFSET 4
+// missileRange is an AI hint. SpitWait controls weapon color-animation cadence.
 
-static const RACE_DESC zoqfotpik_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE,
-		6, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		ZOQFOTPIK_RACE_STRINGS,
-		ZOQFOTPIK_ICON_MASK_PMAP_ANIM,
-		ZOQFOTPIK_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		320 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			3761, 5333,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			ZOQFOTPIK_BIG_MASK_PMAP_ANIM,
-			ZOQFOTPIK_MED_MASK_PMAP_ANIM,
-			ZOQFOTPIK_SML_MASK_PMAP_ANIM,
-		},
-		{
-			SPIT_BIG_MASK_PMAP_ANIM,
-			SPIT_MED_MASK_PMAP_ANIM,
-			SPIT_SML_MASK_PMAP_ANIM,
-		},
-		{
-			STINGER_BIG_MASK_PMAP_ANIM,
-			STINGER_MED_MASK_PMAP_ANIM,
-			STINGER_SML_MASK_PMAP_ANIM,
-		},
-		{
-			ZOQFOTPIK_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		ZOQFOTPIK_VICTORY_SONG,
-		ZOQFOTPIK_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_RANGE,
-		NULL,
-	},
+static const RACE_DESC &zoqfotpikDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            ZOQFOTPIK_RACE_STRINGS,
+            ZOQFOTPIK_ICON_MASK_PMAP_ANIM,
+            ZOQFOTPIK_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            320 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                3761, 5333,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                ZOQFOTPIK_BIG_MASK_PMAP_ANIM,
+                ZOQFOTPIK_MED_MASK_PMAP_ANIM,
+                ZOQFOTPIK_SML_MASK_PMAP_ANIM,
+            },
+            {
+                SPIT_BIG_MASK_PMAP_ANIM,
+                SPIT_MED_MASK_PMAP_ANIM,
+                SPIT_SML_MASK_PMAP_ANIM,
+            },
+            {
+                STINGER_BIG_MASK_PMAP_ANIM,
+                STINGER_MED_MASK_PMAP_ANIM,
+                STINGER_SML_MASK_PMAP_ANIM,
+            },
+            {
+                ZOQFOTPIK_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            ZOQFOTPIK_VICTORY_SONG,
+            ZOQFOTPIK_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileRange()),
+            NULL,
+        },
 
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 spit_preprocess (ELEMENT *ElementPtr)
@@ -148,7 +139,7 @@ spit_preprocess (ELEMENT *ElementPtr)
 				(SIZE)SINE (angle, speed));
 
 		/* turn_wait is abused here to control the animation speed. */
-		ElementPtr->turn_wait = SPIT_WAIT;
+		ElementPtr->turn_wait = SpitWait;
 		ElementPtr->state_flags |= CHANGING;
 	}
 }
@@ -167,14 +158,14 @@ initialize_spit (ELEMENT *ShipPtr, HELEMENT SpitArray[])
 	MissileBlock.index = 0;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = ZOQFOTPIK_OFFSET;
+	MissileBlock.pixoffs = ZoqfotpikOffset;
 	MissileBlock.speed = DISPLAY_TO_WORLD (
 			GetFrameCount (StarShipPtr->RaceDescPtr->ship_data.weapon[0])) << 1;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = spit_preprocess;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	SpitArray[0] = initialize_missile (&MissileBlock);
 
 	return (1);
@@ -220,12 +211,12 @@ spawn_tongue (ELEMENT *ElementPtr)
 	TongueBlock.sender = ElementPtr->playerNr;
 	TongueBlock.flags = IGNORE_SIMILAR;
 	TongueBlock.pixoffs = 0;
-	TongueBlock.speed = TONGUE_SPEED;
-	TongueBlock.hit_points = TONGUE_HITS;
-	TongueBlock.damage = TONGUE_DAMAGE;
+	TongueBlock.speed = TongueSpeed;
+	TongueBlock.hit_points = TongueHits;
+	TongueBlock.damage = TongueDamage;
 	TongueBlock.life = 1;
 	TongueBlock.preprocess_func = 0;
-	TongueBlock.blast_offs = TONGUE_OFFSET;
+	TongueBlock.blast_offs = TongueOffset;
 	Tongue = initialize_missile (&TongueBlock);
 	if (Tongue)
 	{
@@ -285,7 +276,7 @@ zoqfotpik_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		if (lpEnemyEvalDesc->ObjectPtr
 				&& lpEnemyEvalDesc->which_turn <= 4
 #ifdef NEVER
-				&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
+				&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= tuning().ship.specialEnergyCost
 #endif /* NEVER */
 				)
 		{
@@ -345,7 +336,7 @@ zoqfotpik_postprocess (ELEMENT *ElementPtr)
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		ProcessSound (SetAbsSoundIndex (
 					/* STICK_OUT_TONGUE */
@@ -380,7 +371,7 @@ RACE_DESC*
 init_zoqfotpik (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ZoqFotPikShip>(zoqfotpik_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<ZoqFotPikShip>(zoqfotpikDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("ZoqFotPikShip");
     return nullptr;

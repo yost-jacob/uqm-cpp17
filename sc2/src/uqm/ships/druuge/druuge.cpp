@@ -18,104 +18,96 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "druuge.h"
 #include "resinst.h"
 
-// Core characteristics
-#define MAX_CREW 14
-#define MAX_ENERGY 32
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 50
-#define MAX_THRUST 20
-#define THRUST_INCREMENT 2
-#define THRUST_WAIT 1
-#define TURN_WAIT 4
-#define SHIP_MASS 5
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("druuge");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Mass Driver
-#define WEAPON_ENERGY_COST 4
-#define WEAPON_WAIT 10
-#define DRUUGE_OFFSET 24
-#define MISSILE_OFFSET 6
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
-#define MISSILE_LIFE 20
-#define MISSILE_RANGE (MISSILE_SPEED * MISSILE_LIFE)
-#define MISSILE_HITS 4
-#define MISSILE_DAMAGE 6
-#define RECOIL_VELOCITY WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (6))
-#define MAX_RECOIL_VELOCITY (RECOIL_VELOCITY * 4)
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto DruugeOffset = 24;
+constexpr auto MissileOffset = 6;
+static auto missileRange() { return (missileStats().speed * missileStats().lifetime); }
+constexpr auto RecoilVelocity = WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (6));
+constexpr auto MaxRecoilVelocity = (RecoilVelocity * 4);
 
-// Furnace
-#define SPECIAL_ENERGY_COST 16
-#define SPECIAL_WAIT 30
+static const RACE_DESC &druugeDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            DRUUGE_RACE_STRINGS,
+            DRUUGE_ICON_MASK_PMAP_ANIM,
+            DRUUGE_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            1400 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                9500, 2792,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                DRUUGE_BIG_MASK_PMAP_ANIM,
+                DRUUGE_MED_MASK_PMAP_ANIM,
+                DRUUGE_SML_MASK_PMAP_ANIM,
+            },
+            {
+                DRUUGE_CANNON_BIG_MASK_PMAP_ANIM,
+                DRUUGE_CANNON_MED_MASK_PMAP_ANIM,
+                DRUUGE_CANNON_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                DRUUGE_CAPT_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            DRUUGE_VICTORY_SONG,
+            DRUUGE_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileRange()),
+            NULL,
+        },
 
-static const RACE_DESC druuge_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE,
-		17, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		DRUUGE_RACE_STRINGS,
-		DRUUGE_ICON_MASK_PMAP_ANIM,
-		DRUUGE_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		1400 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			9500, 2792,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			DRUUGE_BIG_MASK_PMAP_ANIM,
-			DRUUGE_MED_MASK_PMAP_ANIM,
-			DRUUGE_SML_MASK_PMAP_ANIM,
-		},
-		{
-			DRUUGE_CANNON_BIG_MASK_PMAP_ANIM,
-			DRUUGE_CANNON_MED_MASK_PMAP_ANIM,
-			DRUUGE_CANNON_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			DRUUGE_CAPT_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		DRUUGE_VICTORY_SONG,
-		DRUUGE_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_RANGE,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 cannon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
@@ -139,18 +131,18 @@ cannon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 				GetFrameIndex (ElementPtr0->next.image.frame)
 				);
 		DeltaVelocityComponents (&ElementPtr1->velocity,
-				COSINE (angle, RECOIL_VELOCITY),
-				SINE (angle, RECOIL_VELOCITY));
+				COSINE (angle, RecoilVelocity),
+				SINE (angle, RecoilVelocity));
 		GetCurrentVelocityComponents (&ElementPtr1->velocity,
 				&cur_delta_x, &cur_delta_y);
 		if ((long)cur_delta_x * (long)cur_delta_x
 				+ (long)cur_delta_y * (long)cur_delta_y
-				> (long)MAX_RECOIL_VELOCITY * (long)MAX_RECOIL_VELOCITY)
+				> (long)MaxRecoilVelocity * (long)MaxRecoilVelocity)
 		{
 			angle = ARCTAN (cur_delta_x, cur_delta_y);
 			SetVelocityComponents (&ElementPtr1->velocity,
-					COSINE (angle, MAX_RECOIL_VELOCITY),
-					SINE (angle, MAX_RECOIL_VELOCITY));
+					COSINE (angle, MaxRecoilVelocity),
+					SINE (angle, MaxRecoilVelocity));
 		}
 	}
 }
@@ -169,13 +161,13 @@ initialize_cannon (ELEMENT *ShipPtr, HELEMENT CannonArray[])
 	MissileBlock.index = MissileBlock.face;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = DRUUGE_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = DruugeOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	CannonArray[0] = initialize_missile (&MissileBlock);
 
 	if (CannonArray[0])
@@ -205,7 +197,7 @@ druuge_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	if (StarShipPtr->cur_status_flags & SHIP_BEYOND_MAX_SPEED)
 		lpEvalDesc->MoveState = ENTICE;
 	else if (lpEvalDesc->ObjectPtr
-			&& lpEvalDesc->which_turn <= WORLD_TO_TURN (MISSILE_RANGE * 3 / 4))
+			&& lpEvalDesc->which_turn <= WORLD_TO_TURN (missileRange() * 3 / 4))
 	{
 		GetElementStarShip (lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 		ship_flags = EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags;
@@ -230,12 +222,12 @@ druuge_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			)))
 	{
 		 StarShipPtr->ship_input_state |= WEAPON;
-		 if (ShipPtr->thrust_wait < WEAPON_WAIT + 1)
-			ShipPtr->thrust_wait = WEAPON_WAIT + 1;
+		 if (ShipPtr->thrust_wait < tuning().ship.weaponWait + 1)
+			ShipPtr->thrust_wait = tuning().ship.weaponWait + 1;
 	}
 
 	if ((StarShipPtr->ship_input_state & WEAPON)
-			&& StarShipPtr->RaceDescPtr->ship_info.energy_level < WEAPON_ENERGY_COST
+			&& StarShipPtr->RaceDescPtr->ship_info.energy_level < tuning().ship.weaponEnergyCost
 			&& ShipPtr->crew_level > 1)
 		StarShipPtr->ship_input_state |= SPECIAL;
 	else
@@ -260,18 +252,18 @@ druuge_postprocess (ELEMENT *ElementPtr)
 
 		angle = FACING_TO_ANGLE (StarShipPtr->ShipFacing) + HALF_CIRCLE;
 		DeltaVelocityComponents (&ElementPtr->velocity,
-				COSINE (angle, RECOIL_VELOCITY),
-				SINE (angle, RECOIL_VELOCITY));
+				COSINE (angle, RecoilVelocity),
+				SINE (angle, RecoilVelocity));
 		GetCurrentVelocityComponents (&ElementPtr->velocity,
 				&cur_delta_x, &cur_delta_y);
 		if ((long)cur_delta_x * (long)cur_delta_x
 				+ (long)cur_delta_y * (long)cur_delta_y
-				> (long)MAX_RECOIL_VELOCITY * (long)MAX_RECOIL_VELOCITY)
+				> (long)MaxRecoilVelocity * (long)MaxRecoilVelocity)
 		{
 			angle = ARCTAN (cur_delta_x, cur_delta_y);
 			SetVelocityComponents (&ElementPtr->velocity,
-					COSINE (angle, MAX_RECOIL_VELOCITY),
-					SINE (angle, MAX_RECOIL_VELOCITY));
+					COSINE (angle, MaxRecoilVelocity),
+					SINE (angle, MaxRecoilVelocity));
 		}
 	}
 }
@@ -296,7 +288,7 @@ druuge_preprocess (ELEMENT *ElementPtr)
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
 
 			DeltaCrew (ElementPtr, -1);
-			DeltaEnergy (ElementPtr, SPECIAL_ENERGY_COST);
+			DeltaEnergy (ElementPtr, tuning().ship.specialEnergyCost);
 
 			StarShipPtr->special_counter =
 					StarShipPtr->RaceDescPtr->characteristics.special_wait;
@@ -328,7 +320,7 @@ RACE_DESC*
 init_druuge (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<DruugeShip>(druuge_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<DruugeShip>(druugeDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("DruugeShip");
     return nullptr;

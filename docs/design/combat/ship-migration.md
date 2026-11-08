@@ -90,7 +90,9 @@ prototype rather than substituted into gameplay prematurely.
 
 AI remains the existing ship-specific cyborg backend, independently registered in
 each instance. Keyboard/network/alternative-AI controller replacement is separate
-work. Definitions remain compiled data; external JSON is also a separate step.
+work. Base ship and standard projectile balance values now load from
+[ships.json](../../ship-tuning.md); structural geometry and complex weapon
+mechanics remain typed C++ constants.
 Legacy asset handles, C globals and Pkunk's existing sound-selection history still
 prevent multiple independent battles in one process. These classes alone do not
 make combat thread-safe or headless.

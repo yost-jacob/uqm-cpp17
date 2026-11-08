@@ -18,6 +18,7 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "orz.h"
 #include "resinst.h"
 
@@ -25,110 +26,98 @@
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 16
-#define MAX_ENERGY 20
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 6
-#define MAX_THRUST 35
-#define THRUST_INCREMENT 5
-#define THRUST_WAIT 0
-#define TURN_WAIT 1
-#define SHIP_MASS 4
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("orz");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Howitzer
-#define WEAPON_ENERGY_COST (MAX_ENERGY / 3)
-#define WEAPON_WAIT 4
-#define ORZ_OFFSET 9
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
-#define MISSILE_LIFE 12
-#define MISSILE_HITS 2
-#define MISSILE_DAMAGE 3
-#define MISSILE_OFFSET 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto MissileOffset = 1;
+constexpr auto MarineMaxThrust = 32;
+constexpr auto MarineThrustIncrement = 8;
+constexpr auto MarineHitPoints = 3;
+constexpr auto MarineMassPoints = 1;
+constexpr auto MaxMarines = 8;
+constexpr auto MarineWait = 12;
+constexpr auto IonLife = 1;
+constexpr auto StartIonColor = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x15, 0x00), 0x7A);
+constexpr auto TurretOffset = 14;
+constexpr auto TurretWait = 3;
 
-// Marine
-#define SPECIAL_ENERGY_COST 0
-#define SPECIAL_WAIT 12
-#define MARINE_MAX_THRUST 32
-#define MARINE_THRUST_INCREMENT 8
-#define MARINE_HIT_POINTS 3
-#define MARINE_MASS_POINTS 1
-#define MAX_MARINES 8
-#define MARINE_WAIT 12
-#define ION_LIFE 1
-#define START_ION_COLOR BUILD_COLOR (MAKE_RGB15 (0x1F, 0x15, 0x00), 0x7A)
+static const RACE_DESC &orzDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | SEEKING_SPECIAL,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            ORZ_RACE_STRINGS,
+            ORZ_ICON_MASK_PMAP_ANIM,
+            ORZ_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                3608, 2637,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                ORZ_BIG_MASK_PMAP_ANIM,
+                ORZ_MED_MASK_PMAP_ANIM,
+                ORZ_SML_MASK_PMAP_ANIM,
+            },
+            {
+                HOWITZER_BIG_MASK_PMAP_ANIM,
+                HOWITZER_MED_MASK_PMAP_ANIM,
+                HOWITZER_SML_MASK_PMAP_ANIM,
+            },
+            {
+                TURRET_BIG_MASK_PMAP_ANIM,
+                TURRET_MED_MASK_PMAP_ANIM,
+                TURRET_SML_MASK_PMAP_ANIM,
+            },
+            {
+                ORZ_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            ORZ_VICTORY_SONG,
+            ORZ_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileStats().speed * missileStats().lifetime),
+            NULL,
+        },
 
-// Rotating Turret
-#define TURRET_OFFSET 14
-#define TURRET_WAIT 3
-
-static const RACE_DESC orz_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | SEEKING_SPECIAL,
-		23, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		ORZ_RACE_STRINGS,
-		ORZ_ICON_MASK_PMAP_ANIM,
-		ORZ_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			3608, 2637,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			ORZ_BIG_MASK_PMAP_ANIM,
-			ORZ_MED_MASK_PMAP_ANIM,
-			ORZ_SML_MASK_PMAP_ANIM,
-		},
-		{
-			HOWITZER_BIG_MASK_PMAP_ANIM,
-			HOWITZER_MED_MASK_PMAP_ANIM,
-			HOWITZER_SML_MASK_PMAP_ANIM,
-		},
-		{
-			TURRET_BIG_MASK_PMAP_ANIM,
-			TURRET_MED_MASK_PMAP_ANIM,
-			TURRET_SML_MASK_PMAP_ANIM,
-		},
-		{
-			ORZ_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		ORZ_VICTORY_SONG,
-		ORZ_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_SPEED * MISSILE_LIFE,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 howitzer_collision (ELEMENT *ElementPtr0, POINT *pPt0,
@@ -160,7 +149,7 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 		else
 			--TurretPtr->thrust_wait;
 
-		TurretPtr->turn_wait = TURRET_WAIT + 1;
+		TurretPtr->turn_wait = TurretWait + 1;
 	}
 	MissileBlock.face = MissileBlock.index =
 			NORMALIZE_FACING (StarShipPtr->ShipFacing
@@ -169,13 +158,13 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = TURRET_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = TurretOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	MissileArray[0] = initialize_missile (&MissileBlock);
 
 	if (MissileArray[0])
@@ -193,10 +182,10 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 static BYTE
 count_marines (STARSHIP *StarShipPtr, BOOLEAN FindSpot)
 {
-	BYTE num_marines, id_use[MAX_MARINES];
+	BYTE num_marines, id_use[MaxMarines];
 	HELEMENT hElement, hNextElement;
 
-	num_marines = MAX_MARINES;
+	num_marines = MaxMarines;
 	while (num_marines--)
 		id_use[num_marines] = 0;
 
@@ -217,7 +206,7 @@ count_marines (STARSHIP *StarShipPtr, BOOLEAN FindSpot)
 				id_use[ElementPtr->turn_wait] = 1;
 			}
 
-			if (++num_marines == MAX_MARINES)
+			if (++num_marines == MaxMarines)
 			{
 				UnlockElement (hElement);
 				hNextElement = 0;
@@ -388,7 +377,7 @@ intruder_preprocess (ELEMENT *ElementPtr)
 		{
 			STAMP s;
 
-			if (ElementPtr->thrust_wait == MARINE_WAIT)
+			if (ElementPtr->thrust_wait == MarineWait)
 			{
 				--ElementPtr->thrust_wait;
 
@@ -416,7 +405,7 @@ LeftShip:
 			{
 				BYTE randval;
 
-				ElementPtr->thrust_wait = MARINE_WAIT;
+				ElementPtr->thrust_wait = MarineWait;
 
 				randval = (BYTE)TFB_Random ();
 				if (randval < (0x0100 / 16))
@@ -488,7 +477,7 @@ spawn_marine_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
 		LockElement (hIonElement, &IonElementPtr);
 		IonElementPtr->playerNr = NEUTRAL_PLAYER_NUM;
 		IonElementPtr->state_flags = APPEARING | FINITE_LIFE | NONSOLID;
-		IonElementPtr->thrust_wait = ION_LIFE;
+		IonElementPtr->thrust_wait = IonLife;
 		IonElementPtr->life_span = IonElementPtr->thrust_wait;
 				// When the element "dies", in the death_func
 				// 'cycle_ion_trail', it is given new life a number of
@@ -496,7 +485,7 @@ spawn_marine_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
 		SetPrimType (&(GLOBAL (DisplayArray))[IonElementPtr->PrimIndex],
 				POINT_PRIM);
 		SetPrimColor (&(GLOBAL (DisplayArray))[IonElementPtr->PrimIndex],
-				START_ION_COLOR);
+				StartIonColor);
 		IonElementPtr->colorCycleIndex = 0;
 		IonElementPtr->current.location = ElementPtr->current.location;
 		IonElementPtr->current.location.x +=
@@ -702,9 +691,9 @@ marine_preprocess (ELEMENT *ElementPtr)
 			//   gravity well flags
 			StarShipPtr->cur_status_flags = ElementPtr->thrust_wait << 6;
 			StarShipPtr->RaceDescPtr->characteristics.thrust_increment =
-					MARINE_THRUST_INCREMENT;
+					MarineThrustIncrement;
 			StarShipPtr->RaceDescPtr->characteristics.max_thrust =
-					MARINE_MAX_THRUST;
+					MarineMaxThrust;
 
 			thrust_status = inertial_thrust (ElementPtr);
 
@@ -783,7 +772,7 @@ marine_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 				else
 				{
 					ElementPtr0->turn_wait = count_marines (StarShipPtr, TRUE);
-					ElementPtr0->thrust_wait = MARINE_WAIT;
+					ElementPtr0->thrust_wait = MarineWait;
 					ElementPtr0->next.image.frame = SetAbsFrameIndex (
 							ElementPtr0->next.image.farray[0],
 							22 + ElementPtr0->turn_wait
@@ -872,7 +861,7 @@ turret_postprocess (ELEMENT *ElementPtr)
 					else
 						--TurretPtr->thrust_wait;
 
-					TurretPtr->turn_wait = TURRET_WAIT;
+					TurretPtr->turn_wait = TurretWait;
 				}
 				facing = NORMALIZE_FACING (StarShipPtr->ShipFacing
 						+ TurretPtr->thrust_wait);
@@ -912,11 +901,11 @@ turret_postprocess (ELEMENT *ElementPtr)
 						TurretEffectPtr->current.location.x =
 								TurretPtr->current.location.x
 								+ COSINE (facing,
-								DISPLAY_TO_WORLD (TURRET_OFFSET));
+								DISPLAY_TO_WORLD (TurretOffset));
 						TurretEffectPtr->current.location.y =
 								TurretPtr->current.location.y
 								+ SINE (facing,
-								DISPLAY_TO_WORLD (TURRET_OFFSET));
+								DISPLAY_TO_WORLD (TurretOffset));
 						TurretEffectPtr->current.image.farray =
 								StarShipPtr->RaceDescPtr->ship_data.special;
 						TurretEffectPtr->current.image.frame =
@@ -959,7 +948,7 @@ turret_postprocess (ELEMENT *ElementPtr)
 					&& (StarShipPtr->cur_status_flags & SPECIAL)
 					&& (StarShipPtr->cur_status_flags & WEAPON)
 					&& ShipPtr->crew_level > 1
-					&& count_marines (StarShipPtr, FALSE) < MAX_MARINES
+					&& count_marines (StarShipPtr, FALSE) < MaxMarines
 					&& TrackShip (ShipPtr, &facing) >= 0
 					&& (hSpaceMarine = AllocElement ()))
 			{
@@ -970,16 +959,16 @@ turret_postprocess (ELEMENT *ElementPtr)
 				SpaceMarinePtr->state_flags = IGNORE_SIMILAR | APPEARING
 						| CREW_OBJECT;
 				SpaceMarinePtr->life_span = NORMAL_LIFE;
-				SpaceMarinePtr->hit_points = MARINE_HIT_POINTS;
-				SpaceMarinePtr->mass_points = MARINE_MASS_POINTS;
+				SpaceMarinePtr->hit_points = MarineHitPoints;
+				SpaceMarinePtr->mass_points = MarineMassPoints;
 
 				facing = FACING_TO_ANGLE (StarShipPtr->ShipFacing);
 				SpaceMarinePtr->current.location.x =
 						ShipPtr->current.location.x
-						- COSINE (facing, DISPLAY_TO_WORLD (TURRET_OFFSET));
+						- COSINE (facing, DISPLAY_TO_WORLD (TurretOffset));
 				SpaceMarinePtr->current.location.y =
 						ShipPtr->current.location.y
-						- SINE (facing, DISPLAY_TO_WORLD (TURRET_OFFSET));
+						- SINE (facing, DISPLAY_TO_WORLD (TurretOffset));
 				SpaceMarinePtr->current.image.farray =
 						StarShipPtr->RaceDescPtr->ship_data.special;
 				SpaceMarinePtr->current.image.frame = SetAbsFrameIndex (
@@ -1086,7 +1075,7 @@ RACE_DESC*
 init_orz (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<OrzShip>(orz_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<OrzShip>(orzDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("OrzShip");
     return nullptr;

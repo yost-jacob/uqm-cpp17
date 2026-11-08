@@ -18,122 +18,112 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "chenjesu.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 36
-#define MAX_ENERGY 30
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 4
-#define MAX_THRUST /* DISPLAY_TO_WORLD (7) */ 27
-#define THRUST_INCREMENT /* DISPLAY_TO_WORLD (2) */ 3
-#define THRUST_WAIT 4
-#define TURN_WAIT 6
-#define SHIP_MASS 10
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("chenjesu");
+    return value;
+}
+static const uqm::combat::ProjectileStats &fragmentStats() {
+    static const auto &value = tuning().projectile("fragment");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Photon Shard
-#define WEAPON_ENERGY_COST 5
-#define WEAPON_WAIT 0
-#define CHENJESU_OFFSET 16
-#define MISSILE_OFFSET 0
-#define MISSILE_SPEED DISPLAY_TO_WORLD (16)
-#define MISSILE_LIFE 90
-		/* actually, it's as long as you hold the button down. */
-#define MISSILE_HITS 10
-#define MISSILE_DAMAGE 6
-#define NUM_SPARKLES 8
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto ChenjesuOffset = 16;
+constexpr auto MissileOffset = 0;
+constexpr auto NumSparkles = 8;
+constexpr auto FragmentOffset = 2;
+constexpr auto NumFragments = 8;
+static auto fragmentRange() { return (fragmentStats().lifetime * fragmentStats().speed); }
+constexpr auto DoggyOffset = 18;
+constexpr auto DoggySpeed = DISPLAY_TO_WORLD (8);
+constexpr auto EnergyDrain = 10;
+constexpr auto MaxDoggies = 4;
+constexpr auto DoggyHits = 3;
+constexpr auto DoggyMass = 4;
 
-// Shrapnel
-#define FRAGMENT_OFFSET 2
-#define NUM_FRAGMENTS 8
-#define FRAGMENT_LIFE 10
-#define FRAGMENT_SPEED MISSILE_SPEED
-#define FRAGMENT_RANGE (FRAGMENT_LIFE * FRAGMENT_SPEED)
-		/* This bit is for the cyborg only. */
-#define FRAGMENT_HITS 1
-#define FRAGMENT_DAMAGE 2
+// The crystal extends its lifetime while fire is held. fragmentRange is an AI hint.
 
-// DOGI
-#define SPECIAL_ENERGY_COST MAX_ENERGY
-#define SPECIAL_WAIT 0
-#define DOGGY_OFFSET 18
-#define DOGGY_SPEED DISPLAY_TO_WORLD (8)
-#define ENERGY_DRAIN 10
-#define MAX_DOGGIES 4
-#define DOGGY_HITS 3
-#define DOGGY_MASS 4
+static const RACE_DESC &chenjesuDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | SEEKING_SPECIAL | SEEKING_WEAPON,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            CHENJESU_RACE_STRINGS,
+            CHENJESU_ICON_MASK_PMAP_ANIM,
+            CHENJESU_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            0, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                0, 0,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                CHENJESU_BIG_MASK_PMAP_ANIM,
+                CHENJESU_MED_MASK_PMAP_ANIM,
+                CHENJESU_SML_MASK_PMAP_ANIM,
+            },
+            {
+                SPARK_BIG_MASK_PMAP_ANIM,
+                SPARK_MED_MASK_PMAP_ANIM,
+                SPARK_SML_MASK_PMAP_ANIM,
+            },
+            {
+                DOGGY_BIG_MASK_PMAP_ANIM,
+                DOGGY_MED_MASK_PMAP_ANIM,
+                DOGGY_SML_MASK_PMAP_ANIM,
+            },
+            {
+                CHENJESU_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            CHENJESU_VICTORY_SONG,
+            CHENJESU_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(LONG_RANGE_WEAPON),
+            NULL,
+        },
 
-static const RACE_DESC chenjesu_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | SEEKING_SPECIAL | SEEKING_WEAPON,
-		28, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		CHENJESU_RACE_STRINGS,
-		CHENJESU_ICON_MASK_PMAP_ANIM,
-		CHENJESU_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			0, 0,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			CHENJESU_BIG_MASK_PMAP_ANIM,
-			CHENJESU_MED_MASK_PMAP_ANIM,
-			CHENJESU_SML_MASK_PMAP_ANIM,
-		},
-		{
-			SPARK_BIG_MASK_PMAP_ANIM,
-			SPARK_MED_MASK_PMAP_ANIM,
-			SPARK_SML_MASK_PMAP_ANIM,
-		},
-		{
-			DOGGY_BIG_MASK_PMAP_ANIM,
-			DOGGY_MED_MASK_PMAP_ANIM,
-			DOGGY_SML_MASK_PMAP_ANIM,
-		},
-		{
-			CHENJESU_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		CHENJESU_VICTORY_SONG,
-		CHENJESU_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		LONG_RANGE_WEAPON,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 crystal_postprocess (ELEMENT *ElementPtr)
@@ -149,17 +139,17 @@ crystal_postprocess (ELEMENT *ElementPtr)
 	MissileBlock.sender = ElementPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
 	MissileBlock.pixoffs = 0;
-	MissileBlock.speed = FRAGMENT_SPEED;
-	MissileBlock.hit_points = FRAGMENT_HITS;
-	MissileBlock.damage = FRAGMENT_DAMAGE;
-	MissileBlock.life = FRAGMENT_LIFE;
+	MissileBlock.speed = fragmentStats().speed;
+	MissileBlock.hit_points = fragmentStats().hitPoints;
+	MissileBlock.damage = fragmentStats().damage;
+	MissileBlock.life = fragmentStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = FRAGMENT_OFFSET;
+	MissileBlock.blast_offs = FragmentOffset;
 
 	for (MissileBlock.face = 0;
 			MissileBlock.face < ANGLE_TO_FACING (FULL_CIRCLE);
 			MissileBlock.face +=
-			(ANGLE_TO_FACING (FULL_CIRCLE) / NUM_FRAGMENTS))
+			(ANGLE_TO_FACING (FULL_CIRCLE) / NumFragments))
 	{
 		HELEMENT hFragment;
 
@@ -226,7 +216,7 @@ crystal_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		LockElement (hBlastElement, &BlastElementPtr);
 		BlastElementPtr->current.location = ElementPtr1->current.location;
 
-		BlastElementPtr->life_span = NUM_SPARKLES;
+		BlastElementPtr->life_span = NumSparkles;
 		BlastElementPtr->turn_wait = BlastElementPtr->next_turn = 0;
 		{
 			BlastElementPtr->preprocess_func = animate;
@@ -290,7 +280,7 @@ doggy_preprocess (ELEMENT *ElementPtr)
 
 		if (facing != orig_facing)
 			SetVelocityVector (&ElementPtr->velocity,
-					DOGGY_SPEED, facing);
+					DoggySpeed, facing);
 	}
 }
 
@@ -332,10 +322,10 @@ doggy_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 						/* DOGGY_STEALS_ENERGY */
 				StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2), ElementPtr0);
 		GetElementStarShip (ElementPtr1, &StarShipPtr);
-		if (StarShipPtr->RaceDescPtr->ship_info.energy_level < ENERGY_DRAIN)
+		if (StarShipPtr->RaceDescPtr->ship_info.energy_level < EnergyDrain)
 			DeltaEnergy (ElementPtr1, -StarShipPtr->RaceDescPtr->ship_info.energy_level);
 		else
-			DeltaEnergy (ElementPtr1, -ENERGY_DRAIN);
+			DeltaEnergy (ElementPtr1, -EnergyDrain);
 	}
 	if (ElementPtr0->thrust_wait <= COLLISION_THRUST_WAIT)
 		ElementPtr0->thrust_wait += COLLISION_THRUST_WAIT << 1;
@@ -356,8 +346,8 @@ spawn_doggy (ELEMENT *ElementPtr)
 
 		PutElement (hDoggyElement);
 		LockElement (hDoggyElement, &DoggyElementPtr);
-		DoggyElementPtr->hit_points = DOGGY_HITS;
-		DoggyElementPtr->mass_points = DOGGY_MASS;
+		DoggyElementPtr->hit_points = DoggyHits;
+		DoggyElementPtr->mass_points = DoggyMass;
 		DoggyElementPtr->thrust_wait = 0;
 		DoggyElementPtr->playerNr = ElementPtr->playerNr;
 		DoggyElementPtr->state_flags = APPEARING;
@@ -374,14 +364,14 @@ spawn_doggy (ELEMENT *ElementPtr)
 		GetElementStarShip (ElementPtr, &StarShipPtr);
 		angle = FACING_TO_ANGLE (StarShipPtr->ShipFacing) + HALF_CIRCLE;
 		DoggyElementPtr->current.location.x = ElementPtr->next.location.x
-				+ COSINE (angle, DISPLAY_TO_WORLD (CHENJESU_OFFSET + DOGGY_OFFSET));
+				+ COSINE (angle, DISPLAY_TO_WORLD (ChenjesuOffset + DoggyOffset));
 		DoggyElementPtr->current.location.y = ElementPtr->next.location.y
-				+ SINE (angle, DISPLAY_TO_WORLD (CHENJESU_OFFSET + DOGGY_OFFSET));
+				+ SINE (angle, DISPLAY_TO_WORLD (ChenjesuOffset + DoggyOffset));
 		DoggyElementPtr->current.image.farray = StarShipPtr->RaceDescPtr->ship_data.special;
 		DoggyElementPtr->current.image.frame = StarShipPtr->RaceDescPtr->ship_data.special[0];
 
 		SetVelocityVector (&DoggyElementPtr->velocity,
-				DOGGY_SPEED, NORMALIZE_FACING (ANGLE_TO_FACING (angle)));
+				DoggySpeed, NORMALIZE_FACING (ANGLE_TO_FACING (angle)));
 
 		SetElementStarShip (DoggyElementPtr, StarShipPtr);
 
@@ -457,7 +447,7 @@ chenjesu_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 					if ((which_turn = PlotIntercept (CrystalPtr,
 							ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr,
 							CrystalPtr->life_span,
-							FRAGMENT_RANGE / 2)) == 0
+							fragmentRange() / 2)) == 0
 							|| (which_turn == 1
 							&& PlotIntercept (CrystalPtr,
 							ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr,
@@ -486,15 +476,15 @@ chenjesu_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 					StarShipPtr->weapon_counter = 3;
 			}
 			else if (StarShipPtr->weapon_counter == 0
-					&& ship_weapons (ShipPtr, lpEvalDesc->ObjectPtr, FRAGMENT_RANGE / 2))
+					&& ship_weapons (ShipPtr, lpEvalDesc->ObjectPtr, fragmentRange() / 2))
 				StarShipPtr->ship_input_state |= WEAPON;
 		}
 	}
 
-	if (StarShipPtr->special_counter < MAX_DOGGIES)
+	if (StarShipPtr->special_counter < MaxDoggies)
 	{
 		if (lpEvalDesc->ObjectPtr
-				&& StarShipPtr->RaceDescPtr->ship_info.energy_level <= SPECIAL_ENERGY_COST
+				&& StarShipPtr->RaceDescPtr->ship_info.energy_level <= tuning().ship.specialEnergyCost
 				&& !(StarShipPtr->ship_input_state & WEAPON))
 			StarShipPtr->ship_input_state |= SPECIAL;
 	}
@@ -514,13 +504,13 @@ initialize_crystal (ELEMENT *ShipPtr, HELEMENT CrystalArray[])
 	MissileBlock.index = 0;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = CHENJESU_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = ChenjesuOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = crystal_preprocess;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	CrystalArray[0] = initialize_missile (&MissileBlock);
 
 	if (CrystalArray[0])
@@ -542,8 +532,8 @@ chenjesu_postprocess (ELEMENT *ElementPtr)
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
-			&& StarShipPtr->special_counter < MAX_DOGGIES
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& StarShipPtr->special_counter < MaxDoggies
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		spawn_doggy (ElementPtr);
 	}
@@ -562,7 +552,7 @@ chenjesu_preprocess (ELEMENT *ElementPtr)
 	if (StarShipPtr->special_counter > 1) /* only when STANDARD
 											 * computer opponent
 											 */
-		StarShipPtr->special_counter += MAX_DOGGIES;
+		StarShipPtr->special_counter += MaxDoggies;
 	if (StarShipPtr->cur_status_flags
 			& StarShipPtr->old_status_flags
 			& WEAPON)
@@ -593,7 +583,7 @@ RACE_DESC*
 init_chenjesu (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ChenjesuShip>(chenjesu_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<ChenjesuShip>(chenjesuDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("ChenjesuShip");
     return nullptr;

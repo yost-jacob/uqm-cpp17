@@ -18,6 +18,7 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "shofixti.h"
 #include "resinst.h"
 
@@ -25,103 +26,94 @@
 #include "uqm/tactrans.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 6
-#define MAX_ENERGY 4
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 9
-#define MAX_THRUST 35
-#define THRUST_INCREMENT 5
-#define TURN_WAIT 1
-#define THRUST_WAIT 0
-#define WEAPON_WAIT 3
-#define SPECIAL_WAIT 0
-#define SHIP_MASS 1
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("shofixti");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Dart Gun
-#define WEAPON_ENERGY_COST 1
-#define SHOFIXTI_OFFSET 15
-#define MISSILE_OFFSET 1
-#define MISSILE_SPEED DISPLAY_TO_WORLD (24)
-#define MISSILE_LIFE 10
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto ShofixtiOffset = 15;
+constexpr auto MissileOffset = 1;
+constexpr auto DestructRange = 180;
+constexpr auto MaxDestruction = (DestructRange / 10);
+constexpr auto NumLimpets = 3;
+constexpr auto DestructSwitch = ((NUM_EXPLOSION_FRAMES * 3) - 3);
+constexpr auto MinThrustIncrement = DISPLAY_TO_WORLD (1);
 
-// Glory Device
-#define SPECIAL_ENERGY_COST 0
-#define DESTRUCT_RANGE 180
-#define MAX_DESTRUCTION (DESTRUCT_RANGE / 10)
+static const RACE_DESC &shofixtiDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            SHOFIXTI_RACE_STRINGS,
+            SHOFIXTI_ICON_MASK_PMAP_ANIM,
+            SHOFIXTI_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            0, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                0, 0,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                SHOFIXTI_BIG_MASK_PMAP_ANIM,
+                SHOFIXTI_MED_MASK_PMAP_ANIM,
+                SHOFIXTI_SML_MASK_PMAP_ANIM,
+            },
+            {
+                DART_BIG_MASK_PMAP_ANIM,
+                DART_MED_MASK_PMAP_ANIM,
+                DART_SML_MASK_PMAP_ANIM,
+            },
+            {
+                DESTRUCT_BIG_MASK_ANIM,
+                DESTRUCT_MED_MASK_ANIM,
+                DESTRUCT_SML_MASK_ANIM,
+            },
+            {
+                SHOFIXTI_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+                SHOFIXTI_VICTORY_SONG,
+            SHOFIXTI_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(missileStats().speed * missileStats().lifetime),
+            NULL,
+        },
 
-// Full game: Tanaka/Katana's damaged ships
-#define NUM_LIMPETS 3
-
-static const RACE_DESC shofixti_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE,
-		5, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		SHOFIXTI_RACE_STRINGS,
-		SHOFIXTI_ICON_MASK_PMAP_ANIM,
-		SHOFIXTI_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			0, 0,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			SHOFIXTI_BIG_MASK_PMAP_ANIM,
-			SHOFIXTI_MED_MASK_PMAP_ANIM,
-			SHOFIXTI_SML_MASK_PMAP_ANIM,
-		},
-		{
-			DART_BIG_MASK_PMAP_ANIM,
-			DART_MED_MASK_PMAP_ANIM,
-			DART_SML_MASK_PMAP_ANIM,
-		},
-		{
-			DESTRUCT_BIG_MASK_ANIM,
-			DESTRUCT_MED_MASK_ANIM,
-			DESTRUCT_SML_MASK_ANIM,
-		},
-		{
-			SHOFIXTI_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-	        SHOFIXTI_VICTORY_SONG,
-		SHOFIXTI_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		MISSILE_SPEED * MISSILE_LIFE,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT
 initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
@@ -137,13 +129,13 @@ initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = SHOFIXTI_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = ShofixtiOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	MissileArray[0] = initialize_missile (&MissileBlock);
 
 	return (1);
@@ -152,26 +144,25 @@ initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 static void
 destruct_preprocess (ELEMENT *ElementPtr)
 {
-#define DESTRUCT_SWITCH ((NUM_EXPLOSION_FRAMES * 3) - 3)
 	PRIMITIVE *lpPrim;
 
 	// ship_death() set the ship element's life_span to
 	// (NUM_EXPLOSION_FRAMES * 3)
 	lpPrim = &(GLOBAL (DisplayArray))[ElementPtr->PrimIndex];
 	ElementPtr->state_flags |= CHANGING;
-	if (ElementPtr->life_span > DESTRUCT_SWITCH)
+	if (ElementPtr->life_span > DestructSwitch)
 	{
 		// First, stamp-fill the ship's own element with changing colors
 		// for 3 frames. No explosion element yet.
 		SetPrimType (lpPrim, STAMPFILL_PRIM);
-		if (ElementPtr->life_span == DESTRUCT_SWITCH + 2)
+		if (ElementPtr->life_span == DestructSwitch + 2)
 			SetPrimColor (lpPrim,
 					BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E));
 		else
 			SetPrimColor (lpPrim,
 					BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F));
 	}
-	else if (ElementPtr->life_span < DESTRUCT_SWITCH)
+	else if (ElementPtr->life_span < DestructSwitch)
 	{
 		// Stamp-fill the explosion element with cycling colors for the
 		// remainder of the glory explosion frames.
@@ -247,8 +238,10 @@ destruct_preprocess (ELEMENT *ElementPtr)
 /* In order to detect any Orz Marines that have boarded the ship
    when it self-destructs, we'll need to see some Orz functions */
 #include "../orz/orz.h"
-#define ORZ_MARINE(ptr) (ptr->preprocess_func == intruder_preprocess && \
-		ptr->collision_func == marine_collision)
+static bool isOrzMarine(const ELEMENT &element) noexcept {
+    return element.preprocess_func == intruder_preprocess
+        && element.collision_func == marine_collision;
+}
 
 static void
 self_destruct_kill_objects (ELEMENT *ElementPtr)
@@ -267,7 +260,7 @@ self_destruct_kill_objects (ELEMENT *ElementPtr)
 		LockElement (hElement, &ObjPtr);
 		hNextElement = GetSuccElement (ObjPtr);
 
-		if (!CollidingElement (ObjPtr) && !ORZ_MARINE (ObjPtr))
+		if (!CollidingElement (ObjPtr) && !isOrzMarine (*ObjPtr))
 		{
 			UnlockElement (hElement);
 			continue;
@@ -282,11 +275,11 @@ self_destruct_kill_objects (ELEMENT *ElementPtr)
 		delta_x = WORLD_TO_DISPLAY (delta_x);
 		delta_y = WORLD_TO_DISPLAY (delta_y);
 		dist = delta_x * delta_x + delta_y * delta_y;
-		if (delta_x <= DESTRUCT_RANGE && delta_y <= DESTRUCT_RANGE
-				&& dist <= DESTRUCT_RANGE * DESTRUCT_RANGE)
+		if (delta_x <= DestructRange && delta_y <= DestructRange
+				&& dist <= DestructRange * DestructRange)
 		{
-			int destruction = 1 + MAX_DESTRUCTION *
-					(DESTRUCT_RANGE - square_root (dist)) / DESTRUCT_RANGE;
+			int destruction = 1 + MaxDestruction *
+					(DestructRange - square_root (dist)) / DestructRange;
 
 			// XXX: Why not simply call do_damage()?
 			if (ObjPtr->state_flags & PLAYER_SHIP)
@@ -474,7 +467,7 @@ init_shofixti (void) try
 	// Build a per-instance definition, copied into the native owner.
 	RACE_DESC new_shofixti_desc;
 
-	new_shofixti_desc = shofixti_desc;
+	new_shofixti_desc = shofixtiDefinition();
 	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
 			&& !GET_GAME_STATE (SHOFIXTI_RECRUITED))
 	{
@@ -494,7 +487,7 @@ init_shofixti (void) try
 		new_shofixti_desc.characteristics.weapon_wait = 10;
 		
 		/* Simulate VUX limpets */
-		for (i = 0; i < NUM_LIMPETS; ++i)
+		for (i = 0; i < NumLimpets; ++i)
 		{
 			if (++new_shofixti_desc.characteristics.turn_wait == 0)
 				--new_shofixti_desc.characteristics.turn_wait;
@@ -502,10 +495,9 @@ init_shofixti (void) try
 				--new_shofixti_desc.characteristics.thrust_wait;
 
 /* This should be the same as MIN_THRUST_INCREMENT in vux.c */
-#define MIN_THRUST_INCREMENT DISPLAY_TO_WORLD (1)
 
 			if (new_shofixti_desc.characteristics.thrust_increment <=
-					MIN_THRUST_INCREMENT)
+					MinThrustIncrement)
 			{
 				new_shofixti_desc.characteristics.max_thrust =
 						new_shofixti_desc.characteristics.thrust_increment << 1;

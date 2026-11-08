@@ -18,105 +18,97 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include <optional>
 #include "umgah.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 10
-#define MAX_ENERGY 30
-#define ENERGY_REGENERATION MAX_ENERGY
-#define ENERGY_WAIT 150
-#define MAX_THRUST /* DISPLAY_TO_WORLD (5) */ 18
-#define THRUST_INCREMENT /* DISPLAY_TO_WORLD (2) */ 6
-#define THRUST_WAIT 3
-#define TURN_WAIT 4
-#define SHIP_MASS 1
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("umgah");
+    return value;
+}
+static const uqm::combat::ProjectileStats &coneStats() {
+    static const auto &value = tuning().projectile("cone");
+    return value;
+}
 
-// Antimatter cone
-#define WEAPON_ENERGY_COST 0
-#define WEAPON_WAIT 0
-#define UMGAH_OFFSET 0
-#define CONE_OFFSET 0
-#define CONE_SPEED 0
-#define CONE_HITS 100
-#define CONE_DAMAGE 1
-#define CONE_LIFE 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto UmgahOffset = 0;
+constexpr auto ConeOffset = 0;
+constexpr auto JumpDist = DISPLAY_TO_WORLD (40);
 
-// Retropropulsion
-#define SPECIAL_ENERGY_COST 1
-#define SPECIAL_WAIT 2
-#define JUMP_DIST DISPLAY_TO_WORLD (40)
+static const RACE_DESC &umgahDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | IMMEDIATE_WEAPON,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            UMGAH_RACE_STRINGS,
+            UMGAH_ICON_MASK_PMAP_ANIM,
+            UMGAH_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            833 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                1798, 6000,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                UMGAH_BIG_MASK_PMAP_ANIM,
+                UMGAH_MED_MASK_PMAP_ANIM,
+                UMGAH_SML_MASK_PMAP_ANIM,
+            },
+            {
+                SPRITZ_MASK_PMAP_ANIM,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                CONE_BIG_MASK_ANIM,
+                CONE_MED_MASK_ANIM,
+                CONE_SML_MASK_ANIM,
+            },
+            {
+                UMGAH_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            UMGAH_VICTORY_SONG,
+            UMGAH_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint((LONG_RANGE_WEAPON << 2)),
+            NULL,
+        },
 
-static const RACE_DESC umgah_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | IMMEDIATE_WEAPON,
-		7, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		UMGAH_RACE_STRINGS,
-		UMGAH_ICON_MASK_PMAP_ANIM,
-		UMGAH_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		833 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			1798, 6000,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			UMGAH_BIG_MASK_PMAP_ANIM,
-			UMGAH_MED_MASK_PMAP_ANIM,
-			UMGAH_SML_MASK_PMAP_ANIM,
-		},
-		{
-			SPRITZ_MASK_PMAP_ANIM,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			CONE_BIG_MASK_ANIM,
-			CONE_MED_MASK_ANIM,
-			CONE_SML_MASK_ANIM,
-		},
-		{
-			UMGAH_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		UMGAH_VICTORY_SONG,
-		UMGAH_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		(LONG_RANGE_WEAPON << 2),
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 // Private per-instance ship data
 typedef struct
@@ -212,8 +204,8 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			this_turn = (BYTE)lpEvalDesc->which_turn;
 
 		EnoughJuice = (BOOLEAN)(WORLD_TO_TURN (
-				JUMP_DIST * StarShipPtr->RaceDescPtr->ship_info.energy_level
-				/ SPECIAL_ENERGY_COST
+				JumpDist * StarShipPtr->RaceDescPtr->ship_info.energy_level
+				/ tuning().ship.specialEnergyCost
 				) > this_turn);
 		delta_x = lpEvalDesc->ObjectPtr->next.location.x -
 				ShipPtr->next.location.x;
@@ -295,13 +287,13 @@ initialize_cone (ELEMENT *ShipPtr, HELEMENT ConeArray[])
 	MissileBlock.face = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = UMGAH_OFFSET;
-	MissileBlock.speed = CONE_SPEED;
-	MissileBlock.hit_points = CONE_HITS;
-	MissileBlock.damage = CONE_DAMAGE;
-	MissileBlock.life = CONE_LIFE;
+	MissileBlock.pixoffs = UmgahOffset;
+	MissileBlock.speed = coneStats().speed;
+	MissileBlock.hit_points = coneStats().hitPoints;
+	MissileBlock.damage = coneStats().damage;
+	MissileBlock.life = coneStats().lifetime;
 	MissileBlock.preprocess_func = cone_preprocess;
-	MissileBlock.blast_offs = CONE_OFFSET;
+	MissileBlock.blast_offs = ConeOffset;
 
 	// This func is called every frame while the player is holding down WEAPON
 	// Don't reset the cone FRAME to the first image every time
@@ -369,7 +361,7 @@ umgah_preprocess (ELEMENT *ElementPtr)
 	{
 		if (ElementPtr->thrust_wait == 0
 				&& (StarShipPtr->cur_status_flags & SPECIAL)
-				&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+				&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 		{
 			COUNT facing;
 
@@ -378,12 +370,12 @@ umgah_preprocess (ELEMENT *ElementPtr)
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
 			facing = FACING_TO_ANGLE (StarShipPtr->ShipFacing) + HALF_CIRCLE;
 			DeltaVelocityComponents (&ElementPtr->velocity,
-					COSINE (facing, WORLD_TO_VELOCITY (JUMP_DIST)),
-					SINE (facing, WORLD_TO_VELOCITY (JUMP_DIST)));
+					COSINE (facing, WORLD_TO_VELOCITY (JumpDist)),
+					SINE (facing, WORLD_TO_VELOCITY (JumpDist)));
 			StarShipPtr->cur_status_flags &=
 					~(SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
 
-			StarShipPtr->special_counter = SPECIAL_WAIT;
+			StarShipPtr->special_counter = tuning().ship.specialWait;
 		}
 	}
 }
@@ -439,7 +431,7 @@ RACE_DESC*
 init_umgah (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<UmgahShip>(umgah_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<UmgahShip>(umgahDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("UmgahShip");
     return nullptr;

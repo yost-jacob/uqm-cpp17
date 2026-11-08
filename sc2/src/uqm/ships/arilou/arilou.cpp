@@ -18,100 +18,92 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "arilou.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 6
-#define MAX_ENERGY 20
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 6
-#define MAX_THRUST /* DISPLAY_TO_WORLD (10) */ 40
-#define THRUST_INCREMENT MAX_THRUST
-#define THRUST_WAIT 0
-#define TURN_WAIT 0
-#define SHIP_MASS 1
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("arilou");
+    return value;
+}
 
-// Tracking Laser
-#define WEAPON_ENERGY_COST 2
-#define WEAPON_WAIT 1
-#define ARILOU_OFFSET 9
-#define LASER_RANGE DISPLAY_TO_WORLD (100 + ARILOU_OFFSET)
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto ArilouOffset = 9;
+constexpr auto LaserRange = DISPLAY_TO_WORLD (100 + ArilouOffset);
+constexpr auto HyperLife = 5;
 
-// Teleporter
-#define SPECIAL_ENERGY_COST 3
-#define SPECIAL_WAIT 2
-#define HYPER_LIFE 5
+static const RACE_DESC &arilouDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            /* FIRES_FORE | */ IMMEDIATE_WEAPON,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            ARILOU_RACE_STRINGS,
+            ARILOU_ICON_MASK_PMAP_ANIM,
+            ARILOU_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            250 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                438, 6372,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                ARILOU_BIG_MASK_PMAP_ANIM,
+                ARILOU_MED_MASK_PMAP_ANIM,
+                ARILOU_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                WARP_BIG_MASK_PMAP_ANIM,
+                WARP_MED_MASK_PMAP_ANIM,
+                WARP_SML_MASK_PMAP_ANIM,
+            },
+            {
+                ARILOU_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            ARILOU_VICTORY_SONG,
+            ARILOU_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(LaserRange >> 1),
+            NULL,
+        },
 
-static const RACE_DESC arilou_desc =
-{
-	{ /* SHIP_INFO */
-		/* FIRES_FORE | */ IMMEDIATE_WEAPON,
-		16, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		ARILOU_RACE_STRINGS,
-		ARILOU_ICON_MASK_PMAP_ANIM,
-		ARILOU_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		250 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			438, 6372,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			ARILOU_BIG_MASK_PMAP_ANIM,
-			ARILOU_MED_MASK_PMAP_ANIM,
-			ARILOU_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			WARP_BIG_MASK_PMAP_ANIM,
-			WARP_MED_MASK_PMAP_ANIM,
-			WARP_SML_MASK_PMAP_ANIM,
-		},
-		{
-			ARILOU_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		ARILOU_VICTORY_SONG,
-		ARILOU_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		LASER_RANGE >> 1,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT
 initialize_autoaim_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
@@ -129,11 +121,11 @@ initialize_autoaim_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 
 	LaserBlock.cx = ShipPtr->next.location.x;
 	LaserBlock.cy = ShipPtr->next.location.y;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LASER_RANGE);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LASER_RANGE);
+	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
+	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
 	LaserBlock.sender = ShipPtr->playerNr;
 	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = ARILOU_OFFSET;
+	LaserBlock.pixoffs = ArilouOffset;
 	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
 	LaserArray[0] = initialize_laser (&LaserBlock);
 
@@ -188,7 +180,7 @@ arilou_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			}
 		}
 	}
-	if (StarShipPtr->RaceDescPtr->ship_info.energy_level <= SPECIAL_ENERGY_COST << 1)
+	if (StarShipPtr->RaceDescPtr->ship_info.energy_level <= tuning().ship.specialEnergyCost << 1)
 		StarShipPtr->ship_input_state &= ~WEAPON;
 }
 
@@ -208,7 +200,7 @@ arilou_preprocess (ELEMENT *ElementPtr)
 
 		if ((StarShipPtr->cur_status_flags & SPECIAL)
 				&& StarShipPtr->special_counter == 0
-				&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+				&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 		{
 			/* Special key is pressed; start teleport */
 			ZeroVelocityComponents (&ElementPtr->velocity);
@@ -216,7 +208,7 @@ arilou_preprocess (ELEMENT *ElementPtr)
 					~(SHIP_AT_MAX_SPEED | LEFT | RIGHT | THRUST | WEAPON);
 
 			ElementPtr->state_flags |= NONSOLID | FINITE_LIFE | CHANGING;
-			ElementPtr->life_span = HYPER_LIFE;
+			ElementPtr->life_span = HyperLife;
 
 			ElementPtr->next.image.farray =
 					StarShipPtr->RaceDescPtr->ship_data.special;
@@ -306,7 +298,7 @@ RACE_DESC*
 init_arilou (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<ArilouShip>(arilou_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<ArilouShip>(arilouDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("ArilouShip");
     return nullptr;

@@ -18,104 +18,95 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "slylandr.h"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 12
-#define MAX_ENERGY 20
-#define ENERGY_REGENERATION 0
-#define ENERGY_WAIT 10
-#define MAX_THRUST 60
-#define THRUST_INCREMENT MAX_THRUST
-#define THRUST_WAIT 0
-#define TURN_WAIT 0
-#define SHIP_MASS 1
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("slylandr");
+    return value;
+}
 
-// Lightning weapon
-#define WEAPON_ENERGY_COST 2
-#define WEAPON_WAIT 17
-#define SLYLANDRO_OFFSET 9
-#define LASER_LENGTH 32
-		/* Total length of lighting bolts. Actual range is usually less than
-		 * this, since the lightning rarely is straight. */
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto LaserLength = 32;
+constexpr auto HarvestRange = (208 * 3 / 8);
 
-// Harvester
-#define SPECIAL_ENERGY_COST 0
-#define SPECIAL_WAIT 20
-#define HARVEST_RANGE (208 * 3 / 8)
-		/* Was originally (SPACE_HEIGHT * 3 / 8) */
+// LaserLength counts the full lightning path; its effective straight-line range is shorter.
+// HarvestRange preserves the original fixed world distance rather than depending on resolution.
 
-static const RACE_DESC slylandro_desc =
-{
-	{ /* SHIP_INFO */
-		SEEKING_WEAPON | CREW_IMMUNE,
-		17, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		SLYLANDRO_RACE_STRINGS,
-		SLYLANDRO_ICON_MASK_PMAP_ANIM,
-		SLYLANDRO_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		INFINITE_RADIUS, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			333, 9812,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			SLYLANDRO_BIG_MASK_PMAP_ANIM,
-			SLYLANDRO_MED_MASK_PMAP_ANIM,
-			SLYLANDRO_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			SLYLANDRO_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		SLYLANDRO_VICTORY_SONG,
-		SLYLANDRO_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		CLOSE_RANGE_WEAPON << 1,
-		NULL,
-	},
+static const RACE_DESC &slylandroDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            SEEKING_WEAPON | CREW_IMMUNE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            SLYLANDRO_RACE_STRINGS,
+            SLYLANDRO_ICON_MASK_PMAP_ANIM,
+            SLYLANDRO_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            INFINITE_RADIUS, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                333, 9812,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                SLYLANDRO_BIG_MASK_PMAP_ANIM,
+                SLYLANDRO_MED_MASK_PMAP_ANIM,
+                SLYLANDRO_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                SLYLANDRO_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            SLYLANDRO_VICTORY_SONG,
+            SLYLANDRO_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(CLOSE_RANGE_WEAPON << 1),
+            NULL,
+        },
 
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT initialize_lightning (ELEMENT *ElementPtr,
 		HELEMENT LaserArray[]);
@@ -141,9 +132,9 @@ lightning_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr0, &StarShipPtr);
-	if (StarShipPtr->weapon_counter > WEAPON_WAIT >> 1)
+	if (StarShipPtr->weapon_counter > tuning().ship.weaponWait >> 1)
 		StarShipPtr->weapon_counter =
-				WEAPON_WAIT - StarShipPtr->weapon_counter;
+				tuning().ship.weaponWait - StarShipPtr->weapon_counter;
 	StarShipPtr->weapon_counter -= ElementPtr0->turn_wait;
 	ElementPtr0->turn_wait = 0;
 
@@ -202,10 +193,10 @@ initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 			angle = FACING_TO_ANGLE (facing);
 
 			if ((LaserPtr->turn_wait = StarShipPtr->weapon_counter) == 0)
-				LaserPtr->turn_wait = WEAPON_WAIT;
+				LaserPtr->turn_wait = tuning().ship.weaponWait;
 
-			if (LaserPtr->turn_wait > WEAPON_WAIT >> 1)
-				LaserPtr->turn_wait = WEAPON_WAIT - LaserPtr->turn_wait;
+			if (LaserPtr->turn_wait > tuning().ship.weaponWait >> 1)
+				LaserPtr->turn_wait = tuning().ship.weaponWait - LaserPtr->turn_wait;
 
 			switch (HIBYTE (LOWORD (rand_val)) & 3)
 			{
@@ -245,7 +236,7 @@ initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 		else
 			angle -= LOWORD (rand_val) & (QUADRANT - 1);
 		delta = WORLD_TO_VELOCITY (
-				DISPLAY_TO_WORLD ((HIWORD (rand_val) & (LASER_LENGTH - 1)) + 4)
+				DISPLAY_TO_WORLD ((HIWORD (rand_val) & (LaserLength - 1)) + 4)
 				);
 		SetVelocityComponents (&LaserPtr->velocity,
 				COSINE (angle, delta), SINE (angle, delta));
@@ -328,8 +319,8 @@ harvest_space_junk (ELEMENT *ElementPtr)
 				dy = -dy;
 			dx = WORLD_TO_DISPLAY (dx);
 			dy = WORLD_TO_DISPLAY (dy);
-			if (dx <= HARVEST_RANGE && dy <= HARVEST_RANGE
-					&& dx * dx + dy * dy <= HARVEST_RANGE * HARVEST_RANGE)
+			if (dx <= HarvestRange && dy <= HarvestRange
+					&& dx * dx + dy * dy <= HarvestRange * HarvestRange)
 			{
 				ObjPtr->life_span = 0;
 				ObjPtr->state_flags |= NONSOLID;
@@ -343,7 +334,7 @@ harvest_space_junk (ELEMENT *ElementPtr)
 					GetElementStarShip (ElementPtr, &StarShipPtr);
 					ProcessSound (SetAbsSoundIndex (
 							StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
-					DeltaEnergy (ElementPtr, MAX_ENERGY);
+					DeltaEnergy (ElementPtr, tuning().ship.maxEnergy);
 				}
 			}
 		}
@@ -361,7 +352,7 @@ slylandro_postprocess (ELEMENT *ElementPtr)
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if (StarShipPtr->weapon_counter
-			&& StarShipPtr->weapon_counter < WEAPON_WAIT)
+			&& StarShipPtr->weapon_counter < tuning().ship.weaponWait)
 	{
 		HELEMENT Lightning;
 
@@ -444,7 +435,7 @@ RACE_DESC*
 init_slylandro (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SlylandroShip>(slylandro_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<SlylandroShip>(slylandroDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("SlylandroShip");
     return nullptr;

@@ -18,91 +18,85 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "probe.h"
 #include "resinst.h"
 
-#define MAX_CREW 1
-#define MAX_ENERGY 1
-#define ENERGY_REGENERATION 0
-#define WEAPON_ENERGY_COST 0
-#define SPECIAL_ENERGY_COST 0
-#define ENERGY_WAIT 0
-#define MAX_THRUST 0
-#define THRUST_INCREMENT 0
-#define TURN_WAIT 0
-#define THRUST_WAIT 0
-#define WEAPON_WAIT 0
-#define SPECIAL_WAIT 0
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("probe");
+    return value;
+}
 
-#define SHIP_MASS 0
+static const RACE_DESC &probeDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            0,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            0,
+            0,
+            URQUAN_DRONE_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            0, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                0, 0,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                NULL_RESOURCE,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            NULL_RESOURCE,
+            NULL_RESOURCE,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(0),
+            NULL,
+        },
 
-static const RACE_DESC probe_desc =
-{
-	{ /* SHIP_INFO */
-		0,
-		0, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		0,
-		0,
-		URQUAN_DRONE_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			0, 0,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			NULL_RESOURCE,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		NULL_RESOURCE,
-		NULL_RESOURCE,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		0,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 namespace {
 class UrQuanProbeShip final : public uqm::combat::Ship {
@@ -120,7 +114,7 @@ RACE_DESC*
 init_probe (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanProbeShip>(probe_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<UrQuanProbeShip>(probeDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("UrQuanProbeShip");
     return nullptr;

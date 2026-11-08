@@ -103,3 +103,6 @@ fields are retained. See [the editing and ownership guide](docs/starmap.md).
 
 JSON loading uses the header-only nlohmann/json library (`nlohmann-json3-dev` on
 Ubuntu), also required for the legacy build.
+
+Ship balance values are editable in [`sc2/content/base/ships.json`](sc2/content/base/ships.json).
+See [ship tuning](docs/ship-tuning.md) for fields, units, validation and module-derived behavior.

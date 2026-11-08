@@ -18,6 +18,7 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include <optional>
 #include "sis_ship.h"
 #include "resinst.h"
@@ -28,138 +29,106 @@
 #include "uqm/hyper.h"
 #include "libs/mathlib.h"
 
-/* Core characteristics.
- * All of these are changed at init time by some module, except for
- * MAX_ENERGY, THRUST_INCREMENT, and SHIP_MASS. */
 
-#define MAX_CREW MAX_CREW_SIZE
-		/* This value gets thrown out - actual max crew is determined by the
-		 * number of crew pods. The minimum value is 1 (just the Captain). */
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("sis_ship");
+    return value;
+}
+static const uqm::combat::ProjectileStats &blasterStats() {
+    static const auto &value = tuning().projectile("blaster");
+    return value;
+}
 
-#define MAX_ENERGY MAX_ENERGY_SIZE
-#define ENERGY_REGENERATION 1
-		/* Shiva furnaces increase this by 1 each. */
-#define SHIVA_ENERGY_REGEN_INC 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto ShivaEnergyRegenInc = 1;
+constexpr auto MinEnergyWait = 4;
+constexpr auto DynamoUnitEnergyWaitDec = 2;
+constexpr auto MaxTracking = 3;
+constexpr auto TrackerEnergyCost = 3;
+constexpr auto BlasterOffset = 8;
+constexpr auto SisVertOffset = 28;
+constexpr auto SisHorzOffset = 20;
+constexpr auto AntimissileEnergyInc = 1;
+constexpr auto LaserRange = (UWORD)100;
+constexpr auto MaxDefense = 8;
+constexpr auto MenuDelay = 10;
 
-#define ENERGY_WAIT 10
-		/* Dynamos decrease this by 2 each, to a minimum of 4. */
-#define MIN_ENERGY_WAIT 4
-#define DYNAMO_UNIT_ENERGY_WAIT_DEC 2
+// Flagship JSON values are base values; installed modules derive final characteristics.
+// Crew pods determine capacity (including the captain). Furnaces/dynamos adjust
+// regeneration and delay; thrusters/jets adjust movement. Weapon modules multiply
+// base blaster damage/hit points and extend lifetime. Point defense adds energy cost.
+// SisVertOffset is used by forward/spread/rear guns; SisHorzOffset by side guns.
 
-#define MAX_THRUST 10
-		/* Thrusters increase this and decrease THRUST_WAIT based on
-		 * THRUST_INCREMENT, see InitDriveSlots near the bottom of this file
-		 * for details. */
-#define THRUST_INCREMENT 4
-#define THRUST_WAIT 6
-#define TURN_WAIT 17
-		/* Turning jets decrease by 2 each */
-#define SHIP_MASS MAX_SHIP_MASS
+static const RACE_DESC &sisDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            0,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            NULL_RESOURCE,
+            SIS_ICON_MASK_PMAP_ANIM,
+            NULL_RESOURCE,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            0, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                0, 0,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                SIS_BIG_MASK_PMAP_ANIM,
+                SIS_MED_MASK_PMAP_ANIM,
+                SIS_SML_MASK_PMAP_ANIM,
+            },
+            {
+                BLASTER_BIG_MASK_PMAP_ANIM,
+                BLASTER_MED_MASK_PMAP_ANIM,
+                BLASTER_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                SIS_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            SIS_VICTORY_SONG,
+            SIS_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(blasterStats().speed * blasterStats().lifetime),
+            NULL,
+        },
 
-/* Primary weapon - energy cost and damage change at init time based on
- * the number and type of weapon modules installed. */
-
-#define BLASTER_DAMAGE 2
-		/* This is the damage value for the basic ion bolt guns. Fusion
-		 * blasters and hellbore cannons end up doing (BLASTER_DAMAGE * 2)
-		 * and (BLASTER_DAMAGE * 3) damage, respectively, but this depends
-		 * on enum values. */
-
-#define BLASTER_HITS 2 /* Hitpoints for ion bolt guns, see BLASTER_DAMAGE */
-
-#define WEAPON_ENERGY_COST 1
-		/* This value gets thrown out and reset in an ugly manner based on
-		 * the enum that is used for module IDs. Bigger gun = higher value.
-		 */
-#define WEAPON_WAIT 6
-#define BLASTER_SPEED DISPLAY_TO_WORLD (24)
-#define BLASTER_LIFE 12
-		/* This value is greatly increased, based in part on the enum used
-		 * for module IDs (bigger gun == longer life). See the first half of
-		 * InitWeaponSlots */
-#define MAX_TRACKING 3
-#define TRACKER_ENERGY_COST 3
-#define BLASTER_OFFSET 8
-#define SIS_VERT_OFFSET 28
-		/* Used for foward, spread, and rear slots */
-#define SIS_HORZ_OFFSET 20
-		/* Used for side slot */
-
-/* Secondary weapon */
-#define SPECIAL_ENERGY_COST 0
-		/* Increased by 1 for each point defense module */
-#define ANTIMISSILE_ENERGY_INC 1
-#define SPECIAL_WAIT 9
-#define LASER_RANGE (UWORD)100
-#define MAX_DEFENSE 8
-
-static const RACE_DESC sis_desc =
-{
-	{ /* SHIP_INFO */
-		0,
-		16, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		NULL_RESOURCE,
-		SIS_ICON_MASK_PMAP_ANIM,
-		NULL_RESOURCE,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			0, 0,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			SIS_BIG_MASK_PMAP_ANIM,
-			SIS_MED_MASK_PMAP_ANIM,
-			SIS_SML_MASK_PMAP_ANIM,
-		},
-		{
-			BLASTER_BIG_MASK_PMAP_ANIM,
-			BLASTER_MED_MASK_PMAP_ANIM,
-			BLASTER_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			SIS_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		SIS_VICTORY_SONG,
-		SIS_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		BLASTER_SPEED * BLASTER_LIFE,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 // Private per-instance SIS data
 typedef struct
@@ -359,10 +328,9 @@ sis_hyper_postprocess (ELEMENT *ElementPtr)
 			PulsedInputState.menu[KEY_MENU_CANCEL])
 			&& StarShipPtr->special_counter == 0)
 	{
-#define MENU_DELAY 10
 		HyperspaceMenu ();
 		StarShipPtr->cur_status_flags &= ~SHIP_AT_MAX_SPEED;
-		StarShipPtr->special_counter = MENU_DELAY;
+		StarShipPtr->special_counter = MenuDelay;
 	}
 }
 
@@ -438,11 +406,11 @@ spawn_point_defense (ELEMENT *ElementPtr)
 					delta_y = -delta_y;
 				delta_x = WORLD_TO_DISPLAY (delta_x);
 				delta_y = WORLD_TO_DISPLAY (delta_y);
-				if ((UWORD)delta_x <= LASER_RANGE &&
-						(UWORD)delta_y <= LASER_RANGE &&
+				if ((UWORD)delta_x <= LaserRange &&
+						(UWORD)delta_y <= LaserRange &&
 						(UWORD)delta_x * (UWORD)delta_x +
 						(UWORD)delta_y * (UWORD)delta_y <=
-						LASER_RANGE * LASER_RANGE)
+						LaserRange * LaserRange)
 				{
 					HELEMENT hPointDefense;
 					LASER_BLOCK LaserBlock;
@@ -528,6 +496,13 @@ sis_battle_postprocess (ELEMENT *ElementPtr)
 	}
 }
 
+// Legacy sprites identify the gun tier through its damage multiple. Keep that
+// relationship explicit while allowing the base damage to come from tuning.
+static unsigned blasterTier(BYTE damage) noexcept {
+    const auto base = blasterStats().damage; // Validated positive for the flagship.
+    return damage % base == 0 ? damage / base : 0;
+}
+
 static void
 blaster_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
@@ -540,20 +515,20 @@ blaster_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *BlastElementPtr;
 
 		LockElement (hBlastElement, &BlastElementPtr);
-		switch (ElementPtr0->mass_points)
+		switch (blasterTier(ElementPtr0->mass_points))
 		{
-			case BLASTER_DAMAGE * 1:
+			case 1:
 				BlastElementPtr->life_span = 2;
 				BlastElementPtr->current.image.frame =
 						SetAbsFrameIndex (ElementPtr0->current.image.frame, 0);
 				BlastElementPtr->preprocess_func = NULL;
 				break;
-			case BLASTER_DAMAGE * 2:
+			case 2:
 				BlastElementPtr->life_span = 6;
 				BlastElementPtr->current.image.frame =
 						IncFrameIndex (ElementPtr0->current.image.frame);
 				break;
-			case BLASTER_DAMAGE * 3:
+			case 3:
 				BlastElementPtr->life_span = 7;
 				BlastElementPtr->current.image.frame =
 						SetAbsFrameIndex (ElementPtr0->current.image.frame, 20);
@@ -568,9 +543,9 @@ blaster_preprocess (ELEMENT *ElementPtr)
 {
 	BYTE wait;
 
-	switch (ElementPtr->mass_points)
+	switch (blasterTier(ElementPtr->mass_points))
 	{
-		case BLASTER_DAMAGE * 1:
+		case 1:
 			if (GetFrameIndex (ElementPtr->current.image.frame) < 8)
 			{
 				ElementPtr->next.image.frame =
@@ -578,7 +553,7 @@ blaster_preprocess (ELEMENT *ElementPtr)
 				ElementPtr->state_flags |= CHANGING;
 			}
 			break;
-		case BLASTER_DAMAGE * 3:
+		case 3:
 			if (GetFrameIndex (ElementPtr->current.image.frame) < 19)
 				ElementPtr->next.image.frame =
 						IncFrameIndex (ElementPtr->current.image.frame);
@@ -598,7 +573,7 @@ blaster_preprocess (ELEMENT *ElementPtr)
 		facing = NORMALIZE_FACING (ANGLE_TO_FACING (
 				GetVelocityTravelAngle (&ElementPtr->velocity)));
 		if (TrackShip (ElementPtr, &facing) > 0)
-			SetVelocityVector (&ElementPtr->velocity, BLASTER_SPEED, facing);
+			SetVelocityVector (&ElementPtr->velocity, blasterStats().speed, facing);
 
 		ElementPtr->turn_wait = MAKE_BYTE (wait, wait);
 	}
@@ -744,12 +719,12 @@ InitWeaponSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 				which_gun * 2;
 		
 		lpMB->flags = IGNORE_SIMILAR;
-		lpMB->blast_offs = BLASTER_OFFSET;
-		lpMB->speed = BLASTER_SPEED;
+		lpMB->blast_offs = BlasterOffset;
+		lpMB->speed = blasterStats().speed;
 		lpMB->preprocess_func = blaster_preprocess;
-		lpMB->hit_points = BLASTER_HITS * which_gun;
-		lpMB->damage = BLASTER_DAMAGE * which_gun;
-		lpMB->life = BLASTER_LIFE + ((BLASTER_LIFE >> 2) * (which_gun - 1));
+		lpMB->hit_points = blasterStats().hitPoints * which_gun;
+		lpMB->damage = blasterStats().damage * which_gun;
+		lpMB->life = blasterStats().lifetime + ((blasterStats().lifetime >> 2) * (which_gun - 1));
 
 		if (which_gun == 1)
 			lpMB->index = 0;
@@ -762,12 +737,12 @@ InitWeaponSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 		{
 			case 0: /* NOSE WEAPON */
 				RaceDescPtr->ship_info.ship_flags |= FIRES_FORE;
-				lpMB->pixoffs = SIS_VERT_OFFSET;
+				lpMB->pixoffs = SisVertOffset;
 				lpMB->face = 0;
 				break;
 			case 1: /* SPREAD WEAPON */
 				RaceDescPtr->ship_info.ship_flags |= FIRES_FORE;
-				lpMB->pixoffs = SIS_VERT_OFFSET;
+				lpMB->pixoffs = SisVertOffset;
 				lpMB->face = +1;
 				/* copy it because there are two */
 				lpMB[1] = lpMB[0];
@@ -778,7 +753,7 @@ InitWeaponSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 			case 2: /* SIDE WEAPON */
 				RaceDescPtr->ship_info.ship_flags |=
 						FIRES_LEFT | FIRES_RIGHT;
-				lpMB->pixoffs = SIS_HORZ_OFFSET;
+				lpMB->pixoffs = SisHorzOffset;
 				lpMB->face = ANGLE_TO_FACING (QUADRANT);
 				/* copy it because there are two */
 				lpMB[1] = lpMB[0];
@@ -788,7 +763,7 @@ InitWeaponSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 				break;
 			case NUM_MODULE_SLOTS - 1: /* TAIL WEAPON */
 				RaceDescPtr->ship_info.ship_flags |= FIRES_AFT;
-				lpMB->pixoffs = SIS_VERT_OFFSET;
+				lpMB->pixoffs = SisVertOffset;
 				lpMB->face = ANGLE_TO_FACING (HALF_CIRCLE);
 				break;
 		}
@@ -822,31 +797,31 @@ InitModuleSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 				break;
 			case ANTIMISSILE_DEFENSE:
 				RaceDescPtr->characteristics.special_energy_cost +=
-						ANTIMISSILE_ENERGY_INC;
+						AntimissileEnergyInc;
 				break;
 			case SHIVA_FURNACE:
 				RaceDescPtr->characteristics.energy_regeneration +=
-						SHIVA_ENERGY_REGEN_INC;
+						ShivaEnergyRegenInc;
 				break;
 			case DYNAMO_UNIT:
 				RaceDescPtr->characteristics.energy_wait -=
-						DYNAMO_UNIT_ENERGY_WAIT_DEC;
-				if (RaceDescPtr->characteristics.energy_wait < MIN_ENERGY_WAIT)
-					RaceDescPtr->characteristics.energy_wait = MIN_ENERGY_WAIT;
+						DynamoUnitEnergyWaitDec;
+				if (RaceDescPtr->characteristics.energy_wait < MinEnergyWait)
+					RaceDescPtr->characteristics.energy_wait = MinEnergyWait;
 				break;
 		}
 	}
 
-	if (num_trackers > MAX_TRACKING)
-		num_trackers = MAX_TRACKING;
+	if (num_trackers > MaxTracking)
+		num_trackers = MaxTracking;
 	RaceDescPtr->characteristics.weapon_energy_cost +=
-			num_trackers * TRACKER_ENERGY_COST;
+			num_trackers * TrackerEnergyCost;
 	SisData->num_trackers = num_trackers;
 	if (RaceDescPtr->characteristics.special_energy_cost)
 	{
 		RaceDescPtr->ship_info.ship_flags |= POINT_DEFENSE;
-		if (RaceDescPtr->characteristics.special_energy_cost > MAX_DEFENSE)
-			RaceDescPtr->characteristics.special_energy_cost = MAX_DEFENSE;
+		if (RaceDescPtr->characteristics.special_energy_cost > MaxDefense)
+			RaceDescPtr->characteristics.special_energy_cost = MaxDefense;
 	}
 }
 
@@ -868,7 +843,7 @@ InitDriveSlots (RACE_DESC *RaceDescPtr, const BYTE *DriveSlots)
 		}
 	}
 	RaceDescPtr->characteristics.thrust_wait = (BYTE)(
-			THRUST_WAIT - (RaceDescPtr->characteristics.thrust_wait >> 1));
+			tuning().ship.thrustWait - (RaceDescPtr->characteristics.thrust_wait >> 1));
 	RaceDescPtr->characteristics.max_thrust =
 			((RaceDescPtr->characteristics.max_thrust /
 			RaceDescPtr->characteristics.thrust_increment) + 1)
@@ -944,7 +919,7 @@ init_sis (void) try
 	SIS_DATA empty_data{};
 
 	/* copy initial ship settings to new_sis_desc */
-	new_sis_desc = sis_desc;
+	new_sis_desc = sisDefinition();
 
 	if (inHQSpace ())
 	{

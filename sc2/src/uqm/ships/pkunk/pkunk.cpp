@@ -18,6 +18,7 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include <optional>
 #include "pkunk.h"
 #include "resinst.h"
@@ -26,104 +27,93 @@
 #include "uqm/tactrans.h"
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define MAX_CREW 8
-#define MAX_ENERGY 12
-#define ENERGY_REGENERATION 0
-#define ENERGY_WAIT 0
-#define MAX_THRUST 64
-#define THRUST_INCREMENT 16
-#define THRUST_WAIT 0
-#define TURN_WAIT 0
-#define SHIP_MASS 1
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("pkunk");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Triple Miniguns
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 0
-#define PKUNK_OFFSET 15
-#define MISSILE_OFFSET 1
-#define MISSILE_SPEED DISPLAY_TO_WORLD (24)
-#define MISSILE_LIFE 5
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto PkunkOffset = 15;
+constexpr auto MissileOffset = 1;
+constexpr auto PhoenixLife = 12;
+constexpr auto StartPhoenixColor = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x15, 0x00), 0x7A);
+constexpr auto TransitionLife = 1;
+constexpr auto TransitionSpeed = DISPLAY_TO_WORLD (20);
 
-// Taunt
-#define SPECIAL_ENERGY_COST 2
-#define SPECIAL_WAIT 16
+static const RACE_DESC &pkunkDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | FIRES_LEFT | FIRES_RIGHT,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            PKUNK_RACE_STRINGS,
+            PKUNK_ICON_MASK_PMAP_ANIM,
+            PKUNK_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                502, 401,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                PKUNK_BIG_MASK_PMAP_ANIM,
+                PKUNK_MED_MASK_PMAP_ANIM,
+                PKUNK_SML_MASK_PMAP_ANIM,
+            },
+            {
+                BUG_BIG_MASK_PMAP_ANIM,
+                BUG_MED_MASK_PMAP_ANIM,
+                BUG_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                PKUNK_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            PKUNK_VICTORY_SONG,
+            PKUNK_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(CLOSE_RANGE_WEAPON + 1),
+            NULL,
+        },
 
-// Respawn
-#define PHOENIX_LIFE 12
-#define START_PHOENIX_COLOR BUILD_COLOR (MAKE_RGB15 (0x1F, 0x15, 0x00), 0x7A)
-#define TRANSITION_LIFE 1
-#define TRANSITION_SPEED DISPLAY_TO_WORLD (20)
-
-static const RACE_DESC pkunk_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | FIRES_LEFT | FIRES_RIGHT,
-		20, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		PKUNK_RACE_STRINGS,
-		PKUNK_ICON_MASK_PMAP_ANIM,
-		PKUNK_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			502, 401,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		0, /* SPECIAL_WAIT */
-		SHIP_MASS,
-	},
-	{
-		{
-			PKUNK_BIG_MASK_PMAP_ANIM,
-			PKUNK_MED_MASK_PMAP_ANIM,
-			PKUNK_SML_MASK_PMAP_ANIM,
-		},
-		{
-			BUG_BIG_MASK_PMAP_ANIM,
-			BUG_MED_MASK_PMAP_ANIM,
-			BUG_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			PKUNK_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		PKUNK_VICTORY_SONG,
-		PKUNK_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		CLOSE_RANGE_WEAPON + 1,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 // Private per-instance ship data
 typedef struct
@@ -177,13 +167,13 @@ initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.index = 0;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = PKUNK_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = PkunkOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 
 	for (i = 0; i < 3; ++i)
 	{
@@ -251,7 +241,7 @@ new_pkunk (ELEMENT *ElementPtr)
 	PkunkData = GetCustomShipData (StarShipPtr->RaceDescPtr);
 
 	ElementPtr->state_flags = APPEARING | PLAYER_SHIP | IGNORE_SIMILAR;
-	ElementPtr->mass_points = SHIP_MASS;
+	ElementPtr->mass_points = tuning().ship.shipMass;
 	// Restore the element processing callbacks after the explosion.
 	// The callbacks were changed for the explosion sequence
 	ElementPtr->preprocess_func = PkunkData->saved_preprocess_func;
@@ -260,13 +250,13 @@ new_pkunk (ELEMENT *ElementPtr)
 	// preprocess_func() is called during the phoenix transition and
 	// then cleared, so we need to restore it
 	uqm::combat::shipFor(*StarShipPtr->RaceDescPtr).enablePreprocessing(true);
-	StarShipPtr->RaceDescPtr->ship_info.crew_level = MAX_CREW;
-	StarShipPtr->RaceDescPtr->ship_info.energy_level = MAX_ENERGY;
+	StarShipPtr->RaceDescPtr->ship_info.crew_level = tuning().ship.maxCrew;
+	StarShipPtr->RaceDescPtr->ship_info.energy_level = tuning().ship.maxEnergy;
 				/* fix vux impairment */
-	StarShipPtr->RaceDescPtr->characteristics.max_thrust = MAX_THRUST;
-	StarShipPtr->RaceDescPtr->characteristics.thrust_increment = THRUST_INCREMENT;
-	StarShipPtr->RaceDescPtr->characteristics.turn_wait = TURN_WAIT;
-	StarShipPtr->RaceDescPtr->characteristics.thrust_wait = THRUST_WAIT;
+	StarShipPtr->RaceDescPtr->characteristics.max_thrust = tuning().ship.maxThrust;
+	StarShipPtr->RaceDescPtr->characteristics.thrust_increment = tuning().ship.thrustIncrement;
+	StarShipPtr->RaceDescPtr->characteristics.turn_wait = tuning().ship.turnWait;
+	StarShipPtr->RaceDescPtr->characteristics.thrust_wait = tuning().ship.thrustWait;
 	StarShipPtr->RaceDescPtr->characteristics.special_wait = 0;
 
 	StarShipPtr->ship_input_state = 0;
@@ -375,7 +365,7 @@ spawn_phoenix_trail (ELEMENT *ElementPtr)
 	ElementPtr->colorCycleIndex++;
 	if (ElementPtr->colorCycleIndex != colorTableCount)
 	{
-		ElementPtr->life_span = TRANSITION_LIFE;
+		ElementPtr->life_span = TransitionLife;
 
 		SetPrimColor (&(GLOBAL (DisplayArray))[ElementPtr->PrimIndex],
 				colorTable[ElementPtr->colorCycleIndex]);
@@ -408,12 +398,12 @@ phoenix_transition (ELEMENT *ElementPtr)
 		LockElement (hShipImage, &ShipImagePtr);
 		ShipImagePtr->playerNr = NEUTRAL_PLAYER_NUM;
 		ShipImagePtr->state_flags = APPEARING | FINITE_LIFE | NONSOLID;
-		ShipImagePtr->life_span = TRANSITION_LIFE;
+		ShipImagePtr->life_span = TransitionLife;
 		SetPrimType (&(GLOBAL (DisplayArray))[ShipImagePtr->PrimIndex],
 				STAMPFILL_PRIM);
 		SetPrimColor (
 				&(GLOBAL (DisplayArray))[ShipImagePtr->PrimIndex],
-				START_PHOENIX_COLOR);
+				StartPhoenixColor);
 		ShipImagePtr->colorCycleIndex = 0;
 		ShipImagePtr->current.image = ElementPtr->current.image;
 		ShipImagePtr->current.location = ElementPtr->current.location;
@@ -422,9 +412,9 @@ phoenix_transition (ELEMENT *ElementPtr)
 			angle = ElementPtr->mass_points;
 
 			ShipImagePtr->current.location.x +=
-					COSINE (angle, TRANSITION_SPEED);
+					COSINE (angle, TransitionSpeed);
 			ShipImagePtr->current.location.y +=
-					SINE (angle, TRANSITION_SPEED);
+					SINE (angle, TransitionSpeed);
 			ElementPtr->preprocess_func = NULL;
 		}
 		else
@@ -432,10 +422,10 @@ phoenix_transition (ELEMENT *ElementPtr)
 			angle = FACING_TO_ANGLE (StarShipPtr->ShipFacing);
 
 			ShipImagePtr->current.location.x -=
-					COSINE (angle, TRANSITION_SPEED)
+					COSINE (angle, TransitionSpeed)
 					* (ElementPtr->life_span - 1);
 			ShipImagePtr->current.location.y -=
-					SINE (angle, TRANSITION_SPEED)
+					SINE (angle, TransitionSpeed)
 					* (ElementPtr->life_span - 1);
 
 			ShipImagePtr->current.location.x =
@@ -508,7 +498,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1
 					), ElementPtr);
 
-			ElementPtr->life_span = PHOENIX_LIFE;
+			ElementPtr->life_span = PhoenixLife;
 			SetPrimType (&(GLOBAL (DisplayArray))[ElementPtr->PrimIndex],
 					NO_PRIM);
 			ElementPtr->state_flags |= NONSOLID | FINITE_LIFE | CHANGING;
@@ -578,9 +568,9 @@ pkunk_postprocess (ELEMENT *ElementPtr)
 				), ElementPtr);
 		LastSound = CurSound;
 
-		DeltaEnergy (ElementPtr, SPECIAL_ENERGY_COST);
+		DeltaEnergy (ElementPtr, tuning().ship.specialEnergyCost);
 
-		StarShipPtr->RaceDescPtr->characteristics.special_wait = SPECIAL_WAIT;
+		StarShipPtr->RaceDescPtr->characteristics.special_wait = tuning().ship.specialWait;
 	}
 }
 
@@ -639,7 +629,7 @@ init_pkunk (void) try
 	PKUNK_DATA empty_data{};
 
 	/* copy initial ship settings to the new descriptor */
-	new_pkunk_desc = pkunk_desc;
+	new_pkunk_desc = pkunkDefinition();
 	new_pkunk_desc.data = &empty_data;
 
 	LastSound = 0;

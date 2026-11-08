@@ -18,123 +18,109 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include <optional>
 #include "mmrnmhrm.h"
 #include "resinst.h"
 
-// Core characteristics
-#define MAX_CREW 20
-#define MAX_ENERGY 10
-#define SHIP_MASS 3
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("mmrnmhrm");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// X-Wing characteristics
-#define ENERGY_REGENERATION 2
-#define ENERGY_WAIT 6
-#define MAX_THRUST 20
-#define THRUST_INCREMENT 5
-#define THRUST_WAIT 1
-#define TURN_WAIT 2
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto YwingEnergyRegeneration = 1;
+static auto ywingSpecialEnergyCost() { return tuning().ship.maxEnergy; }
+constexpr auto YwingEnergyWait = 6;
+constexpr auto YwingMaxThrust = 50;
+constexpr auto YwingThrustIncrement = 10;
+constexpr auto YwingThrustWait = 0;
+constexpr auto YwingTurnWait = 14;
+constexpr auto MmrnmhrmOffset = 16;
+constexpr auto CenterOffs = DISPLAY_TO_WORLD (4);
+constexpr auto WingOffs = DISPLAY_TO_WORLD (10);
+constexpr auto LaserRange = DISPLAY_TO_WORLD (125 + MmrnmhrmOffset);
+constexpr auto YwingWeaponEnergyCost = 1;
+constexpr auto YwingWeaponWait = 20;
+constexpr auto LaunchOffs = DISPLAY_TO_WORLD (4);
+constexpr auto MissileOffset = 0;
+constexpr auto TrackWait = 5;
+constexpr auto YwingSpecialWait = 0;
 
-// Y-Wing characteristics
-#define YWING_ENERGY_REGENERATION 1
-#define YWING_SPECIAL_ENERGY_COST MAX_ENERGY
-#define YWING_ENERGY_WAIT 6
-#define YWING_MAX_THRUST 50
-#define YWING_THRUST_INCREMENT 10
-#define YWING_THRUST_WAIT 0
-#define YWING_TURN_WAIT 14
+static const RACE_DESC &mmrnmhrmDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE | IMMEDIATE_WEAPON,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            MMRNMHRM_RACE_STRINGS,
+            MMRNMHRM_ICON_MASK_PMAP_ANIM,
+            MMRNMHRM_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            0, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                0, 0,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                MMRNMHRM_BIG_MASK_PMAP_ANIM,
+                MMRNMHRM_MED_MASK_PMAP_ANIM,
+                MMRNMHRM_SML_MASK_PMAP_ANIM,
+            },
+            {
+                TORP_BIG_MASK_PMAP_ANIM,
+                TORP_MED_MASK_PMAP_ANIM,
+                TORP_SML_MASK_PMAP_ANIM,
+            },
+            {
+                YWING_BIG_MASK_PMAP_ANIM,
+                YWING_MED_MASK_PMAP_ANIM,
+                YWING_SML_MASK_PMAP_ANIM,
+            },
+            {
+                MMRNMHRM_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            MMRNMHRM_VICTORY_SONG,
+            MMRNMHRM_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(CLOSE_RANGE_WEAPON),
+            NULL,
+        },
 
-// X-Wing Lasers
-#define MMRNMHRM_OFFSET 16
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 0
-#define CENTER_OFFS DISPLAY_TO_WORLD (4)
-#define WING_OFFS DISPLAY_TO_WORLD (10)
-#define LASER_RANGE DISPLAY_TO_WORLD (125 + MMRNMHRM_OFFSET)
-
-// Y-Wing Missiles
-#define YWING_WEAPON_ENERGY_COST 1
-#define YWING_WEAPON_WAIT 20
-#define LAUNCH_OFFS DISPLAY_TO_WORLD (4)
-#define MISSILE_OFFSET 0
-#define MISSILE_SPEED DISPLAY_TO_WORLD (20)
-#define MISSILE_LIFE 40
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
-#define TRACK_WAIT 5
-
-// Transform
-#define SPECIAL_ENERGY_COST MAX_ENERGY
-#define SPECIAL_WAIT 0
-#define YWING_SPECIAL_WAIT 0
-
-static const RACE_DESC mmrnmhrm_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE | IMMEDIATE_WEAPON,
-		19, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		MMRNMHRM_RACE_STRINGS,
-		MMRNMHRM_ICON_MASK_PMAP_ANIM,
-		MMRNMHRM_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			0, 0,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			MMRNMHRM_BIG_MASK_PMAP_ANIM,
-			MMRNMHRM_MED_MASK_PMAP_ANIM,
-			MMRNMHRM_SML_MASK_PMAP_ANIM,
-		},
-		{
-			TORP_BIG_MASK_PMAP_ANIM,
-			TORP_MED_MASK_PMAP_ANIM,
-			TORP_SML_MASK_PMAP_ANIM,
-		},
-		{
-			YWING_BIG_MASK_PMAP_ANIM,
-			YWING_MED_MASK_PMAP_ANIM,
-			YWING_SML_MASK_PMAP_ANIM,
-		},
-		{
-			MMRNMHRM_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		MMRNMHRM_VICTORY_SONG,
-		MMRNMHRM_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		CLOSE_RANGE_WEAPON,
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 // Private per-instance ship data
 typedef CHARACTERISTIC_STUFF MMRNMHRM_DATA;
@@ -170,10 +156,10 @@ missile_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->state_flags |= CHANGING;
 
 			SetVelocityVector (&ElementPtr->velocity,
-					MISSILE_SPEED, facing);
+					missileStats().speed, facing);
 		}
 
-		ElementPtr->turn_wait = TRACK_WAIT;
+		ElementPtr->turn_wait = TrackWait;
 	}
 }
 
@@ -289,8 +275,8 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 	GetElementStarShip (ShipPtr, &StarShipPtr);
 	facing = StarShipPtr->ShipFacing;
 	angle = FACING_TO_ANGLE (facing);
-	cx = ShipPtr->next.location.x + COSINE (angle, CENTER_OFFS);
-	cy = ShipPtr->next.location.y + SINE (angle, CENTER_OFFS);
+	cx = ShipPtr->next.location.x + COSINE (angle, CenterOffs);
+	cy = ShipPtr->next.location.y + SINE (angle, CenterOffs);
 
 	if (ShipPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.ship)
 	{
@@ -304,10 +290,10 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 		LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x0A, 0x0A), 0x0C);
 		LaserBlock.face = facing;
 
-		ex = cx + COSINE (angle, LASER_RANGE);
-		ey = cy + SINE (angle, LASER_RANGE);
-		offs_x = -SINE (angle, WING_OFFS);
-		offs_y = COSINE (angle, WING_OFFS);
+		ex = cx + COSINE (angle, LaserRange);
+		ey = cy + SINE (angle, LaserRange);
+		offs_x = -SINE (angle, WingOffs);
+		offs_y = COSINE (angle, WingOffs);
 
 		LaserBlock.cx = cx + offs_x;
 		LaserBlock.cy = cy + offs_y;
@@ -340,23 +326,23 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 		TorpBlock.sender = ShipPtr->playerNr;
 		TorpBlock.flags = IGNORE_SIMILAR;
 		TorpBlock.pixoffs = 0;
-		TorpBlock.speed = MISSILE_SPEED;
-		TorpBlock.hit_points = MISSILE_HITS;
-		TorpBlock.damage = MISSILE_DAMAGE;
-		TorpBlock.life = MISSILE_LIFE;
+		TorpBlock.speed = missileStats().speed;
+		TorpBlock.hit_points = missileStats().hitPoints;
+		TorpBlock.damage = missileStats().damage;
+		TorpBlock.life = missileStats().lifetime;
 		TorpBlock.preprocess_func = missile_preprocess;
-		TorpBlock.blast_offs = MISSILE_OFFSET;
+		TorpBlock.blast_offs = MissileOffset;
 
 		TorpBlock.face = TorpBlock.index = NORMALIZE_FACING (facing - 1);
-		offs_x = -SINE (FACING_TO_ANGLE (TorpBlock.face), LAUNCH_OFFS);
-		offs_y = COSINE (FACING_TO_ANGLE (TorpBlock.face), LAUNCH_OFFS);
+		offs_x = -SINE (FACING_TO_ANGLE (TorpBlock.face), LaunchOffs);
+		offs_y = COSINE (FACING_TO_ANGLE (TorpBlock.face), LaunchOffs);
 
 		TorpBlock.cx = cx + offs_x;
 		TorpBlock.cy = cy + offs_y;
 		if ((WeaponArray[0] = initialize_missile (&TorpBlock)))
 		{
 			LockElement (WeaponArray[0], &TorpPtr);
-			TorpPtr->turn_wait = TRACK_WAIT;
+			TorpPtr->turn_wait = TrackWait;
 			UnlockElement (WeaponArray[0]);
 		}
 
@@ -367,7 +353,7 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 		if ((WeaponArray[1] = initialize_missile (&TorpBlock)))
 		{
 			LockElement (WeaponArray[1], &TorpPtr);
-			TorpPtr->turn_wait = TRACK_WAIT;
+			TorpPtr->turn_wait = TrackWait;
 			UnlockElement (WeaponArray[1]);
 		}
 	}
@@ -518,19 +504,19 @@ init_mmrnmhrm (void) try
 	RACE_DESC new_mmrnmhrm_desc;
 	MMRNMHRM_DATA otherwing_desc;
 
-	new_mmrnmhrm_desc = mmrnmhrm_desc;
+	new_mmrnmhrm_desc = mmrnmhrmDefinition();
 
-	otherwing_desc.max_thrust = YWING_MAX_THRUST;
-	otherwing_desc.thrust_increment = YWING_THRUST_INCREMENT;
-	otherwing_desc.energy_regeneration = YWING_ENERGY_REGENERATION;
-	otherwing_desc.weapon_energy_cost = YWING_WEAPON_ENERGY_COST;
-	otherwing_desc.special_energy_cost = YWING_SPECIAL_ENERGY_COST;
-	otherwing_desc.energy_wait = YWING_ENERGY_WAIT;
-	otherwing_desc.turn_wait = YWING_TURN_WAIT;
-	otherwing_desc.thrust_wait = YWING_THRUST_WAIT;
-	otherwing_desc.weapon_wait = YWING_WEAPON_WAIT;
-	otherwing_desc.special_wait = YWING_SPECIAL_WAIT;
-	otherwing_desc.ship_mass = SHIP_MASS;
+	otherwing_desc.max_thrust = YwingMaxThrust;
+	otherwing_desc.thrust_increment = YwingThrustIncrement;
+	otherwing_desc.energy_regeneration = YwingEnergyRegeneration;
+	otherwing_desc.weapon_energy_cost = YwingWeaponEnergyCost;
+	otherwing_desc.special_energy_cost = ywingSpecialEnergyCost();
+	otherwing_desc.energy_wait = YwingEnergyWait;
+	otherwing_desc.turn_wait = YwingTurnWait;
+	otherwing_desc.thrust_wait = YwingThrustWait;
+	otherwing_desc.weapon_wait = YwingWeaponWait;
+	otherwing_desc.special_wait = YwingSpecialWait;
+	otherwing_desc.ship_mass = tuning().ship.shipMass;
 
 	new_mmrnmhrm_desc.data = &otherwing_desc;
 

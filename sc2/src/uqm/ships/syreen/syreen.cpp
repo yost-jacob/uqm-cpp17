@@ -18,106 +18,98 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "syreen.h"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
 
-// Core characteristics
-#define SYREEN_MAX_CREW_SIZE MAX_CREW_SIZE
-#define MAX_CREW 12
-#define MAX_ENERGY 16
-#define ENERGY_REGENERATION 1
-#define ENERGY_WAIT 6
-#define MAX_THRUST /* DISPLAY_TO_WORLD (8) */ 36
-#define THRUST_INCREMENT /* DISPLAY_TO_WORLD (2) */ 9
-#define THRUST_WAIT 1
-#define TURN_WAIT 1
-#define SHIP_MASS 2
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("syreen");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Particle Beam Stiletto
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 8
-#define SYREEN_OFFSET 30
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
-#define MISSILE_LIFE 10
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 2
-#define MISSILE_OFFSET 3
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto SyreenMaxCrewSize = MAX_CREW_SIZE;
+constexpr auto SyreenOffset = 30;
+constexpr auto MissileOffset = 3;
+constexpr auto AbandonerRange = 208;
+constexpr auto MaxAbandoners = 8;
 
-// Syreen song
-#define SPECIAL_ENERGY_COST 5
-#define SPECIAL_WAIT 20
-#define ABANDONER_RANGE 208 /* originally SPACE_HEIGHT */
-#define MAX_ABANDONERS 8
+static const RACE_DESC &syreenDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, SyreenMaxCrewSize,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            SYREEN_RACE_STRINGS,
+            SYREEN_ICON_MASK_PMAP_ANIM,
+            SYREEN_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            0, /* Initial sphere of influence radius */
+            { /* Known location (center of SoI) */
+                0, 0,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                SYREEN_BIG_MASK_PMAP_ANIM,
+                SYREEN_MED_MASK_PMAP_ANIM,
+                SYREEN_SML_MASK_PMAP_ANIM,
+            },
+            {
+                DAGGER_BIG_MASK_PMAP_ANIM,
+                DAGGER_MED_MASK_PMAP_ANIM,
+                DAGGER_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                SYREEN_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            SYREEN_VICTORY_SONG,
+            SYREEN_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint((missileStats().speed * missileStats().lifetime * 2 / 3)),
+            NULL,
+        },
 
-static const RACE_DESC syreen_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE,
-		13, /* Super Melee cost */
-		MAX_CREW, SYREEN_MAX_CREW_SIZE,
-		MAX_ENERGY, MAX_ENERGY,
-		SYREEN_RACE_STRINGS,
-		SYREEN_ICON_MASK_PMAP_ANIM,
-		SYREEN_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			0, 0,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			SYREEN_BIG_MASK_PMAP_ANIM,
-			SYREEN_MED_MASK_PMAP_ANIM,
-			SYREEN_SML_MASK_PMAP_ANIM,
-		},
-		{
-			DAGGER_BIG_MASK_PMAP_ANIM,
-			DAGGER_MED_MASK_PMAP_ANIM,
-			DAGGER_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			SYREEN_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		SYREEN_VICTORY_SONG,
-		SYREEN_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		(MISSILE_SPEED * MISSILE_LIFE * 2 / 3),
-		NULL,
-	},
-
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static COUNT
 initialize_dagger (ELEMENT *ShipPtr, HELEMENT DaggerArray[])
@@ -132,13 +124,13 @@ initialize_dagger (ELEMENT *ShipPtr, HELEMENT DaggerArray[])
 	MissileBlock.face = MissileBlock.index = StarShipPtr->ShipFacing;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = SYREEN_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = SyreenOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	DaggerArray[0] = initialize_missile (&MissileBlock);
 
 	return (1);
@@ -197,16 +189,16 @@ spawn_crew (ELEMENT *ElementPtr)
 
 				dx = WORLD_TO_DISPLAY (dx);
 				dy = WORLD_TO_DISPLAY (dy);
-				if (dx <= ABANDONER_RANGE && dy <= ABANDONER_RANGE
+				if (dx <= AbandonerRange && dy <= AbandonerRange
 						&& (d_squared = (DWORD)((UWORD)dx * (UWORD)dx)
 						+ (DWORD)((UWORD)dy * (UWORD)dy)) <=
-						(DWORD)((UWORD)ABANDONER_RANGE * (UWORD)ABANDONER_RANGE))
+						(DWORD)((UWORD)AbandonerRange * (UWORD)AbandonerRange))
 				{
 					COUNT crew_loss;
 
-					crew_loss = ((MAX_ABANDONERS
-							* (ABANDONER_RANGE - square_root (d_squared)))
-							/ ABANDONER_RANGE) + 1;
+					crew_loss = ((MaxAbandoners
+							* (AbandonerRange - square_root (d_squared)))
+							/ AbandonerRange) + 1;
 					if (crew_loss >= ObjPtr->crew_level)
 						crew_loss = ObjPtr->crew_level - 1;
 
@@ -254,7 +246,7 @@ syreen_postprocess (ELEMENT *ElementPtr)
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		ProcessSound (SetAbsSoundIndex (
 						/* SYREEN_SONG */
@@ -287,7 +279,7 @@ RACE_DESC*
 init_syreen (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<SyreenShip>(syreen_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<SyreenShip>(syreenDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("SyreenShip");
     return nullptr;

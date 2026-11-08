@@ -18,107 +18,99 @@
 
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/ship_tuning.hpp"
 #include "ilwrath.h"
 #include "resinst.h"
 
 #include "uqm/colors.h"
 #include "uqm/globdata.h"
 
-// Core characteristics
-#define MAX_CREW 22
-#define MAX_ENERGY 16
-#define ENERGY_REGENERATION 4
-#define ENERGY_WAIT 4
-#define MAX_THRUST 25
-#define THRUST_INCREMENT 5
-#define THRUST_WAIT 0
-#define TURN_WAIT 2
-#define SHIP_MASS 7
-#define LOOK_AHEAD 4
-		/* Controls how much the auto-turn will attempt to "lead"
-		 * its target. */
+// Balance values are immutable, loaded from base/ships.json at startup.
+static const uqm::combat::ShipTuning &tuning() {
+    static const auto &value = uqm::combat::shipTuning("ilwrath");
+    return value;
+}
+static const uqm::combat::ProjectileStats &missileStats() {
+    static const auto &value = tuning().projectile("missile");
+    return value;
+}
 
-// Hellfire Spout
-#define WEAPON_ENERGY_COST 1
-#define WEAPON_WAIT 0
-#define MISSILE_LIFE 8
-#define ILWRATH_OFFSET 29
-#define MISSILE_SPEED MAX_THRUST
-#define MISSILE_HITS 1
-#define MISSILE_DAMAGE 1
-#define MISSILE_OFFSET 0
+// Fixed geometry, frame layout, capacities, and derived calculations.
+constexpr auto LookAhead = 4;
+constexpr auto IlwrathOffset = 29;
+constexpr auto MissileOffset = 0;
 
-// Cloaking Device
-#define SPECIAL_ENERGY_COST 3
-#define SPECIAL_WAIT 13
+// LookAhead controls how far auto-turn leads its target.
 
-static const RACE_DESC ilwrath_desc =
-{
-	{ /* SHIP_INFO */
-		FIRES_FORE,
-		10, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		ILWRATH_RACE_STRINGS,
-		ILWRATH_ICON_MASK_PMAP_ANIM,
-		ILWRATH_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		1410 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			48, 1700,
-		},
-	},
-	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
-		{
-			ILWRATH_BIG_MASK_PMAP_ANIM,
-			ILWRATH_MED_MASK_PMAP_ANIM,
-			ILWRATH_SML_MASK_PMAP_ANIM,
-		},
-		{
-			FIRE_BIG_MASK_PMAP_ANIM,
-			FIRE_MED_MASK_PMAP_ANIM,
-			FIRE_SML_MASK_PMAP_ANIM,
-		},
-		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			ILWRATH_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL
-		},
-		ILWRATH_VICTORY_SONG,
-		ILWRATH_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
-		0,
-		CLOSE_RANGE_WEAPON,
-		NULL,
-	},
+static const RACE_DESC &ilwrathDefinition() {
+    static const RACE_DESC definition = {
+        { /* SHIP_INFO */
+            FIRES_FORE,
+            tuning().ship.meleeCost, /* Super Melee cost */
+            tuning().ship.maxCrew, tuning().ship.maxCrew,
+            tuning().ship.maxEnergy, tuning().ship.maxEnergy,
+            ILWRATH_RACE_STRINGS,
+            ILWRATH_ICON_MASK_PMAP_ANIM,
+            ILWRATH_MICON_MASK_PMAP_ANIM,
+            NULL, NULL, NULL
+        },
+        { /* FLEET_STUFF */
+            1410 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+            { /* Known location (center of SoI) */
+                48, 1700,
+            },
+        },
+        {
+            tuning().ship.maxThrust,
+            tuning().ship.thrustIncrement,
+            static_cast<BYTE>(tuning().ship.energyRegeneration),
+            tuning().ship.weaponEnergyCost,
+            tuning().ship.specialEnergyCost,
+            tuning().ship.energyWait,
+            tuning().ship.turnWait,
+            tuning().ship.thrustWait,
+            tuning().ship.weaponWait,
+            tuning().ship.specialWait,
+            tuning().ship.shipMass,
+        },
+        {
+            {
+                ILWRATH_BIG_MASK_PMAP_ANIM,
+                ILWRATH_MED_MASK_PMAP_ANIM,
+                ILWRATH_SML_MASK_PMAP_ANIM,
+            },
+            {
+                FIRE_BIG_MASK_PMAP_ANIM,
+                FIRE_MED_MASK_PMAP_ANIM,
+                FIRE_SML_MASK_PMAP_ANIM,
+            },
+            {
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+                NULL_RESOURCE,
+            },
+            {
+                ILWRATH_CAPTAIN_MASK_PMAP_ANIM,
+                NULL, NULL, NULL, NULL, NULL
+            },
+            ILWRATH_VICTORY_SONG,
+            ILWRATH_SHIP_SOUNDS,
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            { NULL, NULL, NULL },
+            NULL, NULL
+        },
+        {
+            0,
+            uqm::combat::weaponRangeHint(CLOSE_RANGE_WEAPON),
+            NULL,
+        },
 
-	0,
-	0, /* CodeRef */
-};
+        0,
+        0, /* CodeRef */
+    };
+    return definition;
+}
 
 static void
 flame_preprocess (ELEMENT *ElementPtr)
@@ -198,13 +190,13 @@ initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
 	MissileBlock.index = 0;
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
-	MissileBlock.pixoffs = ILWRATH_OFFSET;
-	MissileBlock.speed = MISSILE_SPEED;
-	MissileBlock.hit_points = MISSILE_HITS;
-	MissileBlock.damage = MISSILE_DAMAGE;
-	MissileBlock.life = MISSILE_LIFE;
+	MissileBlock.pixoffs = IlwrathOffset;
+	MissileBlock.speed = missileStats().speed;
+	MissileBlock.hit_points = missileStats().hitPoints;
+	MissileBlock.damage = missileStats().damage;
+	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = flame_preprocess;
-	MissileBlock.blast_offs = MISSILE_OFFSET;
+	MissileBlock.blast_offs = MissileOffset;
 	FlameArray[0] = initialize_missile (&MissileBlock);
 
 	if (FlameArray[0])
@@ -243,7 +235,7 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 
 		color = GetPrimColor (lpPrim);
 		weapon_discharge = ((status_flags & WEAPON)
-				&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= WEAPON_ENERGY_COST);
+				&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= tuning().ship.weaponEnergyCost);
 		if (weapon_discharge
 				|| (StarShipPtr->special_counter == 0
 				&& ((status_flags & SPECIAL) ||
@@ -288,9 +280,9 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 
 						LockElement (ElementPtr->hTarget, &eptr);
 						v = eptr->velocity;
-						GetNextVelocityComponents (&v, &dx0, &dy0, LOOK_AHEAD);
+						GetNextVelocityComponents (&v, &dx0, &dy0, LookAhead);
 						v = ElementPtr->velocity;
-						GetNextVelocityComponents (&v, &dx1, &dy1, LOOK_AHEAD);
+						GetNextVelocityComponents (&v, &dx1, &dy1, LookAhead);
 						dx0 = (eptr->current.location.x + dx0)
 								- (ElementPtr->current.location.x + dx1);
 						dy0 = (eptr->current.location.y + dy0)
@@ -319,7 +311,7 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 								dx0 += dx1;
 								dy0 += dy1;
 								GetNextVelocityComponents (&temp_v,
-										&dx1, &dy1, LOOK_AHEAD);
+										&dx1, &dy1, LookAhead);
 								dx0 -= dx1;
 								dy0 -= dy1;
 								StarShipPtr->ShipFacing =
@@ -373,7 +365,7 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 
 	if ((status_flags & SPECIAL)
 			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& DeltaEnergy (ElementPtr, -tuning().ship.specialEnergyCost))
 	{
 		SetPrimColor (lpPrim,
 				BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F));
@@ -411,7 +403,7 @@ RACE_DESC*
 init_ilwrath (void) try
 {
 
-	return uqm::combat::releaseToLegacy(std::make_unique<IlwrathShip>(ilwrath_desc));
+	return uqm::combat::releaseToLegacy(std::make_unique<IlwrathShip>(ilwrathDefinition()));
 } catch (...) {
     uqm::combat::logShipCreationFailure("IlwrathShip");
     return nullptr;
