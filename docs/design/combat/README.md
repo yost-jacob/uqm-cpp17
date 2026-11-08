@@ -6,6 +6,9 @@ executable ownership/motion prototype, exercised by Boost.Test. It is linked onl
 into the test executable, never the game. It is not a second combat engine or a
 claim that the legacy physics/collision pipeline has been migrated.
 
+See the [runtime architecture map](../runtime-map.md) for the campaign dispatcher,
+state ownership, and remaining C/C++ boundaries.
+
 ## Live migration status
 
 All 28 ship implementations now compile as C++17 concrete classes derived from
