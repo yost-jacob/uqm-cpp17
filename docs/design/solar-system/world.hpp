@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 #include <vector>
-#include "campaign_state.hpp"
+#include "world_state.hpp"
 
 namespace uqm::design {
 class WorldBehavior;
@@ -13,7 +13,7 @@ class GameSession;
 class RandomStream; // Future adapter over the existing compatible RNG.
 struct GenerationContext {
     const StarDesc &star;
-    const CampaignState &campaign;
+    const WorldState &universe;
     RandomStream &random;
     // Borrowed for a generation call only; handlers must not retain this context.
 };
@@ -40,17 +40,17 @@ struct SurfaceState {
 };
 
 // Owns one visitable world's local data, working progress and runtime behavior.
-// Holds shared campaign ownership so queued/local worlds cannot outlive their
+// Holds shared universe ownership so queued/local worlds cannot outlive their
 // state. This does not make World itself thread-safe: its runtime data belongs
 // to its simulation thread. Network threads submit commands, not method calls.
 class World {
 public:
-    // campaign and behavior must be non-null. The campaign is the authoritative
-    // store; copy an initial progress snapshot for local presentation only.
+    // universe and behavior must be non-null. Physical state belongs to this
+    // shared universe; no player's private campaign is retained by a World.
     // Construction establishes ownership without running a story encounter.
-    World(std::shared_ptr<CampaignState> campaign, WorldDefinition definition,
+    World(std::shared_ptr<WorldState> universe, WorldDefinition definition,
             std::unique_ptr<WorldBehavior> behavior);
-    // Cleanup only. Persistent claims were already committed through tryCollect;
+    // Cleanup only. Persistent claims were already committed through StateActions;
     // explicit checkpointing happens before teardown, never a throwing final
     // state write from a destructor. Defined out of line for incomplete behavior.
     ~World() noexcept;
@@ -70,26 +70,27 @@ public:
     void addChild(std::unique_ptr<World> child);
     // Generate physical details without launching conversations or battles.
     void generate(GenerationContext &context);
-    // session must be attached to the same campaign instance. Handlers read live
-    // state; keeping an old shared_ptr alive does not authorize stale actions.
+    // session must be attached to this universe. Handlers consult shared world
+    // facts AND the interacting player's private campaign through that session.
     void enterOrbit(GameSession &session);
     bool collected(NodeId node) const;
     // Submit pickup through the authoritative interaction path. Resolve story
     // eligibility on the simulation thread, then atomically claim/reward through
-    // campaign.tryCollect. Never award twice or treat a local mask as authority.
+    // StateActions across session.campaign() and the universe. Never award twice
+    // or treat a local mask as authority.
     void collect(GameSession &session, NodeId node);
     // Merge only confirmed progress for self/children; never replace masks or
     // grant cargo here. May throw on lock/allocation failure. Call explicitly
     // for save/leave; never rely on destruction to publish the first pickup.
     void commitProgress();
-    WorldProgress progress() const; // Fresh campaign snapshot, not an unsafe ref.
+    WorldProgress progress() const; // Fresh shared-world snapshot, not an unsafe ref.
     // Surface exists only when generated. Access without one throws logic_error.
     const SurfaceState &surface() const;
     void setSurface(SurfaceState surface);
 
 private:
     WorldDefinition definition_;
-    std::shared_ptr<CampaignState> campaign_;
+    std::shared_ptr<WorldState> universe_;
     WorldProgress confirmedProgress_; // Local cache/checkpoint, never authority.
     std::unique_ptr<WorldBehavior> behavior_;
     std::vector<std::unique_ptr<World>> children_;
@@ -111,6 +112,6 @@ private:
 // Build the system before handing it to the session. Initially this can adapt
 // existing generation algorithms. Existing seed coercion/draw order stay intact.
 std::unique_ptr<SolarSystem> generateSystem(const StarDesc &star,
-        std::shared_ptr<CampaignState> campaign, RandomStream &random);
+        std::shared_ptr<WorldState> universe, RandomStream &random);
 } // namespace uqm::design
 #endif

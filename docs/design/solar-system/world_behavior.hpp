@@ -20,7 +20,7 @@ public:
     // Return true if the node should be removed and its progress bit marked.
     // Overrides resolve story eligibility on the authoritative simulation thread.
     // World/session then use the atomic shared claim/reward operation. Behavior
-    // methods never run under CampaignState's mutex or on a network I/O thread.
+    // methods never run under either state mutex or on a network I/O thread.
     virtual bool pickup(GameSession &session, World &world, NodeId node);
 };
 class SolBehavior final : public WorldBehavior {

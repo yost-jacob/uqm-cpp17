@@ -1,30 +1,35 @@
-# Solar-system and campaign architecture wireframe
+# Personal campaign, shared universe, and world behavior wireframe
 
 This is a **declaration-only C++17 design sketch**, not a gameplay implementation.
-Nothing here is included in CMake, a legacy source manifest, or an existing game
-file. Non-template methods intentionally have no definitions: this sketch can
-be syntax-checked, but it is not a linkable replacement for today's gameplay.
-It does not instantiate a second campaign alongside `GlobData`.
+It adds no production integration, threads, locking implementation or networking.
+Non-template methods intentionally have no definitions: syntax-check these headers,
+but do not try to link them into the game. No second state store runs alongside
+GlobData. Existing game sources and build manifests remain unchanged.
 
-Start with `campaign_state.hpp` for persistent data, `world.hpp` for ownership,
-`world_behavior.hpp` for the virtual hierarchy, and `game_session.hpp` for the
-running session and save/load boundary. The only existing project dependency is
-the C++ `StarId`/`StarDesc` declaration in `uqm/star_map.hpp`.
+Read [CampaignState](campaign_state.hpp) for a player's portable information,
+[WorldState](world_state.hpp) for shared universe facts and public presence,
+[World](world.hpp) for local runtime ownership, [WorldBehavior](world_behavior.hpp)
+for virtual dispatch and [GameSession](game_session.hpp) for their connection.
+[Common types](state_types.hpp) contain only values and stable IDs.
 
 ```mermaid
 classDiagram
-    GameSession "many" o-- "1" CampaignState : shared_ptr
-    World "many" o-- "1" CampaignState : shared_ptr
+    GameSession "1" o-- "1" CampaignState : personal shared_ptr
+    GameSession "many" o-- "1" WorldState : universe shared_ptr
+    World "many" o-- "1" WorldState : universe shared_ptr
+    CampaignState *-- CampaignSnapshot : private locked data
+    CampaignSnapshot *-- UserProfile
+    CampaignSnapshot *-- FlagshipState
+    WorldState *-- WorldSnapshot : private locked data
+    WorldSnapshot *-- WorldProgress : keyed by WorldId
+    WorldState *-- PlayerPresence : runtime public projections
     GameSession "1" *-- "0..1" SolarSystem : unique_ptr
-    CampaignState *-- CampaignSnapshot : guarded data_
-    CampaignState *-- shared_mutex : private mutex_
-    CampaignSnapshot *-- WorldProgress : keyed by WorldId
-    CampaignSnapshot *-- FlagshipState : keyed by PlayerId
-    CampaignSnapshot *-- CampaignClock
-    SolarSystem "1" *-- "0..*" World : unique ownership
+    SolarSystem "1" *-- "0..*" World
     World "1" *-- "0..*" World : moons and orbital locations
     World "1" *-- "1" WorldBehavior : unique_ptr
-    World *-- SurfaceState : simulation-thread local
+    World *-- SurfaceState : local runtime
+    StateActions ..> CampaignState : coordinated mutation
+    StateActions ..> WorldState : coordinated mutation
     WorldBehavior <|-- SolBehavior
     WorldBehavior <|-- ChmmrBehavior
     WorldBehavior <|-- ThraddashBehavior
@@ -32,191 +37,183 @@ classDiagram
     WorldBehavior <|-- SaMatraBehavior
 ```
 
-## Shared state and synchronization contract
+## Personal versus shared information
 
-GameSession and World each retain a non-null `shared_ptr<CampaignState>`. Several
-players/sessions may attach to the same campaign, and a world or outstanding job
-can retain the old campaign after one session detaches. CampaignState does not
-own sessions or worlds: there is no strong-reference cycle. A later callback
-that needs a session should use a weak_ptr or an explicit queued ID rather than
-create a cycle. Worlds, children and behavior objects still use unique ownership.
+| Owner | Representative information |
+|---|---|
+| CampaignState, one per user | UserProfile, ship/cargo/equipment, escorts, personal story flags/counters, visited-world knowledge, personal scheduled events |
+| WorldState, shared universe | Physical world flags, retrieved-node masks, NPC fleets, authoritative calendar/events |
+| WorldState public presence | Accepted player position, display name, facing, space/system/world coordinate frame |
+| World / GameSession runtime | Current view and interaction, local surfaces, behavior object, rendering and input |
 
-**A shared_ptr keeps an object alive; it does not make that object thread-safe.**
-Different shared_ptr copies can share ownership safely, but racing reads/writes
-of the same session's shared_ptr member still requires synchronization. The
-session, World, behavior and local surface objects remain simulation-thread
-confined. A task receives its own shared_ptr copy before being handed to another
-thread; it cannot concurrently change a session's attachment or local runtime.
+A shared WorldState does not contain all private player campaigns. Each campaign
+encapsulates one stable PlayerId and display profile. UserProfile contains no
+passwords, authentication credentials, socket or UI object. Personal snapshots
+can be saved, loaded or hosted independently of runtime sessions later.
 
-CampaignState reserves a private `mutable std::shared_mutex`. Future method bodies
-must use `std::shared_lock` for reads and `std::unique_lock` for writes. Containers
-stay private. Queries return value snapshots, not references into containers after
-a lock has been released. Bool/counter reads and the 12-byte collection-mask copy
-are small; larger snapshots deliberately copy vectors/maps when requested.
-No lock guard or mutable record reference is exposed to callers.
+These are representative fields, not a final story schema. Freeing the Chmmr is
+shown as a shared physical WorldFlag; carrying the Sun Device is personal. We
+still need to decide which legacy quest/dialogue counters are personal, shared
+or instanced. World generation receives shared world state so all players see
+the same physical layout; personal conditions affect their interactions rather
+than silently creating contradictory shared geography.
 
-`CampaignSnapshot` contains story flags/counters, per-world masks, per-player
-flagships, fleet progress, a clock/event list and a revision. `snapshot()` copies
-all these under one read lock, producing a coherent point-in-time save value.
-Serialization happens after releasing the lock. Mutexes and ownership handles
-are never serialized. This is a synchronization contract in declarations only:
-there is no locking or concurrency implementation in this wireframe.
+UniverseId binds a campaign's visited-world IDs and story policy to an instance.
+WorldId is `(StarId, planet slot, optional moon slot)` within that instance, not
+a hash/address or drawing order. Cross-universe campaign transfers need an
+explicit compatibility policy for identities, seeds, progress and deadlines.
+A stable identifier in this sketch does not define its final UUID/wire format.
 
-Multi-field mutations update private data under one guard; they must not call
-another public lock-taking method and recursively acquire this non-recursive
-mutex. Begin with one campaign mutex; finer-grained locking is a later measured
-decision rather than a new lock hierarchy now.
-
-For example, two local player sessions can retain the same campaign owner:
+For example, two users can join the same universe with separate campaigns:
 
 ```cpp
-auto universe = std::make_shared<CampaignState>();
-universe->addPlayer(PlayerId{1}, FlagshipState{});
-universe->addPlayer(PlayerId{2}, FlagshipState{});
-GameSession alice{PlayerId{1}, universe};
-GameSession bob{PlayerId{2}, universe};
+auto universe = std::make_shared<WorldState>(UniverseId{1});
+auto alice = std::make_shared<CampaignState>(UserProfile{PlayerId{1}, "Alice"});
+auto bob = std::make_shared<CampaignState>(UserProfile{PlayerId{2}, "Bob"});
+alice->bindUniverse(UniverseId{1});
+bob->bindUniverse(UniverseId{1});
+GameSession aliceSession{alice, universe};
+GameSession bobSession{bob, universe};
 ```
 
-World-wide facts such as freeing the Chmmr are shared StoryFlags. A ship-specific
-fact such as SunDeviceOnShip is a PlayerFlag, and inventory/cargo is keyed by
-PlayerId. The exact sharing policy of every existing story counter, quest and
-ship flag still needs an audit. Only representative fields are listed; this is
-not a complete multiplayer schema. Register players before querying their ships.
+A session's identity comes from its campaign. It must not supply an unrelated
+PlayerId that could disagree with the state receiving rewards.
 
-Counter values calculated during gameplay need runtime range validation.
-Constant fields/values may use `set<StoryCounter::BombProgress, 3>()`, with a
-compile-time check. Four is invalid for the existing two-bit bomb state.
+## Lifetime and synchronization
 
-WorldId is `(StarId, planet slot, optional moon slot)`, not a hash value. Save
-formats retain the components; orbital drawing order is not identity. Additional
-location identities remain a decision for the implementation phase.
+Sessions hold shared_ptr copies of their personal campaign and the shared
+universe. Worlds hold only the shared WorldState, not a particular user's
+campaign. Behavior methods receive a GameSession when someone interacts and
+query both `session.campaign()` and `session.worldState()` as needed.
+State objects own no sessions or worlds back, so this topology has no ownership
+cycle. Local worlds, children and behavior objects remain uniquely owned.
 
-## Collection and checkpoints
+**shared_ptr protects lifetime, not mutable data.** Each state owner reserves a
+private mutable shared_mutex. Implementations must use shared_lock for queries
+and unique_lock for mutations. No internal mutable record/reference or lock guard
+escapes. Queries return copied values. Snapshot methods copy one owner's data
+under a read lock, then release it before serialization. Mutexes, pointers,
+handlers and ownership representations are never saved.
 
-Two players may encounter the same node. A local WorldProgress copy must never
-overwrite another player's collection or award the same mineral twice.
-`tryCollect(player, world, node, reward)` therefore validates and claims the node
-and grants the authoritative reward in one write-locked operation. The second
-claim fails without cargo. Rewards are determined by trusted simulation code,
-not accepted from a network client. Capacity checks and story eligibility must
-be resolved by the authoritative interaction path.
+Each session/World remains simulation-thread confined. Workers receive their own
+shared_ptr copies; racing access to the same session's attachment member still
+needs synchronization. Callbacks, rendering, networking and disk I/O must not run
+under either state mutex, and methods must not recursively call another public
+lock-taking method while holding its lock.
 
-World's progress is a presentation/checkpoint cache, not the authoritative record.
-Queries can obtain fresh snapshots. Checkpoints OR only confirmed permanent
-collection bits into shared state, never replace the whole record or grant more
-cargo. This merge is idempotent. It cannot be used to undo/reset nodes or submit
-speculative client claims. Respawns and resettable story nodes would need their
-own versioned rules, so an old checkpoint could not reinstate a cleared bit.
+The typed flag/counter overloads remain: `read(StoryFlag)`, `set(StoryFlag)`,
+`clear(StoryFlag)` and bounded counter operations on the personal campaign;
+WorldFlag operations live on WorldState. Constant bomb progress 3 compiles with
+`set<StoryCounter::BombProgress, 3>()`; 4 is invalid for the current two-bit field.
 
-This deliberately changes the earlier single-player destructor write-back sketch:
-shared pickups are published when accepted, not first when a world is destroyed.
-Save/leave operations explicitly checkpoint before teardown. A destructor only
-releases runtime resources; it does not attempt a lock or a state write that can
-throw. Mutex acquisition and allocation can fail, so checkpointing no longer
-promises noexcept. No references to map records escape, and no allocator/rehash
-lifetime assumptions are needed by World.
+## Atomic collection across the two owners
 
-World objects cannot be copied or moved; their unique_ptr owners can move safely.
-Their shared campaign member keeps the correct campaign alive independently of
-session destruction order. Session attachment changes do not redirect old World
-objects to a different campaign. Delayed actions must additionally validate a
-campaign/session generation or authority token: memory lifetime is not permission
-to execute an action after detachment.
+Claiming a shared mineral while adding cargo to a personal ship crosses the
+state boundary. Locking either object alone is insufficient.
+StateActions::tryCollect must lock both owners together with std::scoped_lock,
+validate the player/universe binding, eligibility and capacity, then update the
+shared mask and personal reward as one in-memory operation. A second claim
+awards nothing. Update private fields directly under the guards, not by calling
+public methods that would reacquire these non-recursive mutexes. Story eligibility
+is resolved by the authoritative interaction path; callbacks run outside locks.
 
-Surface creatures, movement, hit points and stunned conditions remain temporary.
-For actual co-op, an authoritative server will also need a shared live simulation
-for each occupied world. Sharing campaign masks alone does not synchronize
-creatures, landers, battles or other live objects.
+Rewards are computed by trusted simulation code, not accepted from a network
+client. The coordinator does not make two separately persisted files or services
+transactional. Independent/containerized services will need an authoritative
+command/transaction protocol, consistent checkpointing and retry/idempotency
+rules. The sketch does not implement those mechanisms.
 
-## Construction, generation and interactions
+WorldProgress contains three collected-node bitsets. Runtime progress copies are
+presentation/checkpoint caches, never authority. Confirmed permanent bits may be
+OR-merged without awarding cargo again; replacing a record could erase another
+player's progress. Future respawn/reset operations need a separate versioned
+policy so stale checkpoints cannot reapply cleared bits. Shared claims are
+published when accepted, not first in a destructor. Save/leave checkpointing is
+explicit and may throw; destructors only clean up runtime objects.
 
-A definition supplies identity, name, kind, seed and initial physical properties.
-Construction establishes ownership and local presentation; it does not start a
-conversation or battle. `generateSystem` and generation methods are explicit,
-initially delegating existing algorithms and preserving RNG consumption.
-Moons and orbital locations can be children. Surface nodes are typed data,
-not another generic node/class hierarchy. No support for moons of moons is
-required for UQM's current content.
+## Seeing other players
 
-World owns a non-null `unique_ptr<WorldBehavior>`. The base is concrete and
-supplies ordinary behavior; derived classes override exceptions. There is no
-std::function/lambda dispatch layer or type-erasure machinery. The behavior
-factory selects from the existing star special-system ID and world definition.
-Its implementation can preserve today's gendef.c switch routing.
+WorldState keeps a separate runtime presence map keyed by PlayerId. The authority
+publishes accepted movement in an explicit coordinate frame. `nearbyPlayers`
+returns only the permitted public projection, allowing a client to draw other
+ships without receiving those users' inventories, quest flags or private saves.
+Presence is not part of the persistent WorldSnapshot and is rebuilt when users
+connect. Disconnect/reconnect handling must reject stale-session updates/removals.
 
-Calling `world.enterOrbit(session)` dispatches to the behavior's virtual method.
-Handlers retain the returned `session.campaign()` shared_ptr for the operation
-and query its methods at invocation time. They do not cache the
-outcome of story conditions during construction, and they do not retain references
-to a temporary generation context. Chmmr shielding and encounters depend on live
-story state. Shielding/landing permissions and story interaction are separate:
-ordinary orbit does not automatically launch a lander.
+Presence data alone does not implement co-op. The authority still needs active
+world simulations and replication for creatures, landers, encounters and battles,
+plus visibility rules, update ordering and interpolation. Rendered remote ships
+would be local views of accepted presence, not direct access to another process's
+CampaignState object.
 
-These subclasses illustrate the topology; exact hook placement still needs an
-audit of each current generator. System-wide NPC initialization/reentry/cleanup
-hooks remain an explicit migration boundary; this sketch does not pretend they
-are world-surface operations. A dedicated system behavior may be warranted after
-that audit. Reuse existing conversations, battles, lander and rendering code
-through a C adapter; raw pointers, C structs and packed save fields stay there.
+## Construction and conventional OOP dispatch
 
-## Save, leave and load
+World construction establishes physical/local data and shared universe ownership;
+it does not launch a story. generateSystem initially adapts existing generation
+algorithms with unchanged seed coercion/draw order. Planets can own moons and
+orbital locations; surface nodes remain typed data. No moons-of-moons support is
+required by current content.
+
+Each World owns a non-null unique_ptr<WorldBehavior>. The concrete base supplies
+normal generation/orbit/pickup methods; derived classes override special cases.
+The factory uses StarDesc's special-system ID and the world definition, preserving
+the gendef.c switch routing concept. No lambda/type-erasure layer is introduced.
+An interaction reads both current personal and shared state; it never caches a
+construction-time story decision. Shielding/landing permission and story dispatch
+remain separate. Normal orbit does not automatically launch a lander.
+
+These subclasses are illustrative. System-wide NPC initialization/reentry/cleanup
+and the exact migration of current generator hooks still need an audit. C adapters
+would keep old structs, raw buffers and packed save fields outside these classes.
+
+## Save, load and deployment boundaries
+
+A player's save serializes their CampaignSnapshot; the host persists WorldSnapshot
+separately. A private save/load cannot rewind shared collected minerals or replace
+the universe for other users. Online restoration and cross-owner checkpoints need
+host coordination to preserve reward/claim consistency. Snapshots should be taken
+at defined authoritative action/tick boundaries, not midway through a story action.
 
 ```mermaid
 flowchart TD
-    Save[Save requested] --> Checkpoint[Checkpoint confirmed local progress]
-    Checkpoint --> Snapshot[Copy coherent campaign snapshot under read lock]
-    Snapshot --> Unlock[Release lock]
-    Unlock --> Write[Serialize snapshot while play continues]
-    Leave[Leave system] --> Flush[Explicit checkpoint]
-    Flush --> Destroy[Destroy local runtime - release shared ownership]
-    Load[Offline or host-authorized load] --> Validate[Read and validate candidate]
-    Validate -->|Invalid| Keep[Keep current session]
-    Validate -->|Valid| Old[Checkpoint and tear down this session's runtime]
-    Old --> Attach[Attach candidate campaign]
-    Attach --> Rebuild[Reconstruct local runtime]
+    Session[Player session] --> Personal[Personal CampaignState snapshot]
+    Host[Universe authority] --> Shared[Shared WorldState snapshot]
+    Personal --> PlayerSave[Player persistence]
+    Shared --> WorldSave[Universe persistence]
+    Movement[Accepted movement] --> Presence[Runtime public presence]
+    Presence --> Nearby[Nearby players' views]
 ```
 
-Detaching one session never destroys or silently replaces the campaign that
-other players still use. An online universe save/load operation must be
-coordinated by the authority; an individual client cannot roll back everybody.
-Outstanding old-campaign references keep that old instance alive but may not
-write into the new instance or run stale commands against the reattached session.
-A save is a coherent state revision, not a globally paused set of runtime objects.
+Validate candidate personal saves and identity/universe bindings before changing
+a session. Tear down that session's runtime, attach the approved state and rebuild.
+Other users retain their campaigns and the shared universe. A retained shared_ptr
+keeps old data alive; it does not authorize late commands against a reattached
+session. Authentication, campaign/session generations and access checks belong at
+the authority boundary.
 
-Serialized state contains facts and stable IDs, never mutexes, pointers, virtual
-tables or handlers. Loading reconstructs runtime objects. Reconstruction failure
-recovery, atomic file replacement and legacy save compatibility remain design
-work; this wireframe makes no transactional recovery claim for those cases.
-
-## Multiplayer direction, without building a networking framework
-
-Use an authoritative host/server to own shared-universe decisions. Player
-sessions submit identified commands; network I/O threads do not directly invoke
-behavior methods or setters. The authority validates player permissions, campaign
-instance and current conditions, then applies actions in a defined simulation
-order. Story callbacks, networking, rendering and disk I/O run outside the state
-mutex. A mutex protects data access, not the semantics of multi-step story rules.
-
-Remote machines do not share a C++ shared_ptr or mutex. They need serialization,
-replication, command validation, ordering, reconnect handling and a policy for
-which quests/inventory/progress are shared. Campaign revision numbers leave a
-place to identify snapshots, not an implemented replication protocol. Keep that
-work outside this storage sketch rather than invent a framework now.
+Encapsulation permits later per-user storage or service/container deployment, but
+remote processes do not share C++ pointers or mutexes. They exchange IDs, snapshots
+and validated commands. No Docker layout, wire protocol, database or networking
+framework is selected here. Reconstruction failure recovery, legacy save mapping,
+quest-sharing policy and distributed transactions remain implementation work.
 
 ## Incremental implementation boundary
 
-1. Audit persistent fields and old save encodings; define the full flag/counter
-   schema and stable world/location IDs before replacing storage.
-2. Implement shared campaign ownership, lock-scoped access/snapshots and atomic
-   collection, with a C adapter and one authoritative store.
-3. Implement the default world behavior and migrate one ordinary world path.
-4. Migrate a special case such as Chmmr, then expand the derived hierarchy.
-5. Retire function tables and old global access only as their callers migrate.
+1. Audit legacy state/save fields and assign each to personal, shared or runtime
+   scope. Define stable world/location and player/universe identities.
+2. Implement state owners and adapters with lock-scoped snapshots and coordinated
+   collection, keeping one authoritative owner for each fact.
+3. Add default world behavior and one ordinary world path, then a special case.
+4. Add presence publication/views before attempting full shared active simulation.
+5. Retire global/function-table access only as corresponding callers migrate.
 
-Syntax-check the declaration sketch from the repository root:
+Syntax-check each header from the repository root:
 
 ```sh
-printf '#include "game_session.hpp"\n#include "world_behavior.hpp"\n' | \
-  g++ -std=c++17 -Wall -Wextra -Wpedantic -fsyntax-only -x c++ \
-  -Isc2/src -Idocs/design/solar-system -
+for header in state_types.hpp campaign_state.hpp world_state.hpp world.hpp \
+              world_behavior.hpp game_session.hpp; do
+  printf '#include "%s"\n' "$header" | \
+    g++ -std=c++17 -pthread -Wall -Wextra -Wpedantic -fsyntax-only -x c++ \
+    -Isc2/src -Idocs/design/solar-system - || exit 1
+done
 ```
