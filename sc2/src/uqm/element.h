@@ -169,10 +169,12 @@ struct element
 
 #define NEUTRAL_PLAYER_NUM  -1
 
+/* Compare player numbers of two required, read-only elements. Matching neutral
+ * player numbers compare equal too. Return the legacy BOOLEAN enum for C ABI. */
 static inline BOOLEAN
-elementsOfSamePlayer (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
+elementsOfSamePlayer (const ELEMENT *ElementPtr0, const ELEMENT *ElementPtr1)
 {
-	return ElementPtr0->playerNr == ElementPtr1->playerNr;
+	return ElementPtr0->playerNr == ElementPtr1->playerNr ? TRUE : FALSE;
 }
 
 extern QUEUE disp_q;

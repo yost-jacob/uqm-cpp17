@@ -336,7 +336,7 @@ set(UQM_SOURCES
     sc2/src/uqm/supermelee/netplay/notifyall.c
     sc2/src/uqm/supermelee/netplay/packet.c
     sc2/src/uqm/supermelee/netplay/packethandlers.c
-    sc2/src/uqm/supermelee/netplay/packetq.c
+    sc2/src/uqm/supermelee/netplay/packetq.cpp
     sc2/src/uqm/supermelee/netplay/packetsenders.c
     sc2/src/uqm/supermelee/netplay/proto/npconfirm.c
     sc2/src/uqm/supermelee/netplay/proto/ready.c
