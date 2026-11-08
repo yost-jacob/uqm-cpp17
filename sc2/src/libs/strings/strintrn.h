@@ -41,16 +41,39 @@ struct string_table
 	StringHashTable_HashTable *nameIndex;
 };
 
-#define HAS_SOUND_CLIPS  (1 << 0)
-#define HAS_TIMESTAMP    (1 << 1)
-#define HAS_NAMEINDEX    (1 << 2)
+enum {
+    HAS_SOUND_CLIPS = 1 << 0,
+    HAS_TIMESTAMP = 1 << 1,
+    HAS_NAMEINDEX = 1 << 2
+};
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Allocate num_entries entries per enabled dataset; num_entries must be
+ * nonnegative and flags must use the HAS_* values above. The caller owns the
+ * returned table. Allocation failure is fatal. */
 STRING_TABLE AllocStringTable (int num_entries, int flags);
+/* Release all datasets and the name index; NULL is allowed. Borrowed entry
+ * and text pointers must no longer be used after the table is freed. */
 void FreeStringTable (STRING_TABLE strtab);
 
+/* Read a text table from borrowed fp at its current position; length is the
+ * byte range to read. Caller owns the returned table, or gets NULL if empty. */
 void *_GetStringData (uio_Stream *fp, DWORD length);
+/* Decode a borrowed binary stream containing a legacy length prefix and
+ * big-endian table words. Caller owns the returned table; read failure yields
+ * NULL. fp must be non-NULL and length must describe the encoded resource. */
 void *_GetBinaryTableData (uio_Stream *fp, DWORD length);
+/* Load path[:voice-prefix[:timestamp-path]] from contentDir. Both arguments
+ * are required; resdata receives an owned table or NULL. Opened streams and
+ * temporary buffers are released before return. Allocation failure is fatal. */
 void _GetConversationData (const char *path, RESOURCE_DATA *resdata);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBS_STRINGS_STRINTRN_H_ */
 

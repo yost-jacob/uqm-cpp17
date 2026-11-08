@@ -66,6 +66,10 @@ FreeStringTable (STRING_TABLE strtab)
 	 * Destroy it before releasing those entries and their backing strings. */
 	StringHashTable_deleteHashTable (strtab->nameIndex);
 
+	/* Names occupy a dataset just like text, clips and timestamps. */
+	if (strtab->flags & HAS_NAMEINDEX)
+		multiplier++;
+
 	if (strtab->flags & HAS_SOUND_CLIPS)
 	{
 		multiplier++;

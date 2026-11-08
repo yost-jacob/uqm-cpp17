@@ -119,7 +119,7 @@ set(UQM_SOURCES
     sc2/src/libs/sound/sound.c
     sc2/src/libs/sound/stream.c
     sc2/src/libs/sound/trackplayer.c
-    sc2/src/libs/strings/getstr.c
+    sc2/src/libs/strings/getstr.cpp
     sc2/src/libs/strings/sfileins.c
     sc2/src/libs/strings/sresins.c
     sc2/src/libs/strings/strings.c

@@ -16,17 +16,30 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <array>
+#include <cassert>
+#include <exception>
+#include <memory>
+#include <vector>
+
 #include "options.h"
 #include "strintrn.h"
-#include "libs/graphics/gfx_common.h"
 #include "libs/reslib.h"
 #include "libs/log.h"
 #include "libs/memlib.h"
 
+namespace {
+constexpr size_t MaxStrings = 2048;
+constexpr size_t LineCapacity = 1024;
+using Lengths = std::array<DWORD, MaxStrings>;
+using Stream = std::unique_ptr<uio_Stream, decltype(&res_CloseResFile)>;
+using StringTable = std::unique_ptr<STRING_TABLE_DESC, decltype(&FreeStringTable)>;
+using NameIndex = std::unique_ptr<StringHashTable_HashTable,
+        decltype(&StringHashTable_deleteHashTable)>;
+}
 
-#define MAX_STRINGS 2048
-#define POOL_SIZE 4096
-
+/* Decode num_dwords big-endian words in place; the array must be writable
+ * and contain at least that many words. num_dwords must be positive. */
 static void
 dword_convert (DWORD *dword_array, COUNT num_dwords)
 {
@@ -34,141 +47,109 @@ dword_convert (DWORD *dword_array, COUNT num_dwords)
 
 	do
 	{
-		*dword_array++ = MAKE_DWORD (
-				MAKE_WORD (p[3], p[2]),
-				MAKE_WORD (p[1], p[0])
-				);
+		*dword_array++ = (static_cast<DWORD>(p[0]) << 24)
+                | (static_cast<DWORD>(p[1]) << 16)
+                | (static_cast<DWORD>(p[2]) << 8) | p[3];
 		p += 4;
 	} while (--num_dwords);
 }
 
+/* Replace one table entry with an owned byte copy. index must be in range;
+ * value must contain len bytes (nullptr is allowed only for len == 0). */
 static STRING
-set_strtab_entry (STRING_TABLE_DESC *strtab, int index, const char *value,
-		int len)
+set_strtab_entry (STRING_TABLE_DESC &strtab, const size_t index, const char *value,
+		const size_t len)
 {
-	STRING str = &strtab->strings[index];
+	STRING str = &strtab.strings[index];
 
 	if (str->data)
 	{
 		HFree (str->data);
-		str->data = NULL;
+		str->data = nullptr;
 		str->length = 0;
 	}
 	if (len)
 	{
-		str->data = HMalloc (len);
+		str->data = static_cast<char *>(HMalloc (len));
 		str->length = len;
 		memcpy (str->data, value, len);
 	}
 	return str;
 }
 
+/* Copy count packed strings into a required table starting at firstIndex.
+ * The sum of the first count lengths must fit data, and the destination range
+ * must exist. Zero-length entries do not require backing bytes. */
 static void
-copy_strings_to_strtab (STRING_TABLE_DESC *strtab, size_t firstIndex,
-		size_t count, const char *data, const DWORD *lens)
+copy_strings_to_strtab (STRING_TABLE_DESC &strtab, const size_t firstIndex,
+		const size_t count, const std::vector<char> &data, const Lengths &lens)
 {
 	size_t stringI;
-	const char *off = data;
+	const char *off = data.data();
 
 	for (stringI = 0; stringI < count; stringI++)
 	{
 		set_strtab_entry(strtab, firstIndex + stringI,
 				off, lens[stringI]);
-		off += lens[stringI];
+		if (lens[stringI] != 0)
+			off += lens[stringI];
 	}
-}
-
-// Check whether a buffer has a certain minimum size, and enlarge it
-// if necessary.
-// buf: pointer to the pointer to the buffer. May be NULL.
-// curSize: pointer to the current size (multiple of 'increment')
-// minSize: required minimum size
-// increment: size to increment the buffer with if necessary
-// On success, *buf and *curSize are updated. On failure, they are
-// unchanged.
-// returns FALSE if and only if the buffer needs to be enlarged but
-// memory allocation failed.
-static BOOLEAN
-ensureBufSize (char **buf, size_t *curSize, size_t minSize, size_t increment)
-{
-	char *newBuf;
-	size_t newSize;
-
-	if (minSize <= *curSize)
-	{
-		// Buffer is large enough as it is.
-		return TRUE;
-	}
-
-	newSize = ((minSize + (increment - 1)) / increment) * increment;
-			// Smallest multiple of 'increment' larger or equal to minSize.
-	newBuf = HRealloc (*buf, newSize);
-	if (newBuf == NULL)
-		return FALSE;
-
-	// Success
-	*buf = newBuf;
-	*curSize = newSize;
-	return TRUE;
 }
 
 void
-_GetConversationData (const char *path, RESOURCE_DATA *resdata)
+_GetConversationData (const char *path, RESOURCE_DATA *resdata) try
 {
+	assert(path && resdata);
+	resdata->ptr = nullptr;
 	unsigned long dataLen;
-	void *result;
+	StringTable result(nullptr, FreeStringTable);
 	int stringI;
-	int path_len;
-	int num_data_sets;
+	size_t path_len;
 	DWORD opos;
-	
-	char *namedata = NULL;
+
+	std::vector<char> namedata;
 			// Contains the names (indexes) of the dialogs.
-	DWORD nlen[MAX_STRINGS];
+	Lengths nlen{};
 			// Length of each of the names.
 	DWORD NameOffs;
-	size_t tot_name_size;
 
-	char *strdata = NULL;
+	std::vector<char> strdata;
 			// Contains the dialog strings.
-	DWORD slen[MAX_STRINGS];
+	Lengths slen{};
 			// Length of each of the dialog strings.
 	DWORD StringOffs;
-	size_t tot_string_size;
 
-	char *clipdata = NULL;
+	std::vector<char> clipdata;
 			// Contains the file names of the speech files.
-	DWORD clen[MAX_STRINGS];
+	Lengths clen{};
 			// Length of each of the speech file names.
 	DWORD ClipOffs;
-	size_t tot_clip_size;
 
-	char *ts_data = NULL;
+	std::vector<char> ts_data;
 			// Contains the timestamp data for synching the text with the
 			// speech.
-	DWORD tslen[MAX_STRINGS];
+	Lengths tslen{};
 			// Length of each of the timestamp strings.
 	DWORD TSOffs;
-	size_t tot_ts_size = 0;
 
-	char CurrentLine[1024];
-	char paths[1024];
+	char CurrentLine[LineCapacity];
+	char paths[LineCapacity];
 	char *clip_path;
 	char *ts_path;
 
-	uio_Stream *fp = NULL;
-	uio_Stream *timestamp_fp = NULL;
-	StringHashTable_HashTable *nameHashTable = NULL;
+	Stream fp(nullptr, res_CloseResFile);
+	Stream timestamp_fp(nullptr, res_CloseResFile);
+	NameIndex nameHashTable(nullptr, StringHashTable_deleteHashTable);
 			// Hash table of string names (such as "GLAD_WHEN_YOU_COME_BACK")
 			// to a STRING.
 
 	/* Parse out the conversation components. */
-	strncpy (paths, path, 1023);
-	paths[1023] = '\0';
+	strncpy (paths, path, sizeof(paths) - 1);
+	paths[sizeof(paths) - 1] = '\0';
 	clip_path = strchr (paths, ':');
-	if (clip_path == NULL)
+	if (clip_path == nullptr)
 	{
-		ts_path = NULL;
+		ts_path = nullptr;
 	}
 	else
 	{
@@ -176,22 +157,22 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		clip_path++;
 
 		ts_path = strchr (clip_path, ':');
-		if (ts_path != NULL)
+		if (ts_path != nullptr)
 		{
 			*ts_path = '\0';
 			ts_path++;
 		}
 	}
 
-	fp = res_OpenResFile (contentDir, paths, "rb");
-	if (fp == NULL)
+	fp.reset(res_OpenResFile (contentDir, paths, "rb"));
+	if (!fp)
 	{
 		log_add (log_Warning, "Warning: Can't open '%s'", paths);
-		resdata->ptr = NULL;
+		resdata->ptr = nullptr;
 		return;
 	}
 
-	dataLen = LengthResFile (fp);
+	dataLen = LengthResFile (fp.get());
 	log_add (log_Info, "\t'%s' -- conversation phrases -- %lu bytes", paths,
 			dataLen);
 	if (clip_path)
@@ -207,44 +188,21 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 	{
 		log_add (log_Warning, "Warning: Trying to load empty file '%s'.",
 				path);
-		goto err;
+		return;
 	}
-	
-	tot_string_size = POOL_SIZE;
-	strdata = HMalloc (tot_string_size);
-	if (strdata == 0)
-		goto err;
-	
-	tot_name_size = POOL_SIZE;
-	namedata = HMalloc (tot_name_size);
-	if (namedata == 0)
-		goto err;
-	
-	tot_clip_size = POOL_SIZE;
-	clipdata = HMalloc (tot_clip_size);
-	if (clipdata == 0)
-		goto err;
-	ts_data = NULL;
 
-	nameHashTable = StringHashTable_newHashTable();
-	if (nameHashTable == NULL)
-		goto err;
-	
+
+
+	nameHashTable.reset(StringHashTable_newHashTable());
+
 	path_len = clip_path ? strlen (clip_path) : 0;
 
 	if (ts_path)
 	{
-		timestamp_fp = uio_fopen (contentDir, ts_path, "rb");
-		if (timestamp_fp != NULL)
-		{
-			tot_ts_size = POOL_SIZE;
-			ts_data = HMalloc (tot_ts_size);
-			if (ts_data == 0)
-				goto err;
-		}
+		timestamp_fp.reset(uio_fopen (contentDir, ts_path, "rb"));
 	}
-	
-	opos = uio_ftell (fp);
+
+	opos = uio_ftell (fp.get());
 	stringI = -1;
 	NameOffs = 0;
 	StringOffs = 0;
@@ -254,13 +212,13 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 	{
 		int l;
 
-		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) == NULL)
+		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp.get()) == nullptr)
 		{
 			// EOF or read error.
 			break;
 		}
-	
-		if (stringI >= MAX_STRINGS - 1)
+
+		if (stringI >= static_cast<int>(MaxStrings) - 1)
 		{
 			// Too many strings.
 			break;
@@ -270,7 +228,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		{
 			// String header, of the following form:
 			//     #(GLAD_WHEN_YOU_COME_BACK) commander-000.ogg
-			char CopyLine[1024];
+			char CopyLine[LineCapacity];
 			char *name;
 			char *ts;
 
@@ -294,9 +252,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 
 				// Store the string name.
 				l = strlen (name) + 1;
-				if (!ensureBufSize (&namedata, &tot_name_size,
-						NameOffs + l, POOL_SIZE))
-					goto err;
+				namedata.resize(NameOffs + l);
 				strcpy (&namedata[NameOffs], name);
 				NameOffs += l;
 				nlen[stringI] = l;
@@ -305,11 +261,11 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 				if (timestamp_fp)
 				{
 					// We have a time stamp file.
-					char TimeStampLine[1024];
+					char TimeStampLine[LineCapacity];
 					char *tsptr;
 					BOOLEAN ts_ok = FALSE;
-					uio_fgets (TimeStampLine, sizeof (TimeStampLine), timestamp_fp);
-					if (TimeStampLine[0] == '#')
+					if (uio_fgets (TimeStampLine, sizeof (TimeStampLine), timestamp_fp.get())
+							&& TimeStampLine[0] == '#')
 					{
 						// Line is of the following form:
 						//     #(GIVE_FUEL_AGAIN) 3304,3255
@@ -324,9 +280,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 							if (*tsptr)
 							{
 								l = strlen (tsptr) + 1;
-								if (!ensureBufSize (&ts_data, &tot_ts_size, TSOffs + l,
-										POOL_SIZE))
-									goto err;
+								ts_data.resize(TSOffs + l);
 
 								strcpy (&ts_data[TSOffs], tsptr);
 								TSOffs += l;
@@ -339,21 +293,17 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 						// timestamp data is invalid, remove all of it
 						log_add (log_Warning, "Invalid timestamp data "
 								"for '%s'.  Disabling timestamps", name);
-						HFree (ts_data);
-						ts_data = NULL;
-						uio_fclose (timestamp_fp);
-						timestamp_fp = NULL;
+						ts_data.clear();
+						timestamp_fp.reset();
 						TSOffs = 0;
 					}
 				}
 				clen[stringI] = 0;
-				ts = strtok (NULL, " \t\r\n)");
+				ts = strtok (nullptr, " \t\r\n)");
 				if (ts)
 				{
 					l = path_len + strlen (ts) + 1;
-					if (!ensureBufSize (&clipdata, &tot_clip_size,
-							ClipOffs + l, POOL_SIZE))
-						goto err;
+					clipdata.resize(ClipOffs + l);
 
 					if (clip_path)
 						strcpy (&clipdata[ClipOffs], clip_path);
@@ -368,9 +318,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			char *s;
 			l = strlen (CurrentLine) + 1;
 
-			if (!ensureBufSize (&strdata, &tot_string_size, StringOffs + l,
-					POOL_SIZE))
-				goto err;
+			strdata.resize(StringOffs + l);
 
 			if (slen[stringI])
 			{
@@ -384,7 +332,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			strcpy (s, CurrentLine);
 		}
 
-		if ((int)uio_ftell (fp) - (int)opos >= (int)dataLen)
+		if ((int)uio_ftell (fp.get()) - (int)opos >= (int)dataLen)
 			break;
 	}
 	if (stringI >= 0)
@@ -398,11 +346,6 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		}
 	}
 
-	if (timestamp_fp)
-		uio_fclose (timestamp_fp);
-
-	result = NULL;
-	num_data_sets = (ClipOffs ? 1 : 0) + (TSOffs ? 1 : 0) + 1;
 	if (++stringI)
 	{
 		int flags = 0;
@@ -414,29 +357,29 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			flags |= HAS_TIMESTAMP;
 		flags |= HAS_NAMEINDEX;
 
-		result = AllocStringTable (stringCount, flags);
+		result.reset(AllocStringTable (stringCount, flags));
 		if (result)
 		{
 			// Copy all the gatherered data in a STRING_TABLE
-			STRING_TABLE_DESC *lpST = (STRING_TABLE) result;
+			STRING_TABLE_DESC *lpST = result.get();
 			STRING str;
 			stringI = 0;
 
 			// Store the dialog string.
 			copy_strings_to_strtab (
-					lpST, stringI, stringCount, strdata, slen);
+					*lpST, stringI, stringCount, strdata, slen);
 			stringI += stringCount;
-			
+
 			// Store the dialog names.
 			copy_strings_to_strtab (
-					lpST, stringI, stringCount, namedata, nlen);
+					*lpST, stringI, stringCount, namedata, nlen);
 			stringI += stringCount;
-				
+
 			// Store sound clip file names.
 			if (lpST->flags & HAS_SOUND_CLIPS)
 			{
 				copy_strings_to_strtab (
-						lpST, stringI, stringCount, clipdata, clen);
+						*lpST, stringI, stringCount, clipdata, clen);
 				stringI += stringCount;
 			}
 
@@ -444,7 +387,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			if (lpST->flags & HAS_TIMESTAMP)
 			{
 				copy_strings_to_strtab (
-						lpST, stringI, stringCount, ts_data, tslen);
+						*lpST, stringI, stringCount, ts_data, tslen);
 				//stringI += stringCount;
 			}
 
@@ -453,52 +396,30 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			str = &lpST->strings[stringCount];
 			for (stringI = 0; stringI < stringCount; stringI++)
 			{
-				StringHashTable_add (nameHashTable, str[stringI].data,
+				StringHashTable_add (nameHashTable.get(), str[stringI].data,
 						&str[stringI]);
 			}
 
-			lpST->nameIndex = nameHashTable;
+			lpST->nameIndex = nameHashTable.release();
 		}
 	}
-	HFree (strdata);
-	if (clipdata != NULL)
-		HFree (clipdata);
-	if (ts_data != NULL)
-		HFree (ts_data);
-
-	resdata->ptr = result;
-	return;
-
-err:
-	if (nameHashTable != NULL)
-		StringHashTable_deleteHashTable (nameHashTable);
-	if (ts_data != NULL)
-		HFree (ts_data);
-	if (clipdata != NULL)
-		HFree (clipdata);
-	if (strdata != NULL)
-		HFree (strdata);
-	res_CloseResFile (fp);
-	resdata->ptr = NULL;
+	resdata->ptr = result.release();
+} catch (...) {
+    std::terminate();
 }
 
 void *
-_GetStringData (uio_Stream *fp, DWORD length)
+_GetStringData (uio_Stream *fp, DWORD length) try
 {
-	void *result;
+	assert(fp);
+	StringTable result(nullptr, FreeStringTable);
 
 	int stringI;
 	DWORD opos;
-	DWORD slen[MAX_STRINGS];
+	Lengths slen{};
 	DWORD StringOffs;
-	size_t tot_string_size;
-	char CurrentLine[1024];
-	char *strdata = NULL;
-
-	tot_string_size = POOL_SIZE;
-	strdata = HMalloc (tot_string_size);
-	if (strdata == 0)
-		goto err;
+	char CurrentLine[LineCapacity];
+	std::vector<char> strdata;
 
 	opos = uio_ftell (fp);
 	stringI = -1;
@@ -507,13 +428,13 @@ _GetStringData (uio_Stream *fp, DWORD length)
 	{
 		int l;
 
-		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) == NULL)
+		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) == nullptr)
 		{
 			// EOF or read error.
 			break;
 		}
-	
-		if (stringI >= MAX_STRINGS - 1)
+
+		if (stringI >= static_cast<int>(MaxStrings) - 1)
 		{
 			// Too many strings.
 			break;
@@ -521,7 +442,7 @@ _GetStringData (uio_Stream *fp, DWORD length)
 
 		if (CurrentLine[0] == '#')
 		{
-			char CopyLine[1024];
+			char CopyLine[LineCapacity];
 			char *s;
 
 			strcpy (CopyLine, CurrentLine);
@@ -530,7 +451,7 @@ _GetStringData (uio_Stream *fp, DWORD length)
 			{
 				if (stringI >= 0)
 				{
-					while (slen[stringI] > 1 && 
+					while (slen[stringI] > 1 &&
 							(strdata[StringOffs - 2] == '\n' ||
 							strdata[StringOffs - 2] == '\r'))
 					{
@@ -548,9 +469,7 @@ _GetStringData (uio_Stream *fp, DWORD length)
 			char *s;
 			l = strlen (CurrentLine) + 1;
 
-			if (!ensureBufSize (&strdata, &tot_string_size, StringOffs + l,
-					POOL_SIZE))
-				goto err;
+			strdata.resize(StringOffs + l);
 
 			if (slen[stringI])
 			{
@@ -578,65 +497,44 @@ _GetStringData (uio_Stream *fp, DWORD length)
 		}
 	}
 
-	result = NULL;
 	if (++stringI)
 	{
 		int flags = 0;
 		int stringCount = stringI;
 
-		result = AllocStringTable (stringI, flags);
+		result.reset(AllocStringTable (stringI, flags));
 		if (result)
 		{
-			STRING_TABLE_DESC *lpST = (STRING_TABLE) result;
-			copy_strings_to_strtab (lpST, 0, stringCount, strdata, slen);
+			STRING_TABLE_DESC *lpST = result.get();
+			copy_strings_to_strtab (*lpST, 0, stringCount, strdata, slen);
 		}
 	}
-	HFree (strdata);
-
-	return result;
-
-err:
-	if (strdata != NULL)
-		HFree (strdata);
-	return 0;
+	return result.release();
+} catch (...) {
+    std::terminate();
 }
 
-
+/* Decode a borrowed binary stream; the returned table belongs to the caller.
+ * length is the encoded byte count. File-format interpretation is unchanged. */
 void *
-_GetBinaryTableData (uio_Stream *fp, DWORD length)
+_GetBinaryTableData (uio_Stream *fp, DWORD length) try
 {
-	void *result;
-	result = GetResourceData (fp, length);
+    assert(fp);
+    const std::unique_ptr<void, decltype(&HFree)> data(GetResourceData(fp, length), HFree);
+    if (!data)
+        return nullptr;
 
-	if (result)
-	{
-		DWORD *fileData;
-		STRING_TABLE lpST;
-
-		fileData = (DWORD *)result;
-
-		dword_convert (fileData, 1); /* Length */
-
-		lpST = AllocStringTable (fileData[0], 0);
-		if (lpST)
-		{
-			int i, size;
-			BYTE *stringptr;
-
-			size = lpST->size;
-
-			dword_convert (fileData+1, size + 1);
-			stringptr = (BYTE *)(fileData + 2 + size + fileData[1]);
-			for (i = 0; i < size; i++)
-			{
-				set_strtab_entry (lpST, i, (char *)stringptr, fileData[2+i]);
-				stringptr += fileData[2+i];
-			}
-		}
-		HFree (result);
-		result = lpST;
-	}
-
-	return result;
+    DWORD *fileData = static_cast<DWORD *>(data.get());
+    dword_convert(fileData, 1);
+    StringTable table(AllocStringTable(fileData[0], 0), FreeStringTable);
+    const int size = table->size;
+    dword_convert(fileData + 1, size + 1);
+    const BYTE *stringptr = reinterpret_cast<const BYTE *>(fileData + 2 + size + fileData[1]);
+    for (int i = 0; i < size; ++i) {
+        set_strtab_entry(*table, i, reinterpret_cast<const char *>(stringptr), fileData[2 + i]);
+        stringptr += fileData[2 + i];
+    }
+    return table.release();
+} catch (...) {
+    std::terminate();
 }
-
