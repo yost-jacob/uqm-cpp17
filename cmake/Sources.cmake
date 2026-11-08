@@ -56,7 +56,6 @@ set(UQM_SOURCES
     sc2/src/libs/input/sdl/input.c
     sc2/src/libs/input/sdl/keynames.c
     sc2/src/libs/input/sdl/vcontrol.c
-    sc2/src/libs/list/list.c
     sc2/src/libs/log/msgbox_stub.c
     sc2/src/libs/log/uqmlog.c
     sc2/src/libs/math/random.c

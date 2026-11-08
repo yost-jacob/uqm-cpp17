@@ -602,18 +602,6 @@ SOURCE=..\..\src\libs\input\input_common.c
 SOURCE=..\..\src\libs\input\input_common.h
 # End Source File
 # End Group
-# Begin Group "list"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\libs\list\list.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\libs\list\list.h
-# End Source File
-# End Group
 # Begin Group "log"
 
 # PROP Default_Filter ""
@@ -1527,10 +1515,6 @@ SOURCE=..\..\src\libs\heap.h
 # Begin Source File
 
 SOURCE=..\..\src\libs\inplib.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\libs\list.h
 # End Source File
 # Begin Source File
 
