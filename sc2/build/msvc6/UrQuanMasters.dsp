@@ -207,7 +207,7 @@ SOURCE=..\..\src\regex\regexec.ci
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\libs\callback\alarm.c
+SOURCE=..\..\src\libs\callback\alarm.cpp
 # End Source File
 # Begin Source File
 
@@ -540,18 +540,6 @@ SOURCE=..\..\src\libs\graphics\widgets.c
 # Begin Source File
 
 SOURCE=..\..\src\libs\graphics\widgets.h
-# End Source File
-# End Group
-# Begin Group "heap"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\libs\heap\heap.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\libs\heap\heap.h
 # End Source File
 # End Group
 # Begin Group "input"
@@ -1507,10 +1495,6 @@ SOURCE=..\..\src\libs\file.h
 # Begin Source File
 
 SOURCE=..\..\src\libs\gfxlib.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\libs\heap.h
 # End Source File
 # Begin Source File
 

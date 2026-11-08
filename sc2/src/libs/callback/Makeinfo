@@ -1,2 +1,3 @@
-uqm_CFILES="alarm.c async.c callback.c"
+uqm_CXXFILES="alarm.cpp"
+uqm_CFILES="async.c callback.c"
 uqm_HFILES="alarm.h async.h callback.h"
