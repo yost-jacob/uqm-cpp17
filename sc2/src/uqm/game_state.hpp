@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 #include "world_state.hpp"
-#include "discovery_state.hpp"
+#include "world_types.hpp"
 
 namespace uqm {
 struct PlayerId {

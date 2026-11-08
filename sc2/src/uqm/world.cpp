@@ -17,6 +17,10 @@ const WorldId &World::id() const noexcept { return definition_.id; }
 bool World::canLand() const noexcept {
     return !definition_.shielded && (definition_.kind == WorldKind::Planet || definition_.kind == WorldKind::Moon);
 }
+void World::attachLayout(const SystemLayout &layout) { layout_ = layout; }
+WorldProgress World::progress() const { return state_->planetProgress(id(), layout_); }
+void World::replaceProgress(const WorldProgress &progress) { state_->replacePlanetProgress(id(), layout_, progress); }
+void World::mergeProgress(const WorldProgress &confirmed) { state_->mergePlanetProgress(id(), layout_, confirmed); }
 void World::setShielded(bool shielded) noexcept { definition_.shielded = shielded; }
 void World::setEnergyBehavior(std::unique_ptr<EnergyBehavior> behavior) {
     if (!behavior) throw std::invalid_argument("world energy behavior must be non-null");
@@ -24,6 +28,8 @@ void World::setEnergyBehavior(std::unique_ptr<EnergyBehavior> behavior) {
 }
 EnergyInteraction World::interactEnergy(CampaignState &campaign, std::size_t site, bool retrieved) {
     if (site >= 32) throw std::out_of_range("energy site must be in 0..31");
+    if (!layout_.empty())
+        retrieved = retrieved || progress().energy.test(site);
     auto result = energy_->interact(campaign, id(), site, retrieved);
     if (!result.accepted && (result.removeNode || result.report))
         throw std::logic_error("rejected energy interaction has side effects");
@@ -33,6 +39,8 @@ std::size_t World::childCount() const noexcept { return children_.size(); }
 World &World::child(std::size_t index) { return *children_.at(index); }
 const World &World::child(std::size_t index) const { return *children_.at(index); }
 void World::replaceChildren(std::vector<std::unique_ptr<World>> children) {
+    if (!layout_.empty() && children.size() != definition_.moonCount)
+        throw std::invalid_argument("moon list does not match generated layout");
     for (std::size_t i = 0; i < children.size(); ++i) {
         if (!children[i]) throw std::invalid_argument("null child world");
         const auto &other = children[i]->id();
@@ -40,21 +48,38 @@ void World::replaceChildren(std::vector<std::unique_ptr<World>> children) {
                 || other.planet != id().planet || !other.moon || *other.moon != i)
             throw std::invalid_argument("child world does not match parent and slot");
     }
+    for (auto &child : children) child->attachLayout(layout_);
     children_ = std::move(children);
 }
 SolarSystem::SolarSystem(StarId star, std::shared_ptr<WorldState> state,
         std::vector<WorldDefinition> definitions) : star_(star), state_(std::move(state)) {
     if (!state_) throw std::invalid_argument("solar system requires world state");
+    for (const auto &definition : definitions) layout_.push_back(definition.moonCount);
     for (std::size_t i = 0; i < definitions.size(); ++i) {
         const auto &id = definitions[i].id;
         if (id.system != star_ || id.universe != state_->id() || id.planet != i || id.moon)
             throw std::invalid_argument("planet definition does not match system and slot");
-        worlds_.push_back(std::make_unique<World>(std::move(definitions[i]), state_));
+        auto world = std::make_unique<World>(std::move(definitions[i]), state_);
+        world->attachLayout(layout_);
+        worlds_.push_back(std::move(world));
     }
 }
 StarId SolarSystem::star() const noexcept { return star_; }
 UniverseId SolarSystem::universe() const noexcept { return state_->id(); }
 std::size_t SolarSystem::worldCount() const noexcept { return worlds_.size(); }
+const SystemLayout &SolarSystem::layout() const noexcept { return layout_; }
+WorldProgress SolarSystem::progress(const WorldId &id) const {
+    if (id.system != star_) throw std::out_of_range("world belongs to another solar system");
+    return state_->planetProgress(id, layout_);
+}
+void SolarSystem::replaceProgress(const WorldId &id, const WorldProgress &progress) {
+    if (id.system != star_) throw std::out_of_range("world belongs to another solar system");
+    state_->replacePlanetProgress(id, layout_, progress);
+}
+void SolarSystem::mergeProgress(const WorldId &id, const WorldProgress &progress) {
+    if (id.system != star_) throw std::out_of_range("world belongs to another solar system");
+    state_->mergePlanetProgress(id, layout_, progress);
+}
 World &SolarSystem::world(std::size_t planet) { return *worlds_.at(planet); }
 const World &SolarSystem::world(std::size_t planet) const { return *worlds_.at(planet); }
 const World &SolarSystem::at(const WorldId &id) const {

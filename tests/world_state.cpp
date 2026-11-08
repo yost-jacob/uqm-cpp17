@@ -201,3 +201,104 @@ BOOST_AUTO_TEST_CASE(empty_invalid_and_zero_sized_operations_fail_cleanly)
     DeleteStateFile(-1);
 }
 BOOST_AUTO_TEST_SUITE_END()
+
+namespace {
+const uqm::WorldId progressWorld{uqm::UniverseId{1}, StarId{4}, 1, std::nullopt};
+const uqm::SystemLayout progressLayout{2, 0};
+}
+BOOST_AUTO_TEST_CASE(typed_world_progress_addresses_planets_and_moons_without_exposing_offsets)
+{
+    uqm::WorldState world;
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).minerals.none());
+    uqm::WorldProgress planet;
+    planet.minerals.set(31);
+    planet.energy.set(3);
+    planet.biologicals.set(7);
+    world.replacePlanetProgress(progressWorld, progressLayout, planet);
+    auto moon = progressWorld;
+    moon.planet = 0;
+    moon.moon = 1;
+    uqm::WorldProgress collected;
+    collected.energy.set(4);
+    world.mergePlanetProgress(moon, progressLayout, collected);
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).minerals.test(31));
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).energy.to_ulong() == 8u);
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).biologicals.to_ulong() == 128u);
+    BOOST_TEST(world.planetProgress(moon, progressLayout).energy.to_ulong() == 16u);
+    BOOST_TEST(world.planetProgress(moon, progressLayout).minerals.none());
+    // The old C save grammar is unchanged: table followed by mineral/energy/bio words.
+    const auto snapshot = world.snapshot();
+    std::uint32_t offset = 0;
+    std::memcpy(&offset, snapshot.planetScans.data() + 4 * sizeof offset, sizeof offset);
+    BOOST_TEST(offset == 502u * sizeof offset);
+    std::array<std::uint32_t, 3> record{};
+    std::memcpy(record.data(), snapshot.planetScans.data() + offset + 3 * sizeof record, sizeof record);
+    BOOST_TEST(record[0] == UINT32_C(0x80000000));
+    BOOST_TEST(record[1] == 8u);
+    BOOST_TEST(record[2] == 128u);
+}
+BOOST_AUTO_TEST_CASE(permanent_progress_merges_preserve_other_claims_and_replacement_is_explicit)
+{
+    uqm::WorldState world;
+    uqm::WorldProgress first, second;
+    first.minerals.set(0);
+    second.minerals.set(5);
+    world.mergePlanetProgress(progressWorld, progressLayout, first);
+    const auto old = world.planetProgress(progressWorld, progressLayout);
+    world.mergePlanetProgress(progressWorld, progressLayout, second);
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).minerals.count() == 2u);
+    BOOST_TEST(old.minerals.count() == 1u);
+    world.replacePlanetProgress(progressWorld, progressLayout, {});
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).minerals.none());
+}
+BOOST_AUTO_TEST_CASE(concurrent_permanent_claim_merges_do_not_lose_bits)
+{
+    uqm::WorldState world;
+    auto claim = [&](unsigned begin, unsigned end) {
+        for (unsigned i = begin; i < end; ++i) {
+            uqm::WorldProgress progress;
+            progress.energy.set(i);
+            world.mergePlanetProgress(progressWorld, progressLayout, progress);
+            std::this_thread::yield();
+        }
+    };
+    std::thread first(claim, 0, 16), second(claim, 16, 32);
+    first.join();
+    second.join();
+    BOOST_TEST(world.planetProgress(progressWorld, progressLayout).energy.all());
+}
+BOOST_AUTO_TEST_CASE(typed_progress_rejects_invalid_identity_layout_and_truncated_archives)
+{
+    uqm::WorldState world;
+    auto invalid = progressWorld;
+    invalid.universe = uqm::UniverseId{2};
+    BOOST_CHECK_THROW(world.planetProgress(invalid, progressLayout), std::out_of_range);
+    invalid = progressWorld;
+    invalid.moon = 0; // Planet 1 has no moons.
+    BOOST_CHECK_THROW(world.planetProgress(invalid, progressLayout), std::out_of_range);
+    BOOST_CHECK_THROW(world.planetProgress(progressWorld, {}), std::out_of_range);
+    BOOST_CHECK_THROW(world.replacePlanetProgress(progressWorld, {5, 0}, {}), std::invalid_argument);
+    BOOST_TEST(world.snapshot().planetScans.empty());
+    auto snapshot = world.snapshot();
+    snapshot.planetScans = {0};
+    world.restore(snapshot);
+    BOOST_CHECK_THROW(world.planetProgress(progressWorld, progressLayout), std::invalid_argument);
+    snapshot.planetScans.resize(502 * 4);
+    const std::uint32_t offset = 502 * 4;
+    std::memcpy(snapshot.planetScans.data() + 4 * sizeof offset, &offset, sizeof offset);
+    world.restore(snapshot);
+    BOOST_CHECK_THROW(world.replacePlanetProgress(progressWorld, progressLayout, {}), std::invalid_argument);
+    BOOST_TEST(world.snapshot().planetScans == snapshot.planetScans, boost::test_tools::per_element());
+}
+BOOST_AUTO_TEST_CASE(typed_progress_refuses_to_interleave_with_legacy_scan_cursors)
+{
+    auto &world = uqm::gameSession().world();
+    DeleteStateFile(STARINFO_FILE);
+    world.initializePlanetProgress();
+    auto *file = OpenStateFile(STARINFO_FILE, "rb");
+    BOOST_CHECK_THROW(world.planetProgress(progressWorld, progressLayout), std::logic_error);
+    BOOST_CHECK_THROW(world.mergePlanetProgress(progressWorld, progressLayout, {}), std::logic_error);
+    CloseStateFile(file);
+    world.mergePlanetProgress(progressWorld, progressLayout, {});
+    DeleteStateFile(STARINFO_FILE);
+}

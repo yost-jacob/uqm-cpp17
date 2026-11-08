@@ -42,7 +42,9 @@ BOOST_AUTO_TEST_CASE(polymorphic_discovery_behavior_advances_each_players_own_re
 BOOST_AUTO_TEST_CASE(artifact_behavior_requests_physical_removal_without_personal_visit_flags)
 {
     auto state = std::make_shared<uqm::WorldState>();
-    uqm::World world{planet(), state, std::make_unique<uqm::ArtifactEnergyBehavior>()};
+    uqm::SolarSystem system{StarId{42}, state, {planet()}};
+    auto &world = system.world(0);
+    world.setEnergyBehavior(std::make_unique<uqm::ArtifactEnergyBehavior>());
     uqm::GameState player{{uqm::PlayerId{1}, "Player"}, state};
     auto &campaign = player.player(uqm::PlayerId{1}).campaign();
     const auto result = world.interactEnergy(campaign, 0, false);
@@ -50,7 +52,10 @@ BOOST_AUTO_TEST_CASE(artifact_behavior_requests_physical_removal_without_persona
     BOOST_TEST(result.removeNode);
     BOOST_REQUIRE(result.report);
     BOOST_TEST(*result.report == 0u);
-    const auto collected = world.interactEnergy(campaign, 0, true);
+    uqm::WorldProgress confirmed;
+    confirmed.energy.set(0);
+    world.mergeProgress(confirmed);
+    const auto collected = world.interactEnergy(campaign, 0, false); // Stale C view cannot re-award it.
     BOOST_TEST(!collected.accepted);
     BOOST_TEST(!collected.removeNode);
     BOOST_TEST(campaign.discovery(planetId).visitedSites.none());
@@ -59,7 +64,9 @@ BOOST_AUTO_TEST_CASE(artifact_behavior_requests_physical_removal_without_persona
 BOOST_AUTO_TEST_CASE(world_tree_owns_checked_children_and_keeps_shielding_separate_from_behavior)
 {
     auto state = std::make_shared<uqm::WorldState>();
-    uqm::SolarSystem system{StarId{42}, state, {planet()}};
+    auto parent = planet();
+    parent.moonCount = 1;
+    uqm::SolarSystem system{StarId{42}, state, {parent}};
     auto &world = system.at(planetId);
     BOOST_TEST(world.canLand());
     world.setShielded(true);

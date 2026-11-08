@@ -1,7 +1,6 @@
-#ifndef UQM_DISCOVERY_STATE_HPP_
-#define UQM_DISCOVERY_STATE_HPP_
+#ifndef UQM_WORLD_TYPES_HPP_
+#define UQM_WORLD_TYPES_HPP_
 
-#include "world_state.hpp"
 #include "star_map.hpp"
 #include <bitset>
 #include <cstddef>
@@ -9,8 +8,18 @@
 #include <map>
 #include <optional>
 #include <tuple>
+#include <vector>
 
 namespace uqm {
+struct UniverseId {
+    std::uint64_t value;
+    constexpr bool operator==(UniverseId other) const noexcept { return value == other.value; }
+    constexpr bool operator!=(UniverseId other) const noexcept { return !(*this == other); }
+};
+inline constexpr UniverseId SinglePlayerUniverse{1};
+using SystemLayout = std::vector<std::uint16_t>; // Moon count for each planet slot.
+struct WorldProgress { std::bitset<32> minerals, biologicals, energy; };
+
 // Stable identity, independent of runtime descriptor addresses and save offsets.
 // Planet/moon slots are zero-based; nullopt identifies the planet itself.
 struct WorldId {

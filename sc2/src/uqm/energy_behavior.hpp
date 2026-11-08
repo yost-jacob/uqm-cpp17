@@ -1,7 +1,7 @@
 #ifndef UQM_ENERGY_BEHAVIOR_HPP_
 #define UQM_ENERGY_BEHAVIOR_HPP_
 
-#include "discovery_state.hpp"
+#include "world_types.hpp"
 #include <cstddef>
 #include <optional>
 

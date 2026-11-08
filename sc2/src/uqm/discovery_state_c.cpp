@@ -20,24 +20,10 @@ void ResetPersonalDiscoveries(void) {
     try { uqm::gameSession().player().campaign().clearDiscoveries(); }
     catch (...) { std::abort(); }
 }
-void ImportPersonalDiscovery(COUNT system, COUNT planet, int moon,
-        DWORD energyWord, DWORD systemWords, DWORD legacyEnergy) {
-    try {
-        uqm::gameSession().player().campaign().importLegacyDiscovery(
-                {worldId(system, planet, moon), energyWord, systemWords},
-                static_cast<std::uint16_t>(legacyEnergy >> 16));
-    } catch (...) { std::abort(); }
-}
 COUNT PersonalDiscoveryCount(COUNT system, COUNT planet, int moon) {
     try {
         return static_cast<COUNT>(uqm::gameSession().player().campaign().discovery(
                 worldId(system, planet, moon)).visitedSites.count());
-    } catch (...) { std::abort(); }
-}
-BOOLEAN VisitPersonalDiscovery(COUNT system, COUNT planet, int moon, COUNT site) {
-    try {
-        return static_cast<BOOLEAN>(uqm::gameSession().player().campaign().visitDiscovery(
-                worldId(system, planet, moon), site));
     } catch (...) { std::abort(); }
 }
 PLANET_INFO_SNAPSHOT *CapturePlanetInfoForSave(void) {

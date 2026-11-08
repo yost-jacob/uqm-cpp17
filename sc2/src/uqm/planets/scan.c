@@ -1349,14 +1349,14 @@ GeneratePlanetSide (void)
 }
 
 bool
-isNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
+isNodeRetrieved (const PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
 {
 	return (planetInfo->ScanRetrieveMask[scanType] & ((DWORD) 1 << nodeNr))
 			!= 0;
 }
 
 COUNT
-countNodesRetrieved (PLANET_INFO *planetInfo, BYTE scanType)
+countNodesRetrieved (const PLANET_INFO *planetInfo, BYTE scanType)
 {
 	COUNT count;
 	DWORD mask = planetInfo->ScanRetrieveMask[scanType];
@@ -1376,10 +1376,3 @@ setNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
 {
 	planetInfo->ScanRetrieveMask[scanType] |= ((DWORD) 1 << nodeNr);
 }
-
-void
-setNodeNotRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
-{
-	planetInfo->ScanRetrieveMask[scanType] &= ~((DWORD) 1 << nodeNr);
-}
-

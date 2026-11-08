@@ -392,11 +392,6 @@ LoadSolarSys (void)
 
 	(*pSolarSysState->genFuncs->generatePlanets) (pSolarSysState);
     BuildSystemWorlds (pSolarSysState, CurStarDescPtr);
-	if (GET_GAME_STATE (PLANETARY_CHANGE))
-	{
-		PutPlanetInfo ();
-		SET_GAME_STATE (PLANETARY_CHANGE, 0);
-	}
 
 	for (i = 0, pCurDesc = pSolarSysState->PlanetDesc;
 			i < MAX_PLANETS; ++i, ++pCurDesc)
@@ -1870,13 +1865,6 @@ SaveSolarSysLocation (void)
 	else
 	{	// In orbit around a planet.
 		BYTE moon;
-
-		// Update the starinfo.dat file if necessary.
-		if (GET_GAME_STATE (PLANETARY_CHANGE))
-		{
-			PutPlanetInfo ();
-			SET_GAME_STATE (PLANETARY_CHANGE, 0);
-		}
 
 		// GLOBAL (ip_planet) is already set
 		assert (GLOBAL (ip_planet) != 0);

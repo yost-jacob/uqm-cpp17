@@ -28,16 +28,6 @@ int discovery_state_c_round_trip(void)
     solar.pBaseDesc = solar.MoonDesc;
     solar.pOrbitalDesc = &solar.PlanetDesc[1];
     InitPlanetInfo();
-    BuildSystemWorlds (&solar, CurStarDescPtr);
-    ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
-    BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);
-    ConfigureArtifactEnergyBehavior (&solar, 0, 1);
-    {
-        ENERGY_INTERACTION artifact = InteractWorldEnergy (&solar, 0, 1, 0, FALSE);
-        ENERGY_INTERACTION collected = InteractWorldEnergy (&solar, 0, 1, 0, TRUE);
-        if (!artifact.accepted || !artifact.removeNode || !artifact.hasReport
-                || artifact.report != 0 || collected.accepted) goto done;
-    }
     file = OpenStateFile(STARINFO_FILE, "r+b");
     SeekStateFile(file, star * sizeof(DWORD), SEEK_SET);
     swrite_32(file, NUM_SOLAR_SYSTEMS * sizeof(DWORD));
@@ -48,6 +38,16 @@ int discovery_state_c_round_trip(void)
     swrite_32(file, UINT32_C(0x00050003));
     CloseStateFile(file);
     file = NULL;
+    BuildSystemWorlds (&solar, CurStarDescPtr);
+    ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
+    BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);
+    ConfigureArtifactEnergyBehavior (&solar, 0, 1);
+    {
+        ENERGY_INTERACTION artifact = InteractWorldEnergy (&solar, 0, 1, 0, FALSE);
+        ENERGY_INTERACTION collected = InteractWorldEnergy (&solar, 0, 1, 0, TRUE);
+        if (!artifact.accepted || !artifact.removeNode || !artifact.hasReport
+                || artifact.report != 0 || collected.accepted) goto done;
+    }
     GetPlanetInfo();
     if (PersonalDiscoveryCount(star, 1, -1) != 2
             || solar.SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN] != 3) goto done;

@@ -60,10 +60,9 @@ extern void RedrawSurfaceScan (const POINT *newLoc);
 extern CONTEXT GetScanContext (BOOLEAN *owner);
 extern void DestroyScanContext (void);
 
-bool isNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
-COUNT countNodesRetrieved (PLANET_INFO *planetInfo, BYTE scanType);
+bool isNodeRetrieved (const PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
+COUNT countNodesRetrieved (const PLANET_INFO *planetInfo, BYTE scanType);
 void setNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
-void setNodeNotRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
 
 #if defined(__cplusplus)
 }

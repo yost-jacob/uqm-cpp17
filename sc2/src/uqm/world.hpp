@@ -1,7 +1,8 @@
 #ifndef UQM_WORLD_HPP_
 #define UQM_WORLD_HPP_
 
-#include "discovery_state.hpp"
+#include "world_types.hpp"
+#include "world_state.hpp"
 #include "energy_behavior.hpp"
 #include <memory>
 #include <string>
@@ -16,6 +17,7 @@ struct WorldDefinition {
     std::uint32_t seed;
     bool shielded;
     std::string name;
+    std::uint16_t moonCount = 0; // Generated layout, before moon descriptors are loaded.
 };
 // Owns a runtime world's behavior and generated children. Physical persistence
 // stays in the shared state; personal progress stays in the interacting campaign.
@@ -33,6 +35,9 @@ public:
     const WorldDefinition &definition() const noexcept;
     const WorldId &id() const noexcept;
     bool canLand() const noexcept;
+    WorldProgress progress() const; // Requires layout attachment by SolarSystem; fresh copy.
+    void replaceProgress(const WorldProgress &progress); // Explicit import/reset only.
+    void mergeProgress(const WorldProgress &confirmed); // Permanent bits; no cargo award.
     void setShielded(bool shielded) noexcept;
     // Reject null behavior. Configuration is runtime-only and owns no progress.
     void setEnergyBehavior(std::unique_ptr<EnergyBehavior> behavior);
@@ -45,6 +50,9 @@ public:
     // the whole replacement before mutation. Borrowed child references expire.
     void replaceChildren(std::vector<std::unique_ptr<World>> children);
 private:
+    friend class SolarSystem;
+    void attachLayout(const SystemLayout &layout);
+    SystemLayout layout_;
     WorldDefinition definition_;
     std::shared_ptr<WorldState> state_;
     std::unique_ptr<EnergyBehavior> energy_;
@@ -58,6 +66,10 @@ public:
     StarId star() const noexcept;
     UniverseId universe() const noexcept;
     std::size_t worldCount() const noexcept;
+    const SystemLayout &layout() const noexcept; // Borrowed generated moon counts.
+    WorldProgress progress(const WorldId &id) const; // Includes not-yet-generated moons.
+    void replaceProgress(const WorldId &id, const WorldProgress &progress);
+    void mergeProgress(const WorldId &id, const WorldProgress &confirmed);
     World &world(std::size_t planet);
     const World &world(std::size_t planet) const;
     World &at(const WorldId &id); // Checked universe/system/planet/moon lookup.
@@ -65,6 +77,7 @@ public:
 private:
     StarId star_;
     std::shared_ptr<WorldState> state_;
+    SystemLayout layout_;
     std::vector<std::unique_ptr<World>> worlds_;
 };
 } // namespace uqm

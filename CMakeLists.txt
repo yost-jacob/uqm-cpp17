@@ -94,7 +94,6 @@ if(BUILD_TESTING)
         sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp sc2/src/uqm/star_map.cpp
         sc2/src/uqm/star_map_c.cpp sc2/src/uqm/game_state.cpp
         sc2/src/uqm/discovery_state.cpp sc2/src/uqm/discovery_state_c.cpp
-        sc2/src/uqm/state.c
         sc2/src/uqm/world_state.cpp
         sc2/src/uqm/world.cpp sc2/src/uqm/energy_behavior.cpp sc2/src/uqm/world_c.cpp sc2/src/uqm/game_state_bits.c
         sc2/src/libs/uio/charhashtable.cpp

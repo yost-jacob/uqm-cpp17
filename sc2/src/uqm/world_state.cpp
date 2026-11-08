@@ -1,6 +1,7 @@
 #include "world_state.hpp"
 #include "game_state.hpp"
 #include "state.h"
+#include "starmap.h"
 #include "libs/log.h"
 
 #include <algorithm>
@@ -40,9 +41,107 @@ namespace {
 constexpr auto maxFileSize = std::numeric_limits<std::uint32_t>::max();
 static_assert(STARINFO_FILE == 0 && RANDGRPINFO_FILE == 1 && DEFGRPINFO_FILE == 2);
 }
+namespace {
+constexpr std::size_t scanTableBytes = NUM_SOLAR_SYSTEMS * sizeof(std::uint32_t);
+constexpr std::size_t scanRecordBytes = 3 * sizeof(std::uint32_t);
+static_assert(NUM_SCAN_TYPES == 3 && MINERAL_SCAN == 0 && ENERGY_SCAN == 1 && BIOLOGICAL_SCAN == 2);
+struct ScanPosition { std::size_t record, records; };
+ScanPosition scanPosition(const WorldId &world, const SystemLayout &layout, UniverseId universe) {
+    if (world.universe != universe || world.system.value >= NUM_SOLAR_SYSTEMS
+            || layout.empty() || layout.size() > MAX_PLANETS || world.planet >= layout.size())
+        throw std::out_of_range("unknown world or invalid system layout");
+    ScanPosition position{0, 0};
+    for (std::size_t i = 0; i < layout.size(); ++i) {
+        if (layout[i] > MAX_MOONS) throw std::invalid_argument("too many moons in legacy layout");
+        if (i < world.planet) position.record += 1 + layout[i];
+        position.records += 1 + layout[i];
+    }
+    if (world.moon) {
+        if (*world.moon >= layout[world.planet]) throw std::out_of_range("unknown moon slot");
+        position.record += 1 + *world.moon;
+    }
+    return position;
+}
+std::uint32_t scanWord(const std::vector<std::uint8_t> &bytes, std::size_t offset) {
+    if (offset > bytes.size() || sizeof(std::uint32_t) > bytes.size() - offset)
+        throw std::invalid_argument("truncated legacy scan archive");
+    std::uint32_t value;
+    std::memcpy(&value, bytes.data() + offset, sizeof value);
+    return value;
+}
+void setScanWord(std::vector<std::uint8_t> &bytes, std::size_t offset, std::uint32_t value) {
+    std::memcpy(bytes.data() + offset, &value, sizeof value);
+}
+std::size_t systemBlock(const std::vector<std::uint8_t> &bytes, const WorldId &world, ScanPosition position) {
+    if (bytes.empty()) return 0;
+    if (bytes.size() < scanTableBytes || bytes.size() % sizeof(std::uint32_t) != 0)
+        throw std::invalid_argument("invalid legacy scan offset table");
+    const auto start = scanWord(bytes, world.system.value * sizeof(std::uint32_t));
+    if (start == 0) return 0;
+    if (start < scanTableBytes || start % sizeof(std::uint32_t) != 0 || start > bytes.size()
+            || position.records * scanRecordBytes > bytes.size() - start)
+        throw std::invalid_argument("invalid legacy system scan block");
+    return start;
+}
+WorldProgress readProgress(const std::vector<std::uint8_t> &bytes, std::size_t start, ScanPosition position) {
+    if (start == 0) return {};
+    const auto offset = start + position.record * scanRecordBytes;
+    return {std::bitset<32>{scanWord(bytes, offset)},
+            std::bitset<32>{scanWord(bytes, offset + 8)},
+            std::bitset<32>{scanWord(bytes, offset + 4)}};
+}
+}
 WorldState::WorldState(UniverseId id) : id_(id), storage_(std::make_unique<detail::WorldStorage>()) {}
 WorldState::~WorldState() = default;
 UniverseId WorldState::id() const noexcept { return id_; }
+WorldProgress WorldState::planetProgress(const WorldId &world, const SystemLayout &layout) const {
+    const auto position = scanPosition(world, layout, id_);
+    const std::shared_lock lock(storage_->mutex);
+    const auto &file = storage_->files[STARINFO_FILE];
+    if (file.openCount) throw std::logic_error("typed scan access requires closed C handles");
+    return readProgress(file.data, systemBlock(file.data, world, position), position);
+}
+void WorldState::initializePlanetProgress() {
+    std::vector<std::uint8_t> empty(scanTableBytes);
+    const std::unique_lock lock(storage_->mutex);
+    auto &file = storage_->files[STARINFO_FILE];
+    if (file.openCount) throw std::logic_error("cannot initialize scans with open C handles");
+    file.data.swap(empty);
+    file.cursor = 0;
+}
+void WorldState::replacePlanetProgress(const WorldId &world, const SystemLayout &layout, const WorldProgress &progress) {
+    updatePlanetProgress(world, layout, progress, false);
+}
+void WorldState::mergePlanetProgress(const WorldId &world, const SystemLayout &layout, const WorldProgress &progress) {
+    updatePlanetProgress(world, layout, progress, true);
+}
+void WorldState::updatePlanetProgress(const WorldId &world, const SystemLayout &layout,
+        const WorldProgress &progress, bool merge) {
+    const auto position = scanPosition(world, layout, id_);
+    const std::unique_lock lock(storage_->mutex);
+    auto &file = storage_->files[STARINFO_FILE];
+    if (file.openCount) throw std::logic_error("typed scan access requires closed C handles");
+    auto start = systemBlock(file.data, world, position);
+    auto combined = progress;
+    if (merge) {
+        const auto old = readProgress(file.data, start, position);
+        combined.minerals |= old.minerals;
+        combined.biologicals |= old.biologicals;
+        combined.energy |= old.energy;
+    }
+    if (start == 0) {
+        start = file.data.empty() ? scanTableBytes : file.data.size();
+        if (start > maxFileSize - position.records * scanRecordBytes)
+            throw std::length_error("scan archive exceeds 32-bit offsets");
+        // Resize has a strong exception guarantee; only then publish the offset.
+        file.data.resize(start + position.records * scanRecordBytes);
+        setScanWord(file.data, world.system.value * sizeof(std::uint32_t), static_cast<std::uint32_t>(start));
+    }
+    const auto offset = start + position.record * scanRecordBytes;
+    setScanWord(file.data, offset, static_cast<std::uint32_t>(combined.minerals.to_ulong()));
+    setScanWord(file.data, offset + 4, static_cast<std::uint32_t>(combined.energy.to_ulong()));
+    setScanWord(file.data, offset + 8, static_cast<std::uint32_t>(combined.biologicals.to_ulong()));
+}
 WorldSnapshot WorldState::snapshot() const {
     const std::shared_lock lock(storage_->mutex);
     return {id_, storage_->files[0].data, storage_->files[1].data, storage_->files[2].data};

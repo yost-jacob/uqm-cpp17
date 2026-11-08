@@ -17,6 +17,7 @@
  */
 
 #include "lander.h"
+#include "../state.h"
 
 #include "lifeform.h"
 #include "scan.h"
@@ -828,7 +829,7 @@ CheckObjectCollision (COUNT index)
 				{	// Node retrieved, remove from the surface
 					setNodeRetrieved (&pSolarSysState->SysInfo.PlanetInfo,
 							scan, which_node);
-					SET_GAME_STATE (PLANETARY_CHANGE, 1);
+                    PutPlanetInfo (); // Publish accepted permanent retrieval immediately.
 					ElementPtr->state_flags |= DISAPPEARING;
 				}
 				UnlockElement (hElement);

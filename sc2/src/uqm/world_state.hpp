@@ -2,17 +2,11 @@
 #define UQM_WORLD_STATE_HPP_
 
 #include <cstdint>
+#include "world_types.hpp"
 #include <memory>
 #include <vector>
 
 namespace uqm {
-struct UniverseId {
-    std::uint64_t value;
-    constexpr bool operator==(UniverseId other) const noexcept { return value == other.value; }
-    constexpr bool operator!=(UniverseId other) const noexcept { return !(*this == other); }
-};
-inline constexpr UniverseId SinglePlayerUniverse{1};
-
 // Detached legacy-format state bytes, NOT a new portable save encoding. Current
 // save/load code handles byte order. No file cursors, locks or handles are saved.
 struct WorldSnapshot {
@@ -23,11 +17,9 @@ struct WorldSnapshot {
 };
 namespace detail { struct WorldStorage; struct LegacyWorldAccess; }
 
-// Transitional shared owner of the legacy scan/NPC archive. Scan bytes still
-// contain personal discovery bits (e.g. Androsynth reports); they must be split
-// before multiple players use this archive. This is storage ownership, not a
-// completed multiplayer schema. It owns no player/session
-// back. Legacy handles borrow its stable file records, not vector data pointers.
+// Shared owner of legacy scan/NPC storage and checked physical progress access.
+// Old checkpoints may retain personal report bits until on-demand import; this
+// is not a completed multiplayer schema. It owns no player/session back. Legacy handles borrow its stable file records, not vector data pointers.
 // Individual operations and native snapshots are locked; the C seek/read/write
 // cursor protocol still requires simulation-thread confinement across calls.
 class WorldState {
@@ -39,6 +31,15 @@ public:
     WorldState(WorldState &&) = delete;
     WorldState &operator=(WorldState &&) = delete;
     UniverseId id() const noexcept;
+    // Typed world records are addressed by identity and generated layout. Queries
+    // return copies; absent records are empty. Invalid IDs/layouts throw, malformed
+    // archives throw invalid_argument, and open C scan handles throw logic_error.
+    WorldProgress planetProgress(const WorldId &world, const SystemLayout &layout) const;
+    void initializePlanetProgress(); // Empty offset table; caller resets personal state.
+    // Replacement supports legacy import/reset; merge is for confirmed permanent
+    // collection bits and cannot erase another accepted claim. Neither awards cargo.
+    void replacePlanetProgress(const WorldId &world, const SystemLayout &layout, const WorldProgress &progress);
+    void mergePlanetProgress(const WorldId &world, const SystemLayout &layout, const WorldProgress &confirmed);
     WorldSnapshot snapshot() const; // Coherent copied bytes under a shared lock.
     // Authoritative checkpoint restore only; never a per-player rollback online.
     // Validate ID/sizes before replacing anything. Throws invalid_argument for
@@ -47,6 +48,7 @@ public:
     void restore(WorldSnapshot candidate);
 private:
     friend struct detail::LegacyWorldAccess;
+    void updatePlanetProgress(const WorldId &, const SystemLayout &, const WorldProgress &, bool merge);
     UniverseId id_;
     std::unique_ptr<detail::WorldStorage> storage_;
 };

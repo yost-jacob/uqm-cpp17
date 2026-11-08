@@ -323,7 +323,6 @@ set(UQM_SOURCES
     sc2/src/uqm/star_map.cpp
     sc2/src/uqm/star_map_c.cpp
     sc2/src/uqm/starmap.c
-    sc2/src/uqm/state.c
     sc2/src/uqm/status.c
     sc2/src/uqm/supermelee/buildpick.c
     sc2/src/uqm/supermelee/loadmele.c

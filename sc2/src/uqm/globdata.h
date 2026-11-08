@@ -199,11 +199,8 @@ START_GAME_STATE
 			 */
 	ADD_GAME_STATE (PLANETARY_LANDING, 1)
 	ADD_GAME_STATE (PLANETARY_CHANGE, 1)
-			/* Flag set to 1 when the planet information for the current
-			 * world is changed since it was last saved to the starinfo.dat
-			 * file. Set when picking up bio, mineral, or energy nodes.
-			 * When there's no current world, it should be 0.
-			 */
+            /* Reserved legacy save bit. Permanent retrieval is now published
+             * immediately; no deferred dirty-world flag is maintained. */
 
 		/* Spathi states */
 	ADD_GAME_STATE (SPATHI_VISITS, 3)
