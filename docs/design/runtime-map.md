@@ -38,9 +38,10 @@ flowchart TD
     SH --> EL["C element engine<br/>projectile callbacks / collision / retirement"]:::legacy
     B --> EL
 
-    EX --> GEN["gendef.c + generate/*.c<br/>GenerateFunctions tables and story handlers"]:::legacy
+    EX --> GEN["SystemBehavior dispatch<br/>native Chmmr; 27 legacy special systems"]:::mixed
     EX --> WA["world_c.cpp / discovery_state_c.cpp<br/>descriptor, handle and progress translation"]:::adapter
     GEN --> WA
+    GEN --> SB["SolarSystem-owned behavior<br/>borrowed CampaignState reference"]:::native
     WA --> WO["SolarSystem / World / EnergyBehavior<br/>runtime ownership and selected energy rules"]:::native
 
     O --> MN["Native MenuResult + C menu bridge<br/>game_menu.cpp / game_session_c.h"]:::adapter
@@ -127,7 +128,7 @@ transfer contracts; it is not redundant simply because its implementation is C++
 | Area | Current boundary | What deeper encapsulation would involve |
 | --- | --- | --- |
 | Mode selection | Native dispatcher; mixed mode bodies | Move activity/transition decisions away from global flags and into explicit results. |
-| Solar-system generation | C function tables plus native runtime worlds | Migrate generation callers and lifetime management, then remove world adapters as their C callers disappear. |
+| Solar-system generation | Scoped native system/behavior; Chmmr overrides; 27 legacy special systems | Migrate remaining handlers through the borrowed campaign reference, then retire their tables and C bridge as callers migrate. |
 | Navigation | Legacy HyperSpace and interplanetary loops | Own navigation runtime state behind a native interface while preserving transitions. |
 | Encounters and communication | Legacy nested loops and story-state access | Separate encounter decisions from UI/execution and make exits explicit. |
 | Combat | Native ships and callers over a legacy element engine | Encapsulate battle/element lifetime, collisions and projectile behaviors; preserve retirement and reincarnation ordering. |
@@ -137,7 +138,9 @@ transfer contracts; it is not redundant simply because its implementation is C++
 The Battle / ProjectileBehavior design in [combat/README.md](combat/README.md)
 is an executable test prototype, **not** the production combat implementation
 shown above. Likewise, native EnergyBehavior covers selected energy-site rules;
-it has not replaced the orbital/story generator tables.
+it is separate from system-level orbital/story dispatch. See the
+[system behavior migration](solar-system/system-behavior.md) for the live default
+and Chmmr migration, scoped owner and remaining legacy adapters.
 
 ## Source anchors
 

@@ -12,7 +12,7 @@ changes:
 Files related to this system:
 - planets/generate.h
   Defines GenerateFunctions.
-- planets/generate/gendefault.c
+- planets/generate/gendefault.cpp
   Default generation functions for when no specific one is specified.
 - planets/generate/gen*.c
   Specific generation functions.

@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+// Legacy-only selector. Native special systems are selected by createSystemBehavior.
 const GenerateFunctions *getGenerateFunctions (BYTE Index);
 
 enum

@@ -10,6 +10,7 @@
 
 namespace uqm {
 class CampaignState;
+class SystemBehavior;
 enum class WorldKind { Planet, Moon, Starbase, FinalBattleSite };
 struct WorldDefinition {
     WorldId id;
@@ -60,9 +61,19 @@ private:
 };
 class SolarSystem {
 public:
-    // state must be non-null; definitions use dense zero-based planet slots.
+    // Detached data-only view, without behavior. state must be non-null;
+    // definitions use dense zero-based planet slots. behavior() throws on this view.
     SolarSystem(StarId star, std::shared_ptr<WorldState> state,
             std::vector<WorldDefinition> definitions);
+    // campaign must outlive this system; the selected behavior borrows it.
+    SolarSystem(StarId star, std::shared_ptr<WorldState> state,
+            CampaignState &campaign, std::uint8_t specialSystem);
+    ~SolarSystem();
+    SystemBehavior &behavior();
+    const SystemBehavior &behavior() const;
+    // Attach one complete generated planet layout. Validate before replacing it;
+    // behavior identity and borrowed campaign reference remain unchanged.
+    void replacePlanets(std::vector<WorldDefinition> definitions);
     StarId star() const noexcept;
     UniverseId universe() const noexcept;
     std::size_t worldCount() const noexcept;
@@ -75,6 +86,7 @@ public:
     World &at(const WorldId &id); // Checked universe/system/planet/moon lookup.
     const World &at(const WorldId &id) const;
 private:
+    std::unique_ptr<SystemBehavior> behavior_;
     StarId star_;
     std::shared_ptr<WorldState> state_;
     SystemLayout layout_;

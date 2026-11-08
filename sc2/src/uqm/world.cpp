@@ -1,4 +1,5 @@
 #include "world.hpp"
+#include "system_behavior.hpp"
 #include <stdexcept>
 #include <utility>
 
@@ -54,15 +55,36 @@ void World::replaceChildren(std::vector<std::unique_ptr<World>> children) {
 SolarSystem::SolarSystem(StarId star, std::shared_ptr<WorldState> state,
         std::vector<WorldDefinition> definitions) : star_(star), state_(std::move(state)) {
     if (!state_) throw std::invalid_argument("solar system requires world state");
-    for (const auto &definition : definitions) layout_.push_back(definition.moonCount);
+    replacePlanets(std::move(definitions));
+}
+SolarSystem::SolarSystem(StarId star, std::shared_ptr<WorldState> state,
+        CampaignState &campaign, std::uint8_t specialSystem)
+    : behavior_(createSystemBehavior(specialSystem, campaign)), star_(star), state_(std::move(state)) {
+    if (!state_ || !behavior_) throw std::invalid_argument("system requires state and behavior");
+}
+SolarSystem::~SolarSystem() = default;
+SystemBehavior &SolarSystem::behavior() {
+    if (!behavior_) throw std::logic_error("data-only system has no runtime behavior");
+    return *behavior_;
+}
+const SystemBehavior &SolarSystem::behavior() const {
+    if (!behavior_) throw std::logic_error("data-only system has no runtime behavior");
+    return *behavior_;
+}
+void SolarSystem::replacePlanets(std::vector<WorldDefinition> definitions) {
+    SystemLayout layout;
+    std::vector<std::unique_ptr<World>> worlds;
+    for (const auto &definition : definitions) layout.push_back(definition.moonCount);
     for (std::size_t i = 0; i < definitions.size(); ++i) {
         const auto &id = definitions[i].id;
         if (id.system != star_ || id.universe != state_->id() || id.planet != i || id.moon)
             throw std::invalid_argument("planet definition does not match system and slot");
         auto world = std::make_unique<World>(std::move(definitions[i]), state_);
-        world->attachLayout(layout_);
-        worlds_.push_back(std::move(world));
+        world->attachLayout(layout);
+        worlds.push_back(std::move(world));
     }
+    layout_ = std::move(layout);
+    worlds_ = std::move(worlds);
 }
 StarId SolarSystem::star() const noexcept { return star_; }
 UniverseId SolarSystem::universe() const noexcept { return state_->id(); }

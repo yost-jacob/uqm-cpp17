@@ -8,8 +8,11 @@ typedef struct UQM_SYSTEM_RUNTIME UQM_SYSTEM_RUNTIME;
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* C owns only this opaque runtime handle. Build replaces it after generation;
- * destroy after all system callbacks. No raw descriptor is retained by C++. */
+/* Production C exploration borrows a native entry-scope context. Prepare creates
+ * its behavior before any hooks; Build attaches descriptors after generation.
+ * Create/Destroy are paired owning adapters only for legacy debug tooling. */
+void PrepareSystemWorlds(struct solarsys_state *system, const struct star_desc *star);
+void CreateSystemWorlds(struct solarsys_state *system, const struct star_desc *star);
 void BuildSystemWorlds(struct solarsys_state *system, const struct star_desc *star);
 void BuildMoonWorlds(struct solarsys_state *system, const struct planet_desc *planet);
 void DestroySystemWorlds(struct solarsys_state *system);

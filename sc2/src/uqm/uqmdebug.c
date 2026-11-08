@@ -644,7 +644,7 @@ starRecurse (STAR_DESC *star, void *arg)
 	SolarSysState.SunDesc[0].location.x = 0;
 	SolarSysState.SunDesc[0].location.y = 0;
 	//SolarSysState.SunDesc[0].radius = MIN_ZOOM_RADIUS;
-	SolarSysState.genFuncs = getGenerateFunctions (star->Index);
+	CreateSystemWorlds (&SolarSysState, star);
 
 	pSolarSysState = &SolarSysState;
 	(*SolarSysState.genFuncs->generatePlanets) (&SolarSysState);

@@ -33,7 +33,7 @@ Other unclassified archive contents are not yet a multiplayer schema.
 
 Other examples reinforce the distinction:
 
-- [genchmmr.c](../../../sc2/src/uqm/planets/generate/genchmmr.c) reads the physical
+- [genchmmr.cpp](../../../sc2/src/uqm/planets/generate/genchmmr.cpp) reads the physical
   CHMMR_UNLEASHED fact when generating shielding, then combines it with personal
   SUN_DEVICE_ON_SHIP and bomb progress during orbital interaction.
 - [genspa.c](../../../sc2/src/uqm/planets/generate/genspa.c) combines a physical

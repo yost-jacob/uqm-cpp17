@@ -1,4 +1,6 @@
 #include "world.hpp"
+#include "system_runtime.hpp"
+#include "system_behavior.hpp"
 #include "game_state.hpp"
 #include "world_c.h"
 #include "state.h"
@@ -10,10 +12,9 @@
 #include <limits>
 #include <utility>
 
-struct UQM_SYSTEM_RUNTIME { std::unique_ptr<uqm::SolarSystem> system; };
 namespace {
-uqm::SolarSystem &runtime(SOLARSYS_STATE &system) {
-    if (!system.worlds) throw std::logic_error("system worlds have not been built");
+uqm::SolarSystem &runtime(const SOLARSYS_STATE &system) {
+    if (!system.worlds || !system.worlds->system) throw std::logic_error("system worlds have not been built");
     return *system.worlds->system;
 }
 uqm::WorldId id(uqm::SolarSystem &system, COUNT planet, int moon) {
@@ -48,18 +49,85 @@ uqm::LegacyDiscoveryLocation discoveryLocation(uqm::SolarSystem &system, const u
     return {world, record * NUM_SCAN_TYPES + ENERGY_SCAN, records * NUM_SCAN_TYPES};
 }
 
-void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star) {
+void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQM_SYSTEM_RUNTIME &context) {
     if (star.Index != ANDROSYNTH_DEFINED) return;
     const auto world = id(system, 1, -1);
     auto progress = system.progress(world);
     const auto legacy = progress.energy.to_ulong();
-    uqm::gameSession().player().campaign().importLegacyDiscovery(
+    context.campaign.importLegacyDiscovery(
             discoveryLocation(system, world), static_cast<std::uint16_t>(legacy >> 16));
     progress.energy &= std::bitset<32>{UINT32_C(0x0000ffff)};
     if (legacy >> 16) system.replaceProgress(world, progress);
 }
 
 }
+static bool dispatch_initNpcs(SOLARSYS_STATE *system) {
+    try { return runtime(*system).behavior().initNpcs(*system); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_reinitNpcs(SOLARSYS_STATE *system) {
+    try { return runtime(*system).behavior().reinitNpcs(*system); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_uninitNpcs(SOLARSYS_STATE *system) {
+    try { return runtime(*system).behavior().uninitNpcs(*system); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_generatePlanets(SOLARSYS_STATE *system) {
+    try { return runtime(*system).behavior().generatePlanets(*system); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_generateMoons(SOLARSYS_STATE *system, PLANET_DESC *world) {
+    try { return runtime(*system).behavior().generateMoons(*system, *world); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_generateName(const SOLARSYS_STATE *system, const PLANET_DESC *world) {
+    try { return runtime(*system).behavior().generateName(*system, *world); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_generateOrbital(SOLARSYS_STATE *system, PLANET_DESC *world) {
+    try { return runtime(*system).behavior().generateOrbital(*system, *world); }
+    catch (...) { std::abort(); }
+}
+static COUNT dispatch_generateMinerals(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
+    try { return runtime(*system).behavior().generateMinerals(*system, *world, node, info); }
+    catch (...) { std::abort(); }
+}
+static COUNT dispatch_generateEnergy(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
+    try { return runtime(*system).behavior().generateEnergy(*system, *world, node, info); }
+    catch (...) { std::abort(); }
+}
+static COUNT dispatch_generateLife(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
+    try { return runtime(*system).behavior().generateLife(*system, *world, node, info); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_pickupMinerals(SOLARSYS_STATE *system, PLANET_DESC *world, COUNT node) {
+    try { return runtime(*system).behavior().pickupMinerals(*system, *world, node); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_pickupEnergy(SOLARSYS_STATE *system, PLANET_DESC *world, COUNT node) {
+    try { return runtime(*system).behavior().pickupEnergy(*system, *world, node); }
+    catch (...) { std::abort(); }
+}
+static bool dispatch_pickupLife(SOLARSYS_STATE *system, PLANET_DESC *world, COUNT node) {
+    try { return runtime(*system).behavior().pickupLife(*system, *world, node); }
+    catch (...) { std::abort(); }
+}
+static const GenerateFunctions nativeFunctions = {
+    dispatch_initNpcs,
+    dispatch_reinitNpcs,
+    dispatch_uninitNpcs,
+    dispatch_generatePlanets,
+    dispatch_generateMoons,
+    dispatch_generateName,
+    dispatch_generateOrbital,
+    dispatch_generateMinerals,
+    dispatch_generateEnergy,
+    dispatch_generateLife,
+    dispatch_pickupMinerals,
+    dispatch_pickupEnergy,
+    dispatch_pickupLife,
+};
 extern "C" {
 void InitPlanetInfo(void) {
     try {
@@ -72,7 +140,7 @@ void GetPlanetInfo(void) {
     try {
         auto &native = runtime(*pSolarSysState);
         const auto world = orbitalId(*pSolarSysState, native);
-        importSystemDiscoveries(native, *CurStarDescPtr); // Recheck after in-place checkpoint load.
+        importSystemDiscoveries(native, *CurStarDescPtr, *pSolarSysState->worlds); // Recheck after in-place checkpoint load.
         const auto progress = native.progress(world);
         auto &masks = pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask;
         masks[MINERAL_SCAN] = static_cast<DWORD>(progress.minerals.to_ulong());
@@ -90,6 +158,28 @@ void PutPlanetInfo(void) {
     } catch (...) { std::abort(); }
 }
 
+void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
+    try {
+        if (!system || !system->worlds || !star) throw std::invalid_argument("missing exploration context");
+        const StarId id{GetStarIndex(star)};
+        if (id.value >= NUM_SOLAR_SYSTEMS) throw std::out_of_range("invalid system star");
+        auto &context = *system->worlds;
+        context.system = std::make_unique<uqm::SolarSystem>(id, context.world,
+                context.campaign, star->Index);
+        system->genFuncs = &nativeFunctions;
+    } catch (...) { std::abort(); }
+}
+// Legacy debug tooling still owns an opaque heap handle. Production exploration
+// instead supplies a stack-owned context carrying its explicit campaign borrow.
+void CreateSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
+    try {
+        auto next = std::make_unique<UQM_SYSTEM_RUNTIME>(UQM_SYSTEM_RUNTIME{
+                uqm::gameSession().player().campaign(), uqm::gameSession().worldOwner(), nullptr});
+        system->worlds = next.get();
+        PrepareSystemWorlds(system, star);
+        next.release();
+    } catch (...) { std::abort(); }
+}
 void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
     try {
         if (!system || !star || system->SunDesc[0].NumPlanets > MAX_PLANETS)
@@ -97,19 +187,15 @@ void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
         const StarId starId{GetStarIndex(star)};
         if (starId.value >= NUM_SOLAR_SYSTEMS)
             throw std::out_of_range("world system requires a real catalogue star");
-        auto state = uqm::gameSession().world().id();
+        auto state = system->worlds->world->id();
         std::vector<uqm::WorldDefinition> planets;
         for (COUNT i = 0; i < system->SunDesc[0].NumPlanets; ++i)
             planets.push_back(definition({state, starId, i, std::nullopt},
                     uqm::WorldKind::Planet, system->PlanetDesc[i]));
-        auto next = std::make_unique<UQM_SYSTEM_RUNTIME>();
-        // Native owners receive C++ values and shared state; only this bridge
-        // reads the borrowed C descriptor arrays.
-        next->system = std::make_unique<uqm::SolarSystem>(starId,
-                uqm::gameSession().worldOwner(), std::move(planets));
-        importSystemDiscoveries(*next->system, *star);
-        delete system->worlds;
-        system->worlds = next.release();
+        auto &native = runtime(*system);
+        if (native.star() != starId) throw std::logic_error("wrong active system");
+        native.replacePlanets(std::move(planets));
+        importSystemDiscoveries(native, *star, *system->worlds);
     } catch (...) { std::abort(); }
 }
 void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
@@ -121,7 +207,7 @@ void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
         std::vector<std::unique_ptr<uqm::World>> moons;
         for (COUNT i = 0; i < planet->NumPlanets; ++i)
             moons.push_back(std::make_unique<uqm::World>(definition(id(native, static_cast<COUNT>(slot), i),
-                    uqm::WorldKind::Moon, system->MoonDesc[i]), uqm::gameSession().worldOwner()));
+                    uqm::WorldKind::Moon, system->MoonDesc[i]), system->worlds->world));
         native.world(static_cast<std::size_t>(slot)).replaceChildren(std::move(moons));
     } catch (...) { std::abort(); }
 }
@@ -146,7 +232,7 @@ ENERGY_INTERACTION InteractWorldEnergy(SOLARSYS_STATE *system, COUNT planet, int
     try {
         auto &native = runtime(*system);
         const auto result = native.at(id(native, planet, moon)).interactEnergy(
-                uqm::gameSession().player().campaign(), site, retrieved);
+                system->worlds->campaign, site, retrieved);
         if (result.report && *result.report > std::numeric_limits<COUNT>::max())
             throw std::out_of_range("report index exceeds C table capacity");
         return {static_cast<BOOLEAN>(result.accepted), static_cast<BOOLEAN>(result.removeNode),

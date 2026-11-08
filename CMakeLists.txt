@@ -82,7 +82,8 @@ if(BUILD_TESTING)
         tests/ship_factory.cpp sc2/src/uqm/ship_factory.cpp sc2/src/uqm/loadship.cpp
         # Executable design prototype; deliberately excluded from UQM_SOURCES.
         tests/combat_ownership.cpp docs/design/combat/projectile.cpp
-        tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp
+        tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp tests/system_behavior.cpp
+        sc2/src/uqm/system_behavior.cpp sc2/src/uqm/planets/generate/genchmmr.cpp
         tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp
         tests/stringbank_c.c tests/string_resources.cpp tests/string_tables_c.c

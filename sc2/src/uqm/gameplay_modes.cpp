@@ -1,4 +1,5 @@
 #include "game_state.hpp"
+#include "system_runtime.hpp"
 #include "game_menu.hpp"
 #include "game_session_c.h"
 #include "globdata.h"
@@ -95,7 +96,7 @@ public:
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(INTERPLANETARY_CLOCK_RATE);
-        ExploreSolarSys();
+        exploreSolarSystem(stateOwner()->player(playerId()).campaign(), stateOwner()->worldOwner());
         return finishMode(stateOwner(), playerId());
     }
 };

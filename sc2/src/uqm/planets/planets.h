@@ -285,7 +285,9 @@ extern void FreePlanet (void);
 extern void LoadStdLanderFont (PLANET_INFO *info);
 extern void FreeLanderFont (PLANET_INFO *info);
 
-extern void ExploreSolarSys (void);
+/* runtime is borrowed from the native mode entry and must outlive every
+ * exploration callback. The C loop does not destroy it. */
+extern void ExploreSolarSys (UQM_SYSTEM_RUNTIME *runtime);
 extern void DrawStarBackGround (void);
 extern void XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);

@@ -38,6 +38,7 @@ int discovery_state_c_round_trip(void)
     swrite_32(file, UINT32_C(0x00050003));
     CloseStateFile(file);
     file = NULL;
+    CreateSystemWorlds (&solar, CurStarDescPtr);
     BuildSystemWorlds (&solar, CurStarDescPtr);
     ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
     BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);

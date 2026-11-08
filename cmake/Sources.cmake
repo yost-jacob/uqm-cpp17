@@ -220,6 +220,8 @@ set(UQM_SOURCES
     sc2/src/uqm/discovery_state_c.cpp
     sc2/src/uqm/world_state.cpp
     sc2/src/uqm/world.cpp
+    sc2/src/uqm/system_behavior.cpp
+    sc2/src/uqm/system_runtime.cpp
     sc2/src/uqm/energy_behavior.cpp
     sc2/src/uqm/world_c.cpp
     sc2/src/uqm/game_state_bits.c
@@ -245,9 +247,9 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/devices.c
     sc2/src/uqm/planets/generate/genand.c
     sc2/src/uqm/planets/generate/genburv.c
-    sc2/src/uqm/planets/generate/genchmmr.c
+    sc2/src/uqm/planets/generate/genchmmr.cpp
     sc2/src/uqm/planets/generate/gencol.c
-    sc2/src/uqm/planets/generate/gendefault.c
+    sc2/src/uqm/planets/generate/gendefault.cpp
     sc2/src/uqm/planets/generate/gendru.c
     sc2/src/uqm/planets/generate/genilw.c
     sc2/src/uqm/planets/generate/genmel.c

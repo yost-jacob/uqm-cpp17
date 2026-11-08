@@ -33,12 +33,14 @@ struct PlayerLocation {
     std::uint16_t facing;
     std::uint8_t planet, orbit;
 };
-enum class StoryFlag { StarbaseAccessGranted, SunDeviceOnShip };
-enum class StoryCounter { BombProgress, ShofixtiVisits };
+enum class StoryFlag { StarbaseAccessGranted, SunDeviceOnShip, ChmmrFreed, IlwrathDeceived, YehatCivilWar };
+enum class StoryCounter { BombProgress, ShofixtiVisits, EncounterContext, BattlePlanet };
 constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
     switch (counter) {
         case StoryCounter::BombProgress: return 3;
         case StoryCounter::ShofixtiVisits: return 7;
+        case StoryCounter::EncounterContext: return 255;
+        case StoryCounter::BattlePlanet: return 255;
     }
     return 0; // Invalid enum values are rejected by the runtime overload.
 }
@@ -76,8 +78,7 @@ public:
             const std::vector<std::uint8_t> &physicalArchive) const;
     template<StoryCounter Counter, unsigned Value>
     void set() {
-        static_assert(Counter == StoryCounter::BombProgress
-                || Counter == StoryCounter::ShofixtiVisits, "unknown story counter");
+        static_assert(counterMaximum(Counter) > 0, "unknown story counter");
         static_assert(Value <= counterMaximum(Counter), "story counter value out of range");
         set(Counter, Value);
     }

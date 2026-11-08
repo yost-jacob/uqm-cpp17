@@ -23,12 +23,17 @@ struct Field { int first, last; };
 Field field(StoryFlag flag) {
     switch (flag) {
         case StoryFlag::StarbaseAccessGranted: return {STARBASE_AVAILABLE, END_STARBASE_AVAILABLE};
+        case StoryFlag::YehatCivilWar: return {YEHAT_CIVIL_WAR, END_YEHAT_CIVIL_WAR};
+        case StoryFlag::ChmmrFreed: return {CHMMR_UNLEASHED, END_CHMMR_UNLEASHED};
+        case StoryFlag::IlwrathDeceived: return {ILWRATH_DECEIVED, END_ILWRATH_DECEIVED};
         case StoryFlag::SunDeviceOnShip: return {SUN_DEVICE_ON_SHIP, END_SUN_DEVICE_ON_SHIP};
     }
     throw std::invalid_argument("unknown story flag");
 }
 Field field(StoryCounter counter) {
     switch (counter) {
+        case StoryCounter::BattlePlanet: return {BATTLE_PLANET, END_BATTLE_PLANET};
+        case StoryCounter::EncounterContext: return {GLOBAL_FLAGS_AND_DATA, END_GLOBAL_FLAGS_AND_DATA};
         case StoryCounter::BombProgress: return {CHMMR_BOMB_STATE, END_CHMMR_BOMB_STATE};
         case StoryCounter::ShofixtiVisits: return {SHOFIXTI_VISITS, END_SHOFIXTI_VISITS};
     }

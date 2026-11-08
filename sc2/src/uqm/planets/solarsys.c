@@ -1702,7 +1702,7 @@ XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay)
 }
 
 void
-ExploreSolarSys (void)
+ExploreSolarSys (UQM_SYSTEM_RUNTIME *runtime)
 {
 	SOLARSYS_STATE SolarSysState;
 	
@@ -1726,14 +1726,14 @@ ExploreSolarSys (void)
 
 	memset (pSolarSysState, 0, sizeof (*pSolarSysState));
 
-	SolarSysState.genFuncs = getGenerateFunctions (CurStarDescPtr->Index);
+	SolarSysState.worlds = runtime;
+	PrepareSystemWorlds (&SolarSysState, CurStarDescPtr);
 
 	InitSolarSys ();
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	SolarSysState.InputFunc = DoIpFlight;
 	DoInput (&SolarSysState, FALSE);
 	UninitSolarSys ();
-    DestroySystemWorlds (&SolarSysState);
 	pSolarSysState = 0;
 }
 

@@ -24,7 +24,6 @@ extern GenerateFunctions generateDefaultFunctions;
 
 extern GenerateFunctions generateAndrosynthFunctions;
 extern GenerateFunctions generateBurvixeseFunctions;
-extern GenerateFunctions generateChmmrFunctions;
 extern GenerateFunctions generateColonyFunctions;
 extern GenerateFunctions generateDruugeFunctions;
 extern GenerateFunctions generateIlwrathFunctions;
@@ -77,8 +76,6 @@ getGenerateFunctions (BYTE Index)
 			return &generateMelnormeFunctions;
 		case TALKING_PET_DEFINED:
 			return &generateTalkingPetFunctions;
-		case CHMMR_DEFINED:
-			return &generateChmmrFunctions;
 		case SYREEN_DEFINED:
 			return &generateSyreenFunctions;
 		case MYCON_TRAP_DEFINED:
