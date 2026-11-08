@@ -25,6 +25,7 @@
 #include "../../gendef.h"
 #include "../../starmap.h"
 #include "../../globdata.h"
+#include "../../world_c.h"
 #include "../../ipdisp.h"
 #include "../../nameref.h"
 #include "../../setup.h"
@@ -87,6 +88,12 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
+        if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
+                || CurStarDescPtr->Index == EGG_CASE0_DEFINED
+                || CurStarDescPtr->Index == EGG_CASE1_DEFINED
+                || CurStarDescPtr->Index == EGG_CASE2_DEFINED)
+            ConfigureArtifactEnergyBehavior (solarSys, 0, -1);
+
 		if ((CurStarDescPtr->Index == MYCON_DEFINED
 				|| CurStarDescPtr->Index == SUN_DEVICE_DEFINED)
 				&& StartSphereTracking (MYCON_SHIP))
@@ -232,6 +239,11 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	{
 		assert (!GET_GAME_STATE (SUN_DEVICE) && whichNode == 0);
 
+        ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 0, -1, whichNode,
+                isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode));
+        if (!result.accepted)
+            return false;
+
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
@@ -239,7 +251,7 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		SET_GAME_STATE (SUN_DEVICE_ON_SHIP, 1);
 		SET_GAME_STATE (MYCON_VISITS, 0);
 
-		return true; // picked up
+        return result.removeNode; // Physical retrieval is committed by the lander.
 	}
 
 	if ((CurStarDescPtr->Index == EGG_CASE0_DEFINED
@@ -248,6 +260,11 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		assert (whichNode == 0);
+
+        ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 0, -1, whichNode,
+                isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode));
+        if (!result.accepted)
+            return false;
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
@@ -265,7 +282,7 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 				break;
 		}
 
-		return true; // picked up
+        return result.removeNode; // Physical retrieval is committed by the lander.
 	}
 
 	(void) whichNode;

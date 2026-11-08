@@ -15,8 +15,10 @@ explains the required semantic split before multiplayer sharing or typed world
 progress replaces the archive.
 
 The production layer deliberately retains the existing mixed GLOBDATA layout
-behind its C adapter. Full shared-world field extraction, typed persistence snapshots,
-world/behavior classes and networking described below are not implemented yet.
+behind its C adapter. Full shared-world field extraction, typed persistence snapshots and networking
+remain future work. Native World/SolarSystem runtime ownership and polymorphic
+[energy behaviors](energy-behavior.md) now run in the game; the broader
+WorldBehavior generation/orbit hierarchy below remains a target.
 The sketches use a separate namespace and illustrate the destination; their
 signatures are not a second production API or a second live state store.
 

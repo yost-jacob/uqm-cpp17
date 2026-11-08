@@ -213,6 +213,9 @@ set(UQM_SOURCES
     sc2/src/uqm/discovery_state.cpp
     sc2/src/uqm/discovery_state_c.cpp
     sc2/src/uqm/world_state.cpp
+    sc2/src/uqm/world.cpp
+    sc2/src/uqm/energy_behavior.cpp
+    sc2/src/uqm/world_c.cpp
     sc2/src/uqm/game_state_bits.c
     sc2/src/uqm/gravity.c
     sc2/src/uqm/grpinfo.c

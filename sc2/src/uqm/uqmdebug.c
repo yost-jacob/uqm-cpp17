@@ -648,6 +648,7 @@ starRecurse (STAR_DESC *star, void *arg)
 
 	pSolarSysState = &SolarSysState;
 	(*SolarSysState.genFuncs->generatePlanets) (&SolarSysState);
+    BuildSystemWorlds (&SolarSysState, star);
 
 	if (universeRecurseArg->systemFuncPre != NULL)
 	{
@@ -669,6 +670,7 @@ starRecurse (STAR_DESC *star, void *arg)
 				star, &SolarSysState, universeRecurseArg->arg);
 	}
 	
+    DestroySystemWorlds (&SolarSysState);
 	pSolarSysState = oldPSolarSysState;
 	CurStarDescPtr = oldStarDescPtr;
 }
@@ -701,6 +703,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		RandomContext_SeedRandom (&SysGenRNG, planet->rand_seed);
 		
 		(*system->genFuncs->generateMoons) (system, planet);
+        BuildMoonWorlds (system, planet);
 
 		forAllMoons (star, system, planet, moonRecurse,
 				(void *) universeRecurseArg);

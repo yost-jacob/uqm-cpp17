@@ -22,6 +22,7 @@
 #include "../scan.h"
 #include "../../globdata.h"
 #include "../../state.h"
+#include "../../world_c.h"
 #include "../../starmap.h"
 #include "../../nameref.h"
 #include "../../resinst.h"
@@ -87,6 +88,8 @@ GenerateAndrosynth_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (
 				LoadStringTable (ANDROSYNTH_RUINS_STRTAB));
+        ConfigurePersonalEnergyBehavior (solarSys, 1, -1, NUM_RACE_RUINS,
+                GetStringTableCount (solarSys->SysInfo.PlanetInfo.DiscoveryString));
         // The site remains in the shared world. This player's accepted visits
         // select the next report independently of physical retrieval masks.
 		if (visits >= GetStringTableCount (
@@ -124,8 +127,11 @@ GenerateAndrosynth_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 {
 	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
 	{
-        if (!VisitPersonalDiscovery ((COUNT)GetStarIndex(CurStarDescPtr), 1, -1, whichNode))
-            return false; // This player already visited; keep the physical site.
+        ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 1, -1, whichNode, FALSE);
+        if (!result.accepted || !result.hasReport)
+            return false;
+        solarSys->SysInfo.PlanetInfo.DiscoveryString = SetAbsStringTableIndex (
+                solarSys->SysInfo.PlanetInfo.DiscoveryString, result.report);
 
 		// Androsynth ruins have several lander reports which form a story
 		GenerateDefault_landerReportCycle (solarSys);

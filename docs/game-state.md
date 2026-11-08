@@ -113,6 +113,22 @@ separates physical depletion, personal visits, and item possession. The raw arch
 must not become the multiplayer sharing policy merely because it has a shared
 owner. Production remains single-player.
 
+## Runtime world and energy behavior integration
+
+SolarSystem now owns native World objects, each with shared universe ownership,
+checked moon children and a unique_ptr<EnergyBehavior>. The C buffer adapter
+copies generated metadata into values, retains the tree behind an opaque handle,
+and destroys it at system teardown or replacement. Native classes retain no C
+planet pointers. The existing generator and rendering code still runs.
+
+The [energy behavior hierarchy](design/solar-system/energy-behavior.md) is active
+for Androsynth personal reports and the Sun Device/Mycon egg-case artifacts.
+Behavior calls return typed interaction decisions; C adapters execute report UI
+and legacy bookkeeping, while the lander commits physical retrieval. Policies
+own no player progress. World definitions currently mirror generated metadata;
+shared physical transitions need refresh before native landing checks become
+authoritative gameplay decisions.
+
 ## Remaining migration
 
 The legacy record still mixes personal and shared state. Its temporary placement
@@ -122,8 +138,8 @@ represent players inhabiting a shared universe.
 
 Next, split semantic fields inside the legacy archives and GLOBDATA into shared
 world progress and personal storage while adapting save/load and C callers. Collection rewards need a coordinated
-personal/shared operation before multiple players can interact. The target world
-and behavior hierarchy, typed world-progress persistence, public presence, networking,
+personal/shared operation before multiple players can interact. The remaining generation/orbit behavior hierarchy, typed world-progress
+persistence, public presence, networking,
 and cross-process authority are not implemented by this change. Worker mutation
 would require a player synchronization boundary and snapshot-based access.
 

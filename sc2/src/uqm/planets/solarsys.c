@@ -224,6 +224,7 @@ GenerateMoons (SOLARSYS_STATE *system, PLANET_DESC *planet)
 
 	(*system->genFuncs->generateName) (system, planet);
 	(*system->genFuncs->generateMoons) (system, planet);
+    BuildMoonWorlds (system, planet);
 
 	facing = NORMALIZE_FACING (ANGLE_TO_FACING (
 			ARCTAN (planet->location.x, planet->location.y)));
@@ -390,6 +391,7 @@ LoadSolarSys (void)
 	pCurDesc->image.frame = SunFrame;
 
 	(*pSolarSysState->genFuncs->generatePlanets) (pSolarSysState);
+    BuildSystemWorlds (pSolarSysState, CurStarDescPtr);
 	if (GET_GAME_STATE (PLANETARY_CHANGE))
 	{
 		PutPlanetInfo ();
@@ -1736,6 +1738,7 @@ ExploreSolarSys (void)
 	SolarSysState.InputFunc = DoIpFlight;
 	DoInput (&SolarSysState, FALSE);
 	UninitSolarSys ();
+    DestroySystemWorlds (&SolarSysState);
 	pSolarSysState = 0;
 }
 

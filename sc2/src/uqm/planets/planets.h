@@ -94,6 +94,7 @@ typedef struct solarsys_state SOLARSYS_STATE;
 
 
 #include "generate.h"
+#include "../world_c.h"
 #include "../menustat.h"
 #include "../units.h"
 
@@ -233,6 +234,7 @@ struct solarsys_state
 
 	SYSTEM_INFO SysInfo;
 
+    UQM_SYSTEM_RUNTIME *worlds; // Opaque owner of native World/EnergyBehavior objects.
 	const GenerateFunctions *genFuncs;
 			// Functions to call to fill in various parts of this structure.
 			// See generate.h, doc/devel/generate

@@ -138,6 +138,7 @@ GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player)
 PlayerId GameSession::playerId() const noexcept { return player_; }
 PlayerEntity &GameSession::player() { return state_->player(player_); }
 const PlayerEntity &GameSession::player() const { return std::as_const(*state_).player(player_); }
+std::shared_ptr<WorldState> GameSession::worldOwner() noexcept { return state_->worldOwner(); }
 WorldState &GameSession::world() noexcept { return state_->world(); }
 const WorldState &GameSession::world() const noexcept { return std::as_const(*state_).world(); }
 GameSession &gameSession() {

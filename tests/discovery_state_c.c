@@ -28,6 +28,16 @@ int discovery_state_c_round_trip(void)
     solar.pBaseDesc = solar.MoonDesc;
     solar.pOrbitalDesc = &solar.PlanetDesc[1];
     InitPlanetInfo();
+    BuildSystemWorlds (&solar, CurStarDescPtr);
+    ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
+    BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);
+    ConfigureArtifactEnergyBehavior (&solar, 0, 1);
+    {
+        ENERGY_INTERACTION artifact = InteractWorldEnergy (&solar, 0, 1, 0, FALSE);
+        ENERGY_INTERACTION collected = InteractWorldEnergy (&solar, 0, 1, 0, TRUE);
+        if (!artifact.accepted || !artifact.removeNode || !artifact.hasReport
+                || artifact.report != 0 || collected.accepted) goto done;
+    }
     file = OpenStateFile(STARINFO_FILE, "r+b");
     SeekStateFile(file, star * sizeof(DWORD), SEEK_SET);
     swrite_32(file, NUM_SOLAR_SYSTEMS * sizeof(DWORD));
@@ -46,8 +56,13 @@ int discovery_state_c_round_trip(void)
     sread_32(file, &mask);
     CloseStateFile(file);
     file = NULL;
-    if (mask != 3 || !VisitPersonalDiscovery(star, 1, -1, 4)
-            || VisitPersonalDiscovery(star, 1, -1, 4)) goto done;
+    if (mask != 3) goto done;
+    {
+        ENERGY_INTERACTION first = InteractWorldEnergy (&solar, 1, -1, 4, FALSE);
+        ENERGY_INTERACTION repeat = InteractWorldEnergy (&solar, 1, -1, 4, FALSE);
+        if (!first.accepted || first.removeNode || !first.hasReport || first.report != 2
+                || repeat.accepted) goto done;
+    }
     snapshot = CapturePlanetInfoForSave();
     if (!snapshot || PlanetInfoSnapshotData(snapshot)[energy_offset / sizeof(DWORD)] != UINT32_C(0x00150003)) goto done;
     /* Use the actual legacy archive load path: truncate, write, then orbit read. */
@@ -66,6 +81,7 @@ int discovery_state_c_round_trip(void)
 done:
     if (file) CloseStateFile(file);
     ReleasePlanetInfoSnapshot(snapshot);
+    DestroySystemWorlds (&solar);
     UninitPlanetInfo();
     pSolarSysState = old_system;
     CurStarDescPtr = old_star;

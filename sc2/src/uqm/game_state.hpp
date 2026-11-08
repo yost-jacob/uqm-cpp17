@@ -154,6 +154,7 @@ public:
     const PlayerEntity &player() const;
     WorldState &world() noexcept;
     const WorldState &world() const noexcept;
+    std::shared_ptr<WorldState> worldOwner() noexcept;
 private:
     std::shared_ptr<GameState> state_;
     PlayerId player_;
