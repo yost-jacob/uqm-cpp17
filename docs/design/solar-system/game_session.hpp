@@ -9,26 +9,34 @@ namespace uqm::design {
 enum class ConversationId { Chmmr, Thraddash, EarthStarbase };
 enum class BattleId { Encounter, SaMatra };
 
-// Coordinates the running game. Own campaign BEFORE the system so reverse member
-// destruction destroys worlds (and commits them) before releasing campaign data.
+// Per-player running session attached to a possibly shared campaign. Session and
+// local World runtime methods are simulation-thread confined. Other threads get
+// their own shared_ptr copies and use the synchronized CampaignState interface;
+// they must not race attachment changes on this shared_ptr member itself.
 class GameSession {
 public:
-    explicit GameSession(std::unique_ptr<CampaignState> campaign); // Non-null.
+    explicit GameSession(PlayerId player, std::shared_ptr<CampaignState> campaign); // Non-null.
     ~GameSession();
     GameSession(const GameSession &) = delete;
     GameSession &operator=(const GameSession &) = delete;
     GameSession(GameSession &&) = delete;
     GameSession &operator=(GameSession &&) = delete;
-    CampaignState &campaign() noexcept;
-    const CampaignState &campaign() const noexcept;
+    PlayerId player() const noexcept;
+    std::shared_ptr<CampaignState> campaign();
+    std::shared_ptr<const CampaignState> campaign() const;
     void enterSystem(const StarDesc &star, RandomStream &random);
-    void leaveSystem(); // Destroy the system while its campaign still lives.
-    // Flush working world progress, then serialize the campaign. Keep playing:
-    // no runtime object destruction, encounter restart or loss of stunned bio.
+    void leaveSystem(); // Explicit checkpoint before runtime teardown; may throw.
+    // Detach only this player/session. Other sessions/worlds keep the old state
+    // alive. Online campaign replacement requires authoritative host coordination.
+    void attachCampaign(std::shared_ptr<CampaignState> campaign);
+    // Checkpoint confirmed progress, take one coherent CampaignSnapshot under a
+    // read lock, release the lock, then write it. Do not hold locks during I/O.
+    // This is a point-in-time universe snapshot, not a pause of every client.
     void save(std::ostream &destination);
-    // Parse/validate a candidate campaign first. On validation failure, preserve
-    // this session. Then destroy old worlds (committing to OLD campaign), replace
-    // the campaign owner, and reconstruct the saved location and handlers.
+    // Offline/host-authorized load: validate a candidate first, checkpoint/tear
+    // down this session's old runtime, then attach the candidate and rebuild.
+    // A client may not replace shared universe state for other players. Reject
+    // delayed commands from a prior campaign/session generation after attachment.
     void load(std::istream &source);
     // Behavior methods request these existing game operations through the session.
     // They query/change current campaign state, never a constructor-time snapshot.
@@ -38,7 +46,8 @@ public:
     void startBattle(BattleId battle);
 
 private:
-    std::unique_ptr<CampaignState> campaign_;
+    PlayerId player_;
+    std::shared_ptr<CampaignState> campaign_;
     std::unique_ptr<SolarSystem> system_;
 };
 } // namespace uqm::design

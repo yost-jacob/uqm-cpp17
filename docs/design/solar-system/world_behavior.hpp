@@ -18,7 +18,9 @@ public:
     // Default opens normal orbit; lander availability is checked separately.
     virtual void enterOrbit(GameSession &session, World &world);
     // Return true if the node should be removed and its progress bit marked.
-    // Overrides may perform story actions; the World applies the progress change.
+    // Overrides resolve story eligibility on the authoritative simulation thread.
+    // World/session then use the atomic shared claim/reward operation. Behavior
+    // methods never run under CampaignState's mutex or on a network I/O thread.
     virtual bool pickup(GameSession &session, World &world, NodeId node);
 };
 class SolBehavior final : public WorldBehavior {

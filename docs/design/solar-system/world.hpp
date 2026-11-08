@@ -40,16 +40,19 @@ struct SurfaceState {
 };
 
 // Owns one visitable world's local data, working progress and runtime behavior.
-// The supplied campaign must outlive this object and every owned child.
+// Holds shared campaign ownership so queued/local worlds cannot outlive their
+// state. This does not make World itself thread-safe: its runtime data belongs
+// to its simulation thread. Network threads submit commands, not method calls.
 class World {
 public:
-    // behavior must be non-null (ordinary worlds get the concrete base behavior).
-    // Only one live World may hold a given WorldId. Allocate/find its record first,
-    // bind committedProgress_ and copy its masks. Construction never runs a story.
-    World(CampaignState &campaign, WorldDefinition definition,
+    // campaign and behavior must be non-null. The campaign is the authoritative
+    // store; copy an initial progress snapshot for local presentation only.
+    // Construction establishes ownership without running a story encounter.
+    World(std::shared_ptr<CampaignState> campaign, WorldDefinition definition,
             std::unique_ptr<WorldBehavior> behavior);
-    // Commit progress without throwing/allocating, then release local resources.
-    // Defined out of line so WorldBehavior may remain an incomplete type here.
+    // Cleanup only. Persistent claims were already committed through tryCollect;
+    // explicit checkpointing happens before teardown, never a throwing final
+    // state write from a destructor. Defined out of line for incomplete behavior.
     ~World() noexcept;
     World(const World &) = delete;
     World &operator=(const World &) = delete;
@@ -67,25 +70,27 @@ public:
     void addChild(std::unique_ptr<World> child);
     // Generate physical details without launching conversations or battles.
     void generate(GenerationContext &context);
-    // Explicit interaction. session must own this world's campaign; the handler
-    // reads that live campaign rather than a construction-time snapshot.
+    // session must be attached to the same campaign instance. Handlers read live
+    // state; keeping an old shared_ptr alive does not authorize stale actions.
     void enterOrbit(GameSession &session);
     bool collected(NodeId node) const;
-    // Run the pickup handler first; mark only if it accepts the pickup. Invalid
-    // node kinds/indices are rejected. Cargo changes remain campaign operations.
+    // Submit pickup through the authoritative interaction path. Resolve story
+    // eligibility on the simulation thread, then atomically claim/reward through
+    // campaign.tryCollect. Never award twice or treat a local mask as authority.
     void collect(GameSession &session, NodeId node);
-    // Idempotent flush of self and children. Copy fixed-size masks to records
-    // reserved during construction: no insertion, I/O or story callbacks here.
-    void commitProgress() noexcept;
-    const WorldProgress &progress() const noexcept;
+    // Merge only confirmed progress for self/children; never replace masks or
+    // grant cargo here. May throw on lock/allocation failure. Call explicitly
+    // for save/leave; never rely on destruction to publish the first pickup.
+    void commitProgress();
+    WorldProgress progress() const; // Fresh campaign snapshot, not an unsafe ref.
     // Surface exists only when generated. Access without one throws logic_error.
     const SurfaceState &surface() const;
     void setSurface(SurfaceState surface);
 
 private:
     WorldDefinition definition_;
-    WorldProgress &committedProgress_; // Borrowed stable record; campaign owns it.
-    WorldProgress workingProgress_;
+    std::shared_ptr<CampaignState> campaign_;
+    WorldProgress confirmedProgress_; // Local cache/checkpoint, never authority.
     std::unique_ptr<WorldBehavior> behavior_;
     std::vector<std::unique_ptr<World>> children_;
     std::optional<SurfaceState> surface_;
@@ -98,7 +103,7 @@ public:
     World &world(std::size_t index); // Checked access.
     const World &world(std::size_t index) const;
     void addWorld(std::unique_ptr<World> world);
-    void commitProgress() noexcept; // Flush every live world, without destruction.
+    void commitProgress(); // Checkpoint every live world; may throw.
 private:
     StarId star_;
     std::vector<std::unique_ptr<World>> worlds_;
@@ -106,6 +111,6 @@ private:
 // Build the system before handing it to the session. Initially this can adapt
 // existing generation algorithms. Existing seed coercion/draw order stay intact.
 std::unique_ptr<SolarSystem> generateSystem(const StarDesc &star,
-        CampaignState &campaign, RandomStream &random);
+        std::shared_ptr<CampaignState> campaign, RandomStream &random);
 } // namespace uqm::design
 #endif
