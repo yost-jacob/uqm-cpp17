@@ -44,6 +44,9 @@ size_t utf8StringCount(const UNICODE_CHAR *start);
 size_t utf8StringCountN(const UNICODE_CHAR *start,
 		const UNICODE_CHAR *end);
 int utf8StringPos (const UNICODE_CHAR *pStr, UniChar ch);
+/* Copy valid NUL-terminated UTF-8, leaving room for a terminator and never
+ * splitting a character. Zero-pad the destination to size bytes. Buffers must
+ * not overlap; size == 0 writes nothing and returns NULL. */
 unsigned char *utf8StringCopy (UNICODE_CHAR *dst, size_t size,
 		const UNICODE_CHAR *src);
 int utf8StringCompare (const UNICODE_CHAR *str1, const UNICODE_CHAR *str2);

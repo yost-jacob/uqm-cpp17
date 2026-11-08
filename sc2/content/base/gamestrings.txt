@@ -1,534 +1,268 @@
-#(Vega) -- STAR_STRING_BASE
-Vega
+#(RESERVED_STAR_TEXT_0) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_1) -- moved to base/starmap.json
 
-#(Antliae)
-Antliae
+#(RESERVED_STAR_TEXT_2) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_3) -- moved to base/starmap.json
 
-#(Apodis)
-Apodis
+#(RESERVED_STAR_TEXT_4) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_5) -- moved to base/starmap.json
 
-#(Aquarii)
-Aquarii
+#(RESERVED_STAR_TEXT_6) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_7) -- moved to base/starmap.json
 
-#(Aquilae)
-Aquilae
+#(RESERVED_STAR_TEXT_8) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_9) -- moved to base/starmap.json
 
-#(Arae)
-Arae
+#(RESERVED_STAR_TEXT_10) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_11) -- moved to base/starmap.json
 
-#(Arietis)
-Arietis
+#(RESERVED_STAR_TEXT_12) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_13) -- moved to base/starmap.json
 
-#(Aurigae)
-Aurigae
+#(RESERVED_STAR_TEXT_14) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_15) -- moved to base/starmap.json
 
-#(Trianguli)
-Trianguli
+#(RESERVED_STAR_TEXT_16) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_17) -- moved to base/starmap.json
 
-#(Caeli)
-Caeli
+#(RESERVED_STAR_TEXT_18) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_19) -- moved to base/starmap.json
 
-#(Camelopardalis)
-Camelopardalis
+#(RESERVED_STAR_TEXT_20) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_21) -- moved to base/starmap.json
 
-#(Cancri)
-Cancri
+#(RESERVED_STAR_TEXT_22) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_23) -- moved to base/starmap.json
 
-#(Brahe)
-Brahe
+#(RESERVED_STAR_TEXT_24) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_25) -- moved to base/starmap.json
 
-#(Kepler)
-Kepler
+#(RESERVED_STAR_TEXT_26) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_27) -- moved to base/starmap.json
 
-#(Copernicus)
-Copernicus
+#(RESERVED_STAR_TEXT_28) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_29) -- moved to base/starmap.json
 
-#(Capricorni)
-Capricorni
+#(RESERVED_STAR_TEXT_30) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_31) -- moved to base/starmap.json
 
-#(Carinae)
-Carinae
+#(RESERVED_STAR_TEXT_32) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_33) -- moved to base/starmap.json
 
-#(Cassiopeiae)
-Cassiopeiae
+#(RESERVED_STAR_TEXT_34) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_35) -- moved to base/starmap.json
 
-#(Tucanae)
-Tucanae
+#(RESERVED_STAR_TEXT_36) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_37) -- moved to base/starmap.json
 
-#(Cephei)
-Cephei
+#(RESERVED_STAR_TEXT_38) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_39) -- moved to base/starmap.json
 
-#(Ceti)
-Ceti
+#(RESERVED_STAR_TEXT_40) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_41) -- moved to base/starmap.json
 
-#(Crateris)
-Crateris
+#(RESERVED_STAR_TEXT_42) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_43) -- moved to base/starmap.json
 
-#(Circini)
-Circini
+#(RESERVED_STAR_TEXT_44) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_45) -- moved to base/starmap.json
 
-#(Columbae)
-Columbae
+#(RESERVED_STAR_TEXT_46) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_47) -- moved to base/starmap.json
 
-#(Chandrasekhar)
-Chandrasekhar
+#(RESERVED_STAR_TEXT_48) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_49) -- moved to base/starmap.json
 
-#(Sagittae)
-Sagittae
+#(RESERVED_STAR_TEXT_50) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_51) -- moved to base/starmap.json
 
-#(Cygnus)
-Cygnus
+#(RESERVED_STAR_TEXT_52) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_53) -- moved to base/starmap.json
 
-#(Corvi)
-Corvi
+#(RESERVED_STAR_TEXT_54) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_55) -- moved to base/starmap.json
 
-#(Chamaeleonis)
-Chamaeleonis
+#(RESERVED_STAR_TEXT_56) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_57) -- moved to base/starmap.json
 
-#(Equulei)
-Equulei
+#(RESERVED_STAR_TEXT_58) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_59) -- moved to base/starmap.json
 
-#(Delphini)
-Delphini
+#(RESERVED_STAR_TEXT_60) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_61) -- moved to base/starmap.json
 
-#(Doradus)
-Doradus
+#(RESERVED_STAR_TEXT_62) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_63) -- moved to base/starmap.json
 
-#(Monocerotis)
-Monocerotis
+#(RESERVED_STAR_TEXT_64) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_65) -- moved to base/starmap.json
 
-#(Crucis)
-Crucis
+#(RESERVED_STAR_TEXT_66) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_67) -- moved to base/starmap.json
 
-#(Eridani)
-Eridani
+#(RESERVED_STAR_TEXT_68) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_69) -- moved to base/starmap.json
 
-#(Fornacis)
-Fornacis
+#(RESERVED_STAR_TEXT_70) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_71) -- moved to base/starmap.json
 
-#(Geminorum)
-Geminorum
+#(RESERVED_STAR_TEXT_72) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_73) -- moved to base/starmap.json
 
-#(Altair)
-Altair
+#(RESERVED_STAR_TEXT_74) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_75) -- moved to base/starmap.json
 
-#(Antares)
-Antares
+#(RESERVED_STAR_TEXT_76) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_77) -- moved to base/starmap.json
 
-#(Horologii)
-Horologii
+#(RESERVED_STAR_TEXT_78) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_79) -- moved to base/starmap.json
 
-#(Hydrae)
-Hydrae
+#(RESERVED_STAR_TEXT_80) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_81) -- moved to base/starmap.json
 
-#(Andromedae)
-Andromedae
+#(RESERVED_STAR_TEXT_82) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_83) -- moved to base/starmap.json
 
-#(Groombridge)
-Groombridge
+#(RESERVED_STAR_TEXT_84) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_85) -- moved to base/starmap.json
 
-#(Lacertae)
-Lacertae
+#(RESERVED_STAR_TEXT_86) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_87) -- moved to base/starmap.json
 
-#(Leonis)
-Leonis
+#(RESERVED_STAR_TEXT_88) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_89) -- moved to base/starmap.json
 
-#(Hyades)
-Hyades
+#(RESERVED_STAR_TEXT_90) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_91) -- moved to base/starmap.json
 
-#(Leporis)
-Leporis
+#(RESERVED_STAR_TEXT_92) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_93) -- moved to base/starmap.json
 
-#(Librae)
-Librae
+#(RESERVED_STAR_TEXT_94) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_95) -- moved to base/starmap.json
 
-#(Lipi)
-Lipi
+#(RESERVED_STAR_TEXT_96) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_97) -- moved to base/starmap.json
 
-#(Lyncis)
-Lyncis
+#(RESERVED_STAR_TEXT_98) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_99) -- moved to base/starmap.json
 
-#(Fomalhaut)
-Fomalhaut
+#(RESERVED_STAR_TEXT_100) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_101) -- moved to base/starmap.json
 
-#(Menkar)
-Menkar
+#(RESERVED_STAR_TEXT_102) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_103) -- moved to base/starmap.json
 
-#(Microscopii)
-Microscopii
+#(RESERVED_STAR_TEXT_104) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_105) -- moved to base/starmap.json
 
-#(Draconis)
-Draconis
+#(RESERVED_STAR_TEXT_106) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_107) -- moved to base/starmap.json
 
-#(Orionis)
-Orionis
+#(RESERVED_STAR_TEXT_108) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_109) -- moved to base/starmap.json
 
-#(Normae)
-Normae
+#(RESERVED_STAR_TEXT_110) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_111) -- moved to base/starmap.json
 
-#(Octantis)
-Octantis
+#(RESERVED_STAR_TEXT_112) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_113) -- moved to base/starmap.json
 
-#(Ophiuchi)
-Ophiuchi
+#(RESERVED_STAR_TEXT_114) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_115) -- moved to base/starmap.json
 
-#(Muscae)
-Muscae
+#(RESERVED_STAR_TEXT_116) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_117) -- moved to base/starmap.json
 
-#(Pavonis)
-Pavonis
+#(RESERVED_STAR_TEXT_118) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_119) -- moved to base/starmap.json
 
-#(Pegasi)
-Pegasi
+#(RESERVED_STAR_TEXT_120) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_121) -- moved to base/starmap.json
 
-#(Persei)
-Persei
+#(RESERVED_STAR_TEXT_122) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_123) -- moved to base/starmap.json
 
-#(Phoenicis)
-Phoenicis
+#(RESERVED_STAR_TEXT_124) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_125) -- moved to base/starmap.json
 
-#(Pictoris)
-Pictoris
+#(RESERVED_STAR_TEXT_126) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_127) -- moved to base/starmap.json
 
-#(Piscium)
-Piscium
+#(RESERVED_STAR_TEXT_128) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_129) -- moved to base/starmap.json
 
-#(Hyginus)
-Hyginus
+#(RESERVED_STAR_TEXT_130) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_131) -- moved to base/starmap.json
 
-#(Puppis)
-Puppis
-
-
-#(Pyxidis)
-Pyxidis
-
-
-#(Reticuli)
-Reticuli
-
-
-#(Arianni)
-Arianni
-
-
-#(Sagittarii)
-Sagittarii
-
-
-#(Scorpii)
-Scorpii
-
-
-#(Sculptoris)
-Sculptoris
-
-
-#(Scuti)
-Scuti
-
-
-#(Serpentis)
-Serpentis
-
-
-#(Sextantis)
-Sextantis
-
-
-#(Tauri)
-Tauri
-
-
-#(Telescopii)
-Telescopii
-
-
-#(Bootis)
-Bootis
-
-
-#(Olber)
-Olber
-
-
-#(Centauri)
-Centauri
-
-
-#(Ptolemae)
-Ptolemae
-
-
-#(Gorno)
-Gorno
-
-
-#(Velorum)
-Velorum
-
-
-#(Virginis)
-Virginis
-
-
-#(Volantis)
-Volantis
-
-
-#(Vulpeculae)
-Vulpeculae
-
-
-#(Lalande)
-Lalande
-
-
-#(Luyten)
-Luyten
-
-
-#(Indi)
-Indi
-
-
-#(Lacaille)
-Lacaille
-
-
-#(Giclas)
-Giclas
-
-
-#(Krueger)
-Krueger
-
-
-#(Lyrae)
-Lyrae
-
-
-#(Wolf)
-Wolf
-
-
-#(Saurus)
-Saurus
-
-
-#(Raynet)
-Raynet
-
-
-#(Zeeman)
-Zeeman
-
-
-#(Vela)
-Vela
-
-
-#(Mira)
-Mira
-
-
-#(Cerenkov)
-Cerenkov
-
-
-#(Mersenne)
-Mersenne
-
-
-#(Maksutov)
-Maksutov
-
-
-#(Klystron)
-Klystron
-
-
-#(Metis)
-Metis
-
-
-#(Mensae)
-Mensae
-
-
-#(Illuminati)
-Illuminati
-
-
-#(Vitalis)
-Vitalis
-
-
-#(Herculis)
-Herculis
-
-
-#(Gruis)
-Gruis
-
-
-#(Squidi)
-Squidi
-
-
-#(Almagest)
-Almagest
-
-
-#(Alcor)
-Alcor
-
-
-#(Algol)
-Algol
-
-
-#(Betelgeuse)
-Betelgeuse
-
-
-#(Aldebaran)
-Aldebaran
-
-
-#(Achernar)
-Achernar
-
-
-#(Procyon)
-Procyon
-
-
-#(Rigel)
-Rigel
-
-
-#(Bellatrix)
-Bellatrix
-
-
-#(Mizar)
-Mizar
-
-
-#(Hyperion)
-Hyperion
-
-
-#(Regulus)
-Regulus
-
-
-#(Organon)
-Organon
-
-
-#(Pollux)
-Pollux
-
-
-#(Capella)
-Capella
-
-
-#(Deneb)
-Deneb
-
-
-#(Canopus)
-Canopus
-
-
-#(Sirius)
-Sirius
-
-
-#(Sol)
-Sol
-
-
-#(Arcturus)
-Arcturus
-
-
-#(Lentilis)
-Lentilis
-
-
-#(UNKNOWN)
-UNKNOWN
-
+#(RESERVED_STAR_TEXT_132) -- moved to base/starmap.json
 
 #(devices) -- DEVICE_STRING_BASE
 devices
@@ -1442,61 +1176,33 @@ World
 Gas Giant
 
 
-#(Alpha) -- STAR_NUMBER_BASE
-Alpha
+#(RESERVED_STAR_TEXT_361) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_362) -- moved to base/starmap.json
 
-#(Beta)
-Beta
+#(RESERVED_STAR_TEXT_363) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_364) -- moved to base/starmap.json
 
-#(Gamma)
-Gamma
+#(RESERVED_STAR_TEXT_365) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_366) -- moved to base/starmap.json
 
-#(Delta)
-Delta
+#(RESERVED_STAR_TEXT_367) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_368) -- moved to base/starmap.json
 
-#(Epsilon)
-Epsilon
+#(RESERVED_STAR_TEXT_369) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_370) -- moved to base/starmap.json
 
-#(Zeta)
-Zeta
+#(RESERVED_STAR_TEXT_371) -- moved to base/starmap.json
 
+#(RESERVED_STAR_TEXT_372) -- moved to base/starmap.json
 
-#(Eta)
-Eta
+#(RESERVED_STAR_TEXT_373) -- moved to base/starmap.json
 
-
-#(Theta)
-Theta
-
-
-#(Iota)
-Iota
-
-
-#(Kappa)
-Kappa
-
-
-#(Lambda)
-Lambda
-
-
-#(Mu)
-Mu
-
-
-#(Nu)
-Nu
-
-
-#(Xi)
-Xi
-
+#(RESERVED_STAR_TEXT_374) -- moved to base/starmap.json
 
 #(Mercury) -- PLANET_NUMBER_BASE
 Mercury

@@ -548,7 +548,7 @@ START_GAME_STATE
 	ADD_GAME_STATE (RAINBOW_WORLD0, 8)
 			/* Low byte of a bit array, one bit per rainbow world.
 			 * Each bit is set if the rainbow world has been visited.
-			 * The lowest bit is for the first star in the star_array
+			 * The lowest bit is for the first star in the catalogue
 			 * with RAINBOW_DEFINED, and so on.
 			 */
 	ADD_GAME_STATE (RAINBOW_WORLD1, 2)

@@ -539,7 +539,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		ReinitQueue (&GLOBAL (ip_group_q));
 #ifdef DEBUG_GROUPS
 		log_add (log_Debug, "%u == %u", GH.star_index,
-				(COUNT)(CurStarDescPtr - star_array));
+				(COUNT)(GetStarIndex(CurStarDescPtr)));
 #endif /* DEBUG_GROUPS */
 
 		/* Check if the requested groups are valid for this star system
@@ -548,12 +548,12 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		month_index = GH.month_index;
 		year_index = GH.year_index;
 		if (offset == GROUPS_RANDOM
-				&& (GH.star_index != (COUNT)(CurStarDescPtr - star_array)
+				&& (GH.star_index != (COUNT)(GetStarIndex(CurStarDescPtr))
 				|| !ValidateEvent (ABSOLUTE_EVENT, &month_index, &day_index,
 					&year_index)))
 		{
 #ifdef DEBUG_GROUPS
-			if (GH.star_index == CurStarDescPtr - star_array)
+			if (GH.star_index == GetStarIndex(CurStarDescPtr))
 				log_add (log_Debug, "GetGroupInfo: battle groups out of "
 						"date %u/%u/%u!", month_index, day_index,
 						year_index);
@@ -848,7 +848,7 @@ PutGroupInfo (DWORD offset, BYTE which_group)
 		GH.month_index = (BYTE)month_index;
 		GH.year_index = year_index;
 	}
-	GH.star_index = CurStarDescPtr - star_array;
+	GH.star_index = GetStarIndex(CurStarDescPtr);
 
 #ifdef DEBUG_GROUPS
 	log_add (log_Debug, "PutGroupInfo(%lu): %u out of %u -- %u/%u/%u",

@@ -312,6 +312,8 @@ set(UQM_SOURCES
     sc2/src/uqm/sounds.c
     sc2/src/uqm/starbase.c
     sc2/src/uqm/starcon.c
+    sc2/src/uqm/star_map.cpp
+    sc2/src/uqm/star_map_c.cpp
     sc2/src/uqm/starmap.c
     sc2/src/uqm/state.c
     sc2/src/uqm/status.c

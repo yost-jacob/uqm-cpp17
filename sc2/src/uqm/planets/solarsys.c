@@ -568,7 +568,7 @@ CheckIntersect (void)
 			pSolarSysState->WaitIntersect = NewWaitPlanet;
 #ifdef DEBUG_SOLARSYS
 			log_add (log_Debug, "Star index = %d, Planet index = %d, <%d, %d>",
-					CurStarDescPtr - star_array,
+					GetStarIndex(CurStarDescPtr),
 					pCurDesc - pSolarSysState->PlanetDesc,
 					pSolarSysState->SunDesc[0].location.x,
 					pSolarSysState->SunDesc[0].location.y);

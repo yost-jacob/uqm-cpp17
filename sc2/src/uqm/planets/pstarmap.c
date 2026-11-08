@@ -324,14 +324,14 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 
 	if (which_space <= 1)
 	{
-		SDPtr = &star_array[0];
+		SDPtr = GetStar(0);
 		SetContextForeGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x07), 0x57));
 		SetContextBackGroundColor (BLACK_COLOR);
 	}
 	else
 	{
-		SDPtr = &star_array[NUM_SOLAR_SYSTEMS + 1];
+		SDPtr = GetStar(QUASISPACE_FIRST);
 		SetContextForeGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x0B, 0x00), 0x6D));
 		SetContextBackGroundColor (
@@ -505,7 +505,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 					GIANT_STAR * NUM_STAR_COLORS + GREEN_BODY);
 		DrawStamp (&s);
 
-		++SDPtr;
+		SDPtr = GetStar(GetStarIndex(SDPtr) + 1);
 	} while (SDPtr->star_pt.x <= MAX_X_UNIVERSE
 			&& SDPtr->star_pt.y <= MAX_Y_UNIVERSE);
 
@@ -717,7 +717,7 @@ UpdateCursorInfo (UNICODE *prevbuf)
 	if (BestSDPtr)
 	{
 		cursorLoc = BestSDPtr->star_pt;
-		GetClusterName (BestSDPtr, buf);
+		GetClusterName (BestSDPtr, buf, sizeof(buf));
 	}
 	else
 	{	// No star found. Reset the coordinates to the cursor's location
@@ -753,7 +753,7 @@ UpdateCursorInfo (UNICODE *prevbuf)
 		{
 			cursorLoc = ari_pt;
 			utf8StringCopy (buf, sizeof (buf),
-					GAME_STRING (STAR_STRING_BASE + 132));
+					GetQuasiSpaceName());
 		}
 	}
 
@@ -828,16 +828,15 @@ compStarName (const void *ptr1, const void *ptr2)
 
 	index1 = *(const int *) ptr1;
 	index2 = *(const int *) ptr2;
-	if (star_array[index1].Postfix != star_array[index2].Postfix)
-	{
-		return utf8StringCompare (GAME_STRING (star_array[index1].Postfix),
-				GAME_STRING (star_array[index2].Postfix));
-	}
+	const int clusterOrder = utf8StringCompare(GetStarPostfix(GetStar(index1)),
+			GetStarPostfix(GetStar(index2)));
+	if (clusterOrder != 0)
+		return clusterOrder;
 
-	if (star_array[index1].Prefix < star_array[index2].Prefix)
+	if (GetStar(index1)->Prefix < GetStar(index2)->Prefix)
 		return -1;
 	
-	if (star_array[index1].Prefix > star_array[index2].Prefix)
+	if (GetStar(index1)->Prefix > GetStar(index2)->Prefix)
 		return 1;
 
 	return 0;
@@ -915,10 +914,10 @@ SplitStarName (STAR_SEARCH_STATE *pSS)
 static inline int
 SkipStarCluster (int *sortedStars, int istar)
 {
-	int Postfix = star_array[sortedStars[istar]].Postfix;
+	const char *postfix = GetStarPostfix(GetStar(sortedStars[istar]));
 
 	for (++istar; istar < NUM_SOLAR_SYSTEMS &&
-			star_array[sortedStars[istar]].Postfix == Postfix;
+			strcmp(GetStarPostfix(GetStar(sortedStars[istar])), postfix) == 0;
 			++istar)
 		;
 	return istar;
@@ -934,9 +933,9 @@ FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, BOOLEAN WithinClust)
 
 	for (i = from; i < NUM_SOLAR_SYSTEMS; ++i)
 	{
-		STAR_DESC *SDPtr = &star_array[pSS->SortedStars[i]];
+		STAR_DESC *SDPtr = GetStar(pSS->SortedStars[i]);
 		UNICODE FullName[STAR_SEARCH_BUFSIZE];
-		UNICODE *ClusterName = GAME_STRING (SDPtr->Postfix);
+		const UNICODE *ClusterName = GetStarPostfix(SDPtr);
 		const UNICODE *sptr;
 		const UNICODE *dptr;
 		int dlen;
@@ -965,7 +964,7 @@ FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, BOOLEAN WithinClust)
 			continue;
 		}
 
-		if (pSS->Prefix && !SDPtr->Prefix)
+		if (pSS->Prefix && !*GetStarPrefix(SDPtr))
 			// we were given a prefix but found a singular star;
 			// that is a no match
 			continue;
@@ -977,8 +976,8 @@ FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, BOOLEAN WithinClust)
 		if (!pSS->Prefix)
 		{	// searching for cluster name only
 			// return only the first stars in a cluster
-			if (i == 0 || SDPtr->Postfix !=
-					star_array[pSS->SortedStars[i - 1]].Postfix)
+			if (i == 0 || strcmp(GetStarPostfix(SDPtr),
+					GetStarPostfix(GetStar(pSS->SortedStars[i - 1]))) != 0)
 			{	// found one
 				break;
 			}
@@ -990,7 +989,7 @@ FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, BOOLEAN WithinClust)
 		}
 
 		// check prefix
-		GetClusterName (SDPtr, FullName);
+		GetClusterName (SDPtr, FullName, sizeof(FullName));
 		dlen = utf8StringCount (FullName);
 		if (pSS->PrefixLen > dlen)
 			continue;
@@ -1019,12 +1018,12 @@ DrawMatchedStarName (TEXTENTRY_STATE *pTES)
 	UNICODE buf[STAR_SEARCH_BUFSIZE] = "";
 	SIZE ExPos = 0;
 	SIZE CurPos = -1;
-	STAR_DESC *SDPtr = &star_array[pSS->SortedStars[pSS->CurIndex]];
+	STAR_DESC *SDPtr = GetStar(pSS->SortedStars[pSS->CurIndex]);
 	COUNT flags;
 
 	if (pSS->SingleClust || pSS->SingleMatch)
 	{	// draw full star name
-		GetClusterName (SDPtr, buf);
+		GetClusterName (SDPtr, buf, sizeof(buf));
 		ExPos = -1;
 		flags = DSME_SETFR;
 	}
@@ -1036,7 +1035,7 @@ DrawMatchedStarName (TEXTENTRY_STATE *pTES)
 		ExPos = pSS->ClusterPos;
 		pstr = skipUTF8Chars (pstr, pSS->ClusterPos);
 
-		strcpy (pstr, GAME_STRING (SDPtr->Postfix));
+		utf8StringCopy(pstr, sizeof(buf) - (pstr - buf), GetStarPostfix(SDPtr));
 		ExPos += pSS->ClusterLen;
 		CurPos = pTES->CursorPos;
 
@@ -1124,7 +1123,7 @@ OnStarNameChange (TEXTENTRY_STATE *pTES)
 		STAR_DESC *SDPtr;
 
 		// move the cursor to the found star
-		SDPtr = &star_array[pSS->SortedStars[pSS->CurIndex]];
+		SDPtr = GetStar(pSS->SortedStars[pSS->CurIndex]);
 		UpdateCursorLocation (0, 0, &SDPtr->star_pt);
 
 		DrawMatchedStarName (pTES);
@@ -1153,7 +1152,7 @@ OnStarNameFrame (TEXTENTRY_STATE *pTES)
 		}
 
 		// move the cursor to the found star
-		SDPtr = &star_array[pSS->SortedStars[pSS->CurIndex]];
+		SDPtr = GetStar(pSS->SortedStars[pSS->CurIndex]);
 		UpdateCursorLocation (0, 0, &SDPtr->star_pt);
 
 		DrawMatchedStarName (pTES);

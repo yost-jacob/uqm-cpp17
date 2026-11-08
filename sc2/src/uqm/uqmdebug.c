@@ -566,10 +566,9 @@ void
 forAllStars (void (*callback) (STAR_DESC *, void *), void *arg)
 {
 	int i;
-	extern STAR_DESC starmap_array[];
 
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
-		callback (&starmap_array[i], arg);
+		callback (GetStar(i), arg);
 }
 
 void
@@ -812,7 +811,7 @@ dumpSystem (FILE *out, const STAR_DESC *star, const SOLARSYS_STATE *system)
 	UNICODE name[256];
 	UNICODE buf[40];
 
-	GetClusterName (star, name);
+	GetClusterName (star, name, sizeof(name));
 	snprintf (buf, sizeof buf, "%s %s",
 			bodyColorString (STAR_COLOR(star->Type)),
 			starTypeString (STAR_TYPE(star->Type)));
@@ -1220,7 +1219,7 @@ tallySystemPostCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
 	TallyResourcesArg *tallyResourcesArg = (TallyResourcesArg *) arg;
 	FILE *out = tallyResourcesArg->out;
 
-	GetClusterName (star, name);
+	GetClusterName (star, name, sizeof(name));
 	fprintf (out, "%s\t%d\t%d\n", name, tallyResourcesArg->mineralCount,
 			tallyResourcesArg->bioCount);
 

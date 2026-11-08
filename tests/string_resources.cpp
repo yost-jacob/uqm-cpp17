@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <cstring>
+#include <fstream>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -10,6 +12,7 @@
 #include "libs/memlib.h"
 #include "libs/log.h"
 #include "options.h"
+#include "uqm/starmap.h"
 
 // In-memory VFS boundary for the real loaders, allocator and table destructor.
 // Tests control file bytes and count live handles without starting the game.
@@ -322,4 +325,23 @@ BOOST_FIXTURE_TEST_CASE(binary_table_preserves_empty_entries_and_word_offsets, R
     BOOST_TEST(std::string(GetStringAddress(second), 3) == std::string("a\0b", 3));
     const auto third = SetRelStringTableIndex(first, -1);
     BOOST_TEST(std::string(GetStringAddress(third), GetStringLengthBin(third)) == "next");
+}
+
+extern "C" int star_map_c_contract(void);
+
+BOOST_FIXTURE_TEST_CASE(star_map_content_loader_closes_files_and_exposes_c_names, ResourceFixture) {
+    FreeStarMap();
+    BOOST_TEST(LoadStarMap() == FALSE); // Missing file.
+    files["base/starmap.json"] = "{broken}";
+    BOOST_TEST(LoadStarMap() == FALSE);
+    BOOST_TEST(liveStreams == 0);
+    std::ifstream input(UQM_TEST_STARMAP_PATH);
+    BOOST_REQUIRE(input.good());
+    files["base/starmap.json"].assign(std::istreambuf_iterator<char>(input), {});
+    BOOST_REQUIRE(LoadStarMap() == TRUE);
+    BOOST_TEST(liveStreams == 0);
+    BOOST_TEST(star_map_c_contract() == 1);
+    CurStarDescPtr = GetStar(0);
+    FreeStarMap();
+    BOOST_TEST(CurStarDescPtr == nullptr);
 }
