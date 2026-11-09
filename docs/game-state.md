@@ -184,4 +184,5 @@ orbital handlers can migrate within this established control-flow contract.
 [Synchronous nested modes](design/nested-modes.md) are also available: the child
 owns the suspended parent until returning it, and session exits propagate after
 ownership restoration. Child exceptions currently abort with a graceful-shutdown
-TODO. Existing legacy encounters have not yet been routed through this API.
+TODO. Orbital system encounters now use this path while dialogue/combat internals
+remain unchanged. See the [runtime encapsulation map](design/runtime-encapsulation.md).

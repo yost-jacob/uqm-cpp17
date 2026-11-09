@@ -50,6 +50,8 @@ parent/child destruction, and propagation of load slot zero. A Linux subprocess
 test verifies SIGABRT on a thrown child exception without terminating the test
 runner or writing a core dump.
 
-This API is implemented and tested, but existing orbital encounters and
-conversations still use their legacy synchronous functions. This change does
-not convert them into new GameMode classes or route those calls through this API.
+Orbital system behaviors now use this API through SystemEncounterMode, which
+runs the unchanged legacy communication backend. See the
+[runtime encapsulation map](runtime-encapsulation.md). Dialogue internals and
+combat are still nested legacy routines inside that child. Root navigation
+encounters and starbase transitions retain their established outer mode path.

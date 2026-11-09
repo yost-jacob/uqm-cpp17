@@ -1,3 +1,7 @@
+See the [current runtime encapsulation map](../runtime-encapsulation.md) for the
+exploration/navigation/encounter/lander ownership. This document focuses on
+the native behavior interface and migration contracts.
+
 # Native system behaviors
 
 The active exploration runtime now owns one `SolarSystem`, which owns a
@@ -14,8 +18,7 @@ flowchart TD
     Behavior -. borrows .-> Campaign["PlayerEntity campaign"]
     System --> Worlds["Generated planets and moons"]
     Worlds -. shared physical state .-> State["WorldState"]
-    C["Legacy exploration loop"] --> Bridge["One C hook table"]
-    Bridge --> Behavior
+    C["Native exploration and scan callers"] --> Behavior
     Behavior --> Default["Default helpers in C++"]
     Behavior --> Special["28 concrete special-system behaviors"]
 ```
@@ -24,7 +27,7 @@ flowchart TD
 
 `SolarSystemMode` passes its player's campaign reference and shared world owner to
 `exploreSolarSystem`. That native entry owns the opaque context on its stack.
-The existing C loop resolves the current star, attaches the borrowed context,
+The native exploration entry resolves the current star, attaches the borrowed context,
 and creates the system/behavior **before** calling any generation hooks.
 
 After `generatePlanets`, `BuildSystemWorlds` attaches the generated planet
@@ -33,7 +36,7 @@ Moon generation still populates the existing native world children afterward.
 Hook order, return conventions, RNG consumption, and C descriptor layout remain
 as before. A rejected planet layout leaves the existing native layout unchanged.
 
-The C exploration loop completes `UninitSolarSys` and returns before the scoped
+The native exploration scope completes `UninitSolarSys` and returns before the scoped
 context destroys its system, worlds, and behavior. The enclosing mode retains
 the GameState owner, so the borrowed campaign outlives all these objects. Loads
 continue to wait for mode/menu unwinding.
@@ -75,17 +78,17 @@ The old per-system tables, `LegacySystemBehavior`, the default function table,
 and `gendef.c` selector are removed. Default helper functions keep C-compatible
 signatures for now, but only native behavior methods call them.
 
-The single C bridge table translates existing `SOLARSYS_STATE*` calls into native
-virtual calls using the context already on that descriptor. Native classes never
-dispatch back into that bridge. As before, invalid world-adapter context or an
-exception at this legacy C boundary aborts; this does not introduce graceful
-recovery for C allocation/resource failures.
+The generator C bridge table, genFuncs field, and generate.h have since been
+removed. Native exploration/scanning/debug callers dispatch directly. Catalogue
+and session context are attached before hooks; system conversations now run as
+nested child modes.
 
 ## What remains procedural
 
-System orbital actions still call existing communication, resource, activity-flag,
-and encounter-queue routines. Planet calculations, rendering, landers, and NPC
-queues remain in their existing engine. This migration makes the campaign
+System orbital actions use a native child mode around existing communication,
+plus scoped temporary-fleet cleanup. Resource operations and activity flags still
+use the legacy backend. Planet calculations, rendering and NPC queues remain
+procedural; a native LanderVisit now owns launch state. This migration makes the campaign
 reference and behavior lifetime explicit; it does not make exploration concurrent,
 headless, or independent of the process-wide legacy engine.
 
@@ -114,9 +117,9 @@ against the original 27 function tables.
 - [Native behavior interface/factory](../../../sc2/src/uqm/system_behavior.hpp)
 - [Scoped exploration entry](../../../sc2/src/uqm/system_runtime.cpp)
 - [World owner](../../../sc2/src/uqm/world.hpp)
-- [C hook bridge](../../../sc2/src/uqm/world_c.cpp)
+- [World/archive compatibility](../../../sc2/src/uqm/world_c.cpp)
 - [Chmmr overrides](../../../sc2/src/uqm/planets/generate/genchmmr.cpp)
 - [Shared default helpers](../../../sc2/src/uqm/planets/generate/gendefault.cpp)
 
-The [nested mode API](../nested-modes.md) is available for future encounter
-encapsulation; this migration preserves current synchronous encounter calls.
+The [nested mode API](../nested-modes.md) now runs orbital system encounters
+through a child mode, preserving synchronous dialogue and combat internals.

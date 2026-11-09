@@ -26,7 +26,7 @@ globdata.c     Sets up global data, creates the main ship, and the radar.
 gravity.c      Maths regarding gravity in combat.
 gravwell.c     Handles objects that generate gravity in combat.
 grpinfo.c      Handles battle groups.
-hyper.c        Handles hyperspace movement and actions.
+hyper.cpp        Handles hyperspace movement and actions.
 init.c         Initialization of various game data.
 intel.c        Passes input of computer or player along (?)
 intro.c        Alternative functions for beginning and ending sequences

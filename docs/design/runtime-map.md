@@ -28,8 +28,8 @@ flowchart TD
     M --> O["LoadMenuMode"]:::mixed
 
     H --> B["Battle loop<br/>battle.c / process.c<br/>also used for HyperSpace movement"]:::legacy
-    H --> HP["hyper.c<br/>navigation and encounters"]:::legacy
-    S --> EX["ExploreSolarSys<br/>interplanetary / orbit / scan / lander"]:::legacy
+    H --> HP["HyperSpaceNavigation<br/>owned visit; explicit player/campaign"]:::mixed
+    S --> EX["SolarSystemExploration<br/>owned descriptor; native scan / lander entry"]:::mixed
     E --> EC["RaceCommunication / VisitStarBase<br/>communication, encounters, story actions"]:::legacy
     EC --> B
 
@@ -39,7 +39,9 @@ flowchart TD
     B --> EL
 
     EX --> GEN["SystemBehavior dispatch<br/>28 native special-system behaviors"]:::mixed
-    EX --> WA["world_c.cpp / discovery_state_c.cpp<br/>descriptor, handle and progress translation"]:::adapter
+    EX --> WA["world_c.cpp / discovery_state_c.cpp<br/>world progress / archive compatibility"]:::adapter
+    GEN --> CHILD["SystemEncounterMode<br/>swapGameMode retains exploration parent"]:::native
+    CHILD --> EC
     GEN --> WA
     GEN --> SB["SolarSystem-owned behavior<br/>borrowed CampaignState reference"]:::native
     WA --> WO["SolarSystem / World / EnergyBehavior<br/>runtime ownership and selected energy rules"]:::native
@@ -127,10 +129,10 @@ transfer contracts; it is not redundant simply because its implementation is C++
 
 | Area | Current boundary | What deeper encapsulation would involve |
 | --- | --- | --- |
-| Mode selection | Native dispatcher; mixed mode bodies | Move activity/transition decisions away from global flags and into explicit results. |
-| Solar-system generation | Scoped native ownership; all special-system behavior classes borrow campaign state | Migrate the C exploration callers and remaining global runtime/queue access, then retire the single hook bridge. |
-| Navigation | Legacy HyperSpace and interplanetary loops | Own navigation runtime state behind a native interface while preserving transitions. |
-| Encounters and communication | Legacy nested loops and story-state access | Separate encounter decisions from UI/execution and make exits explicit. |
+| Mode selection | Native dispatcher; mixed mode bodies | Move remaining C activity/transition flags into explicit results; production modes already receive their session. |
+| Solar-system generation | Scoped native ownership; all special-system behavior classes borrow campaign state | Replace remaining global runtime/queue access and C engine entry points. |
+| Navigation | Owned native HyperSpace state; procedural element/render backend | Move remaining selected-star, graphics and C input dependencies behind explicit interfaces. |
+| Encounters and communication | Native orbital child modes and scoped temporary fleets; legacy dialogue | Migrate conversation internals later; preserve existing root encounter/starbase handoffs. |
 | Combat | Native ships and callers over a legacy element engine | Encapsulate battle/element lifetime, collisions and projectile behaviors; preserve retirement and reincarnation ordering. |
 | Menus and saves | Typed exit request around legacy UI and decoder | Migrate menu callers; separately address transactional state decoding. |
 | State | Native lifetime around a legacy payload | Replace borrowed global access incrementally without introducing duplicate authoritative state. |
@@ -150,5 +152,6 @@ and all-special-system migration, scoped owner and remaining C engine boundary.
 - [Ship execution](../../sc2/src/uqm/ship.cpp), [cyborg prediction](../../sc2/src/uqm/cyborg.cpp), [native ship](../../sc2/src/uqm/ship_behavior.hpp), [asset boundary](../../sc2/src/uqm/loadship.cpp).
 - [Star catalogue adapter](../../sc2/src/uqm/star_map_c.cpp), [ship tuning loader](../../sc2/src/uqm/ship_tuning_c.cpp).
 
-The session also supports [synchronous nested modes](nested-modes.md). Existing
-legacy orbital encounters/conversations do not yet use that API.
+The session uses [synchronous nested modes](nested-modes.md) for orbital
+system conversations. See the [current ownership and callback boundaries](runtime-encapsulation.md)
+for navigation, exploration, lander visits and temporary fleets.

@@ -1,3 +1,8 @@
+The generator C callback bridge and generate.h have now been removed. Native
+exploration, scanning and debug callers invoke SystemBehavior directly. See
+docs/design/runtime-encapsulation.md for current ownership and adapter boundaries.
+Historical notes below predate these changes.
+
 Current C++17 implementation: SolarSystem owns a SystemBehavior selected by
 system_behavior_factory.cpp. All special systems override native hooks and
 borrow CampaignState&. One GenerateFunctions table remains only as a bridge
