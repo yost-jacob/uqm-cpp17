@@ -1,4 +1,4 @@
-uqm_CXXFILES="ship.cpp cyborg.cpp trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp system_behavior.cpp system_behavior_factory.cpp system_runtime.cpp energy_behavior.cpp world_c.cpp ship_tuning.cpp ship_tuning_c.cpp loadship.cpp ship_factory.cpp ship_behavior.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
+uqm_CXXFILES="uqmdebug.cpp ship.cpp cyborg.cpp trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp system_behavior.cpp system_behavior_factory.cpp system_runtime.cpp energy_behavior.cpp world_c.cpp ship_tuning.cpp ship_tuning_c.cpp loadship.cpp ship_factory.cpp ship_behavior.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
 uqm_SUBDIRS="comm planets ships supermelee"
 uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		cnctdlg.c collide.c comm.c commanim.c commglue.c confirm.c credits.c
@@ -9,7 +9,7 @@ uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		master.c menu.c misc.c oscill.c outfit.c pickship.c
 		plandata.c process.c restart.c save.c settings.c setup.c setupmenu.c
 		shipstat.c shipyard.c sis.c sounds.c starbase.c starcon.c
-		starmap.c status.c tactrans.c uqmdebug.c util.c
+		starmap.c status.c tactrans.c util.c
 		velocity.c weapon.c"
 uqm_HFILES="battlecontrols.h battle.h build.h clock.h cnctdlg.h
 		collide.h colors.h commanim.h commglue.h comm.h cons_res.h controls.h

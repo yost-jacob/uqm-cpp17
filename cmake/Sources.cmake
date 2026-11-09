@@ -284,8 +284,8 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/pstarmap.c
     sc2/src/uqm/planets/report.c
     sc2/src/uqm/planets/roster.c
-    sc2/src/uqm/planets/scan.c
-    sc2/src/uqm/planets/solarsys.c
+    sc2/src/uqm/planets/scan.cpp
+    sc2/src/uqm/planets/solarsys.cpp
     sc2/src/uqm/planets/surface.c
     sc2/src/uqm/process.c
     sc2/src/uqm/restart.c
@@ -359,7 +359,7 @@ set(UQM_SOURCES
     sc2/src/uqm/supermelee/pickmele.c
     sc2/src/uqm/tactrans.c
     sc2/src/uqm/trans.cpp
-    sc2/src/uqm/uqmdebug.c
+    sc2/src/uqm/uqmdebug.cpp
     sc2/src/uqm/util.c
     sc2/src/uqm/velocity.c
     sc2/src/uqm/weapon.c

@@ -16,6 +16,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#include "../system_runtime.hpp"
+#include "../system_behavior.hpp"
 #include "lander.h"
 #include "lifeform.h"
 #include "scan.h"
@@ -516,7 +519,7 @@ flashPlanetLocation (void)
 	static int val = -2;
 	static POINT prevPt;
 	static TimeCount NextTime = 0;
-	BOOLEAN locChanged;
+	bool locChanged;
 	TimeCount Now = GetTimeCounter ();
 
 	locChanged = prevPt.x != cursorRect.corner.x
@@ -659,9 +662,9 @@ typedef struct
 static BOOLEAN
 DoPickPlanetSide (MENU_STATE *pMS)
 {
-	PICK_PLANET_STATE *pickState = pMS->privData;
+	auto *pickState = static_cast<PICK_PLANET_STATE *>(pMS->privData);
 	DWORD TimeIn = GetTimeCounter ();
-	BOOLEAN select, cancel;
+	bool select, cancel;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -756,7 +759,7 @@ PickPlanetSide (void)
 	MENU_STATE MenuState;
 	PICK_PLANET_STATE PickState;
 	COUNT fuel = getLandingFuelNeeded ();
-	BOOLEAN retval = TRUE;
+	bool retval = TRUE;
 
 	memset (&MenuState, 0, sizeof MenuState);
 	MenuState.privData = &PickState;
@@ -793,7 +796,7 @@ PickPlanetSide (void)
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
-	return retval;
+	return retval ? TRUE : FALSE;
 }
 
 #define NUM_FLASH_COLORS 8
@@ -883,14 +886,11 @@ callGenerateForScanType (const SOLARSYS_STATE *solarSys,
 	switch (scanType)
 	{
 		case MINERAL_SCAN:
-			return (*solarSys->genFuncs->generateMinerals) (
-					solarSys, world, node, info);
+			return uqm::systemBehavior(*solarSys).generateMinerals(*(solarSys), *(world), node, info);
 		case ENERGY_SCAN:
-			return (*solarSys->genFuncs->generateEnergy) (
-					solarSys, world, node, info);
+			return uqm::systemBehavior(*solarSys).generateEnergy(*(solarSys), *(world), node, info);
 		case BIOLOGICAL_SCAN:
-			return (*solarSys->genFuncs->generateLife) (
-					solarSys, world, node, info);
+			return uqm::systemBehavior(*solarSys).generateLife(*(solarSys), *(world), node, info);
 	}
 
 	assert (false);
@@ -904,14 +904,11 @@ callPickupForScanType (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	switch (scanType)
 	{
 		case MINERAL_SCAN:
-			return (*solarSys->genFuncs->pickupMinerals) (
-					solarSys, world, node);
+			return uqm::systemBehavior(*solarSys).pickupMinerals(*(solarSys), *(world), node);
 		case ENERGY_SCAN:
-			return (*solarSys->genFuncs->pickupEnergy) (
-					solarSys, world, node);
+			return uqm::systemBehavior(*solarSys).pickupEnergy(*(solarSys), *(world), node);
 		case BIOLOGICAL_SCAN:
-			return (*solarSys->genFuncs->pickupLife) (
-					solarSys, world, node);
+			return uqm::systemBehavior(*solarSys).pickupLife(*(solarSys), *(world), node);
 	}
 
 	assert (false);
@@ -1032,7 +1029,7 @@ ScanPlanet (COUNT scanType)
 static BOOLEAN
 DoScan (MENU_STATE *pMS)
 {
-	BOOLEAN select, cancel;
+	bool select, cancel;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];

@@ -16,6 +16,9 @@
 
 #if defined(DEBUG) || defined(USE_DEBUG_KEY)
 
+
+#include "system_runtime.hpp"
+#include "system_behavior.hpp"
 #include "uqmdebug.h"
 
 #include "build.h"
@@ -101,7 +104,7 @@ debugKeyPressedSynchronous (void)
 
 	resetCrewBattle ();
 	resetEnergyBattle ();
-	instantMove = !instantMove;
+	instantMove = instantMove ? FALSE : TRUE;
 	showSpheres ();
 	activateAllShips ();
 //	forwardToNextEvent (TRUE);
@@ -163,7 +166,7 @@ forwardToNextEvent (BOOLEAN skipHEE)
 
 	LockGameClock ();
 
-	done = !skipHEE;
+	done = skipHEE ? FALSE : TRUE;
 	do {
 		hEvent = GetHeadEvent ();
 		if (hEvent == 0)
@@ -647,7 +650,7 @@ starRecurse (STAR_DESC *star, void *arg)
 	CreateSystemWorlds (&SolarSysState, star);
 
 	pSolarSysState = &SolarSysState;
-	(*SolarSysState.genFuncs->generatePlanets) (&SolarSysState);
+	uqm::systemBehavior(SolarSysState).generatePlanets(*(&SolarSysState));
     BuildSystemWorlds (&SolarSysState, star);
 
 	if (universeRecurseArg->systemFuncPre != NULL)
@@ -693,7 +696,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 				// When GenerateDefaultFunctions is used as genFuncs,
 				// generateOrbital will also call DoPlanetaryAnalysis,
 				// but with other GenerateFunctions this is not guaranteed.
-		(*system->genFuncs->generateOrbital) (system, planet);
+		uqm::systemBehavior(*system).generateOrbital(*(system), *(planet));
 		(*universeRecurseArg->planetFuncPre) (
 				planet, universeRecurseArg->arg);
 	}
@@ -702,7 +705,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	{
 		RandomContext_SeedRandom (&SysGenRNG, planet->rand_seed);
 		
-		(*system->genFuncs->generateMoons) (system, planet);
+		uqm::systemBehavior(*system).generateMoons(*(system), *(planet));
         BuildMoonWorlds (system, planet);
 
 		forAllMoons (star, system, planet, moonRecurse,
@@ -716,7 +719,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 				// When GenerateDefaultFunctions is used as genFuncs,
 				// generateOrbital will also call DoPlanetaryAnalysis,
 				// but with other GenerateFunctions this is not guaranteed.
-		(*system->genFuncs->generateOrbital) (system, planet);
+		uqm::systemBehavior(*system).generateOrbital(*(system), *(planet));
 		(*universeRecurseArg->planetFuncPost) (
 				planet, universeRecurseArg->arg);
 	}
@@ -743,7 +746,7 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 				// generateOrbital will also call DoPlanetaryAnalysis,
 				// but with other GenerateFunctions this is not guaranteed.
 		}
-		(*system->genFuncs->generateOrbital) (system, moon);
+		uqm::systemBehavior(*system).generateOrbital(*(system), *(moon));
 		(*universeRecurseArg->moonFunc) (
 				moon, universeRecurseArg->arg);
 	}
@@ -985,7 +988,7 @@ dumpPlanetCallback (const PLANET_DESC *planet, void *arg)
 void
 dumpPlanet (FILE *out, const PLANET_DESC *planet)
 {
-	(*pSolarSysState->genFuncs->generateName) (pSolarSysState, planet);
+	uqm::systemBehavior(*pSolarSysState).generateName(*(pSolarSysState), *(planet));
 	fprintf (out, "- %-37s  %s\n", GLOBAL_SIS (PlanetName),
 			planetTypeString (planet->data_index & ~PLANET_SHIELDED));
 	dumpWorld (out, planet);
@@ -1521,7 +1524,10 @@ resetCrewBattle (void)
 			StarShipPtr->RaceDescPtr->ship_info.crew_level;
 
 	OldContext = SetContext (StatusContext);
-	DeltaCrew (StarShipPtr->hShip, delta);
+    ELEMENT *element;
+    LockElement(StarShipPtr->hShip, &element);
+    DeltaCrew(element, delta);
+    UnlockElement(StarShipPtr->hShip);
 	SetContext (OldContext);
 }
 
@@ -1544,7 +1550,10 @@ resetEnergyBattle (void)
 			StarShipPtr->RaceDescPtr->ship_info.energy_level;
 
 	OldContext = SetContext (StatusContext);
-	DeltaEnergy (StarShipPtr->hShip, delta);
+    ELEMENT *element;
+    LockElement(StarShipPtr->hShip, &element);
+    DeltaEnergy(element, delta);
+    UnlockElement(StarShipPtr->hShip);
 	SetContext (OldContext);
 }
 

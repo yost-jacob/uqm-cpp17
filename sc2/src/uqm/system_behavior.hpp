@@ -1,12 +1,12 @@
 #ifndef UQM_SYSTEM_BEHAVIOR_HPP_
 #define UQM_SYSTEM_BEHAVIOR_HPP_
-#include "planets/generate.h"
+#include "planets/planets.h"
 #include <memory>
 namespace uqm {
 class CampaignState;
 // One behavior per explored system. campaign must outlive this object. Hook
 // descriptors belong to the active C engine frame and are never retained.
-// Return meanings/order match GenerateFunctions; node info may be null for counts.
+// Return meanings/order match the original generation hooks; node info may be null for counts.
 class SystemBehavior {
 public:
     explicit SystemBehavior(CampaignState &campaign) noexcept : campaign_(campaign) {}

@@ -91,14 +91,17 @@ public:
 };
 class SolarSystemMode final : public GameMode {
 public:
-    using GameMode::GameMode;
+    SolarSystemMode(std::shared_ptr<GameState> state, PlayerId player)
+        : GameMode(state, player), exploration_(state->player(player).campaign(), state->worldOwner()) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(INTERPLANETARY_CLOCK_RATE);
-        exploreSolarSystem(stateOwner()->player(playerId()).campaign(), stateOwner()->worldOwner());
+        exploration_.run();
         return finishMode(stateOwner(), playerId());
     }
+private:
+    SolarSystemExploration exploration_;
 };
 enum class EncounterKind { Communication, Starbase, InstallBomb };
 class EncounterMode final : public GameMode {

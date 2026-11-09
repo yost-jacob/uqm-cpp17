@@ -16,6 +16,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#include "../system_runtime.hpp"
+#include "../system_behavior.hpp"
 #include "solarsys.h"
 #include "lander.h"
 #include "../colors.h"
@@ -222,8 +225,8 @@ GenerateMoons (SOLARSYS_STATE *system, PLANET_DESC *planet)
 
 	RandomContext_SeedRandom (&SysGenRNG, planet->rand_seed);
 
-	(*system->genFuncs->generateName) (system, planet);
-	(*system->genFuncs->generateMoons) (system, planet);
+	uqm::systemBehavior(*system).generateName(*(system), *(planet));
+	uqm::systemBehavior(*system).generateMoons(*(system), *(planet));
     BuildMoonWorlds (system, planet);
 
 	facing = NORMALIZE_FACING (ANGLE_TO_FACING (
@@ -390,7 +393,7 @@ LoadSolarSys (void)
 	pCurDesc->image.origin = pCurDesc->location;
 	pCurDesc->image.frame = SunFrame;
 
-	(*pSolarSysState->genFuncs->generatePlanets) (pSolarSysState);
+	uqm::systemBehavior(*pSolarSysState).generatePlanets(*(pSolarSysState));
     BuildSystemWorlds (pSolarSysState, CurStarDescPtr);
 
 	for (i = 0, pCurDesc = pSolarSysState->PlanetDesc;
@@ -1006,7 +1009,7 @@ CheckShipLocation (SIZE *newRadius)
 }
 
 static void
-DrawSystemTransition (BOOLEAN inner)
+DrawSystemTransition (bool inner)
 {
 	SetTransitionSource (NULL);
 	BatchGraphics ();
@@ -1104,7 +1107,7 @@ RestoreSystemView (void)
 static void
 IP_frame (void)
 {
-	BOOLEAN locChange;
+	bool locChange;
 	SIZE newRadius;
 
 	SetContext (SpaceContext);
@@ -1139,10 +1142,10 @@ IP_frame (void)
 	
 }
 
-static BOOLEAN
+static bool
 CheckZoomLevel (void)
 {
-	BOOLEAN InnerSystem;
+	bool InnerSystem;
 	POINT shipLoc;
 
 	InnerSystem = playerInInnerSystem ();
@@ -1267,8 +1270,7 @@ EnterPlanetOrbit (void)
 	}
 
 	GetPlanetInfo ();
-	(*pSolarSysState->genFuncs->generateOrbital) (pSolarSysState,
-			pSolarSysState->pOrbitalDesc);
+	uqm::systemBehavior(*pSolarSysState).generateOrbital(*(pSolarSysState), *(pSolarSysState->pOrbitalDesc));
 	LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
 			START_ENCOUNTER)) || GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
@@ -1307,8 +1309,8 @@ EnterPlanetOrbit (void)
 static void
 InitSolarSys (void)
 {
-	BOOLEAN InnerSystem;
-	BOOLEAN Reentry;
+	bool InnerSystem;
+	bool Reentry;
 	PLANET_DESC *orbital;
 
 
@@ -1344,7 +1346,7 @@ InitSolarSys (void)
 
 	if (Reentry)
 	{
-		(*pSolarSysState->genFuncs->reinitNpcs) (pSolarSysState);
+		uqm::systemBehavior(*pSolarSysState).reinitNpcs(*(pSolarSysState));
 	}
 	else
 	{
@@ -1353,7 +1355,7 @@ InitSolarSys (void)
 		GLOBAL (BattleGroupRef) = 0;
 		ReinitQueue (&GLOBAL (ip_group_q));
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		(*pSolarSysState->genFuncs->initNpcs) (pSolarSysState);
+		uqm::systemBehavior(*pSolarSysState).initNpcs(*(pSolarSysState));
 	}
 
 	if (orbital)
@@ -1411,7 +1413,7 @@ endInterPlanetary (void)
 	{
 		// These are game state changing ops and so cannot be
 		// called once another game has been loaded!
-		(*pSolarSysState->genFuncs->uninitNpcs) (pSolarSysState);
+		uqm::systemBehavior(*pSolarSysState).uninitNpcs(*(pSolarSysState));
 		SET_GAME_STATE (USED_BROADCASTER, 0);
 	}
 }
@@ -1475,8 +1477,7 @@ UninitSolarSys (void)
 			PLANET_DESC *planet =
 					closestPlanetInterPlanetary (&GLOBAL (ShipStamp.origin));
 
-			(*pSolarSysState->genFuncs->generateName) (
-					pSolarSysState, planet);
+			uqm::systemBehavior(*pSolarSysState).generateName(*(pSolarSysState), *(planet));
 		}
 	}
 }
@@ -1702,9 +1703,9 @@ XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay)
 }
 
 void
-ExploreSolarSys (UQM_SYSTEM_RUNTIME *runtime)
+uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 {
-	SOLARSYS_STATE SolarSysState;
+	auto &SolarSysState = runtime.engine;
 	
 	if (CurStarDescPtr == 0)
 	{
@@ -1722,19 +1723,21 @@ ExploreSolarSys (UQM_SYSTEM_RUNTIME *runtime)
 	GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (CurStarDescPtr->star_pt.x);
 	GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (CurStarDescPtr->star_pt.y);
 
-	pSolarSysState = &SolarSysState;
+    struct Binding {
+        SOLARSYS_STATE *previous = pSolarSysState;
+        ~Binding() { pSolarSysState = previous; }
+    } binding;
+    SolarSysState = {};
+    pSolarSysState = &SolarSysState;
 
-	memset (pSolarSysState, 0, sizeof (*pSolarSysState));
-
-	SolarSysState.worlds = runtime;
+	SolarSysState.worlds = &runtime;
 	PrepareSystemWorlds (&SolarSysState, CurStarDescPtr);
 
 	InitSolarSys ();
+    struct Cleanup { ~Cleanup() { UninitSolarSys(); } } cleanup;
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	SolarSysState.InputFunc = DoIpFlight;
 	DoInput (&SolarSysState, FALSE);
-	UninitSolarSys ();
-	pSolarSysState = 0;
 }
 
 UNICODE *
@@ -1884,8 +1887,8 @@ SaveSolarSysLocation (void)
 static BOOLEAN
 DoSolarSysMenu (MENU_STATE *pMS)
 {
-	BOOLEAN select = PulsedInputState.menu[KEY_MENU_SELECT];
-	BOOLEAN handled;
+	bool select = PulsedInputState.menu[KEY_MENU_SELECT];
+	bool handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
@@ -1979,7 +1982,7 @@ static BOOLEAN
 DoIpFlight (SOLARSYS_STATE *pSS)
 {
 	static TimeCount NextTime;
-	BOOLEAN cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
+	bool cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 
 	if (pSS->InOrbit)
 	{	// CheckShipLocation() or InitSolarSys() sent us to orbital
@@ -2003,5 +2006,5 @@ DoIpFlight (SOLARSYS_STATE *pSS)
 	return (!(GLOBAL (CurrentActivity)
 			& (START_ENCOUNTER | END_INTERPLANETARY
 			| CHECK_ABORT | CHECK_LOAD))
-			&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0);
+			&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0) ? TRUE : FALSE;
 }

@@ -1,7 +1,7 @@
 #ifndef GENDEF_H
 #define GENDEF_H
 
-#include "planets/generate.h"
+#include "planets/planets.h"
 #include "libs/compiler.h"
 
 #if defined(__cplusplus)

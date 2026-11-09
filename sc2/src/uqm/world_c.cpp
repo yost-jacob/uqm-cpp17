@@ -61,73 +61,6 @@ void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQ
 }
 
 }
-static bool dispatch_initNpcs(SOLARSYS_STATE *system) {
-    try { return runtime(*system).behavior().initNpcs(*system); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_reinitNpcs(SOLARSYS_STATE *system) {
-    try { return runtime(*system).behavior().reinitNpcs(*system); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_uninitNpcs(SOLARSYS_STATE *system) {
-    try { return runtime(*system).behavior().uninitNpcs(*system); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_generatePlanets(SOLARSYS_STATE *system) {
-    try { return runtime(*system).behavior().generatePlanets(*system); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_generateMoons(SOLARSYS_STATE *system, PLANET_DESC *world) {
-    try { return runtime(*system).behavior().generateMoons(*system, *world); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_generateName(const SOLARSYS_STATE *system, const PLANET_DESC *world) {
-    try { return runtime(*system).behavior().generateName(*system, *world); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_generateOrbital(SOLARSYS_STATE *system, PLANET_DESC *world) {
-    try { return runtime(*system).behavior().generateOrbital(*system, *world); }
-    catch (...) { std::abort(); }
-}
-static COUNT dispatch_generateMinerals(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
-    try { return runtime(*system).behavior().generateMinerals(*system, *world, node, info); }
-    catch (...) { std::abort(); }
-}
-static COUNT dispatch_generateEnergy(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
-    try { return runtime(*system).behavior().generateEnergy(*system, *world, node, info); }
-    catch (...) { std::abort(); }
-}
-static COUNT dispatch_generateLife(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
-    try { return runtime(*system).behavior().generateLife(*system, *world, node, info); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_pickupMinerals(SOLARSYS_STATE *system, PLANET_DESC *world, COUNT node) {
-    try { return runtime(*system).behavior().pickupMinerals(*system, *world, node); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_pickupEnergy(SOLARSYS_STATE *system, PLANET_DESC *world, COUNT node) {
-    try { return runtime(*system).behavior().pickupEnergy(*system, *world, node); }
-    catch (...) { std::abort(); }
-}
-static bool dispatch_pickupLife(SOLARSYS_STATE *system, PLANET_DESC *world, COUNT node) {
-    try { return runtime(*system).behavior().pickupLife(*system, *world, node); }
-    catch (...) { std::abort(); }
-}
-static const GenerateFunctions nativeFunctions = {
-    dispatch_initNpcs,
-    dispatch_reinitNpcs,
-    dispatch_uninitNpcs,
-    dispatch_generatePlanets,
-    dispatch_generateMoons,
-    dispatch_generateName,
-    dispatch_generateOrbital,
-    dispatch_generateMinerals,
-    dispatch_generateEnergy,
-    dispatch_generateLife,
-    dispatch_pickupMinerals,
-    dispatch_pickupEnergy,
-    dispatch_pickupLife,
-};
 extern "C" {
 void InitPlanetInfo(void) {
     try {
@@ -166,7 +99,6 @@ void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
         auto &context = *system->worlds;
         context.system = std::make_unique<uqm::SolarSystem>(id, context.world,
                 context.campaign, star->Index);
-        system->genFuncs = &nativeFunctions;
     } catch (...) { std::abort(); }
 }
 // Legacy debug tooling still owns an opaque heap handle. Production exploration

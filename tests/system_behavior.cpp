@@ -378,14 +378,14 @@ extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
     system.worlds = &context;
     PrepareSystemWorlds(&system, star);
     auto *identity = &context.system->behavior();
-    if (!system.genFuncs->generatePlanets(&system)) return 0;
+    if (!uqm::systemBehavior(system).generatePlanets(system)) return 0;
     if (!(system.PlanetDesc[1].data_index & PLANET_SHIELDED)) return 0;
     BuildSystemWorlds(&system, star);
     if (&context.system->behavior() != identity || context.system->worldCount() != 2) return 0;
     campaign.set(uqm::StoryFlag::ChmmrFreed);
-    if (!system.genFuncs->generatePlanets(&system)) return 0;
+    if (!uqm::systemBehavior(system).generatePlanets(system)) return 0;
     if (system.PlanetDesc[1].data_index & PLANET_SHIELDED) return 0;
-    if (system.genFuncs->generateMinerals(&system, &system.PlanetDesc[0], 7, nullptr) != 7) return 0;
+    if (uqm::systemBehavior(system).generateMinerals(system, system.PlanetDesc[0], 7, nullptr) != 7) return 0;
     return 1;
 }
 
@@ -460,3 +460,5 @@ BOOST_AUTO_TEST_CASE(syreen_native_overrides_keep_shielded_planet_and_starbase_m
     BOOST_TEST(defaultCalls[3] == 1u);
     BOOST_TEST(defaultCalls[4] == 1u);
 }
+
+namespace uqm { void runExploration(UQM_SYSTEM_RUNTIME &) {} }

@@ -10,6 +10,7 @@ struct UQM_SYSTEM_RUNTIME {
     uqm::CampaignState &campaign;
     std::shared_ptr<uqm::WorldState> world;
     std::unique_ptr<uqm::SolarSystem> system;
+    SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
 };
 namespace uqm {
 // Compatibility helpers borrow the explicitly attached exploration context.
@@ -18,6 +19,19 @@ inline CampaignState &systemCampaign(const SOLARSYS_STATE &system) {
     return system.worlds->campaign;
 }
 
-void exploreSolarSystem(CampaignState &campaign, std::shared_ptr<WorldState> world);
+// Borrowed lookup; system must have a prepared native runtime.
+SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
+// Mode-owned exploration lifetime. The campaign outlives this object.
+class SolarSystemExploration {
+public:
+    SolarSystemExploration(CampaignState &campaign, std::shared_ptr<WorldState> world);
+    void run();
+    SolarSystemExploration(const SolarSystemExploration &) = delete;
+    SolarSystemExploration &operator=(const SolarSystemExploration &) = delete;
+private:
+    UQM_SYSTEM_RUNTIME runtime_;
+};
+// Native engine entry, called only by SolarSystemExploration::run.
+void runExploration(UQM_SYSTEM_RUNTIME &runtime);
 }
 #endif
