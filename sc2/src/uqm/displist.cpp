@@ -27,6 +27,7 @@
 #include <variant>
 #include <vector>
 #include "displist.h"
+#include "fleet_legacy.hpp"
 #include "element.h"
 #include "races.h"
 #include "grpinfo.h"
@@ -38,7 +39,7 @@ struct QueueStorage {
     // Concrete objects have their actual C types and alignment, not byte-array
     // storage. Each vector is sized once, before any handles are published.
     std::variant<std::vector<ELEMENT>, std::vector<STARSHIP>,
-            std::vector<SHIP_FRAGMENT>, std::vector<FLEET_INFO>,
+            std::vector<uqm::Ship>, std::vector<FLEET_INFO>,
             std::vector<IP_GROUP>, std::vector<ENCOUNTER>,
             std::vector<EVENT>, std::vector<MASTER_SHIP_INFO>> objects;
     std::vector<HLINK> free;
@@ -68,7 +69,7 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
     switch (kind) {
         case QUEUE_ELEMENT: pool->objects.emplace<std::vector<ELEMENT>>(capacity); break;
         case QUEUE_STARSHIP: pool->objects.emplace<std::vector<STARSHIP>>(capacity); break;
-        case QUEUE_SHIP_FRAGMENT: pool->objects.emplace<std::vector<SHIP_FRAGMENT>>(capacity); break;
+        case QUEUE_SHIP_FRAGMENT: pool->objects.emplace<std::vector<uqm::Ship>>(capacity); break;
         case QUEUE_FLEET_INFO: pool->objects.emplace<std::vector<FLEET_INFO>>(capacity); break;
         case QUEUE_IP_GROUP: pool->objects.emplace<std::vector<IP_GROUP>>(capacity); break;
         case QUEUE_ENCOUNTER: pool->objects.emplace<std::vector<ENCOUNTER>>(capacity); break;
@@ -79,7 +80,8 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
     pool->capacity = capacity;
     pool->free.reserve(capacity);
     std::visit([&](auto &objects) {
-        using Object = typename std::decay_t<decltype(objects)>::value_type;
+        using Stored = typename std::decay_t<decltype(objects)>::value_type;
+        using Object = std::conditional_t<std::is_same_v<Stored, uqm::Ship>, SHIP_FRAGMENT, Stored>;
         static_assert(std::is_standard_layout_v<Object> && std::is_trivially_copyable_v<Object>);
         static_assert(offsetof(Object, pred) == 0 && offsetof(Object, succ) == sizeof(HLINK));
         queue->object_size = sizeof(Object);
@@ -119,6 +121,8 @@ HLINK AllocLink(QUEUE *queue) {
         return nullptr;
     const auto link = free.back();
     free.pop_back();
+    if (std::holds_alternative<std::vector<uqm::Ship>>(queue->storage->objects))
+        uqm::detail::FleetAccess::activate(uqm::detail::FleetAccess::ship(*static_cast<SHIP_FRAGMENT *>(link)));
     return link;
 }
 void FreeLink(QUEUE *queue, HLINK link) {

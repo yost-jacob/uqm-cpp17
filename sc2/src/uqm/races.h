@@ -267,6 +267,8 @@ struct STARSHIP
 			//  0: bottom player; In full-game: the human player (RPG)
 			//  1: top player; In full-game: the NPC opponent
 			// -1: neutral; this should currently never happen (asserts)
+    QUEUE *fleet_owner; // Borrowed persistent roster; outlives this combat participant.
+	uint64_t fleet_ship_id; // Runtime-only persistent vessel identity; zero for flagship/Super Melee.
 	BYTE control;
 			// HUMAN, COMPUTER or NETWORK control flags, see intel.h
 };
@@ -305,6 +307,7 @@ typedef struct
 	STRING race_strings;
 	FRAME icons;
 	FRAME melee_icon;  /* Only used by Shipyard */
+	uint64_t ship_id; // Runtime-only identity; intentionally excluded from save encoding.
 
 #define INFINITE_FLEET ((COUNT) ~0)
 } SHIP_FRAGMENT;

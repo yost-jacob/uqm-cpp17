@@ -86,7 +86,7 @@ getSupportShipIcon (ROSTER_STATE *rosterState)
 		return;
 
 	rosterState->curShipFrame = ShipFragPtr->icons;
-	UnlockShipFrag (&GLOBAL (built_ship_q), hShipFrag);
+	UnlockShipFrag (GetPlayerFleetQueue(), hShipFrag);
 }
 
 static void
@@ -133,13 +133,13 @@ LockSupportShip (ROSTER_STATE *rosterState, HSHIPFRAG *phFrag)
 
 	// Lookup the current escort's location in the unsorted points list
 	// to find the original escort index
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q)),
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue()),
 			pship_pos = ship_pos;
 			hStarShip; hStarShip = hNextShip, ++pship_pos)
 	{
 		SHIP_FRAGMENT *StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 		if (pointsEqual (*pship_pos, rosterState->curShipPt))
 		{
@@ -148,7 +148,7 @@ LockSupportShip (ROSTER_STATE *rosterState, HSHIPFRAG *phFrag)
 		}
 
 		hNextShip = _GetSuccLink (StarShipPtr);
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 
 	return NULL;
@@ -210,7 +210,7 @@ DeltaSupportCrew (ROSTER_STATE *rosterState, SIZE crew_delta)
 	}
 
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hTemplate);
-	UnlockShipFrag (&GLOBAL (built_ship_q), hShipFrag);
+	UnlockShipFrag (GetPlayerFleetQueue(), hShipFrag);
 
 	return ret;
 }
@@ -400,7 +400,7 @@ RosterMenu (void)
 
 	memset (&RosterState, 0, sizeof RosterState);
 	
-	RosterState.count = CountLinks (&GLOBAL (built_ship_q));
+	RosterState.count = CountLinks (GetPlayerFleetQueue());
 	if (!RosterState.count)
 		return FALSE;
 

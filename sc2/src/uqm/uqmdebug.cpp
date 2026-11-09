@@ -419,17 +419,17 @@ clearEscorts (void)
 {
 	HSHIPFRAG hStarShip, hNextShip;
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue());
 			hStarShip; hStarShip = hNextShip)
 	{
 		SHIP_FRAGMENT *StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
-		RemoveQueue (&GLOBAL (built_ship_q), hStarShip);
-		FreeShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		RemoveQueue (GetPlayerFleetQueue(), hStarShip);
+		FreeShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 
 	DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);

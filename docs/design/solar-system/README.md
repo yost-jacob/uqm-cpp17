@@ -51,6 +51,8 @@ classDiagram
     PlayerEntity *-- FlagshipState
     PlayerEntity *-- PlayerPresence : accepted location
     PlayerEntity *-- StoryState : value member
+    PlayerEntity *-- Fleet : unique owner
+    Fleet *-- Ship : persistent vessels
     StoryState *-- StorySnapshot
     WorldState *-- WorldSnapshot
     WorldSnapshot *-- WorldProgress : keyed by WorldId
@@ -95,8 +97,8 @@ lifetime, not a player's membership or permission to execute a late command.
 
 | Owner | Representative information |
 |---|---|
-| PlayerEntity | Immutable player identity, display profile, accepted location, ship/cargo/equipment, personal StoryState |
-| StoryState inside PlayerEntity | Personal story flags/counters, escorts, visited-world knowledge, personal events |
+| PlayerEntity | Immutable player identity, display profile, accepted location, ship/cargo/equipment, owned Fleet, personal StoryState |
+| StoryState inside PlayerEntity | Personal story flags/counters, visited-world knowledge, personal events |
 | WorldState | Physical world flags, retrieved-node masks, NPC fleets, authoritative calendar/events |
 | WorldState public presence | Derived display name/location/facing for visible players |
 | World / GameSession runtime | Current view, local surface data, behavior objects, rendering/input |

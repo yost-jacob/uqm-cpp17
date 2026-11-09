@@ -25,8 +25,6 @@ struct StorySnapshot {
     std::uint64_t revision = 0;
     std::bitset<static_cast<std::size_t>(StoryFlag::Count)> flags;
     std::array<unsigned, static_cast<std::size_t>(StoryCounter::Count)> counters{};
-    // Historical wireframe field: move to PlayerEntity-owned Fleet in #21.
-    std::vector<FleetProgress> escorts;
     std::unordered_set<WorldId, WorldIdHash> visitedWorlds;
     std::unordered_map<WorldId, DiscoveryProgress, WorldIdHash> discoveries;
     std::vector<ScheduledStoryEvent> personalEvents;

@@ -819,7 +819,7 @@ Intro (void)
 	else
 	{
 		NumVisits = 0;
-		if (GetHeadLink (&GLOBAL (built_ship_q)) == 0)
+		if (GetHeadLink (GetPlayerFleetQueue()) == 0)
 		{
 			for (NumVisits = 0; NumVisits < NUM_MODULE_SLOTS; ++NumVisits)
 			{

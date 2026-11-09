@@ -9,7 +9,9 @@
 #include "world_types.hpp"
 #include "game_mode.hpp"
 
+
 namespace uqm {
+class Fleet;
 // Transient per-player navigation memory, retained across encounter mode swaps.
 // Portal coordinates were process statics and are not part of the legacy save.
 struct NavigationState { std::int16_t portalX = 0, portalY = 0; };
@@ -273,6 +275,9 @@ public:
     // Storage quantities only; gameplay callers must enforce capacity/cost rules.
     void setFuel(std::uint32_t fuel) noexcept;
     void setCrew(std::uint16_t crew) noexcept;
+    // Borrow owned escorts; valid for this player's lifetime.
+    Fleet &fleet() noexcept;
+    const Fleet &fleet() const noexcept;
     // Borrow personal story progress; valid for this player's lifetime.
     StoryState &story() noexcept;
     const StoryState &story() const noexcept;
@@ -282,6 +287,7 @@ private:
     UserProfile profile_;
     std::unique_ptr<detail::PlayerStorage> storage_;
     StoryState story_;
+    std::unique_ptr<Fleet> fleet_;
 };
 
 // Storage-independent lookup boundary. Initially owns one player, not a list.

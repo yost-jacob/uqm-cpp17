@@ -951,9 +951,6 @@ typedef struct
 	QUEUE encounter_q;
 			/* List of HyperSpace encounters (black globes);
 			 * queue element is ENCOUNTER */
-	QUEUE built_ship_q;
-			/* List of SIS escort ships;
-			 * queue element is SHIP_FRAGMENT */
 
 	BYTE GameState[(NUM_GAME_STATE_BITS + 7) >> 3];
 } GAME_STATE;
@@ -968,6 +965,9 @@ typedef struct
  * Keep sizeof/address/member expressions valid for legacy loaders and ship code.
  * C++ gameplay should use game_state.hpp instead of this mutable buffer. */
 extern GLOBDATA *GetLegacyGlobData (void);
+// Borrow the active player's Fleet C buffer. Ownership stays in PlayerEntity;
+// implemented in game_state.cpp. Native callers use player.fleet().
+extern QUEUE *GetPlayerFleetQueue (void);
 #define GlobData (*GetLegacyGlobData ())
 #define GLOBAL(f) GlobData.Game_state.f
 #define GLOBAL_SIS(f) GlobData.SIS_state.f

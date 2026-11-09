@@ -527,7 +527,9 @@ LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh)
 	DummyLoadQueue (&GSPtr->npc_built_ship_q, fh);
 	// Not loading ip_group_q, was not there originally
 	DummyLoadQueue (&GSPtr->encounter_q, fh);
-	DummyLoadQueue (&GSPtr->built_ship_q, fh);
+	// Old saves contain an unused queue descriptor before the packed story bits.
+    // Consume its bytes without giving it ownership of the player's Fleet.
+    DummyLoadQueue (NULL, fh);
 
 	cread_a8  (fh, oldstate, LEGACY_GAMESTATE_SIZE);
 	InterpretLegacyGameState (GSPtr->GameState, oldstate);
@@ -664,7 +666,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	ReinitQueue (&GLOBAL (encounter_q));
 	ReinitQueue (&GLOBAL (ip_group_q));
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
-	ReinitQueue (&GLOBAL (built_ship_q));
+	ReinitQueue (GetPlayerFleetQueue());
 
 	memset (&GLOBAL (GameState[0]), 0, sizeof (GLOBAL (GameState)));
 	Activity = GLOBAL (CurrentActivity);
@@ -692,7 +694,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 			//   the savegame compatibility
 			LoadEmptyQueue (fh);
 	}
-	LoadShipQueue (fh, &GLOBAL (built_ship_q));
+	LoadShipQueue (fh, GetPlayerFleetQueue());
 
 	// Load the game events (compressed)
 	cread_16 (fh, &num_links);

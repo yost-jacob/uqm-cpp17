@@ -644,7 +644,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	ReinitQueue (&GLOBAL (encounter_q));
 	ReinitQueue (&GLOBAL (ip_group_q));
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
-	ReinitQueue (&GLOBAL (built_ship_q));
+	ReinitQueue (GetPlayerFleetQueue());
 
 	memset (&GLOBAL (GameState[0]), 0, sizeof (GLOBAL (GameState)));
 	Activity = GLOBAL (CurrentActivity);
@@ -725,7 +725,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 			LoadShipQueue (in_fp, &GLOBAL (npc_built_ship_q), chunkSize);
 			break;
 		case SHIP_Q_TAG:
-			LoadShipQueue (in_fp, &GLOBAL (built_ship_q), chunkSize);
+			LoadShipQueue (in_fp, GetPlayerFleetQueue(), chunkSize);
 			break;
 		case SCAN_TAG:
 			LoadScanInfo (in_fp, chunkSize);

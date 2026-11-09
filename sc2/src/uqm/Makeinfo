@@ -1,4 +1,4 @@
-uqm_CXXFILES="conversation.cpp conversation_mode.cpp conversation_context.cpp conversation_resources.cpp conversation_lifetime.cpp conversation_animation.cpp mode_rendering.cpp device_inventory.cpp encount.cpp combat_mode.cpp campaign_combat.cpp encounter_runtime.cpp encounter_context.cpp navigation_context.cpp hyper.cpp uqmdebug.cpp ship.cpp cyborg.cpp trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp system_behavior.cpp system_encounter.cpp orbital_encounter.cpp system_behavior_factory.cpp system_runtime.cpp exploration_rendering.cpp energy_behavior.cpp world_c.cpp ship_tuning.cpp ship_tuning_c.cpp loadship.cpp ship_factory.cpp ship_behavior.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
+uqm_CXXFILES="conversation.cpp conversation_mode.cpp conversation_context.cpp conversation_resources.cpp conversation_lifetime.cpp conversation_animation.cpp mode_rendering.cpp device_inventory.cpp encount.cpp fleet.cpp fleet_legacy.cpp combat_mode.cpp campaign_combat.cpp encounter_runtime.cpp encounter_context.cpp navigation_context.cpp hyper.cpp uqmdebug.cpp ship.cpp cyborg.cpp trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp system_behavior.cpp system_encounter.cpp orbital_encounter.cpp system_behavior_factory.cpp system_runtime.cpp exploration_rendering.cpp energy_behavior.cpp world_c.cpp ship_tuning.cpp ship_tuning_c.cpp loadship.cpp ship_factory.cpp ship_behavior.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
 uqm_SUBDIRS="comm planets ships supermelee"
 uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		cnctdlg.c collide.c commglue.c confirm.c credits.c
@@ -13,7 +13,7 @@ uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		velocity.c weapon.c"
 uqm_HFILES="battlecontrols.h battle.h build.h clock.h cnctdlg.h
 		collide.h colors.h commanim.h commglue.h comm.h conversation.hpp conversation_context.hpp conversation_resources.hpp conversation_animation.hpp mode_rendering.hpp cons_res.h controls.h
-		credits.h demo.h displist.h element.h encount.h combat_mode.hpp encounter_runtime.hpp device_menu.hpp
+		credits.h demo.h displist.h element.h encount.h fleet.hpp fleet_legacy.hpp combat_mode.hpp encounter_runtime.hpp device_menu.hpp
 		flash.h fmv.h gameev.h gameopt.h gamestr.h gendef.h globdata.h
 		grpinfo.h hyper.h hyper_navigation.hpp ifontres.h igfxres.h ikey_con.h imusicre.h init.h
 		intel.h ipdisp.h isndres.h istrtab.h master.h menustat.h

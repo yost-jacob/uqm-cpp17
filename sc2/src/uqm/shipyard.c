@@ -352,41 +352,41 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 	{
 		if (which_window == (COUNT)~0)
 		{
-			hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
-			num_ships = CountLinks (&GLOBAL (built_ship_q));
+			hStarShip = GetHeadLink (GetPlayerFleetQueue());
+			num_ships = CountLinks (GetPlayerFleetQueue());
 		}
 		else
 		{
 			HSHIPFRAG hTailShip;
 
-			hTailShip = GetTailLink (&GLOBAL (built_ship_q));
-			RemoveQueue (&GLOBAL (built_ship_q), hTailShip);
+			hTailShip = GetTailLink (GetPlayerFleetQueue());
+			RemoveQueue (GetPlayerFleetQueue(), hTailShip);
 
-			hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
+			hStarShip = GetHeadLink (GetPlayerFleetQueue());
 			while (hStarShip)
 			{
-				StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+				StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 				if (StarShipPtr->index > which_window)
 				{
-					UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+					UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 					break;
 				}
 				hNextShip = _GetSuccLink (StarShipPtr);
-				UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+				UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 				hStarShip = hNextShip;
 			}
-			InsertQueue (&GLOBAL (built_ship_q), hTailShip, hStarShip);
+			InsertQueue (GetPlayerFleetQueue(), hTailShip, hStarShip);
 
 			hStarShip = hTailShip;
-			StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 			StarShipPtr->index = which_window;
-			UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		}
 
 		for (i = 0; i < num_ships; ++i)
 		{
-			StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 			hNextShip = _GetSuccLink (StarShipPtr);
 
 			pship_win_info->StarShipPtr = StarShipPtr;
@@ -414,7 +414,7 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 					(which_window / HANGAR_SHIPS_ROW));
 			++pship_win_info;
 
-			UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 			hStarShip = hNextShip;
 		}
 	}
@@ -689,10 +689,10 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	{
 		// Hovering over an escort ship.
 		SHIP_FRAGMENT *FragPtr = LockShipFrag (
-				&GLOBAL (built_ship_q), hStarShip);
+				GetPlayerFleetQueue(), hStarShip);
 		hSpinShip = GetStarShipFromIndex (
 				&GLOBAL (avail_race_q), FragPtr->race_id);
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 	
 	SetFlashRect (NULL);
@@ -894,7 +894,7 @@ DMS_ModifyCrew (MENU_STATE *pMS, HSHIPFRAG hStarShip, SBYTE dy)
 	SHIP_FRAGMENT *StarShipPtr = NULL;
 
 	if (hStarShip)
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 	if (hStarShip == 0)
 	{
@@ -936,7 +936,7 @@ DMS_ModifyCrew (MENU_STATE *pMS, HSHIPFRAG hStarShip, SBYTE dy)
 
 	if (hStarShip)
 	{
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		
 		// Clear out the bought ship index so that flash rects work
 		// correctly.
@@ -957,7 +957,7 @@ DMS_TryAddEscortShip (MENU_STATE *pMS)
 	COUNT Index = GetIndexFromStarShip (&GLOBAL (avail_race_q), shipInfo);
 
 	if (GLOBAL_SIS (ResUnits) >= (DWORD)ShipCost[Index]
-			&& CloneShipFragment (Index, &GLOBAL (built_ship_q), 1))
+			&& CloneShipFragment (Index, GetPlayerFleetQueue(), 1))
 	{
 		ShowCombatShip (pMS, pMS->CurState, NULL);
 				// Reset flash rectangle
@@ -1044,17 +1044,17 @@ static void
 DMS_ScrapEscortShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 {
 	SHIP_FRAGMENT *StarShipPtr =
-			LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	BYTE slotNr;
 
 	SetFlashRect (NULL);
 	ShowCombatShip (pMS, pMS->CurState, StarShipPtr);
 
 	slotNr = StarShipPtr->index;
-	UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+	UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
-	RemoveQueue (&GLOBAL (built_ship_q), hStarShip);
-	FreeShipFrag (&GLOBAL (built_ship_q), hStarShip);
+	RemoveQueue (GetPlayerFleetQueue(), hStarShip);
+	FreeShipFrag (GetPlayerFleetQueue(), hStarShip);
 	// refresh SIS display
 	DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 
@@ -1116,9 +1116,9 @@ DMS_EditCrewMode (MENU_STATE *pMS, HSHIPFRAG hStarShip,
 		{
 			// Exiting crew editing mode for an escort ship.
 			SHIP_FRAGMENT *StarShipPtr = LockShipFrag (
-					&GLOBAL (built_ship_q), hStarShip);
+					GetPlayerFleetQueue(), hStarShip);
 			COUNT crew_level = StarShipPtr->crew_level;
-			UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 			if (crew_level == 0)
 			{

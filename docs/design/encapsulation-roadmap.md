@@ -38,6 +38,7 @@ a load does not decode a replacement campaign while these objects remain alive.
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
 | Campaign combat | CampaignCombatMode borrows the session and campaign; backend scopes temporary sounds, cyborg input and activity | Battle loop, rosters, mechanics and engine resources retain existing ownership |
+| Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers, flagship storage and NPC queue ownership |
 | Lander | Child LanderMode owns LanderVisit with explicit system/campaign borrows | Element callbacks and graphics caches |
 | Session startup | RunGameSession C adapter invokes GameSession::runCampaign | C title loop; definition is in sc2/src/uqm/gameplay_modes.cpp |
 
@@ -49,8 +50,8 @@ encapsulate every service or legacy payload accessed beneath that boundary.
 The personal progress interface is `StoryState`, accessed as `player.story()`.
 It owns flags, counters and personal discovery progress, not the fleet or the
 whole campaign. This is a naming refactor of the same storage and serialization;
-there is no compatibility alias or second copy of the state. The proposed Fleet
-will be a separate member of PlayerEntity (#21).
+there is no compatibility alias or second copy of the state. Fleet is a separately owned member of PlayerEntity (#21); its native Ship objects
+share their compatibility records with existing C callers.
 
 ## This increment
 
@@ -61,15 +62,21 @@ sound/input/activity changes through a scope, restoring the caller's previous
 input, speed and sound bindings. Existing combat retirement, reincarnation,
 projectile and victory timing logic is unchanged.
 
+Persistent escorts now belong to PlayerEntity's Fleet. Their native Ship objects
+share C compatibility records; combat participants borrow an owning roster and
+vessel ID. Crew results resolve identity instead of traversing parallel queues.
+See [fleet ownership](fleet-ownership.md) for API and save-format contracts.
+
 This is the campaign-specific integration step toward #17, not completion of a
 campaign-independent CombatMode. Super Melee and HyperSpace retain their current
 Battle entry paths; HyperSpace uses Battle for navigation rather than combat.
 
 ## Next steps on this path
 
-1. Audit encounter fleet/roster ownership and aftermath together with stable
-   vessel identities (#21). Replace parallel-queue reconciliation incrementally;
-   retain destroyed roster slots until the encounter finishes using them.
+1. Continue fleet migration (#21): persistent escorts now belong to PlayerEntity's
+   Fleet and combat results resolve stable vessel IDs. Next address native default/
+   resource construction, flagship integration, and enemy fleet ownership. See
+   [fleet ownership](fleet-ownership.md).
 2. Pass explicit campaign/player dependencies through combat callbacks and
    factor a shared combat interface usable by Super Melee (#17, #18, #22).
 3. Replace shared rendering/input/audio access with borrowed session services
@@ -101,6 +108,7 @@ See [runtime details](runtime-encapsulation.md),
 [nested-mode contracts](nested-modes.md).
 
 For this increment, Debug and Release CMake/Ninja builds and all three CTest
-entries pass. The full Boost.Test suite has 157 cases / 13,731 assertions;
+entries pass. The full Boost.Test suite has 164 cases / 13,779 assertions;
 ASan/UBSan and the legacy SDL2 build also pass. Changed native sources pass
-`-Wall -Wextra -Werror`. No new interactive story/combat playthrough was performed.
+`-Wall -Wextra -Werror`. A focused GUI check loaded an existing probe encounter into dialogue and started
+a fresh campaign in Sol. No exhaustive story/combat playthrough was performed.
