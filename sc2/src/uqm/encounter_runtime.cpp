@@ -46,7 +46,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 	if (disableInteractivity)
 		return 0;
 #endif
-	
+
 
 	if (LastActivity & CHECK_LOAD)
 	{
@@ -298,7 +298,7 @@ uqm::EncounterRuntime::run()
 			BSIPtr->max_energy = FragPtr->max_energy;
 			UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
 		}
-		
+
 		UnlockEncounter (hEncounter);
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
 	}

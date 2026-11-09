@@ -29,7 +29,7 @@ std::vector<BYTE> uqm::inventoryDevices(const CampaignState &campaign)
 	BYTE i;
 	std::vector<BYTE> devices;
     devices.reserve(NUM_DEVICES);
-	
+
 	for (i = 0; i < NUM_DEVICES; ++i)
 	{
 		BYTE DeviceState;
@@ -120,7 +120,7 @@ std::vector<BYTE> uqm::inventoryDevices(const CampaignState &campaign)
 			devices.push_back(i);
 		}
 	}
-	
+
 	return devices;
 }
 
