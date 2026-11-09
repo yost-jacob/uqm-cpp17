@@ -22,7 +22,6 @@
 #include <iterator>
 
 #include "battle.h"
-#include "battlecontrols.h"
 #include "build.h"
 #include "colors.h"
 #include "starmap.h"
@@ -46,12 +45,10 @@
 #include "libs/log.h"
 #include "libs/mathlib.h"
 #include "libs/inplib.h"
-#include "libs/misc.h"
 
 
 extern "C" {
 extern FRAME planet[];
-extern UWORD nth_frame;
 }
 
 static void DrawFadeText (const UNICODE *str1, const UNICODE *str2,
@@ -775,72 +772,4 @@ uqm::EncounterRuntime::finish()
 ExitUninitEncounter:
 
 	return (ships_killed);
-}
-
-void
-uqm::EncounterRuntime::battle()
-{
-    // Own every temporary combat binding until Battle has returned. Resource
-    // teardown precedes restoring the caller's activity, including C++ unwinds.
-    struct BattleCleanup {
-        ACTIVITY activity;
-        InputContext *savedPlayerInput = nullptr;
-        bool cyborgInput = false;
-        bool soundLoaded = false;
-        ~BattleCleanup() {
-            if (soundLoaded) {
-                DestroySound(ReleaseSound(GameSounds));
-                GameSounds = 0;
-            }
-            if (cyborgInput) {
-                nth_frame = MAKE_WORD(0, 0);
-                PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
-                ClearPlayerInput(0);
-                PlayerInput[0] = savedPlayerInput;
-            }
-            GLOBAL(CurrentActivity) = activity;
-        }
-    } cleanup{GLOBAL(CurrentActivity)};
-    const auto OldActivity = cleanup.activity;
-
-	campaign_.set(uqm::StoryFlag::BattleSegue, 1);
-
-	if (LOBYTE (OldActivity) == IN_LAST_BATTLE)
-		GLOBAL (CurrentActivity) = MAKE_WORD (IN_LAST_BATTLE, 0);
-	else
-		GLOBAL (CurrentActivity) = MAKE_WORD (IN_ENCOUNTER, 0);
-
-	WaitForSoundEnd (TFBSOUND_WAIT_ALL);
-
-	if (GLOBAL (glob_flags) & CYBORG_ENABLED)
-	{
-		BYTE cur_speed;
-
-		cur_speed = (BYTE)(GLOBAL (glob_flags) & COMBAT_SPEED_MASK)
-				>> COMBAT_SPEED_SHIFT;
-		if (cur_speed == 1)
-			cur_speed = 0; /* normal speed */
-		else if (cur_speed == 2)
-			++cur_speed;   /* 4x speed, 3 of 4 frames skipped */
-		else /* if (cur_speed == 3) */
-			cur_speed = (BYTE)~0; /* maximum speed - no rendering */
-		nth_frame = MAKE_WORD (1, cur_speed);
-		PlayerControl[0] = CYBORG_CONTROL | AWESOME_RATING;
-		cleanup.savedPlayerInput = PlayerInput[0];
-        cleanup.cyborgInput = true;
-		PlayerInput[0] = NULL;
-		if (!SetPlayerInput (0)) {
-			log_add (log_Fatal, "Could not set cyborg player input.");
-			explode ();  // Does not return;
-		}
-	}
-
-	GameSounds = CaptureSound (LoadSound (GAME_SOUNDS));
-    cleanup.soundLoaded = true;
-
-	Battle (NULL, NULL);
-
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
-
 }

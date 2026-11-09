@@ -232,6 +232,8 @@ extern "C" BOOLEAN RequestGameSessionLoad(COUNT slot) {
         return TRUE;
     } catch (...) { return FALSE; }
 }
+// C entry from starcon.c; declared in game_session_c.h. Translate the native
+// session result for the outer title loop without letting exceptions enter C.
 extern "C" UQM_SESSION_EXIT RunGameSession(int slot) {
     try {
         const auto exit = uqm::gameSession().runCampaign(slot < 0 ? std::nullopt : std::optional<unsigned>{static_cast<unsigned>(slot)});

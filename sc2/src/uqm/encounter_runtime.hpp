@@ -24,7 +24,6 @@ private:
     void buildBattle(COUNT player); // Populate the requested side's combat queue.
     COUNT selectAction(); // Present the encounter UI; returns HAIL or ATTACK.
     COUNT finish(); // Apply the existing aftermath; returns ships destroyed.
-    void battle();
     const STAR_DESC &star() const; // Requires a system encounter, throws if missing.
     CampaignState &campaign_;
     const STAR_DESC *star_;

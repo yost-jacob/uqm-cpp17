@@ -17,7 +17,8 @@ flowchart TD
     Explore --> Scan["Native scan caller<br/>direct virtual hooks"]
     Scan --> Lander["LanderVisit<br/>owned launch state / borrowed system and campaign"]
     Rules --> Child["SystemEncounterMode<br/>owns suspended parent through swapGameMode"]
-    Child --> Dialog["Unchanged legacy communication / combat"]
+    Child --> Dialog["ConversationMode / owned ConversationRuntime"]
+    Child --> Combat["CampaignCombatMode / scoped legacy Battle adapter"]
     Child -. restore parent before returning .-> Solar
     Rules --> Fleet["OrbitalEncounter scope<br/>temporary fleet cleanup / group restoration"]
 ```
@@ -115,8 +116,13 @@ aftermath moved out of comm.c/encount.c into native procedures on that owner.
 The remaining C `InitCommunication` is a compatibility entry for starbase code.
 Hailed dialogue now runs in `ConversationMode`, whose runtime owns UI state,
 script data, assets and animation sequences. C alien scripts retain their story
-callbacks through checked borrows. See [conversation ownership](conversation-mode.md). Battle resources restore temporary
-sound, cyborg input and caller activity through a scope owner.
+callbacks through checked borrows. See [conversation ownership](conversation-mode.md). Campaign combat now runs as a separate child through `swapGameMode`.
+`EncounterRuntime` prepares its rosters and applies aftermath after the child
+returns. The combat adapter scopes temporary sound, cyborg input and caller
+activity, restoring the saved bindings rather than assuming default controls.
+The underlying Battle engine and fleet queues retain their legacy ownership.
+See the [current roadmap](encapsulation-roadmap.md) for remaining work toward
+a shared campaign/Super Melee combat interface.
 
 `DeviceMenu` takes `CampaignState&` and optionally a borrowed explored system.
 Navigation and exploration call it directly; C planet menus use the compatibility

@@ -18,6 +18,7 @@
 
 #include "encounter_runtime.hpp"
 #include "conversation.hpp"
+#include "combat_mode.hpp"
 #include "game_state.hpp"
 #include "globdata.h"
 #include "build.h"
@@ -167,7 +168,8 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 		{
 			// Start combat
 			buildBattle(RPG_PLAYER_NUM);
-			battle();
+            if (auto exit = session.swapGameMode(createCampaignCombatMode(session)))
+                GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
 		}
 		else
 		{
