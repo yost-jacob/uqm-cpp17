@@ -17,45 +17,43 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../globdata.h"
 #include "../../nameref.h"
 #include "../../resinst.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateBurvixeseFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateBurvixese_generatePlanets,
-	/* .generateMoons    = */ GenerateBurvixese_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateBurvixese_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateBurvixese_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateBurvixese_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class BurvixeseSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+bool
+BurvixeseSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -72,9 +70,11 @@ GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+bool
+BurvixeseSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *planet = &body;
 	GenerateDefault_generateMoons (solarSys, planet);
 
 	if (matchWorld (solarSys, planet, 0, MATCH_PLANET))
@@ -95,9 +95,11 @@ GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 	return true;
 }
 
-static bool
-GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+BurvixeseSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	DWORD rand_val;
 
 	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
@@ -125,7 +127,7 @@ GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 	}
 	else if (matchWorld (solarSys, world, 0, 0)
-			&& !GET_GAME_STATE (BURVIXESE_BROADCASTERS))
+			&& !campaign_.read(StoryFlag::BurvixeseBroadcasters))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] = CaptureDrawable (
@@ -139,10 +141,11 @@ GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+BurvixeseSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
@@ -152,21 +155,22 @@ GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *solarSys,
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (BURVIXESE_BROADCASTERS))
+		if (campaign_.read(StoryFlag::BurvixeseBroadcasters))
 		{	// already picked up
 			return 0;
 		}
-		
+
 		return GenerateDefault_generateArtifact (solarSys, whichNode, info);
 	}
 
 	return 0;
 }
 
-static bool
-GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+BurvixeseSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report
@@ -176,13 +180,13 @@ GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 
 	if (matchWorld (solarSys, world, 0, 0))
 	{
-		assert (!GET_GAME_STATE (BURVIXESE_BROADCASTERS) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::BurvixeseBroadcasters) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (BURVIXESE_BROADCASTERS, 1);
-		SET_GAME_STATE (BURV_BROADCASTERS_ON_SHIP, 1);
+		campaign_.set(StoryFlag::BurvixeseBroadcasters, (1) != 0);
+		campaign_.set(StoryFlag::BurvBroadcastersOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -190,3 +194,8 @@ GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	(void) whichNode;
 	return false;
 }
+
+std::unique_ptr<SystemBehavior> createBurvixeseSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<BurvixeseSystemBehavior>(campaign);
+}
+} // namespace uqm

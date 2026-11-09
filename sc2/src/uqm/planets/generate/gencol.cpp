@@ -17,50 +17,49 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../planets.h"
 #include "../../build.h"
 #include "../../globdata.h"
 #include "../../grpinfo.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateColony_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateColony_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-
-
-const GenerateFunctions generateColonyFunctions = {
-	/* .initNpcs         = */ GenerateColony_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateColony_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateColony_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class ColonySystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool initNpcs(SOLARSYS_STATE &system) override;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
+}
 
 
-static bool
-GenerateColony_initNpcs (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+bool
+ColonySystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	HIPGROUP hGroup;
 
-	GLOBAL (BattleGroupRef) = GET_GAME_STATE_32 (COLONY_GRPOFFS0);
+	GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::ColonyGrpoffs0);
 	if (GLOBAL (BattleGroupRef) == 0)
 	{
 		CloneShipFragment (URQUAN_SHIP,
 				&GLOBAL (npc_built_ship_q), 0);
 		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		SET_GAME_STATE_32 (COLONY_GRPOFFS0, GLOBAL (BattleGroupRef));
+		campaign_.set(StoryCounter::ColonyGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
 	GenerateDefault_initNpcs (solarSys);
@@ -83,9 +82,10 @@ GenerateColony_initNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys)
+bool
+ColonySystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 	PLANET_DESC *pMinPlanet;
 
@@ -101,9 +101,11 @@ GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateColony_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+ColonySystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
@@ -124,3 +126,8 @@ GenerateColony_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
+
+std::unique_ptr<SystemBehavior> createColonySystemBehavior(CampaignState &campaign) {
+    return std::make_unique<ColonySystemBehavior>(campaign);
+}
+} // namespace uqm

@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../build.h"
@@ -26,37 +28,33 @@
 #include "../../nameref.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateSupox_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateSupox_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateSupoxFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateSupox_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateSupox_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateSupox_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateSupox_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class SupoxSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+bool
+SupoxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -74,9 +72,11 @@ GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+SupoxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (SUPOX_SHIP))
@@ -90,7 +90,7 @@ GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 					INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			InitCommunication (SUPOX_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -108,7 +108,7 @@ GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (SUPOX_RUINS_STRTAB));
-			if (GET_GAME_STATE (ULTRON_CONDITION))
+			if (campaign_.read(StoryCounter::UltronCondition))
 			{	// Already picked up the Ultron, skip the report
 				solarSys->SysInfo.PlanetInfo.DiscoveryString =
 						SetAbsStringTableIndex (
@@ -122,20 +122,21 @@ GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static bool
-GenerateSupox_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+SupoxSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		GenerateDefault_landerReportCycle (solarSys);
 
 		// The artifact can be picked up from any ruin
-		if (!GET_GAME_STATE (ULTRON_CONDITION))
+		if (!campaign_.read(StoryCounter::UltronCondition))
 		{	// Just picked up the Ultron from a ruin
 			SetLanderTakeoff ();
 
-			SET_GAME_STATE (ULTRON_CONDITION, 1);
+			campaign_.set(StoryCounter::UltronCondition, 1);
 		}
 
 		return false; // do not remove the node
@@ -145,10 +146,11 @@ GenerateSupox_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
-GenerateSupox_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+SupoxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
@@ -157,3 +159,8 @@ GenerateSupox_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
+
+std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<SupoxSystemBehavior>(campaign);
+}
+} // namespace uqm

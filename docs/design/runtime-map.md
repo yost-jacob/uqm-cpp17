@@ -38,7 +38,7 @@ flowchart TD
     SH --> EL["C element engine<br/>projectile callbacks / collision / retirement"]:::legacy
     B --> EL
 
-    EX --> GEN["SystemBehavior dispatch<br/>native Chmmr; 27 legacy special systems"]:::mixed
+    EX --> GEN["SystemBehavior dispatch<br/>28 native special-system behaviors"]:::mixed
     EX --> WA["world_c.cpp / discovery_state_c.cpp<br/>descriptor, handle and progress translation"]:::adapter
     GEN --> WA
     GEN --> SB["SolarSystem-owned behavior<br/>borrowed CampaignState reference"]:::native
@@ -128,7 +128,7 @@ transfer contracts; it is not redundant simply because its implementation is C++
 | Area | Current boundary | What deeper encapsulation would involve |
 | --- | --- | --- |
 | Mode selection | Native dispatcher; mixed mode bodies | Move activity/transition decisions away from global flags and into explicit results. |
-| Solar-system generation | Scoped native system/behavior; Chmmr overrides; 27 legacy special systems | Migrate remaining handlers through the borrowed campaign reference, then retire their tables and C bridge as callers migrate. |
+| Solar-system generation | Scoped native ownership; all special-system behavior classes borrow campaign state | Migrate the C exploration callers and remaining global runtime/queue access, then retire the single hook bridge. |
 | Navigation | Legacy HyperSpace and interplanetary loops | Own navigation runtime state behind a native interface while preserving transitions. |
 | Encounters and communication | Legacy nested loops and story-state access | Separate encounter decisions from UI/execution and make exits explicit. |
 | Combat | Native ships and callers over a legacy element engine | Encapsulate battle/element lifetime, collisions and projectile behaviors; preserve retirement and reincarnation ordering. |
@@ -140,12 +140,15 @@ is an executable test prototype, **not** the production combat implementation
 shown above. Likewise, native EnergyBehavior covers selected energy-site rules;
 it is separate from system-level orbital/story dispatch. See the
 [system behavior migration](solar-system/system-behavior.md) for the live default
-and Chmmr migration, scoped owner and remaining legacy adapters.
+and all-special-system migration, scoped owner and remaining C engine boundary.
 
 ## Source anchors
 
 - [Dispatcher](../../sc2/src/uqm/game_mode.cpp), [mode bodies and campaign lifecycle](../../sc2/src/uqm/gameplay_modes.cpp), [outer campaign caller](../../sc2/src/uqm/starcon.c).
 - [State ownership](../../sc2/src/uqm/game_state.hpp), [payload adapter](../../sc2/src/uqm/game_state.cpp), [world runtime](../../sc2/src/uqm/world.hpp).
-- [World adapter](../../sc2/src/uqm/world_c.cpp), [generator selection](../../sc2/src/uqm/gendef.c), [menu adapter](../../sc2/src/uqm/game_menu.cpp).
+- [World adapter](../../sc2/src/uqm/world_c.cpp), [behavior selection](../../sc2/src/uqm/system_behavior_factory.cpp), [menu adapter](../../sc2/src/uqm/game_menu.cpp).
 - [Ship execution](../../sc2/src/uqm/ship.cpp), [cyborg prediction](../../sc2/src/uqm/cyborg.cpp), [native ship](../../sc2/src/uqm/ship_behavior.hpp), [asset boundary](../../sc2/src/uqm/loadship.cpp).
 - [Star catalogue adapter](../../sc2/src/uqm/star_map_c.cpp), [ship tuning loader](../../sc2/src/uqm/ship_tuning_c.cpp).
+
+The session also supports [synchronous nested modes](nested-modes.md). Existing
+legacy orbital encounters/conversations do not yet use that API.

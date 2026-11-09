@@ -56,7 +56,6 @@ bool GenerateDefault_landerReport (SOLARSYS_STATE *);
 bool GenerateDefault_landerReportCycle (SOLARSYS_STATE *);
 
 
-extern const GenerateFunctions generateDefaultFunctions;
 
 #if defined(__cplusplus)
 }

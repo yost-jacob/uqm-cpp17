@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../scan.h"
@@ -31,39 +33,35 @@
 #include "../../setup.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateMycon_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static COUNT GenerateMycon_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateMyconFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateMycon_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateMycon_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateMycon_generateEnergy,
-	/* .generateLife     = */ GenerateMycon_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateMycon_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class MyconSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+bool
+MyconSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -83,9 +81,11 @@ GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
         if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
@@ -99,7 +99,7 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				&& StartSphereTracking (MYCON_SHIP))
 		{
 			if (CurStarDescPtr->Index == MYCON_DEFINED
-					|| !GET_GAME_STATE (SUN_DEVICE_UNGUARDED))
+					|| !campaign_.read(StoryFlag::SunDeviceUnguarded))
 			{
 				NotifyOthers (MYCON_SHIP, IPNL_ALL_CLEAR);
 				PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
@@ -107,7 +107,7 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
 
 				if (CurStarDescPtr->Index == MYCON_DEFINED
-						|| !GET_GAME_STATE (MYCON_FELL_FOR_AMBUSH))
+						|| !campaign_.read(StoryFlag::MyconFellForAmbush))
 				{
 					CloneShipFragment (MYCON_SHIP,
 							&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
@@ -124,11 +124,11 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 				if (CurStarDescPtr->Index == MYCON_DEFINED)
 				{
-					SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+					campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 				}
 				else
 				{
-					SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
+					campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 				}
 				InitCommunication (MYCON_CONVERSATION);
 
@@ -136,7 +136,7 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 					return true;
 
 				{
-					BOOLEAN MyconSurvivors;
+					bool MyconSurvivors;
 
 					MyconSurvivors =
 							GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
@@ -148,7 +148,7 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 					if (MyconSurvivors)
 						return true;
 
-					SET_GAME_STATE (SUN_DEVICE_UNGUARDED, 1);
+					campaign_.set(StoryFlag::SunDeviceUnguarded, (1) != 0);
 					RepairSISBorder ();
 				}
 			}
@@ -157,7 +157,7 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		switch (CurStarDescPtr->Index)
 		{
 			case SUN_DEVICE_DEFINED:
-				if (!GET_GAME_STATE (SUN_DEVICE))
+				if (!campaign_.read(StoryFlag::SunDevice))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
@@ -171,8 +171,8 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			case EGG_CASE0_DEFINED:
 			case EGG_CASE1_DEFINED:
 			case EGG_CASE2_DEFINED:
-				if (GET_GAME_STATE (KNOW_ABOUT_SHATTERED) == 0)
-					SET_GAME_STATE (KNOW_ABOUT_SHATTERED, 1);
+				if (campaign_.read(StoryCounter::KnowAboutShattered) == 0)
+					campaign_.set(StoryCounter::KnowAboutShattered, 1);
 
 				if (!isNodeRetrieved (&solarSys->SysInfo.PlanetInfo,
 						ENERGY_SCAN, 0))
@@ -193,16 +193,17 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateMycon_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+MyconSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (SUN_DEVICE))
+		if (campaign_.read(StoryFlag::SunDevice))
 		{	// already picked up
 			return 0;
 		}
@@ -230,26 +231,27 @@ GenerateMycon_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!GET_GAME_STATE (SUN_DEVICE) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::SunDevice) && whichNode == 0);
 
         ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 0, -1, whichNode,
-                isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode));
+                isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode) ? TRUE : FALSE);
         if (!result.accepted)
             return false;
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (SUN_DEVICE, 1);
-		SET_GAME_STATE (SUN_DEVICE_ON_SHIP, 1);
-		SET_GAME_STATE (MYCON_VISITS, 0);
+		campaign_.set(StoryFlag::SunDevice, (1) != 0);
+		campaign_.set(StoryFlag::SunDeviceOnShip, (1) != 0);
+		campaign_.set(StoryCounter::MyconVisits, 0);
 
         return result.removeNode; // Physical retrieval is committed by the lander.
 	}
@@ -262,7 +264,7 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		assert (whichNode == 0);
 
         ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 0, -1, whichNode,
-                isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode));
+                isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode) ? TRUE : FALSE);
         if (!result.accepted)
             return false;
 
@@ -272,13 +274,13 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		switch (CurStarDescPtr->Index)
 		{
 			case EGG_CASE0_DEFINED:
-				SET_GAME_STATE (EGG_CASE0_ON_SHIP, 1);
+				campaign_.set(StoryFlag::EggCase0OnShip, (1) != 0);
 				break;
 			case EGG_CASE1_DEFINED:
-				SET_GAME_STATE (EGG_CASE1_ON_SHIP, 1);
+				campaign_.set(StoryFlag::EggCase1OnShip, (1) != 0);
 				break;
 			case EGG_CASE2_DEFINED:
-				SET_GAME_STATE (EGG_CASE2_ON_SHIP, 1);
+				campaign_.set(StoryFlag::EggCase2OnShip, (1) != 0);
 				break;
 		}
 
@@ -289,10 +291,11 @@ GenerateMycon_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
-GenerateMycon_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+MyconSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	// Gee, I wonder why there isn't any life in Mycon systems...
 	(void) whichNode;
 	(void) solarSys;
@@ -301,3 +304,8 @@ GenerateMycon_generateLife (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
+
+std::unique_ptr<SystemBehavior> createMyconSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<MyconSystemBehavior>(campaign);
+}
+} // namespace uqm

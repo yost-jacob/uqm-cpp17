@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../lifeform.h"
 #include "../planets.h"
@@ -31,41 +33,37 @@
 #include "../../sounds.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateVux_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static COUNT GenerateVux_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateVux_pickupEnergy (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
-static bool GenerateVux_pickupLife (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
-
-
-const GenerateFunctions generateVuxFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateVux_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateVux_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateVux_generateEnergy,
-	/* .generateLife     = */ GenerateVux_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateVux_pickupEnergy,
-	/* .pickupLife       = */ GenerateVux_pickupLife,
+namespace uqm {
+namespace {
+class VuxSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
+    bool pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+VuxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -118,13 +116,15 @@ GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if ((matchWorld (solarSys, world, 0, MATCH_PLANET)
 			&& (CurStarDescPtr->Index == VUX_DEFINED
 			|| (CurStarDescPtr->Index == MAIDENS_DEFINED
-			&& !GET_GAME_STATE (ZEX_IS_DEAD))))
+			&& !campaign_.read(StoryFlag::ZexIsDead))))
 			&& StartSphereTracking (VUX_SHIP))
 	{
 		NotifyOthers (VUX_SHIP, IPNL_ALL_CLEAR);
@@ -136,11 +136,11 @@ GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 		if (CurStarDescPtr->Index == VUX_DEFINED)
 		{
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 		}
 		else
 		{
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
+			campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 		}
 
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
@@ -155,7 +155,7 @@ GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
 
 			if (CurStarDescPtr->Index == VUX_DEFINED
-					|| !GET_GAME_STATE (ZEX_IS_DEAD))
+					|| !campaign_.read(StoryFlag::ZexIsDead))
 				return true;
 
 			RepairSISBorder ();
@@ -166,7 +166,7 @@ GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	{
 		if (CurStarDescPtr->Index == MAIDENS_DEFINED)
 		{
-			if (!GET_GAME_STATE (SHOFIXTI_MAIDENS))
+			if (!campaign_.read(StoryFlag::ShofixtiMaidens))
 			{
 				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 				solarSys->PlanetSideFrame[1] = CaptureDrawable (
@@ -178,7 +178,7 @@ GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		}
 		else if (CurStarDescPtr->Index == VUX_BEAST_DEFINED)
 		{
-			if (!GET_GAME_STATE (VUX_BEAST))
+			if (!campaign_.read(StoryFlag::VuxBeast))
 			{
 				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 				solarSys->PlanetSideFrame[1] = 0;
@@ -208,16 +208,17 @@ GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateVux_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+VuxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (SHOFIXTI_MAIDENS))
+		if (campaign_.read(StoryFlag::ShofixtiMaidens))
 		{	// already picked up
 			return 0;
 		}
@@ -227,7 +228,7 @@ GenerateVux_generateEnergy (const SOLARSYS_STATE *solarSys,
 			info->loc_pt.x = MAP_WIDTH / 3;
 			info->loc_pt.y = MAP_HEIGHT * 5 / 8;
 		}
-		
+
 		return 1; // only matters when count is requested
 	}
 
@@ -240,21 +241,22 @@ GenerateVux_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateVux_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+VuxSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!GET_GAME_STATE (SHOFIXTI_MAIDENS) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::ShofixtiMaidens) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (SHOFIXTI_MAIDENS, 1);
-		SET_GAME_STATE (MAIDENS_ON_SHIP, 1);
-		
+		campaign_.set(StoryFlag::ShofixtiMaidens, (1) != 0);
+		campaign_.set(StoryFlag::MaidensOnShip, (1) != 0);
+
 		return true; // picked up
 	}
 
@@ -270,10 +272,11 @@ GenerateVux_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
-GenerateVux_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+VuxSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
@@ -304,22 +307,23 @@ GenerateVux_generateLife (const SOLARSYS_STATE *solarSys,
 	return GenerateDefault_generateLife (solarSys, world, whichNode, info);
 }
 
-static bool
-GenerateVux_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+VuxSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == VUX_BEAST_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (whichNode == 0)
 		{	// Picked up Zex' Beauty
-			assert (!GET_GAME_STATE (VUX_BEAST));
+			assert (!campaign_.read(StoryFlag::VuxBeast));
 
 			GenerateDefault_landerReport (solarSys);
 			SetLanderTakeoff ();
 
-			SET_GAME_STATE (VUX_BEAST, 1);
-			SET_GAME_STATE (VUX_BEAST_ON_SHIP, 1);
+			campaign_.set(StoryFlag::VuxBeast, (1) != 0);
+			campaign_.set(StoryFlag::VuxBeastOnShip, (1) != 0);
 		}
 
 		return true; // picked up
@@ -327,3 +331,8 @@ GenerateVux_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 
 	return GenerateDefault_pickupLife (solarSys, world, whichNode);
 }
+
+std::unique_ptr<SystemBehavior> createVuxSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<VuxSystemBehavior>(campaign);
+}
+} // namespace uqm

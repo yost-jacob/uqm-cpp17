@@ -17,46 +17,45 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../../build.h"
 #include "../../globdata.h"
 #include "../../grpinfo.h"
 #include "../../state.h"
-
-
-static bool GenerateZoqFotPikScout_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateZoqFotPikScout_reinitNpcs (SOLARSYS_STATE *solarSys);
-
-
-const GenerateFunctions generateZoqFotPikScoutFunctions = {
-	/* .initNpcs         = */ GenerateZoqFotPikScout_initNpcs,
-	/* .reinitNpcs       = */ GenerateZoqFotPikScout_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateDefault_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateDefault_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class ZoqFotPikScoutSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool initNpcs(SOLARSYS_STATE &system) override;
+    bool reinitNpcs(SOLARSYS_STATE &system) override;
 };
+}
 
 
-static bool
-GenerateZoqFotPikScout_initNpcs (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+bool
+ZoqFotPikScoutSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
-	if (!GET_GAME_STATE (MET_ZOQFOT))
+    auto *solarSys = &system;
+	if (!campaign_.read(StoryFlag::MetZoqfot))
 	{
-		GLOBAL (BattleGroupRef) = GET_GAME_STATE_32 (ZOQFOT_GRPOFFS0);
+		GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::ZoqfotGrpoffs0);
 		if (GLOBAL (BattleGroupRef) == 0)
 		{
 			CloneShipFragment (ZOQFOTPIK_SHIP,
 					&GLOBAL (npc_built_ship_q), 0);
 			GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			SET_GAME_STATE_32 (ZOQFOT_GRPOFFS0, GLOBAL (BattleGroupRef));
+			campaign_.set(StoryCounter::ZoqfotGrpoffs0, GLOBAL (BattleGroupRef));
 		}
 	}
 
@@ -65,9 +64,10 @@ GenerateZoqFotPikScout_initNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateZoqFotPikScout_reinitNpcs (SOLARSYS_STATE *solarSys)
+bool
+ZoqFotPikScoutSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	HIPGROUP hGroup;
 	IP_GROUP *GroupPtr;
 
@@ -94,3 +94,8 @@ GenerateZoqFotPikScout_reinitNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
+
+std::unique_ptr<SystemBehavior> createZoqFotPikScoutSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<ZoqFotPikScoutSystemBehavior>(campaign);
+}
+} // namespace uqm

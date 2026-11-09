@@ -17,47 +17,50 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../../build.h"
 #include "../../globdata.h"
 #include "../../grpinfo.h"
 #include "../../state.h"
 #include "../planets.h"
-
-
-static bool GenerateShofixti_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateShofixti_reinitNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateShofixti_uninitNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys);
-
-static void check_old_shofixti (void);
-
-
-const GenerateFunctions generateShofixtiFunctions = {
-	/* .initNpcs         = */ GenerateShofixti_initNpcs,
-	/* .reinitNpcs       = */ GenerateShofixti_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateShofixti_uninitNpcs,
-	/* .generatePlanets  = */ GenerateShofixti_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateDefault_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class ShofixtiSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool initNpcs(SOLARSYS_STATE &system) override;
+    bool reinitNpcs(SOLARSYS_STATE &system) override;
+    bool uninitNpcs(SOLARSYS_STATE &system) override;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+private:
+    void check_old_shofixti(void);
 };
+}
 
 
-static bool
-GenerateShofixti_initNpcs (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+ShofixtiSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
-	if (!GET_GAME_STATE (SHOFIXTI_RECRUITED)
-			&& (!GET_GAME_STATE (SHOFIXTI_KIA)
-			|| (!GET_GAME_STATE (SHOFIXTI_BRO_KIA)
-			&& GET_GAME_STATE (MAIDENS_ON_SHIP))))
+    auto *solarSys = &system;
+	if (!campaign_.read(StoryFlag::ShofixtiRecruited)
+			&& (!campaign_.read(StoryFlag::ShofixtiKia)
+			|| (!campaign_.read(StoryFlag::ShofixtiBroKia)
+			&& campaign_.read(StoryFlag::MaidensOnShip))))
 	{
-		GLOBAL (BattleGroupRef) = GET_GAME_STATE_32 (SHOFIXTI_GRPOFFS0);
+		GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::ShofixtiGrpoffs0);
 		if (GLOBAL (BattleGroupRef) == 0
 				|| !GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
 		{
@@ -75,14 +78,14 @@ GenerateShofixti_initNpcs (SOLARSYS_STATE *solarSys)
 				/* Name Tanaka or Katana (+1) */
 				FragPtr->captains_name_index =
 						NAME_OFFSET + NUM_CAPTAINS_NAMES +
-						(GET_GAME_STATE (SHOFIXTI_KIA) & 1);
+						(campaign_.read(StoryFlag::ShofixtiKia) & 1);
 				UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
 			}
 
 			GLOBAL (BattleGroupRef) = PutGroupInfo (
 					GLOBAL (BattleGroupRef), 1);
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			SET_GAME_STATE_32 (SHOFIXTI_GRPOFFS0, GLOBAL (BattleGroupRef));
+			campaign_.set(StoryCounter::ShofixtiGrpoffs0, GLOBAL (BattleGroupRef));
 		}
 	}
 
@@ -94,9 +97,10 @@ GenerateShofixti_initNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateShofixti_reinitNpcs (SOLARSYS_STATE *solarSys)
+bool
+ShofixtiSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	GenerateDefault_reinitNpcs (solarSys);
 	check_old_shofixti ();
 
@@ -104,31 +108,33 @@ GenerateShofixti_reinitNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateShofixti_uninitNpcs (SOLARSYS_STATE *solarSys)
+bool
+ShofixtiSystemBehavior::uninitNpcs(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	if (GLOBAL (BattleGroupRef)
-			&& !GET_GAME_STATE (SHOFIXTI_RECRUITED)
+			&& !campaign_.read(StoryFlag::ShofixtiRecruited)
 			&& GetHeadLink (&GLOBAL (ip_group_q)) == 0)
 	{
-		if (!GET_GAME_STATE (SHOFIXTI_KIA))
+		if (!campaign_.read(StoryFlag::ShofixtiKia))
 		{
-			SET_GAME_STATE (SHOFIXTI_KIA, 1);
-			SET_GAME_STATE (SHOFIXTI_VISITS, 0);
+			campaign_.set(StoryFlag::ShofixtiKia, (1) != 0);
+			campaign_.set(StoryCounter::ShofixtiVisits, 0);
 		}
-		else if (GET_GAME_STATE (MAIDENS_ON_SHIP))
+		else if (campaign_.read(StoryFlag::MaidensOnShip))
 		{
-			SET_GAME_STATE (SHOFIXTI_BRO_KIA, 1);
+			campaign_.set(StoryFlag::ShofixtiBroKia, (1) != 0);
 		}
 	}
-	
+
 	GenerateDefault_uninitNpcs (solarSys);
 	return true;
 }
 
-static bool
-GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
+bool
+ShofixtiSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT i;
 
 #define NUM_PLANETS 6
@@ -150,8 +156,8 @@ GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 
-static void
-check_old_shofixti (void)
+void
+ShofixtiSystemBehavior::check_old_shofixti(void)
 {
 	HIPGROUP hGroup;
 	IP_GROUP *GroupPtr;
@@ -168,7 +174,7 @@ check_old_shofixti (void)
 	// during a collision with the flagship.
 	if (GroupPtr->race_id == SHOFIXTI_SHIP
 			&& (GroupPtr->task & REFORM_GROUP)
-			&& GET_GAME_STATE (SHOFIXTI_RECRUITED))
+			&& campaign_.read(StoryFlag::ShofixtiRecruited))
 	{
 		GroupPtr->task = FLEE | IGNORE_FLAGSHIP | REFORM_GROUP;
 		GroupPtr->dest_loc = 0;
@@ -176,3 +182,8 @@ check_old_shofixti (void)
 	UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
 }
 
+
+std::unique_ptr<SystemBehavior> createShofixtiSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<ShofixtiSystemBehavior>(campaign);
+}
+} // namespace uqm

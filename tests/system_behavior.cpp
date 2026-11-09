@@ -1,4 +1,5 @@
 #include "uqm/system_behavior.hpp"
+#include "uqm/system_builders.hpp"
 #include "uqm/system_runtime.hpp"
 #include "uqm/gendef.h"
 #include "uqm/globdata.h"
@@ -13,7 +14,7 @@
 #include <typeinfo>
 namespace {
 std::array<unsigned, 13> defaultCalls{};
-unsigned legacyCalls = 0, communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
+unsigned communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
 CONVERSATION lastConversation{};
 bool sphereTracked = false;
 struct EncounterQueues {
@@ -35,10 +36,9 @@ struct EncounterQueues {
 };
 void resetCalls() {
     defaultCalls.fill(0);
-    legacyCalls = communications = groupsSaved = groupsLoaded = clones = 0;
+    communications = groupsSaved = groupsLoaded = clones = 0;
     sphereTracked = false;
 }
-bool legacyPlanets(SOLARSYS_STATE *) { ++legacyCalls; return false; }
 }
 // Dependencies are fake engine services. Tests below use the real behavior
 // factory, Chmmr hooks, campaign storage, world ownership and C callback bridge.
@@ -129,29 +129,6 @@ bool GenerateDefault_pickupLife(SOLARSYS_STATE *system, PLANET_DESC *world, COUN
     (void)node;
     return true;
 }
-const GenerateFunctions generateDefaultFunctions = {
-    GenerateDefault_initNpcs,
-    GenerateDefault_reinitNpcs,
-    GenerateDefault_uninitNpcs,
-    GenerateDefault_generatePlanets,
-    GenerateDefault_generateMoons,
-    GenerateDefault_generateName,
-    GenerateDefault_generateOrbital,
-    GenerateDefault_generateMinerals,
-    GenerateDefault_generateEnergy,
-    GenerateDefault_generateLife,
-    GenerateDefault_pickupMinerals,
-    GenerateDefault_pickupEnergy,
-    GenerateDefault_pickupLife,
-};
-const GenerateFunctions *getGenerateFunctions(BYTE special) {
-    static const auto legacy = [] {
-        auto functions = generateDefaultFunctions;
-        functions.generatePlanets = legacyPlanets;
-        return functions;
-    }();
-    return special == SOL_DEFINED ? &legacy : &generateDefaultFunctions;
-}
 bool matchWorld(const SOLARSYS_STATE *system, const PLANET_DESC *world, BYTE planet, BYTE moon) {
     if (moon == MATCH_PLANET) return world == &system->PlanetDesc[planet];
     return world == &system->MoonDesc[moon] && world->pPrevDesc == &system->PlanetDesc[planet];
@@ -166,20 +143,123 @@ void FreeLanderFont(PLANET_INFO *) {}
 void DoDiscoveryReport(SOUND) {}
 }
 
-BOOST_AUTO_TEST_CASE(system_factory_selects_native_chmmr_default_and_legacy_rules)
+namespace { std::string selectedBuilder; }
+namespace uqm {
+std::unique_ptr<SystemBehavior> createAndrosynthSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Androsynth";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createBurvixeseSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Burvixese";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createColonySystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Colony";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Druuge";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createIlwrathSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Ilwrath";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createMelnormeSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Melnorme";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createMyconSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Mycon";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createOrzSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Orz";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createTalkingPetSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "TalkingPet";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createPkunkSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Pkunk";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createRainbowWorldSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "RainbowWorld";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createSaMatraSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "SaMatra";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createShofixtiSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Shofixti";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Slylandro";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createSolSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Sol";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createSpathiSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Spathi";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Supox";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Thraddash";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createTrapSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Trap";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createUtwigSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Utwig";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createVaultSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Vault";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createVuxSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Vux";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createWreckSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Wreck";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createYehatSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "Yehat";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createZoqFotPikScoutSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "ZoqFotPikScout";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+std::unique_ptr<SystemBehavior> createZoqFotPikSystemBehavior(CampaignState &campaign) {
+    selectedBuilder = "ZoqFotPik";
+    return std::make_unique<SystemBehavior>(campaign);
+}
+}
+BOOST_AUTO_TEST_CASE(system_factory_selects_native_chmmr_and_default_rules)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
     auto &campaign = state.player(uqm::SinglePlayerId).campaign();
     auto ordinary = uqm::createSystemBehavior(0, campaign);
     auto special = uqm::createSystemBehavior(CHMMR_DEFINED, campaign);
-    auto legacy = uqm::createSystemBehavior(SOL_DEFINED, campaign);
     BOOST_TEST((typeid(*ordinary) == typeid(uqm::SystemBehavior)));
     BOOST_TEST((typeid(*special) != typeid(*ordinary)));
     SOLARSYS_STATE system{};
     resetCalls();
-    BOOST_TEST(!legacy->generatePlanets(system));
-    BOOST_TEST(legacyCalls == 1u);
-    BOOST_TEST(defaultCalls[3] == 0u);
     BOOST_TEST(special->generatePlanets(system));
     BOOST_TEST(defaultCalls[3] == 1u);
     BOOST_TEST(system.PlanetDesc[1].NumPlanets == 1u);
@@ -307,4 +387,76 @@ extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
     if (system.PlanetDesc[1].data_index & PLANET_SHIELDED) return 0;
     if (system.genFuncs->generateMinerals(&system, &system.PlanetDesc[0], 7, nullptr) != 7) return 0;
     return 1;
+}
+
+BOOST_AUTO_TEST_CASE(system_factory_preserves_catalogue_special_system_mappings)
+{
+    uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
+    auto &campaign = state.player(uqm::SinglePlayerId).campaign();
+    struct Mapping { BYTE id; const char *builder; };
+    const Mapping expected[] = {
+        {SOL_DEFINED, "Sol"},
+        {SHOFIXTI_DEFINED, "Shofixti"},
+        {START_COLONY_DEFINED, "Colony"},
+        {SPATHI_DEFINED, "Spathi"},
+        {MELNORME0_DEFINED, "Melnorme"},
+        {MELNORME1_DEFINED, "Melnorme"},
+        {MELNORME2_DEFINED, "Melnorme"},
+        {MELNORME3_DEFINED, "Melnorme"},
+        {MELNORME4_DEFINED, "Melnorme"},
+        {MELNORME5_DEFINED, "Melnorme"},
+        {MELNORME6_DEFINED, "Melnorme"},
+        {MELNORME7_DEFINED, "Melnorme"},
+        {MELNORME8_DEFINED, "Melnorme"},
+        {TALKING_PET_DEFINED, "TalkingPet"},
+        {MYCON_TRAP_DEFINED, "Trap"},
+        {BURVIXESE_DEFINED, "Burvixese"},
+        {SLYLANDRO_DEFINED, "Slylandro"},
+        {DRUUGE_DEFINED, "Druuge"},
+        {BOMB_DEFINED, "Utwig"},
+        {UTWIG_DEFINED, "Utwig"},
+        {AQUA_HELIX_DEFINED, "Thraddash"},
+        {THRADD_DEFINED, "Thraddash"},
+        {SUN_DEVICE_DEFINED, "Mycon"},
+        {MYCON_DEFINED, "Mycon"},
+        {EGG_CASE0_DEFINED, "Mycon"},
+        {EGG_CASE1_DEFINED, "Mycon"},
+        {EGG_CASE2_DEFINED, "Mycon"},
+        {ANDROSYNTH_DEFINED, "Androsynth"},
+        {TAALO_PROTECTOR_DEFINED, "Orz"},
+        {ORZ_DEFINED, "Orz"},
+        {SHIP_VAULT_DEFINED, "Vault"},
+        {URQUAN_WRECK_DEFINED, "Wreck"},
+        {MAIDENS_DEFINED, "Vux"},
+        {VUX_BEAST_DEFINED, "Vux"},
+        {VUX_DEFINED, "Vux"},
+        {SAMATRA_DEFINED, "SaMatra"},
+        {ZOQFOT_DEFINED, "ZoqFotPik"},
+        {ZOQ_SCOUT_DEFINED, "ZoqFotPikScout"},
+        {YEHAT_DEFINED, "Yehat"},
+        {PKUNK_DEFINED, "Pkunk"},
+        {SUPOX_DEFINED, "Supox"},
+        {RAINBOW_DEFINED, "RainbowWorld"},
+        {ILWRATH_DEFINED, "Ilwrath"},
+    };
+    for (const auto &mapping : expected) {
+        selectedBuilder.clear();
+        auto behavior = uqm::createSystemBehavior(mapping.id, campaign);
+        BOOST_REQUIRE(behavior);
+        BOOST_TEST(selectedBuilder == mapping.builder);
+    }
+}
+BOOST_AUTO_TEST_CASE(syreen_native_overrides_keep_shielded_planet_and_starbase_moon)
+{
+    uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
+    auto behavior = uqm::createSystemBehavior(SYREEN_DEFINED, state.player(uqm::SinglePlayerId).campaign());
+    SOLARSYS_STATE system{};
+    resetCalls();
+    behavior->generatePlanets(system);
+    BOOST_TEST((system.PlanetDesc[0].data_index & PLANET_SHIELDED) != 0);
+    BOOST_TEST(system.PlanetDesc[0].NumPlanets == 1u);
+    behavior->generateMoons(system, system.PlanetDesc[0]);
+    BOOST_TEST(system.MoonDesc[0].data_index == HIERARCHY_STARBASE);
+    BOOST_TEST(defaultCalls[3] == 1u);
+    BOOST_TEST(defaultCalls[4] == 1u);
 }

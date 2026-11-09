@@ -1,4 +1,4 @@
-# System behavior: first production migration
+# Native system behaviors
 
 The active exploration runtime now owns one `SolarSystem`, which owns a
 `unique_ptr<SystemBehavior>`. The behavior borrows `CampaignState&`; physical
@@ -17,8 +17,7 @@ flowchart TD
     C["Legacy exploration loop"] --> Bridge["One C hook table"]
     Bridge --> Behavior
     Behavior --> Default["Default helpers in C++"]
-    Behavior --> Chmmr["ChmmrSystemBehavior"]
-    Behavior --> Legacy["LegacySystemBehavior: 27 remaining special systems"]
+    Behavior --> Special["28 concrete special-system behaviors"]
 ```
 
 ## Lifetime and generation order
@@ -60,10 +59,21 @@ Chmmr liberation, Sun Device, Ilwrath deception, bomb progress, and encounter
 context. Conditions are read when hooks execute, not cached at construction.
 Its old function table is removed.
 
-The factory selects Chmmr by the catalogue's special-system ID. Ordinary systems
-use the default class. The remaining 27 special-system implementations retain
-their tables through `LegacySystemBehavior`; their global story accesses have
-**not** yet migrated. There is no global current-behavior pointer or new registry.
+The native factory covers all 45 catalogue special-system IDs, including aliases
+that share rules. Ordinary systems use the base class; all 28 special-system
+implementations are native derived classes. The remaining 27 generator sources
+were converted to C++ with the same hook selections and procedural algorithms.
+Their private helpers are members where they need campaign access.
+
+All direct story macro accesses in these files are replaced with the borrowed
+campaign reference. The generic interface gains typed identifiers and metadata,
+not a method per story field. Four-byte NPC group offsets retain the original
+32-bit packed encoding; Melnorme's dynamic offset selector returns an optional
+typed counter instead of an untyped bit offset.
+
+The old per-system tables, `LegacySystemBehavior`, the default function table,
+and `gendef.c` selector are removed. Default helper functions keep C-compatible
+signatures for now, but only native behavior methods call them.
 
 The single C bridge table translates existing `SOLARSYS_STATE*` calls into native
 virtual calls using the context already on that descriptor. Native classes never
@@ -73,7 +83,7 @@ recovery for C allocation/resource failures.
 
 ## What remains procedural
 
-Chmmr orbital actions still call existing communication, resource, activity-flag,
+System orbital actions still call existing communication, resource, activity-flag,
 and encounter-queue routines. Planet calculations, rendering, landers, and NPC
 queues remain in their existing engine. This migration makes the campaign
 reference and behavior lifetime explicit; it does not make exploration concurrent,
@@ -85,17 +95,19 @@ has not grown a method per story field.
 
 ## Verification
 
-Boost.Test uses the real factory, Chmmr overrides, campaign storage, runtime
+Boost.Test uses the real factory, Chmmr/Syreen overrides, campaign storage, runtime
 ownership and C bridge, with fake default-generation and encounter/UI services.
 It checks separate campaigns, hook-time flag changes, shielding, orbital fallback,
-Chmmr/Ilwrath dispatch, encounter context, default-hook forwarding, legacy-table
-forwarding, stable behavior identity and atomic layout validation. The existing
+Chmmr/Ilwrath dispatch, encounter context, default-hook forwarding, catalogue ID mapping, packed-field and 32-bit compatibility, stable behavior identity and atomic layout validation. The existing
 C discovery/save integration fixture also uses the new construction order.
 These dependency fakes do not prove terrain or dialogue rendering correctness.
 
 Debug/Release CMake/Ninja, legacy build and ASan/UBSan checks are recorded in the
 PR. A focused new-game GUI smoke check entered Sol through the legacy adapter;
-Chmmr story branches are covered by the dependency-isolated regression tests.
+Chmmr/Syreen branches are covered by dependency-isolated regression tests. Other
+system builders are faked in factory tests; the full game build links all actual
+implementations. A source audit verifies all 108 migrated override selections
+against the original 27 function tables.
 
 ## Sources
 
@@ -105,3 +117,6 @@ Chmmr story branches are covered by the dependency-isolated regression tests.
 - [C hook bridge](../../../sc2/src/uqm/world_c.cpp)
 - [Chmmr overrides](../../../sc2/src/uqm/planets/generate/genchmmr.cpp)
 - [Shared default helpers](../../../sc2/src/uqm/planets/generate/gendefault.cpp)
+
+The [nested mode API](../nested-modes.md) is available for future encounter
+encapsulation; this migration preserves current synchronous encounter calls.

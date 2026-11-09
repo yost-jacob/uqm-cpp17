@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../lifeform.h"
 #include "../planets.h"
@@ -28,55 +30,56 @@
 #include "../../nameref.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateSol_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateSol_reinitNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSol_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateSol_generateName (const SOLARSYS_STATE *,
-		const PLANET_DESC *world);
-static bool GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateSol_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static COUNT GenerateSol_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-static int init_probe (void);
-static void check_probe (void);
-
-
-const GenerateFunctions generateSolFunctions = {
-	/* .initNpcs         = */ GenerateSol_initNpcs,
-	/* .reinitNpcs       = */ GenerateSol_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateSol_generatePlanets,
-	/* .generateMoons    = */ GenerateSol_generateMoons,
-	/* .generateName     = */ GenerateSol_generateName,
-	/* .generateOrbital  = */ GenerateSol_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateSol_generateEnergy,
-	/* .generateLife     = */ GenerateSol_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateSol_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class SolSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool initNpcs(SOLARSYS_STATE &system) override;
+    bool reinitNpcs(SOLARSYS_STATE &system) override;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    bool generateName(const SOLARSYS_STATE &system, const PLANET_DESC &body) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
+private:
+    int init_probe(void);
+    void check_probe(void);
 };
+}
 
 
-static bool
-GenerateSol_initNpcs (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+SolSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
-	GLOBAL (BattleGroupRef) = GET_GAME_STATE_32 (URQUAN_PROBE_GRPOFFS0);
+    auto *solarSys = &system;
+	GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::UrquanProbeGrpoffs0);
 	if (GLOBAL (BattleGroupRef) == 0)
 	{
 		CloneShipFragment (URQUAN_DRONE_SHIP, &GLOBAL (npc_built_ship_q), 0);
 		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		SET_GAME_STATE_32 (URQUAN_PROBE_GRPOFFS0, GLOBAL (BattleGroupRef));
+		campaign_.set(StoryCounter::UrquanProbeGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
 	if (!init_probe ())
@@ -85,10 +88,11 @@ GenerateSol_initNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSol_reinitNpcs (SOLARSYS_STATE *solarSys)
+bool
+SolSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 {
-	if (GET_GAME_STATE (CHMMR_BOMB_STATE) != 3)
+    auto *solarSys = &system;
+	if (campaign_.read(StoryCounter::BombProgress) != 3)
 	{
 		GenerateDefault_reinitNpcs (solarSys);
 		check_probe ();
@@ -102,9 +106,10 @@ GenerateSol_reinitNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
+bool
+SolSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT planetI;
 
 #define SOL_SEED 334241042L
@@ -181,9 +186,11 @@ GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSol_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+bool
+SolSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *planet = &body;
 	COUNT planetNr;
 	DWORD rand_val;
 
@@ -240,21 +247,24 @@ GenerateSol_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 	return true;
 }
 
-static bool
-GenerateSol_generateName (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world)
+bool
+SolSystemBehavior::generateName(const SOLARSYS_STATE &system, const PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	COUNT planetNr = planetIndex (solarSys, world);
 	utf8StringCopy (GLOBAL_SIS (PlanetName), sizeof (GLOBAL_SIS (PlanetName)),
 			GAME_STRING (PLANET_NUMBER_BASE + planetNr));
-	SET_GAME_STATE (BATTLE_PLANET, solarSys->PlanetDesc[planetNr].data_index);
+	campaign_.set(StoryCounter::BattlePlanet, solarSys->PlanetDesc[planetNr].data_index);
 
 	return true;
 }
 
-static bool
-GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	DWORD rand_val;
 	COUNT planetNr;
 
@@ -267,7 +277,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 
 		EncounterGroup = 0;
 		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (BYTE)~0);
+		campaign_.set(StoryCounter::EncounterContext, (BYTE)~0);
 		return true;
 	}
 
@@ -379,7 +389,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 						EARTH_RADIUS * 2999L / 100;
 				break;
 			case 8: /* PLUTO */
-				if (!GET_GAME_STATE (FOUND_PLUTO_SPATHI))
+				if (!campaign_.read(StoryCounter::FoundPlutoSpathi))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
@@ -426,7 +436,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
 						rand_val;
 
-				if (!GET_GAME_STATE (MOONBASE_DESTROYED))
+				if (!campaign_.read(StoryFlag::MoonbaseDestroyed))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
@@ -514,16 +524,17 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateSol_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+SolSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 8, MATCH_PLANET))
 	{
 		/* Pluto */
 		// This check is needed because the retrieval bit is not set for
 		// this node to keep it on the surface while the lander is taking off
-		if (GET_GAME_STATE (FOUND_PLUTO_SPATHI))
+		if (campaign_.read(StoryCounter::FoundPlutoSpathi))
 		{	// already picked up
 			return 0;
 		}
@@ -536,13 +547,13 @@ GenerateSol_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 		return 1; // only matters when count is requested
 	}
-	
+
 	if (matchWorld (solarSys, world, 2, 1))
 	{
 		/* Earth Moon */
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (MOONBASE_DESTROYED))
+		if (campaign_.read(StoryFlag::MoonbaseDestroyed))
 		{	// already picked up
 			return 0;
 		}
@@ -560,20 +571,21 @@ GenerateSol_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+SolSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 8, MATCH_PLANET))
 	{	// Pluto
-		assert (!GET_GAME_STATE (FOUND_PLUTO_SPATHI) && whichNode == 0);
-	
+		assert (!campaign_.read(StoryCounter::FoundPlutoSpathi) && whichNode == 0);
+
 		// Ran into Fwiffo on Pluto
 		#define FWIFFO_FRAGS  8
 		if (!KillLanderCrewSeq (FWIFFO_FRAGS, ONE_SECOND / 20))
 			return false; // lander probably died
 
-		SET_GAME_STATE (FOUND_PLUTO_SPATHI, 1);
+		campaign_.set(StoryCounter::FoundPlutoSpathi, 1);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
@@ -583,16 +595,16 @@ GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		// showing up on subsequent visits.
 		return false;
 	}
-	
+
 	if (matchWorld (solarSys, world, 2, 1))
 	{	// Earth Moon
-		assert (!GET_GAME_STATE (MOONBASE_DESTROYED) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::MoonbaseDestroyed) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (MOONBASE_DESTROYED, 1);
-		SET_GAME_STATE (MOONBASE_ON_SHIP, 1);
+		campaign_.set(StoryFlag::MoonbaseDestroyed, (1) != 0);
+		campaign_.set(StoryFlag::MoonbaseOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -601,10 +613,11 @@ GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
-GenerateSol_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+SolSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 2, 1))
 	{
 		/* Earth Moon */
@@ -616,12 +629,12 @@ GenerateSol_generateLife (const SOLARSYS_STATE *solarSys,
 }
 
 
-static int
-init_probe (void)
+int
+SolSystemBehavior::init_probe(void)
 {
 	HIPGROUP hGroup;
 
-	if (!GET_GAME_STATE (PROBE_MESSAGE_DELIVERED)
+	if (!campaign_.read(StoryFlag::ProbeMessageDelivered)
 			&& GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP)
 			&& (hGroup = GetHeadLink (&GLOBAL (ip_group_q))))
 	{
@@ -642,8 +655,8 @@ init_probe (void)
 		return 0;
 }
 
-static void
-check_probe (void)
+void
+SolSystemBehavior::check_probe(void)
 {
 	HIPGROUP hGroup;
 	IP_GROUP *GroupPtr;
@@ -654,7 +667,7 @@ check_probe (void)
 	hGroup = GetHeadLink (&GLOBAL (ip_group_q));
 	if (!hGroup)
 		return; // still nothing to check
-	
+
 	GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()
 	// during a collision with the flagship.
@@ -669,3 +682,8 @@ check_probe (void)
 	UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
 }
 
+
+std::unique_ptr<SystemBehavior> createSolSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<SolSystemBehavior>(campaign);
+}
+} // namespace uqm

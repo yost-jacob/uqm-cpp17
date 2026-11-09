@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../planets.h"
 #include "../../build.h"
 #include "../../comm.h"
@@ -28,39 +30,37 @@
 #include "../../setup.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateTalkingPet_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-static void ZapToUrquanEncounter (void);
-
-
-const GenerateFunctions generateTalkingPetFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateTalkingPet_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateTalkingPet_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateTalkingPet_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateTalkingPet_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class TalkingPetSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
+private:
+    void ZapToUrquanEncounter(void);
 };
+}
 
 
-static bool
-GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+TalkingPetSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -77,12 +77,14 @@ GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET)
-			&& (GET_GAME_STATE (UMGAH_ZOMBIE_BLOBBIES)
-			|| !GET_GAME_STATE (TALKING_PET)
+			&& (campaign_.read(StoryFlag::UmgahZombieBlobbies)
+			|| !campaign_.read(StoryFlag::TalkingPet)
 			|| StartSphereTracking (UMGAH_SHIP)))
 	{
 		NotifyOthers (UMGAH_SHIP, IPNL_ALL_CLEAR);
@@ -93,8 +95,8 @@ GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world
 		if (StartSphereTracking (UMGAH_SHIP))
 		{
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-			if (!GET_GAME_STATE (UMGAH_ZOMBIE_BLOBBIES))
+			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			if (!campaign_.read(StoryFlag::UmgahZombieBlobbies))
 			{
 				CloneShipFragment (UMGAH_SHIP,
 						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
@@ -115,15 +117,15 @@ GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world
 
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 		{
-			BOOLEAN UmgahSurvivors;
+			bool UmgahSurvivors;
 
 			UmgahSurvivors = GetHeadLink (
 					&GLOBAL (npc_built_ship_q)) != 0;
 			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
 
-			if (GET_GAME_STATE (PLAYER_HYPNOTIZED))
+			if (campaign_.read(StoryFlag::PlayerHypnotized))
 				ZapToUrquanEncounter ();
-			else if (GET_GAME_STATE (UMGAH_ZOMBIE_BLOBBIES)
+			else if (campaign_.read(StoryFlag::UmgahZombieBlobbies)
 					&& !UmgahSurvivors)
 			{
 				// Defeated the zombie fleet.
@@ -160,10 +162,11 @@ GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world
 	return true;
 }
 
-static COUNT
-GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+TalkingPetSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
@@ -172,10 +175,11 @@ GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateTalkingPet_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+TalkingPetSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report
@@ -187,8 +191,8 @@ GenerateTalkingPet_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static void
-ZapToUrquanEncounter (void)
+void
+TalkingPetSystemBehavior::ZapToUrquanEncounter(void)
 {
 	HENCOUNTER hEncounter;
 
@@ -255,3 +259,8 @@ ZapToUrquanEncounter (void)
 	}
 }
 
+
+std::unique_ptr<SystemBehavior> createTalkingPetSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<TalkingPetSystemBehavior>(campaign);
+}
+} // namespace uqm

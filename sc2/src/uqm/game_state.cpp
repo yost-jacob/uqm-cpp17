@@ -22,6 +22,58 @@ namespace {
 struct Field { int first, last; };
 Field field(StoryFlag flag) {
     switch (flag) {
+        case StoryFlag::AquaHelix: return {AQUA_HELIX, END_AQUA_HELIX};
+        case StoryFlag::AquaHelixOnShip: return {AQUA_HELIX_ON_SHIP, END_AQUA_HELIX_ON_SHIP};
+        case StoryFlag::BombUnprotected: return {BOMB_UNPROTECTED, END_BOMB_UNPROTECTED};
+        case StoryFlag::BurvixeseBroadcasters: return {BURVIXESE_BROADCASTERS, END_BURVIXESE_BROADCASTERS};
+        case StoryFlag::BurvBroadcastersOnShip: return {BURV_BROADCASTERS_ON_SHIP, END_BURV_BROADCASTERS_ON_SHIP};
+        case StoryFlag::ClearSpindle: return {CLEAR_SPINDLE, END_CLEAR_SPINDLE};
+        case StoryFlag::ClearSpindleOnShip: return {CLEAR_SPINDLE_ON_SHIP, END_CLEAR_SPINDLE_ON_SHIP};
+        case StoryFlag::DruugeManner: return {DRUUGE_MANNER, END_DRUUGE_MANNER};
+        case StoryFlag::EggCase0OnShip: return {EGG_CASE0_ON_SHIP, END_EGG_CASE0_ON_SHIP};
+        case StoryFlag::EggCase1OnShip: return {EGG_CASE1_ON_SHIP, END_EGG_CASE1_ON_SHIP};
+        case StoryFlag::EggCase2OnShip: return {EGG_CASE2_ON_SHIP, END_EGG_CASE2_ON_SHIP};
+        case StoryFlag::HelixUnprotected: return {HELIX_UNPROTECTED, END_HELIX_UNPROTECTED};
+        case StoryFlag::KnowSyreenVault: return {KNOW_SYREEN_VAULT, END_KNOW_SYREEN_VAULT};
+        case StoryFlag::KohrAhFrenzy: return {KOHR_AH_FRENZY, END_KOHR_AH_FRENZY};
+        case StoryFlag::MaidensOnShip: return {MAIDENS_ON_SHIP, END_MAIDENS_ON_SHIP};
+        case StoryFlag::MetZoqfot: return {MET_ZOQFOT, END_MET_ZOQFOT};
+        case StoryFlag::MoonbaseDestroyed: return {MOONBASE_DESTROYED, END_MOONBASE_DESTROYED};
+        case StoryFlag::MoonbaseOnShip: return {MOONBASE_ON_SHIP, END_MOONBASE_ON_SHIP};
+        case StoryFlag::MyconFellForAmbush: return {MYCON_FELL_FOR_AMBUSH, END_MYCON_FELL_FOR_AMBUSH};
+        case StoryFlag::PlayerHypnotized: return {PLAYER_HYPNOTIZED, END_PLAYER_HYPNOTIZED};
+        case StoryFlag::PortalKey: return {PORTAL_KEY, END_PORTAL_KEY};
+        case StoryFlag::PortalKeyOnShip: return {PORTAL_KEY_ON_SHIP, END_PORTAL_KEY_ON_SHIP};
+        case StoryFlag::ProbeMessageDelivered: return {PROBE_MESSAGE_DELIVERED, END_PROBE_MESSAGE_DELIVERED};
+        case StoryFlag::RosySphere: return {ROSY_SPHERE, END_ROSY_SPHERE};
+        case StoryFlag::RosySphereOnShip: return {ROSY_SPHERE_ON_SHIP, END_ROSY_SPHERE_ON_SHIP};
+        case StoryFlag::ShipVaultUnlocked: return {SHIP_VAULT_UNLOCKED, END_SHIP_VAULT_UNLOCKED};
+        case StoryFlag::ShofixtiBroKia: return {SHOFIXTI_BRO_KIA, END_SHOFIXTI_BRO_KIA};
+        case StoryFlag::ShofixtiKia: return {SHOFIXTI_KIA, END_SHOFIXTI_KIA};
+        case StoryFlag::ShofixtiMaidens: return {SHOFIXTI_MAIDENS, END_SHOFIXTI_MAIDENS};
+        case StoryFlag::ShofixtiRecruited: return {SHOFIXTI_RECRUITED, END_SHOFIXTI_RECRUITED};
+        case StoryFlag::SpathiCreaturesEliminated: return {SPATHI_CREATURES_ELIMINATED, END_SPATHI_CREATURES_ELIMINATED};
+        case StoryFlag::SpathiCreaturesExamined: return {SPATHI_CREATURES_EXAMINED, END_SPATHI_CREATURES_EXAMINED};
+        case StoryFlag::SpathiShieldedSelves: return {SPATHI_SHIELDED_SELVES, END_SPATHI_SHIELDED_SELVES};
+        case StoryFlag::SunDevice: return {SUN_DEVICE, END_SUN_DEVICE};
+        case StoryFlag::SunDeviceUnguarded: return {SUN_DEVICE_UNGUARDED, END_SUN_DEVICE_UNGUARDED};
+        case StoryFlag::SyreenShuttleOnShip: return {SYREEN_SHUTTLE_ON_SHIP, END_SYREEN_SHUTTLE_ON_SHIP};
+        case StoryFlag::TaaloProtector: return {TAALO_PROTECTOR, END_TAALO_PROTECTOR};
+        case StoryFlag::TaaloProtectorOnShip: return {TAALO_PROTECTOR_ON_SHIP, END_TAALO_PROTECTOR_ON_SHIP};
+        case StoryFlag::TaaloUnprotected: return {TAALO_UNPROTECTED, END_TAALO_UNPROTECTED};
+        case StoryFlag::TalkingPet: return {TALKING_PET, END_TALKING_PET};
+        case StoryFlag::UmgahBroadcasters: return {UMGAH_BROADCASTERS, END_UMGAH_BROADCASTERS};
+        case StoryFlag::UmgahBroadcastersOnShip: return {UMGAH_BROADCASTERS_ON_SHIP, END_UMGAH_BROADCASTERS_ON_SHIP};
+        case StoryFlag::UmgahZombieBlobbies: return {UMGAH_ZOMBIE_BLOBBIES, END_UMGAH_ZOMBIE_BLOBBIES};
+        case StoryFlag::UrquanMessedUp: return {URQUAN_MESSED_UP, END_URQUAN_MESSED_UP};
+        case StoryFlag::UrquanProtectingSamatra: return {URQUAN_PROTECTING_SAMATRA, END_URQUAN_PROTECTING_SAMATRA};
+        case StoryFlag::UtwigBomb: return {UTWIG_BOMB, END_UTWIG_BOMB};
+        case StoryFlag::UtwigBombOnShip: return {UTWIG_BOMB_ON_SHIP, END_UTWIG_BOMB_ON_SHIP};
+        case StoryFlag::UtwigHaveUltron: return {UTWIG_HAVE_ULTRON, END_UTWIG_HAVE_ULTRON};
+        case StoryFlag::VuxBeast: return {VUX_BEAST, END_VUX_BEAST};
+        case StoryFlag::VuxBeastOnShip: return {VUX_BEAST_ON_SHIP, END_VUX_BEAST_ON_SHIP};
+        case StoryFlag::ZexIsDead: return {ZEX_IS_DEAD, END_ZEX_IS_DEAD};
+
         case StoryFlag::StarbaseAccessGranted: return {STARBASE_AVAILABLE, END_STARBASE_AVAILABLE};
         case StoryFlag::YehatCivilWar: return {YEHAT_CIVIL_WAR, END_YEHAT_CIVIL_WAR};
         case StoryFlag::ChmmrFreed: return {CHMMR_UNLEASHED, END_CHMMR_UNLEASHED};
@@ -32,6 +84,33 @@ Field field(StoryFlag flag) {
 }
 Field field(StoryCounter counter) {
     switch (counter) {
+        case StoryCounter::ColonyGrpoffs0: return {COLONY_GRPOFFS0, COLONY_GRPOFFS0 + 31};
+        case StoryCounter::DruugeHomeVisits: return {DRUUGE_HOME_VISITS, END_DRUUGE_HOME_VISITS};
+        case StoryCounter::DruugeVisits: return {DRUUGE_VISITS, END_DRUUGE_VISITS};
+        case StoryCounter::FoundPlutoSpathi: return {FOUND_PLUTO_SPATHI, END_FOUND_PLUTO_SPATHI};
+        case StoryCounter::HelixVisits: return {HELIX_VISITS, END_HELIX_VISITS};
+        case StoryCounter::KnowAboutShattered: return {KNOW_ABOUT_SHATTERED, END_KNOW_ABOUT_SHATTERED};
+        case StoryCounter::Melnorme0Grpoffs0: return {MELNORME0_GRPOFFS0, MELNORME0_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme1Grpoffs0: return {MELNORME1_GRPOFFS0, MELNORME1_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme2Grpoffs0: return {MELNORME2_GRPOFFS0, MELNORME2_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme3Grpoffs0: return {MELNORME3_GRPOFFS0, MELNORME3_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme4Grpoffs0: return {MELNORME4_GRPOFFS0, MELNORME4_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme5Grpoffs0: return {MELNORME5_GRPOFFS0, MELNORME5_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme6Grpoffs0: return {MELNORME6_GRPOFFS0, MELNORME6_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme7Grpoffs0: return {MELNORME7_GRPOFFS0, MELNORME7_GRPOFFS0 + 31};
+        case StoryCounter::Melnorme8Grpoffs0: return {MELNORME8_GRPOFFS0, MELNORME8_GRPOFFS0 + 31};
+        case StoryCounter::MyconVisits: return {MYCON_VISITS, END_MYCON_VISITS};
+        case StoryCounter::RainbowWorld0: return {RAINBOW_WORLD0, END_RAINBOW_WORLD0};
+        case StoryCounter::RainbowWorld1: return {RAINBOW_WORLD1, END_RAINBOW_WORLD1};
+        case StoryCounter::SamatraGrpoffs0: return {SAMATRA_GRPOFFS0, SAMATRA_GRPOFFS0 + 31};
+        case StoryCounter::ShofixtiGrpoffs0: return {SHOFIXTI_GRPOFFS0, SHOFIXTI_GRPOFFS0 + 31};
+        case StoryCounter::SyreenHomeVisits: return {SYREEN_HOME_VISITS, END_SYREEN_HOME_VISITS};
+        case StoryCounter::ThraddMission: return {THRADD_MISSION, END_THRADD_MISSION};
+        case StoryCounter::UltronCondition: return {ULTRON_CONDITION, END_ULTRON_CONDITION};
+        case StoryCounter::UrquanProbeGrpoffs0: return {URQUAN_PROBE_GRPOFFS0, URQUAN_PROBE_GRPOFFS0 + 31};
+        case StoryCounter::ZoqfotDistress: return {ZOQFOT_DISTRESS, END_ZOQFOT_DISTRESS};
+        case StoryCounter::ZoqfotGrpoffs0: return {ZOQFOT_GRPOFFS0, ZOQFOT_GRPOFFS0 + 31};
+
         case StoryCounter::BattlePlanet: return {BATTLE_PLANET, END_BATTLE_PLANET};
         case StoryCounter::EncounterContext: return {GLOBAL_FLAGS_AND_DATA, END_GLOBAL_FLAGS_AND_DATA};
         case StoryCounter::BombProgress: return {CHMMR_BOMB_STATE, END_CHMMR_BOMB_STATE};
@@ -44,9 +123,19 @@ static_assert(counterMaximum(StoryCounter::BombProgress)
 static_assert(counterMaximum(StoryCounter::ShofixtiVisits)
         == (1u << (END_SHOFIXTI_VISITS - SHOFIXTI_VISITS + 1)) - 1);
 unsigned read(const detail::PlayerStorage &storage, Field field) {
+    if (field.last - field.first + 1 == 32)
+        return getGameState32(storage.legacy.Game_state.GameState, field.first);
     return getGameState(storage.legacy.Game_state.GameState, field.first, field.last);
 }
 void write(detail::PlayerStorage &storage, Field field, unsigned value) {
+    if (field.last - field.first + 1 == 32) {
+        setGameState32(storage.legacy.Game_state.GameState, field.first, value
+#ifdef STATE_DEBUG
+                , "typed campaign group offset"
+#endif
+                );
+        return;
+    }
     setGameState(storage.legacy.Game_state.GameState, field.first, field.last,
             static_cast<BYTE>(value)
 #ifdef STATE_DEBUG
@@ -66,6 +155,7 @@ CampaignState::CampaignState(detail::PlayerStorage &storage) noexcept : storage_
 bool CampaignState::read(StoryFlag flag) const { return uqm::read(storage_, field(flag)) != 0; }
 unsigned CampaignState::read(StoryCounter counter) const { return uqm::read(storage_, field(counter)); }
 void CampaignState::set(StoryFlag flag) { write(storage_, field(flag), 1); }
+void CampaignState::set(StoryFlag flag, bool value) { write(storage_, field(flag), value ? 1 : 0); }
 void CampaignState::clear(StoryFlag flag) { write(storage_, field(flag), 0); }
 void CampaignState::set(StoryCounter counter, unsigned value) {
     const auto bits = field(counter); // Reject invalid enums before any mutation.

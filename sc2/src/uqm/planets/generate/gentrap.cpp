@@ -17,34 +17,32 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../planets.h"
-
-
-static bool GenerateTrap_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateTrap_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-
-
-const GenerateFunctions generateTrapFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateTrap_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateTrap_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class TrapSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
+}
 
 
-static bool
-GenerateTrap_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+bool
+TrapSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -62,9 +60,11 @@ GenerateTrap_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateTrap_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+TrapSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	GenerateDefault_generateOrbital (solarSys, world);
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
@@ -78,3 +78,8 @@ GenerateTrap_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
+
+std::unique_ptr<SystemBehavior> createTrapSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<TrapSystemBehavior>(campaign);
+}
+} // namespace uqm

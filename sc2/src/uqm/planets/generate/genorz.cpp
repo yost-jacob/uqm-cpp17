@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../build.h"
@@ -29,37 +31,33 @@
 #include "../../setup.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateOrz_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateOrz_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateOrzFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateOrz_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateOrz_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateOrz_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateOrz_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class OrzSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+bool
+OrzSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -80,19 +78,21 @@ GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if ((CurStarDescPtr->Index == ORZ_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 			|| (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2)
-			&& !GET_GAME_STATE (TAALO_PROTECTOR)))
+			&& !campaign_.read(StoryFlag::TaaloProtector)))
 	{
 		COUNT i;
 
 		if ((CurStarDescPtr->Index == ORZ_DEFINED
-				|| !GET_GAME_STATE (TAALO_UNPROTECTED))
+				|| !campaign_.read(StoryFlag::TaaloUnprotected))
 				&& StartSphereTracking (ORZ_SHIP))
 		{
 			NotifyOthers (ORZ_SHIP, IPNL_ALL_CLEAR);
@@ -104,7 +104,7 @@ GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			{
 				CloneShipFragment (ORZ_SHIP,
 						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
@@ -113,7 +113,7 @@ GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 					CloneShipFragment (ORZ_SHIP,
 							&GLOBAL (npc_built_ship_q), 0);
 				}
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
+				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			InitCommunication (ORZ_CONVERSATION);
@@ -122,11 +122,11 @@ GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				return true;
 
 			{
-				BOOLEAN OrzSurvivors;
+				bool OrzSurvivors;
 
 				OrzSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q))
 						&& (CurStarDescPtr->Index == ORZ_DEFINED
-						|| !GET_GAME_STATE (TAALO_UNPROTECTED));
+						|| !campaign_.read(StoryFlag::TaaloUnprotected));
 
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
 				ReinitQueue (&GLOBAL (npc_built_ship_q));
@@ -139,7 +139,7 @@ GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			}
 		}
 
-		SET_GAME_STATE (TAALO_UNPROTECTED, 1);
+		campaign_.set(StoryFlag::TaaloUnprotected, (1) != 0);
 		if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
@@ -165,16 +165,17 @@ GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateOrz_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+OrzSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2))
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (TAALO_PROTECTOR))
+		if (campaign_.read(StoryFlag::TaaloProtector))
 		{	// already picked up
 			return 0;
 		}
@@ -191,20 +192,21 @@ GenerateOrz_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateOrz_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+OrzSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2))
 	{
-		assert (!GET_GAME_STATE (TAALO_PROTECTOR) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::TaaloProtector) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (TAALO_PROTECTOR, 1);
-		SET_GAME_STATE (TAALO_PROTECTOR_ON_SHIP, 1);
+		campaign_.set(StoryFlag::TaaloProtector, (1) != 0);
+		campaign_.set(StoryFlag::TaaloProtectorOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -220,3 +222,8 @@ GenerateOrz_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	(void) whichNode;
 	return false;
 }
+
+std::unique_ptr<SystemBehavior> createOrzSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<OrzSystemBehavior>(campaign);
+}
+} // namespace uqm

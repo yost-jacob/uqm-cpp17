@@ -1,3 +1,4 @@
+#include "uqm/globdata.h"
 #include "uqm/game_state.hpp"
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
@@ -160,4 +161,121 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_CASE(legacy_unaligned_32bit_fields_survive_copy)
 {
     BOOST_TEST(game_state_c_packed_words() == 1);
+}
+
+BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
+{
+    auto &campaign = gameSession().player().campaign();
+    struct Restore {
+        std::array<BYTE, sizeof GLOBAL(GameState)> bytes{};
+        Restore() { std::copy(std::begin(GLOBAL(GameState)), std::end(GLOBAL(GameState)), bytes.begin()); }
+        ~Restore() { std::copy(bytes.begin(), bytes.end(), std::begin(GLOBAL(GameState))); }
+    } restore;
+    struct Flag { StoryFlag id; int start, end; };
+    const Flag flags[] = {
+        {StoryFlag::AquaHelix, AQUA_HELIX, END_AQUA_HELIX},
+        {StoryFlag::AquaHelixOnShip, AQUA_HELIX_ON_SHIP, END_AQUA_HELIX_ON_SHIP},
+        {StoryFlag::BombUnprotected, BOMB_UNPROTECTED, END_BOMB_UNPROTECTED},
+        {StoryFlag::BurvixeseBroadcasters, BURVIXESE_BROADCASTERS, END_BURVIXESE_BROADCASTERS},
+        {StoryFlag::BurvBroadcastersOnShip, BURV_BROADCASTERS_ON_SHIP, END_BURV_BROADCASTERS_ON_SHIP},
+        {StoryFlag::ClearSpindle, CLEAR_SPINDLE, END_CLEAR_SPINDLE},
+        {StoryFlag::ClearSpindleOnShip, CLEAR_SPINDLE_ON_SHIP, END_CLEAR_SPINDLE_ON_SHIP},
+        {StoryFlag::DruugeManner, DRUUGE_MANNER, END_DRUUGE_MANNER},
+        {StoryFlag::EggCase0OnShip, EGG_CASE0_ON_SHIP, END_EGG_CASE0_ON_SHIP},
+        {StoryFlag::EggCase1OnShip, EGG_CASE1_ON_SHIP, END_EGG_CASE1_ON_SHIP},
+        {StoryFlag::EggCase2OnShip, EGG_CASE2_ON_SHIP, END_EGG_CASE2_ON_SHIP},
+        {StoryFlag::HelixUnprotected, HELIX_UNPROTECTED, END_HELIX_UNPROTECTED},
+        {StoryFlag::KnowSyreenVault, KNOW_SYREEN_VAULT, END_KNOW_SYREEN_VAULT},
+        {StoryFlag::KohrAhFrenzy, KOHR_AH_FRENZY, END_KOHR_AH_FRENZY},
+        {StoryFlag::MaidensOnShip, MAIDENS_ON_SHIP, END_MAIDENS_ON_SHIP},
+        {StoryFlag::MetZoqfot, MET_ZOQFOT, END_MET_ZOQFOT},
+        {StoryFlag::MoonbaseDestroyed, MOONBASE_DESTROYED, END_MOONBASE_DESTROYED},
+        {StoryFlag::MoonbaseOnShip, MOONBASE_ON_SHIP, END_MOONBASE_ON_SHIP},
+        {StoryFlag::MyconFellForAmbush, MYCON_FELL_FOR_AMBUSH, END_MYCON_FELL_FOR_AMBUSH},
+        {StoryFlag::PlayerHypnotized, PLAYER_HYPNOTIZED, END_PLAYER_HYPNOTIZED},
+        {StoryFlag::PortalKey, PORTAL_KEY, END_PORTAL_KEY},
+        {StoryFlag::PortalKeyOnShip, PORTAL_KEY_ON_SHIP, END_PORTAL_KEY_ON_SHIP},
+        {StoryFlag::ProbeMessageDelivered, PROBE_MESSAGE_DELIVERED, END_PROBE_MESSAGE_DELIVERED},
+        {StoryFlag::RosySphere, ROSY_SPHERE, END_ROSY_SPHERE},
+        {StoryFlag::RosySphereOnShip, ROSY_SPHERE_ON_SHIP, END_ROSY_SPHERE_ON_SHIP},
+        {StoryFlag::ShipVaultUnlocked, SHIP_VAULT_UNLOCKED, END_SHIP_VAULT_UNLOCKED},
+        {StoryFlag::ShofixtiBroKia, SHOFIXTI_BRO_KIA, END_SHOFIXTI_BRO_KIA},
+        {StoryFlag::ShofixtiKia, SHOFIXTI_KIA, END_SHOFIXTI_KIA},
+        {StoryFlag::ShofixtiMaidens, SHOFIXTI_MAIDENS, END_SHOFIXTI_MAIDENS},
+        {StoryFlag::ShofixtiRecruited, SHOFIXTI_RECRUITED, END_SHOFIXTI_RECRUITED},
+        {StoryFlag::SpathiCreaturesEliminated, SPATHI_CREATURES_ELIMINATED, END_SPATHI_CREATURES_ELIMINATED},
+        {StoryFlag::SpathiCreaturesExamined, SPATHI_CREATURES_EXAMINED, END_SPATHI_CREATURES_EXAMINED},
+        {StoryFlag::SpathiShieldedSelves, SPATHI_SHIELDED_SELVES, END_SPATHI_SHIELDED_SELVES},
+        {StoryFlag::SunDevice, SUN_DEVICE, END_SUN_DEVICE},
+        {StoryFlag::SunDeviceOnShip, SUN_DEVICE_ON_SHIP, END_SUN_DEVICE_ON_SHIP},
+        {StoryFlag::SunDeviceUnguarded, SUN_DEVICE_UNGUARDED, END_SUN_DEVICE_UNGUARDED},
+        {StoryFlag::SyreenShuttleOnShip, SYREEN_SHUTTLE_ON_SHIP, END_SYREEN_SHUTTLE_ON_SHIP},
+        {StoryFlag::TaaloProtector, TAALO_PROTECTOR, END_TAALO_PROTECTOR},
+        {StoryFlag::TaaloProtectorOnShip, TAALO_PROTECTOR_ON_SHIP, END_TAALO_PROTECTOR_ON_SHIP},
+        {StoryFlag::TaaloUnprotected, TAALO_UNPROTECTED, END_TAALO_UNPROTECTED},
+        {StoryFlag::TalkingPet, TALKING_PET, END_TALKING_PET},
+        {StoryFlag::UmgahBroadcasters, UMGAH_BROADCASTERS, END_UMGAH_BROADCASTERS},
+        {StoryFlag::UmgahBroadcastersOnShip, UMGAH_BROADCASTERS_ON_SHIP, END_UMGAH_BROADCASTERS_ON_SHIP},
+        {StoryFlag::UmgahZombieBlobbies, UMGAH_ZOMBIE_BLOBBIES, END_UMGAH_ZOMBIE_BLOBBIES},
+        {StoryFlag::UrquanMessedUp, URQUAN_MESSED_UP, END_URQUAN_MESSED_UP},
+        {StoryFlag::UrquanProtectingSamatra, URQUAN_PROTECTING_SAMATRA, END_URQUAN_PROTECTING_SAMATRA},
+        {StoryFlag::UtwigBomb, UTWIG_BOMB, END_UTWIG_BOMB},
+        {StoryFlag::UtwigBombOnShip, UTWIG_BOMB_ON_SHIP, END_UTWIG_BOMB_ON_SHIP},
+        {StoryFlag::UtwigHaveUltron, UTWIG_HAVE_ULTRON, END_UTWIG_HAVE_ULTRON},
+        {StoryFlag::VuxBeast, VUX_BEAST, END_VUX_BEAST},
+        {StoryFlag::VuxBeastOnShip, VUX_BEAST_ON_SHIP, END_VUX_BEAST_ON_SHIP},
+        {StoryFlag::YehatCivilWar, YEHAT_CIVIL_WAR, END_YEHAT_CIVIL_WAR},
+        {StoryFlag::ZexIsDead, ZEX_IS_DEAD, END_ZEX_IS_DEAD},
+    };
+    for (const auto &flag : flags) {
+        campaign.set(flag.id, true);
+        BOOST_TEST(getGameState(GLOBAL(GameState), flag.start, flag.end) == 1u);
+        campaign.set(flag.id, false);
+        BOOST_TEST(getGameState(GLOBAL(GameState), flag.start, flag.end) == 0u);
+    }
+    struct Counter { StoryCounter id; int start, bits; };
+    const Counter counters[] = {
+        {StoryCounter::BattlePlanet, BATTLE_PLANET, 8},
+        {StoryCounter::BombProgress, CHMMR_BOMB_STATE, 2},
+        {StoryCounter::ColonyGrpoffs0, COLONY_GRPOFFS0, 32},
+        {StoryCounter::DruugeHomeVisits, DRUUGE_HOME_VISITS, 3},
+        {StoryCounter::DruugeVisits, DRUUGE_VISITS, 3},
+        {StoryCounter::FoundPlutoSpathi, FOUND_PLUTO_SPATHI, 2},
+        {StoryCounter::EncounterContext, GLOBAL_FLAGS_AND_DATA, 8},
+        {StoryCounter::HelixVisits, HELIX_VISITS, 3},
+        {StoryCounter::KnowAboutShattered, KNOW_ABOUT_SHATTERED, 2},
+        {StoryCounter::Melnorme0Grpoffs0, MELNORME0_GRPOFFS0, 32},
+        {StoryCounter::Melnorme1Grpoffs0, MELNORME1_GRPOFFS0, 32},
+        {StoryCounter::Melnorme2Grpoffs0, MELNORME2_GRPOFFS0, 32},
+        {StoryCounter::Melnorme3Grpoffs0, MELNORME3_GRPOFFS0, 32},
+        {StoryCounter::Melnorme4Grpoffs0, MELNORME4_GRPOFFS0, 32},
+        {StoryCounter::Melnorme5Grpoffs0, MELNORME5_GRPOFFS0, 32},
+        {StoryCounter::Melnorme6Grpoffs0, MELNORME6_GRPOFFS0, 32},
+        {StoryCounter::Melnorme7Grpoffs0, MELNORME7_GRPOFFS0, 32},
+        {StoryCounter::Melnorme8Grpoffs0, MELNORME8_GRPOFFS0, 32},
+        {StoryCounter::MyconVisits, MYCON_VISITS, 3},
+        {StoryCounter::RainbowWorld0, RAINBOW_WORLD0, 8},
+        {StoryCounter::RainbowWorld1, RAINBOW_WORLD1, 2},
+        {StoryCounter::SamatraGrpoffs0, SAMATRA_GRPOFFS0, 32},
+        {StoryCounter::ShofixtiGrpoffs0, SHOFIXTI_GRPOFFS0, 32},
+        {StoryCounter::ShofixtiVisits, SHOFIXTI_VISITS, 3},
+        {StoryCounter::SyreenHomeVisits, SYREEN_HOME_VISITS, 3},
+        {StoryCounter::ThraddMission, THRADD_MISSION, 3},
+        {StoryCounter::UltronCondition, ULTRON_CONDITION, 3},
+        {StoryCounter::UrquanProbeGrpoffs0, URQUAN_PROBE_GRPOFFS0, 32},
+        {StoryCounter::ZoqfotDistress, ZOQFOT_DISTRESS, 2},
+        {StoryCounter::ZoqfotGrpoffs0, ZOQFOT_GRPOFFS0, 32},
+    };
+    for (const auto &counter : counters) {
+        const unsigned value = counter.bits == 32 ? UINT32_C(0xfedcba98) : counterMaximum(counter.id);
+        const auto before = counter.start ? getGameState(GLOBAL(GameState), counter.start - 1, counter.start - 1) : 0;
+        const auto after = counter.start + counter.bits < NUM_GAME_STATE_BITS ? getGameState(GLOBAL(GameState), counter.start + counter.bits, counter.start + counter.bits) : 0;
+        campaign.set(counter.id, value);
+        const unsigned encoded = counter.bits == 32 ? getGameState32(GLOBAL(GameState), counter.start)
+                : getGameState(GLOBAL(GameState), counter.start, counter.start + counter.bits - 1);
+        BOOST_TEST(encoded == value);
+        BOOST_TEST(campaign.read(counter.id) == value);
+        if (counter.start) BOOST_TEST(getGameState(GLOBAL(GameState), counter.start - 1, counter.start - 1) == before);
+        if (counter.start + counter.bits < NUM_GAME_STATE_BITS) BOOST_TEST(getGameState(GLOBAL(GameState), counter.start + counter.bits, counter.start + counter.bits) == after);
+    }
 }

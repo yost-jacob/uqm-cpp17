@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../build.h"
@@ -29,37 +31,33 @@
 #include "../../setup.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateThraddash_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateThraddash_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateThraddashFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateThraddash_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateThraddash_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateThraddash_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateThraddash_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class ThraddashSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+bool
+ThraddashSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -90,16 +88,17 @@ GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+bool
+ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (THRADDASH_SHIP)
 				&& (CurStarDescPtr->Index == THRADD_DEFINED
-				|| (!GET_GAME_STATE (HELIX_UNPROTECTED)
-				&& (BYTE)(GET_GAME_STATE (THRADD_MISSION) - 1) >= 3)))
+				|| (!campaign_.read(StoryFlag::HelixUnprotected)
+				&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3)))
 		{
 			NotifyOthers (THRADDASH_SHIP, IPNL_ALL_CLEAR);
 			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
@@ -112,11 +111,11 @@ GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			if (CurStarDescPtr->Index == THRADD_DEFINED)
 			{
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
+				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			InitCommunication (THRADD_CONVERSATION);
 
@@ -128,15 +127,15 @@ GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
 			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
 
 			if (CurStarDescPtr->Index == THRADD_DEFINED
-					|| (!GET_GAME_STATE (HELIX_UNPROTECTED)
-					&& (BYTE)(GET_GAME_STATE (THRADD_MISSION) - 1) >= 3))
+					|| (!campaign_.read(StoryFlag::HelixUnprotected)
+					&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3))
 				return true;
 
 			RepairSISBorder ();
 		}
 
 		if (CurStarDescPtr->Index == AQUA_HELIX_DEFINED
-				&& !GET_GAME_STATE (AQUA_HELIX))
+				&& !campaign_.read(StoryFlag::AquaHelix))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
@@ -158,10 +157,11 @@ GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
-GenerateThraddash_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+ThraddashSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == THRADD_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
@@ -173,7 +173,7 @@ GenerateThraddash_generateEnergy (const SOLARSYS_STATE *solarSys,
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (AQUA_HELIX))
+		if (campaign_.read(StoryFlag::AquaHelix))
 		{	// already picked up
 			return 0;
 		}
@@ -184,10 +184,11 @@ GenerateThraddash_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateThraddash_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+ThraddashSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == THRADD_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
@@ -199,15 +200,15 @@ GenerateThraddash_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	if (CurStarDescPtr->Index == AQUA_HELIX_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!GET_GAME_STATE (AQUA_HELIX) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::AquaHelix) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (HELIX_VISITS, 0);
-		SET_GAME_STATE (AQUA_HELIX, 1);
-		SET_GAME_STATE (AQUA_HELIX_ON_SHIP, 1);
-		SET_GAME_STATE (HELIX_UNPROTECTED, 1);
+		campaign_.set(StoryCounter::HelixVisits, 0);
+		campaign_.set(StoryFlag::AquaHelix, (1) != 0);
+		campaign_.set(StoryFlag::AquaHelixOnShip, (1) != 0);
+		campaign_.set(StoryFlag::HelixUnprotected, (1) != 0);
 
 		return true; // picked up
 	}
@@ -215,3 +216,8 @@ GenerateThraddash_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	(void) whichNode;
 	return false;
 }
+
+std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<ThraddashSystemBehavior>(campaign);
+}
+} // namespace uqm

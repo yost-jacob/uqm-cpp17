@@ -17,36 +17,34 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../planets.h"
 #include "../../comm.h"
-
-static bool GenerateSyreen_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSyreen_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateSyreen_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-
-
-const GenerateFunctions generateSyreenFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateSyreen_generatePlanets,
-	/* .generateMoons    = */ GenerateSyreen_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateSyreen_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class SyreenSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
+}
 
 
-static bool
-GenerateSyreen_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+bool
+SyreenSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	GenerateDefault_generatePlanets (solarSys);
 
 	solarSys->PlanetDesc[0].data_index = WATER_WORLD | PLANET_SHIELDED;
@@ -55,9 +53,11 @@ GenerateSyreen_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSyreen_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+bool
+SyreenSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *planet = &body;
 	GenerateDefault_generateMoons (solarSys, planet);
 
 	if (matchWorld (solarSys, planet, 0, MATCH_PLANET))
@@ -73,9 +73,11 @@ GenerateSyreen_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 	return true;
 }
 
-static bool
-GenerateSyreen_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+SyreenSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		/* Syreen home planet */
@@ -100,3 +102,8 @@ GenerateSyreen_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
+
+std::unique_ptr<SystemBehavior> createSyreenSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<SyreenSystemBehavior>(campaign);
+}
+} // namespace uqm

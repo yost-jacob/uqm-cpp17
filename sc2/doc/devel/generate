@@ -1,3 +1,9 @@
+Current C++17 implementation: SolarSystem owns a SystemBehavior selected by
+system_behavior_factory.cpp. All special systems override native hooks and
+borrow CampaignState&. One GenerateFunctions table remains only as a bridge
+for the C exploration loop. See docs/design/solar-system/system-behavior.md.
+The historical description below predates this migration.
+
 Note: this file (still) describes the way in which various things were
 generated in the original source. It is still useful, but there are some
 changes:
@@ -14,10 +20,10 @@ Files related to this system:
   Defines GenerateFunctions.
 - planets/generate/gendefault.cpp
   Default generation functions for when no specific one is specified.
-- planets/generate/gen*.c
+- planets/generate/gen*.cpp
   Specific generation functions.
-- gendef.c
-  Glue code.
+- system_behavior_factory.cpp
+  Native behavior selection.
 
 This file should eventually be updated to reflect the new system.
 See the file 'orggenerate' for a description on how the system originally

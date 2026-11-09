@@ -17,42 +17,40 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../globdata.h"
 #include "../../nameref.h"
 #include "../../resinst.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateVault_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateVaultFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateDefault_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateVault_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateVault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateVault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class VaultSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+
+
+
+
+
+
+
+
+
+bool
+VaultSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
@@ -60,13 +58,13 @@ GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				CaptureDrawable (LoadGraphic (VAULT_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (VAULT_STRTAB));
-		if (GET_GAME_STATE (SHIP_VAULT_UNLOCKED))
+		if (campaign_.read(StoryFlag::ShipVaultUnlocked))
 		{
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					SetAbsStringTableIndex (
 					solarSys->SysInfo.PlanetInfo.DiscoveryString, 2);
 		}
-		else if (GET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP))
+		else if (campaign_.read(StoryFlag::SyreenShuttleOnShip))
 		{
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					SetAbsStringTableIndex (
@@ -78,10 +76,11 @@ GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateVault_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+VaultSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		return GenerateDefault_generateArtifact (solarSys, whichNode, info);
@@ -90,34 +89,35 @@ GenerateVault_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+VaultSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		assert (whichNode == 0);
 
-		if (GET_GAME_STATE (SHIP_VAULT_UNLOCKED))
+		if (campaign_.read(StoryFlag::ShipVaultUnlocked))
 		{	// Give the final report, "omg empty" and whatnot
 			GenerateDefault_landerReportCycle (solarSys);
 		}
-		else if (GET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP))
+		else if (campaign_.read(StoryFlag::SyreenShuttleOnShip))
 		{
 			GenerateDefault_landerReportCycle (solarSys);
 			SetLanderTakeoff ();
 
-			SET_GAME_STATE (SHIP_VAULT_UNLOCKED, 1);
-			SET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP, 0);
-			SET_GAME_STATE (SYREEN_HOME_VISITS, 0);
+			campaign_.set(StoryFlag::ShipVaultUnlocked, (1) != 0);
+			campaign_.set(StoryFlag::SyreenShuttleOnShip, (0) != 0);
+			campaign_.set(StoryCounter::SyreenHomeVisits, 0);
 		}
 		else
 		{
 			GenerateDefault_landerReport (solarSys);
 
-			if (!GET_GAME_STATE (KNOW_SYREEN_VAULT))
+			if (!campaign_.read(StoryFlag::KnowSyreenVault))
 			{
-				SET_GAME_STATE (KNOW_SYREEN_VAULT, 1);
+				campaign_.set(StoryFlag::KnowSyreenVault, (1) != 0);
 			}
 		}
 
@@ -128,3 +128,8 @@ GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	(void) whichNode;
 	return false;
 }
+
+std::unique_ptr<SystemBehavior> createVaultSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<VaultSystemBehavior>(campaign);
+}
+} // namespace uqm

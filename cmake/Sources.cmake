@@ -205,7 +205,6 @@ set(UQM_SOURCES
     sc2/src/uqm/gameev.c
     sc2/src/uqm/gameinp.c
     sc2/src/uqm/gameopt.c
-    sc2/src/uqm/gendef.c
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/game_state.cpp
@@ -221,6 +220,7 @@ set(UQM_SOURCES
     sc2/src/uqm/world_state.cpp
     sc2/src/uqm/world.cpp
     sc2/src/uqm/system_behavior.cpp
+    sc2/src/uqm/system_behavior_factory.cpp
     sc2/src/uqm/system_runtime.cpp
     sc2/src/uqm/energy_behavior.cpp
     sc2/src/uqm/world_c.cpp
@@ -245,35 +245,35 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/calc.c
     sc2/src/uqm/planets/cargo.c
     sc2/src/uqm/planets/devices.c
-    sc2/src/uqm/planets/generate/genand.c
-    sc2/src/uqm/planets/generate/genburv.c
+    sc2/src/uqm/planets/generate/genand.cpp
+    sc2/src/uqm/planets/generate/genburv.cpp
     sc2/src/uqm/planets/generate/genchmmr.cpp
-    sc2/src/uqm/planets/generate/gencol.c
+    sc2/src/uqm/planets/generate/gencol.cpp
     sc2/src/uqm/planets/generate/gendefault.cpp
-    sc2/src/uqm/planets/generate/gendru.c
-    sc2/src/uqm/planets/generate/genilw.c
-    sc2/src/uqm/planets/generate/genmel.c
-    sc2/src/uqm/planets/generate/genmyc.c
-    sc2/src/uqm/planets/generate/genorz.c
-    sc2/src/uqm/planets/generate/genpet.c
-    sc2/src/uqm/planets/generate/genpku.c
-    sc2/src/uqm/planets/generate/genrain.c
-    sc2/src/uqm/planets/generate/gensam.c
-    sc2/src/uqm/planets/generate/genshof.c
-    sc2/src/uqm/planets/generate/gensly.c
-    sc2/src/uqm/planets/generate/gensol.c
-    sc2/src/uqm/planets/generate/genspa.c
-    sc2/src/uqm/planets/generate/gensup.c
-    sc2/src/uqm/planets/generate/gensyr.c
-    sc2/src/uqm/planets/generate/genthrad.c
-    sc2/src/uqm/planets/generate/gentrap.c
-    sc2/src/uqm/planets/generate/genutw.c
-    sc2/src/uqm/planets/generate/genvault.c
-    sc2/src/uqm/planets/generate/genvux.c
-    sc2/src/uqm/planets/generate/genwreck.c
-    sc2/src/uqm/planets/generate/genyeh.c
-    sc2/src/uqm/planets/generate/genzfpscout.c
-    sc2/src/uqm/planets/generate/genzoq.c
+    sc2/src/uqm/planets/generate/gendru.cpp
+    sc2/src/uqm/planets/generate/genilw.cpp
+    sc2/src/uqm/planets/generate/genmel.cpp
+    sc2/src/uqm/planets/generate/genmyc.cpp
+    sc2/src/uqm/planets/generate/genorz.cpp
+    sc2/src/uqm/planets/generate/genpet.cpp
+    sc2/src/uqm/planets/generate/genpku.cpp
+    sc2/src/uqm/planets/generate/genrain.cpp
+    sc2/src/uqm/planets/generate/gensam.cpp
+    sc2/src/uqm/planets/generate/genshof.cpp
+    sc2/src/uqm/planets/generate/gensly.cpp
+    sc2/src/uqm/planets/generate/gensol.cpp
+    sc2/src/uqm/planets/generate/genspa.cpp
+    sc2/src/uqm/planets/generate/gensup.cpp
+    sc2/src/uqm/planets/generate/gensyr.cpp
+    sc2/src/uqm/planets/generate/genthrad.cpp
+    sc2/src/uqm/planets/generate/gentrap.cpp
+    sc2/src/uqm/planets/generate/genutw.cpp
+    sc2/src/uqm/planets/generate/genvault.cpp
+    sc2/src/uqm/planets/generate/genvux.cpp
+    sc2/src/uqm/planets/generate/genwreck.cpp
+    sc2/src/uqm/planets/generate/genyeh.cpp
+    sc2/src/uqm/planets/generate/genzfpscout.cpp
+    sc2/src/uqm/planets/generate/genzoq.cpp
     sc2/src/uqm/planets/gentopo.c
     sc2/src/uqm/planets/lander.c
     sc2/src/uqm/planets/orbits.c

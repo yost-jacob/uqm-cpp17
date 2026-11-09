@@ -33,10 +33,125 @@ struct PlayerLocation {
     std::uint16_t facing;
     std::uint8_t planet, orbit;
 };
-enum class StoryFlag { StarbaseAccessGranted, SunDeviceOnShip, ChmmrFreed, IlwrathDeceived, YehatCivilWar };
-enum class StoryCounter { BombProgress, ShofixtiVisits, EncounterContext, BattlePlanet };
+enum class StoryFlag {
+    StarbaseAccessGranted,
+    SunDeviceOnShip,
+    ChmmrFreed,
+    IlwrathDeceived,
+    YehatCivilWar,
+    AquaHelix,
+    AquaHelixOnShip,
+    BombUnprotected,
+    BurvixeseBroadcasters,
+    BurvBroadcastersOnShip,
+    ClearSpindle,
+    ClearSpindleOnShip,
+    DruugeManner,
+    EggCase0OnShip,
+    EggCase1OnShip,
+    EggCase2OnShip,
+    HelixUnprotected,
+    KnowSyreenVault,
+    KohrAhFrenzy,
+    MaidensOnShip,
+    MetZoqfot,
+    MoonbaseDestroyed,
+    MoonbaseOnShip,
+    MyconFellForAmbush,
+    PlayerHypnotized,
+    PortalKey,
+    PortalKeyOnShip,
+    ProbeMessageDelivered,
+    RosySphere,
+    RosySphereOnShip,
+    ShipVaultUnlocked,
+    ShofixtiBroKia,
+    ShofixtiKia,
+    ShofixtiMaidens,
+    ShofixtiRecruited,
+    SpathiCreaturesEliminated,
+    SpathiCreaturesExamined,
+    SpathiShieldedSelves,
+    SunDevice,
+    SunDeviceUnguarded,
+    SyreenShuttleOnShip,
+    TaaloProtector,
+    TaaloProtectorOnShip,
+    TaaloUnprotected,
+    TalkingPet,
+    UmgahBroadcasters,
+    UmgahBroadcastersOnShip,
+    UmgahZombieBlobbies,
+    UrquanMessedUp,
+    UrquanProtectingSamatra,
+    UtwigBomb,
+    UtwigBombOnShip,
+    UtwigHaveUltron,
+    VuxBeast,
+    VuxBeastOnShip,
+    ZexIsDead,
+};
+enum class StoryCounter {
+    BombProgress,
+    ShofixtiVisits,
+    EncounterContext,
+    BattlePlanet,
+    ColonyGrpoffs0,
+    DruugeHomeVisits,
+    DruugeVisits,
+    FoundPlutoSpathi,
+    HelixVisits,
+    KnowAboutShattered,
+    Melnorme0Grpoffs0,
+    Melnorme1Grpoffs0,
+    Melnorme2Grpoffs0,
+    Melnorme3Grpoffs0,
+    Melnorme4Grpoffs0,
+    Melnorme5Grpoffs0,
+    Melnorme6Grpoffs0,
+    Melnorme7Grpoffs0,
+    Melnorme8Grpoffs0,
+    MyconVisits,
+    RainbowWorld0,
+    RainbowWorld1,
+    SamatraGrpoffs0,
+    ShofixtiGrpoffs0,
+    SyreenHomeVisits,
+    ThraddMission,
+    UltronCondition,
+    UrquanProbeGrpoffs0,
+    ZoqfotDistress,
+    ZoqfotGrpoffs0,
+};
 constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
     switch (counter) {
+        case StoryCounter::ColonyGrpoffs0: return 4294967295u;
+        case StoryCounter::DruugeHomeVisits: return 7u;
+        case StoryCounter::DruugeVisits: return 7u;
+        case StoryCounter::FoundPlutoSpathi: return 3u;
+        case StoryCounter::HelixVisits: return 7u;
+        case StoryCounter::KnowAboutShattered: return 3u;
+        case StoryCounter::Melnorme0Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme1Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme2Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme3Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme4Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme5Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme6Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme7Grpoffs0: return 4294967295u;
+        case StoryCounter::Melnorme8Grpoffs0: return 4294967295u;
+        case StoryCounter::MyconVisits: return 7u;
+        case StoryCounter::RainbowWorld0: return 255u;
+        case StoryCounter::RainbowWorld1: return 3u;
+        case StoryCounter::SamatraGrpoffs0: return 4294967295u;
+        case StoryCounter::ShofixtiGrpoffs0: return 4294967295u;
+        case StoryCounter::SyreenHomeVisits: return 7u;
+        case StoryCounter::ThraddMission: return 7u;
+        case StoryCounter::UltronCondition: return 7u;
+        case StoryCounter::UrquanProbeGrpoffs0: return 4294967295u;
+        case StoryCounter::ZoqfotDistress: return 3u;
+        case StoryCounter::ZoqfotGrpoffs0: return 4294967295u;
+
         case StoryCounter::BombProgress: return 3;
         case StoryCounter::ShofixtiVisits: return 7;
         case StoryCounter::EncounterContext: return 255;
@@ -56,6 +171,7 @@ public:
     bool read(StoryFlag flag) const;
     unsigned read(StoryCounter counter) const;
     void set(StoryFlag flag);
+    void set(StoryFlag flag, bool value);
     void clear(StoryFlag flag);
     // Throws out_of_range above the field maximum, leaving all bits unchanged.
     void set(StoryCounter counter, unsigned value);

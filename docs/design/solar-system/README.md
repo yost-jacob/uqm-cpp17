@@ -1,8 +1,7 @@
 # Game state, player entities, and world behavior wireframe
 
 For the live system-level implementation, see [SystemBehavior migration](system-behavior.md):
-scoped exploration ownership, a borrowed campaign reference, default hooks, Chmmr
-overrides, and the temporary adapter for other special systems.
+scoped exploration ownership, a borrowed campaign reference, default hooks, all special-system overrides, and the remaining C engine bridge.
 
 The headers in this directory remain a **declaration-only target design**. Do
 not link them into the game. The first production step now lives in

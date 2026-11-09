@@ -17,42 +17,40 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../globdata.h"
 #include "../../nameref.h"
 #include "../../resinst.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateWreck_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateWreck_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateWreckFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateDefault_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateWreck_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateWreck_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateWreck_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class WreckSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+
+
+
+
+
+
+
+
+
+bool
+WreckSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 6, MATCH_PLANET))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
@@ -60,7 +58,7 @@ GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				CaptureDrawable (LoadGraphic (WRECK_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (WRECK_STRTAB));
-		if (GET_GAME_STATE (PORTAL_KEY))
+		if (campaign_.read(StoryFlag::PortalKey))
 		{	// Already picked it up, skip the first report
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					SetAbsStringTableIndex (
@@ -72,10 +70,11 @@ GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateWreck_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+WreckSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 6, MATCH_PLANET))
 	{
 		return GenerateDefault_generateArtifact (solarSys, whichNode, info);
@@ -84,22 +83,23 @@ GenerateWreck_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateWreck_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+WreckSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 6, MATCH_PLANET))
 	{
 		assert (whichNode == 0);
 
 		GenerateDefault_landerReportCycle (solarSys);
 
-		if (!GET_GAME_STATE (PORTAL_KEY))
+		if (!campaign_.read(StoryFlag::PortalKey))
 		{
 			SetLanderTakeoff ();
 
-			SET_GAME_STATE (PORTAL_KEY, 1);
-			SET_GAME_STATE (PORTAL_KEY_ON_SHIP, 1);
+			campaign_.set(StoryFlag::PortalKey, (1) != 0);
+			campaign_.set(StoryFlag::PortalKeyOnShip, (1) != 0);
 		}
 
 		// The Wreck cannot be "picked up". It is always on the surface.
@@ -109,3 +109,8 @@ GenerateWreck_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	(void) whichNode;
 	return false;
 }
+
+std::unique_ptr<SystemBehavior> createWreckSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<WreckSystemBehavior>(campaign);
+}
+} // namespace uqm

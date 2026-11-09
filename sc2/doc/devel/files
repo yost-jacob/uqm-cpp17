@@ -20,7 +20,7 @@ fmv.c          Handles video sequences.
 galaxy.c       Starmap? Hyperspace background?
 gameinp.c
 gameopt.c      Game options menu, including save and load selection.
-gendef.c       Defines functions to be called for generating star systems.
+system_behavior_factory.cpp Selects native special-system behavior classes.
 getchar.c      Routines for entering characters with the joystick.
 globdata.c     Sets up global data, creates the main ship, and the radar.
 gravity.c      Maths regarding gravity in combat.

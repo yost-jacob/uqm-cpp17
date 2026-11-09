@@ -20,7 +20,7 @@ The broader classification below still guides remaining story/encounter work.
 ## The legacy scan mask mixes two meanings
 
 Ordinary mineral and biological retrieval bits record objects removed from a
-world. But [genand.c](../../../sc2/src/uqm/planets/generate/genand.c) uses the upper
+world. But [genand.cpp](../../../sc2/src/uqm/planets/generate/genand.cpp) uses the upper
 16 energy bits for visited Androsynth ruins. It clears the lower retrieval bits
 so the ruins remain visible, counts visited ruins to select the next story
 report, and returns false from pickup so the object is not removed.
@@ -36,10 +36,10 @@ Other examples reinforce the distinction:
 - [genchmmr.cpp](../../../sc2/src/uqm/planets/generate/genchmmr.cpp) reads the physical
   CHMMR_UNLEASHED fact when generating shielding, then combines it with personal
   SUN_DEVICE_ON_SHIP and bomb progress during orbital interaction.
-- [genspa.c](../../../sc2/src/uqm/planets/generate/genspa.c) combines a physical
+- [genspa.cpp](../../../sc2/src/uqm/planets/generate/genspa.cpp) combines a physical
   shield state, retrieved creatures, personal mission/report handling, and a
   discovery artifact. Those fields need individual classification.
-- [genmyc.c](../../../sc2/src/uqm/planets/generate/genmyc.c) updates artifact removal
+- [genmyc.cpp](../../../sc2/src/uqm/planets/generate/genmyc.cpp) updates artifact removal
   and on-ship possession together. Removing an object from a world is distinct
   from knowing about it or possessing it later.
 

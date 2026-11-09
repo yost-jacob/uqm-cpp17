@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../build.h"
@@ -29,40 +31,37 @@
 #include "../../setup.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateUtwig_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateUtwig_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateUtwig_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateUtwigFunctions = {
-	/* .initNpcs         = */ GenerateUtwig_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateUtwig_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateUtwig_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateUtwig_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateUtwig_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class UtwigSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool initNpcs(SOLARSYS_STATE &system) override;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateUtwig_initNpcs (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+bool
+UtwigSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	if (CurStarDescPtr->Index == BOMB_DEFINED
-			&& !GET_GAME_STATE (UTWIG_BOMB))
+			&& !campaign_.read(StoryFlag::UtwigBomb))
 	{
 		ReinitQueue (&GLOBAL (ip_group_q));
 		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
@@ -75,9 +74,10 @@ GenerateUtwig_initNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys)
+bool
+UtwigSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
@@ -98,17 +98,19 @@ GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if ((CurStarDescPtr->Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 			|| (CurStarDescPtr->Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1)
-			&& !GET_GAME_STATE (UTWIG_BOMB)))
+			&& !campaign_.read(StoryFlag::UtwigBomb)))
 	{
 		if ((CurStarDescPtr->Index == UTWIG_DEFINED
-				|| !GET_GAME_STATE (UTWIG_HAVE_ULTRON))
+				|| !campaign_.read(StoryFlag::UtwigHaveUltron))
 				&& StartSphereTracking (UTWIG_SHIP))
 		{
 			NotifyOthers (UTWIG_SHIP, IPNL_ALL_CLEAR);
@@ -122,11 +124,11 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			if (CurStarDescPtr->Index == UTWIG_DEFINED)
 			{
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
+				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			InitCommunication (UTWIG_CONVERSATION);
 
@@ -140,7 +142,7 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		}
 
 		if (CurStarDescPtr->Index == BOMB_DEFINED
-				&& !GET_GAME_STATE (BOMB_UNPROTECTED)
+				&& !campaign_.read(StoryFlag::BombUnprotected)
 				&& StartSphereTracking (DRUUGE_SHIP))
 		{
 			COUNT i;
@@ -155,14 +157,14 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 						&GLOBAL (npc_built_ship_q), 0);
 			}
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
+			campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			InitCommunication (DRUUGE_CONVERSATION);
 
 			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 				return true;
 
 			{
-				BOOLEAN DruugeSurvivors;
+				bool DruugeSurvivors;
 
 				DruugeSurvivors =
 						GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
@@ -175,7 +177,7 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 					return true;
 
 				RepairSISBorder ();
-				SET_GAME_STATE (BOMB_UNPROTECTED, 1);
+				campaign_.set(StoryFlag::BombUnprotected, (1) != 0);
 			}
 		}
 
@@ -209,10 +211,11 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
-GenerateUtwig_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+UtwigSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
@@ -224,7 +227,7 @@ GenerateUtwig_generateEnergy (const SOLARSYS_STATE *solarSys,
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (UTWIG_BOMB))
+		if (campaign_.read(StoryFlag::UtwigBomb))
 		{	// already picked up
 			return 0;
 		}
@@ -235,10 +238,11 @@ GenerateUtwig_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateUtwig_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+UtwigSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (CurStarDescPtr->Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
@@ -250,16 +254,16 @@ GenerateUtwig_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	if (CurStarDescPtr->Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1))
 	{
-		assert (!GET_GAME_STATE (UTWIG_BOMB) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::UtwigBomb) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (UTWIG_BOMB, 1);
-		SET_GAME_STATE (UTWIG_BOMB_ON_SHIP, 1);
-		SET_GAME_STATE (DRUUGE_MANNER, 1);
-		SET_GAME_STATE (DRUUGE_VISITS, 0);
-		SET_GAME_STATE (DRUUGE_HOME_VISITS, 0);
+		campaign_.set(StoryFlag::UtwigBomb, (1) != 0);
+		campaign_.set(StoryFlag::UtwigBombOnShip, (1) != 0);
+		campaign_.set(StoryFlag::DruugeManner, (1) != 0);
+		campaign_.set(StoryCounter::DruugeVisits, 0);
+		campaign_.set(StoryCounter::DruugeHomeVisits, 0);
 
 		return true; // picked up
 	}
@@ -267,3 +271,8 @@ GenerateUtwig_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	(void) whichNode;
 	return false;
 }
+
+std::unique_ptr<SystemBehavior> createUtwigSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<UtwigSystemBehavior>(campaign);
+}
+} // namespace uqm

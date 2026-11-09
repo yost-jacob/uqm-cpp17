@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lander.h"
 #include "../planets.h"
 #include "../../build.h"
@@ -27,72 +29,78 @@
 #include "../../state.h"
 #include "libs/mathlib.h"
 
-
-static bool GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GeneratePkunk_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GeneratePkunk_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generatePkunkFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GeneratePkunk_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GeneratePkunk_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GeneratePkunk_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GeneratePkunk_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+#include <string.h>
+namespace uqm {
+namespace {
+class DruugeSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+bool
+DruugeSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	COUNT angle;
 
 	GenerateDefault_generatePlanets (solarSys);
 
-	solarSys->PlanetDesc[0].data_index = WATER_WORLD;
-	solarSys->PlanetDesc[0].NumPlanets = 1;
-	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 104L / 100;
-	angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
-			solarSys->PlanetDesc[0].location.y);
+	memmove (&solarSys->PlanetDesc[1], &solarSys->PlanetDesc[0],
+			sizeof (solarSys->PlanetDesc[0])
+			* solarSys->SunDesc[0].NumPlanets);
+	++solarSys->SunDesc[0].NumPlanets;
+
+	solarSys->PlanetDesc[0].data_index = DUST_WORLD;
+	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 50L / 100;
+	solarSys->PlanetDesc[0].NumPlanets = 0;
+	angle = HALF_CIRCLE - OCTANT;
 	solarSys->PlanetDesc[0].location.x =
 			COSINE (angle, solarSys->PlanetDesc[0].radius);
 	solarSys->PlanetDesc[0].location.y =
 			SINE (angle, solarSys->PlanetDesc[0].radius);
+	solarSys->PlanetDesc[0].rand_seed = MAKE_DWORD (
+			solarSys->PlanetDesc[0].location.x,
+			solarSys->PlanetDesc[0].location.y);
 
 	return true;
 }
 
-static bool
-GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+DruugeSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		if (StartSphereTracking (PKUNK_SHIP))
+		if (StartSphereTracking (DRUUGE_SHIP))
 		{
-			NotifyOthers (PKUNK_SHIP, IPNL_ALL_CLEAR);
+			NotifyOthers (DRUUGE_SHIP, IPNL_ALL_CLEAR);
 			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue (&GLOBAL (ip_group_q));
 			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
 
-			CloneShipFragment (PKUNK_SHIP,
+			CloneShipFragment (DRUUGE_SHIP,
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-			InitCommunication (PKUNK_CONVERSATION);
-
+			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			InitCommunication (DRUUGE_CONVERSATION);
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
@@ -107,9 +115,10 @@ GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			solarSys->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (PKUNK_RUINS_STRTAB));
-			if (GET_GAME_STATE (CLEAR_SPINDLE))
-			{	// Already picked up the Clear Spindle, skip the report
+					CaptureStringTable (
+							LoadStringTable (DRUUGE_RUINS_STRTAB));
+			if (campaign_.read(StoryFlag::RosySphere))
+			{	// Already picked up Rosy Sphere, skip the report
 				solarSys->SysInfo.PlanetInfo.DiscoveryString =
 						SetAbsStringTableIndex (
 						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
@@ -118,24 +127,26 @@ GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	}
 
 	GenerateDefault_generateOrbital (solarSys, world);
+
 	return true;
 }
 
-static bool
-GeneratePkunk_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+DruugeSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		GenerateDefault_landerReportCycle (solarSys);
 
 		// The artifact can be picked up from any ruin
-		if (!GET_GAME_STATE (CLEAR_SPINDLE))
-		{	// Just picked up the Clear Spindle from a ruin
+		if (!campaign_.read(StoryFlag::RosySphere))
+		{	// Just picked up the Rosy Sphere from a ruin
 			SetLanderTakeoff ();
 
-			SET_GAME_STATE (CLEAR_SPINDLE, 1);
-			SET_GAME_STATE (CLEAR_SPINDLE_ON_SHIP, 1);
+			campaign_.set(StoryFlag::RosySphere, (1) != 0);
+			campaign_.set(StoryFlag::RosySphereOnShip, (1) != 0);
 		}
 
 		return false; // do not remove the node
@@ -145,10 +156,11 @@ GeneratePkunk_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
-GeneratePkunk_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+DruugeSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
@@ -157,3 +169,8 @@ GeneratePkunk_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
+
+std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<DruugeSystemBehavior>(campaign);
+}
+} // namespace uqm

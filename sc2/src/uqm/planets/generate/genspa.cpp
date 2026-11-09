@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../lifeform.h"
 #include "../lander.h"
 #include "../planets.h"
@@ -28,43 +30,39 @@
 #include "../../nameref.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static COUNT GenerateSpathi_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static COUNT GenerateSpathi_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static bool GenerateSpathi_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-static bool GenerateSpathi_pickupLife (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
-
-
-const GenerateFunctions generateSpathiFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateSpathi_generatePlanets,
-	/* .generateMoons    = */ GenerateSpathi_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateSpathi_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateSpathi_generateEnergy,
-	/* .generateLife     = */ GenerateSpathi_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateSpathi_pickupEnergy,
-	/* .pickupLife       = */ GenerateSpathi_pickupLife,
+namespace uqm {
+namespace {
+class SpathiSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
+    bool pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
+}
 
 
-static bool
-GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+SpathiSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	PLANET_DESC *pMinPlanet;
 	COUNT angle;
 
@@ -78,16 +76,18 @@ GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
 	pMinPlanet->location.x = COSINE (angle, pMinPlanet->radius);
 	pMinPlanet->location.y = SINE (angle, pMinPlanet->radius);
 	pMinPlanet->data_index = WATER_WORLD;
-	if (GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+	if (campaign_.read(StoryFlag::SpathiShieldedSelves))
 		pMinPlanet->data_index |= PLANET_SHIELDED;
 	pMinPlanet->NumPlanets = 1;
 
 	return true;
 }
 
-static bool
-GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+bool
+SpathiSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *planet = &body;
 	COUNT angle;
 
 	GenerateDefault_generateMoons (solarSys, planet);
@@ -112,15 +112,17 @@ GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 	return true;
 }
 
-static bool
-GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+SpathiSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	DWORD rand_val;
 
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		/* Spathiwa's moon */
-		if (!GET_GAME_STATE (SPATHI_SHIELDED_SELVES)
+		if (!campaign_.read(StoryFlag::SpathiShieldedSelves)
 				&& StartSphereTracking (SPATHI_SHIP))
 		{
 			NotifyOthers (SPATHI_SHIP, IPNL_ALL_CLEAR);
@@ -131,7 +133,7 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			CloneShipFragment (SPATHI_SHIP, &GLOBAL (npc_built_ship_q),
 					INFINITE_FLEET);
 
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
+			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			InitCommunication (SPATHI_CONVERSATION);
 
@@ -143,7 +145,7 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			}
 			return true;
 		}
-		
+
 		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
 		rand_val = RandomContext_GetSeed (&SysGenRNG);
 
@@ -159,18 +161,18 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		solarSys->SysInfo.PlanetInfo.Weather = 0;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
-		if (!GET_GAME_STATE (UMGAH_BROADCASTERS))
+		if (!campaign_.read(StoryFlag::UmgahBroadcasters))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (UMGAH_BCS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (UMGAH_BCS_STRTAB));
-			if (!GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+			if (!campaign_.read(StoryFlag::SpathiShieldedSelves))
 			{	// The first report talks extensively about Spathi
 				// slave-shielding selves. If they never did so, the report
 				// makes no sense, so use an alternate.
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =	
+				solarSys->SysInfo.PlanetInfo.DiscoveryString =
 						SetAbsStringTableIndex (
 						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
 			}
@@ -200,21 +202,22 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		LoadPlanet (NULL);
 		return true;
 	}
-	
+
 	GenerateDefault_generateOrbital (solarSys, world);
 
 	return true;
 }
 
-static COUNT
-GenerateSpathi_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+SpathiSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (UMGAH_BROADCASTERS))
+		if (campaign_.read(StoryFlag::UmgahBroadcasters))
 		{	// already picked up
 			return 0;
 		}
@@ -225,19 +228,20 @@ GenerateSpathi_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateSpathi_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+SpathiSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
-		assert (!GET_GAME_STATE (UMGAH_BROADCASTERS) && whichNode == 0);
+		assert (!campaign_.read(StoryFlag::UmgahBroadcasters) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		SET_GAME_STATE (UMGAH_BROADCASTERS, 1);
-		SET_GAME_STATE (UMGAH_BROADCASTERS_ON_SHIP, 1);
+		campaign_.set(StoryFlag::UmgahBroadcasters, (1) != 0);
+		campaign_.set(StoryFlag::UmgahBroadcastersOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -246,10 +250,11 @@ GenerateSpathi_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
-GenerateSpathi_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+COUNT
+SpathiSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		#define NUM_EVIL_ONES  32
@@ -260,20 +265,21 @@ GenerateSpathi_generateLife (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
-static bool
-GenerateSpathi_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+bool
+SpathiSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!GET_GAME_STATE (SPATHI_CREATURES_ELIMINATED) &&
-				!GET_GAME_STATE (SPATHI_SHIELDED_SELVES));
+		assert (!campaign_.read(StoryFlag::SpathiCreaturesEliminated) &&
+				!campaign_.read(StoryFlag::SpathiShieldedSelves));
 
-		SET_GAME_STATE (SPATHI_CREATURES_EXAMINED, 1);
+		campaign_.set(StoryFlag::SpathiCreaturesExamined, (1) != 0);
 		if (countNodesRetrieved (&solarSys->SysInfo.PlanetInfo, BIOLOGICAL_SCAN)
 				+ 1 == NUM_EVIL_ONES)
 		{	// last creature picked up
-			SET_GAME_STATE (SPATHI_CREATURES_ELIMINATED, 1);
+			campaign_.set(StoryFlag::SpathiCreaturesEliminated, (1) != 0);
 		}
 
 		return true; // picked up
@@ -281,3 +287,8 @@ GenerateSpathi_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 
 	return GenerateDefault_pickupLife (solarSys, world, whichNode);
 }
+
+std::unique_ptr<SystemBehavior> createSpathiSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<SpathiSystemBehavior>(campaign);
+}
+} // namespace uqm

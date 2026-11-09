@@ -17,35 +17,33 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../planets.h"
 #include "../../comm.h"
-
-
-static bool GenerateSlylandro_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSlylandro_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-
-
-const GenerateFunctions generateSlylandroFunctions = {
-	/* .initNpcs         = */ GenerateDefault_initNpcs,
-	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateSlylandro_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateSlylandro_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class SlylandroSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
+}
 
 
-static bool
-GenerateSlylandro_generatePlanets (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+bool
+SlylandroSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	GenerateDefault_generatePlanets (solarSys);
 
 	solarSys->PlanetDesc[3].data_index = RED_GAS_GIANT;
@@ -54,10 +52,11 @@ GenerateSlylandro_generatePlanets (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSlylandro_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+bool
+SlylandroSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	if (matchWorld (solarSys, world, 3, MATCH_PLANET))
 	{
 		InitCommunication (SLYLANDRO_HOME_CONVERSATION);
@@ -68,3 +67,8 @@ GenerateSlylandro_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
+
+std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<SlylandroSystemBehavior>(campaign);
+}
+} // namespace uqm

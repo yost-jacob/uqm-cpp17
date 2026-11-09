@@ -17,6 +17,8 @@
  */
 
 #include "genall.h"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
 #include "../planets.h"
 #include "../../build.h"
 #include "../../comm.h"
@@ -25,40 +27,40 @@
 #include "../../grpinfo.h"
 #include "../../state.h"
 #include "libs/mathlib.h"
-
-
-static bool GenerateSaMatra_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateSaMatra_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSaMatra_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-
-static void BuildUrquanGuard (SOLARSYS_STATE *solarSys);
-
-
-const GenerateFunctions generateSaMatraFunctions = {
-	/* .initNpcs         = */ GenerateSaMatra_initNpcs,
-	/* .reinitNpcs       = */ GenerateSaMatra_reinitNpcs,
-	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
-	/* .generatePlanets  = */ GenerateSaMatra_generatePlanets,
-	/* .generateMoons    = */ GenerateSaMatra_generateMoons,
-	/* .generateName     = */ GenerateDefault_generateName,
-	/* .generateOrbital  = */ GenerateSaMatra_generateOrbital,
-	/* .generateMinerals = */ GenerateDefault_generateMinerals,
-	/* .generateEnergy   = */ GenerateDefault_generateEnergy,
-	/* .generateLife     = */ GenerateDefault_generateLife,
-	/* .pickupMinerals   = */ GenerateDefault_pickupMinerals,
-	/* .pickupEnergy     = */ GenerateDefault_pickupEnergy,
-	/* .pickupLife       = */ GenerateDefault_pickupLife,
+namespace uqm {
+namespace {
+class SaMatraSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool initNpcs(SOLARSYS_STATE &system) override;
+    bool reinitNpcs(SOLARSYS_STATE &system) override;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+private:
+    void BuildUrquanGuard(SOLARSYS_STATE *solarSys);
 };
+}
 
 
-static bool
-GenerateSaMatra_initNpcs (SOLARSYS_STATE *solarSys)
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+SaMatraSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
-	if (!GET_GAME_STATE (URQUAN_MESSED_UP))
+    auto *solarSys = &system;
+	if (!campaign_.read(StoryFlag::UrquanMessedUp))
 	{
 		BuildUrquanGuard (solarSys);
 	}
@@ -72,10 +74,11 @@ GenerateSaMatra_initNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
+bool
+SaMatraSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 {
-	BOOLEAN GuardEngaged;
+    auto *solarSys = &system;
+	bool GuardEngaged;
 	HIPGROUP hGroup;
 	HIPGROUP hNextGroup;
 
@@ -83,7 +86,7 @@ GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 	EncounterGroup = 0;
 	EncounterRace = -1;
 			// Do not want guards to chase the player
-	
+
 	GuardEngaged = FALSE;
 	for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
 			hGroup; hGroup = hNextGroup)
@@ -93,7 +96,7 @@ GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
 		hNextGroup = _GetSuccLink (GroupPtr);
 
-		if (GET_GAME_STATE (URQUAN_MESSED_UP))
+		if (campaign_.read(StoryFlag::UrquanMessedUp))
 		{
 			GroupPtr->task &= REFORM_GROUP;
 			GroupPtr->task |= FLEE | IGNORE_FLAGSHIP;
@@ -130,17 +133,20 @@ GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 	return true;
 }
 
-static bool
-GenerateSaMatra_generatePlanets (SOLARSYS_STATE *solarSys)
+bool
+SaMatraSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 {
+    auto *solarSys = &system;
 	GenerateDefault_generatePlanets (solarSys);
 	solarSys->PlanetDesc[4].NumPlanets = 1;
 	return true;
 }
 
-static bool
-GenerateSaMatra_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+bool
+SaMatraSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *planet = &body;
 	GenerateDefault_generateMoons (solarSys, planet);
 
 	if (matchWorld (solarSys, planet, 4, MATCH_PLANET))
@@ -161,9 +167,11 @@ GenerateSaMatra_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 	return true;
 }
 
-static bool
-GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool
+SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
+    auto *solarSys = &system;
+    auto *world = &body;
 	/* Samatra */
 	if (matchWorld (solarSys, world, 4, 0))
 	{
@@ -171,9 +179,9 @@ GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		ReinitQueue (&GLOBAL (ip_group_q));
 		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
 
-		if (!GET_GAME_STATE (URQUAN_MESSED_UP))
+		if (!campaign_.read(StoryFlag::UrquanMessedUp))
 		{
-			CloneShipFragment (!GET_GAME_STATE (KOHR_AH_FRENZY) ?
+			CloneShipFragment (!campaign_.read(StoryFlag::KohrAhFrenzy) ?
 					URQUAN_SHIP : BLACK_URQUAN_SHIP,
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 		}
@@ -192,13 +200,13 @@ GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		}
 
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-		SET_GAME_STATE (URQUAN_PROTECTING_SAMATRA, 1);
+		campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+		campaign_.set(StoryFlag::UrquanProtectingSamatra, (1) != 0);
 		InitCommunication (URQUAN_CONVERSATION);
 
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 		{
-			BOOLEAN UrquanSurvivors;
+			bool UrquanSurvivors;
 
 			UrquanSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
 
@@ -207,14 +215,14 @@ GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
 			if (UrquanSurvivors)
 			{
-				SET_GAME_STATE (URQUAN_PROTECTING_SAMATRA, 0);
+				campaign_.set(StoryFlag::UrquanProtectingSamatra, (0) != 0);
 			}
 			else
 			{
 				EncounterGroup = 0;
 				EncounterRace = -1;
 				GLOBAL (CurrentActivity) = IN_LAST_BATTLE | START_ENCOUNTER;
-				if (GET_GAME_STATE (YEHAT_CIVIL_WAR)
+				if (campaign_.read(StoryFlag::YehatCivilWar)
 						&& StartSphereTracking (YEHAT_SHIP)
 						&& EscortFeasibilityStudy (YEHAT_REBEL_SHIP))
 					InitCommunication (YEHAT_REBEL_CONVERSATION);
@@ -227,17 +235,17 @@ GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static void
-BuildUrquanGuard (SOLARSYS_STATE *solarSys)
+void
+SaMatraSystemBehavior::BuildUrquanGuard(SOLARSYS_STATE *solarSys)
 {
 	BYTE ship1, ship2;
 	BYTE b0, b1;
 	POINT org;
 	HIPGROUP hGroup, hNextGroup;
 
-	GLOBAL (BattleGroupRef) = GET_GAME_STATE_32 (SAMATRA_GRPOFFS0);
+	GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::SamatraGrpoffs0);
 
-	if (!GET_GAME_STATE (KOHR_AH_FRENZY))
+	if (!campaign_.read(StoryFlag::KohrAhFrenzy))
 	{
 		ship1 = URQUAN_SHIP;
 		ship2 = BLACK_URQUAN_SHIP;
@@ -256,7 +264,7 @@ BuildUrquanGuard (SOLARSYS_STATE *solarSys)
 	if (GLOBAL (BattleGroupRef) == 0)
 	{
 		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
-		SET_GAME_STATE_32 (SAMATRA_GRPOFFS0, GLOBAL (BattleGroupRef));
+		campaign_.set(StoryCounter::SamatraGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
 #define NUM_URQUAN_GUARDS0 12
@@ -322,3 +330,8 @@ BuildUrquanGuard (SOLARSYS_STATE *solarSys)
 	(void) solarSys;
 }
 
+
+std::unique_ptr<SystemBehavior> createSaMatraSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<SaMatraSystemBehavior>(campaign);
+}
+} // namespace uqm
