@@ -30,7 +30,6 @@ extern "C" {
 extern void InitPlanetInfo (void);
 extern void UninitPlanetInfo (void);
 extern void GetPlanetInfo (void);
-extern void PutPlanetInfo (void);
 
 /* Personal discovery adapter. Slots are zero-based; moon == -1 is the planet.
  * World adapters import after layout generation. Reset on new/load campaign.

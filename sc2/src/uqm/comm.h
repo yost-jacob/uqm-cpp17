@@ -114,7 +114,8 @@ extern void init_communication (void);
 extern void uninit_communication (void);
 
 extern COUNT InitCommunication (CONVERSATION which_comm);
-extern void RaceCommunication (void);
+// Legacy dialogue backend, invoked by native encounter orchestration.
+extern void HailAlien (void);
 
 #define WAIT_TRACK_ALL  ((COUNT)~0)
 extern void AlienTalkSegue (COUNT wait_track);

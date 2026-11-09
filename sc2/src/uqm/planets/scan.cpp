@@ -57,11 +57,8 @@ extern FRAME SpaceJunkFrame;
 
 static CONTEXT ScanContext;
 
-static POINT planetLoc;
-static RECT cursorRect;
-static FRAME eraseFrame;
 
-// ScanSystem() menu items
+// ScanSystem(system) menu items
 // The first three are from enum PlanetScanTypes in planets.h
 enum ScanMenuItems
 {
@@ -124,10 +121,10 @@ MakeScanValue (UNICODE *buf, long val, const UNICODE *extra)
 }
 
 static void
-GetPlanetTitle (UNICODE *buf, COUNT bufsize)
+GetPlanetTitle(const SOLARSYS_STATE &system, UNICODE *buf, COUNT bufsize)
 {
 	int val;
-	UNICODE *named = GetNamedPlanetaryBody ();
+	const UNICODE *named = uqm::namedPlanetaryBody(system);
 	if (named)
 	{
 		utf8StringCopy (buf, bufsize, named);
@@ -135,7 +132,7 @@ GetPlanetTitle (UNICODE *buf, COUNT bufsize)
 	}
 
 	// Unnamed body, use world type
-	val = pSolarSysState->pOrbitalDesc->data_index & ~PLANET_SHIELDED;
+	val = system.pOrbitalDesc->data_index & ~PLANET_SHIELDED;
 	if (val >= FIRST_GAS_GIANT)
 	{
 		sprintf (buf, "%s", GAME_STRING (SCAN_STRING_BASE + 4 + 51));
@@ -151,7 +148,7 @@ GetPlanetTitle (UNICODE *buf, COUNT bufsize)
 }
 
 static void
-PrintCoarseScanPC (void)
+PrintCoarseScanPC(const SOLARSYS_STATE &system)
 {
 #define SCAN_LEADING_PC 14
 	SDWORD val;
@@ -159,7 +156,7 @@ PrintCoarseScanPC (void)
 	RECT r;
 	UNICODE buf[200];
 
-	GetPlanetTitle (buf, sizeof (buf));
+	GetPlanetTitle(system, buf, sizeof (buf));
 
 	SetContext (PlanetContext);
 
@@ -184,7 +181,7 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE),
 			LEFT_SIDE_BASELINE_X_PC); // "Orbit: "
-	val = ((pSolarSysState->SysInfo.PlanetInfo.PlanetToSunDist * 100L
+	val = ((system.SysInfo.PlanetInfo.PlanetToSunDist * 100L
 			+ (EARTH_RADIUS >> 1)) / EARTH_RADIUS);
 	MakeScanValue (buf, val,
 			GAME_STRING (ORBITSCAN_STRING_BASE + 1)); // " a.u."
@@ -195,15 +192,15 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 2),
 			LEFT_SIDE_BASELINE_X_PC); // "Atmo: "
-	if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE)
+	if (system.SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE)
 		utf8StringCopy (buf, sizeof (buf),
 				GAME_STRING (ORBITSCAN_STRING_BASE + 3)); // "Super Thick"
-	else if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0)
+	else if (system.SysInfo.PlanetInfo.AtmoDensity == 0)
 		utf8StringCopy (buf, sizeof (buf),
 				GAME_STRING (ORBITSCAN_STRING_BASE + 4)); // "Vacuum"
 	else
 	{
-		val = (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity * 100
+		val = (system.SysInfo.PlanetInfo.AtmoDensity * 100
 			+ (EARTH_ATMOSPHERE >> 1)) / EARTH_ATMOSPHERE;
 		MakeScanValue (buf, val,
 				GAME_STRING (ORBITSCAN_STRING_BASE + 5)); // " atm"
@@ -216,7 +213,7 @@ PrintCoarseScanPC (void)
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 6),
 			LEFT_SIDE_BASELINE_X_PC); // "Temp: "
 	sprintf (buf, "%d" STR_DEGREE_SIGN " c",
-			pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature);
+			system.SysInfo.PlanetInfo.SurfaceTemperature);
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
@@ -224,13 +221,13 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 7),
 			LEFT_SIDE_BASELINE_X_PC); // "Weather: "
-	if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0)
+	if (system.SysInfo.PlanetInfo.AtmoDensity == 0)
 		t.pStr = GAME_STRING (ORBITSCAN_STRING_BASE + 8); // "None"
 	else
 	{
 		sprintf (buf, "%s %u",
 				GAME_STRING (ORBITSCAN_STRING_BASE + 9), // "Class"
-				pSolarSysState->SysInfo.PlanetInfo.Weather + 1);
+				system.SysInfo.PlanetInfo.Weather + 1);
 		t.pStr = buf;
 	}
 	t.CharCount = (COUNT)~0;
@@ -239,14 +236,14 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 10),
 			LEFT_SIDE_BASELINE_X_PC); // "Tectonics: "
-	if (PLANSIZE (pSolarSysState->SysInfo.PlanetInfo.PlanDataPtr->Type) ==
+	if (PLANSIZE (system.SysInfo.PlanetInfo.PlanDataPtr->Type) ==
 			GAS_GIANT)
 		t.pStr = GAME_STRING (ORBITSCAN_STRING_BASE + 8); // "None"
 	else
 	{
 		sprintf (buf, "%s %u",
 				GAME_STRING (ORBITSCAN_STRING_BASE + 9), // "Class"
-				pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1);
+				system.SysInfo.PlanetInfo.Tectonics + 1);
 		t.pStr = buf;
 	}
 	t.CharCount = (COUNT)~0;
@@ -256,9 +253,9 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 11),
 			RIGHT_SIDE_BASELINE_X_PC); // "Mass: "
-	val = pSolarSysState->SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.PlanetRadius;
 	val = ((DWORD) val * (DWORD) val * (DWORD) val / 100L
-			* pSolarSysState->SysInfo.PlanetInfo.PlanetDensity
+			* system.SysInfo.PlanetInfo.PlanetDensity
 			+ ((100L * 100L) >> 1)) / (100L * 100L);
 	if (val == 0)
 		val = 1;
@@ -271,7 +268,7 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 13),
 			RIGHT_SIDE_BASELINE_X_PC); // "Radius: "
-	val = pSolarSysState->SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.PlanetRadius;
 	MakeScanValue (buf, val,
 			GAME_STRING (ORBITSCAN_STRING_BASE + 12)); // " e.s."
 	t.pStr = buf;
@@ -281,7 +278,7 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 14),
 			RIGHT_SIDE_BASELINE_X_PC); // "Gravity: "
-	val = pSolarSysState->SysInfo.PlanetInfo.SurfaceGravity;
+	val = system.SysInfo.PlanetInfo.SurfaceGravity;
 	if (val == 0)
 		val = 1;
 	MakeScanValue (buf, val,
@@ -293,7 +290,7 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 16),
 			RIGHT_SIDE_BASELINE_X_PC); // "Day: "
-	val = (SDWORD)pSolarSysState->SysInfo.PlanetInfo.RotationPeriod
+	val = (SDWORD)system.SysInfo.PlanetInfo.RotationPeriod
 			* 10 / 24;
 	MakeScanValue (buf, val,
 			GAME_STRING (ORBITSCAN_STRING_BASE + 17)); // " days"
@@ -304,7 +301,7 @@ PrintCoarseScanPC (void)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 18),
 			RIGHT_SIDE_BASELINE_X_PC); // "Tilt: "
-	val = pSolarSysState->SysInfo.PlanetInfo.AxialTilt;
+	val = system.SysInfo.PlanetInfo.AxialTilt;
 	if (val < 0)
 		val = -val;
 	t.pStr = buf;
@@ -314,7 +311,7 @@ PrintCoarseScanPC (void)
 }
 
 static void
-PrintCoarseScan3DO (void)
+PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 {
 #define SCAN_LEADING 19
 	SDWORD val;
@@ -322,7 +319,7 @@ PrintCoarseScan3DO (void)
 	STAMP s;
 	UNICODE buf[200];
 
-	GetPlanetTitle (buf, sizeof (buf));
+	GetPlanetTitle(system, buf, sizeof (buf));
 
 	SetContext (PlanetContext);
 
@@ -350,7 +347,7 @@ PrintCoarseScan3DO (void)
 	t.align = ALIGN_LEFT;
 
 	t.pStr = buf;
-	val = ((pSolarSysState->SysInfo.PlanetInfo.PlanetToSunDist * 100L
+	val = ((system.SysInfo.PlanetInfo.PlanetToSunDist * 100L
 			+ (EARTH_RADIUS >> 1)) / EARTH_RADIUS);
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
@@ -358,11 +355,11 @@ PrintCoarseScan3DO (void)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE)
+	if (system.SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE)
 		strcpy (buf, STR_INFINITY_SIGN);
 	else
 	{
-		val = (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity * 100
+		val = (system.SysInfo.PlanetInfo.AtmoDensity * 100
 				+ (EARTH_ATMOSPHERE >> 1)) / EARTH_ATMOSPHERE;
 		MakeScanValue (buf, val, STR_EARTH_SIGN);
 	}
@@ -372,14 +369,14 @@ PrintCoarseScan3DO (void)
 
 	t.pStr = buf;
 	sprintf (buf, "%d" STR_DEGREE_SIGN,
-			pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature);
+			system.SysInfo.PlanetInfo.SurfaceTemperature);
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	sprintf (buf, "<%u>", pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0
-			? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
+	sprintf (buf, "<%u>", system.SysInfo.PlanetInfo.AtmoDensity == 0
+			? 0 : (system.SysInfo.PlanetInfo.Weather + 1));
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 	t.baseline.y += SCAN_LEADING;
@@ -387,9 +384,9 @@ PrintCoarseScan3DO (void)
 	t.pStr = buf;
 	sprintf (buf, "<%u>",
 			PLANSIZE (
-			pSolarSysState->SysInfo.PlanetInfo.PlanDataPtr->Type
+			system.SysInfo.PlanetInfo.PlanDataPtr->Type
 			) == GAS_GIANT
-			? 0 : (pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1));
+			? 0 : (system.SysInfo.PlanetInfo.Tectonics + 1));
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 
@@ -398,9 +395,9 @@ PrintCoarseScan3DO (void)
 	t.align = ALIGN_RIGHT;
 
 	t.pStr = buf;
-	val = pSolarSysState->SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.PlanetRadius;
 	val = ((DWORD) val * (DWORD) val * (DWORD) val / 100L
-			* pSolarSysState->SysInfo.PlanetInfo.PlanetDensity
+			* system.SysInfo.PlanetInfo.PlanetDensity
 			+ ((100L * 100L) >> 1)) / (100L * 100L);
 	if (val == 0)
 		val = 1;
@@ -410,7 +407,7 @@ PrintCoarseScan3DO (void)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = pSolarSysState->SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.PlanetRadius;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 
 	t.CharCount = (COUNT)~0;
@@ -418,7 +415,7 @@ PrintCoarseScan3DO (void)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = pSolarSysState->SysInfo.PlanetInfo.SurfaceGravity;
+	val = system.SysInfo.PlanetInfo.SurfaceGravity;
 	if (val == 0)
 		val = 1;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
@@ -427,7 +424,7 @@ PrintCoarseScan3DO (void)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = pSolarSysState->SysInfo.PlanetInfo.AxialTilt;
+	val = system.SysInfo.PlanetInfo.AxialTilt;
 	if (val < 0)
 		val = -val;
 	sprintf (buf, "%d" STR_DEGREE_SIGN, val);
@@ -436,7 +433,7 @@ PrintCoarseScan3DO (void)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = (SDWORD)pSolarSysState->SysInfo.PlanetInfo.RotationPeriod
+	val = (SDWORD)system.SysInfo.PlanetInfo.RotationPeriod
 			* 10 / 24;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
@@ -444,47 +441,51 @@ PrintCoarseScan3DO (void)
 }
 
 static void
-initPlanetLocationImage (void)
+initPlanetLocationImage(SOLARSYS_STATE &system)
 {
+    auto &cursor = system.worlds->scan;
 	FRAME cursorFrame;
 
 	// Get the cursor image
 	cursorFrame = SetAbsFrameIndex (MiscDataFrame, FLASH_INDEX);
-	cursorRect.extent = GetFrameBounds (cursorFrame);
+	cursor.cursorRect.extent = GetFrameBounds (cursorFrame);
 }
 
 static void
-savePlanetLocationImage (void)
+savePlanetLocationImage(SOLARSYS_STATE &system)
 {
+    auto &cursor = system.worlds->scan;
 	RECT r;
 	FRAME cursorFrame = SetAbsFrameIndex (MiscDataFrame, FLASH_INDEX);
 	HOT_SPOT hs = GetFrameHot (cursorFrame);
 
-	DestroyDrawable (ReleaseDrawable (eraseFrame));
+	DestroyDrawable (ReleaseDrawable (cursor.eraseFrame));
 
-	r = cursorRect;
+	r = cursor.cursorRect;
 	r.corner.x -= hs.x;
 	r.corner.y -= hs.y;
-	eraseFrame = CaptureDrawable (CopyContextRect (&r));
-	SetFrameHot (eraseFrame, hs);
+	cursor.eraseFrame = CaptureDrawable (CopyContextRect (&r));
+	SetFrameHot (cursor.eraseFrame, hs);
 }
 
 static void
-restorePlanetLocationImage (void)
+restorePlanetLocationImage(const SOLARSYS_STATE &system)
 {
+    const auto &cursor = system.worlds->scan;
 	STAMP s;
 
-	s.origin = cursorRect.corner;
-	s.frame = eraseFrame; // saved image
+	s.origin = cursor.cursorRect.corner;
+	s.frame = cursor.eraseFrame; // saved image
 	DrawStamp (&s);
 }
 
 static void
-drawPlanetCursor (BOOLEAN filled)
+drawPlanetCursor(const SOLARSYS_STATE &system, BOOLEAN filled)
 {
+    const auto &cursor = system.worlds->scan;
 	STAMP s;
 
-	s.origin = cursorRect.corner;
+	s.origin = cursor.cursorRect.corner;
 	s.frame = SetAbsFrameIndex (MiscDataFrame, FLASH_INDEX);
 	if (filled)
 		DrawFilledStamp (&s);
@@ -493,38 +494,41 @@ drawPlanetCursor (BOOLEAN filled)
 }
 
 static void
-setPlanetCursorLoc (POINT new_pt)
+setPlanetCursorLoc(SOLARSYS_STATE &system, POINT new_pt)
 {
+    auto &cursor = system.worlds->scan;
 	new_pt.x >>= MAG_SHIFT;
 	new_pt.y >>= MAG_SHIFT;
-	cursorRect.corner = new_pt;
+	cursor.cursorRect.corner = new_pt;
 }
 
 static void
-setPlanetLoc (POINT new_pt, BOOLEAN restoreOld)
+setPlanetLoc(SOLARSYS_STATE &system, POINT new_pt, BOOLEAN restoreOld)
 {
-	planetLoc = new_pt;
+    auto &cursor = system.worlds->scan;
+	cursor.location = new_pt;
 
 	SetContext (ScanContext);
 	if (restoreOld)
-		restorePlanetLocationImage ();
-	setPlanetCursorLoc (new_pt);
-	savePlanetLocationImage ();
+		restorePlanetLocationImage(system);
+	setPlanetCursorLoc(system, new_pt);
+	savePlanetLocationImage(system);
 }
 
 static void
-flashPlanetLocation (void)
+flashPlanetLocation(SOLARSYS_STATE &system)
 {
+    auto &cursor = system.worlds->scan;
 #define FLASH_FRAME_DELAY  (ONE_SECOND / 16)
-	static BYTE c = 0x00;
-	static int val = -2;
-	static POINT prevPt;
-	static TimeCount NextTime = 0;
+	auto &c = cursor.flashColor;
+	auto &val = cursor.flashStep;
+	auto &prevPt = cursor.previousFlashLocation;
+	auto &NextTime = cursor.nextFlash;
 	bool locChanged;
 	TimeCount Now = GetTimeCounter ();
 
-	locChanged = prevPt.x != cursorRect.corner.x
-				|| prevPt.y != cursorRect.corner.y;
+	locChanged = prevPt.x != cursor.cursorRect.corner.x
+				|| prevPt.y != cursor.cursorRect.corner.y;
 
 	if (!locChanged && Now < NextTime)
 		return; // nothing to do
@@ -533,7 +537,7 @@ flashPlanetLocation (void)
 	{	// Reset the flashing cycle
 		c = 0x00;
 		val = -2;
-		prevPt = cursorRect.corner;
+		prevPt = cursor.cursorRect.corner;
 		
 		NextTime = Now + FLASH_FRAME_DELAY;
 	}
@@ -551,11 +555,11 @@ flashPlanetLocation (void)
 
 	SetContext (ScanContext);
 	SetContextForeGroundColor (BUILD_COLOR (MAKE_RGB15 (c, c, c), c));
-	drawPlanetCursor (TRUE);
+	drawPlanetCursor(system, TRUE);
 }
 
 void
-RedrawSurfaceScan (const POINT *newLoc)
+uqm::redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLoc)
 {
 	CONTEXT OldContext;
 
@@ -566,8 +570,8 @@ RedrawSurfaceScan (const POINT *newLoc)
 	DrawScannedObjects (TRUE);
 	if (newLoc)
 	{
-		setPlanetLoc (*newLoc, FALSE);
-	 	drawPlanetCursor (FALSE);
+		setPlanetLoc(system, *newLoc, FALSE);
+		drawPlanetCursor(system, FALSE);
 	}
 	UnbatchGraphics ();
 
@@ -575,11 +579,11 @@ RedrawSurfaceScan (const POINT *newLoc)
 }
 
 static COUNT
-getLandingFuelNeeded (void)
+getLandingFuelNeeded(const SOLARSYS_STATE &system)
 {
 	COUNT fuel;
 
-	fuel = pSolarSysState->SysInfo.PlanetInfo.SurfaceGravity << 1;
+	fuel = system.SysInfo.PlanetInfo.SurfaceGravity << 1;
 	if (fuel > 3 * FUEL_TANK_SCALE)
 		fuel = 3 * FUEL_TANK_SCALE;
 
@@ -613,27 +617,28 @@ spawnFwiffo (void)
 
 // Returns TRUE if the parent menu should remain
 static BOOLEAN
-DispatchLander (void)
+DispatchLander(SOLARSYS_STATE &system)
 {
-	SIZE landingFuel = getLandingFuelNeeded ();
+    auto &cursor = system.worlds->scan;
+	SIZE landingFuel = getLandingFuelNeeded(system);
 
 	EraseCoarseScan ();
 
 
 	DeltaSISGauges (0, -landingFuel, 0);
 	SetContext (ScanContext);
-	drawPlanetCursor (FALSE);
+	drawPlanetCursor(system, FALSE);
 
-    if (!pSolarSysState->worlds->session) throw std::logic_error("lander requires its owning session");
-    auto &session = *pSolarSysState->worlds->session;
-    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, *pSolarSysState, planetLoc))) {
+    if (!system.worlds->session) throw std::logic_error("lander requires its owning session");
+    auto &session = *system.worlds->session;
+    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, system, cursor.location))) {
         GLOBAL(CurrentActivity) |= exit->kind == uqm::SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
         return FALSE;
     }
 	if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 		return FALSE;
 
-	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI) == 1)
+	if (uqm::systemCampaign(system).read(uqm::StoryCounter::FoundPlutoSpathi) == 1)
 	{
 		/* Create Fwiffo group and go into comm with it */
 		spawnFwiffo ();
@@ -649,16 +654,19 @@ DispatchLander (void)
 	return TRUE;
 }
 
-typedef struct
+struct LandingSiteSelection
 {
-	bool success;
+    SOLARSYS_STATE &system;
+    bool success;
 			// true when player selected a location
-} PICK_PLANET_STATE;
+};
 
 static BOOLEAN
-DoPickPlanetSide (MENU_STATE *pMS)
+DoPickPlanetSide(MENU_STATE *pMS)
 {
-	auto *pickState = static_cast<PICK_PLANET_STATE *>(pMS->privData);
+	auto *pickState = static_cast<LandingSiteSelection *>(pMS->privData);
+	auto &system = pickState->system;
+    auto &cursor = system.worlds->scan;
 	DWORD TimeIn = GetTimeCounter ();
 	bool select, cancel;
 
@@ -687,7 +695,7 @@ DoPickPlanetSide (MENU_STATE *pMS)
 		SIZE dy = 0;
 		POINT new_pt;
 
-		new_pt = planetLoc;
+		new_pt = cursor.location;
 
 		if (CurrentInputState.menu[KEY_MENU_LEFT])
 			dx = -1;
@@ -714,15 +722,15 @@ DoPickPlanetSide (MENU_STATE *pMS)
 		{
 			new_pt.y += dy;
 			if (new_pt.y < 0 || new_pt.y >= (MAP_HEIGHT << MAG_SHIFT))
-				new_pt.y = planetLoc.y;
+				new_pt.y = cursor.location.y;
 		}
 
-		if (!pointsEqual (new_pt, planetLoc))
+		if (!pointsEqual (new_pt, cursor.location))
 		{
-			setPlanetLoc (new_pt, TRUE);
+			setPlanetLoc(system, new_pt, TRUE);
 		}
 
-		flashPlanetLocation ();
+		flashPlanetLocation(system);
 
 		UnbatchGraphics ();
 
@@ -750,11 +758,12 @@ eraseLandingFuelUsage (void)
 }
 
 static BOOLEAN
-PickPlanetSide (void)
+PickPlanetSide(SOLARSYS_STATE &system)
 {
+    auto &cursor = system.worlds->scan;
 	MENU_STATE MenuState;
-	PICK_PLANET_STATE PickState;
-	COUNT fuel = getLandingFuelNeeded ();
+	LandingSiteSelection PickState{system, false};
+	COUNT fuel = getLandingFuelNeeded(system);
 	bool retval = TRUE;
 
 	memset (&MenuState, 0, sizeof MenuState);
@@ -769,8 +778,8 @@ PickPlanetSide (void)
 
 	drawLandingFuelUsage (fuel);
 	// Set the current flash location
-	setPlanetCursorLoc (planetLoc);
-	savePlanetLocationImage ();
+	setPlanetCursorLoc(system, cursor.location);
+	savePlanetLocationImage(system);
 
 	InitLander (0);
 
@@ -783,11 +792,11 @@ PickPlanetSide (void)
 	eraseLandingFuelUsage ();
 	if (PickState.success)
 	{	// player chose a location
-		retval = DispatchLander ();
+		retval = DispatchLander(system);
 	}
 	else
 	{	// player bailed out
-		restorePlanetLocationImage ();
+		restorePlanetLocationImage(system);
 	}
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
@@ -859,7 +868,7 @@ DrawScannedStuff (COUNT y, COUNT scan)
 			
 			// flash the node from the smallest size to node size
 			// Get the node size for mineral, or number of transitions
-			// for other scan types (was set by GeneratePlanetSide())
+			// for other scan types (was set by generatePlanetSide)
 			nodeSize = GetFrameIndex (ElementPtr->next.image.frame)
 					- GetFrameIndex (ElementPtr->current.image.frame);
 			if (dy > nodeSize)
@@ -1023,8 +1032,9 @@ ScanPlanet (COUNT scanType)
 }
 
 static BOOLEAN
-DoScan (MENU_STATE *pMS)
+DoScan(MENU_STATE *pMS)
 {
+    auto &system = *static_cast<SOLARSYS_STATE *>(pMS->privData);
 	bool select, cancel;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
@@ -1043,15 +1053,15 @@ DoScan (MENU_STATE *pMS)
 		{
 			COUNT fuel_required;
 
-			if ((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
-					|| (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity ==
+			if ((system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+					|| (system.SysInfo.PlanetInfo.AtmoDensity ==
 						GAS_GIANT_ATMOSPHERE))
 			{	// cannot dispatch to shielded planets or gas giants
 				PlayMenuSound (MENU_SOUND_FAILURE);
 				return TRUE;
 			}
 
-			fuel_required = getLandingFuelNeeded ();
+			fuel_required = getLandingFuelNeeded(system);
 			if (GLOBAL_SIS (FuelOnBoard) < fuel_required
 					|| GLOBAL_SIS (NumLanders) == 0
 					|| GLOBAL_SIS (CrewEnlisted) == 0)
@@ -1062,7 +1072,7 @@ DoScan (MENU_STATE *pMS)
 
 			SetFlashRect (NULL);
 
-			if (!PickPlanetSide ())
+			if (!PickPlanetSide(system))
 				return FALSE;
 
 			DrawMenuStateStrings (PM_MIN_SCAN, pMS->CurState);
@@ -1072,7 +1082,7 @@ DoScan (MENU_STATE *pMS)
 		}
 
 		// Various scans
-		if (pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
+		if (system.pOrbitalDesc->data_index & PLANET_SHIELDED)
 		{	// cannot scan shielded planets
 			PlayMenuSound (MENU_SOUND_FAILURE);
 			return TRUE;
@@ -1086,8 +1096,8 @@ DoScan (MENU_STATE *pMS)
 		}
 	}
 	else if (optWhichMenu == OPT_PC ||
-			(!(pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
-			&& pSolarSysState->SysInfo.PlanetInfo.AtmoDensity !=
+			(!(system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+			&& system.SysInfo.PlanetInfo.AtmoDensity !=
 				GAS_GIANT_ATMOSPHERE))
 	{
 		DoMenuChooser (pMS, PM_MIN_SCAN);
@@ -1150,18 +1160,25 @@ DestroyScanContext (void)
 }
 
 void
-ScanSystem (void)
+uqm::runScan(SOLARSYS_STATE &system)
 {
-    uqm::ExplorationViewScope view{*pSolarSysState->worlds, uqm::ExplorationView::Scan};
-	MENU_STATE MenuState;
-
-	memset (&MenuState, 0, sizeof MenuState);
+    auto &cursor = system.worlds->scan;
+    uqm::ExplorationViewScope view{*system.worlds, uqm::ExplorationView::Scan};
+	struct CursorCleanup {
+        uqm::SurfaceScanState &cursor;
+        ~CursorCleanup() {
+            DestroyDrawable(ReleaseDrawable(cursor.eraseFrame));
+            cursor.eraseFrame = nullptr;
+        }
+    } cleanup{cursor};
+    MENU_STATE MenuState{};
+    MenuState.privData = &system;
 
 	GetScanContext (NULL);
 
 	if (optWhichMenu == OPT_3DO &&
-			((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
-			|| pSolarSysState->SysInfo.PlanetInfo.AtmoDensity ==
+			((system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+			|| system.SysInfo.PlanetInfo.AtmoDensity ==
 				GAS_GIANT_ATMOSPHERE))
 	{
 		MenuState.CurState = EXIT_SCAN;
@@ -1169,10 +1186,10 @@ ScanSystem (void)
 	else
 	{
 		MenuState.CurState = AUTO_SCAN;
-		planetLoc.x = (MAP_WIDTH >> 1) << MAG_SHIFT;
-		planetLoc.y = (MAP_HEIGHT >> 1) << MAG_SHIFT;
+		cursor.location.x = (MAP_WIDTH >> 1) << MAG_SHIFT;
+		cursor.location.y = (MAP_HEIGHT >> 1) << MAG_SHIFT;
 
-		initPlanetLocationImage ();
+		initPlanetLocationImage(system);
 		SetContext (ScanContext);
 		DrawScannedObjects (FALSE);
 	}
@@ -1181,9 +1198,9 @@ ScanSystem (void)
 	SetFlashRect (SFR_MENU_3DO);
 
 	if (optWhichCoarseScan == OPT_PC)
-		PrintCoarseScanPC ();
+		PrintCoarseScanPC(system);
 	else
-		PrintCoarseScan3DO ();
+		PrintCoarseScan3DO(system);
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
@@ -1199,8 +1216,7 @@ ScanSystem (void)
 	EraseCoarseScan ();
 	UnbatchGraphics ();
 
-	DestroyDrawable (ReleaseDrawable (eraseFrame));
-	eraseFrame = NULL;
+
 }
 
 static void
@@ -1247,7 +1263,7 @@ generateBioNode (SOLARSYS_STATE *system, ELEMENT *NodeElementPtr,
 }
 
 void
-GeneratePlanetSide (void)
+uqm::generatePlanetSide(SOLARSYS_STATE &system)
 {
 	SIZE scan;
 	BYTE life_init_tab[MAX_LIFE_VARIATION];
@@ -1256,7 +1272,7 @@ GeneratePlanetSide (void)
 			// yet, otherwise, it is 1 more than the creature type.
 
 	InitDisplayList ();
-	if (pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
+	if (system.pOrbitalDesc->data_index & PLANET_SHIELDED)
 		return;
 
 	memset (life_init_tab, 0, sizeof life_init_tab);
@@ -1269,8 +1285,8 @@ GeneratePlanetSide (void)
 		f = SetAbsFrameIndex (MiscDataFrame,
 				NUM_SCANDOT_TRANSITIONS * (scan - ENERGY_SCAN));
 
-		num_nodes = callGenerateForScanType (pSolarSysState,
-				pSolarSysState->pOrbitalDesc, GENERATE_ALL, scan, NULL);
+		num_nodes = callGenerateForScanType (&system,
+				system.pOrbitalDesc, GENERATE_ALL, scan, NULL);
 
 		while (num_nodes--)
 		{
@@ -1278,7 +1294,7 @@ GeneratePlanetSide (void)
 			ELEMENT *NodeElementPtr;
 			NODE_INFO info;
 
-			if (isNodeRetrieved (&pSolarSysState->SysInfo.PlanetInfo,
+			if (isNodeRetrieved (&system.SysInfo.PlanetInfo,
 					scan, num_nodes))
 				continue;
 
@@ -1288,8 +1304,8 @@ GeneratePlanetSide (void)
 
 			LockElement (hNodeElement, &NodeElementPtr);
 
-			callGenerateForScanType (pSolarSysState,
-					pSolarSysState->pOrbitalDesc, num_nodes,
+			callGenerateForScanType (&system,
+					system.pOrbitalDesc, num_nodes,
 					scan, &info);
 
 			NodeElementPtr->scan_node = MAKE_WORD (scan, num_nodes + 1);
@@ -1322,11 +1338,11 @@ GeneratePlanetSide (void)
 				{
 					NodeElementPtr->mass_points = MAX_SCROUNGED;
 					DisplayArray[NodeElementPtr->PrimIndex].Object.Stamp.frame =
-							pSolarSysState->PlanetSideFrame[1];
+							system.PlanetSideFrame[1];
 				}
 				else /* (scan == BIOLOGICAL_SCAN) */
 				{
-					generateBioNode (pSolarSysState, NodeElementPtr,
+					generateBioNode (&system, NodeElementPtr,
 							life_init_tab, info.type);
 				}
 			}
@@ -1381,10 +1397,14 @@ void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
     DrawStarBackGround();
     DrawDefaultPlanetSphere();
     DrawPlanetSurfaceBorder();
-    RedrawSurfaceScan(nullptr);
+    uqm::redrawSurfaceScan(system, nullptr);
     UnbatchGraphics();
     if (view == ExplorationView::Scan) {
-        if (optWhichCoarseScan == OPT_PC) PrintCoarseScanPC();
-        else PrintCoarseScan3DO();
+        if (optWhichCoarseScan == OPT_PC) PrintCoarseScanPC(system);
+        else PrintCoarseScan3DO(system);
     }
 }
+
+// Remaining C planet-loop entry points resolve context only at the boundary.
+void ScanSystem(void) { uqm::runScan(*pSolarSysState); }
+void GeneratePlanetSide(void) { uqm::generatePlanetSide(*pSolarSysState); }

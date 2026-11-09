@@ -1,3 +1,4 @@
+#include "uqm/encounter_runtime.hpp"
 #include "uqm/system_behavior.hpp"
 #include "uqm/orbital_encounter.hpp"
 #include "uqm/system_builders.hpp"
@@ -20,6 +21,7 @@ unsigned communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
 CONVERSATION lastConversation{};
 bool sphereTracked = false;
 std::function<void()> dialogueHook;
+uqm::CampaignState *encounterCampaign = nullptr;
 struct EncounterQueues {
     QUEUE groups{}, ships{};
     ACTIVITY activity = GLOBAL(CurrentActivity);
@@ -505,6 +507,8 @@ BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_reques
         bool resumed = false;
         unsigned destroyed = 0;
         dialogueHook = [&] {
+            BOOST_TEST(encounterCampaign == &session.player().campaign());
+            BOOST_TEST(encounterCampaign != &uqm::gameSession().player().campaign());
             BOOST_TEST(!resumed);
             BOOST_TEST(destroyed == 0u);
             if (load) session.requestLoad(3);
@@ -565,4 +569,12 @@ BOOST_AUTO_TEST_CASE(orbital_encounter_scope_restores_on_early_return_but_preser
         BOOST_TEST(groupsLoaded == (flag ? 0u : 1u));
         BOOST_TEST(bool(GLOBAL(CurrentActivity) & START_INTERPLANETARY) == bool(flag));
     }
+}
+
+// Dialogue/UI are simulated; use the real campaign reference provided by the mode.
+COUNT uqm::EncounterRuntime::communicate(CONVERSATION conversation) {
+    encounterCampaign = &campaign_;
+    const auto result = InitCommunication(conversation);
+    encounterCampaign = nullptr;
+    return result;
 }

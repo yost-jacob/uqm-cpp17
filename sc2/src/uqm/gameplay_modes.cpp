@@ -1,4 +1,6 @@
 #include "game_state.hpp"
+#include "encounter_runtime.hpp"
+#include "starmap.h"
 #include "system_runtime.hpp"
 #include "hyper_navigation.hpp"
 #include "game_menu.hpp"
@@ -63,7 +65,10 @@ ModeResult finishMode(GameSession &session) {
     if (!(GLOBAL(CurrentActivity) & CHECK_LOAD)
             && (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
                 || session.player().crew() == static_cast<COUNT>(~0u))) {
-        if (session.player().campaign().read(StoryFlag::KohrAhKilledAll)) InitCommunication(BLACKURQ_CONVERSATION);
+        if (session.player().campaign().read(StoryFlag::KohrAhKilledAll)) {
+            EncounterRuntime encounter{session.player().campaign(), CurStarDescPtr};
+            encounter.communicate(BLACKURQ_CONVERSATION);
+        }
         else if (GLOBAL(CurrentActivity) & CHECK_RESTART) GLOBAL(CurrentActivity) &= ~CHECK_RESTART;
         return SessionExit::title();
     }
@@ -106,13 +111,13 @@ enum class EncounterKind { Communication, Starbase, InstallBomb };
 class EncounterMode final : public GameMode {
 public:
     EncounterMode(GameSession &session, EncounterKind kind)
-        : GameMode(session.stateOwner(), session.playerId()), session_(session), kind_(kind) {}
+        : GameMode(session.stateOwner(), session.playerId()), session_(session), kind_(kind), encounter_(session.player().campaign(), CurStarDescPtr) {}
     ModeResult run() override {
         if (kind_ == EncounterKind::InstallBomb) InstallBombAtEarth();
         else {
             GLOBAL(CurrentActivity) |= START_ENCOUNTER;
             if (kind_ == EncounterKind::Starbase) VisitStarBase();
-            else RaceCommunication();
+            else encounter_.run();
         }
         if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))) {
             GLOBAL(CurrentActivity) &= ~START_ENCOUNTER;
@@ -124,6 +129,7 @@ public:
 private:
     GameSession &session_;
     EncounterKind kind_;
+    EncounterRuntime encounter_;
 };
 class LoadMenuMode final : public GameMode {
 public:

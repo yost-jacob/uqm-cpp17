@@ -17,6 +17,7 @@
  */
 
 #include "hyper_navigation.hpp"
+#include "device_menu.hpp"
 #include "game_state.hpp"
 #include "battle.h"
 #include "clock.h"
@@ -62,7 +63,6 @@ static void arilou_space_collision(ELEMENT *ElementPtr0,
 static void encounter_transition(ELEMENT *ElementPtr);
 static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1);
-static BOOLEAN DoHyperspaceMenu(MENU_STATE *pMS);
 static void hyper_transition_callback(ELEMENT *element);
 static HELEMENT getSisElement(void);
 static FRAME hyperstars[3];
@@ -1654,7 +1654,7 @@ uqm::HyperSpaceNavigation::DoHyperspaceMenu(MENU_STATE *pMS)
 	switch (pMS->CurState)
 	{
 		case EQUIP_DEVICE:
-			select = DevicesMenu ();
+			select = uqm::DeviceMenu{campaign_}.run();
 			if (campaign_.read(uqm::StoryCounter::PortalCounter))
 			{	// A player-induced portal to QuasiSpace is opening
 				return FALSE;
@@ -1709,7 +1709,10 @@ UnbatchGraphics ();
 
 
 	memset (&MenuState, 0, sizeof (MenuState));
-	MenuState.InputFunc = ::DoHyperspaceMenu;
+	MenuState.privData = this;
+    MenuState.InputFunc = [](MENU_STATE *menu) {
+        return static_cast<HyperSpaceNavigation *>(menu->privData)->DoHyperspaceMenu(menu);
+    };
 	MenuState.Initialized = TRUE;
 	MenuState.CurState = STARMAP;
 
@@ -1778,7 +1781,6 @@ static void arilou_space_collision(ELEMENT *ElementPtr0,
 static void encounter_transition(ELEMENT *ElementPtr) { activeNavigation().encounter_transition(ElementPtr); }
 static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().encounter_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
-static BOOLEAN DoHyperspaceMenu(MENU_STATE *pMS) { return activeNavigation().DoHyperspaceMenu(pMS); }
 void HyperspaceMenu(void) { activeNavigation().HyperspaceMenu(); }
 
 namespace uqm {

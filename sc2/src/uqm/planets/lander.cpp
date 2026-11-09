@@ -837,7 +837,7 @@ CheckObjectCollision (COUNT index)
 				{	// Node retrieved, remove from the surface
 					setNodeRetrieved (&planetSideDesc->system.SysInfo.PlanetInfo,
 							scan, which_node);
-                    PutPlanetInfo (); // Publish accepted permanent retrieval immediately.
+                    uqm::publishPlanetProgress(planetSideDesc->system); // Publish accepted permanent retrieval immediately.
 					ElementPtr->state_flags |= DISAPPEARING;
 				}
 				UnlockElement (hElement);
@@ -1252,7 +1252,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 		}
 	}
 
-	RedrawSurfaceScan (&new_pt);
+	uqm::redrawSurfaceScan(planetSideDesc->system, &new_pt);
 
 	if (planetSideDesc->lander_flags & KILL_CREW)
 		DeltaLanderCrew (-1, LIGHTNING_DISASTER);
@@ -1739,7 +1739,7 @@ drawTakeoffBackdrop (void)
 	BatchGraphics ();
 	DrawStarBackGround ();
 	DrawPlanetSurfaceBorder ();
-	RedrawSurfaceScan (NULL);
+	uqm::redrawSurfaceScan(planetSideDesc->system, nullptr);
 	ScreenTransition (3, &r);
 	UnbatchGraphics ();
 

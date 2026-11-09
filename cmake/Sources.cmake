@@ -198,7 +198,9 @@ set(UQM_SOURCES
     sc2/src/uqm/cyborg.cpp
     sc2/src/uqm/demo.c
     sc2/src/uqm/displist.cpp
-    sc2/src/uqm/encount.c
+    sc2/src/uqm/encount.cpp
+    sc2/src/uqm/encounter_runtime.cpp
+    sc2/src/uqm/encounter_context.cpp
     sc2/src/uqm/flash.c
     sc2/src/uqm/fmv.c
     sc2/src/uqm/galaxy.c
@@ -248,7 +250,8 @@ set(UQM_SOURCES
     sc2/src/uqm/plandata.c
     sc2/src/uqm/planets/calc.c
     sc2/src/uqm/planets/cargo.c
-    sc2/src/uqm/planets/devices.c
+    sc2/src/uqm/planets/devices.cpp
+    sc2/src/uqm/device_inventory.cpp
     sc2/src/uqm/planets/generate/genand.cpp
     sc2/src/uqm/planets/generate/genburv.cpp
     sc2/src/uqm/planets/generate/genchmmr.cpp

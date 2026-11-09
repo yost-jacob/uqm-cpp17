@@ -4,7 +4,17 @@
 #include "planets/planets.h"
 #include "game_state.hpp"
 #include <cassert>
-namespace uqm { enum class ExplorationView { Flight, Orbit, Scan }; }
+namespace uqm {
+enum class ExplorationView { Flight, Orbit, Scan };
+struct SurfaceScanState {
+    POINT location{}, previousFlashLocation{};
+    RECT cursorRect{};
+    FRAME eraseFrame = nullptr; // Owned by the active scan visit's cleanup scope.
+    BYTE flashColor = 0;
+    int flashStep = -2;
+    TimeCount nextFlash = 0;
+};
+}
 // Opaque to C. The production entry scope owns this context; the C loop borrows
 // it only until return. Campaign lifetime is guaranteed by the enclosing mode.
 struct UQM_SYSTEM_RUNTIME {
@@ -13,7 +23,9 @@ struct UQM_SYSTEM_RUNTIME {
     std::unique_ptr<uqm::SolarSystem> system;
     uqm::GameSession *session = nullptr;
     uqm::ExplorationView view = uqm::ExplorationView::Flight;
+    uqm::SurfaceScanState scan{};
     SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
+    TimeCount nextFlightFrame = 0;
 };
 namespace uqm {
 // Compatibility helpers borrow the explicitly attached exploration context.
@@ -48,6 +60,16 @@ private:
     UQM_SYSTEM_RUNTIME &runtime_;
     ExplorationView previous_;
 };
+// Prepared system context is required; no process-wide selected-star lookup.
+const STAR_DESC &systemStar(const SOLARSYS_STATE &system);
+const UNICODE *namedPlanetaryBody(const SOLARSYS_STATE &system);
+// Orbit descriptor and world layout must already be attached. Loading replaces
+// local masks; publishing merges permanent retrieval bits without awarding cargo.
+void loadPlanetProgress(SOLARSYS_STATE &system);
+void publishPlanetProgress(SOLARSYS_STATE &system);
+void runScan(SOLARSYS_STATE &system);
+void generatePlanetSide(SOLARSYS_STATE &system);
+void redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLocation);
 void redrawExploration(SOLARSYS_STATE &system, ExplorationView view);
 // Native engine entry, called only by SolarSystemExploration::run.
 void runExploration(UQM_SYSTEM_RUNTIME &runtime);

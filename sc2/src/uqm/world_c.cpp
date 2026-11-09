@@ -61,6 +61,26 @@ void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQ
 }
 
 }
+namespace uqm {
+void loadPlanetProgress(SOLARSYS_STATE &system) {
+    auto &native = runtime(system);
+    const auto world = orbitalId(system, native);
+    importSystemDiscoveries(native, systemStar(system), *system.worlds);
+    const auto progress = native.progress(world);
+    auto &masks = system.SysInfo.PlanetInfo.ScanRetrieveMask;
+    masks[MINERAL_SCAN] = static_cast<DWORD>(progress.minerals.to_ulong());
+    masks[BIOLOGICAL_SCAN] = static_cast<DWORD>(progress.biologicals.to_ulong());
+    masks[ENERGY_SCAN] = static_cast<DWORD>(progress.energy.to_ulong());
+}
+void publishPlanetProgress(SOLARSYS_STATE &system) {
+    auto &native = runtime(system);
+    const auto &masks = system.SysInfo.PlanetInfo.ScanRetrieveMask;
+    const WorldProgress progress{std::bitset<32>{masks[MINERAL_SCAN]},
+            std::bitset<32>{masks[BIOLOGICAL_SCAN]}, std::bitset<32>{masks[ENERGY_SCAN]}};
+    native.mergeProgress(orbitalId(system, native), progress);
+}
+} // namespace uqm
+
 extern "C" {
 void InitPlanetInfo(void) {
     try {
@@ -69,26 +89,10 @@ void InitPlanetInfo(void) {
     } catch (...) { std::abort(); }
 }
 void UninitPlanetInfo(void) { DeleteStateFile(STARINFO_FILE); }
+// Retained C compatibility entry; production exploration supplies its system.
 void GetPlanetInfo(void) {
-    try {
-        auto &native = runtime(*pSolarSysState);
-        const auto world = orbitalId(*pSolarSysState, native);
-        importSystemDiscoveries(native, *GetStar(native.star().value), *pSolarSysState->worlds); // Recheck after in-place checkpoint load.
-        const auto progress = native.progress(world);
-        auto &masks = pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask;
-        masks[MINERAL_SCAN] = static_cast<DWORD>(progress.minerals.to_ulong());
-        masks[BIOLOGICAL_SCAN] = static_cast<DWORD>(progress.biologicals.to_ulong());
-        masks[ENERGY_SCAN] = static_cast<DWORD>(progress.energy.to_ulong());
-    } catch (...) { std::abort(); }
-}
-void PutPlanetInfo(void) {
-    try {
-        auto &native = runtime(*pSolarSysState);
-        const auto &masks = pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask;
-        const uqm::WorldProgress progress{std::bitset<32>{masks[MINERAL_SCAN]},
-                std::bitset<32>{masks[BIOLOGICAL_SCAN]}, std::bitset<32>{masks[ENERGY_SCAN]}};
-        native.mergeProgress(orbitalId(*pSolarSysState, native), progress);
-    } catch (...) { std::abort(); }
+    try { uqm::loadPlanetProgress(*pSolarSysState); }
+    catch (...) { std::abort(); }
 }
 
 void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {

@@ -1,4 +1,5 @@
 #include "system_behavior.hpp"
+#include "encounter_runtime.hpp"
 #include "game_state.hpp"
 #include "globdata.h"
 #include <stdexcept>
@@ -8,11 +9,11 @@ namespace {
 // result borrows the suspended caller's stack and is consumed before it resumes.
 class SystemEncounterMode final : public GameMode {
 public:
-    SystemEncounterMode(GameSession &session, CONVERSATION conversation, COUNT &result)
+    SystemEncounterMode(GameSession &session, const STAR_DESC *star, CONVERSATION conversation, COUNT &result)
         : GameMode(session.stateOwner(), session.playerId()), session_(session),
-          conversation_(conversation), result_(result) {}
+          conversation_(conversation), result_(result), encounter_(session.player().campaign(), star) {}
     ModeResult run() override {
-        result_ = InitCommunication(conversation_);
+        result_ = encounter_.communicate(conversation_);
         if (auto exit = session_.menuExit()) return *exit;
         return uqm::ModeCompleted{};
     }
@@ -20,6 +21,7 @@ private:
     GameSession &session_;
     CONVERSATION conversation_;
     COUNT &result_;
+    EncounterRuntime encounter_;
 };
 }
 void SystemBehavior::attachSession(GameSession &session) {
@@ -30,9 +32,12 @@ void SystemBehavior::attachSession(GameSession &session) {
     session_ = &session;
 }
 COUNT SystemBehavior::communicate(CONVERSATION conversation) {
-    if (!session_) return InitCommunication(conversation); // Legacy debug/test entry.
+    if (!session_) { // Native debug/test entry still uses the supplied campaign.
+        EncounterRuntime encounter{campaign_, star_};
+        return encounter.communicate(conversation);
+    }
     COUNT result = 0;
-    if (auto exit = session_->swapGameMode(std::make_unique<SystemEncounterMode>(*session_, conversation, result))) {
+    if (auto exit = session_->swapGameMode(std::make_unique<SystemEncounterMode>(*session_, star_, conversation, result))) {
         // Let the existing C exploration stack unwind using its established flags.
         GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
     }
