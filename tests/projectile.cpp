@@ -38,6 +38,7 @@ struct CountingProjectile final : Projectile {
 extern "C" {
 QUEUE disp_q{};
 HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { return nullptr; }
+FRAME IncFrameIndex(FRAME frame) { return reinterpret_cast<FRAME>(reinterpret_cast<std::uintptr_t>(frame) + 1); }
 COUNT GetFrameIndex(FRAME frame) { return static_cast<COUNT>(reinterpret_cast<std::uintptr_t>(frame)); }
 FRAME SetAbsFrameIndex(FRAME, COUNT index) { return reinterpret_cast<FRAME>(std::uintptr_t(index)); }
 SIZE TrackShip(ELEMENT *, COUNT *facing) {
@@ -153,18 +154,18 @@ BOOST_FIXTURE_TEST_CASE(projectile_pool_owns_behavior_through_free_reset_and_des
 {
     unsigned destroyed = 0;
     auto a = AllocLink(&disp_q), b = AllocLink(&disp_q);
-    uqm::detail::bindProjectile(disp_q, a, std::make_unique<CountingProjectile>(destroyed));
-    uqm::detail::bindProjectile(disp_q, b, std::make_unique<CountingProjectile>(destroyed));
-    BOOST_REQUIRE(uqm::detail::borrowProjectile(disp_q, a));
+    uqm::detail::bindEntity(disp_q, a, std::make_unique<CountingProjectile>(destroyed));
+    uqm::detail::bindEntity(disp_q, b, std::make_unique<CountingProjectile>(destroyed));
+    BOOST_REQUIRE(uqm::detail::borrowEntity(disp_q, a));
     ELEMENT prediction = *static_cast<ELEMENT *>(a);
-    BOOST_TEST(uqm::detail::borrowProjectile(disp_q, &prediction) == nullptr);
+    BOOST_TEST(uqm::detail::borrowEntity(disp_q, &prediction) == nullptr);
     FreeLink(&disp_q, a);
     BOOST_TEST(destroyed == 1u);
-    BOOST_TEST(uqm::detail::borrowProjectile(disp_q, a) == nullptr);
+    BOOST_TEST(uqm::detail::borrowEntity(disp_q, a) == nullptr);
     ReinitQueue(&disp_q);
     BOOST_TEST(destroyed == 2u);
     auto c = AllocLink(&disp_q);
-    uqm::detail::bindProjectile(disp_q, c, std::make_unique<CountingProjectile>(destroyed));
+    uqm::detail::bindEntity(disp_q, c, std::make_unique<CountingProjectile>(destroyed));
     UninitQueue(&disp_q);
     BOOST_TEST(destroyed == 3u);
     InitQueue(&disp_q, 2, QUEUE_ELEMENT);

@@ -77,7 +77,7 @@ if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
     add_executable(uqm-build-tests
         tests/build.cpp tests/game_state.cpp tests/game_modes.cpp sc2/src/uqm/projectile.cpp sc2/src/uqm/projectile_legacy.cpp sc2/src/uqm/sis_weapons.cpp
-        tests/projectile.cpp sc2/src/uqm/velocity.c sc2/src/uqm/sis_state.cpp sc2/src/uqm/fleet.cpp sc2/src/uqm/fleet_legacy.cpp tests/fleet.cpp
+        tests/projectile.cpp tests/combat_entities.cpp sc2/src/uqm/gravity_field.cpp sc2/src/uqm/animation_effect.cpp sc2/src/uqm/combat_entity_legacy.cpp sc2/src/uqm/velocity.c sc2/src/uqm/sis_state.cpp sc2/src/uqm/fleet.cpp sc2/src/uqm/fleet_legacy.cpp tests/fleet.cpp
         tests/encounter_context.cpp sc2/src/uqm/encounter_context.cpp
         tests/device_inventory.cpp sc2/src/uqm/device_inventory.cpp
         tests/conversation_mode.cpp sc2/src/uqm/conversation_mode.cpp

@@ -24,55 +24,35 @@
 #include "setup.h"
 #include "sounds.h"
 #include "weapon.h"
+#include "combat_entity_legacy.hpp"
+#include "animation_effect.hpp"
 #include "libs/mathlib.h"
 
 
-void
-spawn_planet (void)
-{
-	HELEMENT hPlanetElement;
-	
-	hPlanetElement = AllocElement ();
-	if (hPlanetElement)
-	{
-		ELEMENT *PlanetElementPtr;
-		extern FRAME planet[];
 
-		LockElement (hPlanetElement, &PlanetElementPtr);
-		PlanetElementPtr->playerNr = NEUTRAL_PLAYER_NUM;
-		PlanetElementPtr->hit_points = 200;
-		PlanetElementPtr->state_flags = APPEARING;
-		PlanetElementPtr->life_span = NORMAL_LIFE + 1;
-		SetPrimType (&DisplayArray[PlanetElementPtr->PrimIndex], STAMP_PRIM);
-		PlanetElementPtr->current.image.farray = planet;
-		PlanetElementPtr->current.image.frame =
-				PlanetElementPtr->current.image.farray[0];
-		PlanetElementPtr->collision_func = collision;
-		PlanetElementPtr->postprocess_func =
-				(void (*) (struct element *ElementPtr))CalculateGravity;
-		ZeroVelocityComponents (&PlanetElementPtr->velocity);
-		do
-		{
-			PlanetElementPtr->current.location.x =
-					WRAP_X (DISPLAY_ALIGN_X (TFB_Random ()));
-			PlanetElementPtr->current.location.y =
-					WRAP_Y (DISPLAY_ALIGN_Y (TFB_Random ()));
-		} while (CalculateGravity (PlanetElementPtr)
-				|| TimeSpaceMatterConflict (PlanetElementPtr));
-		PlanetElementPtr->mass_points = PlanetElementPtr->hit_points;
-		UnlockElement (hPlanetElement);
 
-		PutElement (hPlanetElement);
-	}
+namespace {
+class Asteroid final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &self) override;
+    void expire(ELEMENT &self) override;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override {
+        collision(&self, &point, &other, &otherPoint);
+    }
+};
+class Rubble final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &self) override { uqm::combat::advanceAnimation(self); }
+    void expire(ELEMENT &self) override { spawn_asteroid(&self); }
+};
 }
 
 extern FRAME asteroid[];
 
-static void
-spawn_rubble (ELEMENT *AsteroidElementPtr)
-{
+void Asteroid::expire(ELEMENT &self) {
+    auto *AsteroidElementPtr = &self;
 	HELEMENT hRubbleElement;
-	
+
 	hRubbleElement = AllocElement ();
 	if (hRubbleElement)
 	{
@@ -89,15 +69,17 @@ spawn_rubble (ELEMENT *AsteroidElementPtr)
 		RubbleElementPtr->current.image.frame =
 				SetAbsFrameIndex (asteroid[0], ANGLE_TO_FACING (FULL_CIRCLE));
 		RubbleElementPtr->current.location = AsteroidElementPtr->current.location;
-		RubbleElementPtr->preprocess_func = animation_preprocess;
-		RubbleElementPtr->death_func = spawn_asteroid;
+		uqm::detail::attachEntity(*RubbleElementPtr, std::make_unique<Rubble>(),
+            uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Expiration);
+
 		UnlockElement (hRubbleElement);
 	}
+
 }
 
-static void
-asteroid_preprocess (ELEMENT *ElementPtr)
-{
+
+void Asteroid::update(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else
@@ -116,7 +98,9 @@ asteroid_preprocess (ELEMENT *ElementPtr)
 
 		ElementPtr->turn_wait = (unsigned char)(ElementPtr->thrust_wait & ((1 << 7) - 1));
 	}
+
 }
+
 
 void
 spawn_asteroid (ELEMENT *ElementPtr)
@@ -182,9 +166,10 @@ spawn_asteroid (ELEMENT *ElementPtr)
 				(BYTE)TFB_Random () & (BYTE)((1 << 2) - 1);
 		AsteroidElementPtr->thrust_wait |=
 				(BYTE)TFB_Random () & (BYTE)(1 << 7);
-		AsteroidElementPtr->preprocess_func = asteroid_preprocess;
-		AsteroidElementPtr->death_func = spawn_rubble;
-		AsteroidElementPtr->collision_func = collision;
+		uqm::detail::attachEntity(*AsteroidElementPtr, std::make_unique<Asteroid>(),
+            uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision | uqm::detail::EntityHooks::Expiration);
+
+
 		UnlockElement (hAsteroidElement);
 
 		PutElement (hAsteroidElement);
@@ -404,4 +389,3 @@ AbandonShip (ELEMENT *ShipPtr, ELEMENT *TargetPtr,
 		UnlockElement (hCrew);
 	}
 }
-

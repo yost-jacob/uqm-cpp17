@@ -22,6 +22,9 @@
 #include "uqm/ship_tuning.hpp"
 #include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
+#include "uqm/combat_entity_legacy.hpp"
+#include "uqm/animation_effect.hpp"
+#include "uqm/animation_effect.hpp"
 
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
@@ -248,7 +251,7 @@ void MelnormeCharge::postprocess(ELEMENT &element) {
 			COUNT angle;
 
 			EPtr->life_span = chargeStats().lifetime;
-			auto *next = dynamic_cast<MelnormeCharge *>(uqm::detail::borrowProjectile(disp_q, EPtr));
+			auto *next = dynamic_cast<MelnormeCharge *>(uqm::detail::borrowEntity(disp_q, EPtr));
             assert(next);
             next->release(*EPtr);
 			EPtr->postprocess_func = 0;
@@ -272,20 +275,7 @@ void MelnormeCharge::postprocess(ELEMENT &element) {
 }
 
 
-static void
-animate (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
-		ElementPtr->state_flags |= CHANGING;
 
-		ElementPtr->turn_wait = ElementPtr->next_turn;
-	}
-}
 
 void MelnormeCharge::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     auto *ElementPtr0 = &self;
@@ -315,7 +305,7 @@ void MelnormeCharge::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT 
 				+ (ElementPtr0->turn_wait & ~ReverseDir);
 		BlastElementPtr->turn_wait = BlastElementPtr->next_turn = 0;
 		{
-			BlastElementPtr->preprocess_func = animate;
+			uqm::combat::attachAnimation(*BlastElementPtr);
 		}
 
 		BlastElementPtr->current.image.farray = ElementPtr0->next.image.farray;
@@ -376,9 +366,17 @@ public:
     }
 };
 }
-static void
-confuse_preprocess (ELEMENT *ElementPtr)
-{
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class ConfusionEffect final : public uqm::combat::CombatEntity {
+public:
+
+    void update(ELEMENT &self) override;
+};
+}
+void ConfusionEffect::update(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	if (!(ElementPtr->state_flags & NONSOLID))
 	{
 		ElementPtr->next.image.frame = SetAbsFrameIndex (
@@ -423,7 +421,7 @@ confuse_preprocess (ELEMENT *ElementPtr)
 				eptr->state_flags = FINITE_LIFE | NONSOLID | CHANGING;
 				eptr->life_span = 1;
 				eptr->current = eptr->next = ElementPtr->next;
-				eptr->preprocess_func = confuse_preprocess;
+				uqm::detail::attachEntity(*eptr, std::make_unique<ConfusionEffect>(), uqm::detail::EntityHooks::Update);
 				SetPrimType (&(GLOBAL (DisplayArray))[eptr->PrimIndex],
 						STAMP_PRIM);
 
@@ -438,7 +436,9 @@ confuse_preprocess (ELEMENT *ElementPtr)
 
 		UnlockElement (ElementPtr->hTarget);
 	}
+
 }
+
 
 void MelnormeConfusion::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     auto *ElementPtr0 = &self;
@@ -484,7 +484,7 @@ void MelnormeConfusion::collide(ELEMENT &self, POINT &point, ELEMENT &other, POI
 				ConfusionPtr->next = ConfusionPtr->current;
 				ConfusionPtr->playerNr = ElementPtr0->playerNr;
 				ConfusionPtr->state_flags = FINITE_LIFE | NONSOLID | CHANGING;
-				ConfusionPtr->preprocess_func = confuse_preprocess;
+				uqm::detail::attachEntity(*ConfusionPtr, std::make_unique<ConfusionEffect>(), uqm::detail::EntityHooks::Update);
 				SetPrimType (
 						&(GLOBAL (DisplayArray))[ConfusionPtr->PrimIndex],
 						NO_PRIM
@@ -664,10 +664,10 @@ melnorme_postprocess (ELEMENT *ElementPtr)
 		{
 			ELEMENT *CMissilePtr;
 			LockElement (Confusion, &CMissilePtr);
-			
+
 			ProcessSound (SetAbsSoundIndex (
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), CMissilePtr);
-			
+
 			UnlockElement (Confusion);
 			PutElement (Confusion);
 			StarShipPtr->special_counter =

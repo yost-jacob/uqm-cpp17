@@ -1,11 +1,10 @@
 #ifndef UQM_PROJECTILE_HPP_
 #define UQM_PROJECTILE_HPP_
-#include "element.h"
+#include "combat_entity.hpp"
 #include "ship_tuning.hpp"
 #include <cstdint>
 #include <memory>
 #include <optional>
-namespace uqm::detail { struct ProjectileAccess; }
 namespace uqm::combat {
 struct ProjectileDefinition {
     ProjectileStats stats{};
@@ -16,7 +15,7 @@ struct ProjectileDefinition {
 // Initial values supplied by the ship/mount. These are not a second mutable
 // physics state: after publication the engine's ELEMENT owns live kinematics.
 struct ProjectileLaunch { POINT position{}; COUNT facing = 0; VELOCITY_DESC velocity{}; };
-class Projectile {
+class Projectile : public CombatEntity {
 public:
     // Validates finite-lifetime stats, representable velocity and facing 0..15.
     Projectile(ProjectileDefinition definition, ProjectileLaunch launch);
@@ -30,15 +29,10 @@ public:
     virtual void update(ELEMENT &element) = 0;
     // Opt into the engine's post-movement stage when created. A behavior can
     // also enable it later through the compatibility boundary (held crystals).
-    virtual bool hasPostprocess() const noexcept { return false; }
-    virtual void postprocess(ELEMENT &) {}
     // Both elements and contact points are borrowed for this collision only.
     // Default handling applies the existing weapon damage and explosion rules.
     virtual void collide(ELEMENT &self, POINT &selfPoint, ELEMENT &other, POINT &otherPoint);
 private:
-    friend struct uqm::detail::ProjectileAccess;
-    ElementProcessFunc *visualUpdate_ = nullptr;
-    ElementCollisionFunc *legacyCollision_ = nullptr;
     ProjectileDefinition definition_;
     ProjectileLaunch launch_;
 };

@@ -1,0 +1,25 @@
+#ifndef UQM_COMBAT_PLANET_HPP_
+#define UQM_COMBAT_PLANET_HPP_
+#include "combat_entity.hpp"
+#include "gravity_field.hpp"
+namespace uqm::combat {
+struct PlanetProperties {
+    GravityField gravity{};
+    COUNT spriteIndex = 0;
+};
+class Planet final : public CombatEntity {
+public:
+    explicit Planet(PlanetProperties properties = {}) : properties_(properties) {}
+    const PlanetProperties &properties() const noexcept { return properties_; }
+    void update(ELEMENT &) override {} // Static body; physics runs after motion.
+    void postprocess(ELEMENT &self) override;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+private:
+    PlanetProperties properties_;
+};
+// Creates and enqueues a pool-owned planet using the loaded combat planet art.
+// Art supplies its pixel collision mask; spriteIndex selects a valid frame.
+// Returns a borrowed engine handle, or null on pool exhaustion.
+HELEMENT spawnPlanet(PlanetProperties properties = {});
+}
+#endif

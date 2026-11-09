@@ -205,6 +205,10 @@ set(UQM_SOURCES
     sc2/src/uqm/displist.cpp
     sc2/src/uqm/combat_mode.cpp
     sc2/src/uqm/campaign_combat.cpp
+    sc2/src/uqm/gravity_field.cpp
+    sc2/src/uqm/combat_planet.cpp
+    sc2/src/uqm/animation_effect.cpp
+    sc2/src/uqm/combat_entity_legacy.cpp
     sc2/src/uqm/projectile.cpp
     sc2/src/uqm/projectile_legacy.cpp
     sc2/src/uqm/sis_weapons.cpp
@@ -243,7 +247,7 @@ set(UQM_SOURCES
     sc2/src/uqm/energy_behavior.cpp
     sc2/src/uqm/world_c.cpp
     sc2/src/uqm/game_state_bits.c
-    sc2/src/uqm/gravity.c
+    sc2/src/uqm/gravity.cpp
     sc2/src/uqm/grpinfo.c
     sc2/src/uqm/hyper.cpp
     sc2/src/uqm/navigation_context.cpp
@@ -256,7 +260,7 @@ set(UQM_SOURCES
     sc2/src/uqm/loadship.cpp
     sc2/src/uqm/master.c
     sc2/src/uqm/menu.c
-    sc2/src/uqm/misc.c
+    sc2/src/uqm/misc.cpp
     sc2/src/uqm/oscill.c
     sc2/src/uqm/outfit.c
     sc2/src/uqm/pickship.c

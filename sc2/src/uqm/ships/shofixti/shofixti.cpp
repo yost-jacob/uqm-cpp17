@@ -240,8 +240,7 @@ destruct_preprocess (ELEMENT *ElementPtr)
    when it self-destructs, we'll need to see some Orz functions */
 #include "../orz/orz.h"
 static bool isOrzMarine(const ELEMENT &element) noexcept {
-    return element.preprocess_func == intruder_preprocess
-        && element.collision_func == marine_collision;
+    return uqm::combat::isBoardingMarine(element);
 }
 
 static void
@@ -319,7 +318,7 @@ shofixti_destruct_death (ELEMENT *ShipPtr)
 	StartShipExplosion (ShipPtr, false);
 	// We process the explosion ourselves because it is different
 	ShipPtr->preprocess_func = destruct_preprocess;
-	
+
 	PlaySound (SetAbsSoundIndex (StarShip->RaceDescPtr->ship_data.ship_sounds,
 			1), CalcSoundPosition (ShipPtr), ShipPtr, GAME_SOUND_PRIORITY + 1);
 
@@ -349,7 +348,7 @@ self_destruct (ELEMENT *ElementPtr)
 	HELEMENT hDestruct;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
-		
+
 	// Spawn a temporary element, which dies in this same frame, in order
 	// to defer the effects of the glory explosion.
 	// It will be the last element (or one of the last) for which the
@@ -486,7 +485,7 @@ uqm::combat::makeShofixtiShip()
 
 		/* Weapon doesn't work as well */
 		new_shofixti_desc.characteristics.weapon_wait = 10;
-		
+
 		/* Simulate VUX limpets */
 		for (i = 0; i < NumLimpets; ++i)
 		{

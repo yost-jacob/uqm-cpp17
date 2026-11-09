@@ -318,8 +318,8 @@ void KohrAhSaw::postprocess(ELEMENT &element) {
         // The engine moves a newly fired saw beside its source in the queue.
         // ELEMENT copies do not copy pool ownership; copy the native phase too.
         if (const auto *saw = dynamic_cast<const KohrAhSaw *>(
-                uqm::detail::borrowProjectile(disp_q, ElementPtr)))
-            uqm::detail::bindProjectile(disp_q, hElement,
+                uqm::detail::borrowEntity(disp_q, ElementPtr)))
+            uqm::detail::bindEntity(disp_q, hElement,
                 saw->clone());
 		ListElementPtr->PrimIndex = primIndex;
 		(GLOBAL (DisplayArray))[primIndex] =

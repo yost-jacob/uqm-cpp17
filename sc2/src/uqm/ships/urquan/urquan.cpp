@@ -22,6 +22,9 @@
 #include "uqm/ship_tuning.hpp"
 #include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
+#include "uqm/combat_entity_legacy.hpp"
+#include "uqm/animation_effect.hpp"
+#include "uqm/entity_handle.hpp"
 
 #include "uqm/globdata.h"
 
@@ -145,9 +148,22 @@ initialize_fusion (ELEMENT *ShipPtr, HELEMENT FusionArray[])
 	return (1);
 }
 
-static void
-fighter_postprocess (ELEMENT *ElementPtr)
-{
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class Fighter final : public uqm::combat::CombatEntity {
+public:
+    explicit Fighter(uqm::combat::EntityHandle carrier) : carrier_(carrier) {}
+
+    void postprocess(ELEMENT &self) override;
+    void update(ELEMENT &self) override;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+private:
+    uqm::combat::EntityHandle carrier_;
+};
+}
+void Fighter::postprocess(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	HELEMENT Laser;
 	STARSHIP *StarShipPtr;
 	LASER_BLOCK LaserBlock;
@@ -180,11 +196,12 @@ fighter_postprocess (ELEMENT *ElementPtr)
 
 	ElementPtr->postprocess_func = 0;
 	ElementPtr->thrust_wait = FighterWeaponWait;
+
 }
 
-static void
-fighter_preprocess (ELEMENT *ElementPtr)
-{
+
+void Fighter::update(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -211,12 +228,14 @@ fighter_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->state_flags |= IGNORE_SIMILAR;
 		else if (delta_x)
 		{
-			LockElement (StarShipPtr->hShip, &eptr);
+            const auto carrier = carrier_.resolve(disp_q);
+            if (!carrier) { ElementPtr->life_span = 0; return; }
+            eptr = &carrier->get();
 			delta_x = eptr->current.location.x
 					- ElementPtr->current.location.x;
 			delta_y = eptr->current.location.y
 					- ElementPtr->current.location.y;
-			UnlockElement (StarShipPtr->hShip);
+
 			delta_x = WRAP_DELTA_X (delta_x);
 			delta_y = WRAP_DELTA_Y (delta_y);
 			facing = NORMALIZE_FACING (
@@ -259,7 +278,7 @@ fighter_preprocess (ELEMENT *ElementPtr)
 						(BYTE)NORMALIZE_FACING (
 						ANGLE_TO_FACING (ARCTAN (delta_x, delta_y))
 						);
-				ElementPtr->postprocess_func = fighter_postprocess;
+				uqm::detail::enableEntityHooks(*ElementPtr, uqm::detail::EntityHooks::Postprocess);
 			}
 
 			if (Enroute)
@@ -294,12 +313,15 @@ fighter_preprocess (ELEMENT *ElementPtr)
 				&ElementPtr->velocity, FighterSpeed, facing
 				);
 	}
+
 }
 
-static void
-fighter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void Fighter::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr0, &StarShipPtr);
@@ -317,6 +339,7 @@ fighter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 			LockElement (hFighterElement, &FighterElementPtr);
 			primIndex = FighterElementPtr->PrimIndex;
 			*FighterElementPtr = *ElementPtr0;
+            uqm::detail::attachEntity(*FighterElementPtr, std::make_unique<Fighter>(carrier_), uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision);
 			FighterElementPtr->PrimIndex = primIndex;
 			(GLOBAL (DisplayArray))[primIndex] =
 					(GLOBAL (DisplayArray))[ElementPtr0->PrimIndex];
@@ -381,7 +404,9 @@ fighter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 		--StarShipPtr->RaceDescPtr->characteristics.special_wait;
 	}
+
 }
+
 
 static void
 spawn_fighters (ELEMENT *ElementPtr)
@@ -418,9 +443,9 @@ spawn_fighters (ELEMENT *ElementPtr)
 		SetPrimType (&(GLOBAL (DisplayArray))[FighterElementPtr->PrimIndex],
 				STAMP_PRIM);
 		{
-			FighterElementPtr->preprocess_func = fighter_preprocess;
+			uqm::detail::attachEntity(*FighterElementPtr, std::make_unique<Fighter>(uqm::combat::EntityHandle::capture(disp_q, *ElementPtr)), uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision);
 			FighterElementPtr->postprocess_func = 0;
-			FighterElementPtr->collision_func = fighter_collision;
+
 			FighterElementPtr->death_func = NULL;
 		}
 

@@ -338,7 +338,7 @@ gate_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 				ElementPtr0->mass_points = GateDamage;
 			else
 				ElementPtr0->mass_points = 50;
-				
+
 			ElementPtr0->hit_points = GateHits;
 			hBlastElement = weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 			ElementPtr0->state_flags &= ~(DISAPPEARING | NONSOLID | COLLISION);
@@ -614,7 +614,7 @@ void SaMatraSentinel::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT
 
 	if (ElementPtr1->playerNr == NPC_PLAYER_NUM)
 	{
-		if (dynamic_cast<SaMatraSentinel *>(uqm::detail::borrowProjectile(disp_q, ElementPtr1))
+		if (dynamic_cast<SaMatraSentinel *>(uqm::detail::borrowEntity(disp_q, ElementPtr1))
                 && ElementPtr0->preprocess_func == ElementPtr1->preprocess_func
 				&& !(ElementPtr0->state_flags & DEFY_PHYSICS)
 				&& (pPt0->x != ElementPtr0->IntersectControl.IntersectStamp.origin.x

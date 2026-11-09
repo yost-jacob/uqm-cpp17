@@ -21,6 +21,8 @@
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include "resinst.h"
+#include "uqm/combat_entity_legacy.hpp"
+#include "uqm/animation_effect.hpp"
 
 #include "uqm/colors.h"
 #include "uqm/globdata.h"
@@ -114,24 +116,19 @@ static const RACE_DESC &chmmrDefinition() {
     return definition;
 }
 
-static void
-animate (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
-		ElementPtr->state_flags |= CHANGING;
 
-		ElementPtr->turn_wait = ElementPtr->next_turn;
-	}
+
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class ChmmrBeam final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &) override {}
+    void expire(ELEMENT &self) override;
+};
 }
-
-static void
-laser_death (ELEMENT *ElementPtr)
-{
+void ChmmrBeam::expire(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -184,7 +181,7 @@ laser_death (ELEMENT *ElementPtr)
 					ANGLE_TO_FACING (FULL_CIRCLE) << 1
 					);
 
-			IonSpotsPtr->preprocess_func = animate;
+			uqm::combat::attachAnimation(*IonSpotsPtr);
 
 			SetElementStarShip (IonSpotsPtr, StarShipPtr);
 
@@ -198,7 +195,9 @@ laser_death (ELEMENT *ElementPtr)
 
 		UnlockElement (StarShipPtr->hShip);
 	}
+
 }
+
 
 static COUNT
 initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
@@ -238,7 +237,7 @@ initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 		LockElement (LaserArray[0], &LaserPtr);
 
 		LaserPtr->mass_points = 2;
-		LaserPtr->death_func = laser_death;
+		uqm::detail::attachEntity(*LaserPtr, std::make_unique<ChmmrBeam>(), uqm::detail::EntityHooks::Expiration);
 		LaserPtr->turn_wait = (BYTE)((StarShipPtr->special_counter + 1)
 				% NumCycles);
 
@@ -327,7 +326,7 @@ chmmr_postprocess (ELEMENT *ElementPtr)
 		ELEMENT *ShipElementPtr;
 
 		LockElement (ElementPtr->hTarget, &ShipElementPtr);
-		
+
 		ProcessSound (SetAbsSoundIndex (
 				StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
 				ShipElementPtr);
@@ -442,9 +441,21 @@ chmmr_postprocess (ELEMENT *ElementPtr)
 	StarShipPtr->special_counter = 0;
 }
 
-static void
-satellite_preprocess (ELEMENT *ElementPtr)
-{
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class Satellite final : public uqm::combat::CombatEntity {
+public:
+    bool dying_ = false;
+    void update(ELEMENT &self) override;
+    void postprocess(ELEMENT &self) override;
+    void expire(ELEMENT &self) override;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+};
+}
+void Satellite::update(ELEMENT &self) {
+    auto *ElementPtr = &self;
+    if (dying_) { uqm::combat::advanceAnimation(self); return; }
 	STARSHIP *StarShipPtr;
 
 	++ElementPtr->life_span;
@@ -493,11 +504,21 @@ satellite_preprocess (ELEMENT *ElementPtr)
 
 		UnlockElement (StarShipPtr->hShip);
 	}
+
 }
 
-static void
-spawn_point_defense (ELEMENT *ElementPtr)
-{
+
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class PointDefense final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &) override {}
+    void expire(ELEMENT &self) override;
+};
+}
+void PointDefense::expire(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	BYTE weakest;
 	UWORD best_dist;
 	STARSHIP *StarShipPtr;
@@ -591,11 +612,12 @@ spawn_point_defense (ELEMENT *ElementPtr)
 
 	UnlockElement (ElementPtr->hTarget);
 	UnlockElement (StarShipPtr->hShip);
+
 }
 
-static void
-satellite_postprocess (ELEMENT *ElementPtr)
-{
+
+void Satellite::postprocess(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	STARSHIP *StarShipPtr;
 
 	if (ElementPtr->thrust_wait || ElementPtr->life_span == 0)
@@ -608,7 +630,7 @@ satellite_postprocess (ELEMENT *ElementPtr)
 		if (hDefense)
 		{
 			ELEMENT *DefensePtr;
-			
+
 			PutElement (hDefense);
 
 			LockElement (hDefense, &DefensePtr);
@@ -622,30 +644,34 @@ satellite_postprocess (ELEMENT *ElementPtr)
 				DefensePtr->hTarget = GetPredElement (SuccPtr);
 				UnlockElement (GetSuccElement (ElementPtr));
 
-				DefensePtr->death_func = spawn_point_defense;
+				uqm::detail::attachEntity(*DefensePtr, std::make_unique<PointDefense>(), uqm::detail::EntityHooks::Expiration);
 			}
 
 			GetElementStarShip (ElementPtr, &StarShipPtr);
 			SetElementStarShip (DefensePtr, StarShipPtr);
-			
+
 			UnlockElement (hDefense);
 		}
 	}
+
 }
 
-static void
-satellite_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void Satellite::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
 	(void) ElementPtr0;  /* Satisfying compiler (unused parameter) */
 	(void) pPt0;  /* Satisfying compiler (unused parameter) */
 	(void) ElementPtr1;  /* Satisfying compiler (unused parameter) */
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
+
 }
 
-static void
-satellite_death (ELEMENT *ElementPtr)
-{
+
+void Satellite::expire(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -659,15 +685,25 @@ satellite_death (ELEMENT *ElementPtr)
 	ElementPtr->next.image.frame =
 			SetAbsFrameIndex (ElementPtr->current.image.frame, 8);
 
-	ElementPtr->preprocess_func = animate;
+	dying_ = true;
 	ElementPtr->death_func = NULL;
 	ElementPtr->postprocess_func = NULL;
 	ElementPtr->collision_func = NULL;
+
 }
 
-static void
-spawn_satellites (ELEMENT *ElementPtr)
-{
+
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class SatelliteDeployment final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &) override {}
+    void expire(ELEMENT &self) override;
+};
+}
+void SatelliteDeployment::expire(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	COUNT i;
 	STARSHIP *StarShipPtr;
 
@@ -707,10 +743,10 @@ spawn_satellites (ELEMENT *ElementPtr)
 						(COUNT)TFB_Random () & 0x07
 						);
 
-				SattPtr->preprocess_func = satellite_preprocess;
-				SattPtr->postprocess_func = satellite_postprocess;
-				SattPtr->death_func = satellite_death;
-				SattPtr->collision_func = satellite_collision;
+				uqm::detail::attachEntity(*SattPtr, std::make_unique<Satellite>(), uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Postprocess | uqm::detail::EntityHooks::Collision | uqm::detail::EntityHooks::Expiration);
+
+
+
 
 				SetElementStarShip (SattPtr, StarShipPtr);
 
@@ -724,7 +760,9 @@ spawn_satellites (ELEMENT *ElementPtr)
 		}
 		UnlockElement (StarShipPtr->hShip);
 	}
+
 }
+
 
 static void
 chmmr_preprocess (ELEMENT *ElementPtr)
@@ -745,7 +783,7 @@ chmmr_preprocess (ELEMENT *ElementPtr)
 				| APPEARING;
 		SattPtr->life_span = HYPERJUMP_LIFE + 1;
 
-		SattPtr->death_func = spawn_satellites;
+		uqm::detail::attachEntity(*SattPtr, std::make_unique<SatelliteDeployment>(), uqm::detail::EntityHooks::Expiration);
 
 		GetElementStarShip (ElementPtr, &StarShipPtr);
 		SetElementStarShip (SattPtr, StarShipPtr);

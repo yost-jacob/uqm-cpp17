@@ -5,7 +5,7 @@ namespace uqm::combat {
 Ship::Ship(const RACE_DESC &definition) noexcept : data_(definition) {
     data_.ship_owner = this;
 }
-void Ship::preprocess(ELEMENT &element) noexcept {
+void Ship::update(ELEMENT &element) noexcept {
     if (preprocessingEnabled_ && !finished_) beforeMotion(element);
 }
 void Ship::postprocess(ELEMENT &element) noexcept {

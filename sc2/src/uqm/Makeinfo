@@ -1,12 +1,12 @@
-uqm_CXXFILES="conversation.cpp conversation_mode.cpp conversation_context.cpp conversation_resources.cpp conversation_lifetime.cpp conversation_animation.cpp mode_rendering.cpp device_inventory.cpp encount.cpp fleet.cpp projectile.cpp projectile_legacy.cpp sis_weapons.cpp sis_state.cpp fleet_legacy.cpp combat_mode.cpp campaign_combat.cpp encounter_runtime.cpp encounter_context.cpp navigation_context.cpp hyper.cpp uqmdebug.cpp ship.cpp cyborg.cpp trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp system_behavior.cpp system_encounter.cpp orbital_encounter.cpp system_behavior_factory.cpp system_runtime.cpp exploration_rendering.cpp energy_behavior.cpp world_c.cpp ship_tuning.cpp ship_tuning_c.cpp loadship.cpp ship_factory.cpp ship_behavior.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
+uqm_CXXFILES="gravity.cpp misc.cpp gravity_field.cpp combat_planet.cpp conversation.cpp conversation_mode.cpp conversation_context.cpp conversation_resources.cpp conversation_lifetime.cpp conversation_animation.cpp mode_rendering.cpp device_inventory.cpp encount.cpp fleet.cpp animation_effect.cpp combat_entity_legacy.cpp projectile.cpp projectile_legacy.cpp sis_weapons.cpp sis_state.cpp fleet_legacy.cpp combat_mode.cpp campaign_combat.cpp encounter_runtime.cpp encounter_context.cpp navigation_context.cpp hyper.cpp uqmdebug.cpp ship.cpp cyborg.cpp trans.cpp displist.cpp star_map.cpp star_map_c.cpp game_state.cpp world_state.cpp discovery_state.cpp discovery_state_c.cpp world.cpp system_behavior.cpp system_encounter.cpp orbital_encounter.cpp system_behavior_factory.cpp system_runtime.cpp exploration_rendering.cpp energy_behavior.cpp world_c.cpp ship_tuning.cpp ship_tuning_c.cpp loadship.cpp ship_factory.cpp ship_behavior.cpp game_mode.cpp game_menu.cpp gameplay_modes.cpp"
 uqm_SUBDIRS="comm planets ships supermelee"
 uqm_CFILES="battle.c battlecontrols.c border.c build.c cleanup.c clock.c
 		cnctdlg.c collide.c commglue.c confirm.c credits.c
 		demo.c flash.c fmv.c galaxy.c
-		gameev.c gameinp.c gameopt.c getchar.c globdata.c game_state_bits.c gravity.c
+		gameev.c gameinp.c gameopt.c getchar.c globdata.c game_state_bits.c
 		cons_res.c grpinfo.c init.c intel.c intro.c ipdisp.c load.c
 		load_legacy.c
-		master.c menu.c misc.c oscill.c outfit.c pickship.c
+		master.c menu.c oscill.c outfit.c pickship.c
 		plandata.c process.c restart.c save.c settings.c setup.c setupmenu.c
 		shipstat.c shipyard.c sis.c sounds.c starbase.c starcon.c
 		starmap.c status.c tactrans.c util.c
