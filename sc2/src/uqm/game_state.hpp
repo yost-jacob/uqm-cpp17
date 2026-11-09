@@ -37,6 +37,18 @@ struct PlayerLocation {
     std::uint8_t planet, orbit;
 };
 enum class StoryFlag {
+    SupoxUltronHelp,
+    ShipToCompel,
+    ReadyToConfuseUrquan,
+    PortalSpawnerOnShip,
+    DiscussedUltron,
+    ChmmrEmerging,
+    Artifact3OnShip,
+    Artifact2OnShip,
+    BattleSegue,
+    BombCarrier,
+    ThraddManner,
+    TalkingPetOnShip,
     KohrAhKilledAll,
     PlanetaryLanding,
     ImprovedLanderSpeed,
@@ -104,6 +116,7 @@ enum class StoryFlag {
     ZexIsDead,
 };
 enum class StoryCounter {
+    ThraddashBodyCount,
     LanderShields,
     ArilouSpaceCounter,
     ArilouSpaceSide,
@@ -145,6 +158,7 @@ enum class StoryCounter {
 };
 constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
     switch (counter) {
+        case StoryCounter::ThraddashBodyCount: return 31u;
         case StoryCounter::LanderShields: return 15u;
         case StoryCounter::ArilouSpaceCounter: return 15u;
         case StoryCounter::ArilouSpaceSide: return 3u;

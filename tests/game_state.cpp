@@ -173,6 +173,19 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
     } restore;
     struct Flag { StoryFlag id; int start, end; };
     const Flag flags[] = {
+        {StoryFlag::Artifact2OnShip, ARTIFACT_2_ON_SHIP, END_ARTIFACT_2_ON_SHIP},
+        {StoryFlag::Artifact3OnShip, ARTIFACT_3_ON_SHIP, END_ARTIFACT_3_ON_SHIP},
+        {StoryFlag::ChmmrEmerging, CHMMR_EMERGING, END_CHMMR_EMERGING},
+        {StoryFlag::DiscussedUltron, DISCUSSED_ULTRON, END_DISCUSSED_ULTRON},
+        {StoryFlag::PortalSpawnerOnShip, PORTAL_SPAWNER_ON_SHIP, END_PORTAL_SPAWNER_ON_SHIP},
+        {StoryFlag::ReadyToConfuseUrquan, READY_TO_CONFUSE_URQUAN, END_READY_TO_CONFUSE_URQUAN},
+        {StoryFlag::ShipToCompel, SHIP_TO_COMPEL, END_SHIP_TO_COMPEL},
+        {StoryFlag::SupoxUltronHelp, SUPOX_ULTRON_HELP, END_SUPOX_ULTRON_HELP},
+
+        {StoryFlag::BattleSegue, BATTLE_SEGUE, END_BATTLE_SEGUE},
+        {StoryFlag::BombCarrier, BOMB_CARRIER, END_BOMB_CARRIER},
+        {StoryFlag::ThraddManner, THRADD_MANNER, END_THRADD_MANNER},
+        {StoryFlag::TalkingPetOnShip, TALKING_PET_ON_SHIP, END_TALKING_PET_ON_SHIP},
         {StoryFlag::PlanetaryLanding, PLANETARY_LANDING, END_PLANETARY_LANDING},
         {StoryFlag::ImprovedLanderSpeed, IMPROVED_LANDER_SPEED, END_IMPROVED_LANDER_SPEED},
         {StoryFlag::ImprovedLanderShot, IMPROVED_LANDER_SHOT, END_IMPROVED_LANDER_SHOT},
@@ -243,6 +256,7 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
     }
     struct Counter { StoryCounter id; int start, bits; };
     const Counter counters[] = {
+        {StoryCounter::ThraddashBodyCount, THRADDASH_BODY_COUNT, 5},
         {StoryCounter::LanderShields, LANDER_SHIELDS, 4},
         {StoryCounter::SlylandroMultiplier, SLYLANDRO_MULTIPLIER, 3},
         {StoryCounter::PortalCounter, PORTAL_COUNTER, 4},

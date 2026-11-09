@@ -22,6 +22,18 @@ namespace {
 struct Field { int first, last; };
 Field field(StoryFlag flag) {
     switch (flag) {
+        case StoryFlag::SupoxUltronHelp: return {SUPOX_ULTRON_HELP, END_SUPOX_ULTRON_HELP};
+        case StoryFlag::ShipToCompel: return {SHIP_TO_COMPEL, END_SHIP_TO_COMPEL};
+        case StoryFlag::ReadyToConfuseUrquan: return {READY_TO_CONFUSE_URQUAN, END_READY_TO_CONFUSE_URQUAN};
+        case StoryFlag::PortalSpawnerOnShip: return {PORTAL_SPAWNER_ON_SHIP, END_PORTAL_SPAWNER_ON_SHIP};
+        case StoryFlag::DiscussedUltron: return {DISCUSSED_ULTRON, END_DISCUSSED_ULTRON};
+        case StoryFlag::ChmmrEmerging: return {CHMMR_EMERGING, END_CHMMR_EMERGING};
+        case StoryFlag::Artifact3OnShip: return {ARTIFACT_3_ON_SHIP, END_ARTIFACT_3_ON_SHIP};
+        case StoryFlag::Artifact2OnShip: return {ARTIFACT_2_ON_SHIP, END_ARTIFACT_2_ON_SHIP};
+        case StoryFlag::BattleSegue: return {BATTLE_SEGUE, END_BATTLE_SEGUE};
+        case StoryFlag::BombCarrier: return {BOMB_CARRIER, END_BOMB_CARRIER};
+        case StoryFlag::ThraddManner: return {THRADD_MANNER, END_THRADD_MANNER};
+        case StoryFlag::TalkingPetOnShip: return {TALKING_PET_ON_SHIP, END_TALKING_PET_ON_SHIP};
         case StoryFlag::KohrAhKilledAll: return {KOHR_AH_KILLED_ALL, END_KOHR_AH_KILLED_ALL};
         case StoryFlag::PlanetaryLanding: return {PLANETARY_LANDING, END_PLANETARY_LANDING};
         case StoryFlag::ImprovedLanderSpeed: return {IMPROVED_LANDER_SPEED, END_IMPROVED_LANDER_SPEED};
@@ -93,6 +105,7 @@ Field field(StoryFlag flag) {
 }
 Field field(StoryCounter counter) {
     switch (counter) {
+        case StoryCounter::ThraddashBodyCount: return {THRADDASH_BODY_COUNT, END_THRADDASH_BODY_COUNT};
         case StoryCounter::LanderShields: return {LANDER_SHIELDS, END_LANDER_SHIELDS};
         case StoryCounter::ArilouSpaceCounter: return {ARILOU_SPACE_COUNTER, END_ARILOU_SPACE_COUNTER};
         case StoryCounter::ArilouSpaceSide: return {ARILOU_SPACE_SIDE, END_ARILOU_SPACE_SIDE};
