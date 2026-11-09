@@ -32,9 +32,10 @@ flowchart TD
     S --> EX["SolarSystemExploration<br/>owned descriptor; scan / resume hooks"]:::mixed
     EX --> LM["LanderMode child<br/>RAII visit, bindings and effects"]:::mixed
     E --> ER["EncounterRuntime<br/>explicit campaign / star; setup and aftermath"]:::mixed
-    ER --> EC["HailAlien / legacy dialogue<br/>story callbacks and UI"]:::legacy
+    ER --> CV["ConversationMode child<br/>owned dialogue state / assets / animation"]:::native
+    CV --> EC["C alien scripts / track player<br/>checked script borrow; legacy story flags"]:::mixed
     E --> BASE["VisitStarBase<br/>legacy starbase path"]:::legacy
-    BASE --> EC
+    BASE --> ER
     H --> DEV["DeviceMenu / inventoryDevices<br/>explicit campaign; optional system"]:::mixed
     EX --> DEV
     EC --> B
@@ -138,7 +139,7 @@ transfer contracts; it is not redundant simply because its implementation is C++
 | Mode selection | Native dispatcher; mixed mode bodies | Move remaining C activity/transition flags into explicit results; production modes already receive their session. |
 | Solar-system generation | Scoped native ownership; all special-system behavior classes borrow campaign state | Replace remaining global runtime/queue access and C engine entry points. |
 | Navigation | Owned native HyperSpace state; menu userdata; explicit campaign device actions | Move remaining selected-star, graphics and C input dependencies behind explicit interfaces. |
-| Encounters and communication | Native encounter runtime and orbital children; scoped temporary fleets; legacy dialogue | Migrate conversation internals later; preserve existing root encounter/starbase handoffs. |
+| Encounters and communication | Native encounter runtime, conversation children and owned dialogue/animation state; C alien scripts | Migrate script story access and global media services; preserve root encounter/starbase handoffs. |
 | Combat | Native ships and callers over a legacy element engine | Encapsulate battle/element lifetime, collisions and projectile behaviors; preserve retirement and reincarnation ordering. |
 | Menus and saves | Typed exit request around legacy UI and decoder | Migrate menu callers; separately address transactional state decoding. |
 | State | Native lifetime around a legacy payload | Replace borrowed global access incrementally without introducing duplicate authoritative state. |
@@ -162,3 +163,5 @@ and all-special-system migration, scoped owner and remaining C engine boundary.
 The session uses [synchronous nested modes](nested-modes.md) for orbital
 system conversations. See the [current ownership and callback boundaries](runtime-encapsulation.md)
 for navigation, exploration, lander visits and temporary fleets.
+
+See [conversation child ownership](conversation-mode.md) for the dialogue lifecycle, C script boundary and credits host.

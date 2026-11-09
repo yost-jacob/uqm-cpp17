@@ -113,8 +113,9 @@ Root encounters own the same `EncounterRuntime` as orbital children. Race
 selection, saved-encounter reconstruction, combat setup, hail/attack routing and
 aftermath moved out of comm.c/encount.c into native procedures on that owner.
 The remaining C `InitCommunication` is a compatibility entry for starbase code.
-The dialogue engine still owns its existing callbacks/UI; `HailAlien` is its
-internal backend entry, not a new wrapper. Battle resources restore temporary
+Hailed dialogue now runs in `ConversationMode`, whose runtime owns UI state,
+script data, assets and animation sequences. C alien scripts retain their story
+callbacks through checked borrows. See [conversation ownership](conversation-mode.md). Battle resources restore temporary
 sound, cyborg input and caller activity through a scope owner.
 
 `DeviceMenu` takes `CampaignState&` and optionally a borrowed explored system.
@@ -156,8 +157,9 @@ cargo and crew changes; load/abort skips those outcomes. See
 
 This does not make gameplay concurrent or headless. Rendering/input handles,
 physics queues, selected-star compatibility storage, portions of the exploration
-engine and cargo/UI mutation still use the legacy backend. The conversation
-implementation and combat mechanics are unchanged. The nested-mode catch still
+engine and cargo/UI mutation still use the legacy backend. Alien story scripts
+and combat mechanics are retained; the conversation engine and its animation
+state now have native child-mode ownership. The nested-mode catch still
 uses the agreed diagnostic + abort policy with a graceful-shutdown TODO.
 
 Boost.Test covers scoped navigation binding, player isolation, portal-memory
@@ -181,7 +183,9 @@ Sources: [exploration owner](../../sc2/src/uqm/system_runtime.hpp),
 ## Validation for this pass
 
 Debug and Release CMake/Ninja builds and CTest pass. A fresh legacy dependency
-regeneration and link pass, and the executable reports its version. All 148 Boost.Test cases / 13,621 assertions pass under ASan/UBSan, including packed encounter
+regeneration and link pass, and the executable reports its version. All 154
+Boost.Test cases / 13,668 assertions pass under ASan/UBSan, including conversation child lifetime,
+script binding, partial resource cleanup, and packed encounter
 fields, restored-encounter precedence, caller-campaign delivery, per-player device
 inventory and bounded legacy save-buffer copying. Navigation, exploration,
 scan, lander, mode and encounter/context sources pass strict warning checks.

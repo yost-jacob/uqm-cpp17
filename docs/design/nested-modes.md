@@ -52,11 +52,12 @@ parent/child destruction, and propagation of load slot zero. A Linux subprocess
 test verifies SIGABRT on a thrown child exception without terminating the test
 runner or writing a core dump.
 
-Orbital system behaviors now use this API through SystemEncounterMode, which
-runs the unchanged legacy communication backend. See the
-[runtime encapsulation map](runtime-encapsulation.md). Dialogue internals and
-combat are still nested legacy routines inside that child. Root navigation
-encounters and starbase transitions retain their established outer mode path.
+Orbital system behaviors use this API through SystemEncounterMode. Its native
+EncounterRuntime launches ConversationMode as another child for hailed dialogue;
+combat follows only after that conversation has been destroyed. Root navigation
+encounters and starbase transitions retain their established outer mode path,
+and launch the same conversation child. See [conversation ownership](conversation-mode.md)
+and the [runtime encapsulation map](runtime-encapsulation.md).
 
 ## Service handoff
 
