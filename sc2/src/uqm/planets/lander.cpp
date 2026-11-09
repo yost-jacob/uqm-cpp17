@@ -275,15 +275,7 @@ object_animation (ELEMENT *ElementPtr)
 			}
 			else if (ElementPtr->mass_points == EARTHQUAKE_DISASTER)
 			{
-				SIZE s;
-
-				if (frame_index >= 13)
-					s = 0;
-				else
-					s = (14 - frame_index) >> 1;
-				// XXX: Was 0x8000 the background flag on 3DO?
-				//SetPrimColor (pPrim, BUILD_COLOR (0x8000 | MAKE_RGB15 (0x1F, 0x1F, 0x1F), s));
-				SetPrimColor (pPrim, BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), s));
+				SetPrimColor (pPrim, BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0));
 				if (frame_index == 13)
 					PlaySound (SetAbsSoundIndex (LanderSounds, EARTHQUAKE_DISASTER),
 							NotPositional (), NULL, GAME_SOUND_PRIORITY);
@@ -1326,10 +1318,9 @@ AnimateLanderWarmup (void)
 {
 	SIZE num_crew;
 	STAMP s;
-	CONTEXT OldContext;
 	TimeCount TimeIn = GetTimeCounter ();
 
-	OldContext = SetContext (RadarContext);
+	SetContext (RadarContext);
 
 	s.origin.x = 0;
 	s.origin.y = 0;

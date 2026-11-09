@@ -63,6 +63,7 @@ static void encounter_transition(ELEMENT *ElementPtr);
 static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1);
 static BOOLEAN DoHyperspaceMenu(MENU_STATE *pMS);
+static void hyper_transition_callback(ELEMENT *element);
 static HELEMENT getSisElement(void);
 static FRAME hyperstars[3];
 static COLORMAP hypercmaps[2];
@@ -627,7 +628,7 @@ uqm::HyperSpaceNavigation::hyper_transition(ELEMENT *ElementPtr)
 		else
 		{
 			ElementPtr->preprocess_func =
-					(void (*) (struct element *ElementPtr)) ::hyper_transition;
+					hyper_transition_callback;
 			ElementPtr->postprocess_func = NULL;
 			ElementPtr->state_flags |= NONSOLID;
 			ElementPtr->next.image.frame =
@@ -1765,6 +1766,7 @@ void MoveSIS(SIZE *pdx, SIZE *pdy) { activeNavigation().MoveSIS(pdx, pdy); }
 void check_hyperspace_encounter(void) { activeNavigation().check_hyperspace_encounter(); }
 BOOLEAN LoadHyperspace(void) { return activeNavigation().LoadHyperspace(); }
 BOOLEAN FreeHyperspace(void) { return activeNavigation().FreeHyperspace(); }
+static void hyper_transition_callback(ELEMENT *element) { (void)activeNavigation().hyper_transition(element); }
 static void unhyper_transition(ELEMENT *ElementPtr) { activeNavigation().unhyper_transition(ElementPtr); }
 BOOLEAN hyper_transition(ELEMENT *ElementPtr) { return activeNavigation().hyper_transition(ElementPtr); }
 static void hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
