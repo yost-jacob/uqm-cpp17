@@ -63,7 +63,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 				index -= GLOBAL_ALLIANCE_NAME;
 
 				i = GET_GAME_STATE (NEW_ALLIANCE_NAME);
-				S = SetAbsStringTableIndex (CommData.ConversationPhrases, (index - 1) + i);
+				S = SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, (index - 1) + i);
 				strcpy (buf, (UNICODE *)GetStringAddress (S));
 				if (i == 3)
 					strcat (buf, GLOBAL_SIS (CommanderName));
@@ -75,13 +75,13 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 			else
 			{
 				pStr = (UNICODE *)GetStringAddress (
-						SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1)
+						SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, index - 1)
 						);
 				pClip = GetStringSoundClip (
-						SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1)
+						SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, index - 1)
 						);
 				pTimeStamp = GetStringTimeStamp (
-						SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1)
+						SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, index - 1)
 						);
 			}
 			break;
@@ -102,9 +102,9 @@ NPCPhrase_splice (int index)
 		return;
 
 	pStr = (UNICODE *)GetStringAddress (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
+			SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
+			SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, index - 1));
 
 	if (!pClip)
 	{	// Just appending some text
@@ -127,7 +127,7 @@ NPCNumber (int number, const char *fmt)
 	if (!fmt)
 		fmt = "%d";
 
-	if (CommData.AlienNumberSpeech)
+	if (GetConversationData()->AlienNumberSpeech)
 	{
 		NPCNumberPhrase (number, fmt, NULL);
 		return;
@@ -142,7 +142,7 @@ static int
 NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
 {
 #define MAX_NUMBER_TRACKS 20
-	NUMBER_SPEECH speech = CommData.AlienNumberSpeech;
+	NUMBER_SPEECH speech = GetConversationData()->AlienNumberSpeech;
 	COUNT i;
 	int queued = 0;
 	int toplevel = 0;
@@ -186,7 +186,7 @@ NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
 			index -= 1;
 
 			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
-					CommData.ConversationPhrases, index
+					GetConversationData()->ConversationPhrases, index
 					));
 			queued++;
 		}
@@ -207,7 +207,7 @@ NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
 				{
 					*ptrack++ = GetStringSoundClip (
 							SetAbsStringTableIndex (
-							CommData.ConversationPhrases, name->StrIndex - 1));
+							GetConversationData()->ConversationPhrases, name->StrIndex - 1));
 					queued++;
 					break;
 				}
@@ -216,7 +216,7 @@ NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
 		else if (dig->CommonNameIndex != 0)
 		{
 			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
-					CommData.ConversationPhrases, dig->CommonNameIndex - 1));
+					GetConversationData()->ConversationPhrases, dig->CommonNameIndex - 1));
 			queued++;
 		}
 
@@ -229,7 +229,7 @@ NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
 		{	// nothing queued, say "zero"
 			assert (number == 0);
 			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
-					CommData.ConversationPhrases, dig->StrDigits[number] - 1));
+					GetConversationData()->ConversationPhrases, dig->StrDigits[number] - 1));
 		}
 		*ptrack++ = NULL; // term
 		
@@ -246,7 +246,7 @@ GetAllianceName (UNICODE *buf, RESPONSE_REF name_1)
 	STRING S;
 
 	i = GET_GAME_STATE (NEW_ALLIANCE_NAME);
-	S = SetAbsStringTableIndex (CommData.ConversationPhrases, (name_1 - 1) + i);
+	S = SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, (name_1 - 1) + i);
 	// XXX: this should someday be changed so that the function takes
 	//   the buffer size as an argument
 	strcpy (buf, (UNICODE *)GetStringAddress (S));
@@ -271,7 +271,7 @@ construct_response (UNICODE *buf, int R /* promoted from RESPONSE_REF */, ...)
 		COUNT len;
 		STRING S;
 		
-		S = SetAbsStringTableIndex (CommData.ConversationPhrases, R - 1);
+		S = SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, R - 1);
 		
 		strcpy (buf, (UNICODE *)GetStringAddress (S));
 		
@@ -303,10 +303,10 @@ construct_response (UNICODE *buf, int R /* promoted from RESPONSE_REF */, ...)
 
 	// XXX: this should someday be changed so that the function takes
 	//   the buffer size as an argument
-	if ((buf_start == shared_phrase_buf) &&
-			(buf > shared_phrase_buf + sizeof (shared_phrase_buf)))
+	if ((buf_start == GetConversationPhraseBuffer()) &&
+			(buf > GetConversationPhraseBuffer() + CONVERSATION_PHRASE_CAPACITY))
 	{
-		log_add (log_Fatal, "Error: shared_phrase_buf size exceeded,"
+		log_add (log_Fatal, "Error: conversation phrase buffer size exceeded,"
 				" please increase!\n");
 		exit (EXIT_FAILURE);
 	}

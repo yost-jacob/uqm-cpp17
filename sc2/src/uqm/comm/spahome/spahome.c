@@ -582,7 +582,7 @@ AllianceOffer (RESPONSE_REF R)
 	{
 		NPCPhrase (JUST_MISUNDERSTANDING);
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1)
 				), ONE_SECOND / 4);
 
 		SET_GAME_STATE (SPATHI_MANNER, 3);
@@ -758,7 +758,7 @@ SpathiCouncil (RESPONSE_REF R)
 	{
 		NPCPhrase (YES_GOOD_PASSWORD);
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1)
 				), ONE_SECOND / 4);
 
 		SET_GAME_STATE (KNOW_SPATHI_PASSWORD, 1);
@@ -881,14 +881,14 @@ SpathiPassword (RESPONSE_REF R)
 	}
 	else
 	{
-		construct_response (shared_phrase_buf,
+		construct_response (GetConversationPhraseBuffer(),
 				we_are_vindicator0,
 				GLOBAL_SIS (CommanderName),
 				we_are_vindicator1,
 				GLOBAL_SIS (ShipName),
 				we_are_vindicator2,
 				(UNICODE*)NULL);
-		DoResponsePhrase (we_are_vindicator0, ExitConversation, shared_phrase_buf);
+		DoResponsePhrase (we_are_vindicator0, ExitConversation, GetConversationPhraseBuffer());
 		Response (gort_merenga, ExitConversation);
 		Response (guph_florp, ExitConversation);
 		Response (wagngl_fthagn, ExitConversation);
@@ -917,22 +917,22 @@ Intro (void)
 	}
 	else if (CheckAlliance (SPATHI_SHIP) == GOOD_GUY)
 	{
-		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+		GetConversationData()->AlienColorMap =
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 		SpathiAllies ((RESPONSE_REF)0);
 	}
 	else if (GET_GAME_STATE (SPATHI_PARTY))
 	{
-		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+		GetConversationData()->AlienColorMap =
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 		SpathiParty ((RESPONSE_REF)0);
 	}
 	else if (GET_GAME_STATE (SPATHI_QUEST))
 	{
 		if (GET_GAME_STATE (LIED_ABOUT_CREATURES) < 2)
 		{
-			CommData.AlienColorMap =
-					SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+			GetConversationData()->AlienColorMap =
+					SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 			SpathiQuest ((RESPONSE_REF)0);
 		}
 		else
@@ -945,16 +945,16 @@ Intro (void)
 	}
 	else if (GET_GAME_STATE (KNOW_SPATHI_QUEST))
 	{
-		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+		GetConversationData()->AlienColorMap =
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 		LearnQuest ((RESPONSE_REF)0);
 	}
 	else if (GET_GAME_STATE (KNOW_SPATHI_PASSWORD)
 			&& (GET_GAME_STATE (FOUND_PLUTO_SPATHI)
 			|| GET_GAME_STATE (SPATHI_HOME_VISITS) != 7))
 	{
-		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+		GetConversationData()->AlienColorMap =
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 		SpathiCouncil ((RESPONSE_REF)0);
 	}
 	else

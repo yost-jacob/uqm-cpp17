@@ -239,7 +239,7 @@ ExitConversation (RESPONSE_REF R)
 		}
 
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1)
 				), ONE_SECOND / 2);
 	}
 	else /* insults */
@@ -540,7 +540,7 @@ OrzNeutral (RESPONSE_REF R)
 	}
 	else if (GET_GAME_STATE (ORZ_STACK0) == 0)
 	{
-		construct_response (shared_phrase_buf,
+		construct_response (GetConversationPhraseBuffer(),
 				we_are_vindicator0,
 				GLOBAL_SIS (CommanderName),
 				we_are_vindicator1,
@@ -561,7 +561,7 @@ OrzNeutral (RESPONSE_REF R)
 		if (pStr[LastStack] != we_are_vindicator0)
 			Response (pStr[LastStack], OrzNeutral);
 		else
-			DoResponsePhrase (pStr[LastStack], OrzNeutral, shared_phrase_buf);
+			DoResponsePhrase (pStr[LastStack], OrzNeutral, GetConversationPhraseBuffer());
 	}
 	for (i = 0; i < 3; ++i)
 	{
@@ -570,7 +570,7 @@ OrzNeutral (RESPONSE_REF R)
 			if (pStr[i] != we_are_vindicator0)
 				Response (pStr[i], OrzNeutral);
 			else
-				DoResponsePhrase (pStr[i], OrzNeutral, shared_phrase_buf);
+				DoResponsePhrase (pStr[i], OrzNeutral, GetConversationPhraseBuffer());
 		}
 	}
 	Response (bye_neutral, ExitConversation);
@@ -653,8 +653,8 @@ Intro (void)
 	Manner = GET_GAME_STATE (ORZ_MANNER);
 	if (Manner == 2)
 	{
-		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+		GetConversationData()->AlienColorMap =
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 
 		NumVisits = GET_GAME_STATE (ORZ_VISITS);
 		switch (NumVisits++)

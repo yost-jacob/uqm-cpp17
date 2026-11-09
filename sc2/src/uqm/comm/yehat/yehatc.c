@@ -377,7 +377,7 @@ YehatHome (RESPONSE_REF R)
 
 		GetAllianceName (buf, name_1);
 		construct_response (
-				shared_phrase_buf,
+				GetConversationPhraseBuffer(),
 				i_demand_you_ally_homeworld0,
 				GLOBAL_SIS (CommanderName),
 				i_demand_you_ally_homeworld1,
@@ -387,7 +387,7 @@ YehatHome (RESPONSE_REF R)
 				i_demand_you_ally_homeworld3,
 				(UNICODE*)NULL);
 		DoResponsePhrase (i_demand_you_ally_homeworld0,
-				ExitConversation, shared_phrase_buf);
+				ExitConversation, GetConversationPhraseBuffer());
 	}
 	Response (bye_homeworld, ExitConversation);
 }
@@ -503,7 +503,7 @@ YehatSpace (RESPONSE_REF R)
 
 			GetAllianceName (buf, name_1);
 			construct_response (
-					shared_phrase_buf,
+					GetConversationPhraseBuffer(),
 					i_demand_you_ally_space0,
 					GLOBAL_SIS (CommanderName),
 					i_demand_you_ally_space1,
@@ -525,7 +525,7 @@ YehatSpace (RESPONSE_REF R)
 		if (pStr[LastStack] != i_demand_you_ally_space0)
 			Response (pStr[LastStack], YehatSpace);
 		else
-			DoResponsePhrase (pStr[LastStack], YehatSpace, shared_phrase_buf);
+			DoResponsePhrase (pStr[LastStack], YehatSpace, GetConversationPhraseBuffer());
 	}
 	for (i = 0; i < 3; ++i)
 	{
@@ -534,7 +534,7 @@ YehatSpace (RESPONSE_REF R)
 			if (pStr[i] != i_demand_you_ally_space0)
 				Response (pStr[i], YehatSpace);
 			else
-				DoResponsePhrase (pStr[i], YehatSpace, shared_phrase_buf);
+				DoResponsePhrase (pStr[i], YehatSpace, GetConversationPhraseBuffer());
 		}
 	}
 	if (!GET_GAME_STATE (YEHAT_ROYALIST_TOLD_PKUNK)

@@ -143,7 +143,7 @@ ByeBye (RESPONSE_REF R)
 		else /* if (R == annihilate_those_monsters) */
 			NPCPhrase (KILL_MONSTERS);
 
-		construct_response (shared_phrase_buf,
+		construct_response (GetConversationPhraseBuffer(),
 				name_40,
 				GLOBAL_SIS (CommanderName),
 				name_41,
@@ -154,7 +154,7 @@ ByeBye (RESPONSE_REF R)
 		Response (name_1, ByeBye);
 		Response (name_2, ByeBye);
 		Response (name_3, ByeBye);
-		DoResponsePhrase (name_40, ByeBye, shared_phrase_buf);
+		DoResponsePhrase (name_40, ByeBye, GetConversationPhraseBuffer());
 
 		SET_GAME_STATE (STARBASE_AVAILABLE, 1);
 	}
@@ -536,14 +536,14 @@ RevealSelf (RESPONSE_REF R)
 		{
 			if (PHRASE_ENABLED (we_are_vindicator0))
 			{
-				construct_response (shared_phrase_buf,
+				construct_response (GetConversationPhraseBuffer(),
 						we_are_vindicator0,
 						GLOBAL_SIS (CommanderName),
 						we_are_vindicator1,
 						GLOBAL_SIS (ShipName),
 						we_are_vindicator2,
 						(UNICODE*)NULL);
-				DoResponsePhrase (we_are_vindicator0, RevealSelf, shared_phrase_buf);
+				DoResponsePhrase (we_are_vindicator0, RevealSelf, GetConversationPhraseBuffer());
 			}
 			else if (PHRASE_ENABLED (our_mission_was_secret))
 				Response (our_mission_was_secret, RevealSelf);
@@ -569,10 +569,10 @@ GiveRadios (RESPONSE_REF R)
 		NPCPhrase (FUEL_UP1);		
 		AlienTalkSegue (1);
 
-		CommData.AlienAmbientArray[2].AnimFlags |= ANIM_DISABLED;
+		GetConversationData()->AlienAmbientArray[2].AnimFlags |= ANIM_DISABLED;
 
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 0)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 0)
 				), ONE_SECOND / 2);
 
 		AlienTalkSegue ((COUNT)~0);
@@ -618,8 +618,8 @@ Intro (void)
 		}
 		else
 		{
-			CommData.AlienColorMap =
-					SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+			GetConversationData()->AlienColorMap =
+					SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 			NPCPhrase (DO_YOU_HAVE_RADIO_THIS_TIME);
 
 			if (GLOBAL_SIS (ElementAmounts[RADIOACTIVE]))
@@ -630,19 +630,19 @@ Intro (void)
 	}
 	else /* first visit */
 	{
-		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+		GetConversationData()->AlienColorMap =
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1);
 
 		SET_GAME_STATE (STARBASE_VISITED, 1);
 
 		NPCPhrase (ARE_YOU_SUPPLY_SHIP);
 		construct_response (
-				shared_phrase_buf,
+				GetConversationPhraseBuffer(),
 				no_but_well_help0,
 				GLOBAL_SIS (ShipName),
 				no_but_well_help1,
 				(UNICODE*)NULL);
-		DoResponsePhrase (no_but_well_help0, NoRadioactives, shared_phrase_buf);
+		DoResponsePhrase (no_but_well_help0, NoRadioactives, GetConversationPhraseBuffer());
 		Response (yes_this_is_supply_ship, NoRadioactives);
 		Response (what_slave_planet, NoRadioactives);
 	}

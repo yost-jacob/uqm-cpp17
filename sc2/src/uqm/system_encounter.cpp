@@ -11,7 +11,7 @@ class SystemEncounterMode final : public GameMode {
 public:
     SystemEncounterMode(GameSession &session, const STAR_DESC *star, CONVERSATION conversation, COUNT &result)
         : GameMode(session.stateOwner(), session.playerId()), session_(session),
-          conversation_(conversation), result_(result), encounter_(session.player().campaign(), star) {}
+          conversation_(conversation), result_(result), encounter_(session, star) {}
     ModeResult run() override {
         result_ = encounter_.communicate(conversation_);
         if (auto exit = session_.menuExit()) return *exit;

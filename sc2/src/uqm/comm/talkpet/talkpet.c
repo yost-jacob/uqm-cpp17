@@ -276,7 +276,7 @@ static void
 MindControlStrobe (void)
 {
 	// Enable the one-shot strobe animation
-	CommData.AlienAmbientArray[16].AnimFlags &= ~ANIM_DISABLED;
+	GetConversationData()->AlienAmbientArray[16].AnimFlags &= ~ANIM_DISABLED;
 }
 
 static void
@@ -518,7 +518,7 @@ CompelPlayer (RESPONSE_REF R)
 	if (PHRASE_ENABLED (we_are_vindicator0))
 	{
 		construct_response (
-				shared_phrase_buf,
+				GetConversationPhraseBuffer(),
 				we_are_vindicator0,
 				GLOBAL_SIS (ShipName),
 				we_are_vindicator1,
@@ -533,7 +533,7 @@ CompelPlayer (RESPONSE_REF R)
 		if (pStr[LastStack] != we_are_vindicator0)
 			Response (pStr[LastStack], CompelPlayer);
 		else
-			DoResponsePhrase (pStr[LastStack], CompelPlayer, shared_phrase_buf);
+			DoResponsePhrase (pStr[LastStack], CompelPlayer, GetConversationPhraseBuffer());
 	}
 	for (i = 0; i < 3; ++i)
 	{
@@ -542,7 +542,7 @@ CompelPlayer (RESPONSE_REF R)
 			if (pStr[i] != we_are_vindicator0)
 				Response (pStr[i], CompelPlayer);
 			else
-				DoResponsePhrase (pStr[i], CompelPlayer, shared_phrase_buf);
+				DoResponsePhrase (pStr[i], CompelPlayer, GetConversationPhraseBuffer());
 		}
 	}
 	Response (bye_at_umgah, CompelPlayer);

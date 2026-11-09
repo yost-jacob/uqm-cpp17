@@ -366,7 +366,7 @@ Zombies (RESPONSE_REF R)
 
 		if (PHRASE_ENABLED (we_vindicator0))
 		{
-			construct_response (shared_phrase_buf,
+			construct_response (GetConversationPhraseBuffer(),
 					we_vindicator0,
 					GLOBAL_SIS (CommanderName),
 					we_vindicator1,
@@ -395,7 +395,7 @@ Zombies (RESPONSE_REF R)
 			if (pStr[LastStack] != we_vindicator0)
 				Response (pStr[LastStack], Zombies);
 			else
-				DoResponsePhrase (pStr[LastStack], Zombies, shared_phrase_buf);
+				DoResponsePhrase (pStr[LastStack], Zombies, GetConversationPhraseBuffer());
 		}
 		for (i = 0; i < 4; ++i)
 		{
@@ -404,7 +404,7 @@ Zombies (RESPONSE_REF R)
 				if (pStr[i] != we_vindicator0)
 					Response (pStr[i], Zombies);
 				else
-					DoResponsePhrase (pStr[i], Zombies, shared_phrase_buf);
+					DoResponsePhrase (pStr[i], Zombies, GetConversationPhraseBuffer());
 			}
 		}
 		Response (bye_zombie, CombatIsInevitable);

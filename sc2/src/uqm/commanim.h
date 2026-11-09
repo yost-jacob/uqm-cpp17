@@ -96,44 +96,6 @@ typedef struct
 #define MAX_ANIMATIONS 20
 
 
-#ifdef COMM_INTERNAL
-
-typedef enum
-{
-	DOWN_DIR = -1, // Animation indices are decreasing
-	NO_DIR = 0,
-	UP_DIR = 1,    // Animation indices are increasing
-} ANIM_DIR;
-
-typedef enum
-{
-	PICTURE_ANIM,
-			// Parts of a picture are replaced
-	COLOR_ANIM
-			// Colormap tricks on a picture
-} ANIM_TYPE;
-
-// Describes an active animation.
-struct SEQUENCE
-{
-	ANIMATION_DESC *ADPtr;
-	DWORD Alarm;
-	ANIM_DIR Direction;
-	COUNT CurIndex;
-	COUNT NextIndex;
-	COUNT FramesLeft;
-	ANIM_TYPE AnimType;
-	BOOLEAN Change;
-};
-#endif
-
-typedef struct SEQUENCE SEQUENCE;
-
-// Returns TRUE if there was an animation change
-extern BOOLEAN DrawAlienFrame (SEQUENCE *pSeq, COUNT Num, BOOLEAN fullRedraw);
-extern void InitCommAnimations (void);
-extern BOOLEAN ProcessCommAnimations (BOOLEAN fullRedraw, BOOLEAN paused);
-
 #if defined(__cplusplus)
 }
 #endif

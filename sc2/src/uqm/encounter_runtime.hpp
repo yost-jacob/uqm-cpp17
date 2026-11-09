@@ -4,6 +4,7 @@
 #include "planets/planets.h"
 namespace uqm {
 class CampaignState;
+class GameSession;
 // Reconstruct the special encounter selected by the old save flags. Fwiffo
 // takes precedence over location bits; this query never mutates campaign state.
 CONVERSATION conversationForRestoredEncounter(const CampaignState &campaign);
@@ -14,6 +15,7 @@ class EncounterRuntime {
 public:
     EncounterRuntime(CampaignState &campaign, const STAR_DESC *star) noexcept
         : campaign_(campaign), star_(star) {}
+    EncounterRuntime(GameSession &session, const STAR_DESC *star) noexcept;
     void run(); // Select a race, communicate, and update the encountered fleet.
     COUNT communicate(CONVERSATION conversation); // Returns the legacy combat-status result.
     EncounterRuntime(const EncounterRuntime &) = delete;
@@ -26,6 +28,7 @@ private:
     const STAR_DESC &star() const; // Requires a system encounter, throws if missing.
     CampaignState &campaign_;
     const STAR_DESC *star_;
+    GameSession *session_ = nullptr;
 };
 } // namespace uqm
 #endif

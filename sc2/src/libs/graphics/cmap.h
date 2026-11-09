@@ -21,6 +21,10 @@
 
 #include "libs/gfxlib.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 #define MAX_COLORMAPS           250
 
 // These are pertinent to colortable file format
@@ -73,5 +77,9 @@ NativePalette* AllocNativePalette (void);
 void FreeNativePalette (NativePalette *);
 void SetNativePaletteColor (NativePalette *, int index, Color);
 Color GetNativePaletteColor (NativePalette *, int index);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* CMAP_H */

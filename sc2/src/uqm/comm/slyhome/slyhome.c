@@ -755,7 +755,7 @@ HomeWorld (RESPONSE_REF R)
 	switch (GET_GAME_STATE (SLYLANDRO_STACK1))
 	{
 		case 0:
-			construct_response (shared_phrase_buf,
+			construct_response (GetConversationPhraseBuffer(),
 					we_are_us0,
 					GLOBAL_SIS (CommanderName),
 					we_are_us1,
@@ -811,7 +811,7 @@ HomeWorld (RESPONSE_REF R)
 		if (pStr[LastStack] != we_are_us0)
 			Response (pStr[LastStack], HomeWorld);
 		else
-			DoResponsePhrase (pStr[LastStack], HomeWorld, shared_phrase_buf);
+			DoResponsePhrase (pStr[LastStack], HomeWorld, GetConversationPhraseBuffer());
 	}
 	for (i = 0; i < 3; ++i)
 	{
@@ -820,7 +820,7 @@ HomeWorld (RESPONSE_REF R)
 			if (pStr[i] != we_are_us0)
 				Response (pStr[i], HomeWorld);
 			else
-				DoResponsePhrase (pStr[i], HomeWorld, shared_phrase_buf);
+				DoResponsePhrase (pStr[i], HomeWorld, GetConversationPhraseBuffer());
 		}
 	}
 	if (GET_GAME_STATE (SLYLANDRO_STACK1))

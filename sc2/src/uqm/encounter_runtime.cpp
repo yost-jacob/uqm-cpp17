@@ -17,6 +17,7 @@
  */
 
 #include "encounter_runtime.hpp"
+#include "conversation.hpp"
 #include "game_state.hpp"
 #include "globdata.h"
 #include "build.h"
@@ -31,6 +32,10 @@
 #include "libs/log.h"
 #include <stdexcept>
 
+namespace {
+COUNT runLegacyEncounter(uqm::GameSession &session, const STAR_DESC *star, CONVERSATION conversation);
+}
+
 const STAR_DESC &uqm::EncounterRuntime::star() const {
     if (!star_) throw std::logic_error("system encounter requires a catalogue star");
     return *star_;
@@ -39,6 +44,10 @@ const STAR_DESC &uqm::EncounterRuntime::star() const {
 COUNT
 uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 {
+    auto &session = session_ ? *session_ : gameSession();
+    if (&session.player().campaign() != &campaign_)
+        throw std::logic_error("conversation requires its campaign's active session");
+    if (!session.isRunning()) return runLegacyEncounter(session, star_, which_comm);
 	COUNT status;
 	LOCDATA *LocDataPtr;
 
@@ -111,10 +120,6 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 	LocDataPtr = init_race (
 			status != YEHAT_REBEL_SHIP ? which_comm :
 			YEHAT_REBEL_CONVERSATION);
-	if (LocDataPtr)
-	{	// We make a copy here
-		CommData = *LocDataPtr;
-	}
 
 	if (campaign_.read(uqm::StoryFlag::BattleSegue) == 0)
 	{
@@ -133,17 +138,16 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 		campaign_.set(uqm::StoryFlag::BattleSegue, 1);
 	}
 
-	if (status == HAIL)
-	{
-		HailAlien ();
-	}
-	else if (LocDataPtr)
-	{	// only when comm initied successfully
-		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			(*CommData.post_encounter_func) (); // process states
-
-		(*CommData.uninit_encounter_func) (); // cleanup
-	}
+    if (LocDataPtr) {
+        auto conversation = std::make_unique<ConversationRuntime>(session, *LocDataPtr);
+        if (status == HAIL) {
+            if (auto exit = session.swapGameMode(createConversationMode(session, std::move(conversation))))
+                GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+        } else {
+            // An attack still runs the race's existing post/uninit hooks.
+            conversation->finishWithoutDialogue();
+        }
+    }
 
 	status = 0;
 	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -306,8 +310,36 @@ uqm::EncounterRuntime::run()
 
 // C callers borrow the active campaign once at this compatibility boundary.
 // Native modes construct their runtime with explicit campaign/star context.
+namespace {
+// Credits/outtakes and direct C debug entry points have no enclosing mode yet.
+// Host the encounter as a root so its conversation still uses a child swap.
+class LegacyEncounterHost final : public uqm::GameMode {
+public:
+    LegacyEncounterHost(uqm::GameSession &session, const STAR_DESC *star, CONVERSATION conversation, COUNT &result)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session),
+          conversation_(conversation), result_(result), star_(star) {}
+    uqm::ModeResult run() override {
+        uqm::EncounterRuntime encounter{session_, star_};
+        result_ = encounter.communicate(conversation_);
+        if (auto exit = session_.menuExit()) return *exit;
+        return uqm::ModeCompleted{};
+    }
+private:
+    uqm::GameSession &session_;
+    CONVERSATION conversation_;
+    COUNT &result_;
+    const STAR_DESC *star_;
+};
+COUNT runLegacyEncounter(uqm::GameSession &session, const STAR_DESC *star, CONVERSATION conversation) {
+    COUNT result = 0;
+    const auto exit = session.run(std::make_unique<LegacyEncounterHost>(session, star, conversation, result));
+    if (exit.kind == uqm::SessionExitKind::LoadGame) GLOBAL(CurrentActivity) |= CHECK_LOAD;
+    else if (exit.kind != uqm::SessionExitKind::ReturnToTitle) GLOBAL(CurrentActivity) |= CHECK_ABORT;
+    return result;
+}
+}
 COUNT InitCommunication(CONVERSATION conversation) {
     auto &session = uqm::gameSession();
-    uqm::EncounterRuntime encounter{session.player().campaign(), CurStarDescPtr};
+    uqm::EncounterRuntime encounter{session, CurStarDescPtr};
     return encounter.communicate(conversation);
 }

@@ -220,7 +220,7 @@ FriendlyExit (RESPONSE_REF R)
 
 		AlienTalkSegue (2);
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 0)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 0)
 				), ONE_SECOND / 2);
 		AlienTalkSegue ((COUNT)~0);
 
@@ -285,7 +285,7 @@ Foreplay (RESPONSE_REF R)
 		NPCPhrase (MORE_COMFORTABLE);
 		AlienTalkSegue (1);
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1)
 				), ONE_SECOND);
 		AlienTalkSegue ((COUNT)~0);
 
@@ -791,7 +791,7 @@ Intro (void)
 			NormalSyreen ((RESPONSE_REF)0);
 		else
 		{
-			construct_response (shared_phrase_buf,
+			construct_response (GetConversationPhraseBuffer(),
 					we_are_vindicator0,
 					GLOBAL_SIS (CommanderName),
 					we_are_vindicator1,
@@ -800,7 +800,7 @@ Intro (void)
 					(UNICODE*)NULL);
 			Response (we_are_vice_squad, InitialSyreen);
 			Response (we_are_the_one_for_you_baby, InitialSyreen);
-			DoResponsePhrase (we_are_vindicator0, InitialSyreen, shared_phrase_buf);
+			DoResponsePhrase (we_are_vindicator0, InitialSyreen, GetConversationPhraseBuffer());
 			Response (we_are_impressed, InitialSyreen);
 		}
 	}

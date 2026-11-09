@@ -422,7 +422,7 @@ NeutralSupox (RESPONSE_REF R)
 	switch (GET_GAME_STATE (SUPOX_STACK1))
 	{
 		case 0:
-			construct_response (shared_phrase_buf,
+			construct_response (GetConversationPhraseBuffer(),
 					i_am0,
 					GLOBAL_SIS (CommanderName),
 					i_am1,
@@ -431,7 +431,7 @@ NeutralSupox (RESPONSE_REF R)
 			pStr[1] = 0;
 			break;
 		case 1:
-			construct_response (shared_phrase_buf,
+			construct_response (GetConversationPhraseBuffer(),
 					my_ship0,
 					GLOBAL_SIS (ShipName),
 					my_ship1,
@@ -445,7 +445,7 @@ NeutralSupox (RESPONSE_REF R)
 
 				GetAllianceName (buf, name_1);
 				construct_response (
-						shared_phrase_buf,
+						GetConversationPhraseBuffer(),
 						from_alliance0,
 						buf,
 						from_alliance1,
@@ -489,7 +489,7 @@ NeutralSupox (RESPONSE_REF R)
 		if (LastStack != 0 || GET_GAME_STATE (SUPOX_STACK1) > 2)
 			Response (pStr[LastStack], NeutralSupox);
 		else
-			DoResponsePhrase (pStr[LastStack], NeutralSupox, shared_phrase_buf);
+			DoResponsePhrase (pStr[LastStack], NeutralSupox, GetConversationPhraseBuffer());
 	}
 	for (i = 0; i < 3; ++i)
 	{
@@ -498,7 +498,7 @@ NeutralSupox (RESPONSE_REF R)
 			if (i != 0 || GET_GAME_STATE (SUPOX_STACK1) > 2)
 				Response (pStr[i], NeutralSupox);
 			else
-				DoResponsePhrase (pStr[i], NeutralSupox, shared_phrase_buf);
+				DoResponsePhrase (pStr[i], NeutralSupox, GetConversationPhraseBuffer());
 		}
 	}
 	if (!GET_GAME_STATE (SUPOX_ULTRON_HELP))

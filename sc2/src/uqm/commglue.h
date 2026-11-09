@@ -58,17 +58,20 @@ typedef enum {
 	INVALID_CONVERSATION,
 } CONVERSATION;
 
-extern LOCDATA CommData;
-extern UNICODE shared_phrase_buf[2048];
+// Borrow the active mode's authoritative script data until its callback returns.
+// Calls outside a bound conversation are programming errors.
+LOCDATA *GetConversationData(void);
+enum { CONVERSATION_PHRASE_CAPACITY = 2048 };
+UNICODE *GetConversationPhraseBuffer(void);
 
 #define PLAYER_SAID(r,i) ((r)==(i))
 #define PHRASE_ENABLED(p) \
 		(*(UNICODE *)GetStringAddress ( \
-				SetAbsStringTableIndex (CommData.ConversationPhrases, (p)-1) \
+				SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, (p)-1) \
 				) != '\0')
 #define DISABLE_PHRASE(p) \
 		(*(UNICODE *)GetStringAddress ( \
-				SetAbsStringTableIndex (CommData.ConversationPhrases, (p)-1) \
+				SetAbsStringTableIndex (GetConversationData()->ConversationPhrases, (p)-1) \
 				) = '\0')
 
 #define Response(i,a) \

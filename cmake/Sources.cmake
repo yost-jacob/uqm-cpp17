@@ -162,7 +162,12 @@ set(UQM_SOURCES
     sc2/src/uqm/clock.c
     sc2/src/uqm/cnctdlg.c
     sc2/src/uqm/collide.c
-    sc2/src/uqm/comm.c
+    sc2/src/uqm/conversation.cpp
+    sc2/src/uqm/conversation_mode.cpp
+    sc2/src/uqm/conversation_context.cpp
+    sc2/src/uqm/conversation_resources.cpp
+    sc2/src/uqm/conversation_lifetime.cpp
+    sc2/src/uqm/mode_rendering.cpp
     sc2/src/uqm/comm/arilou/arilouc.c
     sc2/src/uqm/comm/blackur/blackurc.c
     sc2/src/uqm/comm/chmmr/chmmrc.c
@@ -190,7 +195,7 @@ set(UQM_SOURCES
     sc2/src/uqm/comm/vux/vuxc.c
     sc2/src/uqm/comm/yehat/yehatc.c
     sc2/src/uqm/comm/zoqfot/zoqfotc.c
-    sc2/src/uqm/commanim.c
+    sc2/src/uqm/conversation_animation.cpp
     sc2/src/uqm/commglue.c
     sc2/src/uqm/confirm.c
     sc2/src/uqm/cons_res.c

@@ -79,7 +79,9 @@ if(BUILD_TESTING)
         tests/build.cpp tests/game_state.cpp tests/game_modes.cpp
         tests/encounter_context.cpp sc2/src/uqm/encounter_context.cpp
         tests/device_inventory.cpp sc2/src/uqm/device_inventory.cpp
-        tests/rendering_handoff.cpp sc2/src/uqm/exploration_rendering.cpp
+        tests/conversation_mode.cpp sc2/src/uqm/conversation_mode.cpp
+        sc2/src/uqm/conversation_context.cpp sc2/src/uqm/conversation_resources.cpp sc2/src/uqm/conversation_lifetime.cpp
+        tests/rendering_handoff.cpp sc2/src/uqm/exploration_rendering.cpp sc2/src/uqm/mode_rendering.cpp
         tests/navigation_context.cpp sc2/src/uqm/navigation_context.cpp
         tests/game_state_c.c tests/world_state.cpp tests/world_state_c.c
         tests/ship_behavior.cpp sc2/src/uqm/ship_behavior.cpp

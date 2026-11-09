@@ -16,7 +16,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#define COMM_INTERNAL
+#include "conversation.hpp"
+#include "game_state.hpp"
+#include "mode_rendering.hpp"
+#include <stdexcept>
 #include "comm.h"
 
 #include "build.h"
@@ -46,87 +49,25 @@
 
 #include <ctype.h>
 
-#define MAX_RESPONSES 8
-#define BACKGROUND_VOL (usingSpeech ? (NORMAL_VOLUME / 2) : NORMAL_VOLUME)
-#define FOREGROUND_VOL NORMAL_VOLUME
-
-// Oscilloscope frame rate
-// Should be <= COMM_ANIM_RATE
-// XXX: was 32 picked experimentally?
-#define OSCILLOSCOPE_RATE   (ONE_SECOND / 32)
-
-// Maximum comm animation frame rate (actual execution rate)
-// A gfx frame is not always produced during an execution frame,
-// and several animations are combined into one gfx frame.
-// The rate was originally 120fps which allowed for more animation
-// precision which is ultimately wasted on the human eye anyway.
-// The highest known stable animation rate is 40fps, so that's what we use.
-#define COMM_ANIM_RATE   (ONE_SECOND / 40)
-
-static CONTEXT AnimContext;
-
-LOCDATA CommData;
-UNICODE shared_phrase_buf[2048];
-
-static BOOLEAN TalkingFinished;
-static CommIntroMode curIntroMode = CIM_DEFAULT;
-static TimeCount fadeTime;
-
-typedef struct response_entry
-{
-	RESPONSE_REF response_ref;
-	TEXT response_text;
-	RESPONSE_FUNC response_func;
-} RESPONSE_ENTRY;
-
-typedef struct encounter_state
-{
-	BOOLEAN (*InputFunc) (struct encounter_state *pES);
-
-	COUNT Initialized;
-	TimeCount NextTime; // framerate control
-	BYTE num_responses;
-	BYTE cur_response;
-	BYTE top_response;
-	RESPONSE_ENTRY response_list[MAX_RESPONSES];
-
-	UNICODE phrase_buf[1024];
-} ENCOUNTER_STATE;
-
-static ENCOUNTER_STATE *pCurInputState;
-
-static BOOLEAN clear_subtitles;
-static TEXT SubtitleText;
-static const UNICODE *last_subtitle;
-
-static CONTEXT TextCacheContext;
-static FRAME TextCacheFrame;
-
-
-RECT CommWndRect = {
-	// default values; actually inited by HailAlien()
-	{SIS_ORG_X, SIS_ORG_Y},
-	{0, 0}
-};
-
-static void ClearSubtitles (void);
-static void CheckSubtitles (void);
-static void RedrawSubtitles (void);
-
-
+using namespace uqm;
+constexpr auto OSCILLOSCOPE_RATE = ONE_SECOND / 32;
+constexpr auto COMM_ANIM_RATE = ONE_SECOND / 40;
+constexpr auto FOREGROUND_VOL = NORMAL_VOLUME;
+static int backgroundVolume() { return usingSpeech ? NORMAL_VOLUME / 2 : NORMAL_VOLUME; }
+RECT CommWndRect = {{SIS_ORG_X, SIS_ORG_Y}, {0, 0}}; // Legacy credits layout boundary.
 /* _count_lines - sees how many lines a given input string would take to
  * display given the line wrapping information
  */
-static int
-_count_lines (TEXT *pText)
+int
+uqm::ConversationRuntime::_count_lines(TEXT *pText)
 {
 	SIZE text_width;
 	const char *pStr;
 	int numLines = 0;
-	BOOLEAN eol;
+	bool eol;
 
-	text_width = CommData.AlienTextWidth;
-	SetContextFont (CommData.AlienFont);
+	text_width = data_.AlienTextWidth;
+	SetContextFont (data_.AlienFont);
 
 	pStr = pText->pStr;
 	do
@@ -144,8 +85,8 @@ _count_lines (TEXT *pText)
 // status == -2: draw non-highlighted player dialog option
 // status == -4: use current context, and baseline from pTextIn
 // status ==  1:  draw alien speech; subtitle cache is used
-static COORD
-add_text (int status, TEXT *pTextIn)
+COORD
+uqm::ConversationRuntime::add_text(int status, TEXT *pTextIn)
 {
 	COUNT maxchars, numchars;
 	TEXT locText;
@@ -154,10 +95,10 @@ add_text (int status, TEXT *pTextIn)
 	const char *pStr;
 	SIZE text_width;
 	int num_lines = 0;
-	static COORD last_baseline;
-	BOOLEAN eol;
+
+	bool eol;
 	CONTEXT OldContext = NULL;
-	
+
 	BatchGraphics ();
 
 	maxchars = (COUNT)~0;
@@ -170,7 +111,7 @@ add_text (int status, TEXT *pTextIn)
 
 			s.origin.x = 0;
 			s.origin.y = 0;
-			s.frame = TextCacheFrame;
+			s.frame = resources_.textCacheFrame;
 			DrawStamp (&s);
 			UnbatchGraphics ();
 			return last_baseline;
@@ -178,14 +119,14 @@ add_text (int status, TEXT *pTextIn)
 		else
 		{
 			// draw to subtitle cache; prepare first
-			OldContext = SetContext (TextCacheContext);
+			OldContext = SetContext (resources_.textCache);
 			ClearDrawable ();
 
 			last_subtitle = pTextIn->pStr;
 		}
 
-		text_width = CommData.AlienTextWidth;
-		SetContextFont (CommData.AlienFont);
+		text_width = data_.AlienTextWidth;
+		SetContextFont (data_.AlienFont);
 		GetContextFontLeading (&leading);
 
 		pText = pTextIn;
@@ -232,13 +173,13 @@ add_text (int status, TEXT *pTextIn)
 	numchars = 0;
 	pStr = pText->pStr;
 
-	if (status > 0 && (CommData.AlienTextValign &
+	if (status > 0 && (data_.AlienTextValign &
 			(VALIGN_MIDDLE | VALIGN_BOTTOM)))
 	{
 		num_lines = _count_lines(pText);
-		if (CommData.AlienTextValign == VALIGN_BOTTOM)
+		if (data_.AlienTextValign == VALIGN_BOTTOM)
 			pText->baseline.y -= (leading * num_lines);
-		else if (CommData.AlienTextValign == VALIGN_MIDDLE)
+		else if (data_.AlienTextValign == VALIGN_MIDDLE)
 			pText->baseline.y -= ((leading * num_lines) / 2);
 		if (pText->baseline.y < 0)
 			pText->baseline.y = 0;
@@ -255,7 +196,7 @@ add_text (int status, TEXT *pTextIn)
 		if (maxchars != 0)
 			--maxchars;
 		numchars += pText->CharCount;
-		
+
 		if (status <= 0)
 		{
 			// Player dialog option or (status == -4) other non-alien
@@ -274,7 +215,7 @@ add_text (int status, TEXT *pTextIn)
 		{
 			// Alien speech
 			font_DrawTracedText (pText,
-					CommData.AlienTextFColor, CommData.AlienTextBColor);
+					data_.AlienTextFColor, data_.AlienTextBColor);
 		}
 	} while (!eol && maxchars);
 	pText->pStr = pStr;
@@ -282,13 +223,13 @@ add_text (int status, TEXT *pTextIn)
 	if (status == 1)
 	{
 		STAMP s;
-		
+
 		// We were drawing to cache -- flush to screen
 		SetContext (OldContext);
 		s.origin.x = s.origin.y = 0;
-		s.frame = TextCacheFrame;
+		s.frame = resources_.textCacheFrame;
 		DrawStamp (&s);
-		
+
 		last_baseline = pText->baseline.y;
 	}
 
@@ -314,9 +255,9 @@ BOOLEAN
 getLineWithinWidth(TEXT *pText, const char **startNext,
 		SIZE maxWidth, COUNT maxChars)
 {
-	BOOLEAN eol;
+	bool eol;
 			// The end of the line of text has been reached.
-	BOOLEAN done;
+	bool done;
 			// We cannot add any more words.
 	RECT rect;
 	COUNT oldCount;
@@ -327,7 +268,7 @@ getLineWithinWidth(TEXT *pText, const char **startNext,
 
 	//GetContextClipRect (&rect);
 
-	eol = FALSE;	
+	eol = FALSE;
 	done = FALSE;
 	oldCount = 1;
 	charCount = 0;
@@ -357,7 +298,7 @@ getLineWithinWidth(TEXT *pText, const char **startNext,
 		oldCount = pText->CharCount;
 		pText->CharCount = charCount;
 		TextRect (pText, &rect, NULL);
-		
+
 		if (rect.extent.width >= maxWidth)
 		{
 			pText->CharCount = oldCount;
@@ -368,15 +309,15 @@ getLineWithinWidth(TEXT *pText, const char **startNext,
 		if (done)
 		{
 			*startNext = ptr;
-			return eol;
+			return eol ? TRUE : FALSE;
 		}
 		charCount++;
 				// For the space in between words.
 	}
 }
 
-static void
-DrawSISComWindow (void)
+void
+uqm::ConversationRuntime::DrawSISComWindow()
 {
 	CONTEXT OldContext;
 
@@ -397,20 +338,12 @@ DrawSISComWindow (void)
 	}
 }
 
-void
-init_communication (void)
-{
-	// now a no-op
-}
+
+
+
 
 void
-uninit_communication (void)
-{
-	// now a no-op
-}
-
-static void
-RefreshResponses (ENCOUNTER_STATE *pES)
+uqm::ConversationRuntime::RefreshResponses(ENCOUNTER_STATE *pES)
 {
 	COORD y;
 	BYTE response;
@@ -459,11 +392,11 @@ RefreshResponses (ENCOUNTER_STATE *pES)
 	UnbatchGraphics ();
 }
 
-static void
-FeedbackPlayerPhrase (UNICODE *pStr)
+void
+uqm::ConversationRuntime::FeedbackPlayerPhrase(UNICODE *pStr)
 {
 	SetContext (SpaceContext);
-	
+
 	BatchGraphics ();
 	DrawSISComWindow ();
 	if (pStr[0])
@@ -488,8 +421,8 @@ FeedbackPlayerPhrase (UNICODE *pStr)
 	UnbatchGraphics ();
 }
 
-static void
-InitSpeechGraphics (void)
+void
+uqm::ConversationRuntime::InitSpeechGraphics()
 {
 	InitOscilloscope (SetAbsFrameIndex (ActivityFrame, 9));
 
@@ -498,10 +431,10 @@ InitSpeechGraphics (void)
 			SetAbsFrameIndex (ActivityFrame, 2));
 }
 
-static void
-UpdateSpeechGraphics (void)
+void
+uqm::ConversationRuntime::UpdateSpeechGraphics()
 {
-	static TimeCount NextTime;
+	auto &NextTime = nextSpeechFrame_;
 	CONTEXT OldContext;
 
 	if (GetTimeCounter () < NextTime)
@@ -516,10 +449,10 @@ UpdateSpeechGraphics (void)
 	SetContext (OldContext);
 }
 
-static void
-UpdateAnimations (bool paused)
+void
+uqm::ConversationRuntime::UpdateAnimations(bool paused)
 {
-	static TimeCount NextTime;
+	auto &NextTime = nextAnimationFrame_;
 	CONTEXT OldContext;
 	BOOLEAN change;
 
@@ -528,10 +461,10 @@ UpdateAnimations (bool paused)
 
 	NextTime = GetTimeCounter () + COMM_ANIM_RATE;
 
-	OldContext = SetContext (AnimContext);
+	OldContext = SetContext (resources_.animation);
 	BatchGraphics ();
 	// Advance and draw ambient, transit and talk animations
-	change = ProcessCommAnimations (clear_subtitles, paused);
+	change = animations_.ProcessCommAnimations(clear_subtitles, paused ? TRUE : FALSE);
 	if (change || clear_subtitles)
 		RedrawSubtitles ();
 	UnbatchGraphics ();
@@ -539,40 +472,27 @@ UpdateAnimations (bool paused)
 	SetContext (OldContext);
 }
 
-static void
-UpdateCommGraphics (void)
+void
+uqm::ConversationRuntime::UpdateCommGraphics()
 {
 	UpdateAnimations (false);
 	UpdateSpeechGraphics ();
 }
 
 // Derived from INPUT_STATE_DESC
-typedef struct talking_state
-{
-	// Fields required by DoInput()
-	BOOLEAN (*InputFunc) (struct talking_state *);
-
-	TimeCount NextTime;  // framerate control
-	COUNT waitTrack;
-	bool rewind;
-	bool seeking;
-	bool ended;
-
-} TALKING_STATE;
-
-static BOOLEAN
-DoTalkSegue (TALKING_STATE *pTS)
+BOOLEAN
+uqm::ConversationRuntime::DoTalkSegue(TALKING_STATE *pTS)
 {
 	bool left = false;
 	bool right = false;
 	COUNT curTrack;
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (exiting())
 	{
 		pTS->ended = true;
 		return FALSE;
 	}
-	
+
 	if (PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
 		JumpTrack ();
@@ -645,35 +565,34 @@ DoTalkSegue (TALKING_STATE *pTS)
 	// Need a high enough framerate for 3DO smooth seeking
 	pTS->NextTime = GetTimeCounter () + ONE_SECOND / 60;
 
-	return pTS->seeking || (curTrack && curTrack <= pTS->waitTrack);
+	return pTS->seeking || (curTrack && curTrack <= pTS->waitTrack) ? TRUE : FALSE;
 }
 
-static void
-runCommAnimFrame (void)
+void
+uqm::ConversationRuntime::runCommAnimFrame()
 {
 	UpdateCommGraphics ();
 	SleepThread (COMM_ANIM_RATE);
 }
 
-static BOOLEAN
-TalkSegue (COUNT wait_track)
+BOOLEAN
+uqm::ConversationRuntime::TalkSegue(COUNT wait_track)
 {
-	TALKING_STATE talkingState;
+	TALKING_STATE talkingState{};
+    talkingState.owner = this;
 
 	// Transition animation to talking state, if necessary
-	if (wantTalkingAnim () && haveTalkingAnim ())
-	{	
-		if (haveTransitionAnim ())
-			setRunIntroAnim ();
-					
-		setRunTalkingAnim ();
+	if (wantTalkingAnim(data_) && haveTalkingAnim(data_))
+	{
+		if (haveTransitionAnim(data_))
+			setRunIntroAnim(data_);
+
+		setRunTalkingAnim(data_);
 
 		// wait until the transition finishes
-		while (runningIntroAnim ())
+		while (runningIntroAnim(data_) && !exiting())
 			runCommAnimFrame ();
 	}
-
-	memset (&talkingState, 0, sizeof talkingState);
 
 	if (wait_track == 0)
 	{	// Restarting with a rewind
@@ -688,7 +607,7 @@ TalkSegue (COUNT wait_track)
 
 	// Run the talking controls
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
-	talkingState.InputFunc = DoTalkSegue;
+	talkingState.InputFunc = [](TALKING_STATE *state) { return state->owner->DoTalkSegue(state); };
 	talkingState.waitTrack = wait_track;
 	DoInput (&talkingState, FALSE);
 
@@ -700,18 +619,18 @@ TalkSegue (COUNT wait_track)
 	}
 
 	// transition back to silent, if necessary
-	if (runningTalkingAnim ())
-		setStopTalkingAnim ();
+	if (runningTalkingAnim(data_))
+		setStopTalkingAnim(data_);
 
 	// Wait until the animation task stops "talking"
-	while (runningTalkingAnim ())
+	while (runningTalkingAnim(data_) && !exiting())
 		runCommAnimFrame ();
 
-	return talkingState.ended;
+	return talkingState.ended ? TRUE : FALSE;
 }
 
-static void
-CommIntroTransition (void)
+void
+uqm::ConversationRuntime::CommIntroTransition()
 {
 	if (curIntroMode == CIM_CROSSFADE_SCREEN)
 	{
@@ -730,7 +649,7 @@ CommIntroTransition (void)
 	}
 	else if (curIntroMode == CIM_CROSSFADE_WINDOW)
 	{
-		ScreenTransition (3, &CommWndRect);
+		ScreenTransition (3, &window_);
 		UnbatchGraphics ();
 	}
 	else if (curIntroMode == CIM_FADE_IN_SCREEN)
@@ -751,52 +670,39 @@ CommIntroTransition (void)
 }
 
 void
-AlienTalkSegue (COUNT wait_track)
+uqm::ConversationRuntime::AlienTalkSegue(COUNT wait_track)
 {
 	// this skips any talk segues that follow an aborted one
-	if ((GLOBAL (CurrentActivity) & CHECK_ABORT) || TalkingFinished)
+	if (exiting() || TalkingFinished)
 		return;
 
-	if (!pCurInputState->Initialized)
+	if (!(&input_)->Initialized)
 	{
 		InitSpeechGraphics ();
-		SetColorMap (GetColorMapAddress (CommData.AlienColorMap));
-		SetContext (AnimContext);
-		DrawAlienFrame (NULL, 0, TRUE);
+		SetColorMap (GetColorMapAddress (data_.AlienColorMap));
+		SetContext (resources_.animation);
+		animations_.DrawAlienFrame(NULL, 0, TRUE);
 		UpdateSpeechGraphics ();
 		CommIntroTransition ();
-		
-		pCurInputState->Initialized = TRUE;
 
-		PlayMusic (CommData.AlienSong, TRUE, 1);
-		SetMusicVolume (BACKGROUND_VOL);
+		(&input_)->Initialized = TRUE;
 
-		InitCommAnimations ();
+		PlayMusic (data_.AlienSong, TRUE, 1);
+		SetMusicVolume (backgroundVolume());
+
+		animations_.InitCommAnimations();
 
 		LastActivity &= ~CHECK_LOAD;
 	}
-	
+
 	TalkingFinished = TalkSegue (wait_track);
 	if (TalkingFinished)
 		FadeMusic (FOREGROUND_VOL, ONE_SECOND);
 }
 
 
-typedef struct summary_state
-{
-	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (struct summary_state *pSS);
-
-	// extended state
-	BOOLEAN Initialized;
-	BOOLEAN PrintNext;
-	SUBTITLE_REF NextSub;
-	const UNICODE *LeftOver;
-
-} SUMMARY_STATE;
-
-static BOOLEAN
-DoConvSummary (SUMMARY_STATE *pSS)
+BOOLEAN
+uqm::ConversationRuntime::DoConvSummary(SUMMARY_STATE *pSS)
 {
 #define DELTA_Y_SUMMARY 8
 #define MAX_SUMM_ROWS ((SIS_SCREEN_HEIGHT - SLIDER_Y - SLIDER_HEIGHT) \
@@ -807,11 +713,11 @@ DoConvSummary (SUMMARY_STATE *pSS)
 		pSS->PrintNext = TRUE;
 		pSS->NextSub = GetFirstTrackSubtitle ();
 		pSS->LeftOver = NULL;
-		pSS->InputFunc = DoConvSummary;
+		pSS->InputFunc = [](SUMMARY_STATE *state) { return state->owner->DoConvSummary(state); };
 		pSS->Initialized = TRUE;
 		DoInput (pSS, FALSE);
 	}
-	else if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	else if (exiting())
 	{
 		return FALSE; // bail out
 	}
@@ -839,7 +745,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 		r.extent.width = SIS_SCREEN_WIDTH;
 		r.extent.height = SIS_SCREEN_HEIGHT - SLIDER_Y - SLIDER_HEIGHT + 2;
 
-		SetContext (AnimContext);
+		SetContext (resources_.animation);
 		SetContextForeGroundColor (COMM_HISTORY_BACKGROUND_COLOR);
 		DrawFilledRectangle (&r);
 
@@ -885,7 +791,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 				pSS->LeftOver = next;
 				break;
 			}
-		
+
 			// this subtitle fit completely
 			font_DrawText (&t);
 			t.baseline.y += DELTA_Y_SUMMARY;
@@ -919,19 +825,19 @@ DoConvSummary (SUMMARY_STATE *pSS)
 }
 
 // Called when the player presses the select button on a response.
-static void
-SelectResponse (ENCOUNTER_STATE *pES)
+void
+uqm::ConversationRuntime::SelectResponse(ENCOUNTER_STATE *pES)
 {
 	TEXT *response_text =
 			&pES->response_list[pES->cur_response].response_text;
-	utf8StringCopy (pES->phrase_buf, sizeof pES->phrase_buf,
+	utf8StringCopy (pES->phrase_buf.data(), pES->phrase_buf.size(),
 			response_text->pStr);
-	FeedbackPlayerPhrase (pES->phrase_buf);
+	FeedbackPlayerPhrase (pES->phrase_buf.data());
 	StopTrack ();
 	ClearSubtitles ();
 	SetSliderImage (SetAbsFrameIndex (ActivityFrame, 2));
 
-	FadeMusic (BACKGROUND_VOL, ONE_SECOND);
+	FadeMusic (backgroundVolume(), ONE_SECOND);
 
 	TalkingFinished = FALSE;
 	pES->num_responses = 0;
@@ -940,13 +846,14 @@ SelectResponse (ENCOUNTER_STATE *pES)
 }
 
 // Called when the player presses the cancel button in comm.
-static void
-SelectConversationSummary (ENCOUNTER_STATE *pES)
+void
+uqm::ConversationRuntime::SelectConversationSummary(ENCOUNTER_STATE *pES)
 {
-	SUMMARY_STATE SummaryState;
-	
+	SUMMARY_STATE SummaryState{};
+    SummaryState.owner = this;
+
 	if (pES)
-		FeedbackPlayerPhrase (pES->phrase_buf);
+		FeedbackPlayerPhrase (pES->phrase_buf.data());
 
 	SummaryState.Initialized = FALSE;
 	DoConvSummary (&SummaryState);
@@ -956,18 +863,18 @@ SelectConversationSummary (ENCOUNTER_STATE *pES)
 	clear_subtitles = TRUE;
 }
 
-static void
-SelectReplay (ENCOUNTER_STATE *pES)
+void
+uqm::ConversationRuntime::SelectReplay(ENCOUNTER_STATE *pES)
 {
-	FadeMusic (BACKGROUND_VOL, ONE_SECOND);
+	FadeMusic (backgroundVolume(), ONE_SECOND);
 	if (pES)
-		FeedbackPlayerPhrase (pES->phrase_buf);
+		FeedbackPlayerPhrase (pES->phrase_buf.data());
 
 	TalkSegue (0);
 }
 
-static void
-PlayerResponseInput (ENCOUNTER_STATE *pES)
+void
+uqm::ConversationRuntime::PlayerResponseInput(ENCOUNTER_STATE *pES)
 {
 	BYTE response;
 
@@ -993,7 +900,7 @@ PlayerResponseInput (ENCOUNTER_STATE *pES)
 		{
 			SelectReplay (pES);
 
-			if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
+			if (!exiting())
 			{
 				RefreshResponses (pES);
 				FadeMusic (FOREGROUND_VOL, ONE_SECOND);
@@ -1038,20 +945,10 @@ PlayerResponseInput (ENCOUNTER_STATE *pES)
 }
 
 // Derived from INPUT_STATE_DESC
-typedef struct last_replay_state
+BOOLEAN
+uqm::ConversationRuntime::DoLastReplay(LAST_REPLAY_STATE *pLRS)
 {
-	// Fields required by DoInput()
-	BOOLEAN (*InputFunc) (struct last_replay_state *);
-
-	TimeCount NextTime; // framerate control
-	TimeCount TimeOut;
-
-} LAST_REPLAY_STATE;
-
-static BOOLEAN
-DoLastReplay (LAST_REPLAY_STATE *pLRS)
-{
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (exiting())
 		return FALSE;
 
 	if (GetTimeCounter () > pLRS->TimeOut)
@@ -1060,7 +957,7 @@ DoLastReplay (LAST_REPLAY_STATE *pLRS)
 	if (PulsedInputState.menu[KEY_MENU_CANCEL] &&
 			LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
 	{
-		FadeMusic (BACKGROUND_VOL, ONE_SECOND);
+		FadeMusic (backgroundVolume(), ONE_SECOND);
 		SelectConversationSummary (NULL);
 		pLRS->TimeOut = FadeMusic (0, ONE_SECOND * 2) + ONE_SECOND / 60;
 	}
@@ -1071,16 +968,17 @@ DoLastReplay (LAST_REPLAY_STATE *pLRS)
 	}
 
 	UpdateCommGraphics ();
-	
+
 	SleepThreadUntil (pLRS->NextTime);
 	pLRS->NextTime = GetTimeCounter () + COMM_ANIM_RATE;
 
 	return TRUE;
 }
 
-static BOOLEAN
-DoCommunication (ENCOUNTER_STATE *pES)
+BOOLEAN
+uqm::ConversationRuntime::DoCommunication(ENCOUNTER_STATE *pES)
 {
+    if (exiting()) { stopPlayback(); return FALSE; }
 	SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
 
 	// First, finish playing all queued tracks if not done yet
@@ -1090,17 +988,16 @@ DoCommunication (ENCOUNTER_STATE *pES)
 		return TRUE;
 	}
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (exiting())
 		;
 	else if (pES->num_responses == 0)
 	{
 		// The player doesn't get a chance to say anything,
 		// but can still review alien's last phrases.
-		LAST_REPLAY_STATE replayState;
-
-		memset (&replayState, 0, sizeof replayState);
+		LAST_REPLAY_STATE replayState{};
+    replayState.owner = this;
 		replayState.TimeOut = FadeMusic (0, ONE_SECOND * 3) + ONE_SECOND / 60;
-		replayState.InputFunc = DoLastReplay;
+		replayState.InputFunc = [](LAST_REPLAY_STATE *state) { return state->owner->DoLastReplay(state); };
 		DoInput (&replayState, FALSE);
 	}
 	else
@@ -1109,37 +1006,30 @@ DoCommunication (ENCOUNTER_STATE *pES)
 		return TRUE;
 	}
 
-	SetContext (SpaceContext);
-	DestroyContext (AnimContext);
-	AnimContext = NULL;
-
-	FlushColorXForms ();
-	ClearSubtitles ();
-
-	StopMusic ();
-	StopSound ();
-	StopTrack ();
-	SleepThreadUntil (FadeMusic (NORMAL_VOLUME, 0) + ONE_SECOND / 60);
+    stopPlayback();
 
 	return FALSE;
 }
 
 void
-DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
+uqm::ConversationRuntime::DoResponsePhrase(RESPONSE_REF R, RESPONSE_FUNC response_func,
 		UNICODE *ConstructStr)
 {
-	ENCOUNTER_STATE *pES = pCurInputState;
+	ENCOUNTER_STATE *pES = (&input_);
 	RESPONSE_ENTRY *pEntry;
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (exiting())
 		return;
-			
+
 	if (pES->num_responses == 0)
 	{
 		pES->cur_response = 0;
 		pES->top_response = (BYTE)~0;
 	}
 
+    if (pES->num_responses >= MaxResponses) {
+        throw std::out_of_range("conversation response capacity exceeded");
+    }
 	pEntry = &pES->response_list[pES->num_responses];
 	pEntry->response_ref = R;
 	pEntry->response_text.pStr = ConstructStr;
@@ -1148,8 +1038,8 @@ DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
 	else
 	{
 		STRING locString;
-		
-		locString = SetAbsStringTableIndex (CommData.ConversationPhrases,
+
+		locString = SetAbsStringTableIndex (data_.ConversationPhrases,
 				(COUNT) (R - 1));
 		pEntry->response_text.pStr =
 				(UNICODE *) GetStringAddress (locString);
@@ -1166,71 +1056,83 @@ DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
 }
 
 void
-HailAlien (void)
+uqm::ConversationRuntime::run()
 {
-	ENCOUNTER_STATE ES;
-	FONT PlayerFont, OldFont;
-	MUSIC_REF SongRef = 0;
-	Color TextBack = { 0, 0, 0x84, 0 }; /* Create the old colorkey as a transparent version of itself */
-
-	pCurInputState = &ES;
-	memset (pCurInputState, 0, sizeof (*pCurInputState));
-
+    if (started_) throw std::logic_error("conversation cannot be run twice");
+    started_ = true;
+    oldContext_ = GetContext();
+    GetMenuSounds(&oldArrows_, &oldSelect_);
+    binding_.emplace(resources_.script);
+    const auto intro = takeConversationIntro();
+    setIntro(intro.mode, intro.duration);
+    auto &ES = input_;
+    ES.owner = this;
+    MUSIC_REF SongRef = nullptr;
+    Color TextBack = {0, 0, 0x84, 0};
+    window_ = CommWndRect; // Legacy credits supply the outer presentation rect.
 	TalkingFinished = FALSE;
 
-	ES.InputFunc = DoCommunication;
-	PlayerFont = LoadFont (PLAYER_FONT);
+	ES.InputFunc = [](ENCOUNTER_STATE *state) { return state->owner->DoCommunication(state); };
+	resources_.playerFont = LoadFont (PLAYER_FONT);
 
-	CommData.AlienFrame = CaptureDrawable (
-			LoadGraphic (CommData.AlienFrameRes));
-	CommData.AlienFont = LoadFont (CommData.AlienFontRes);
-	CommData.AlienColorMap = CaptureColorMap (
-			LoadColorMap (CommData.AlienColorMapRes));
-	if ((CommData.AlienSongFlags & LDASF_USE_ALTERNATE)
-			&& CommData.AlienAltSongRes)
-		SongRef = LoadMusic (CommData.AlienAltSongRes);
+	data_.AlienFrame = CaptureDrawable (
+			LoadGraphic (data_.AlienFrameRes));
+	data_.AlienFont = LoadFont (data_.AlienFontRes);
+	data_.AlienColorMap = CaptureColorMap (
+			LoadColorMap (data_.AlienColorMapRes));
+	if ((data_.AlienSongFlags & LDASF_USE_ALTERNATE)
+			&& data_.AlienAltSongRes)
+		SongRef = LoadMusic (data_.AlienAltSongRes);
 	if (SongRef)
-		CommData.AlienSong = SongRef;
+		data_.AlienSong = SongRef;
 	else
-		CommData.AlienSong = LoadMusic (CommData.AlienSongRes);
+		data_.AlienSong = LoadMusic (data_.AlienSongRes);
 
-	CommData.ConversationPhrases = CaptureStringTable (
-			LoadStringTable (CommData.ConversationPhrasesRes));
+	data_.ConversationPhrases = CaptureStringTable (
+			LoadStringTable (data_.ConversationPhrasesRes));
 
-	SubtitleText.baseline = CommData.AlienTextBaseline;
-	SubtitleText.align = CommData.AlienTextAlign;
+    if (!resources_.playerFont || !data_.AlienFrame || !data_.AlienFont || !data_.ConversationPhrases) {
+        throw std::runtime_error("could not load required conversation resources");
+    }
+	SubtitleText.baseline = data_.AlienTextBaseline;
+	SubtitleText.align = data_.AlienTextAlign;
 
 
 	// init subtitle cache context
-	TextCacheContext = CreateContext ("TextCacheContext");
-	TextCacheFrame = CaptureDrawable (
+	resources_.textCache = CreateContext ("Conversation.TextCache");
+	resources_.textCacheFrame = CaptureDrawable (
 			CreateDrawable (WANT_PIXMAP | WANT_ALPHA, SIS_SCREEN_WIDTH,
 			SIS_SCREEN_HEIGHT - SLIDER_Y - SLIDER_HEIGHT + 2, 1));
-	SetContext (TextCacheContext);
-	SetContextFGFrame (TextCacheFrame);
+    if (!resources_.textCache || !resources_.textCacheFrame) {
+        throw std::runtime_error("could not create conversation subtitle cache");
+    }
+	SetContext (resources_.textCache);
+	SetContextFGFrame (resources_.textCacheFrame);
 	SetContextBackGroundColor (TextBack);
 	ClearDrawable ();
 
 	ES.phrase_buf[0] = '\0';
 
 	SetContext (SpaceContext);
-	OldFont = SetContextFont (PlayerFont);
+	oldSpaceFont_ = SetContextFont (resources_.playerFont);
+    fontBound_ = true;
 
 	{
 		RECT r;
 
-		AnimContext = CreateContext ("AnimContext");
-		SetContext (AnimContext);
+		resources_.animation = CreateContext ("Conversation.Animation");
+        if (!resources_.animation) throw std::runtime_error("could not create conversation animation context");
+		SetContext (resources_.animation);
 		SetContextFGFrame (Screen);
-		GetFrameRect (CommData.AlienFrame, &r);
+		GetFrameRect (data_.AlienFrame, &r);
 		r.extent.width = SIS_SCREEN_WIDTH;
-		CommWndRect.extent = r.extent;
-		
+		window_.extent = r.extent;
+
 		SetTransitionSource (NULL);
 		BatchGraphics ();
 		if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 		{
-			r.corner = CommWndRect.corner;
+			r.corner = window_.corner;
 			SetContextClipRect (&r);
 		}
 		else
@@ -1238,13 +1140,13 @@ HailAlien (void)
 			r.corner.x = SIS_ORG_X;
 			r.corner.y = SIS_ORG_Y;
 			SetContextClipRect (&r);
-			CommWndRect.corner = r.corner;
+			window_.corner = r.corner;
 
 			DrawSISFrame ();
 			// TODO: find a better way to do this, perhaps set the titles
 			// forward from callers.
-			if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0
-					&& GET_GAME_STATE (STARBASE_AVAILABLE))
+			if (campaign_.read(StoryCounter::EncounterContext) == (BYTE)~0
+					&& campaign_.read(StoryFlag::StarbaseAccessGranted))
 			{	// Talking to allied Starbase
 				DrawSISMessage (GAME_STRING (STARBASE_STRING_BASE + 1));
 						// "Starbase Commander"
@@ -1258,47 +1160,22 @@ HailAlien (void)
 			}
 		}
 
+		CommWndRect = window_; // Compatibility copy for the credits compositor.
 		DrawSISComWindow ();
 	}
 
 
 	LastActivity |= CHECK_LOAD; /* prevent spurious input */
-	(*CommData.init_encounter_func) ();
+    playback_ = true;
+	(*data_.init_encounter_func) ();
 	DoInput (&ES, FALSE);
-	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-		(*CommData.post_encounter_func) ();
-	(*CommData.uninit_encounter_func) ();
-
-	SetContext (SpaceContext);
-	SetContextFont (OldFont);
-
-	DestroyStringTable (ReleaseStringTable (CommData.ConversationPhrases));
-	DestroyMusic (CommData.AlienSong);
-	DestroyColorMap (ReleaseColorMap (CommData.AlienColorMap));
-	DestroyFont (CommData.AlienFont);
-	DestroyDrawable (ReleaseDrawable (CommData.AlienFrame));
-
-	DestroyContext (TextCacheContext);
-	DestroyDrawable (ReleaseDrawable (TextCacheFrame));
-
-	DestroyFont (PlayerFont);
-
-	// Some support code tests either of these to see if the
-	// game is currently in comm or encounter
-	CommData.ConversationPhrasesRes = 0;
-	CommData.ConversationPhrases = 0;
-	pCurInputState = 0;
+    finishScript();
 }
+
+
 
 void
-SetCommIntroMode (CommIntroMode newMode, TimeCount howLong)
-{
-	curIntroMode = newMode;
-	fadeTime = howLong;
-}
-
-static void
-RedrawSubtitles (void)
+uqm::ConversationRuntime::RedrawSubtitles()
 {
 	TEXT t;
 
@@ -1312,8 +1189,8 @@ RedrawSubtitles (void)
 	}
 }
 
-static void
-ClearSubtitles (void)
+void
+uqm::ConversationRuntime::ClearSubtitles()
 {
 	clear_subtitles = TRUE;
 	last_subtitle = NULL;
@@ -1321,16 +1198,16 @@ ClearSubtitles (void)
 	SubtitleText.CharCount = 0;
 }
 
-static void
-CheckSubtitles (void)
+void
+uqm::ConversationRuntime::CheckSubtitles()
 {
 	const UNICODE *pStr;
 	POINT baseline;
 	TEXT_ALIGN align;
 
 	pStr = GetTrackSubtitle ();
-	baseline = CommData.AlienTextBaseline;
-	align = CommData.AlienTextAlign;
+	baseline = data_.AlienTextBaseline;
+	align = data_.AlienTextAlign;
 
 	if (pStr != SubtitleText.pStr ||
 			SubtitleText.baseline.x != baseline.x ||
@@ -1356,11 +1233,25 @@ CheckSubtitles (void)
 	}
 }
 
-void
-EnableTalkingAnim (BOOLEAN enable)
-{
-	if (enable)
-		CommData.AlienTalkDesc.AnimFlags &= ~PAUSE_TALKING;
-	else
-		CommData.AlienTalkDesc.AnimFlags |= PAUSE_TALKING;
+
+
+extern "C" void AlienTalkSegue(COUNT track) { uqm::activeConversation().AlienTalkSegue(track); }
+extern "C" void DoResponsePhrase(RESPONSE_REF response, RESPONSE_FUNC handler, UNICODE *text) {
+    uqm::activeConversation().DoResponsePhrase(response, handler, text);
+}
+extern "C" void EnableTalkingAnim(BOOLEAN enable) { uqm::activeConversation().enableTalking(enable != FALSE); }
+
+std::unique_ptr<uqm::ModeSuspension> uqm::ConversationRuntime::suspend() {
+    return suspendDrawingBindings({SpaceContext, RadarContext, resources_.animation, resources_.textCache});
+}
+void uqm::ConversationRuntime::resume() {
+    if (!started_ || session_.menuExit() || (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))) return;
+    const auto oldContext = SetContext(resources_.animation);
+    animations_.redraw();
+    clear_subtitles = TRUE;
+    RedrawSubtitles();
+    SetContext(SpaceContext);
+    DrawSISComWindow();
+    if (input_.num_responses) RefreshResponses(&input_);
+    SetContext(oldContext);
 }

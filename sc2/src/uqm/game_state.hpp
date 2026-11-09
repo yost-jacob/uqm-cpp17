@@ -323,6 +323,7 @@ public:
     // Child returns ModeCompleted or SessionExit; a returned exit must propagate
     // outward before further gameplay. Child exceptions currently abort (TODO).
     MenuResult swapGameMode(std::unique_ptr<GameMode> child);
+    bool isRunning() const noexcept { return running_; } // C/credits compatibility host selection only.
     // Production lifecycle/legacy adapters; load only at an unwound boundary.
     SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
     // Transitional C menu mailbox. Native menus return the same optional result.

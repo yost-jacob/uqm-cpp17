@@ -214,7 +214,7 @@ CombatIsInevitable (RESPONSE_REF R)
 
 		AlienTalkSegue (1);
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1)
 				), ONE_SECOND / 4);
 		AlienTalkSegue ((COUNT)~0);
 

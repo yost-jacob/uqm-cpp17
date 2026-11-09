@@ -349,7 +349,7 @@ RealizeMistake (RESPONSE_REF R)
 
 		GetAllianceName (buf, name_1);
 		construct_response (
-				shared_phrase_buf,
+				GetConversationPhraseBuffer(),
 				i_am_captain0,
 				GLOBAL_SIS (CommanderName),
 				i_am_captain1,
@@ -359,7 +359,7 @@ RealizeMistake (RESPONSE_REF R)
 				i_am_captain3,
 				(UNICODE*)NULL);
 	}
-	DoResponsePhrase (i_am_captain0, ExplainDefeat, shared_phrase_buf);
+	DoResponsePhrase (i_am_captain0, ExplainDefeat, GetConversationPhraseBuffer());
 	Response (i_am_nice, ExplainDefeat);
 	Response (i_am_guy, ExplainDefeat);
 }
@@ -400,14 +400,14 @@ Hostile (RESPONSE_REF R)
 		case 1:
 		{
 			construct_response (
-					shared_phrase_buf,
+					GetConversationPhraseBuffer(),
 					look0,
 					"",
 					shofixti_name,
 					"",
 					look1,
 					(UNICODE*)NULL);
-			DoResponsePhrase (look0, ExitConversation, shared_phrase_buf);
+			DoResponsePhrase (look0, ExitConversation, GetConversationPhraseBuffer());
 			break;
 		}
 		case 2:
@@ -529,14 +529,14 @@ Friendly (RESPONSE_REF R)
 	}
 
 	construct_response (
-			shared_phrase_buf,
+			GetConversationPhraseBuffer(),
 			bye0,
 			"",
 			shofixti_name,
 			"",
 			bye1,
 			(UNICODE*)NULL);
-	DoResponsePhrase (bye0, ExitConversation, shared_phrase_buf);
+	DoResponsePhrase (bye0, ExitConversation, GetConversationPhraseBuffer());
 }
 
 static void

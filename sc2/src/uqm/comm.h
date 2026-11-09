@@ -28,94 +28,13 @@
 extern "C" {
 #endif
 
-#ifdef COMM_INTERNAL
-
-#define SLIDER_Y 107
-#define SLIDER_HEIGHT 15
-
-#include "commanim.h"
-
-
-extern LOCDATA CommData;
-
-static inline BOOLEAN
-haveTalkingAnim (void)
-{
-	return CommData.AlienTalkDesc.NumFrames > 0;
-}
-
-static inline BOOLEAN
-haveTransitionAnim (void)
-{
-	return CommData.AlienTransitionDesc.NumFrames > 0;
-}
-
-static inline BOOLEAN
-wantTalkingAnim (void)
-{
-	return !(CommData.AlienTalkDesc.AnimFlags & PAUSE_TALKING);
-}
-
-static inline void
-setRunTalkingAnim (void)
-{
-	CommData.AlienTalkDesc.AnimFlags |= WAIT_TALKING;
-}
-
-static inline void
-clearRunTalkingAnim (void)
-{
-	CommData.AlienTalkDesc.AnimFlags &= ~WAIT_TALKING;
-}
-
-static inline BOOLEAN
-runningTalkingAnim (void)
-{
-	return (CommData.AlienTalkDesc.AnimFlags & WAIT_TALKING);
-}
-
-static inline void
-setRunIntroAnim (void)
-{
-	CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
-}
-
-static inline BOOLEAN
-runningIntroAnim (void)
-{
-	return (CommData.AlienTransitionDesc.AnimFlags & TALK_INTRO);
-}
-
-static inline void
-setStopTalkingAnim (void)
-{
-	CommData.AlienTalkDesc.AnimFlags |= TALK_DONE;
-}
-
-static inline void
-clearStopTalkingAnim (void)
-{
-	CommData.AlienTalkDesc.AnimFlags &= ~TALK_DONE;
-}
-
-static inline BOOLEAN
-signaledStopTalkingAnim (void)
-{
-	return CommData.AlienTalkDesc.AnimFlags & TALK_DONE;
-}
-
-#endif
 
 #define TEXT_X_OFFS 1
 #define TEXT_Y_OFFS 1
 #define SIS_TEXT_WIDTH (SIS_SCREEN_WIDTH - (TEXT_X_OFFS << 1))
 
-extern void init_communication (void);
-extern void uninit_communication (void);
 
 extern COUNT InitCommunication (CONVERSATION which_comm);
-// Legacy dialogue backend, invoked by native encounter orchestration.
-extern void HailAlien (void);
 
 #define WAIT_TRACK_ALL  ((COUNT)~0)
 extern void AlienTalkSegue (COUNT wait_track);
