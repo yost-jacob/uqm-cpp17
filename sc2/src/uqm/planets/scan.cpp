@@ -18,6 +18,7 @@
 
 
 #include "../system_runtime.hpp"
+#include <stdexcept>
 #include "../system_behavior.hpp"
 #include "lander.h"
 #include "lifeform.h"
@@ -614,20 +615,22 @@ spawnFwiffo (void)
 static BOOLEAN
 DispatchLander (void)
 {
-	InputFrameCallback *oldCallback;
 	SIZE landingFuel = getLandingFuelNeeded ();
 
 	EraseCoarseScan ();
 
-	// Deactivate planet rotation callback
-	oldCallback = SetInputCallback (NULL);
 
 	DeltaSISGauges (0, -landingFuel, 0);
 	SetContext (ScanContext);
 	drawPlanetCursor (FALSE);
 
-	uqm::runLander(*pSolarSysState, planetLoc);
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+    if (!pSolarSysState->worlds->session) throw std::logic_error("lander requires its owning session");
+    auto &session = *pSolarSysState->worlds->session;
+    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, *pSolarSysState, planetLoc))) {
+        GLOBAL(CurrentActivity) |= exit->kind == uqm::SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+        return FALSE;
+    }
+	if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 		return FALSE;
 
 	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI) == 1)
@@ -642,13 +645,6 @@ DispatchLander (void)
 		return FALSE;
 	}
 
-	if (optWhichCoarseScan == OPT_PC)
-		PrintCoarseScanPC ();
-	else
-		PrintCoarseScan3DO ();
-
-	// Reactivate planet rotation callback
-	SetInputCallback (oldCallback);
 
 	return TRUE;
 }
@@ -1156,6 +1152,7 @@ DestroyScanContext (void)
 void
 ScanSystem (void)
 {
+    uqm::ExplorationViewScope view{*pSolarSysState->worlds, uqm::ExplorationView::Scan};
 	MENU_STATE MenuState;
 
 	memset (&MenuState, 0, sizeof MenuState);
@@ -1372,4 +1369,22 @@ void
 setNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
 {
 	planetInfo->ScanRetrieveMask[scanType] |= ((DWORD) 1 << nodeNr);
+}
+
+void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
+    if (!system.TopoFrame || view == ExplorationView::Flight) return;
+    struct ContextRestore {
+        CONTEXT previous;
+        ~ContextRestore() { SetContext(previous); }
+    } restore{SetContext(PlanetContext)};
+    BatchGraphics();
+    DrawStarBackGround();
+    DrawDefaultPlanetSphere();
+    DrawPlanetSurfaceBorder();
+    RedrawSurfaceScan(nullptr);
+    UnbatchGraphics();
+    if (view == ExplorationView::Scan) {
+        if (optWhichCoarseScan == OPT_PC) PrintCoarseScanPC();
+        else PrintCoarseScan3DO();
+    }
 }

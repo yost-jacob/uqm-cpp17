@@ -11,6 +11,9 @@
 namespace uqm {
 class GameState;
 class GameMode;
+// Mode-owned RAII snapshot. Destruction restores borrowed service bindings.
+class ModeSuspension { public: virtual ~ModeSuspension() = default; };
+struct ModeCompleted {};
 enum class SessionExitKind { LoadGame, ReturnToTitle, Shutdown, Failed };
 struct SessionExit {
     SessionExitKind kind;
@@ -22,13 +25,14 @@ struct SessionExit {
     static SessionExit failed(std::exception_ptr error = {}) { return {SessionExitKind::Failed, {}, error}; }
 };
 // A menu's nullopt means no session action: close normally and resume its caller.
-// A completed game mode always chooses a successor or a definite session exit.
+// A game mode chooses a successor, completion, or a definite session exit.
 using MenuResult = std::optional<SessionExit>;
-using ModeResult = std::variant<std::unique_ptr<GameMode>, SessionExit>;
+using ModeResult = std::variant<std::unique_ptr<GameMode>, SessionExit, ModeCompleted>;
 
 // Named callable with shared state ownership and a checked player identity.
 // run() executes synchronously on the gameplay thread and returns before the
-// dispatcher destroys this object. Return a non-null successor or a session exit.
+// dispatcher destroys this object. Return a successor, session exit, or ModeCompleted. Nested completion
+// automatically returns control to the suspended parent; root completion exits to title.
 class GameMode {
 public:
     GameMode(std::shared_ptr<GameState> state, PlayerId player);
@@ -37,9 +41,11 @@ public:
     GameMode(const GameMode &) = delete;
     GameMode &operator=(const GameMode &) = delete;
 protected:
-    // Finish a nested run by returning ownership of its suspended parent.
-    // Valid only for a child installed by GameSession::swapGameMode.
-    ModeResult resumeParent();
+    // Dispatcher calls these around a child. The token restores bindings after
+    // child destruction, including exits. resume() restores the continuing parent
+    // view and services; it does not restart run() or commit gameplay effects.
+    virtual std::unique_ptr<ModeSuspension> suspend() { return {}; }
+    virtual void resume() {}
     const std::shared_ptr<GameState> &stateOwner() const noexcept;
     PlayerId playerId() const noexcept;
 private:

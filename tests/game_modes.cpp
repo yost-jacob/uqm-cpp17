@@ -2,6 +2,8 @@
 #include "uqm/game_state.hpp"
 #include <boost/test/unit_test.hpp>
 #include <algorithm>
+#include <vector>
+#include <string>
 #include <stdexcept>
 
 namespace {
@@ -155,7 +157,7 @@ public:
             if (exit) return *exit;
         } else if (load_) return uqm::SessionExit::load(0);
         if (root_) return uqm::SessionExit::title();
-        return resumeParent();
+        return uqm::ModeCompleted{};
     }
 private:
     uqm::GameSession &session_;
@@ -221,3 +223,54 @@ BOOST_AUTO_TEST_CASE(nested_child_exceptions_use_the_temporary_abort_policy)
     BOOST_TEST(WTERMSIG(status) == SIGABRT);
 }
 #endif
+
+BOOST_AUTO_TEST_CASE(dispatcher_automates_child_cleanup_renderer_restore_and_parent_redraw_in_order)
+{
+    for (const bool load : {false, true}) {
+        std::vector<std::string> events;
+        auto data = state();
+        uqm::GameSession session{data, uqm::SinglePlayerId};
+        struct Token final : uqm::ModeSuspension {
+            std::vector<std::string> &events;
+            explicit Token(std::vector<std::string> &value) : events(value) {}
+            ~Token() override { events.push_back("bindings restored"); }
+        };
+        struct Child final : uqm::GameMode {
+            std::vector<std::string> &events;
+            bool load;
+            Child(std::shared_ptr<uqm::GameState> state, std::vector<std::string> &log, bool requestLoad)
+                : GameMode(std::move(state), uqm::SinglePlayerId), events(log), load(requestLoad) {}
+            ~Child() override { events.push_back("child cleanup"); }
+            uqm::ModeResult run() override {
+                events.push_back("child runs");
+                if (load) return uqm::SessionExit::load(0);
+                return uqm::ModeCompleted{};
+            }
+        };
+        struct Parent final : uqm::GameMode {
+            uqm::GameSession &session;
+            std::vector<std::string> &events;
+            bool load;
+            Parent(uqm::GameSession &owner, std::vector<std::string> &log, bool requestLoad)
+                : GameMode(owner.stateOwner(), owner.playerId()), session(owner), events(log), load(requestLoad) {}
+            ~Parent() override { events.push_back("parent cleanup"); }
+            std::unique_ptr<uqm::ModeSuspension> suspend() override {
+                events.push_back("parent rendering suspended");
+                return std::make_unique<Token>(events);
+            }
+            void resume() override { events.push_back("parent redraw"); }
+            uqm::ModeResult run() override {
+                auto exit = session.swapGameMode(std::make_unique<Child>(stateOwner(), events, load));
+                events.push_back("parent stack resumes");
+                if (exit) return *exit;
+                return uqm::ModeCompleted{};
+            }
+        };
+        const auto exit = session.run(std::make_unique<Parent>(session, events, load));
+        std::vector<std::string> expected{"parent rendering suspended", "child runs", "child cleanup", "bindings restored"};
+        if (!load) expected.push_back("parent redraw");
+        expected.push_back("parent stack resumes"); expected.push_back("parent cleanup");
+        BOOST_TEST(events == expected, boost::test_tools::per_element());
+        BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(load ? uqm::SessionExitKind::LoadGame : uqm::SessionExitKind::ReturnToTitle));
+    }
+}

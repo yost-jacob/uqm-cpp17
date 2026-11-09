@@ -306,7 +306,7 @@ public:
     SessionExit run(std::unique_ptr<GameMode> initialMode);
     // Synchronous nested execution. Only call from the active mode, with a fresh
     // child bound to the same state/player. Parent remains alive on the stack.
-    // Child returns resumeParent() or SessionExit; a returned exit must propagate
+    // Child returns ModeCompleted or SessionExit; a returned exit must propagate
     // outward before further gameplay. Child exceptions currently abort (TODO).
     MenuResult swapGameMode(std::unique_ptr<GameMode> child);
     // Production lifecycle/legacy adapters; load only at an unwound boundary.

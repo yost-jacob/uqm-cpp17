@@ -224,6 +224,7 @@ set(UQM_SOURCES
     sc2/src/uqm/orbital_encounter.cpp
     sc2/src/uqm/system_behavior_factory.cpp
     sc2/src/uqm/system_runtime.cpp
+    sc2/src/uqm/exploration_rendering.cpp
     sc2/src/uqm/energy_behavior.cpp
     sc2/src/uqm/world_c.cpp
     sc2/src/uqm/game_state_bits.c

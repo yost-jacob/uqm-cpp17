@@ -14,7 +14,7 @@ public:
     ModeResult run() override {
         result_ = InitCommunication(conversation_);
         if (auto exit = session_.menuExit()) return *exit;
-        return resumeParent();
+        return uqm::ModeCompleted{};
     }
 private:
     GameSession &session_;

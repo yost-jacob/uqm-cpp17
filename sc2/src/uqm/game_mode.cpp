@@ -13,30 +13,23 @@ GameMode::GameMode(std::shared_ptr<GameState> state, PlayerId player)
 }
 const std::shared_ptr<GameState> &GameMode::stateOwner() const noexcept { return state_; }
 PlayerId GameMode::playerId() const noexcept { return player_; }
-ModeResult GameMode::resumeParent() {
-    if (!parentMode_) throw std::logic_error("mode has no suspended parent");
-    return std::move(parentMode_);
-}
 MenuResult GameSession::swapGameMode(std::unique_ptr<GameMode> child) {
     if (!running_ || !currentMode_ || !child || child->parentMode_
             || child->state_.get() != state_.get() || child->player_ != player_)
         throw std::invalid_argument("nested mode requires the active session and a fresh matching child");
-    auto *parent = currentMode_.get();
-    child->parentMode_.swap(currentMode_);
-    currentMode_.swap(child);
     try {
+        auto suspension = currentMode_->suspend();
+        child->parentMode_.swap(currentMode_);
+        currentMode_.swap(child);
         auto result = currentMode_->run();
-        std::unique_ptr<GameMode> restored;
-        if (auto *exit = std::get_if<SessionExit>(&result)) {
-            requestMenuExit(*exit);
-            restored = std::move(currentMode_->parentMode_);
-        } else {
-            restored = std::move(std::get<std::unique_ptr<GameMode>>(result));
-        }
-        if (restored.get() != parent)
-            throw std::logic_error("nested mode must return its suspended parent or a session exit");
-        currentMode_.swap(restored);
-        restored.reset(); // Destroy child before returning into the live parent.
+        if (auto *exit = std::get_if<SessionExit>(&result)) requestMenuExit(*exit);
+        else if (!std::holds_alternative<ModeCompleted>(result))
+            throw std::logic_error("nested mode must complete or return a session exit");
+        auto completed = std::move(currentMode_);
+        currentMode_ = std::move(completed->parentMode_);
+        completed.reset(); // RAII cleanup finishes before restoring bindings/redrawing.
+        suspension.reset();
+        if (!pendingExit_) currentMode_->resume();
         return pendingExit_;
     } catch (...) {
         // TODO: IMPLEMENT GRACEFUL SHUTDOWN: restore suspended ownership, unwind
@@ -85,6 +78,7 @@ SessionExit GameSession::run(std::unique_ptr<GameMode> initialMode) {
                 exit = *pendingExit_; // Requests propagate only after the mode unwinds.
                 break;
             }
+            if (std::holds_alternative<ModeCompleted>(result)) break;
             auto &next = std::get<std::unique_ptr<GameMode>>(result);
             if (!next) throw std::logic_error("mode returned a null successor");
             currentMode_ = std::move(next);

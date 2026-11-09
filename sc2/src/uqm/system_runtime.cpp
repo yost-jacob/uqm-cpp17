@@ -9,7 +9,7 @@ SystemBehavior &systemBehavior(const SOLARSYS_STATE &system) {
     return system.worlds->system->behavior();
 }
 SolarSystemExploration::SolarSystemExploration(GameSession &session)
-    : runtime_{session.player().campaign(), session.worldOwner(), nullptr, &session, {}} {
+    : runtime_{session.player().campaign(), session.worldOwner(), nullptr, &session, ExplorationView::Flight, {}} {
     if (!runtime_.world) throw std::invalid_argument("exploration requires world state");
 }
 void SolarSystemExploration::run() { runExploration(runtime_); }

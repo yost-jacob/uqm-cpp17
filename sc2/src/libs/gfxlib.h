@@ -345,6 +345,7 @@ MAKE_DRAW_MODE (DrawKind kind, SWORD factor)
 	return mode;
 }
 
+extern CONTEXT GetContext (void);
 extern CONTEXT SetContext (CONTEXT Context);
 extern Color SetContextForeGroundColor (Color Color);
 extern Color GetContextForeGroundColor (void);

@@ -95,6 +95,9 @@ public:
         exploration_.run();
         return finishMode(session_);
     }
+protected:
+    std::unique_ptr<ModeSuspension> suspend() override { return exploration_.suspendRendering(); }
+    void resume() override { exploration_.resumeRendering(); }
 private:
     GameSession &session_;
     SolarSystemExploration exploration_;

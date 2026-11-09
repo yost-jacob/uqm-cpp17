@@ -1277,6 +1277,7 @@ EnterPlanetOrbit (void)
 	// Implement a to-do in generate.h for a better test
 	if (pSolarSysState->TopoFrame)
 	{	// We've entered orbit; LoadPlanet() called planet surface-gen code
+        uqm::ExplorationViewScope view{*pSolarSysState->worlds, uqm::ExplorationView::Orbit};
 		PlanetOrbitMenu ();
 		FreePlanet ();
 	}

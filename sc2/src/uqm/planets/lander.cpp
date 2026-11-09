@@ -17,6 +17,10 @@
  */
 
 #include "../system_runtime.hpp"
+#include "../game_mode.hpp"
+#include "libs/inplib.h"
+#include <optional>
+#include <stdexcept>
 #include "lander.h"
 #include "../state.h"
 
@@ -153,7 +157,7 @@ extern PRIM_LINKS DisplayLinks;
 
 #define LANDER_SPEED_DENOM 10
 
-// Per-launch state, owned by runLander; C element callbacks only borrow it.
+// Per-launch state, owned by LanderMode; C element callbacks only borrow it.
 struct LanderVisit {
     explicit LanderVisit(SOLARSYS_STATE &owner) : system(owner), campaign(uqm::systemCampaign(owner)) {}
     LanderVisit(const LanderVisit &) = delete;
@@ -1723,7 +1727,7 @@ SetPlanetMusic (BYTE planet_type)
 }
 
 static void
-ReturnToOrbit (void)
+drawTakeoffBackdrop (void)
 {
 	CONTEXT OldContext;
 	RECT r;
@@ -1875,17 +1879,79 @@ GetHazardChance (int hazardType, unsigned HazardRating)
 	return 0;
 }
 
-void
-uqm::runLander(SOLARSYS_STATE &system, POINT planetLoc)
+namespace uqm {
+namespace {
+class LanderBinding {
+public:
+    explicit LanderBinding(LanderVisit &visit) : previous_(planetSideDesc) { planetSideDesc = &visit; }
+    ~LanderBinding() { planetSideDesc = previous_; }
+    LanderBinding(const LanderBinding &) = delete;
+    LanderBinding &operator=(const LanderBinding &) = delete;
+private:
+    LanderVisit *previous_;
+};
+class LanderMenuSounds {
+public:
+    LanderMenuSounds() { GetMenuSounds(&arrows_, &select_); }
+    ~LanderMenuSounds() { SetMenuSounds(arrows_, select_); }
+    LanderMenuSounds(const LanderMenuSounds &) = delete;
+    LanderMenuSounds &operator=(const LanderMenuSounds &) = delete;
+private:
+    MENU_SOUND_FLAGS arrows_{}, select_{};
+};
+class LanderEffects {
+public:
+    ~LanderEffects() {
+        // Keep persistent surface nodes; remove only the visit's transient effects.
+        for (HELEMENT element = GetHeadElement(); element;) {
+            ELEMENT *value;
+            LockElement(element, &value);
+            const auto next = _GetSuccLink(value);
+            const bool transient = value->state_flags & FINITE_LIFE;
+            UnlockElement(element);
+            if (transient) {
+                RemoveElement(element);
+                FreeElement(element);
+            }
+            element = next;
+        }
+        ZeroVelocityComponents(&GLOBAL(velocity));
+    }
+    LanderEffects() = default;
+    LanderEffects(const LanderEffects &) = delete;
+    LanderEffects &operator=(const LanderEffects &) = delete;
+};
+class LanderMode final : public GameMode {
+public:
+    LanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session), location_(location), visit_(system) {
+        if (&session.player().campaign() != &visit_.campaign)
+            throw std::invalid_argument("lander and session have different campaigns");
+    }
+    ModeResult run() override;
+private:
+    GameSession &session_;
+    POINT location_;
+    LanderVisit visit_;
+    // Reverse destruction: transient effects, menu sounds, active visit binding,
+    // then visit data. Dispatcher restores renderer bindings only afterward.
+    std::optional<LanderBinding> binding_;
+    std::optional<LanderMenuSounds> sounds_;
+    std::optional<LanderEffects> effects_;
+};
+}
+}
+
+uqm::ModeResult
+uqm::LanderMode::run()
 {
-	SIZE index;
-	LanderInputState landerInputState;
-    LanderVisit PSD{system};
-    struct Binding {
-        LanderVisit *previous = planetSideDesc;
-        ~Binding() { planetSideDesc = previous; }
-    } binding;
-    planetSideDesc = &PSD;
+    SIZE index;
+    LanderInputState landerInputState{};
+    auto &PSD = visit_;
+    const POINT planetLoc = location_;
+    binding_.emplace(visit_);
+    sounds_.emplace();
+    effects_.emplace();
 	PSD.InTransit = TRUE;
 
 	// Set our chances of hazards occurring.
@@ -1926,7 +1992,6 @@ uqm::runLander(SOLARSYS_STATE &system, POINT planetLoc)
 			BUILD_COLOR (MAKE_RGB15 (0x1F, 0x0A, 0x00), 0x7D);
 	PSD.ColorCycle[(NUM_TEXT_FRAMES >> 1) - 1] =
 			BUILD_COLOR (MAKE_RGB15 (0x1F, 0x03, 0x00), 0x7F);
-	planetSideDesc = &PSD;
 	
 	index = NORMALIZE_FACING (TFB_Random ());
 	LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
@@ -1947,14 +2012,14 @@ uqm::runLander(SOLARSYS_STATE &system, POINT planetLoc)
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	DoInput (&landerInputState, FALSE);
 
-	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)) && !session_.menuExit() && !QuitPosted)
 	{
 		if (planetSideDesc->crew_left == 0)
 		{
 			--GLOBAL_SIS (NumLanders);
 			DrawLanders ();
 
-			ReturnToOrbit ();
+			drawTakeoffBackdrop ();
 		}
 		else
 		{
@@ -1963,7 +2028,7 @@ uqm::runLander(SOLARSYS_STATE &system, POINT planetLoc)
 					NotPositional (), NULL, GAME_SOUND_PRIORITY + 1);
 
 			LandingTakeoffSequence (&landerInputState, FALSE);
-			ReturnToOrbit ();
+			drawTakeoffBackdrop ();
 			AnimateLaunch (LanderFrame[6]);
 			
 			DeltaSISGauges (planetSideDesc->crew_left, 0, 0);
@@ -1985,31 +2050,10 @@ uqm::runLander(SOLARSYS_STATE &system, POINT planetLoc)
 	}
 
 
-	{
-		HELEMENT hElement, hNextElement;
-
-		for (hElement = GetHeadElement ();
-				hElement; hElement = hNextElement)
-		{
-			ELEMENT *ElementPtr;
-
-			LockElement (hElement, &ElementPtr);
-			hNextElement = _GetSuccLink (ElementPtr);
-			if (ElementPtr->state_flags & FINITE_LIFE)
-			{
-				UnlockElement (hElement);
-
-				RemoveElement (hElement);
-				FreeElement (hElement);
-
-				continue;
-			}
-			UnlockElement (hElement);
-		}
-	}
-
-	ZeroVelocityComponents (&GLOBAL (velocity));
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+    if (auto exit = session_.menuExit()) return *exit;
+    if (QuitPosted) return SessionExit::shutdown();
+    if (GLOBAL(CurrentActivity) & CHECK_ABORT) return SessionExit::title();
+    return ModeCompleted{};
 }
 
 void
@@ -2106,4 +2150,8 @@ InitLander (BYTE LanderFlags)
 	}
 
 	UnbatchGraphics ();
+}
+
+std::unique_ptr<uqm::GameMode> uqm::createLanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location) {
+    return std::make_unique<LanderMode>(session, system, location);
 }
