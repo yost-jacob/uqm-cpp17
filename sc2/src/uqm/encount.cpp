@@ -115,7 +115,7 @@ uqm::EncounterRuntime::buildBattle(COUNT which_player)
 
 	if (GetHeadLink (&GLOBAL (npc_built_ship_q)) == 0)
 	{
-		campaign_.set(uqm::StoryFlag::BattleSegue, 0);
+		story_.set(uqm::StoryFlag::BattleSegue, 0);
 		return;
 	}
 
@@ -132,8 +132,8 @@ uqm::EncounterRuntime::buildBattle(COUNT which_player)
 						% NUMBER_OF_PLANET_TYPES));
 				break;
 			default:
-				campaign_.set(uqm::StoryCounter::EscapeCounter, 110);
-				load_gravity_well (campaign_.read(uqm::StoryCounter::BattlePlanet));
+				story_.set(uqm::StoryCounter::EscapeCounter, 110);
+				load_gravity_well (story_.read(uqm::StoryCounter::BattlePlanet));
 				break;
 		}
 	}
@@ -491,7 +491,7 @@ uqm::EncounterRuntime::finish()
 			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 		goto ExitUninitEncounter;
 
-	if (campaign_.read(uqm::StoryFlag::BattleSegue) == 0)
+	if (story_.read(uqm::StoryFlag::BattleSegue) == 0)
 	{
 		ReinitQueue (&race_q[0]);
 		ReinitQueue (&race_q[1]);
@@ -532,12 +532,12 @@ uqm::EncounterRuntime::finish()
 			RACE_SHIP_COST
 		};
 
-		campaign_.set(uqm::StoryFlag::BattleSegue, 0);
-		campaign_.set(uqm::StoryFlag::BombCarrier, 0);
+		story_.set(uqm::StoryFlag::BattleSegue, 0);
+		story_.set(uqm::StoryFlag::BombCarrier, 0);
 
 		VictoryState = (
 				battle_counter[1] || !battle_counter[0]
-				|| campaign_.read(uqm::StoryFlag::UrquanProtectingSamatra)
+				|| story_.read(uqm::StoryFlag::UrquanProtectingSamatra)
 				) ? 0 : 1;
 
 		hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q));
@@ -761,12 +761,12 @@ uqm::EncounterRuntime::finish()
 		}
 
 		if (ships_killed && EncounterRace == THRADDASH_SHIP
-				&& !campaign_.read(uqm::StoryFlag::ThraddManner))
+				&& !story_.read(uqm::StoryFlag::ThraddManner))
 		{
-			if ((ships_killed += campaign_.read(uqm::StoryCounter::ThraddashBodyCount)) >
+			if ((ships_killed += story_.read(uqm::StoryCounter::ThraddashBodyCount)) >
 					THRADDASH_BODY_THRESHOLD)
 				ships_killed = THRADDASH_BODY_THRESHOLD;
-			campaign_.set(uqm::StoryCounter::ThraddashBodyCount, ships_killed);
+			story_.set(uqm::StoryCounter::ThraddashBodyCount, ships_killed);
 		}
 	}
 ExitUninitEncounter:

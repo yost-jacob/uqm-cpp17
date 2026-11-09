@@ -98,7 +98,7 @@ MelnormeSystemBehavior::GetMelnormeRef(void)
 		return 0;
 	}
 
-	return campaign_.read(*RefVar);
+	return story_.read(*RefVar);
 }
 
 void
@@ -111,11 +111,11 @@ MelnormeSystemBehavior::SetMelnormeRef(DWORD Ref)
 		return;
 	}
 
-	campaign_.set(*RefVar, Ref);
+	story_.set(*RefVar, Ref);
 }
 
 
-std::unique_ptr<SystemBehavior> createMelnormeSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<MelnormeSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createMelnormeSystemBehavior(StoryState &story) {
+    return std::make_unique<MelnormeSystemBehavior>(story);
 }
 } // namespace uqm

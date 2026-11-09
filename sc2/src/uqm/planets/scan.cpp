@@ -638,7 +638,7 @@ DispatchLander(SOLARSYS_STATE &system)
 	if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 		return FALSE;
 
-	if (uqm::systemCampaign(system).read(uqm::StoryCounter::FoundPlutoSpathi) == 1)
+	if (uqm::systemStory(system).read(uqm::StoryCounter::FoundPlutoSpathi) == 1)
 	{
 		/* Create Fwiffo group and go into comm with it */
 		spawnFwiffo ();

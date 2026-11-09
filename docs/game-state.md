@@ -15,8 +15,8 @@ flowchart TD
     World --> Archives[Vector-backed legacy scan and NPC archives]
     Player --> Profile[Immutable user identity and display profile]
     Player --> Storage[Owned legacy payload]
-    Player --> Campaign[CampaignState value member]
-    Campaign -->|view of existing packed bytes| Storage
+    Player --> Story[StoryState value member]
+    Story -->|view of existing packed bytes| Storage
     Storage --> Ship[Ship and location fields]
     Storage --> Mixed[Unclassified story, world and runtime fields]
     C[Legacy C callers] --> Adapter[GetLegacyGlobData]
@@ -31,7 +31,7 @@ unknown players at construction, retains its shared owner, and repeats lookup
 when accessing its player. It does not cache a player pointer. A collection can
 replace the private member later without exposing its representation to sessions.
 
-PlayerEntity owns one zero-initialized payload for its lifetime. CampaignState
+PlayerEntity owns one zero-initialized payload for its lifetime. StoryState
 is a noncopyable value member viewing the packed story fields in that payload.
 It cannot be independently constructed or rebound. Ship and location queries
 return detached C++ values, not legacy pointers or another editable live store.
@@ -43,9 +43,9 @@ constant counter assignments can be checked at compile time:
 auto state = std::make_shared<uqm::GameState>(
         uqm::UserProfile{uqm::PlayerId{1}, "Captain"});
 uqm::GameSession session{state, uqm::PlayerId{1}};
-auto &campaign = session.player().campaign();
-campaign.set(uqm::StoryFlag::SunDeviceOnShip);
-campaign.set<uqm::StoryCounter::BombProgress, 3>(); // 4 is a compile error.
+auto &story = session.player().story();
+story.set(uqm::StoryFlag::SunDeviceOnShip);
+story.set<uqm::StoryCounter::BombProgress, 3>(); // 4 is a compile error.
 ```
 
 The native header contains no legacy C headers. Equipment arrays use standard
@@ -96,7 +96,7 @@ writes beyond EOF zero-fill gaps. Obsolete fixed capacity estimates and manual
 growth multipliers are deleted. Existing save/load continues to manage its
 original files and encoding.
 
-Androsynth discovery visits now live in the player's CampaignState, keyed by
+Androsynth discovery visits now live in the player's StoryState, keyed by
 universe, star and planet/moon slots. The report sequence derives from distinct
 accepted visits; repeat visits award no additional report. System construction imports
 old upper energy bits once the generated layout is available, clears those bits

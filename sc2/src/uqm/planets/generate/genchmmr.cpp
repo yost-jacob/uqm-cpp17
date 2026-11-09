@@ -47,7 +47,7 @@ ChmmrSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	GenerateDefault_generatePlanets (&system);
 
 	system.PlanetDesc[1].data_index = SAPPHIRE_WORLD;
-	if (!campaign_.read(StoryFlag::ChmmrFreed))
+	if (!story_.read(StoryFlag::ChmmrFreed))
 		system.PlanetDesc[1].data_index |= PLANET_SHIELDED;
 	system.PlanetDesc[1].NumPlanets = 1;
 
@@ -82,20 +82,20 @@ ChmmrSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
 	if (matchWorld (&system, &body, 1, MATCH_PLANET))
 	{
-		if (campaign_.read(StoryFlag::ChmmrFreed))
+		if (story_.read(StoryFlag::ChmmrFreed))
 		{
-			campaign_.set(StoryCounter::EncounterContext, 1u << 7);
+			story_.set(StoryCounter::EncounterContext, 1u << 7);
 			communicate(CHMMR_CONVERSATION);
 
-			if (campaign_.read(StoryCounter::BombProgress) == 2)
+			if (story_.read(StoryCounter::BombProgress) == 2)
 			{
 				GLOBAL (CurrentActivity) |= END_INTERPLANETARY;
 			}
 
 			return true;
 		}
-		else if (campaign_.read(StoryFlag::SunDeviceOnShip)
-				&& !campaign_.read(StoryFlag::IlwrathDeceived)
+		else if (story_.read(StoryFlag::SunDeviceOnShip)
+				&& !story_.read(StoryFlag::IlwrathDeceived)
 				&& StartSphereTracking (ILWRATH_SHIP))
 		{
 			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
@@ -103,7 +103,7 @@ ChmmrSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			CloneShipFragment (ILWRATH_SHIP,
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
-			campaign_.set(StoryCounter::EncounterContext, 1u << 6);
+			story_.set(StoryCounter::EncounterContext, 1u << 6);
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			communicate(ILWRATH_CONVERSATION);
 
@@ -139,7 +139,7 @@ ChmmrSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 }
 
 
-std::unique_ptr<SystemBehavior> createChmmrSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<ChmmrSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createChmmrSystemBehavior(StoryState &story) {
+    return std::make_unique<ChmmrSystemBehavior>(story);
 }
 } // namespace uqm

@@ -98,7 +98,7 @@ DruugeSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			communicate(DRUUGE_CONVERSATION);
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
@@ -115,7 +115,7 @@ DruugeSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (
 							LoadStringTable (DRUUGE_RUINS_STRTAB));
-			if (campaign_.read(StoryFlag::RosySphere))
+			if (story_.read(StoryFlag::RosySphere))
 			{	// Already picked up Rosy Sphere, skip the report
 				solarSys->SysInfo.PlanetInfo.DiscoveryString =
 						SetAbsStringTableIndex (
@@ -139,12 +139,12 @@ DruugeSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, CO
 		GenerateDefault_landerReportCycle (solarSys);
 
 		// The artifact can be picked up from any ruin
-		if (!campaign_.read(StoryFlag::RosySphere))
+		if (!story_.read(StoryFlag::RosySphere))
 		{	// Just picked up the Rosy Sphere from a ruin
 			SetLanderTakeoff ();
 
-			campaign_.set(StoryFlag::RosySphere, (1) != 0);
-			campaign_.set(StoryFlag::RosySphereOnShip, (1) != 0);
+			story_.set(StoryFlag::RosySphere, (1) != 0);
+			story_.set(StoryFlag::RosySphereOnShip, (1) != 0);
 		}
 
 		return false; // do not remove the node
@@ -168,7 +168,7 @@ DruugeSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_
 }
 
 
-std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<DruugeSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(StoryState &story) {
+    return std::make_unique<DruugeSystemBehavior>(story);
 }
 } // namespace uqm

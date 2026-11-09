@@ -65,7 +65,7 @@ ModeResult finishMode(GameSession &session) {
     if (!(GLOBAL(CurrentActivity) & CHECK_LOAD)
             && (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
                 || session.player().crew() == static_cast<COUNT>(~0u))) {
-        if (session.player().campaign().read(StoryFlag::KohrAhKilledAll)) {
+        if (session.player().story().read(StoryFlag::KohrAhKilledAll)) {
             EncounterRuntime encounter{session, CurStarDescPtr};
             encounter.communicate(BLACKURQ_CONVERSATION);
         }
@@ -167,11 +167,11 @@ std::unique_ptr<GameMode> selectMode(GameSession &session) {
     else if (GLOBAL(CurrentActivity) & CHECK_LOAD)
         GLOBAL(CurrentActivity) = NextActivity;
 
-    if ((GLOBAL(CurrentActivity) & START_ENCOUNTER) || session.player().campaign().read(StoryCounter::BombProgress) == 2) {
-        const auto kind = session.player().campaign().read(StoryCounter::BombProgress) == 2 && !session.player().campaign().read(StoryFlag::StarbaseAccessGranted)
+    if ((GLOBAL(CurrentActivity) & START_ENCOUNTER) || session.player().story().read(StoryCounter::BombProgress) == 2) {
+        const auto kind = session.player().story().read(StoryCounter::BombProgress) == 2 && !session.player().story().read(StoryFlag::StarbaseAccessGranted)
                 ? EncounterKind::InstallBomb
-                : session.player().campaign().read(StoryCounter::EncounterContext) == static_cast<BYTE>(~0u)
-                    || session.player().campaign().read(StoryCounter::BombProgress) == 2
+                : session.player().story().read(StoryCounter::EncounterContext) == static_cast<BYTE>(~0u)
+                    || session.player().story().read(StoryCounter::BombProgress) == 2
                 ? EncounterKind::Starbase : EncounterKind::Communication;
         return std::make_unique<EncounterMode>(session, kind);
     }

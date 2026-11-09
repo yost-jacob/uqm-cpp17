@@ -17,19 +17,19 @@ uqm::WorldId worldId(COUNT system, COUNT planet, int moon) {
 struct PLANET_INFO_SNAPSHOT { std::vector<std::uint32_t> words; };
 extern "C" {
 void ResetPersonalDiscoveries(void) {
-    try { uqm::gameSession().player().campaign().clearDiscoveries(); }
+    try { uqm::gameSession().player().story().clearDiscoveries(); }
     catch (...) { std::abort(); }
 }
 COUNT PersonalDiscoveryCount(COUNT system, COUNT planet, int moon) {
     try {
-        return static_cast<COUNT>(uqm::gameSession().player().campaign().discovery(
+        return static_cast<COUNT>(uqm::gameSession().player().story().discovery(
                 worldId(system, planet, moon)).visitedSites.count());
     } catch (...) { std::abort(); }
 }
 PLANET_INFO_SNAPSHOT *CapturePlanetInfoForSave(void) {
     try {
         auto &session = uqm::gameSession();
-        auto words = session.player().campaign().legacyScanSnapshot(
+        auto words = session.player().story().legacyScanSnapshot(
                 session.world().id(), session.world().snapshot().planetScans);
         return new PLANET_INFO_SNAPSHOT{std::move(words)};
     } catch (...) { return nullptr; }

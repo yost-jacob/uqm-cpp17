@@ -7,7 +7,7 @@ wireframes. Gameplay still runs synchronously on the simulation thread.
 flowchart TD
     Session["GameSession dispatcher"] --> Hyper["HyperSpaceMode"]
     Session --> Solar["SolarSystemMode"]
-    Hyper --> Nav["HyperSpaceNavigation<br/>borrows PlayerEntity / CampaignState"]
+    Hyper --> Nav["HyperSpaceNavigation<br/>borrows PlayerEntity / StoryState"]
     Nav --> Frame["Battle callback plus explicit context"]
     Frame --> Engine["Existing C element / rendering engine"]
     Engine --> Bind["Checked C navigation entry points<br/>scoped session binding"]
@@ -27,7 +27,7 @@ flowchart TD
 
 `SolarSystemMode` owns `SolarSystemExploration` as a member. Its opaque runtime
 contains the actual `SOLARSYS_STATE` descriptor, native SolarSystem owner,
-borrowed CampaignState and GameSession, and shared WorldState. Descriptor
+borrowed StoryState and GameSession, and shared WorldState. Descriptor
 addresses stay stable through nested encounters. The C input backend still
 borrows its existing descriptor shape; no owning C++ members enter save records.
 
@@ -64,7 +64,7 @@ belongs to transient PlayerEntity navigation memory, because it must survive an
 encounter and subsequent navigation-mode recreation. It retains the old
 nonserialized lifetime semantics rather than changing the legacy save format.
 
-Navigation reads story fields through CampaignState and accesses flagship fuel,
+Navigation reads story fields through StoryState and accesses flagship fuel,
 crew and logical coordinates through PlayerEntity methods. Its frame callback
 now receives an explicit context pointer in `BATTLE_STATE`. Combat callers with
 no callback pass null context. The navigation menu callback borrows its navigation
@@ -124,7 +124,7 @@ The underlying Battle engine and fleet queues retain their legacy ownership.
 See the [current roadmap](encapsulation-roadmap.md) for remaining work toward
 a shared campaign/Super Melee combat interface.
 
-`DeviceMenu` takes `CampaignState&` and optionally a borrowed explored system.
+`DeviceMenu` takes `StoryState&` and optionally a borrowed explored system.
 Navigation and exploration call it directly; C planet menus use the compatibility
 entry. Its callbacks carry their owner through userdata. Broadcaster, Sun Device,
 Talking Pet, Ultron and portal actions use typed campaign access; system checks

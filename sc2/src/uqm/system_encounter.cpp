@@ -25,15 +25,15 @@ private:
 };
 }
 void SystemBehavior::attachSession(GameSession &session) {
-    if (&session.player().campaign() != &campaign_)
-        throw std::invalid_argument("system and session have different campaigns");
+    if (&session.player().story() != &story_)
+        throw std::invalid_argument("system and session have different story states");
     if (session_ && session_ != &session)
         throw std::logic_error("system is already attached to another session");
     session_ = &session;
 }
 COUNT SystemBehavior::communicate(CONVERSATION conversation) {
-    if (!session_) { // Native debug/test entry still uses the supplied campaign.
-        EncounterRuntime encounter{campaign_, star_};
+    if (!session_) { // Native debug/test entry still uses the supplied story state.
+        EncounterRuntime encounter{story_, star_};
         return encounter.communicate(conversation);
     }
     COUNT result = 0;

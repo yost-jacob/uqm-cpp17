@@ -21,7 +21,7 @@ unsigned communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
 CONVERSATION lastConversation{};
 bool sphereTracked = false;
 std::function<void()> dialogueHook;
-uqm::CampaignState *encounterCampaign = nullptr;
+uqm::StoryState *encounterCampaign = nullptr;
 struct EncounterQueues {
     QUEUE groups{}, ships{};
     ACTIVITY activity = GLOBAL(CurrentActivity);
@@ -154,117 +154,117 @@ void DoDiscoveryReport(SOUND) {}
 
 namespace { std::string selectedBuilder; }
 namespace uqm {
-std::unique_ptr<SystemBehavior> createAndrosynthSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createAndrosynthSystemBehavior(StoryState &story) {
     selectedBuilder = "Androsynth";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createBurvixeseSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createBurvixeseSystemBehavior(StoryState &story) {
     selectedBuilder = "Burvixese";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createColonySystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createColonySystemBehavior(StoryState &story) {
     selectedBuilder = "Colony";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(StoryState &story) {
     selectedBuilder = "Druuge";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createIlwrathSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createIlwrathSystemBehavior(StoryState &story) {
     selectedBuilder = "Ilwrath";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createMelnormeSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createMelnormeSystemBehavior(StoryState &story) {
     selectedBuilder = "Melnorme";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createMyconSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createMyconSystemBehavior(StoryState &story) {
     selectedBuilder = "Mycon";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createOrzSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createOrzSystemBehavior(StoryState &story) {
     selectedBuilder = "Orz";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createTalkingPetSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createTalkingPetSystemBehavior(StoryState &story) {
     selectedBuilder = "TalkingPet";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createPkunkSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createPkunkSystemBehavior(StoryState &story) {
     selectedBuilder = "Pkunk";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createRainbowWorldSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createRainbowWorldSystemBehavior(StoryState &story) {
     selectedBuilder = "RainbowWorld";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createSaMatraSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createSaMatraSystemBehavior(StoryState &story) {
     selectedBuilder = "SaMatra";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createShofixtiSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createShofixtiSystemBehavior(StoryState &story) {
     selectedBuilder = "Shofixti";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(StoryState &story) {
     selectedBuilder = "Slylandro";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createSolSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createSolSystemBehavior(StoryState &story) {
     selectedBuilder = "Sol";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createSpathiSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createSpathiSystemBehavior(StoryState &story) {
     selectedBuilder = "Spathi";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(StoryState &story) {
     selectedBuilder = "Supox";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(StoryState &story) {
     selectedBuilder = "Thraddash";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createTrapSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createTrapSystemBehavior(StoryState &story) {
     selectedBuilder = "Trap";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createUtwigSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createUtwigSystemBehavior(StoryState &story) {
     selectedBuilder = "Utwig";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createVaultSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createVaultSystemBehavior(StoryState &story) {
     selectedBuilder = "Vault";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createVuxSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createVuxSystemBehavior(StoryState &story) {
     selectedBuilder = "Vux";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createWreckSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createWreckSystemBehavior(StoryState &story) {
     selectedBuilder = "Wreck";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createYehatSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createYehatSystemBehavior(StoryState &story) {
     selectedBuilder = "Yehat";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createZoqFotPikScoutSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createZoqFotPikScoutSystemBehavior(StoryState &story) {
     selectedBuilder = "ZoqFotPikScout";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
-std::unique_ptr<SystemBehavior> createZoqFotPikSystemBehavior(CampaignState &campaign) {
+std::unique_ptr<SystemBehavior> createZoqFotPikSystemBehavior(StoryState &story) {
     selectedBuilder = "ZoqFotPik";
-    return std::make_unique<SystemBehavior>(campaign);
+    return std::make_unique<SystemBehavior>(story);
 }
 }
 BOOST_AUTO_TEST_CASE(system_factory_selects_native_chmmr_and_default_rules)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    auto &campaign = state.player(uqm::SinglePlayerId).campaign();
-    auto ordinary = uqm::createSystemBehavior(0, campaign);
-    auto special = uqm::createSystemBehavior(CHMMR_DEFINED, campaign);
+    auto &story = state.player(uqm::SinglePlayerId).story();
+    auto ordinary = uqm::createSystemBehavior(0, story);
+    auto special = uqm::createSystemBehavior(CHMMR_DEFINED, story);
     BOOST_TEST((typeid(*ordinary) == typeid(uqm::SystemBehavior)));
     BOOST_TEST((typeid(*special) != typeid(*ordinary)));
     SOLARSYS_STATE system{};
@@ -276,8 +276,8 @@ BOOST_AUTO_TEST_CASE(system_factory_selects_native_chmmr_and_default_rules)
 BOOST_AUTO_TEST_CASE(chmmr_hooks_read_the_borrowed_campaign_at_action_time)
 {
     uqm::GameState alice{{uqm::SinglePlayerId, "Alice"}}, bob{{uqm::SinglePlayerId, "Bob"}};
-    auto &a = alice.player(uqm::SinglePlayerId).campaign();
-    auto &b = bob.player(uqm::SinglePlayerId).campaign();
+    auto &a = alice.player(uqm::SinglePlayerId).story();
+    auto &b = bob.player(uqm::SinglePlayerId).story();
     auto first = uqm::createSystemBehavior(CHMMR_DEFINED, a);
     auto second = uqm::createSystemBehavior(CHMMR_DEFINED, b);
     SOLARSYS_STATE system{};
@@ -303,25 +303,25 @@ BOOST_AUTO_TEST_CASE(chmmr_hooks_read_the_borrowed_campaign_at_action_time)
 BOOST_AUTO_TEST_CASE(chmmr_ilwrath_gate_and_ordinary_orbits_preserve_fallback_order)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    auto &campaign = state.player(uqm::SinglePlayerId).campaign();
-    auto behavior = uqm::createSystemBehavior(CHMMR_DEFINED, campaign);
+    auto &story = state.player(uqm::SinglePlayerId).story();
+    auto behavior = uqm::createSystemBehavior(CHMMR_DEFINED, story);
     SOLARSYS_STATE system{};
     resetCalls();
     behavior->generateOrbital(system, system.PlanetDesc[0]);
     BOOST_TEST(defaultCalls[6] == 1u);
-    campaign.set(uqm::StoryFlag::SunDeviceOnShip);
-    campaign.set(uqm::StoryFlag::IlwrathDeceived);
+    story.set(uqm::StoryFlag::SunDeviceOnShip);
+    story.set(uqm::StoryFlag::IlwrathDeceived);
     EncounterQueues queues;
     sphereTracked = true;
     behavior->generateOrbital(system, system.PlanetDesc[1]);
     BOOST_TEST(communications == 0u);
-    campaign.clear(uqm::StoryFlag::IlwrathDeceived);
+    story.clear(uqm::StoryFlag::IlwrathDeceived);
     const auto oldActivity = GLOBAL(CurrentActivity);
     GLOBAL(CurrentActivity) = 0;
     behavior->generateOrbital(system, system.PlanetDesc[1]);
     BOOST_TEST(communications == 1u);
     BOOST_TEST(static_cast<int>(lastConversation) == static_cast<int>(ILWRATH_CONVERSATION));
-    BOOST_TEST(campaign.read(uqm::StoryCounter::EncounterContext) == 64u);
+    BOOST_TEST(story.read(uqm::StoryCounter::EncounterContext) == 64u);
     BOOST_TEST(groupsSaved == 1u);
     BOOST_TEST(groupsLoaded == 1u);
     BOOST_TEST(clones == 1u);
@@ -331,13 +331,13 @@ BOOST_AUTO_TEST_CASE(chmmr_ilwrath_gate_and_ordinary_orbits_preserve_fallback_or
 BOOST_AUTO_TEST_CASE(system_keeps_behavior_identity_when_generated_layout_is_attached)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    auto &campaign = state.player(uqm::SinglePlayerId).campaign();
-    UQM_SYSTEM_RUNTIME context{campaign, state.worldOwner(), nullptr};
+    auto &story = state.player(uqm::SinglePlayerId).story();
+    UQM_SYSTEM_RUNTIME context{story, state.worldOwner(), nullptr};
     SOLARSYS_STATE system{};
     system.worlds = &context;
     // Exercise native ownership/layout independently of catalogue loading.
     context.system = std::make_unique<uqm::SolarSystem>(StarId{42}, context.world,
-            campaign, CHMMR_DEFINED);
+            story, CHMMR_DEFINED);
     auto *identity = &context.system->behavior();
     resetCalls();
     identity->generatePlanets(system);
@@ -350,14 +350,14 @@ BOOST_AUTO_TEST_CASE(system_keeps_behavior_identity_when_generated_layout_is_att
     BOOST_CHECK_THROW(context.system->replacePlanets({{invalid, uqm::WorldKind::Planet, 123, false, "Bad"}}), std::invalid_argument);
     BOOST_TEST(context.system->worldCount() == 1u);
     BOOST_TEST(context.system->world(0).definition().name == "First");
-    campaign.set(uqm::StoryFlag::ChmmrFreed);
+    story.set(uqm::StoryFlag::ChmmrFreed);
     identity->generatePlanets(system);
     BOOST_TEST((system.PlanetDesc[1].data_index & PLANET_SHIELDED) == 0);
 }
 BOOST_AUTO_TEST_CASE(default_system_hooks_forward_all_thirteen_existing_contracts)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    uqm::SystemBehavior behavior{state.player(uqm::SinglePlayerId).campaign()};
+    uqm::SystemBehavior behavior{state.player(uqm::SinglePlayerId).story()};
     SOLARSYS_STATE system{};
     PLANET_DESC world{};
     resetCalls();
@@ -381,8 +381,8 @@ BOOST_AUTO_TEST_CASE(default_system_hooks_forward_all_thirteen_existing_contract
 // through the same opaque handle and callback table used by the C game loop.
 extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
     uqm::GameState state{{uqm::SinglePlayerId, "Local campaign"}};
-    auto &campaign = state.player(uqm::SinglePlayerId).campaign();
-    UQM_SYSTEM_RUNTIME context{campaign, state.worldOwner(), nullptr};
+    auto &story = state.player(uqm::SinglePlayerId).story();
+    UQM_SYSTEM_RUNTIME context{story, state.worldOwner(), nullptr};
     SOLARSYS_STATE system{};
     system.worlds = &context;
     PrepareSystemWorlds(&system, star);
@@ -391,7 +391,7 @@ extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
     if (!(system.PlanetDesc[1].data_index & PLANET_SHIELDED)) return 0;
     BuildSystemWorlds(&system, star);
     if (&context.system->behavior() != identity || context.system->worldCount() != 2) return 0;
-    campaign.set(uqm::StoryFlag::ChmmrFreed);
+    story.set(uqm::StoryFlag::ChmmrFreed);
     if (!uqm::systemBehavior(system).generatePlanets(system)) return 0;
     if (system.PlanetDesc[1].data_index & PLANET_SHIELDED) return 0;
     if (uqm::systemBehavior(system).generateMinerals(system, system.PlanetDesc[0], 7, nullptr) != 7) return 0;
@@ -401,7 +401,7 @@ extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
 BOOST_AUTO_TEST_CASE(system_factory_preserves_catalogue_special_system_mappings)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    auto &campaign = state.player(uqm::SinglePlayerId).campaign();
+    auto &story = state.player(uqm::SinglePlayerId).story();
     struct Mapping { BYTE id; const char *builder; };
     const Mapping expected[] = {
         {SOL_DEFINED, "Sol"},
@@ -450,7 +450,7 @@ BOOST_AUTO_TEST_CASE(system_factory_preserves_catalogue_special_system_mappings)
     };
     for (const auto &mapping : expected) {
         selectedBuilder.clear();
-        auto behavior = uqm::createSystemBehavior(mapping.id, campaign);
+        auto behavior = uqm::createSystemBehavior(mapping.id, story);
         BOOST_REQUIRE(behavior);
         BOOST_TEST(selectedBuilder == mapping.builder);
     }
@@ -458,7 +458,7 @@ BOOST_AUTO_TEST_CASE(system_factory_preserves_catalogue_special_system_mappings)
 BOOST_AUTO_TEST_CASE(syreen_native_overrides_keep_shielded_planet_and_starbase_moon)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    auto behavior = uqm::createSystemBehavior(SYREEN_DEFINED, state.player(uqm::SinglePlayerId).campaign());
+    auto behavior = uqm::createSystemBehavior(SYREEN_DEFINED, state.player(uqm::SinglePlayerId).story());
     SOLARSYS_STATE system{};
     resetCalls();
     behavior->generatePlanets(system);
@@ -485,7 +485,7 @@ BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_reques
     for (const bool load : {false, true}) {
         auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
         uqm::GameSession session{state, uqm::SinglePlayerId};
-        TestSystemRule rule{session.player().campaign()};
+        TestSystemRule rule{session.player().story()};
         rule.attachSession(session);
         struct Parent final : uqm::GameMode {
             uqm::GameSession &session;
@@ -507,8 +507,8 @@ BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_reques
         bool resumed = false;
         unsigned destroyed = 0;
         dialogueHook = [&] {
-            BOOST_TEST(encounterCampaign == &session.player().campaign());
-            BOOST_TEST(encounterCampaign != &uqm::gameSession().player().campaign());
+            BOOST_TEST(encounterCampaign == &session.player().story());
+            BOOST_TEST(encounterCampaign != &uqm::gameSession().player().story());
             BOOST_TEST(!resumed);
             BOOST_TEST(destroyed == 0u);
             if (load) session.requestLoad(3);
@@ -532,7 +532,7 @@ BOOST_AUTO_TEST_CASE(system_star_context_is_explicit_and_cannot_be_rebound_mid_v
     STAR_DESC first{}, other{};
     first.Index = SOL_DEFINED;
     other.Index = CHMMR_DEFINED;
-    TestSystemRule rule{state.player(uqm::SinglePlayerId).campaign()};
+    TestSystemRule rule{state.player(uqm::SinglePlayerId).story()};
     BOOST_CHECK_THROW(rule.starKind(), std::logic_error);
     rule.attachStar(first);
     BOOST_TEST(rule.starKind() == SOL_DEFINED);
@@ -573,7 +573,7 @@ BOOST_AUTO_TEST_CASE(orbital_encounter_scope_restores_on_early_return_but_preser
 
 // Dialogue/UI are simulated; use the real campaign reference provided by the mode.
 COUNT uqm::EncounterRuntime::communicate(CONVERSATION conversation) {
-    encounterCampaign = &campaign_;
+    encounterCampaign = &story_;
     const auto result = InitCommunication(conversation);
     encounterCampaign = nullptr;
     return result;

@@ -141,7 +141,7 @@ uqm::HyperSpaceNavigation::MoveSIS(SIZE *pdx, SIZE *pdy)
 		}
 	}
 
-	if (player_.fuel() && campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
+	if (player_.fuel() && story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		COUNT cur_fuel_ticks;
 		COUNT hyper_dist;
@@ -228,17 +228,17 @@ uqm::HyperSpaceNavigation::check_hyperspace_encounter(void)
 				if (Type == SLYLANDRO_SHIP)
 				{
 					encounter_flags = ONE_SHOT_ENCOUNTER;
-					if (!campaign_.read(uqm::StoryFlag::StarbaseAccessGranted))
+					if (!story_.read(uqm::StoryFlag::StarbaseAccessGranted))
 						percent = 100;
 					else
-						percent *= campaign_.read(uqm::StoryCounter::SlylandroMultiplier);
+						percent *= story_.read(uqm::StoryCounter::SlylandroMultiplier);
 				}
 				else if (Type == MELNORME_SHIP
 						&& (player_.fuel() == 0
-						|| campaign_.read(uqm::StoryFlag::UsedBroadcaster))
-						&& campaign_.read(uqm::StoryCounter::MelnormeAnger) < 3)
+						|| story_.read(uqm::StoryFlag::UsedBroadcaster))
+						&& story_.read(uqm::StoryCounter::MelnormeAnger) < 3)
 				{
-					if (!campaign_.read(uqm::StoryFlag::UsedBroadcaster))
+					if (!story_.read(uqm::StoryFlag::UsedBroadcaster))
 						percent = 30;
 					else
 						percent = 100;
@@ -262,7 +262,7 @@ uqm::HyperSpaceNavigation::check_hyperspace_encounter(void)
 
 				if (percent == 100 && Type == MELNORME_SHIP)
 				{
-					campaign_.set(uqm::StoryFlag::BroadcasterResponse, 1);
+					story_.set(uqm::StoryFlag::BroadcasterResponse, 1);
 				}
 			}
 
@@ -298,7 +298,7 @@ uqm::HyperSpaceNavigation::check_hyperspace_encounter(void)
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
 	}
 
-	campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
+	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 }
 
 void
@@ -378,7 +378,7 @@ uqm::HyperSpaceNavigation::LoadHyperspace(void)
 			BUILD_COLOR (MAKE_RGB15 (0x00, 0x0E, 0x00), 0x6C));
 
 	SetContext (SpaceContext);
-	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
+	if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		SetContextBackGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x07, 0x00, 0x00), 0x2F));
@@ -389,8 +389,8 @@ uqm::HyperSpaceNavigation::LoadHyperspace(void)
 		SetContextBackGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x1A, 0x00), 0x2F));
 		SetColorMap (GetColorMapAddress (hypercmaps[1]));
-		campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
-		campaign_.set(uqm::StoryFlag::BroadcasterResponse, 0);
+		story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
+		story_.set(uqm::StoryFlag::BroadcasterResponse, 0);
 	}
 //    ClearDrawable ();
 
@@ -468,12 +468,12 @@ uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 	GLOBAL (ip_planet) = 0;
 	GLOBAL (in_orbit) = 0;
 	GLOBAL (ShipFacing) = 0; /* Not reentering the system */
-	campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
-	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
+	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
+	if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		// Enter a solar system from HyperSpace.
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-		campaign_.set(uqm::StoryCounter::EscapeCounter, 0);
+		story_.set(uqm::StoryCounter::EscapeCounter, 0);
 	}
 	else
 	{
@@ -500,7 +500,7 @@ uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 			index = GetStarIndex(CurStarDescPtr) - QUASISPACE_FIRST;
 			player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (portal_pt[index].x), UNIVERSE_TO_LOGY (portal_pt[index].y));
 
-			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
+			story_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 		}
 	}
 }
@@ -512,23 +512,23 @@ void
 uqm::HyperSpaceNavigation::ArilouSpaceTransition(void)
 {
 	GLOBAL (ShipFacing) = 0; /* Not reentering the system */
-	campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
+	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 	GLOBAL (autopilot.x) = ~0;
 	GLOBAL (autopilot.y) = ~0;
-	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
+	if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		// From HyperSpace to QuasiSpace.
 		player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (QUASI_SPACE_X), UNIVERSE_TO_LOGY (QUASI_SPACE_Y));
-		if (campaign_.read(uqm::StoryCounter::PortalCounter) == 0)
+		if (story_.read(uqm::StoryCounter::PortalCounter) == 0)
 		{
 			// Periodically appearing portal.
-			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
+			story_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
 		}
 		else
 		{
 			// Player-induced portal.
-			campaign_.set(uqm::StoryCounter::PortalCounter, 0);
-			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
+			story_.set(uqm::StoryCounter::PortalCounter, 0);
+			story_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
 		}
 	}
 	else
@@ -536,7 +536,7 @@ uqm::HyperSpaceNavigation::ArilouSpaceTransition(void)
 		// From QuasiSpace to HyperSpace through the periodically appearing
 		// portal.
 		player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (ARILOU_SPACE_X), UNIVERSE_TO_LOGY (ARILOU_SPACE_Y));
-		campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
+		story_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 	}
 }
 
@@ -681,7 +681,7 @@ uqm::HyperSpaceNavigation::hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)
-			&& campaign_.read(uqm::StoryCounter::PortalCounter) == 0)
+			&& story_.read(uqm::StoryCounter::PortalCounter) == 0)
 	{
 		SIZE dx, dy;
 		POINT pt;
@@ -731,15 +731,15 @@ void
 uqm::HyperSpaceNavigation::arilou_space_death(ELEMENT *ElementPtr)
 {
 	if (!(ElementPtr->state_flags & DEFY_PHYSICS)
-			|| campaign_.read(uqm::StoryCounter::ArilouSpaceCounter) == 0)
+			|| story_.read(uqm::StoryCounter::ArilouSpaceCounter) == 0)
 	{
-		if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
+		if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 		{
-			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
+			story_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 		}
 		else
 		{
-			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
+			story_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
 		}
 	}
 }
@@ -753,12 +753,12 @@ uqm::HyperSpaceNavigation::arilou_space_collision(ELEMENT *ElementPtr0,
 	if (!(ElementPtr1->state_flags & PLAYER_SHIP))
 		return;
 
-	which_side = campaign_.read(uqm::StoryCounter::ArilouSpaceSide);
+	which_side = story_.read(uqm::StoryCounter::ArilouSpaceSide);
 	if (which_side == 0 || which_side == 3)
 	{
 		if (ElementPtr1->state_flags & DEFY_PHYSICS)
 		{
-			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, which_side ^ 1);
+			story_.set(uqm::StoryCounter::ArilouSpaceSide, which_side ^ 1);
 		}
 		else
 		{
@@ -803,7 +803,7 @@ uqm::HyperSpaceNavigation::AllocHyperElement(const POINT *elem_pt)
 		SetPrimType (&DisplayArray[HyperSpaceElementPtr->PrimIndex],
 				STAMP_PRIM);
 		HyperSpaceElementPtr->current.image.farray =
-				&hyperstars[1 + (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)];
+				&hyperstars[1 + (story_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)];
 
 		UnlockElement (hHyperSpaceElement);
 	}
@@ -968,7 +968,7 @@ uqm::HyperSpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *p
 	HELEMENT hElement;
 	POINT enc_pt;
 	
-	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >= 2)
+	if (story_.read(uqm::StoryCounter::ArilouSpaceSide) >= 2)
 		return 0;
 
 	if (EncounterPtr->flags & ENCOUNTER_REFORMING)
@@ -1389,8 +1389,8 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 	ey = (COORD)((long)(MAX_Y_UNIVERSE - GLOBAL (ShipStamp.origin.y))
 			* RADAR_HEIGHT / RADAR_SCAN_HEIGHT) - (RADAR_HEIGHT >> 1);
 
-	arilouSpaceCounter = campaign_.read(uqm::StoryCounter::ArilouSpaceCounter);
-	arilouSpaceSide = campaign_.read(uqm::StoryCounter::ArilouSpaceSide);
+	arilouSpaceCounter = story_.read(uqm::StoryCounter::ArilouSpaceCounter);
+	arilouSpaceSide = story_.read(uqm::StoryCounter::ArilouSpaceSide);
 
 //    if (ox != ex || oy != ey)
 	{
@@ -1420,7 +1420,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 		}
 	}
 
-	portalCounter = campaign_.read(uqm::StoryCounter::PortalCounter);
+	portalCounter = story_.read(uqm::StoryCounter::PortalCounter);
 	if (portalCounter || arilouSpaceCounter)
 	{
 		COUNT i;
@@ -1446,7 +1446,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 			if (++portalCounter == (10 + 1))
 				portalCounter = (9 + 1);
 
-			campaign_.set(uqm::StoryCounter::PortalCounter, portalCounter);
+			story_.set(uqm::StoryCounter::PortalCounter, portalCounter);
 		}
 
 		if (arilouSpaceCounter)
@@ -1504,7 +1504,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
-					hyperstars[1 + (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)],
+					hyperstars[1 + (story_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)],
 					SD[i].Index);
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
@@ -1551,7 +1551,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
-					hyperstars[1 + (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)],
+					hyperstars[1 + (story_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)],
 					STAR_TYPE (star_type) * NUM_STAR_COLORS
 					+ STAR_COLOR (star_type));
 			HyperSpaceElementPtr->preprocess_func = NULL;
@@ -1561,7 +1561,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 			SetUpElement (HyperSpaceElementPtr);
 
 			if (SDPtr == CurStarDescPtr
-					&& campaign_.read(uqm::StoryCounter::PortalCounter) == 0)
+					&& story_.read(uqm::StoryCounter::PortalCounter) == 0)
 				HyperSpaceElementPtr->death_func = ::hyper_death;
 			else
 			{
@@ -1654,8 +1654,8 @@ uqm::HyperSpaceNavigation::DoHyperspaceMenu(MENU_STATE *pMS)
 	switch (pMS->CurState)
 	{
 		case EQUIP_DEVICE:
-			select = uqm::DeviceMenu{campaign_}.run();
-			if (campaign_.read(uqm::StoryCounter::PortalCounter))
+			select = uqm::DeviceMenu{story_}.run();
+			if (story_.read(uqm::StoryCounter::PortalCounter))
 			{	// A player-induced portal to QuasiSpace is opening
 				return FALSE;
 			}
@@ -1790,11 +1790,11 @@ void HyperSpaceNavigation::run(GameSession &session) {
 }
 void HyperSpaceNavigation::frame() {
     GameClockTick();
-    auto counter = campaign_.read(uqm::StoryCounter::ArilouSpaceCounter);
-    if (campaign_.read(uqm::StoryFlag::ArilouSpace) == OPENING) {
+    auto counter = story_.read(uqm::StoryCounter::ArilouSpaceCounter);
+    if (story_.read(uqm::StoryFlag::ArilouSpace) == OPENING) {
         if (counter < 9) ++counter;
     } else if (counter > 0) --counter;
-    campaign_.set(uqm::StoryCounter::ArilouSpaceCounter, counter);
+    story_.set(uqm::StoryCounter::ArilouSpaceCounter, counter);
     if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))) SeedUniverse();
     DrawAutoPilotMessage(FALSE);
 }

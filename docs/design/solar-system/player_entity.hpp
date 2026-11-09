@@ -1,7 +1,7 @@
 #ifndef UQM_DESIGN_PLAYER_ENTITY_HPP_
 #define UQM_DESIGN_PLAYER_ENTITY_HPP_
 
-#include "campaign_state.hpp"
+#include "story_state.hpp"
 #include "world_state.hpp"
 
 namespace uqm::design {
@@ -12,7 +12,7 @@ struct PlayerSnapshot {
     std::optional<UniverseId> universe;
     PlayerLocation location;
     FlagshipState ship;
-    CampaignSnapshot campaign;
+    StorySnapshot story;
 };
 
 // Simulation-thread confined. GameState owns the entity; sessions borrow it.
@@ -27,8 +27,8 @@ public:
     UserProfile profile() const;
     PlayerPresence presence() const; // Public projection, excluding private data.
     FlagshipState ship() const;
-    CampaignState &campaign() noexcept;
-    const CampaignState &campaign() const noexcept;
+    StoryState &story() noexcept;
+    const StoryState &story() const noexcept;
     PlayerSnapshot snapshot() const; // Copy at an authoritative action boundary.
 
 private:
@@ -39,7 +39,7 @@ private:
     std::optional<UniverseId> universe_;
     PlayerLocation location_;
     FlagshipState ship_;
-    CampaignState campaign_;
+    StoryState story_;
 };
 } // namespace uqm::design
 #endif

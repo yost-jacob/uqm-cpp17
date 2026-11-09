@@ -8,9 +8,9 @@ class CampaignCombatMode final : public GameMode {
 public:
     explicit CampaignCombatMode(GameSession &session)
         : GameMode(session.stateOwner(), session.playerId()), session_(session),
-          campaign_(session.player().campaign()) {}
+          story_(session.player().story()) {}
     ModeResult run() override {
-        runCampaignCombat(campaign_);
+        runCampaignCombat(story_);
         if (auto exit = session_.menuExit()) return *exit;
         if (QuitPosted) return SessionExit::shutdown();
         if (GLOBAL(CurrentActivity) & CHECK_ABORT) return SessionExit::title();
@@ -18,7 +18,7 @@ public:
     }
 private:
     GameSession &session_;
-    CampaignState &campaign_;
+    StoryState &story_;
 };
 }
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session) {

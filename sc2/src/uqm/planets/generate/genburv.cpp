@@ -127,7 +127,7 @@ BurvixeseSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 	}
 	else if (matchWorld (solarSys, world, 0, 0)
-			&& !campaign_.read(StoryFlag::BurvixeseBroadcasters))
+			&& !story_.read(StoryFlag::BurvixeseBroadcasters))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] = CaptureDrawable (
@@ -155,7 +155,7 @@ BurvixeseSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLAN
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::BurvixeseBroadcasters))
+		if (story_.read(StoryFlag::BurvixeseBroadcasters))
 		{	// already picked up
 			return 0;
 		}
@@ -180,13 +180,13 @@ BurvixeseSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 
 	if (matchWorld (solarSys, world, 0, 0))
 	{
-		assert (!campaign_.read(StoryFlag::BurvixeseBroadcasters) && whichNode == 0);
+		assert (!story_.read(StoryFlag::BurvixeseBroadcasters) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::BurvixeseBroadcasters, (1) != 0);
-		campaign_.set(StoryFlag::BurvBroadcastersOnShip, (1) != 0);
+		story_.set(StoryFlag::BurvixeseBroadcasters, (1) != 0);
+		story_.set(StoryFlag::BurvBroadcastersOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -195,7 +195,7 @@ BurvixeseSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createBurvixeseSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<BurvixeseSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createBurvixeseSystemBehavior(StoryState &story) {
+    return std::make_unique<BurvixeseSystemBehavior>(story);
 }
 } // namespace uqm

@@ -89,7 +89,7 @@ SupoxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			communicate(SUPOX_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -106,7 +106,7 @@ SupoxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (SUPOX_RUINS_STRTAB));
-			if (campaign_.read(StoryCounter::UltronCondition))
+			if (story_.read(StoryCounter::UltronCondition))
 			{	// Already picked up the Ultron, skip the report
 				solarSys->SysInfo.PlanetInfo.DiscoveryString =
 						SetAbsStringTableIndex (
@@ -130,11 +130,11 @@ SupoxSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 		GenerateDefault_landerReportCycle (solarSys);
 
 		// The artifact can be picked up from any ruin
-		if (!campaign_.read(StoryCounter::UltronCondition))
+		if (!story_.read(StoryCounter::UltronCondition))
 		{	// Just picked up the Ultron from a ruin
 			SetLanderTakeoff ();
 
-			campaign_.set(StoryCounter::UltronCondition, 1);
+			story_.set(StoryCounter::UltronCondition, 1);
 		}
 
 		return false; // do not remove the node
@@ -158,7 +158,7 @@ SupoxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 }
 
 
-std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<SupoxSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(StoryState &story) {
+    return std::make_unique<SupoxSystemBehavior>(story);
 }
 } // namespace uqm

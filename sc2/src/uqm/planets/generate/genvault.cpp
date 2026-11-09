@@ -58,13 +58,13 @@ VaultSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				CaptureDrawable (LoadGraphic (VAULT_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (VAULT_STRTAB));
-		if (campaign_.read(StoryFlag::ShipVaultUnlocked))
+		if (story_.read(StoryFlag::ShipVaultUnlocked))
 		{
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					SetAbsStringTableIndex (
 					solarSys->SysInfo.PlanetInfo.DiscoveryString, 2);
 		}
-		else if (campaign_.read(StoryFlag::SyreenShuttleOnShip))
+		else if (story_.read(StoryFlag::SyreenShuttleOnShip))
 		{
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					SetAbsStringTableIndex (
@@ -98,26 +98,26 @@ VaultSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	{
 		assert (whichNode == 0);
 
-		if (campaign_.read(StoryFlag::ShipVaultUnlocked))
+		if (story_.read(StoryFlag::ShipVaultUnlocked))
 		{	// Give the final report, "omg empty" and whatnot
 			GenerateDefault_landerReportCycle (solarSys);
 		}
-		else if (campaign_.read(StoryFlag::SyreenShuttleOnShip))
+		else if (story_.read(StoryFlag::SyreenShuttleOnShip))
 		{
 			GenerateDefault_landerReportCycle (solarSys);
 			SetLanderTakeoff ();
 
-			campaign_.set(StoryFlag::ShipVaultUnlocked, (1) != 0);
-			campaign_.set(StoryFlag::SyreenShuttleOnShip, (0) != 0);
-			campaign_.set(StoryCounter::SyreenHomeVisits, 0);
+			story_.set(StoryFlag::ShipVaultUnlocked, (1) != 0);
+			story_.set(StoryFlag::SyreenShuttleOnShip, (0) != 0);
+			story_.set(StoryCounter::SyreenHomeVisits, 0);
 		}
 		else
 		{
 			GenerateDefault_landerReport (solarSys);
 
-			if (!campaign_.read(StoryFlag::KnowSyreenVault))
+			if (!story_.read(StoryFlag::KnowSyreenVault))
 			{
-				campaign_.set(StoryFlag::KnowSyreenVault, (1) != 0);
+				story_.set(StoryFlag::KnowSyreenVault, (1) != 0);
 			}
 		}
 
@@ -129,7 +129,7 @@ VaultSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createVaultSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<VaultSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createVaultSystemBehavior(StoryState &story) {
+    return std::make_unique<VaultSystemBehavior>(story);
 }
 } // namespace uqm

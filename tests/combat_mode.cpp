@@ -95,9 +95,9 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
                 events.push_back(3);
             }
         };
-        session.player().campaign().set(uqm::StoryFlag::BattleSegue, false);
+        session.player().story().set(uqm::StoryFlag::BattleSegue, false);
         combatDriver = [&] {
-            BOOST_TEST(session.player().campaign().read(uqm::StoryFlag::BattleSegue));
+            BOOST_TEST(session.player().story().read(uqm::StoryFlag::BattleSegue));
             if (action == 1) session.requestLoad(2);
             if (action == 2) session.requestMenuExit(uqm::SessionExit::shutdown());
         };
@@ -114,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_backend_unwind_restores_temporary_input_
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Pilot"}};
     combatDriver = [] { throw std::runtime_error("combat backend failure"); };
-    BOOST_CHECK_THROW(uqm::runCampaignCombat(state.player(uqm::SinglePlayerId).campaign()), std::runtime_error);
+    BOOST_CHECK_THROW(uqm::runCampaignCombat(state.player(uqm::SinglePlayerId).story()), std::runtime_error);
     BOOST_TEST(PlayerInput[0] == &originalInput);
     BOOST_TEST(PlayerControl[0] == (HUMAN_CONTROL | GOOD_RATING));
     BOOST_TEST(nth_frame == 37u);
@@ -127,7 +127,7 @@ BOOST_FIXTURE_TEST_CASE(campaign_human_combat_keeps_input_and_preserves_legacy_d
     GLOBAL(glob_flags) = 0;
     uqm::GameState state{{uqm::SinglePlayerId, "Pilot"}};
     combatDriver = [] { GLOBAL(CurrentActivity) |= CHECK_ABORT; };
-    uqm::runCampaignCombat(state.player(uqm::SinglePlayerId).campaign());
+    uqm::runCampaignCombat(state.player(uqm::SinglePlayerId).story());
     BOOST_TEST(GLOBAL_SIS(CrewEnlisted) == static_cast<COUNT>(~0u));
     BOOST_TEST(PlayerInput[0] == &originalInput);
     BOOST_TEST(nth_frame == 37u);

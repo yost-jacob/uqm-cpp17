@@ -3,7 +3,7 @@
 #include <stdexcept>
 namespace uqm {
 HyperSpaceNavigation::HyperSpaceNavigation(PlayerEntity &player) noexcept
-    : player_(player), campaign_(player.campaign()) {}
+    : player_(player), story_(player.story()) {}
 NavigationBinding::NavigationBinding(GameSession &session, HyperSpaceNavigation &navigation)
     : session_(session), previous_(session.navigation_) {
     if (&session.player() != &navigation.player_)

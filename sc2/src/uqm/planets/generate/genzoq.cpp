@@ -56,7 +56,7 @@ bool
 ZoqFotPikSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	if (campaign_.read(StoryCounter::ZoqfotDistress) != 1)
+	if (story_.read(StoryCounter::ZoqfotDistress) != 1)
 		GenerateDefault_initNpcs (solarSys);
 
 	return true;
@@ -94,13 +94,13 @@ ZoqFotPikSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 		{
 			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
-			if (campaign_.read(StoryCounter::ZoqfotDistress))
+			if (story_.read(StoryCounter::ZoqfotDistress))
 			{
 				CloneShipFragment (BLACK_URQUAN_SHIP,
 						&GLOBAL (npc_built_ship_q), 0);
 
 				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+				story_.set(StoryCounter::EncounterContext, 1 << 7);
 				communicate(BLACKURQ_CONVERSATION);
 
 				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
@@ -118,7 +118,7 @@ ZoqFotPikSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 					INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			communicate(ZOQFOTPIK_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -170,7 +170,7 @@ ZoqFotPikSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createZoqFotPikSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<ZoqFotPikSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createZoqFotPikSystemBehavior(StoryState &story) {
+    return std::make_unique<ZoqFotPikSystemBehavior>(story);
 }
 } // namespace uqm

@@ -6,11 +6,11 @@
 #include <utility>
 
 namespace uqm {
-DiscoveryProgress CampaignState::discovery(const WorldId &world) const {
+DiscoveryProgress StoryState::discovery(const WorldId &world) const {
     const auto found = discoveries_.find(world);
     return found == discoveries_.end() ? DiscoveryProgress{} : found->second;
 }
-bool CampaignState::visitDiscovery(const WorldId &world, std::size_t site) {
+bool StoryState::visitDiscovery(const WorldId &world, std::size_t site) {
     if (site >= 32)
         throw std::out_of_range("discovery site must be in 0..31");
     if (legacyDiscoveries_.find(world) != legacyDiscoveries_.end() && site >= 16)
@@ -20,8 +20,8 @@ bool CampaignState::visitDiscovery(const WorldId &world, std::size_t site) {
     progress.visitedSites.set(site);
     return true;
 }
-DiscoverySnapshot CampaignState::discoverySnapshot() const { return discoveries_; }
-void CampaignState::restoreDiscoveries(DiscoverySnapshot snapshot) {
+DiscoverySnapshot StoryState::discoverySnapshot() const { return discoveries_; }
+void StoryState::restoreDiscoveries(DiscoverySnapshot snapshot) {
     for (const auto &[world, progress] : snapshot)
         if (legacyDiscoveries_.find(world) != legacyDiscoveries_.end()
                 && progress.visitedSites.to_ulong() > std::numeric_limits<std::uint16_t>::max())
@@ -36,11 +36,11 @@ void CampaignState::restoreDiscoveries(DiscoverySnapshot snapshot) {
             ++it;
     }
 }
-void CampaignState::clearDiscoveries() noexcept {
+void StoryState::clearDiscoveries() noexcept {
     discoveries_.clear();
     legacyDiscoveries_.clear();
 }
-void CampaignState::importLegacyDiscovery(LegacyDiscoveryLocation location, std::uint16_t visited) {
+void StoryState::importLegacyDiscovery(LegacyDiscoveryLocation location, std::uint16_t visited) {
     if (location.world.system.value >= NUM_SOLAR_SYSTEMS
             || location.energyWord >= location.systemWords
             || location.systemWords == 0 || location.systemWords % 3 != 0)
@@ -63,7 +63,7 @@ void CampaignState::importLegacyDiscovery(LegacyDiscoveryLocation location, std:
         throw;
     }
 }
-std::vector<std::uint32_t> CampaignState::legacyScanSnapshot(UniverseId universe,
+std::vector<std::uint32_t> StoryState::legacyScanSnapshot(UniverseId universe,
         const std::vector<std::uint8_t> &archive) const {
     if (archive.size() % sizeof(std::uint32_t) != 0)
         throw std::invalid_argument("legacy scan archive is not word-aligned");

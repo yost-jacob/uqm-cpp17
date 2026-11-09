@@ -14,7 +14,7 @@ classDiagram
     EnergyBehavior <|-- ArtifactEnergyBehavior
     EnergyBehavior <|-- PersonalDiscoveryEnergyBehavior
     EnergyBehavior --> EnergyInteraction : returns decision
-    PersonalDiscoveryEnergyBehavior --> CampaignState : personal accepted visits
+    PersonalDiscoveryEnergyBehavior --> StoryState : personal accepted visits
     EnergyInteraction --> ReportRequest : optional table index
     LegacyLander --> EnergyInteraction : applies physical removal and legacy rewards
     LegacyReportUI --> ReportRequest : presents after mutation

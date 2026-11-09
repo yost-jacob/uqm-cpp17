@@ -1,5 +1,5 @@
-#ifndef UQM_DESIGN_CAMPAIGN_STATE_HPP_
-#define UQM_DESIGN_CAMPAIGN_STATE_HPP_
+#ifndef UQM_DESIGN_STORY_STATE_HPP_
+#define UQM_DESIGN_STORY_STATE_HPP_
 
 // Declaration-only, per-user state. Not part of the game build.
 #include <unordered_set>
@@ -21,10 +21,11 @@ constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
 // also encode these records; see discovery-state.md before migrating scan bits.
 struct DiscoveryProgress { std::bitset<32> visitedSites; };
 // Detached per-user save value; never an aggregate of every player's campaign.
-struct CampaignSnapshot {
+struct StorySnapshot {
     std::uint64_t revision = 0;
     std::bitset<static_cast<std::size_t>(StoryFlag::Count)> flags;
     std::array<unsigned, static_cast<std::size_t>(StoryCounter::Count)> counters{};
+    // Historical wireframe field: move to PlayerEntity-owned Fleet in #21.
     std::vector<FleetProgress> escorts;
     std::unordered_set<WorldId, WorldIdHash> visitedWorlds;
     std::unordered_map<WorldId, DiscoveryProgress, WorldIdHash> discoveries;
@@ -34,7 +35,7 @@ class StateActions;
 
 // Personal story progress, owned by value inside PlayerEntity. Access is confined
 // to the simulation thread; save through the enclosing player snapshot.
-class CampaignState {
+class StoryState {
 public:
     bool read(StoryFlag flag) const;
     unsigned read(StoryCounter counter) const;
@@ -50,12 +51,12 @@ public:
     }
     bool visited(const WorldId &id) const;
     void markVisited(const WorldId &id);
-    CampaignSnapshot snapshot() const;
+    StorySnapshot snapshot() const;
     void schedulePersonal(ScheduledStoryEvent event);
 
 private:
     friend class StateActions;
-    CampaignSnapshot data_;
+    StorySnapshot data_;
 };
 } // namespace uqm::design
 #endif

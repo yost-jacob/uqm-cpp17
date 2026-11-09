@@ -10,7 +10,7 @@
 #include <stdexcept>
 using namespace uqm;
 uqm::ConversationRuntime::ConversationRuntime(GameSession &session, const LOCDATA &configuration)
-    : session_(session), campaign_(session.player().campaign()), resources_(configuration),
+    : session_(session), story_(session.player().story()), resources_(configuration),
       data_(resources_.script.data), animations_(data_) {
     if (!data_.init_encounter_func || !data_.post_encounter_func || !data_.uninit_encounter_func)
         throw std::invalid_argument("conversation requires init/post/uninit callbacks");

@@ -159,11 +159,11 @@ extern PRIM_LINKS DisplayLinks;
 
 // Per-launch state, owned by LanderMode; C element callbacks only borrow it.
 struct LanderVisit {
-    explicit LanderVisit(SOLARSYS_STATE &owner) : system(owner), campaign(uqm::systemCampaign(owner)) {}
+    explicit LanderVisit(SOLARSYS_STATE &owner) : system(owner), story(uqm::systemStory(owner)) {}
     LanderVisit(const LanderVisit &) = delete;
     LanderVisit &operator=(const LanderVisit &) = delete;
     SOLARSYS_STATE &system;
-    uqm::CampaignState &campaign;
+    uqm::StoryState &story;
     bool InTransit{};
     COUNT ElementLevel{}, MaxElementLevel{}, BiologicalLevel{};
     COUNT ElementAmounts[NUM_ELEMENT_CATEGORIES]{};
@@ -456,7 +456,7 @@ DeltaLanderCrew (SIZE crew_delta, COUNT which_disaster)
 		if (planetSideDesc->crew_left < 1)
 			return; // irrelevant -- all dead
 		
-		planetSideDesc->shieldHit = planetSideDesc->campaign.read(uqm::StoryCounter::LanderShields);
+		planetSideDesc->shieldHit = planetSideDesc->story.read(uqm::StoryCounter::LanderShields);
 		planetSideDesc->shieldHit &= 1 << which_disaster;
 		if (!planetSideDesc->shieldHit || TFB_Random () % 100 >= 95)
 		{	// No shield, or it did not help
@@ -505,7 +505,7 @@ FillLanderHold (LanderVisit *pPSD, COUNT scan, COUNT NumRetrieved)
 	{
 		start_count = pPSD->ElementLevel;
 		pPSD->ElementLevel += NumRetrieved;
-		if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderCargo))
+		if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderCargo))
 		{
 			start_count >>= 1;
 			NumRetrieved = (pPSD->ElementLevel >> 1) - start_count;
@@ -1346,7 +1346,7 @@ AnimateLanderWarmup (void)
 
 	animationInterframe (&TimeIn, 2);
 
-	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderShot))
+	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderShot))
 		s.frame = SetAbsFrameIndex (s.frame, 58);
 	else
 		s.frame = SetAbsFrameIndex (s.frame,
@@ -1355,7 +1355,7 @@ AnimateLanderWarmup (void)
 
 	animationInterframe (&TimeIn, 2);
 
-	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderSpeed))
+	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderSpeed))
 		s.frame = SetAbsFrameIndex (s.frame, 57);
 	else
 	{
@@ -1369,7 +1369,7 @@ AnimateLanderWarmup (void)
 	}
 	DrawStamp (&s);
 
-	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderCargo))
+	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderCargo))
 	{
 		animationInterframe (&TimeIn, 2);
 
@@ -1437,7 +1437,7 @@ InitPlanetSide (POINT pt)
 	}
 
 
-	planetSideDesc->campaign.set(uqm::StoryFlag::PlanetaryLanding);
+	planetSideDesc->story.set(uqm::StoryFlag::PlanetaryLanding);
 }
 
 static void
@@ -1549,7 +1549,7 @@ DoPlanetSide (LanderInputState *pMS)
 		planetSideDesc->weapon_wait = 0;
 
 		angle = FACING_TO_ANGLE (GetFrameIndex (LanderFrame[0]));
-		landerSpeedNumer = planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderSpeed) ?
+		landerSpeedNumer = planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderSpeed) ?
 				WORLD_TO_VELOCITY (2 * 14) :
 				WORLD_TO_VELOCITY (2 * 8);
 
@@ -1616,7 +1616,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 				LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
 
 				angle = FACING_TO_ANGLE (index);
-				landerSpeedNumer = planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderSpeed) ?
+				landerSpeedNumer = planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderSpeed) ?
 						WORLD_TO_VELOCITY (2 * 14) :
 						WORLD_TO_VELOCITY (2 * 8);
 
@@ -1646,7 +1646,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 				LanderFire (index);
 
 				planetSideDesc->weapon_wait = SHUTTLE_FIRE_WAIT;
-				if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderShot))
+				if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderShot))
 					planetSideDesc->weapon_wait >>= 1;
 			}
 		}
@@ -1925,7 +1925,7 @@ class LanderMode final : public GameMode {
 public:
     LanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location)
         : GameMode(session.stateOwner(), session.playerId()), session_(session), location_(location), visit_(system) {
-        if (&session.player().campaign() != &visit_.campaign)
+        if (&session.player().story() != &visit_.story)
             throw std::invalid_argument("lander and session have different campaigns");
     }
     ModeResult run() override;
@@ -1964,7 +1964,7 @@ uqm::LanderMode::run()
 
 	PSD.ElementLevel = GetStorageBayCapacity () - GLOBAL_SIS (TotalElementMass);
 	PSD.MaxElementLevel = MAX_SCROUNGED;
-	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderCargo))
+	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderCargo))
 		PSD.MaxElementLevel <<= 1;
 	if (PSD.ElementLevel < PSD.MaxElementLevel)
 		PSD.MaxElementLevel = PSD.ElementLevel;
@@ -2059,7 +2059,7 @@ uqm::LanderMode::run()
 void
 InitLander (BYTE LanderFlags)
 {
-    auto &campaign = uqm::gameSession().player().campaign(); // Legacy C UI entry.
+    auto &story = uqm::gameSession().player().story(); // Legacy C UI entry.
 
 	RECT r;
 
@@ -2086,8 +2086,8 @@ InitLander (BYTE LanderFlags)
 		DrawStamp (&s);
 		if (LanderFlags == 0)
 		{
-			ShieldFlags = campaign.read(uqm::StoryCounter::LanderShields);
-			capacity_shift = campaign.read(uqm::StoryFlag::ImprovedLanderCargo);
+			ShieldFlags = story.read(uqm::StoryCounter::LanderShields);
+			capacity_shift = story.read(uqm::StoryFlag::ImprovedLanderCargo);
 		}
 		else
 		{

@@ -29,7 +29,7 @@
 
 
 static void GeneratePlanets (SOLARSYS_STATE *system);
-static void check_yehat_rebellion (uqm::CampaignState &campaign);
+static void check_yehat_rebellion (uqm::StoryState &story);
 
 
 
@@ -55,7 +55,7 @@ GenerateDefault_reinitNpcs (SOLARSYS_STATE *solarSys)
 	// since you can start the rebellion in any star system (not just
 	// the Homeworld), I could not find a better place for it.
 	// At least it is better than where it was originally.
-	check_yehat_rebellion (uqm::systemCampaign(*solarSys));
+	check_yehat_rebellion (uqm::systemStory(*solarSys));
 
 	(void) solarSys;
 	return true;
@@ -94,7 +94,7 @@ GenerateDefault_generateName (const SOLARSYS_STATE *solarSys,
 	COUNT i = planetIndex (solarSys, world);
 	utf8StringCopy (GLOBAL_SIS (PlanetName), sizeof (GLOBAL_SIS (PlanetName)),
 			GAME_STRING (PLANET_NUMBER_BASE + (9 + 7) + i));
-	uqm::systemCampaign(*solarSys).set(uqm::StoryCounter::BattlePlanet, world->data_index);
+	uqm::systemStory(*solarSys).set(uqm::StoryCounter::BattlePlanet, world->data_index);
 
 	return true;
 }
@@ -321,7 +321,7 @@ GeneratePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static void
-check_yehat_rebellion (uqm::CampaignState &campaign)
+check_yehat_rebellion (uqm::StoryState &story)
 {
 	HIPGROUP hGroup, hNextGroup;
 
@@ -333,7 +333,7 @@ check_yehat_rebellion (uqm::CampaignState &campaign)
 	//   in an encounter with Royalists.
 	// TRANSLATION: "If the civil war has not started yet, or the player
 	//   battled a ship -- bail."
-	if (!campaign.read(uqm::StoryFlag::YehatCivilWar) || EncounterRace >= 0)
+	if (!story.read(uqm::StoryFlag::YehatCivilWar) || EncounterRace >= 0)
 		return; // not this time
 
 	// Send Yehat groups to flee the system, but only if the player

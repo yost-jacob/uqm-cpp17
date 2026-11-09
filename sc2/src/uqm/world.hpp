@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace uqm {
-class CampaignState;
+class StoryState;
 class SystemBehavior;
 enum class WorldKind { Planet, Moon, Starbase, FinalBattleSite };
 struct WorldDefinition {
@@ -21,7 +21,7 @@ struct WorldDefinition {
     std::uint16_t moonCount = 0; // Generated layout, before moon descriptors are loaded.
 };
 // Owns a runtime world's behavior and generated children. Physical persistence
-// stays in the shared state; personal progress stays in the interacting campaign.
+// stays in the shared state; personal progress stays in the interacting story state.
 // This runtime is simulation-thread confined. No state is written in destruction.
 class World {
 public:
@@ -42,7 +42,7 @@ public:
     void setShielded(bool shielded) noexcept;
     // Reject null behavior. Configuration is runtime-only and owns no progress.
     void setEnergyBehavior(std::unique_ptr<EnergyBehavior> behavior);
-    EnergyInteraction interactEnergy(CampaignState &campaign, std::size_t site,
+    EnergyInteraction interactEnergy(StoryState &story, std::size_t site,
             bool physicallyRetrieved);
     std::size_t childCount() const noexcept;
     World &child(std::size_t index);
@@ -65,14 +65,14 @@ public:
     // definitions use dense zero-based planet slots. behavior() throws on this view.
     SolarSystem(StarId star, std::shared_ptr<WorldState> state,
             std::vector<WorldDefinition> definitions);
-    // campaign must outlive this system; the selected behavior borrows it.
+    // story state must outlive this system; the selected behavior borrows it.
     SolarSystem(StarId star, std::shared_ptr<WorldState> state,
-            CampaignState &campaign, std::uint8_t specialSystem);
+            StoryState &story, std::uint8_t specialSystem);
     ~SolarSystem();
     SystemBehavior &behavior();
     const SystemBehavior &behavior() const;
     // Attach one complete generated planet layout. Validate before replacing it;
-    // behavior identity and borrowed campaign reference remain unchanged.
+    // behavior identity and borrowed story-state reference remain unchanged.
     void replacePlanets(std::vector<WorldDefinition> definitions);
     StarId star() const noexcept;
     UniverseId universe() const noexcept;

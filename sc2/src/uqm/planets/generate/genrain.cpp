@@ -80,8 +80,8 @@ RainbowWorldSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC 
 		STAR_DESC *SDPtr;
 
 		rainbow_mask = MAKE_WORD (
-				campaign_.read(StoryCounter::RainbowWorld0),
-				campaign_.read(StoryCounter::RainbowWorld1));
+				story_.read(StoryCounter::RainbowWorld0),
+				story_.read(StoryCounter::RainbowWorld1));
 
 		which_rainbow = 0;
 		SDPtr = GetStar(0);
@@ -92,8 +92,8 @@ RainbowWorldSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC 
 			SDPtr = GetStar(GetStarIndex(SDPtr) + 1);
 		}
 		rainbow_mask |= 1 << which_rainbow;
-		campaign_.set(StoryCounter::RainbowWorld0, LOBYTE (rainbow_mask));
-		campaign_.set(StoryCounter::RainbowWorld1, HIBYTE (rainbow_mask));
+		story_.set(StoryCounter::RainbowWorld0, LOBYTE (rainbow_mask));
+		story_.set(StoryCounter::RainbowWorld1, HIBYTE (rainbow_mask));
 	}
 
 	GenerateDefault_generateOrbital (solarSys, world);
@@ -101,7 +101,7 @@ RainbowWorldSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC 
 }
 
 
-std::unique_ptr<SystemBehavior> createRainbowWorldSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<RainbowWorldSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createRainbowWorldSystemBehavior(StoryState &story) {
+    return std::make_unique<RainbowWorldSystemBehavior>(story);
 }
 } // namespace uqm

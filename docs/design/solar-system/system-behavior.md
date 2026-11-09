@@ -5,7 +5,7 @@ the native behavior interface and migration contracts.
 # Native system behaviors
 
 The active exploration runtime now owns one `SolarSystem`, which owns a
-`unique_ptr<SystemBehavior>`. The behavior borrows `CampaignState&`; physical
+`unique_ptr<SystemBehavior>`. The behavior borrows `StoryState&`; physical
 world progress continues to use shared `WorldState` ownership. No campaign state
 is copied or shared between sessions by this change.
 
@@ -57,7 +57,7 @@ civil war) use the campaign reference attached to the explicit system context.
 The generated descriptor arguments must belong to that behavior's active system.
 
 `ChmmrSystemBehavior` overrides only planet generation, moon generation, and
-orbital handling. Its story reads/writes use the inherited `CampaignState&`:
+orbital handling. Its story reads/writes use the inherited `StoryState&`:
 Chmmr liberation, Sun Device, Ilwrath deception, bomb progress, and encounter
 context. Conditions are read when hooks execute, not cached at construction.
 Its old function table is removed.

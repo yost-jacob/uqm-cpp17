@@ -54,7 +54,7 @@ void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQ
     const auto world = id(system, 1, -1);
     auto progress = system.progress(world);
     const auto legacy = progress.energy.to_ulong();
-    context.campaign.importLegacyDiscovery(
+    context.story.importLegacyDiscovery(
             discoveryLocation(system, world), static_cast<std::uint16_t>(legacy >> 16));
     progress.energy &= std::bitset<32>{UINT32_C(0x0000ffff)};
     if (legacy >> 16) system.replaceProgress(world, progress);
@@ -102,7 +102,7 @@ void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
         if (id.value >= NUM_SOLAR_SYSTEMS) throw std::out_of_range("invalid system star");
         auto &context = *system->worlds;
         context.system = std::make_unique<uqm::SolarSystem>(id, context.world,
-                context.campaign, star->Index);
+                context.story, star->Index);
         context.system->behavior().attachStar(*star);
         if (context.session) context.system->behavior().attachSession(*context.session);
     } catch (...) { std::abort(); }
@@ -112,7 +112,7 @@ void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
 void CreateSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
     try {
         auto next = std::make_unique<UQM_SYSTEM_RUNTIME>(UQM_SYSTEM_RUNTIME{
-                uqm::gameSession().player().campaign(), uqm::gameSession().worldOwner(), nullptr});
+                uqm::gameSession().player().story(), uqm::gameSession().worldOwner(), nullptr});
         system->worlds = next.get();
         PrepareSystemWorlds(system, star);
         next.release();
@@ -170,7 +170,7 @@ ENERGY_INTERACTION InteractWorldEnergy(SOLARSYS_STATE *system, COUNT planet, int
     try {
         auto &native = runtime(*system);
         const auto result = native.at(id(native, planet, moon)).interactEnergy(
-                system->worlds->campaign, site, retrieved);
+                system->worlds->story, site, retrieved);
         if (result.report && *result.report > std::numeric_limits<COUNT>::max())
             throw std::out_of_range("report index exceeds C table capacity");
         return {static_cast<BOOLEAN>(result.accepted), static_cast<BOOLEAN>(result.removeNode),

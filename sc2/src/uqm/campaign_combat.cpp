@@ -34,7 +34,7 @@
 extern "C" UWORD nth_frame;
 
 void
-uqm::runCampaignCombat(CampaignState &campaign)
+uqm::runCampaignCombat(StoryState &story)
 {
     // Own every temporary combat binding until Battle has returned. Resource
     // teardown precedes restoring the caller's activity, including C++ unwinds.
@@ -60,7 +60,7 @@ uqm::runCampaignCombat(CampaignState &campaign)
             GLOBAL(CurrentActivity) = activity;
         }
     } cleanup{GLOBAL(CurrentActivity)};
-    campaign.set(StoryFlag::BattleSegue, true);
+    story.set(StoryFlag::BattleSegue, true);
     GLOBAL(CurrentActivity) = MAKE_WORD(
         LOBYTE(cleanup.activity) == IN_LAST_BATTLE ? IN_LAST_BATTLE : IN_ENCOUNTER, 0);
     WaitForSoundEnd(TFBSOUND_WAIT_ALL);

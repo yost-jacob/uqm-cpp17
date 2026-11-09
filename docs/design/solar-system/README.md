@@ -35,7 +35,7 @@ conversion can proceed within that lifecycle contract.
 
 Start with [GameState](game_state.hpp), the storage boundary, and
 [PlayerEntity](player_entity.hpp), the complete personal state owner.
-[CampaignState](campaign_state.hpp) holds personal story progress by value inside
+[StoryState](story_state.hpp) holds personal story progress by value inside
 that entity. [WorldState](world_state.hpp) holds shared universe facts.
 [GameSession](game_session.hpp) connects a player identity to runtime interaction.
 [World](world.hpp) owns local world data and [WorldBehavior](world_behavior.hpp)
@@ -50,8 +50,8 @@ classDiagram
     PlayerEntity *-- UserProfile
     PlayerEntity *-- FlagshipState
     PlayerEntity *-- PlayerPresence : accepted location
-    PlayerEntity *-- CampaignState : value member
-    CampaignState *-- CampaignSnapshot
+    PlayerEntity *-- StoryState : value member
+    StoryState *-- StorySnapshot
     WorldState *-- WorldSnapshot
     WorldSnapshot *-- WorldProgress : keyed by WorldId
     WorldState *-- PlayerPresence : derived public view
@@ -95,14 +95,14 @@ lifetime, not a player's membership or permission to execute a late command.
 
 | Owner | Representative information |
 |---|---|
-| PlayerEntity | Immutable player identity, display profile, accepted location, ship/cargo/equipment, personal CampaignState |
-| CampaignState inside PlayerEntity | Personal story flags/counters, escorts, visited-world knowledge, personal events |
+| PlayerEntity | Immutable player identity, display profile, accepted location, ship/cargo/equipment, personal StoryState |
+| StoryState inside PlayerEntity | Personal story flags/counters, escorts, visited-world knowledge, personal events |
 | WorldState | Physical world flags, retrieved-node masks, NPC fleets, authoritative calendar/events |
 | WorldState public presence | Derived display name/location/facing for visible players |
 | World / GameSession runtime | Current view, local surface data, behavior objects, rendering/input |
 
 Identity/profile and ship data have one authoritative home in PlayerEntity.
-CampaignState contains story progress, not another copy of the user or ship.
+StoryState contains story progress, not another copy of the user or ship.
 UserProfile has no passwords, credentials, sockets or UI objects. The public
 presence record is a projection: its identity/name must match the owning entity,
 not independently supplied client claims. It excludes inventory and story flags.
@@ -203,7 +203,7 @@ structs, raw buffers and packed save fields from these interfaces.
 ## Save and load boundaries
 
 A personal save contains PlayerSnapshot: profile, universe binding, accepted
-location, ship and nested CampaignSnapshot. GameSession::save obtains it through
+location, ship and nested StorySnapshot. GameSession::save obtains it through
 GameState. The host separately persists WorldSnapshot. Copy snapshots at an
 authoritative action/tick boundary, not halfway through a reward or story action.
 The combined personal/shared checkpoint still needs coordinated persistence.
@@ -227,7 +227,7 @@ No legacy call sites or save formats are migrated by this wireframe.
 Syntax-check each header from the repository root:
 
 ```sh
-for header in state_types.hpp campaign_state.hpp world_state.hpp player_entity.hpp \
+for header in state_types.hpp story_state.hpp world_state.hpp player_entity.hpp \
               game_state.hpp world.hpp world_behavior.hpp game_session.hpp; do
   printf '#include "%s"\n' "$header" | \
     g++ -std=c++17 -pthread -Wall -Wextra -Wpedantic -fsyntax-only -x c++ \

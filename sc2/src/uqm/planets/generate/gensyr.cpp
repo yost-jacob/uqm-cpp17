@@ -103,7 +103,7 @@ SyreenSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 }
 
 
-std::unique_ptr<SystemBehavior> createSyreenSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<SyreenSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createSyreenSystemBehavior(StoryState &story) {
+    return std::make_unique<SyreenSystemBehavior>(story);
 }
 } // namespace uqm

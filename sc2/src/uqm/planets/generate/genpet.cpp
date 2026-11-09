@@ -84,8 +84,8 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
     auto *solarSys = &system;
     auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET)
-			&& (campaign_.read(StoryFlag::UmgahZombieBlobbies)
-			|| !campaign_.read(StoryFlag::TalkingPet)
+			&& (story_.read(StoryFlag::UmgahZombieBlobbies)
+			|| !story_.read(StoryFlag::TalkingPet)
 			|| StartSphereTracking (UMGAH_SHIP)))
 	{
 		NotifyOthers (UMGAH_SHIP, IPNL_ALL_CLEAR);
@@ -94,8 +94,8 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
 		if (StartSphereTracking (UMGAH_SHIP))
 		{
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
-			if (!campaign_.read(StoryFlag::UmgahZombieBlobbies))
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
+			if (!story_.read(StoryFlag::UmgahZombieBlobbies))
 			{
 				CloneShipFragment (UMGAH_SHIP,
 						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
@@ -122,9 +122,9 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
 					&GLOBAL (npc_built_ship_q)) != 0;
 			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
 
-			if (campaign_.read(StoryFlag::PlayerHypnotized))
+			if (story_.read(StoryFlag::PlayerHypnotized))
 				ZapToUrquanEncounter ();
-			else if (campaign_.read(StoryFlag::UmgahZombieBlobbies)
+			else if (story_.read(StoryFlag::UmgahZombieBlobbies)
 					&& !UmgahSurvivors)
 			{
 				// Defeated the zombie fleet.
@@ -258,7 +258,7 @@ TalkingPetSystemBehavior::ZapToUrquanEncounter(void)
 }
 
 
-std::unique_ptr<SystemBehavior> createTalkingPetSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<TalkingPetSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createTalkingPetSystemBehavior(StoryState &story) {
+    return std::make_unique<TalkingPetSystemBehavior>(story);
 }
 } // namespace uqm

@@ -200,9 +200,9 @@ uqm::DeviceMenu::useCaster()
 {
 	if (inHQSpace ())
 	{
-		if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
+		if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 		{
-			campaign_.set(uqm::StoryFlag::UsedBroadcaster, 1);
+			story_.set(uqm::StoryFlag::UsedBroadcaster, 1);
 			return TRUE;
 		}
 		return FALSE;
@@ -216,7 +216,7 @@ uqm::DeviceMenu::useCaster()
 			&& matchWorld (system_, system_->pOrbitalDesc,
 				1, MATCH_PLANET)
 			&& uqm::systemStar(*system_).Index == CHMMR_DEFINED
-			&& !campaign_.read(uqm::StoryFlag::ChmmrFreed))
+			&& !story_.read(uqm::StoryFlag::ChmmrFreed))
 	{
 		// In orbit around the Chenjesu/Mmrnmhrm home planet.
 		NextActivity |= CHECK_LOAD;  /* fake a load game */
@@ -227,7 +227,7 @@ uqm::DeviceMenu::useCaster()
 		ReinitQueue (&GLOBAL (ip_group_q));
 		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
 
-		campaign_.set(uqm::StoryCounter::EncounterContext, 1 << 7);
+		story_.set(uqm::StoryCounter::EncounterContext, 1 << 7);
 		SaveSolarSysLocation ();
 		return TRUE;
 	}
@@ -264,12 +264,12 @@ uqm::DeviceMenu::useCaster()
 			if (uqm::systemStar(*system_).Index == ILWRATH_DEFINED)
 			{
 				// Ilwrath home system.
-				campaign_.set(uqm::StoryCounter::EncounterContext, 1 << 4);
+				story_.set(uqm::StoryCounter::EncounterContext, 1 << 4);
 			}
 			else
 			{
 				// Ilwrath ship.
-				campaign_.set(uqm::StoryCounter::EncounterContext, 1 << 5);
+				story_.set(uqm::StoryCounter::EncounterContext, 1 << 5);
 			}
 			
 			if (inOrbit())
@@ -289,13 +289,13 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 	switch (which_device)
 	{
 		case ROSY_SPHERE_DEVICE:
-			val = campaign_.read(uqm::StoryCounter::UltronCondition);
+			val = story_.read(uqm::StoryCounter::UltronCondition);
 			if (val)
 			{
-				campaign_.set(uqm::StoryCounter::UltronCondition, val + 1);
-				campaign_.set(uqm::StoryFlag::RosySphereOnShip, 0);
-				campaign_.set(uqm::StoryFlag::DiscussedUltron, 0);
-				campaign_.set(uqm::StoryFlag::SupoxUltronHelp, 0);
+				story_.set(uqm::StoryCounter::UltronCondition, val + 1);
+				story_.set(uqm::StoryFlag::RosySphereOnShip, 0);
+				story_.set(uqm::StoryFlag::DiscussedUltron, 0);
+				story_.set(uqm::StoryFlag::SupoxUltronHelp, 0);
 				return DeviceStatus::Success;
 			}
 			break;
@@ -319,7 +319,7 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 				}
 				else
 				{
-					campaign_.set(uqm::StoryFlag::ChmmrEmerging, 1);
+					story_.set(uqm::StoryFlag::ChmmrEmerging, 1);
 
 					EncounterGroup = 0;
 					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
@@ -335,7 +335,7 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 			}
 			break;
 		case UTWIG_BOMB_DEVICE:
-			campaign_.set(uqm::StoryFlag::UtwigBomb, 0);
+			story_.set(uqm::StoryFlag::UtwigBomb, 0);
 			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 			GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
 			return DeviceStatus::Success;
@@ -352,12 +352,12 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 		case TALKING_PET_DEVICE:
 			NextActivity |= CHECK_LOAD; /* fake a load game */
 			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-			campaign_.set(uqm::StoryCounter::EncounterContext, 0);
+			story_.set(uqm::StoryCounter::EncounterContext, 0);
 			if (inHQSpace ())
 			{
 				if (GetHeadEncounter ())
 				{
-					campaign_.set(uqm::StoryFlag::ShipToCompel, 1);
+					story_.set(uqm::StoryFlag::ShipToCompel, 1);
 				}
 				GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 
@@ -368,7 +368,7 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 				EncounterGroup = 0;
 				if (GetHeadLink (&GLOBAL (ip_group_q)))
 				{
-					campaign_.set(uqm::StoryFlag::ShipToCompel, 1);
+					story_.set(uqm::StoryFlag::ShipToCompel, 1);
 
 					PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
 					ReinitQueue (&GLOBAL (ip_group_q));
@@ -377,31 +377,31 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 
 				if (uqm::systemStar(*system_).Index == SAMATRA_DEFINED)
 				{
-					campaign_.set(uqm::StoryFlag::ReadyToConfuseUrquan, 1);
+					story_.set(uqm::StoryFlag::ReadyToConfuseUrquan, 1);
 				}
 				if (inOrbit())
 					SaveSolarSysLocation ();
 			}
 			return DeviceStatus::Success;
 		case AQUA_HELIX_DEVICE:
-			val = campaign_.read(uqm::StoryCounter::UltronCondition);
+			val = story_.read(uqm::StoryCounter::UltronCondition);
 			if (val)
 			{
-				campaign_.set(uqm::StoryCounter::UltronCondition, val + 1);
-				campaign_.set(uqm::StoryFlag::AquaHelixOnShip, 0);
-				campaign_.set(uqm::StoryFlag::DiscussedUltron, 0);
-				campaign_.set(uqm::StoryFlag::SupoxUltronHelp, 0);
+				story_.set(uqm::StoryCounter::UltronCondition, val + 1);
+				story_.set(uqm::StoryFlag::AquaHelixOnShip, 0);
+				story_.set(uqm::StoryFlag::DiscussedUltron, 0);
+				story_.set(uqm::StoryFlag::SupoxUltronHelp, 0);
 				return DeviceStatus::Success;
 			}
 			break;
 		case CLEAR_SPINDLE_DEVICE:
-			val = campaign_.read(uqm::StoryCounter::UltronCondition);
+			val = story_.read(uqm::StoryCounter::UltronCondition);
 			if (val)
 			{
-				campaign_.set(uqm::StoryCounter::UltronCondition, val + 1);
-				campaign_.set(uqm::StoryFlag::ClearSpindleOnShip, 0);
-				campaign_.set(uqm::StoryFlag::DiscussedUltron, 0);
-				campaign_.set(uqm::StoryFlag::SupoxUltronHelp, 0);
+				story_.set(uqm::StoryCounter::UltronCondition, val + 1);
+				story_.set(uqm::StoryFlag::ClearSpindleOnShip, 0);
+				story_.set(uqm::StoryFlag::DiscussedUltron, 0);
+				story_.set(uqm::StoryFlag::SupoxUltronHelp, 0);
 				return DeviceStatus::Success;
 			}
 			break;
@@ -430,7 +430,7 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 				 * is currently obscured.
 				 */
 				GLOBAL_SIS (FuelOnBoard) -= PORTAL_FUEL_COST;
-				campaign_.set(uqm::StoryCounter::PortalCounter, 1);
+				story_.set(uqm::StoryCounter::PortalCounter, 1);
 				return DeviceStatus::Success;
 			}
 			break;
@@ -527,7 +527,7 @@ BOOLEAN
 uqm::DeviceMenu::run()
 {
 	MENU_STATE MenuState{};
-	DeviceMenuState DevicesState{*this, inventoryDevices(campaign_)};
+	DeviceMenuState DevicesState{*this, inventoryDevices(story_)};
 
 	MenuState.privData = &DevicesState;
 
@@ -554,7 +554,7 @@ uqm::DeviceMenu::run()
 	{
 		ClearSISRect (DRAW_SIS_DISPLAY);
 
-		if (!campaign_.read(uqm::StoryCounter::PortalCounter)
+		if (!story_.read(uqm::StoryCounter::PortalCounter)
 				&& !(GLOBAL (CurrentActivity) & START_ENCOUNTER)
 				&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
 			return TRUE;
@@ -566,12 +566,12 @@ uqm::DeviceMenu::run()
 
 // Remaining C planet-menu callers obtain their context once here.
 BOOLEAN DevicesMenu(void) {
-    auto &campaign = uqm::gameSession().player().campaign();
-    if (pSolarSysState) return uqm::DeviceMenu{campaign, *pSolarSysState}.run();
-    return uqm::DeviceMenu{campaign}.run();
+    auto &story = uqm::gameSession().player().story();
+    if (pSolarSysState) return uqm::DeviceMenu{story, *pSolarSysState}.run();
+    return uqm::DeviceMenu{story}.run();
 }
-uqm::DeviceMenu::DeviceMenu(CampaignState &campaign, SOLARSYS_STATE &system)
-    : campaign_(campaign), system_(&system) {
-    if (&systemCampaign(system) != &campaign)
+uqm::DeviceMenu::DeviceMenu(StoryState &story, SOLARSYS_STATE &system)
+    : story_(story), system_(&system) {
+    if (&systemStory(system) != &story)
         throw std::invalid_argument("device menu and exploration have different campaigns");
 }

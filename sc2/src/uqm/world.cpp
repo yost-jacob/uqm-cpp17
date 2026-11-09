@@ -27,11 +27,11 @@ void World::setEnergyBehavior(std::unique_ptr<EnergyBehavior> behavior) {
     if (!behavior) throw std::invalid_argument("world energy behavior must be non-null");
     energy_ = std::move(behavior);
 }
-EnergyInteraction World::interactEnergy(CampaignState &campaign, std::size_t site, bool retrieved) {
+EnergyInteraction World::interactEnergy(StoryState &story, std::size_t site, bool retrieved) {
     if (site >= 32) throw std::out_of_range("energy site must be in 0..31");
     if (!layout_.empty())
         retrieved = retrieved || progress().energy.test(site);
-    auto result = energy_->interact(campaign, id(), site, retrieved);
+    auto result = energy_->interact(story, id(), site, retrieved);
     if (!result.accepted && (result.removeNode || result.report))
         throw std::logic_error("rejected energy interaction has side effects");
     return result;
@@ -58,8 +58,8 @@ SolarSystem::SolarSystem(StarId star, std::shared_ptr<WorldState> state,
     replacePlanets(std::move(definitions));
 }
 SolarSystem::SolarSystem(StarId star, std::shared_ptr<WorldState> state,
-        CampaignState &campaign, std::uint8_t specialSystem)
-    : behavior_(createSystemBehavior(specialSystem, campaign)), star_(star), state_(std::move(state)) {
+        StoryState &story, std::uint8_t specialSystem)
+    : behavior_(createSystemBehavior(specialSystem, story)), star_(star), state_(std::move(state)) {
     if (!state_ || !behavior_) throw std::invalid_argument("system requires state and behavior");
 }
 SolarSystem::~SolarSystem() = default;

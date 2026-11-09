@@ -89,7 +89,7 @@ PkunkSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			communicate(PKUNK_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -106,7 +106,7 @@ PkunkSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (PKUNK_RUINS_STRTAB));
-			if (campaign_.read(StoryFlag::ClearSpindle))
+			if (story_.read(StoryFlag::ClearSpindle))
 			{	// Already picked up the Clear Spindle, skip the report
 				solarSys->SysInfo.PlanetInfo.DiscoveryString =
 						SetAbsStringTableIndex (
@@ -129,12 +129,12 @@ PkunkSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 		GenerateDefault_landerReportCycle (solarSys);
 
 		// The artifact can be picked up from any ruin
-		if (!campaign_.read(StoryFlag::ClearSpindle))
+		if (!story_.read(StoryFlag::ClearSpindle))
 		{	// Just picked up the Clear Spindle from a ruin
 			SetLanderTakeoff ();
 
-			campaign_.set(StoryFlag::ClearSpindle, (1) != 0);
-			campaign_.set(StoryFlag::ClearSpindleOnShip, (1) != 0);
+			story_.set(StoryFlag::ClearSpindle, (1) != 0);
+			story_.set(StoryFlag::ClearSpindleOnShip, (1) != 0);
 		}
 
 		return false; // do not remove the node
@@ -158,7 +158,7 @@ PkunkSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 }
 
 
-std::unique_ptr<SystemBehavior> createPkunkSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<PkunkSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createPkunkSystemBehavior(StoryState &story) {
+    return std::make_unique<PkunkSystemBehavior>(story);
 }
 } // namespace uqm

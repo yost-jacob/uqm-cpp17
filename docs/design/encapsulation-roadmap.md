@@ -44,6 +44,14 @@ a load does not decode a replacement campaign while these objects remain alive.
 A C++ mode wrapper establishes a lifetime boundary; it does not by itself
 encapsulate every service or legacy payload accessed beneath that boundary.
 
+## State naming
+
+The personal progress interface is `StoryState`, accessed as `player.story()`.
+It owns flags, counters and personal discovery progress, not the fleet or the
+whole campaign. This is a naming refactor of the same storage and serialization;
+there is no compatibility alias or second copy of the state. The proposed Fleet
+will be a separate member of PlayerEntity (#21).
+
 ## This increment
 
 Campaign combat now runs through swapGameMode, like conversation and lander

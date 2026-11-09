@@ -17,8 +17,8 @@ BOOST_AUTO_TEST_CASE(polymorphic_discovery_behavior_advances_each_players_own_re
     auto state = std::make_shared<uqm::WorldState>();
     uqm::World world{planet(), state, std::make_unique<uqm::PersonalDiscoveryEnergyBehavior>(3, 2)};
     uqm::GameState alice{{uqm::PlayerId{1}, "Alice"}, state}, bob{{uqm::PlayerId{2}, "Bob"}, state};
-    auto &first = alice.player(uqm::PlayerId{1}).campaign();
-    auto &second = bob.player(uqm::PlayerId{2}).campaign();
+    auto &first = alice.player(uqm::PlayerId{1}).story();
+    auto &second = bob.player(uqm::PlayerId{2}).story();
     const auto ignored = world.interactEnergy(first, 0, true);
     BOOST_TEST(!ignored.accepted);
     BOOST_TEST(first.discovery(planetId).visitedSites.none());
@@ -46,8 +46,8 @@ BOOST_AUTO_TEST_CASE(artifact_behavior_requests_physical_removal_without_persona
     auto &world = system.world(0);
     world.setEnergyBehavior(std::make_unique<uqm::ArtifactEnergyBehavior>());
     uqm::GameState player{{uqm::PlayerId{1}, "Player"}, state};
-    auto &campaign = player.player(uqm::PlayerId{1}).campaign();
-    const auto result = world.interactEnergy(campaign, 0, false);
+    auto &story = player.player(uqm::PlayerId{1}).story();
+    const auto result = world.interactEnergy(story, 0, false);
     BOOST_TEST(result.accepted);
     BOOST_TEST(result.removeNode);
     BOOST_REQUIRE(result.report);
@@ -55,11 +55,11 @@ BOOST_AUTO_TEST_CASE(artifact_behavior_requests_physical_removal_without_persona
     uqm::WorldProgress confirmed;
     confirmed.energy.set(0);
     world.mergeProgress(confirmed);
-    const auto collected = world.interactEnergy(campaign, 0, false); // Stale C view cannot re-award it.
+    const auto collected = world.interactEnergy(story, 0, false); // Stale C view cannot re-award it.
     BOOST_TEST(!collected.accepted);
     BOOST_TEST(!collected.removeNode);
-    BOOST_TEST(campaign.discovery(planetId).visitedSites.none());
-    BOOST_CHECK_THROW(world.interactEnergy(campaign, 1, false), std::out_of_range);
+    BOOST_TEST(story.discovery(planetId).visitedSites.none());
+    BOOST_CHECK_THROW(world.interactEnergy(story, 1, false), std::out_of_range);
 }
 BOOST_AUTO_TEST_CASE(world_tree_owns_checked_children_and_keeps_shielding_separate_from_behavior)
 {
