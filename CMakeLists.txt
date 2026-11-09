@@ -75,7 +75,7 @@ target_link_libraries(uqm PRIVATE PkgConfig::SDL2 PkgConfig::VORBIS PNG::PNG ZLI
 include(CTest)
 if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
-    add_executable(uqm-build-tests tests/build.cpp tests/game_state.cpp tests/game_modes.cpp
+    add_executable(uqm-build-tests tests/build.cpp tests/game_state.cpp tests/game_modes.cpp tests/navigation_context.cpp sc2/src/uqm/navigation_context.cpp
         tests/game_state_c.c tests/world_state.cpp tests/world_state_c.c
         tests/ship_behavior.cpp sc2/src/uqm/ship_behavior.cpp
         tests/ship_tuning.cpp sc2/src/uqm/ship_tuning.cpp

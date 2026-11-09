@@ -1,5 +1,6 @@
 #include "game_state.hpp"
 #include "system_runtime.hpp"
+#include "hyper_navigation.hpp"
 #include "game_menu.hpp"
 #include "game_session_c.h"
 #include "globdata.h"
@@ -53,16 +54,6 @@ public:
 private:
     bool input_ = false, structures_ = false, clock_ = false;
 };
-void hyperSpaceFrame() {
-    GameClockTick();
-    auto counter = GET_GAME_STATE(ARILOU_SPACE_COUNTER);
-    if (GET_GAME_STATE(ARILOU_SPACE) == OPENING) {
-        if (counter < 9) ++counter;
-    } else if (counter > 0) --counter;
-    SET_GAME_STATE(ARILOU_SPACE_COUNTER, counter);
-    if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))) SeedUniverse();
-    DrawAutoPilotMessage(FALSE);
-}
 ModeResult finishMode(std::shared_ptr<GameState> state, PlayerId player) {
     SetFlashRect(nullptr);
     LastActivity = GLOBAL(CurrentActivity);
@@ -80,14 +71,17 @@ ModeResult finishMode(std::shared_ptr<GameState> state, PlayerId player) {
 }
 class HyperSpaceMode final : public GameMode {
 public:
-    using GameMode::GameMode;
+    HyperSpaceMode(std::shared_ptr<GameState> state, PlayerId player)
+        : GameMode(state, player), navigation_(state->player(player)) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(HYPERSPACE_CLOCK_RATE);
-        Battle(hyperSpaceFrame);
+        navigation_.run(gameSession());
         return finishMode(stateOwner(), playerId());
     }
+private:
+    HyperSpaceNavigation navigation_;
 };
 class SolarSystemMode final : public GameMode {
 public:

@@ -10,6 +10,9 @@
 #include "game_mode.hpp"
 
 namespace uqm {
+// Transient per-player navigation memory, retained across encounter mode swaps.
+// Portal coordinates were process statics and are not part of the legacy save.
+struct NavigationState { std::int16_t portalX = 0, portalY = 0; };
 struct UserProfile { PlayerId id; std::string displayName; };
 
 // Copied values, never another mutable ship store. Fuel uses the existing game
@@ -34,6 +37,10 @@ struct PlayerLocation {
     std::uint8_t planet, orbit;
 };
 enum class StoryFlag {
+    ArilouSpace,
+    BroadcasterResponse,
+    UsedBroadcaster,
+
     StarbaseAccessGranted,
     SunDeviceOnShip,
     ChmmrFreed,
@@ -92,6 +99,13 @@ enum class StoryFlag {
     ZexIsDead,
 };
 enum class StoryCounter {
+    ArilouSpaceCounter,
+    ArilouSpaceSide,
+    EscapeCounter,
+    MelnormeAnger,
+    PortalCounter,
+    SlylandroMultiplier,
+
     BombProgress,
     ShofixtiVisits,
     EncounterContext,
@@ -125,6 +139,13 @@ enum class StoryCounter {
 };
 constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
     switch (counter) {
+        case StoryCounter::ArilouSpaceCounter: return 15u;
+        case StoryCounter::ArilouSpaceSide: return 3u;
+        case StoryCounter::EscapeCounter: return 255u;
+        case StoryCounter::MelnormeAnger: return 3u;
+        case StoryCounter::PortalCounter: return 15u;
+        case StoryCounter::SlylandroMultiplier: return 7u;
+
         case StoryCounter::ColonyGrpoffs0: return 4294967295u;
         case StoryCounter::DruugeHomeVisits: return 7u;
         case StoryCounter::DruugeVisits: return 7u;
@@ -218,7 +239,13 @@ public:
     PlayerEntity(PlayerEntity &&) = delete;
     PlayerEntity &operator=(PlayerEntity &&) = delete;
     PlayerId id() const noexcept;
+    NavigationState &navigationState() noexcept;
+    const NavigationState &navigationState() const noexcept;
     const UserProfile &profile() const noexcept; // Borrowed; ID is immutable.
+    std::uint32_t fuel() const noexcept;
+    std::uint16_t crew() const noexcept;
+    // Raw legacy logical coordinates; navigation enforces universe bounds.
+    void setHyperSpacePosition(std::int32_t x, std::int32_t y) noexcept;
     ShipState ship() const; // Detached copy, including equipment and names.
     PlayerLocation location() const noexcept;
     // Storage quantities only; gameplay callers must enforce capacity/cost rules.
@@ -228,6 +255,7 @@ public:
     const CampaignState &campaign() const noexcept;
 private:
     friend struct detail::LegacyStateAccess;
+    NavigationState navigation_;
     UserProfile profile_;
     std::unique_ptr<detail::PlayerStorage> storage_;
     CampaignState campaign_;
@@ -257,6 +285,8 @@ private:
 };
 
 // Session retains its owner, not a cached player pointer or separate campaign.
+class HyperSpaceNavigation;
+class NavigationBinding;
 class GameSession {
 public:
     // Reject null state (invalid_argument) and unknown player (out_of_range).
@@ -279,6 +309,7 @@ public:
     void requestMenuExit(SessionExit exit);
     void requestLoad(unsigned slot);
     MenuResult menuExit() const;
+    HyperSpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
     std::shared_ptr<GameState> stateOwner() noexcept;
     PlayerId playerId() const noexcept;
     PlayerEntity &player();
@@ -292,6 +323,8 @@ private:
     std::unique_ptr<GameMode> currentMode_;
     MenuResult pendingExit_;
     bool running_ = false;
+    friend class NavigationBinding;
+    HyperSpaceNavigation *navigation_ = nullptr;
 };
 
 // Process-lifetime single-player session used by the C compatibility adapter.

@@ -16,6 +16,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "hyper_navigation.hpp"
+#include "game_state.hpp"
+#include "battle.h"
+#include "clock.h"
+#include "gameev.h"
+#include <stdexcept>
 #include "hyper.h"
 
 #include "build.h"
@@ -46,10 +52,20 @@
 #define XOFFS ((RADAR_SCAN_WIDTH + (UNIT_SCREEN_WIDTH << 2)) >> 1)
 #define YOFFS ((RADAR_SCAN_HEIGHT + (UNIT_SCREEN_HEIGHT << 2)) >> 1)
 
+static void unhyper_transition(ELEMENT *ElementPtr);
+static void hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
+		ELEMENT *ElementPtr1, POINT *pPt1);
+static void hyper_death(ELEMENT *ElementPtr);
+static void arilou_space_death(ELEMENT *ElementPtr);
+static void arilou_space_collision(ELEMENT *ElementPtr0,
+		POINT *pPt0, ELEMENT *ElementPtr1, POINT *pPt1);
+static void encounter_transition(ELEMENT *ElementPtr);
+static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
+		ELEMENT *ElementPtr1, POINT *pPt1);
+static BOOLEAN DoHyperspaceMenu(MENU_STATE *pMS);
+static HELEMENT getSisElement(void);
 static FRAME hyperstars[3];
 static COLORMAP hypercmaps[2];
-static BYTE fuel_ticks;
-static COUNT hyper_dx, hyper_dy, hyper_extra;
 
 // HyperspaceMenu() items
 enum HyperMenuItems
@@ -65,36 +81,38 @@ enum HyperMenuItems
 
 
 void
-MoveSIS (SIZE *pdx, SIZE *pdy)
+uqm::HyperSpaceNavigation::MoveSIS(SIZE *pdx, SIZE *pdy)
 {
 	SIZE new_dx, new_dy;
+    auto position = player_.location();
 
 	new_dx = *pdx;
-	GLOBAL_SIS (log_x) -= new_dx;
-	if (GLOBAL_SIS (log_x) < 0)
+	position.logX -= new_dx;
+	if (position.logX < 0)
 	{
-		new_dx += (SIZE)GLOBAL_SIS (log_x);
-		GLOBAL_SIS (log_x) = 0;
+		new_dx += (SIZE)position.logX;
+		position.logX = 0;
 	}
-	else if (GLOBAL_SIS (log_x) > MAX_X_LOGICAL)
+	else if (position.logX > MAX_X_LOGICAL)
 	{
-		new_dx += (SIZE)(GLOBAL_SIS (log_x) - MAX_X_LOGICAL);
-		GLOBAL_SIS (log_x) = MAX_X_LOGICAL;
+		new_dx += (SIZE)(position.logX - MAX_X_LOGICAL);
+		position.logX = MAX_X_LOGICAL;
 	}
 
 	new_dy = *pdy;
-	GLOBAL_SIS (log_y) -= new_dy;
-	if (GLOBAL_SIS (log_y) < 0)
+	position.logY -= new_dy;
+	if (position.logY < 0)
 	{
-		new_dy += (SIZE)GLOBAL_SIS (log_y);
-		GLOBAL_SIS (log_y) = 0;
+		new_dy += (SIZE)position.logY;
+		position.logY = 0;
 	}
-	else if (GLOBAL_SIS (log_y) > MAX_Y_LOGICAL)
+	else if (position.logY > MAX_Y_LOGICAL)
 	{
-		new_dy += (SIZE)(GLOBAL_SIS (log_y) - MAX_Y_LOGICAL);
-		GLOBAL_SIS (log_y) = MAX_Y_LOGICAL;
+		new_dy += (SIZE)(position.logY - MAX_Y_LOGICAL);
+		position.logY = MAX_Y_LOGICAL;
 	}
 
+    player_.setHyperSpacePosition(position.logX, position.logY);
 	if (new_dx != *pdx || new_dy != *pdy)
 	{
 		HELEMENT hElement, hNextElement;
@@ -122,7 +140,7 @@ MoveSIS (SIZE *pdx, SIZE *pdy)
 		}
 	}
 
-	if (GLOBAL_SIS (FuelOnBoard) && GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+	if (player_.fuel() && campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		COUNT cur_fuel_ticks;
 		COUNT hyper_dist;
@@ -162,7 +180,7 @@ MoveSIS (SIZE *pdx, SIZE *pdy)
 }
 
 void
-check_hyperspace_encounter (void)
+uqm::HyperSpaceNavigation::check_hyperspace_encounter(void)
 {
 	BYTE Type;
 	POINT universe;
@@ -172,8 +190,8 @@ check_hyperspace_encounter (void)
 		RACE_HYPERSPACE_PERCENT
 	};
 	
-	universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-	universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+	universe.x = LOGX_TO_UNIVERSE (player_.location().logX);
+	universe.y = LOGY_TO_UNIVERSE (player_.location().logY);
 	for (hStarShip = GetHeadLink (&GLOBAL (avail_race_q)), Type = 0;
 			hStarShip && (GLOBAL (CurrentActivity) & IN_BATTLE);
 			hStarShip = hNextShip, ++Type)
@@ -209,17 +227,17 @@ check_hyperspace_encounter (void)
 				if (Type == SLYLANDRO_SHIP)
 				{
 					encounter_flags = ONE_SHOT_ENCOUNTER;
-					if (!GET_GAME_STATE (STARBASE_AVAILABLE))
+					if (!campaign_.read(uqm::StoryFlag::StarbaseAccessGranted))
 						percent = 100;
 					else
-						percent *= GET_GAME_STATE (SLYLANDRO_MULTIPLIER);
+						percent *= campaign_.read(uqm::StoryCounter::SlylandroMultiplier);
 				}
 				else if (Type == MELNORME_SHIP
-						&& (GLOBAL_SIS (FuelOnBoard) == 0
-						|| GET_GAME_STATE (USED_BROADCASTER))
-						&& GET_GAME_STATE (MELNORME_ANGER) < 3)
+						&& (player_.fuel() == 0
+						|| campaign_.read(uqm::StoryFlag::UsedBroadcaster))
+						&& campaign_.read(uqm::StoryCounter::MelnormeAnger) < 3)
 				{
-					if (!GET_GAME_STATE (USED_BROADCASTER))
+					if (!campaign_.read(uqm::StoryFlag::UsedBroadcaster))
 						percent = 30;
 					else
 						percent = 100;
@@ -243,7 +261,7 @@ check_hyperspace_encounter (void)
 
 				if (percent == 100 && Type == MELNORME_SHIP)
 				{
-					SET_GAME_STATE (BROADCASTER_RESPONSE, 1);
+					campaign_.set(uqm::StoryFlag::BroadcasterResponse, 1);
 				}
 			}
 
@@ -279,7 +297,7 @@ check_hyperspace_encounter (void)
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
 	}
 
-	SET_GAME_STATE (USED_BROADCASTER, 0);
+	campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 }
 
 void
@@ -316,7 +334,7 @@ LoadHyperData (void)
 }
 
 BOOLEAN
-LoadHyperspace (void)
+uqm::HyperSpaceNavigation::LoadHyperspace(void)
 {
 	hyper_dx = 0;
 	hyper_dy = 0;
@@ -359,7 +377,7 @@ LoadHyperspace (void)
 			BUILD_COLOR (MAKE_RGB15 (0x00, 0x0E, 0x00), 0x6C));
 
 	SetContext (SpaceContext);
-	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		SetContextBackGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x07, 0x00, 0x00), 0x2F));
@@ -370,8 +388,8 @@ LoadHyperspace (void)
 		SetContextBackGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x1A, 0x00), 0x2F));
 		SetColorMap (GetColorMapAddress (hypercmaps[1]));
-		SET_GAME_STATE (USED_BROADCASTER, 0);
-		SET_GAME_STATE (BROADCASTER_RESPONSE, 0);
+		campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
+		campaign_.set(uqm::StoryFlag::BroadcasterResponse, 0);
 	}
 //    ClearDrawable ();
 
@@ -381,7 +399,7 @@ LoadHyperspace (void)
 }
 
 BOOLEAN
-FreeHyperspace (void)
+uqm::HyperSpaceNavigation::FreeHyperspace(void)
 {
 	{
 		FRAME F;
@@ -395,21 +413,21 @@ FreeHyperspace (void)
 	return TRUE;
 }
 
-static void
-ElementToUniverse (ELEMENT *ElementPtr, POINT *pPt)
+void
+uqm::HyperSpaceNavigation::ElementToUniverse(ELEMENT *ElementPtr, POINT *pPt)
 {
 	SDWORD log_x, log_y;
 
-	log_x = GLOBAL_SIS (log_x)
+	log_x = player_.location().logX
 			+ (ElementPtr->next.location.x - (LOG_SPACE_WIDTH >> 1));
-	log_y = GLOBAL_SIS (log_y)
+	log_y = player_.location().logY
 			+ (ElementPtr->next.location.y - (LOG_SPACE_HEIGHT >> 1));
 	pPt->x = LOGX_TO_UNIVERSE (log_x);
 	pPt->y = LOGY_TO_UNIVERSE (log_y);
 }
 
-static void
-cleanup_hyperspace (void)
+void
+uqm::HyperSpaceNavigation::cleanup_hyperspace(void)
 {
 	HENCOUNTER hEncounter, hNextEncounter;
 
@@ -441,25 +459,20 @@ cleanup_hyperspace (void)
 	}
 }
 
-typedef enum
-{
-	RANDOM_ENCOUNTER_TRANSITION,
-	INTERPLANETARY_TRANSITION,
-	ARILOU_SPACE_TRANSITION
-} TRANSITION_TYPE;
 
-static void
-InterplanetaryTransition (ELEMENT *ElementPtr)
+
+void
+uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 {
 	GLOBAL (ip_planet) = 0;
 	GLOBAL (in_orbit) = 0;
 	GLOBAL (ShipFacing) = 0; /* Not reentering the system */
-	SET_GAME_STATE (USED_BROADCASTER, 0);
-	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+	campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
+	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		// Enter a solar system from HyperSpace.
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-		SET_GAME_STATE (ESCAPE_COUNTER, 0);
+		campaign_.set(uqm::StoryCounter::EscapeCounter, 0);
 	}
 	else
 	{
@@ -484,10 +497,9 @@ InterplanetaryTransition (ELEMENT *ElementPtr)
 			const POINT portal_pt[] = QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
 
 			index = GetStarIndex(CurStarDescPtr) - QUASISPACE_FIRST;
-			GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (portal_pt[index].x);
-			GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (portal_pt[index].y);
+			player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (portal_pt[index].x), UNIVERSE_TO_LOGY (portal_pt[index].y));
 
-			SET_GAME_STATE (ARILOU_SPACE_SIDE, 0);
+			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 		}
 	}
 }
@@ -495,42 +507,40 @@ InterplanetaryTransition (ELEMENT *ElementPtr)
 /* Enter QuasiSpace from HyperSpace by any portal, or HyperSpace from
  * QuasiSpace through the periodically opening portal.
  */
-static void
-ArilouSpaceTransition (void)
+void
+uqm::HyperSpaceNavigation::ArilouSpaceTransition(void)
 {
 	GLOBAL (ShipFacing) = 0; /* Not reentering the system */
-	SET_GAME_STATE (USED_BROADCASTER, 0);
+	campaign_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 	GLOBAL (autopilot.x) = ~0;
 	GLOBAL (autopilot.y) = ~0;
-	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		// From HyperSpace to QuasiSpace.
-		GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (QUASI_SPACE_X);
-		GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (QUASI_SPACE_Y);
-		if (GET_GAME_STATE (PORTAL_COUNTER) == 0)
+		player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (QUASI_SPACE_X), UNIVERSE_TO_LOGY (QUASI_SPACE_Y));
+		if (campaign_.read(uqm::StoryCounter::PortalCounter) == 0)
 		{
 			// Periodically appearing portal.
-			SET_GAME_STATE (ARILOU_SPACE_SIDE, 3);
+			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
 		}
 		else
 		{
 			// Player-induced portal.
-			SET_GAME_STATE (PORTAL_COUNTER, 0);
-			SET_GAME_STATE (ARILOU_SPACE_SIDE, 3);
+			campaign_.set(uqm::StoryCounter::PortalCounter, 0);
+			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
 		}
 	}
 	else
 	{
 		// From QuasiSpace to HyperSpace through the periodically appearing
 		// portal.
-		GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (ARILOU_SPACE_X);
-		GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (ARILOU_SPACE_Y);
-		SET_GAME_STATE (ARILOU_SPACE_SIDE, 0);
+		player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (ARILOU_SPACE_X), UNIVERSE_TO_LOGY (ARILOU_SPACE_Y));
+		campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 	}
 }
 
-static void
-unhyper_transition (ELEMENT *ElementPtr)
+void
+uqm::HyperSpaceNavigation::unhyper_transition(ELEMENT *ElementPtr)
 {
 	COUNT frame_index;
 
@@ -546,7 +556,7 @@ unhyper_transition (ELEMENT *ElementPtr)
 		cleanup_hyperspace ();
 
 		GLOBAL (CurrentActivity) &= ~IN_BATTLE;
-		switch ((TRANSITION_TYPE) ElementPtr->turn_wait)
+		switch ((TransitionType) ElementPtr->turn_wait)
 		{
 			case RANDOM_ENCOUNTER_TRANSITION:
 				SaveSisHyperState ();
@@ -568,9 +578,9 @@ unhyper_transition (ELEMENT *ElementPtr)
 			SetAbsFrameIndex (ElementPtr->current.image.frame, frame_index);
 }
 
-static void
-init_transition (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
-		TRANSITION_TYPE which_transition)
+void
+uqm::HyperSpaceNavigation::init_transition(ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
+		TransitionType which_transition)
 {
 	SIZE dx, dy;
 	SIZE num_turns;
@@ -582,7 +592,7 @@ init_transition (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 			- ElementPtr1->next.location.y);
 
 	ElementPtr1->state_flags |= NONSOLID;
-	ElementPtr1->preprocess_func = unhyper_transition;
+	ElementPtr1->preprocess_func = ::unhyper_transition;
 	ElementPtr1->postprocess_func = NULL;
 	ElementPtr1->turn_wait = (BYTE) which_transition;
 
@@ -599,7 +609,7 @@ init_transition (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 }
 
 BOOLEAN
-hyper_transition (ELEMENT *ElementPtr)
+uqm::HyperSpaceNavigation::hyper_transition(ELEMENT *ElementPtr)
 {
 	if (ElementPtr->state_flags & APPEARING)
 	{
@@ -617,7 +627,7 @@ hyper_transition (ELEMENT *ElementPtr)
 		else
 		{
 			ElementPtr->preprocess_func =
-					(void (*) (struct element *ElementPtr)) hyper_transition;
+					(void (*) (struct element *ElementPtr)) ::hyper_transition;
 			ElementPtr->postprocess_func = NULL;
 			ElementPtr->state_flags |= NONSOLID;
 			ElementPtr->next.image.frame =
@@ -665,12 +675,12 @@ hyper_transition (ELEMENT *ElementPtr)
 	return TRUE;
 }
 
-static void
-hyper_collision (ELEMENT *ElementPtr0, POINT *pPt0,
+void
+uqm::HyperSpaceNavigation::hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)
-			&& GET_GAME_STATE (PORTAL_COUNTER) == 0)
+			&& campaign_.read(uqm::StoryCounter::PortalCounter) == 0)
 	{
 		SIZE dx, dy;
 		POINT pt;
@@ -708,33 +718,33 @@ hyper_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
-static void
-hyper_death (ELEMENT *ElementPtr)
+void
+uqm::HyperSpaceNavigation::hyper_death(ELEMENT *ElementPtr)
 {
 	if (!(ElementPtr->state_flags & DEFY_PHYSICS)
 			&& (GLOBAL (CurrentActivity) & IN_BATTLE))
 		CurStarDescPtr = 0;
 }
 
-static void
-arilou_space_death (ELEMENT *ElementPtr)
+void
+uqm::HyperSpaceNavigation::arilou_space_death(ELEMENT *ElementPtr)
 {
 	if (!(ElementPtr->state_flags & DEFY_PHYSICS)
-			|| GET_GAME_STATE (ARILOU_SPACE_COUNTER) == 0)
+			|| campaign_.read(uqm::StoryCounter::ArilouSpaceCounter) == 0)
 	{
-		if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+		if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 		{
-			SET_GAME_STATE (ARILOU_SPACE_SIDE, 0);
+			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 		}
 		else
 		{
-			SET_GAME_STATE (ARILOU_SPACE_SIDE, 3);
+			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, 3);
 		}
 	}
 }
 
-static void
-arilou_space_collision (ELEMENT *ElementPtr0,
+void
+uqm::HyperSpaceNavigation::arilou_space_collision(ELEMENT *ElementPtr0,
 		POINT *pPt0, ELEMENT *ElementPtr1, POINT *pPt1)
 {
 	COUNT which_side;
@@ -742,12 +752,12 @@ arilou_space_collision (ELEMENT *ElementPtr0,
 	if (!(ElementPtr1->state_flags & PLAYER_SHIP))
 		return;
 
-	which_side = GET_GAME_STATE (ARILOU_SPACE_SIDE);
+	which_side = campaign_.read(uqm::StoryCounter::ArilouSpaceSide);
 	if (which_side == 0 || which_side == 3)
 	{
 		if (ElementPtr1->state_flags & DEFY_PHYSICS)
 		{
-			SET_GAME_STATE (ARILOU_SPACE_SIDE, which_side ^ 1);
+			campaign_.set(uqm::StoryCounter::ArilouSpaceSide, which_side ^ 1);
 		}
 		else
 		{
@@ -761,8 +771,8 @@ arilou_space_collision (ELEMENT *ElementPtr0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
-static HELEMENT
-AllocHyperElement (const POINT *elem_pt)
+HELEMENT
+uqm::HyperSpaceNavigation::AllocHyperElement(const POINT *elem_pt)
 {
 	HELEMENT hHyperSpaceElement;
 
@@ -781,18 +791,18 @@ AllocHyperElement (const POINT *elem_pt)
 			long lx, ly;
 
 			lx = UNIVERSE_TO_LOGX (elem_pt->x)
-					+ (LOG_SPACE_WIDTH >> 1) - GLOBAL_SIS (log_x);
+					+ (LOG_SPACE_WIDTH >> 1) - player_.location().logX;
 			HyperSpaceElementPtr->current.location.x = WRAP_X (lx);
 
 			ly = UNIVERSE_TO_LOGY (elem_pt->y)
-					+ (LOG_SPACE_HEIGHT >> 1) - GLOBAL_SIS (log_y);
+					+ (LOG_SPACE_HEIGHT >> 1) - player_.location().logY;
 			HyperSpaceElementPtr->current.location.y = WRAP_Y (ly);
 		}
 
 		SetPrimType (&DisplayArray[HyperSpaceElementPtr->PrimIndex],
 				STAMP_PRIM);
 		HyperSpaceElementPtr->current.image.farray =
-				&hyperstars[1 + (GET_GAME_STATE (ARILOU_SPACE_SIDE) >> 1)];
+				&hyperstars[1 + (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)];
 
 		UnlockElement (hHyperSpaceElement);
 	}
@@ -800,8 +810,8 @@ AllocHyperElement (const POINT *elem_pt)
 	return hHyperSpaceElement;
 }
 
-static void
-AddAmbientElement (void)
+void
+uqm::HyperSpaceNavigation::AddAmbientElement(void)
 {
 	HELEMENT hHyperSpaceElement;
 
@@ -851,8 +861,8 @@ AddAmbientElement (void)
 #define NUM_VORTEX_TRANSITIONS 9
 #define VORTEX_WAIT 1
 
-static void
-encounter_transition (ELEMENT *ElementPtr)
+void
+uqm::HyperSpaceNavigation::encounter_transition(ELEMENT *ElementPtr)
 {
 	ElementPtr->state_flags &= ~DISAPPEARING;
 	ElementPtr->life_span = 1;
@@ -883,7 +893,7 @@ encounter_transition (ELEMENT *ElementPtr)
 }
 
 static HELEMENT
-getSisElement (void)
+getSisElement(void)
 {
 	HSTARSHIP hSis;
 	HELEMENT hShip;
@@ -909,8 +919,8 @@ getSisElement (void)
 	return hShip;
 }
 
-static void
-encounter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
+void
+uqm::HyperSpaceNavigation::encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
 	HENCOUNTER hEncounter;
@@ -950,14 +960,14 @@ encounter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
-static HELEMENT
-AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
+HELEMENT
+uqm::HyperSpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *puniverse)
 {
 	BOOLEAN NewEncounter;
 	HELEMENT hElement;
 	POINT enc_pt;
 	
-	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) >= 2)
+	if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >= 2)
 		return 0;
 
 	if (EncounterPtr->flags & ENCOUNTER_REFORMING)
@@ -1066,7 +1076,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 
 			ElementPtr->current.image.frame = SetRelFrameIndex (
 					ElementPtr->current.image.farray[0], -i);
-			ElementPtr->death_func = encounter_transition;
+			ElementPtr->death_func = ::encounter_transition;
 		}
 		else
 		{
@@ -1077,7 +1087,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 		ElementPtr->turn_wait = VORTEX_WAIT;
 		ElementPtr->preprocess_func = NULL;
 		ElementPtr->postprocess_func = NULL;
-		ElementPtr->collision_func = encounter_collision;
+		ElementPtr->collision_func = ::encounter_collision;
 
 		SetUpElement (ElementPtr);
 
@@ -1097,8 +1107,8 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 
 #define GRID_OFFSET 200
 
-static void
-DrawHyperGrid (COORD ux, COORD uy, COORD ox, COORD oy)
+void
+uqm::HyperSpaceNavigation::DrawHyperGrid(COORD ux, COORD uy, COORD ox, COORD oy)
 {
 	COORD sx, sy, ex, ey;
 	RECT r;
@@ -1149,8 +1159,8 @@ DrawHyperGrid (COORD ux, COORD uy, COORD ox, COORD oy)
 }
 
 // Returns false iff the encounter is to be removed.
-static bool
-ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
+bool
+uqm::HyperSpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse,
 		COORD ox, COORD oy, STAMP *stamp)
 {
 	ELEMENT *ElementPtr;
@@ -1256,7 +1266,7 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 
 			if (EncounterPtr->transition_state == 0)
 			{
-				ElementPtr->death_func = encounter_transition;
+				ElementPtr->death_func = ::encounter_transition;
 				EncounterPtr->transition_state = -1;
 				ElementPtr->hit_points = 1;
 			}
@@ -1277,10 +1287,10 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 			&& ey - puniverse->y <= UNIT_SCREEN_HEIGHT)
 	{
 		ElementPtr->next.location.x =
-				(SIZE)(EncounterPtr->log_x - GLOBAL_SIS (log_x))
+				(SIZE)(EncounterPtr->log_x - player_.location().logX)
 				+ (LOG_SPACE_WIDTH >> 1);
 		ElementPtr->next.location.y =
-				(SIZE)(EncounterPtr->log_y - GLOBAL_SIS (log_y))
+				(SIZE)(EncounterPtr->log_y - player_.location().logY)
 				+ (LOG_SPACE_HEIGHT >> 1);
 		if ((ElementPtr->state_flags & NONSOLID)
 				&& EncounterPtr->transition_state == 0)
@@ -1320,8 +1330,8 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 	return true;
 }
 
-static void
-ProcessEncounters (POINT *puniverse, COORD ox, COORD oy)
+void
+uqm::HyperSpaceNavigation::ProcessEncounters(POINT *puniverse, COORD ox, COORD oy)
 {
 	STAMP stamp;
 	HENCOUNTER hEncounter, hNextEncounter;
@@ -1348,7 +1358,7 @@ ProcessEncounters (POINT *puniverse, COORD ox, COORD oy)
 }
 
 void
-SeedUniverse (void)
+uqm::HyperSpaceNavigation::SeedUniverse(void)
 {
 	COORD ox, oy;
 	COORD sx, sy, ex, ey;
@@ -1360,8 +1370,8 @@ SeedUniverse (void)
 	HELEMENT hHyperSpaceElement;
 	ELEMENT *HyperSpaceElementPtr;
 
-	universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-	universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+	universe.x = LOGX_TO_UNIVERSE (player_.location().logX);
+	universe.y = LOGY_TO_UNIVERSE (player_.location().logY);
 
 	blip_frame = SetAbsFrameIndex (stars_in_space, 90);
 
@@ -1378,8 +1388,8 @@ SeedUniverse (void)
 	ey = (COORD)((long)(MAX_Y_UNIVERSE - GLOBAL (ShipStamp.origin.y))
 			* RADAR_HEIGHT / RADAR_SCAN_HEIGHT) - (RADAR_HEIGHT >> 1);
 
-	arilouSpaceCounter = GET_GAME_STATE (ARILOU_SPACE_COUNTER);
-	arilouSpaceSide = GET_GAME_STATE (ARILOU_SPACE_SIDE);
+	arilouSpaceCounter = campaign_.read(uqm::StoryCounter::ArilouSpaceCounter);
+	arilouSpaceSide = campaign_.read(uqm::StoryCounter::ArilouSpaceSide);
 
 //    if (ox != ex || oy != ey)
 	{
@@ -1409,7 +1419,7 @@ SeedUniverse (void)
 		}
 	}
 
-	portalCounter = GET_GAME_STATE (PORTAL_COUNTER);
+	portalCounter = campaign_.read(uqm::StoryCounter::PortalCounter);
 	if (portalCounter || arilouSpaceCounter)
 	{
 		COUNT i;
@@ -1422,18 +1432,20 @@ SeedUniverse (void)
 		if (portalCounter)
 		{
 			// A player-created QuasiSpace portal is opening.
-			static POINT portal_pt;
+			auto &portal = player_.navigationState();
 
 			SD[i].Index = ((portalCounter - 1) >> 1) + 18;
-			if (portalCounter == 1)
-				portal_pt = universe;
-			SD[i].star_pt = portal_pt;
+			if (portalCounter == 1) {
+                portal.portalX = universe.x;
+                portal.portalY = universe.y;
+            }
+			SD[i].star_pt = {portal.portalX, portal.portalY};
 			++i;
 
 			if (++portalCounter == (10 + 1))
 				portalCounter = (9 + 1);
 
-			SET_GAME_STATE (PORTAL_COUNTER, portalCounter);
+			campaign_.set(uqm::StoryCounter::PortalCounter, portalCounter);
 		}
 
 		if (arilouSpaceCounter)
@@ -1491,16 +1503,16 @@ SeedUniverse (void)
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
-					hyperstars[1 + (GET_GAME_STATE (ARILOU_SPACE_SIDE) >> 1)],
+					hyperstars[1 + (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)],
 					SD[i].Index);
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
-			HyperSpaceElementPtr->collision_func = arilou_space_collision;
+			HyperSpaceElementPtr->collision_func = ::arilou_space_collision;
 
 			SetUpElement (HyperSpaceElementPtr);
 
 			if (arilouSpaceSide == 1 || arilouSpaceSide == 2)
-				HyperSpaceElementPtr->death_func = arilou_space_death;
+				HyperSpaceElementPtr->death_func = ::arilou_space_death;
 			else
 			{
 				HyperSpaceElementPtr->death_func = NULL;
@@ -1538,18 +1550,18 @@ SeedUniverse (void)
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
-					hyperstars[1 + (GET_GAME_STATE (ARILOU_SPACE_SIDE) >> 1)],
+					hyperstars[1 + (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >> 1)],
 					STAR_TYPE (star_type) * NUM_STAR_COLORS
 					+ STAR_COLOR (star_type));
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
-			HyperSpaceElementPtr->collision_func = hyper_collision;
+			HyperSpaceElementPtr->collision_func = ::hyper_collision;
 
 			SetUpElement (HyperSpaceElementPtr);
 
 			if (SDPtr == CurStarDescPtr
-					&& GET_GAME_STATE (PORTAL_COUNTER) == 0)
-				HyperSpaceElementPtr->death_func = hyper_death;
+					&& campaign_.read(uqm::StoryCounter::PortalCounter) == 0)
+				HyperSpaceElementPtr->death_func = ::hyper_death;
 			else
 			{
 				HyperSpaceElementPtr->death_func = NULL;
@@ -1619,14 +1631,14 @@ SeedUniverse (void)
 	}
 }
 
-static BOOLEAN
-DoHyperspaceMenu (MENU_STATE *pMS)
+BOOLEAN
+uqm::HyperSpaceNavigation::DoHyperspaceMenu(MENU_STATE *pMS)
 {
-	BOOLEAN select = PulsedInputState.menu[KEY_MENU_SELECT];
+	bool select = PulsedInputState.menu[KEY_MENU_SELECT];
 	BOOLEAN handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
+			|| player_.crew() == (COUNT)~0)
 		return FALSE;
 
 	handled = DoMenuChooser (pMS, PM_STARMAP);
@@ -1642,7 +1654,7 @@ DoHyperspaceMenu (MENU_STATE *pMS)
 	{
 		case EQUIP_DEVICE:
 			select = DevicesMenu ();
-			if (GET_GAME_STATE (PORTAL_COUNTER))
+			if (campaign_.read(uqm::StoryCounter::PortalCounter))
 			{	// A player-induced portal to QuasiSpace is opening
 				return FALSE;
 			}
@@ -1683,7 +1695,7 @@ DoHyperspaceMenu (MENU_STATE *pMS)
 }
 
 void
-HyperspaceMenu (void)
+uqm::HyperSpaceNavigation::HyperspaceMenu(void)
 {
 	Color OldColor;
 	CONTEXT OldContext;
@@ -1696,7 +1708,7 @@ UnbatchGraphics ();
 
 
 	memset (&MenuState, 0, sizeof (MenuState));
-	MenuState.InputFunc = DoHyperspaceMenu;
+	MenuState.InputFunc = ::DoHyperspaceMenu;
 	MenuState.Initialized = TRUE;
 	MenuState.CurState = STARMAP;
 
@@ -1725,7 +1737,7 @@ BatchGraphics ();
 }
 
 void
-SaveSisHyperState (void)
+SaveSisHyperState(void)
 {
 	HELEMENT hSisElement;
 	ELEMENT *ElementPtr;
@@ -1745,3 +1757,41 @@ SaveSisHyperState (void)
 	UnlockElement (hSisElement);
 }
 
+
+namespace {
+uqm::HyperSpaceNavigation &activeNavigation() { return uqm::gameSession().navigation(); }
+}
+void MoveSIS(SIZE *pdx, SIZE *pdy) { activeNavigation().MoveSIS(pdx, pdy); }
+void check_hyperspace_encounter(void) { activeNavigation().check_hyperspace_encounter(); }
+BOOLEAN LoadHyperspace(void) { return activeNavigation().LoadHyperspace(); }
+BOOLEAN FreeHyperspace(void) { return activeNavigation().FreeHyperspace(); }
+static void unhyper_transition(ELEMENT *ElementPtr) { activeNavigation().unhyper_transition(ElementPtr); }
+BOOLEAN hyper_transition(ELEMENT *ElementPtr) { return activeNavigation().hyper_transition(ElementPtr); }
+static void hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
+		ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().hyper_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
+static void hyper_death(ELEMENT *ElementPtr) { activeNavigation().hyper_death(ElementPtr); }
+static void arilou_space_death(ELEMENT *ElementPtr) { activeNavigation().arilou_space_death(ElementPtr); }
+static void arilou_space_collision(ELEMENT *ElementPtr0,
+		POINT *pPt0, ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().arilou_space_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
+static void encounter_transition(ELEMENT *ElementPtr) { activeNavigation().encounter_transition(ElementPtr); }
+static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
+		ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().encounter_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
+static BOOLEAN DoHyperspaceMenu(MENU_STATE *pMS) { return activeNavigation().DoHyperspaceMenu(pMS); }
+void HyperspaceMenu(void) { activeNavigation().HyperspaceMenu(); }
+
+namespace uqm {
+void HyperSpaceNavigation::run(GameSession &session) {
+    NavigationBinding binding(session, *this);
+    Battle([](void *context) { static_cast<HyperSpaceNavigation *>(context)->frame(); }, this);
+}
+void HyperSpaceNavigation::frame() {
+    GameClockTick();
+    auto counter = campaign_.read(uqm::StoryCounter::ArilouSpaceCounter);
+    if (campaign_.read(uqm::StoryFlag::ArilouSpace) == OPENING) {
+        if (counter < 9) ++counter;
+    } else if (counter > 0) --counter;
+    campaign_.set(uqm::StoryCounter::ArilouSpaceCounter, counter);
+    if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))) SeedUniverse();
+    DrawAutoPilotMessage(FALSE);
+}
+}

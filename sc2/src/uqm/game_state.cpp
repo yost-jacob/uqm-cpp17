@@ -22,6 +22,10 @@ namespace {
 struct Field { int first, last; };
 Field field(StoryFlag flag) {
     switch (flag) {
+        case StoryFlag::ArilouSpace: return {ARILOU_SPACE, END_ARILOU_SPACE};
+        case StoryFlag::BroadcasterResponse: return {BROADCASTER_RESPONSE, END_BROADCASTER_RESPONSE};
+        case StoryFlag::UsedBroadcaster: return {USED_BROADCASTER, END_USED_BROADCASTER};
+
         case StoryFlag::AquaHelix: return {AQUA_HELIX, END_AQUA_HELIX};
         case StoryFlag::AquaHelixOnShip: return {AQUA_HELIX_ON_SHIP, END_AQUA_HELIX_ON_SHIP};
         case StoryFlag::BombUnprotected: return {BOMB_UNPROTECTED, END_BOMB_UNPROTECTED};
@@ -84,6 +88,13 @@ Field field(StoryFlag flag) {
 }
 Field field(StoryCounter counter) {
     switch (counter) {
+        case StoryCounter::ArilouSpaceCounter: return {ARILOU_SPACE_COUNTER, END_ARILOU_SPACE_COUNTER};
+        case StoryCounter::ArilouSpaceSide: return {ARILOU_SPACE_SIDE, END_ARILOU_SPACE_SIDE};
+        case StoryCounter::EscapeCounter: return {ESCAPE_COUNTER, END_ESCAPE_COUNTER};
+        case StoryCounter::MelnormeAnger: return {MELNORME_ANGER, END_MELNORME_ANGER};
+        case StoryCounter::PortalCounter: return {PORTAL_COUNTER, END_PORTAL_COUNTER};
+        case StoryCounter::SlylandroMultiplier: return {SLYLANDRO_MULTIPLIER, END_SLYLANDRO_MULTIPLIER};
+
         case StoryCounter::ColonyGrpoffs0: return {COLONY_GRPOFFS0, COLONY_GRPOFFS0 + 31};
         case StoryCounter::DruugeHomeVisits: return {DRUUGE_HOME_VISITS, END_DRUUGE_HOME_VISITS};
         case StoryCounter::DruugeVisits: return {DRUUGE_VISITS, END_DRUUGE_VISITS};
@@ -169,7 +180,15 @@ PlayerEntity::PlayerEntity(UserProfile profile)
       campaign_(*storage_) {}
 PlayerEntity::~PlayerEntity() = default;
 PlayerId PlayerEntity::id() const noexcept { return profile_.id; }
+NavigationState &PlayerEntity::navigationState() noexcept { return navigation_; }
+const NavigationState &PlayerEntity::navigationState() const noexcept { return navigation_; }
 const UserProfile &PlayerEntity::profile() const noexcept { return profile_; }
+std::uint32_t PlayerEntity::fuel() const noexcept { return storage_->legacy.SIS_state.FuelOnBoard; }
+std::uint16_t PlayerEntity::crew() const noexcept { return storage_->legacy.SIS_state.CrewEnlisted; }
+void PlayerEntity::setHyperSpacePosition(std::int32_t x, std::int32_t y) noexcept {
+    storage_->legacy.SIS_state.log_x = x;
+    storage_->legacy.SIS_state.log_y = y;
+}
 ShipState PlayerEntity::ship() const {
     const auto &sis = storage_->legacy.SIS_state;
     ShipState result{};

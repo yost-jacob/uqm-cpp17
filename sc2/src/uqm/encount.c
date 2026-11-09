@@ -816,7 +816,7 @@ EncounterBattle (void)
 
 	GameSounds = CaptureSound (LoadSound (GAME_SOUNDS));
 
-	Battle (NULL);
+	Battle (NULL, NULL);
 
 	DestroySound (ReleaseSound (GameSounds));
 	GameSounds = 0;

@@ -314,7 +314,7 @@ DoBattle (BATTLE_STATE *bs)
 
 	// Call the callback function, if set
 	if (bs->frame_cb)
-		bs->frame_cb ();
+		bs->frame_cb (bs->frame_context);
 
 	RedrawQueue (TRUE);
 
@@ -393,7 +393,7 @@ selectAllShips (SIZE num_ships)
 }
 
 BOOLEAN
-Battle (BattleFrameCallback *callback)
+Battle (BattleFrameCallback *callback, void *context)
 {
 	SIZE num_ships;
 
@@ -463,6 +463,7 @@ Battle (BattleFrameCallback *callback)
 #endif  /* NETPLAY */
 		bs.InputFunc = DoBattle;
 		bs.frame_cb = callback;
+        bs.frame_context = context;
 		bs.first_time = inHQSpace ();
 
 		DoInput (&bs, FALSE);
