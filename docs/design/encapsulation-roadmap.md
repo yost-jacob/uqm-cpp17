@@ -50,9 +50,11 @@ encapsulate every service or legacy payload accessed beneath that boundary.
 Fleet owns an optional persistent SIS, separate from escorts. The flagship combat
 incarnation derives weapon mounts/factories from its equipment; published native
 projectiles own their flight configuration and steering timers. The element pool
-owns them with unique_ptr and releases them on free/reset/teardown. Other races'
-projectiles and the collision/render backend remain legacy. See
-[SIS and projectile ownership](sis-projectiles.md).
+owns them with unique_ptr and releases them on free/reset/teardown. The remaining
+missile builders now publish native flight/collision behaviors too, with shared
+JSON guidance settings. Laser beams, autonomous units, effects and the underlying
+collision/render backend remain legacy. See [SIS and projectile ownership](sis-projectiles.md)
+and the [projectile roster migration](projectile-roster.md).
 
 ## State naming
 

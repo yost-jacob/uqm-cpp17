@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
@@ -195,7 +196,7 @@ initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	HornArray[0] = initialize_missile (&MissileBlock);
+	HornArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 	return (1);
 }
 

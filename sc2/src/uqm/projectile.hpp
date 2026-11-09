@@ -12,9 +12,6 @@ struct ProjectileDefinition {
     COUNT frameIndex = 0;
     SIZE blastOffset = 0;
     ELEMENT_FLAGS flags = IGNORE_SIMILAR;
-    // Zero means unguided. Otherwise turn one facing step every N simulation
-    // ticks, first adjustment after N ticks. Speed is independent of turn rate.
-    std::uint16_t steeringPeriodTicks = 0;
 };
 // Initial values supplied by the ship/mount. These are not a second mutable
 // physics state: after publication the engine's ELEMENT owns live kinematics.
@@ -31,11 +28,28 @@ public:
     // Called once per tick on this projectile's engine element. The engine
     // integrates velocity and handles collision/lifetime after this callback.
     virtual void update(ELEMENT &element) = 0;
+    // Opt into the engine's post-movement stage when created. A behavior can
+    // also enable it later through the compatibility boundary (held crystals).
+    virtual bool hasPostprocess() const noexcept { return false; }
+    virtual void postprocess(ELEMENT &) {}
+    // Both elements and contact points are borrowed for this collision only.
+    // Default handling applies the existing weapon damage and explosion rules.
+    virtual void collide(ELEMENT &self, POINT &selfPoint, ELEMENT &other, POINT &otherPoint);
 private:
     friend struct uqm::detail::ProjectileAccess;
     ElementProcessFunc *visualUpdate_ = nullptr;
+    ElementCollisionFunc *legacyCollision_ = nullptr;
     ProjectileDefinition definition_;
     ProjectileLaunch launch_;
+};
+// Shared flight implementation; specialized projectiles can extend update()
+// for aging, animation or source-controlled actions and reuse this steering.
+class ConfiguredProjectile : public Projectile {
+public:
+    ConfiguredProjectile(ProjectileDefinition definition, ProjectileLaunch launch);
+    void update(ELEMENT &element) override;
+private:
+    std::uint16_t wait_;
 };
 class ProjectileFactory {
 public:

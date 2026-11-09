@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include <optional>
 #include "resinst.h"
 
@@ -38,7 +39,6 @@ static const uqm::combat::ProjectileStats &missileStats() {
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto AndrosynthOffset = 14;
 constexpr auto MissileOffset = 3;
-constexpr auto TrackWait = 2;
 constexpr auto BlazerDegeneration = (-1);
 constexpr auto BlazerOffset = 10;
 constexpr auto BlazerThrust = 60;
@@ -159,13 +159,16 @@ blazer_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
 
-static void
-bubble_preprocess (ELEMENT *ElementPtr)
-{
-	BYTE thrust_wait, turn_wait;
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class AndrosynthBubble final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
 
-	thrust_wait = HINIBBLE (ElementPtr->turn_wait);
-	turn_wait = LONIBBLE (ElementPtr->turn_wait);
+    auto &thrust_wait = animationWait_;
+    auto &turn_wait = steeringWait_;
 	if (thrust_wait > 0)
 		--thrust_wait;
 	else
@@ -194,10 +197,14 @@ bubble_preprocess (ELEMENT *ElementPtr)
 			facing -= (COUNT)TFB_Random () & (ANGLE_TO_FACING (HALF_CIRCLE) - 1);
 		SetVelocityVector (&ElementPtr->velocity,
 				missileStats().speed, facing);
-		turn_wait = TrackWait;
+		turn_wait = definition().stats.flight.steeringPeriod ? definition().stats.flight.steeringPeriod - 1 : 0;
 	}
 
-	ElementPtr->turn_wait = MAKE_BYTE (turn_wait, thrust_wait);
+    }
+private:
+    std::uint16_t animationWait_ = 0;
+    std::uint16_t steeringWait_ = 0;
+};
 }
 
 static COUNT
@@ -219,9 +226,9 @@ initialize_bubble (ELEMENT *ShipPtr, HELEMENT BubbleArray[])
 	MissileBlock.hit_points = missileStats().hitPoints;
 	MissileBlock.damage = missileStats().damage;
 	MissileBlock.life = missileStats().lifetime;
-	MissileBlock.preprocess_func = bubble_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MissileOffset;
-	BubbleArray[0] = initialize_missile (&MissileBlock);
+	BubbleArray[0] = uqm::combat::publishMissile<AndrosynthBubble>(MissileBlock, missileStats().flight);
 
 	if (BubbleArray[0])
 	{

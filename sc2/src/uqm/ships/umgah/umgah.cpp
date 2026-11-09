@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include <optional>
 #include "resinst.h"
 
@@ -129,9 +130,15 @@ GetCustomShipData (RACE_DESC *pRaceDesc)
 // Updates the concrete ship's optional value; no separate heap allocation.
 static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
-static void
-cone_preprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class UmgahCone final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -140,12 +147,17 @@ cone_preprocess (ELEMENT *ElementPtr)
 			ANGLE_TO_FACING (FULL_CIRCLE));
 
 	ElementPtr->state_flags |= APPEARING;
+    }
+};
 }
 
-static void
-cone_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void UmgahCone::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	HELEMENT hBlastElement;
 
 	hBlastElement = weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
@@ -157,6 +169,7 @@ cone_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ElementPtr0->state_flags &= ~DISAPPEARING;
 	}
 }
+
 
 static void
 umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
@@ -292,7 +305,7 @@ initialize_cone (ELEMENT *ShipPtr, HELEMENT ConeArray[])
 	MissileBlock.hit_points = coneStats().hitPoints;
 	MissileBlock.damage = coneStats().damage;
 	MissileBlock.life = coneStats().lifetime;
-	MissileBlock.preprocess_func = cone_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = ConeOffset;
 
 	// This func is called every frame while the player is holding down WEAPON
@@ -311,14 +324,14 @@ initialize_cone (ELEMENT *ShipPtr, HELEMENT ConeArray[])
 	}
 	
 	MissileBlock.index = GetFrameIndex (StarShipPtr->RaceDescPtr->ship_data.special[0]);
-	ConeArray[0] = initialize_missile (&MissileBlock);
+	ConeArray[0] = uqm::combat::publishMissile<UmgahCone>(MissileBlock);
 
 	if (ConeArray[0])
 	{
 		ELEMENT *ConePtr;
 
 		LockElement (ConeArray[0], &ConePtr);
-		ConePtr->collision_func = cone_collision;
+
 		ConePtr->state_flags &= ~APPEARING;
 		ConePtr->next = ConePtr->current;
 		InitIntersectStartPoint (ConePtr);

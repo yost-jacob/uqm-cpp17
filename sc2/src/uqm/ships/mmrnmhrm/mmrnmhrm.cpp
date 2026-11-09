@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include <optional>
 #include "resinst.h"
 
@@ -49,7 +50,6 @@ constexpr auto YwingWeaponEnergyCost = 1;
 constexpr auto YwingWeaponWait = 20;
 constexpr auto LaunchOffs = DISPLAY_TO_WORLD (4);
 constexpr auto MissileOffset = 0;
-constexpr auto TrackWait = 5;
 constexpr auto YwingSpecialWait = 0;
 
 static const RACE_DESC &mmrnmhrmDefinition() {
@@ -137,31 +137,6 @@ GetCustomShipData (RACE_DESC *pRaceDesc)
 
 // Updates the concrete ship's optional value; no separate heap allocation.
 static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
-
-static void
-missile_preprocess (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		COUNT facing;
-
-		facing = GetFrameIndex (ElementPtr->next.image.frame);
-		if (TrackShip (ElementPtr, &facing) > 0)
-		{
-			ElementPtr->next.image.frame =
-					SetAbsFrameIndex (ElementPtr->next.image.frame,
-					facing);
-			ElementPtr->state_flags |= CHANGING;
-
-			SetVelocityVector (&ElementPtr->velocity,
-					missileStats().speed, facing);
-		}
-
-		ElementPtr->turn_wait = TrackWait;
-	}
-}
 
 static void
 mmrnmhrm_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
@@ -330,7 +305,7 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 		TorpBlock.hit_points = missileStats().hitPoints;
 		TorpBlock.damage = missileStats().damage;
 		TorpBlock.life = missileStats().lifetime;
-		TorpBlock.preprocess_func = missile_preprocess;
+		TorpBlock.preprocess_func = nullptr;
 		TorpBlock.blast_offs = MissileOffset;
 
 		TorpBlock.face = TorpBlock.index = NORMALIZE_FACING (facing - 1);
@@ -339,10 +314,10 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 
 		TorpBlock.cx = cx + offs_x;
 		TorpBlock.cy = cy + offs_y;
-		if ((WeaponArray[0] = initialize_missile (&TorpBlock)))
+		if ((WeaponArray[0] = uqm::combat::publishMissile(TorpBlock, missileStats().flight)))
 		{
 			LockElement (WeaponArray[0], &TorpPtr);
-			TorpPtr->turn_wait = TrackWait;
+
 			UnlockElement (WeaponArray[0]);
 		}
 
@@ -350,10 +325,10 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 
 		TorpBlock.cx = cx - offs_x;
 		TorpBlock.cy = cy - offs_y;
-		if ((WeaponArray[1] = initialize_missile (&TorpBlock)))
+		if ((WeaponArray[1] = uqm::combat::publishMissile(TorpBlock, missileStats().flight)))
 		{
 			LockElement (WeaponArray[1], &TorpPtr);
-			TorpPtr->turn_wait = TrackWait;
+
 			UnlockElement (WeaponArray[1]);
 		}
 	}

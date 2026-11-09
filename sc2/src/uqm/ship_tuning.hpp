@@ -16,9 +16,15 @@ struct ShipStats {
     std::int8_t energyRegeneration;
     std::uint8_t shipMass, weaponEnergyCost, weaponWait, specialEnergyCost, specialWait, meleeCost;
 };
+struct FlightTuning {
+    std::uint16_t steeringPeriod = 0, initialDelay = 0;
+    std::int16_t acceleration = 0, maxSpeed = 0;
+    bool directionalSprite = false, snapToTarget = false;
+};
 struct ProjectileStats {
     std::int16_t speed, hitPoints, damage;
     std::uint16_t lifetime;
+    FlightTuning flight{};
 };
 struct ShipTuning {
     ShipStats ship;

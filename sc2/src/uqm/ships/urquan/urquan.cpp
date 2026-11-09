@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -139,7 +140,7 @@ initialize_fusion (ELEMENT *ShipPtr, HELEMENT FusionArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	FusionArray[0] = initialize_missile (&MissileBlock);
+	FusionArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
 	return (1);
 }

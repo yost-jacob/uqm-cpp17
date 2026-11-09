@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -133,9 +134,15 @@ static const RACE_DESC &samatraDefinition() {
 
 static HELEMENT spawn_comet (ELEMENT *ElementPtr);
 
-static void
-comet_preprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class SaMatraComet final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	COUNT frame_index;
 
 	frame_index = GetFrameIndex (ElementPtr->current.image.frame) + 1;
@@ -164,12 +171,17 @@ comet_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->current.image.frame, frame_index
 			);
 	ElementPtr->state_flags |= CHANGING;
+    }
+};
 }
 
-static void
-comet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void SaMatraComet::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	if (ElementPtr1->playerNr == RPG_PLAYER_NUM)
 	{
 		BYTE old_hits;
@@ -207,6 +219,7 @@ comet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 }
 
+
 static HELEMENT
 spawn_comet (ELEMENT *ElementPtr)
 {
@@ -227,9 +240,9 @@ spawn_comet (ELEMENT *ElementPtr)
 	MissileBlock.hit_points = cometStats().hitPoints;
 	MissileBlock.damage = cometStats().damage;
 	MissileBlock.life = cometStats().lifetime;
-	MissileBlock.preprocess_func = comet_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = CometOffset;
-	hComet = initialize_missile (&MissileBlock);
+	hComet = uqm::combat::publishMissile<SaMatraComet>(MissileBlock);
 
 	if (hComet)
 	{
@@ -238,7 +251,7 @@ spawn_comet (ELEMENT *ElementPtr)
 		PutElement (hComet);
 
 		LockElement (hComet, &CometPtr);
-		CometPtr->collision_func = comet_collision;
+
 		SetElementStarShip (CometPtr, StarShipPtr);
 		{
 			COUNT facing;
@@ -443,9 +456,15 @@ generator_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
-static void
-sentinel_preprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class SaMatraSentinel final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -579,18 +598,24 @@ sentinel_preprocess (ELEMENT *ElementPtr)
 
 		ElementPtr->turn_wait = TrackWait;
 	}
+    }
+};
 }
 
-static void
-sentinel_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void SaMatraSentinel::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	COUNT angle;
 	STARSHIP *StarShipPtr;
 
 	if (ElementPtr1->playerNr == NPC_PLAYER_NUM)
 	{
-		if (ElementPtr0->preprocess_func == ElementPtr1->preprocess_func
+		if (dynamic_cast<SaMatraSentinel *>(uqm::detail::borrowProjectile(disp_q, ElementPtr1))
+                && ElementPtr0->preprocess_func == ElementPtr1->preprocess_func
 				&& !(ElementPtr0->state_flags & DEFY_PHYSICS)
 				&& (pPt0->x != ElementPtr0->IntersectControl.IntersectStamp.origin.x
 				|| pPt0->y != ElementPtr0->IntersectControl.IntersectStamp.origin.y))
@@ -675,6 +700,7 @@ sentinel_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 }
 
+
 static void
 samatra_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		COUNT ConcernCounter)
@@ -715,16 +741,16 @@ samatra_postprocess (ELEMENT *ElementPtr)
 			MissileBlock.hit_points = sentinelStats().hitPoints;
 			MissileBlock.damage = sentinelStats().damage;
 			MissileBlock.life = sentinelStats().lifetime;
-			MissileBlock.preprocess_func = sentinel_preprocess;
+			MissileBlock.preprocess_func = nullptr;
 			MissileBlock.blast_offs = SentinelOffset;
-			hSentinel = initialize_missile (&MissileBlock);
+			hSentinel = uqm::combat::publishMissile<SaMatraSentinel>(MissileBlock);
 
 			if (hSentinel)
 			{
 				ELEMENT *SentinelPtr;
 
 				LockElement (hSentinel, &SentinelPtr);
-				SentinelPtr->collision_func = sentinel_collision;
+
 				SentinelPtr->turn_wait = TrackWait + 2;
 				SetElementStarShip (SentinelPtr, StarShipPtr);
 				UnlockElement (hSentinel);

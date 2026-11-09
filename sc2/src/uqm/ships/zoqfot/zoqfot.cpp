@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "libs/mathlib.h"
@@ -34,14 +35,16 @@ static const uqm::combat::ProjectileStats &missileStats() {
     return value;
 }
 
+static const uqm::combat::ProjectileStats &tongueStats() {
+    static const auto &value = tuning().projectile("tongue");
+    return value;
+}
+
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto ZoqfotpikOffset = 13;
 constexpr auto MissileOffset = 0;
 static auto missileRange() { return (missileStats().speed * missileStats().lifetime); }
 constexpr auto SpitWait = 2;
-constexpr auto TongueSpeed = 0;
-constexpr auto TongueHits = 1;
-constexpr auto TongueDamage = 12;
 constexpr auto TongueOffset = 4;
 
 // missileRange is an AI hint. SpitWait controls weapon color-animation cadence.
@@ -116,9 +119,14 @@ static const RACE_DESC &zoqfotpikDefinition() {
     return definition;
 }
 
-static void
-spit_preprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class ZoqfotSpit final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	/* turn_wait is abused here to control the animation speed. */
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
@@ -132,8 +140,8 @@ spit_preprocess (ELEMENT *ElementPtr)
 		if ((index = GetFrameIndex (ElementPtr->next.image.frame)) == 1)
 			angle = angle + (((COUNT)TFB_Random () % 3) - 1);
 
-		speed = WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (
-				GetFrameCount (ElementPtr->next.image.frame) - index) << 1);
+		const auto frames = GetFrameCount(ElementPtr->next.image.frame);
+        speed = WORLD_TO_VELOCITY(definition().stats.speed * (frames - index) / frames);
 		SetVelocityComponents (&ElementPtr->velocity,
 				(SIZE)COSINE (angle, speed),
 				(SIZE)SINE (angle, speed));
@@ -142,7 +150,10 @@ spit_preprocess (ELEMENT *ElementPtr)
 		ElementPtr->turn_wait = SpitWait;
 		ElementPtr->state_flags |= CHANGING;
 	}
+    }
+};
 }
+
 
 static COUNT
 initialize_spit (ELEMENT *ShipPtr, HELEMENT SpitArray[])
@@ -159,31 +170,42 @@ initialize_spit (ELEMENT *ShipPtr, HELEMENT SpitArray[])
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
 	MissileBlock.pixoffs = ZoqfotpikOffset;
-	MissileBlock.speed = DISPLAY_TO_WORLD (
-			GetFrameCount (StarShipPtr->RaceDescPtr->ship_data.weapon[0])) << 1;
+	MissileBlock.speed = missileStats().speed;
 	MissileBlock.hit_points = missileStats().hitPoints;
 	MissileBlock.damage = missileStats().damage;
 	MissileBlock.life = missileStats().lifetime;
-	MissileBlock.preprocess_func = spit_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MissileOffset;
-	SpitArray[0] = initialize_missile (&MissileBlock);
+	SpitArray[0] = uqm::combat::publishMissile<ZoqfotSpit>(MissileBlock);
 
 	return (1);
 }
 
 static void spawn_tongue (ELEMENT *ElementPtr);
 
-static void
-tongue_postprocess (ELEMENT *ElementPtr)
-{
+namespace {
+class ZoqfotTongue final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void update(ELEMENT &) override {}
+    bool hasPostprocess() const noexcept override { return true; }
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void postprocess(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	if (ElementPtr->turn_wait)
 		spawn_tongue (ElementPtr);
+    }
+};
 }
 
-static void
-tongue_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void ZoqfotTongue::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr0, &StarShipPtr);
@@ -195,6 +217,7 @@ tongue_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	ElementPtr0->turn_wait = 0;
 	ElementPtr0->state_flags |= NONSOLID;
 }
+
 
 static void
 spawn_tongue (ELEMENT *ElementPtr)
@@ -211,20 +234,19 @@ spawn_tongue (ELEMENT *ElementPtr)
 	TongueBlock.sender = ElementPtr->playerNr;
 	TongueBlock.flags = IGNORE_SIMILAR;
 	TongueBlock.pixoffs = 0;
-	TongueBlock.speed = TongueSpeed;
-	TongueBlock.hit_points = TongueHits;
-	TongueBlock.damage = TongueDamage;
-	TongueBlock.life = 1;
+	TongueBlock.speed = tongueStats().speed;
+	TongueBlock.hit_points = tongueStats().hitPoints;
+	TongueBlock.damage = tongueStats().damage;
+	TongueBlock.life = tongueStats().lifetime;
 	TongueBlock.preprocess_func = 0;
 	TongueBlock.blast_offs = TongueOffset;
-	Tongue = initialize_missile (&TongueBlock);
+	Tongue = uqm::combat::publishMissile<ZoqfotTongue>(TongueBlock);
 	if (Tongue)
 	{
 		ELEMENT *TonguePtr;
 
 		LockElement (Tongue, &TonguePtr);
-		TonguePtr->postprocess_func = tongue_postprocess;
-		TonguePtr->collision_func = tongue_collision;
+
 		if (ElementPtr->state_flags & PLAYER_SHIP)
 			TonguePtr->turn_wait = StarShipPtr->special_counter;
 		else

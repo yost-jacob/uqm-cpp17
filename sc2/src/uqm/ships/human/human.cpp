@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -38,9 +39,6 @@ static const uqm::combat::ProjectileStats &missileStats() {
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto HumanOffset = 42;
 constexpr auto NukeOffset = 8;
-constexpr auto MaxMissileSpeed = DISPLAY_TO_WORLD (20);
-constexpr auto ThrustScale = DISPLAY_TO_WORLD (1);
-constexpr auto TrackWait = 3;
 constexpr auto LaserRange = (UWORD)100;
 
 static const RACE_DESC &humanDefinition() {
@@ -111,39 +109,6 @@ static const RACE_DESC &humanDefinition() {
         0, /* ship_owner */
     };
     return definition;
-}
-
-static void
-nuke_preprocess (ELEMENT *ElementPtr)
-{
-	COUNT facing;
-
-	facing = GetFrameIndex (ElementPtr->next.image.frame);
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		if (TrackShip (ElementPtr, &facing) > 0)
-		{
-			ElementPtr->next.image.frame =
-					SetAbsFrameIndex (ElementPtr->next.image.frame,
-					facing);
-			ElementPtr->state_flags |= CHANGING;
-		}
-
-		ElementPtr->turn_wait = TrackWait;
-	}
-
-	{
-		SIZE speed;
-
-		if ((speed = missileStats().speed +
-				((missileStats().lifetime - ElementPtr->life_span) *
-				ThrustScale)) > MaxMissileSpeed)
-			speed = MaxMissileSpeed;
-		SetVelocityVector (&ElementPtr->velocity,
-				speed, facing);
-	}
 }
 
 static void
@@ -274,18 +239,10 @@ initialize_nuke (ELEMENT *ShipPtr, HELEMENT NukeArray[])
 	MissileBlock.hit_points = missileStats().hitPoints;
 	MissileBlock.damage = missileStats().damage;
 	MissileBlock.life = missileStats().lifetime;
-	MissileBlock.preprocess_func = nuke_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = NukeOffset;
-	NukeArray[0] = initialize_missile (&MissileBlock);
+	NukeArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
-	if (NukeArray[0])
-	{
-		ELEMENT *NukePtr;
-
-		LockElement (NukeArray[0], &NukePtr);
-		NukePtr->turn_wait = TrackWait;
-		UnlockElement (NukeArray[0]);
-	}
 
 	return (1);
 }

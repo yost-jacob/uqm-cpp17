@@ -12,16 +12,16 @@ struct Schema { const char *id; std::array<const char *, 2> profiles; };
 // These identify supported behavior code, not balance values. A new behavior
 // must explicitly declare its required projectile profiles here.
 constexpr Schema Schemas[] = {
-    {"androsyn", {"missile"}}, {"arilou", {}}, {"blackurq", {"missile"}},
+    {"androsyn", {"missile"}}, {"arilou", {}}, {"blackurq", {"missile", "gas"}},
     {"chenjesu", {"missile", "fragment"}}, {"chmmr", {}}, {"druuge", {"missile"}},
     {"human", {"missile"}}, {"ilwrath", {"missile"}}, {"lastbat", {"comet", "sentinel"}},
-    {"melnorme", {"cmissile"}}, {"mmrnmhrm", {"missile"}}, {"mycon", {}},
+    {"melnorme", {"cmissile", "charge"}}, {"mmrnmhrm", {"missile"}}, {"mycon", {"plasma"}},
     {"orz", {"missile"}}, {"pkunk", {"missile"}}, {"probe", {}},
     {"shofixti", {"missile"}}, {"sis_ship", {"blaster"}}, {"slylandr", {}},
     {"spathi", {"missile", "discriminator"}}, {"supox", {"missile"}},
-    {"syreen", {"missile"}}, {"thradd", {"missile"}}, {"umgah", {"cone"}},
+    {"syreen", {"missile"}}, {"thradd", {"missile", "napalm"}}, {"umgah", {"cone"}},
     {"urquan", {"missile"}}, {"utwig", {"missile"}}, {"vux", {"limpet"}},
-    {"yehat", {"missile"}}, {"zoqfot", {"missile"}}
+    {"yehat", {"missile"}}, {"zoqfot", {"missile", "tongue"}}
 };
 // Check exact key sets, so a typo never silently leaves a field ineffective.
 void fields(const Json &object, std::initializer_list<const char *> names) {
@@ -65,18 +65,31 @@ ShipStats stats(const Json &value) {
     return result;
 }
 ProjectileStats projectileStats(const Json &value) {
-    fields(value, {"speed", "hit_points", "damage", "lifetime"});
+    fields(value, {"speed", "hit_points", "damage", "lifetime", "flight"});
+    const auto &flight = value.at("flight");
+    fields(flight, {"steering_period_ticks", "initial_delay_ticks", "acceleration_per_tick",
+        "maximum_speed", "directional_sprite", "snap_to_target"});
+    for (const auto *key : {"directional_sprite", "snap_to_target"})
+        if (!flight.at(key).is_boolean()) throw std::runtime_error(std::string(key) + " must be boolean");
+    FlightTuning behavior{
+        static_cast<std::uint16_t>(integer(flight, "steering_period_ticks", 0, 32767)),
+        static_cast<std::uint16_t>(integer(flight, "initial_delay_ticks", 0, 32767)),
+        static_cast<std::int16_t>(integer(flight, "acceleration_per_tick", 0, 1023)),
+        static_cast<std::int16_t>(integer(flight, "maximum_speed", 0, 1023)),
+        flight.at("directional_sprite").get<bool>(), flight.at("snap_to_target").get<bool>()};
+    if (behavior.maxSpeed < integer(value, "speed", 0, 1023))
+        throw std::runtime_error("maximum_speed must cover launch speed");
     return {static_cast<std::int16_t>(integer(value, "speed", 0, 32767)),
-        static_cast<std::int16_t>(integer(value, "hit_points", 1, 32767)),
+        static_cast<std::int16_t>(integer(value, "hit_points", 1, 255)),
         // The element engine stores damage in its byte-sized mass field.
         static_cast<std::int16_t>(integer(value, "damage", 0, 255)),
-        static_cast<std::uint16_t>(integer(value, "lifetime", 1, 32767))};
+        static_cast<std::uint16_t>(integer(value, "lifetime", 1, 32767)), behavior};
 }
 }
 ShipTuningCatalog::ShipTuningCatalog(std::istream &input) {
     const auto root = Json::parse(input);
     fields(root, {"schema_version", "ships"});
-    integer(root, "schema_version", 1, 1);
+    integer(root, "schema_version", 2, 2);
     const auto &records = root.at("ships");
     if (!records.is_object() || records.size() != std::size(Schemas))
         throw std::runtime_error("ships must contain the complete supported roster");
@@ -98,8 +111,18 @@ ShipTuningCatalog::ShipTuningCatalog(std::istream &input) {
             }
             if (std::string_view(schema.id) == "sis_ship") {
                 const auto &blaster = tuning.projectile("blaster");
-                if (blaster.damage < 1 || blaster.damage > 255 / 3 || blaster.hitPoints > 32767 / 3)
+                if (blaster.damage < 1 || blaster.damage > 255 / 3 || blaster.hitPoints > 255 / 3)
                     throw std::runtime_error("blaster damage/hit_points must support three module tiers");
+            }
+            if (std::string_view(schema.id) == "melnorme") {
+                const auto &charge = tuning.projectile("charge");
+                if (charge.damage < 1 || charge.damage > 255 / 8 || charge.hitPoints != charge.damage)
+                    throw std::runtime_error("charge must have equal damage/hit_points and support four tiers");
+            }
+            if (std::string_view(schema.id) == "mycon") {
+                const auto &plasma = tuning.projectile("plasma");
+                if (plasma.damage < 1 || plasma.hitPoints != plasma.damage)
+                    throw std::runtime_error("plasma damage/hit_points must be equal and positive");
             }
             ships_.emplace(schema.id, std::move(tuning));
         } catch (const std::exception &error) {

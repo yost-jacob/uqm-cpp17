@@ -20,6 +20,8 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
+#include <algorithm>
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -28,16 +30,16 @@ static const uqm::combat::ShipTuning &tuning() {
     return value;
 }
 
+static const uqm::combat::ProjectileStats &plasmaStats() {
+    return tuning().projectile("plasma");
+}
+
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto MyconOffset = 24;
 constexpr auto MissileOffset = 0;
 constexpr auto NumPlasmas = 11;
 constexpr auto NumGloballs = 8;
-constexpr auto PlasmaDuration = 13;
-constexpr auto MissileLife = (NumPlasmas * PlasmaDuration);
-constexpr auto MissileSpeed = DISPLAY_TO_WORLD (8);
-constexpr auto MissileDamage = 10;
-constexpr auto TrackWait = 1;
+
 constexpr auto RegenerationAmount = 4;
 
 static const RACE_DESC &myconDefinition() {
@@ -110,43 +112,25 @@ static const RACE_DESC &myconDefinition() {
     return definition;
 }
 
-static void
-plasma_preprocess (ELEMENT *ElementPtr)
-{
-	COUNT plasma_index;
-
-	if (ElementPtr->mass_points > ElementPtr->hit_points)
-		ElementPtr->life_span = ElementPtr->hit_points * PlasmaDuration;
-	else
-		ElementPtr->hit_points = (BYTE)((ElementPtr->life_span *
-				MissileDamage + (MissileLife - 1)) / MissileLife);
-	ElementPtr->mass_points = ElementPtr->hit_points;
-	plasma_index = NumPlasmas - ((ElementPtr->life_span +
-			(PlasmaDuration - 1)) / PlasmaDuration);
-	if (plasma_index != GetFrameIndex (ElementPtr->next.image.frame))
-	{
-		ElementPtr->next.image.frame =
-				SetAbsFrameIndex (ElementPtr->next.image.frame,
-				plasma_index);
-		ElementPtr->state_flags |= CHANGING;
-	}
-
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		COUNT facing;
-
-		facing = NORMALIZE_FACING (ANGLE_TO_FACING (
-				GetVelocityTravelAngle (&ElementPtr->velocity)
-				));
-		if (TrackShip (ElementPtr, &facing) > 0)
-			SetVelocityVector (&ElementPtr->velocity,
-					MissileSpeed, facing);
-
-		ElementPtr->turn_wait = TrackWait;
-	}
-}
+class PlasmaProjectile final : public uqm::combat::ConfiguredProjectile {
+public:
+    using ConfiguredProjectile::ConfiguredProjectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        const auto &stats = definition().stats;
+        const unsigned duration = std::max<unsigned>(1, (stats.lifetime + NumPlasmas - 1) / NumPlasmas);
+        if (element.mass_points > element.hit_points)
+            element.life_span = static_cast<COUNT>(std::min<unsigned>(stats.lifetime, element.hit_points * duration));
+        else element.hit_points = static_cast<BYTE>((unsigned(element.life_span) * stats.damage + stats.lifetime - 1) / stats.lifetime);
+        element.mass_points = element.hit_points;
+        const auto frame = static_cast<COUNT>(std::clamp<int>(NumPlasmas - (element.life_span + duration - 1) / duration, 0, NumPlasmas - 1));
+        if (frame != GetFrameIndex(element.next.image.frame)) {
+            element.next.image.frame = SetAbsFrameIndex(element.next.image.frame, frame);
+            element.state_flags |= CHANGING;
+        }
+        ConfiguredProjectile::update(element);
+    }
+};
 
 static void
 plasma_blast_preprocess (ELEMENT *ElementPtr)
@@ -169,10 +153,12 @@ plasma_blast_preprocess (ELEMENT *ElementPtr)
 	ElementPtr->state_flags |= CHANGING;
 }
 
-static void
-plasma_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void PlasmaProjectile::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	SIZE old_mass;
 	HELEMENT hBlastElement;
 
@@ -201,7 +187,7 @@ plasma_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 		if ((num_animations =
 				(old_mass * NumGloballs +
-				(MissileDamage - 1)) / MissileDamage) == 0)
+				(plasmaStats().damage - 1)) / plasmaStats().damage) == 0)
 			num_animations = 1;
 
 		BlastElementPtr->thrust_wait = (BYTE)num_animations;
@@ -217,6 +203,7 @@ plasma_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		UnlockElement (hBlastElement);
 	}
 }
+
 
 static void
 mycon_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
@@ -280,7 +267,7 @@ mycon_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = DISPLAY_TO_WORLD (800);
 		if (ShipPtr->crew_level < StarShipPtr->RaceDescPtr->ship_info.max_crew)
 		{
-			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = MissileSpeed * MissileLife;
+			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = plasmaStats().speed * plasmaStats().lifetime;
 			if (StarShipPtr->RaceDescPtr->ship_info.energy_level >= tuning().ship.specialEnergyCost
 					&& !(StarShipPtr->ship_input_state & WEAPON))
 				StarShipPtr->ship_input_state |= SPECIAL;
@@ -303,23 +290,14 @@ initialize_plasma (ELEMENT *ShipPtr, HELEMENT PlasmaArray[])
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = 0;
 	MissileBlock.pixoffs = MyconOffset;
-	MissileBlock.speed = MissileSpeed;
-	MissileBlock.hit_points = MissileDamage;
-	MissileBlock.damage = MissileDamage;
-	MissileBlock.life = MissileLife;
-	MissileBlock.preprocess_func = plasma_preprocess;
+	MissileBlock.speed = plasmaStats().speed;
+	MissileBlock.hit_points = plasmaStats().damage;
+	MissileBlock.damage = plasmaStats().damage;
+	MissileBlock.life = plasmaStats().lifetime;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MissileOffset;
-	PlasmaArray[0] = initialize_missile (&MissileBlock);
+	PlasmaArray[0] = uqm::combat::publishMissile<PlasmaProjectile>(MissileBlock, plasmaStats().flight);
 
-	if (PlasmaArray[0])
-	{
-		ELEMENT *PlasmaPtr;
-
-		LockElement (PlasmaArray[0], &PlasmaPtr);
-		PlasmaPtr->collision_func = plasma_collision;
-		PlasmaPtr->turn_wait = TrackWait + 2;
-		UnlockElement (PlasmaArray[0]);
-	}
 
 	return (1);
 }

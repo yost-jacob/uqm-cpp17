@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -35,13 +36,15 @@ static const uqm::combat::ProjectileStats &cmissileStats() {
     return value;
 }
 
+static const uqm::combat::ProjectileStats &chargeStats() {
+    static const auto &value = tuning().projectile("charge");
+    return value;
+}
+
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto MelnormeOffset = 24;
 constexpr auto LevelCounter = 72;
 constexpr auto MaxPump = 4;
-constexpr auto PumpupSpeed = DISPLAY_TO_WORLD (45);
-constexpr auto PumpupLife = 10;
-constexpr auto PumpupDamage = 2;
 constexpr auto MinPumpitudeAnims = 3;
 constexpr auto NumPumpAnims = 5;
 constexpr auto ReverseDir = (BYTE)(1 << 7);
@@ -112,7 +115,7 @@ static const RACE_DESC &melnormeDefinition() {
         },
         {
             0,
-            uqm::combat::weaponRangeHint(PumpupSpeed * PumpupLife),
+            uqm::combat::weaponRangeHint(chargeStats().speed * chargeStats().lifetime),
             NULL,
         },
 
@@ -122,9 +125,18 @@ static const RACE_DESC &melnormeDefinition() {
     return definition;
 }
 
-static void
-pump_up_preprocess (ELEMENT *ElementPtr)
-{
+namespace {
+class MelnormeCharge final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    bool hasPostprocess() const noexcept override { return true; }
+    void postprocess(ELEMENT &element) override;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void release(ELEMENT &element) noexcept { phase_ = Phase::Flying; element.postprocess_func = nullptr; }
+    void update(ELEMENT &element) override {
+        if (phase_ != Phase::Flying) return;
+        auto *ElementPtr = &element;
+
 	if (--ElementPtr->thrust_wait & 1)
 	{
 		COUNT frame_index;
@@ -149,13 +161,19 @@ pump_up_preprocess (ELEMENT *ElementPtr)
 
 		ElementPtr->state_flags |= CHANGING;
 	}
+    }
+private:
+    enum class Phase { Charging, Flying };
+    Phase phase_ = Phase::Charging;
+};
 }
+
 
 static COUNT initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[]);
 
-static void
-pump_up_postprocess (ELEMENT *ElementPtr)
-{
+void MelnormeCharge::postprocess(ELEMENT &element) {
+    auto *ElementPtr = &element;
+
 	if (ElementPtr->state_flags & APPEARING)
 	{
 		ZeroVelocityComponents (&ElementPtr->velocity);
@@ -172,6 +190,7 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 		initialize_pump_up (ShipPtr, &hPumpUp);
 		DeltaEnergy (ShipPtr, 0);
 		UnlockElement (StarShipPtr->hShip);
+        if (!hPumpUp) return; // Pool exhaustion expires the old charge normally.
 
 		LockElement (hPumpUp, &EPtr);
 
@@ -193,7 +212,7 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 		}
 
 		EPtr->mass_points = EPtr->hit_points =
-				(PumpupDamage << (ElementPtr->turn_wait & ~ReverseDir));
+				(chargeStats().damage << (ElementPtr->turn_wait & ~ReverseDir));
 		SetElementStarShip (EPtr, StarShipPtr);
 
 		if (EPtr->thrust_wait & 1)
@@ -228,14 +247,16 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 		{
 			COUNT angle;
 
-			EPtr->life_span = PumpupLife;
-			EPtr->preprocess_func = pump_up_preprocess;
+			EPtr->life_span = chargeStats().lifetime;
+			auto *next = dynamic_cast<MelnormeCharge *>(uqm::detail::borrowProjectile(disp_q, EPtr));
+            assert(next);
+            next->release(*EPtr);
 			EPtr->postprocess_func = 0;
 
 			angle = FACING_TO_ANGLE (StarShipPtr->ShipFacing);
 			SetVelocityComponents (&EPtr->velocity,
-					COSINE (angle, WORLD_TO_VELOCITY (PumpupSpeed)),
-					SINE (angle, WORLD_TO_VELOCITY (PumpupSpeed)));
+					COSINE (angle, WORLD_TO_VELOCITY (chargeStats().speed)),
+					SINE (angle, WORLD_TO_VELOCITY (chargeStats().speed)));
 
 			ProcessSound (SetAbsSoundIndex (
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 3), EPtr);
@@ -249,6 +270,7 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 		ElementPtr->state_flags |= NONSOLID;
 	}
 }
+
 
 static void
 animate (ELEMENT *ElementPtr)
@@ -265,10 +287,12 @@ animate (ELEMENT *ElementPtr)
 	}
 }
 
-static void
-pump_up_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void MelnormeCharge::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	RECT r;
 	BYTE old_thrust_wait;
 	HELEMENT hBlastElement;
@@ -303,6 +327,7 @@ pump_up_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 }
 
+
 static COUNT
 initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 {
@@ -319,20 +344,19 @@ initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 	MissileBlock.flags = IGNORE_SIMILAR;
 	MissileBlock.pixoffs = MelnormeOffset;
 	MissileBlock.speed = DISPLAY_TO_WORLD (MelnormeOffset);
-	MissileBlock.hit_points = PumpupDamage;
-	MissileBlock.damage = PumpupDamage;
+	MissileBlock.hit_points = chargeStats().damage;
+	MissileBlock.damage = chargeStats().damage;
 	MissileBlock.life = 2;
 	MissileBlock.preprocess_func = 0;
 	MissileBlock.blast_offs = 0;
-	PumpUpArray[0] = initialize_missile (&MissileBlock);
+	PumpUpArray[0] = uqm::combat::publishMissile<MelnormeCharge>(MissileBlock);
 
 	if (PumpUpArray[0])
 	{
 		ELEMENT *PumpUpPtr;
 
 		LockElement (PumpUpArray[0], &PumpUpPtr);
-		PumpUpPtr->postprocess_func = pump_up_postprocess;
-		PumpUpPtr->collision_func = pump_up_collision;
+
 		PumpUpPtr->thrust_wait = LevelCounter;
 		UnlockElement (PumpUpArray[0]);
 	}
@@ -340,6 +364,18 @@ initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 	return (1);
 }
 
+namespace {
+class MelnormeConfusion final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        element.next.image.frame = SetAbsFrameIndex(element.current.image.frame,
+            (GetFrameIndex(element.current.image.frame) + 1) & 7);
+        element.state_flags |= CHANGING;
+    }
+};
+}
 static void
 confuse_preprocess (ELEMENT *ElementPtr)
 {
@@ -404,10 +440,12 @@ confuse_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
-static void
-confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void MelnormeConfusion::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{
 		HELEMENT hConfusionElement, hNextElement;
@@ -472,6 +510,7 @@ confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
+
 static COUNT
 initialize_confusion (ELEMENT *ShipPtr, HELEMENT ConfusionArray[])
 {
@@ -491,16 +530,16 @@ initialize_confusion (ELEMENT *ShipPtr, HELEMENT ConfusionArray[])
 	ConfusionBlock.hit_points = cmissileStats().hitPoints;
 	ConfusionBlock.damage = cmissileStats().damage;
 	ConfusionBlock.life = cmissileStats().lifetime;
-	ConfusionBlock.preprocess_func = confuse_preprocess;
+	ConfusionBlock.preprocess_func = nullptr;
 	ConfusionBlock.blast_offs = CmissileOffset;
-	ConfusionArray[0] = initialize_missile (&ConfusionBlock);
+	ConfusionArray[0] = uqm::combat::publishMissile<MelnormeConfusion>(ConfusionBlock);
 
 	if (ConfusionArray[0])
 	{
 		ELEMENT *CMissilePtr;
 
 		LockElement (ConfusionArray[0], &CMissilePtr);
-		CMissilePtr->collision_func = confusion_collision;
+
 		SetElementStarShip (CMissilePtr, StarShipPtr);
 		UnlockElement (ConfusionArray[0]);
 	}
@@ -523,13 +562,13 @@ initialize_test_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
 	MissileBlock.pixoffs = MelnormeOffset;
-	MissileBlock.speed = PumpupSpeed;
-	MissileBlock.hit_points = PumpupDamage;
-	MissileBlock.damage = PumpupDamage;
-	MissileBlock.life = PumpupLife;
+	MissileBlock.speed = chargeStats().speed;
+	MissileBlock.hit_points = chargeStats().damage;
+	MissileBlock.damage = chargeStats().damage;
+	MissileBlock.life = chargeStats().lifetime;
 	MissileBlock.preprocess_func = 0;
 	MissileBlock.blast_offs = 0;
-	PumpUpArray[0] = initialize_missile (&MissileBlock);
+	PumpUpArray[0] = uqm::combat::publishMissile(MissileBlock, chargeStats().flight);
 
 	return (1);
 }

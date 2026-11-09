@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -42,7 +43,6 @@ constexpr auto MissileOffset = 1;
 static auto missileRange() { return (missileStats().speed * missileStats().lifetime); }
 constexpr auto SpathiRearOffset = 20;
 constexpr auto DiscriminatorOffset = 4;
-constexpr auto TrackWait = 1;
 
 // missileRange is an AI hint derived from the configured projectile.
 
@@ -117,31 +117,6 @@ static const RACE_DESC &spathiDefinition() {
 }
 
 static void
-butt_missile_preprocess (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		COUNT facing;
-
-		facing = GetFrameIndex (ElementPtr->next.image.frame);
-		if (TrackShip (ElementPtr, &facing) > 0)
-		{
-			ElementPtr->next.image.frame =
-					SetAbsFrameIndex (ElementPtr->next.image.frame,
-					facing);
-			ElementPtr->state_flags |= CHANGING;
-	
-			SetVelocityVector (&ElementPtr->velocity,
-					discriminatorStats().speed, facing);
-		}
-
-		ElementPtr->turn_wait = TrackWait;
-	}
-}
-
-static void
 spawn_butt_missile (ELEMENT *ShipPtr)
 {
 	HELEMENT ButtMissile;
@@ -162,15 +137,15 @@ spawn_butt_missile (ELEMENT *ShipPtr)
 	ButtMissileBlock.hit_points = discriminatorStats().hitPoints;
 	ButtMissileBlock.damage = discriminatorStats().damage;
 	ButtMissileBlock.life = discriminatorStats().lifetime;
-	ButtMissileBlock.preprocess_func = butt_missile_preprocess;
+	ButtMissileBlock.preprocess_func = nullptr;
 	ButtMissileBlock.blast_offs = DiscriminatorOffset;
-	ButtMissile = initialize_missile (&ButtMissileBlock);
+	ButtMissile = uqm::combat::publishMissile(ButtMissileBlock, discriminatorStats().flight);
 	if (ButtMissile)
 	{
 		ELEMENT *ButtPtr;
 
 		LockElement (ButtMissile, &ButtPtr);
-		ButtPtr->turn_wait = TrackWait;
+
 		SetElementStarShip (ButtPtr, StarShipPtr);
 
 		ProcessSound (SetAbsSoundIndex (
@@ -255,7 +230,7 @@ initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	MissileArray[0] = initialize_missile (&MissileBlock);
+	MissileArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
 	return (1);
 }
