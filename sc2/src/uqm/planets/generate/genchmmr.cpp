@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_behavior.hpp"
 #include "../../game_state.hpp"
 #include "../lander.h"
@@ -84,7 +85,7 @@ ChmmrSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		if (campaign_.read(StoryFlag::ChmmrFreed))
 		{
 			campaign_.set(StoryCounter::EncounterContext, 1u << 7);
-			InitCommunication (CHMMR_CONVERSATION);
+			communicate(CHMMR_CONVERSATION);
 
 			if (campaign_.read(StoryCounter::BombProgress) == 2)
 			{
@@ -97,22 +98,19 @@ ChmmrSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				&& !campaign_.read(StoryFlag::IlwrathDeceived)
 				&& StartSphereTracking (ILWRATH_SHIP))
 		{
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 			CloneShipFragment (ILWRATH_SHIP,
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
 			campaign_.set(StoryCounter::EncounterContext, 1u << 6);
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			InitCommunication (ILWRATH_CONVERSATION);
+			communicate(ILWRATH_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				encounter.restore();
 			}
 
 			return true;

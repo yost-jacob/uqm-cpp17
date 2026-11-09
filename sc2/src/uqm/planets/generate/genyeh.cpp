@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../planets.h"
@@ -80,22 +81,19 @@ YehatSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		if (StartSphereTracking (YEHAT_SHIP))
 		{
 			NotifyOthers (YEHAT_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 			CloneShipFragment (YEHAT_SHIP, &GLOBAL (npc_built_ship_q),
 					INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
-			InitCommunication (YEHAT_CONVERSATION);
+			communicate(YEHAT_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				encounter.restore();
 			}
 
 			return true;

@@ -1,4 +1,5 @@
 #include "uqm/system_behavior.hpp"
+#include "uqm/orbital_encounter.hpp"
 #include "uqm/system_builders.hpp"
 #include "uqm/system_runtime.hpp"
 #include "uqm/gendef.h"
@@ -11,12 +12,14 @@
 #include "uqm/planets/generate/gendefault.h"
 #include <boost/test/unit_test.hpp>
 #include <array>
+#include <functional>
 #include <typeinfo>
 namespace {
 std::array<unsigned, 13> defaultCalls{};
 unsigned communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
 CONVERSATION lastConversation{};
 bool sphereTracked = false;
+std::function<void()> dialogueHook;
 struct EncounterQueues {
     QUEUE groups{}, ships{};
     ACTIVITY activity = GLOBAL(CurrentActivity);
@@ -133,7 +136,11 @@ bool matchWorld(const SOLARSYS_STATE *system, const PLANET_DESC *world, BYTE pla
     if (moon == MATCH_PLANET) return world == &system->PlanetDesc[planet];
     return world == &system->MoonDesc[moon] && world->pPrevDesc == &system->PlanetDesc[planet];
 }
-COUNT InitCommunication(CONVERSATION conversation) { ++communications; lastConversation = conversation; return 0; }
+COUNT InitCommunication(CONVERSATION conversation) {
+    ++communications; lastConversation = conversation;
+    if (dialogueHook) dialogueHook();
+    return 0;
+}
 COUNT StartSphereTracking(COUNT) { return sphereTracked ? 1 : 0; }
 DWORD PutGroupInfo(DWORD, BYTE) { ++groupsSaved; return 0; }
 BOOLEAN GetGroupInfo(DWORD, BYTE) { ++groupsLoaded; return TRUE; }
@@ -462,3 +469,100 @@ BOOST_AUTO_TEST_CASE(syreen_native_overrides_keep_shielded_planet_and_starbase_m
 }
 
 namespace uqm { void runExploration(UQM_SYSTEM_RUNTIME &) {} }
+
+namespace {
+class TestSystemRule final : public uqm::SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    COUNT encounter() { return communicate(CHMMR_CONVERSATION); }
+    BYTE starKind() const { return star().Index; }
+};
+}
+BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_requests_after_restoring_parents)
+{
+    for (const bool load : {false, true}) {
+        auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
+        uqm::GameSession session{state, uqm::SinglePlayerId};
+        TestSystemRule rule{session.player().campaign()};
+        rule.attachSession(session);
+        struct Parent final : uqm::GameMode {
+            uqm::GameSession &session;
+            TestSystemRule &rule;
+            bool &resumed;
+            unsigned &destroyed;
+            Parent(uqm::GameSession &s, TestSystemRule &r, bool &after, unsigned &deaths)
+                : GameMode(s.stateOwner(), s.playerId()), session(s), rule(r), resumed(after), destroyed(deaths) {}
+            ~Parent() override { ++destroyed; }
+            uqm::ModeResult run() override {
+                BOOST_TEST(rule.encounter() == 0u);
+                resumed = true;
+                if (auto exit = session.menuExit()) return *exit;
+                return uqm::SessionExit::title();
+            }
+        };
+        const auto oldActivity = GLOBAL(CurrentActivity);
+        GLOBAL(CurrentActivity) = 0;
+        bool resumed = false;
+        unsigned destroyed = 0;
+        dialogueHook = [&] {
+            BOOST_TEST(!resumed);
+            BOOST_TEST(destroyed == 0u);
+            if (load) session.requestLoad(3);
+        };
+        const auto exit = session.run(std::make_unique<Parent>(session, rule, resumed, destroyed));
+        dialogueHook = {};
+        BOOST_TEST(resumed);
+        BOOST_TEST(destroyed == 1u);
+        BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(load ? uqm::SessionExitKind::LoadGame : uqm::SessionExitKind::ReturnToTitle));
+        if (load) {
+            BOOST_REQUIRE(exit.loadSlot);
+            BOOST_TEST(*exit.loadSlot == 3u);
+            BOOST_TEST((GLOBAL(CurrentActivity) & CHECK_LOAD) != 0);
+        }
+        GLOBAL(CurrentActivity) = oldActivity;
+    }
+}
+BOOST_AUTO_TEST_CASE(system_star_context_is_explicit_and_cannot_be_rebound_mid_visit)
+{
+    uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
+    STAR_DESC first{}, other{};
+    first.Index = SOL_DEFINED;
+    other.Index = CHMMR_DEFINED;
+    TestSystemRule rule{state.player(uqm::SinglePlayerId).campaign()};
+    BOOST_CHECK_THROW(rule.starKind(), std::logic_error);
+    rule.attachStar(first);
+    BOOST_TEST(rule.starKind() == SOL_DEFINED);
+    BOOST_CHECK_THROW(rule.attachStar(other), std::logic_error);
+    BOOST_TEST(rule.starKind() == SOL_DEFINED);
+}
+BOOST_AUTO_TEST_CASE(orbital_encounter_restores_once_at_the_explicit_story_boundary)
+{
+    EncounterQueues queues;
+    resetCalls();
+    GLOBAL(CurrentActivity) = 0;
+    {
+        uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+        GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
+        encounter.restore();
+        encounter.restore();
+        BOOST_TEST(groupsSaved == 1u);
+        BOOST_TEST(groupsLoaded == 1u);
+        BOOST_TEST((GLOBAL(CurrentActivity) & START_INTERPLANETARY) == 0);
+    }
+    BOOST_TEST(groupsLoaded == 1u);
+}
+BOOST_AUTO_TEST_CASE(orbital_encounter_scope_restores_on_early_return_but_preserves_load_abort_handoff)
+{
+    EncounterQueues queues;
+    for (const auto flag : {ACTIVITY{0}, ACTIVITY{CHECK_LOAD}, ACTIVITY{CHECK_ABORT}}) {
+        resetCalls();
+        GLOBAL(CurrentActivity) = 0;
+        {
+            uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+            GLOBAL(CurrentActivity) |= START_INTERPLANETARY | flag;
+        }
+        BOOST_TEST(groupsSaved == 1u);
+        BOOST_TEST(groupsLoaded == (flag ? 0u : 1u));
+        BOOST_TEST(bool(GLOBAL(CurrentActivity) & START_INTERPLANETARY) == bool(flag));
+    }
+}

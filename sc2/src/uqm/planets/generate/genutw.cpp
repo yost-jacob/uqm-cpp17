@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../lander.h"
@@ -60,7 +61,7 @@ bool
 UtwigSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	if (CurStarDescPtr->Index == BOMB_DEFINED
+	if (star().Index == BOMB_DEFINED
 			&& !campaign_.read(StoryFlag::UtwigBomb))
 	{
 		ReinitQueue (&GLOBAL (ip_group_q));
@@ -82,7 +83,7 @@ UtwigSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	GenerateDefault_generatePlanets (solarSys);
 
-	if (CurStarDescPtr->Index == UTWIG_DEFINED)
+	if (star().Index == UTWIG_DEFINED)
 	{
 		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
 		solarSys->PlanetDesc[0].NumPlanets = 1;
@@ -103,26 +104,24 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if ((CurStarDescPtr->Index == UTWIG_DEFINED
+	if ((star().Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
-			|| (CurStarDescPtr->Index == BOMB_DEFINED
+			|| (star().Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1)
 			&& !campaign_.read(StoryFlag::UtwigBomb)))
 	{
-		if ((CurStarDescPtr->Index == UTWIG_DEFINED
+		if ((star().Index == UTWIG_DEFINED
 				|| !campaign_.read(StoryFlag::UtwigHaveUltron))
 				&& StartSphereTracking (UTWIG_SHIP))
 		{
 			NotifyOthers (UTWIG_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 			CloneShipFragment (UTWIG_SHIP,
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			if (CurStarDescPtr->Index == UTWIG_DEFINED)
+			if (star().Index == UTWIG_DEFINED)
 			{
 				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
@@ -130,26 +129,23 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			{
 				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
-			InitCommunication (UTWIG_CONVERSATION);
+			communicate(UTWIG_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				encounter.restore();
 			}
 			return true;
 		}
 
-		if (CurStarDescPtr->Index == BOMB_DEFINED
+		if (star().Index == BOMB_DEFINED
 				&& !campaign_.read(StoryFlag::BombUnprotected)
 				&& StartSphereTracking (DRUUGE_SHIP))
 		{
 			COUNT i;
 
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 			for (i = 0; i < 5; ++i)
 			{
@@ -158,7 +154,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			}
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			campaign_.set(StoryCounter::EncounterContext, 1 << 6);
-			InitCommunication (DRUUGE_CONVERSATION);
+			communicate(DRUUGE_CONVERSATION);
 
 			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 				return true;
@@ -170,8 +166,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 						GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
 
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				encounter.restore();
 
 				if (DruugeSurvivors)
 					return true;
@@ -181,7 +176,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			}
 		}
 
-		if (CurStarDescPtr->Index == BOMB_DEFINED)
+		if (star().Index == BOMB_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
@@ -201,7 +196,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 	GenerateDefault_generateOrbital (solarSys, world);
 
-	if (CurStarDescPtr->Index == UTWIG_DEFINED
+	if (star().Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		solarSys->SysInfo.PlanetInfo.Weather = 1;
@@ -216,13 +211,13 @@ UtwigSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == UTWIG_DEFINED
+	if (star().Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
 	}
 
-	if (CurStarDescPtr->Index == BOMB_DEFINED
+	if (star().Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1))
 	{
 		// This check is redundant since the retrieval bit will keep the
@@ -243,7 +238,7 @@ UtwigSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == UTWIG_DEFINED
+	if (star().Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report
@@ -251,7 +246,7 @@ UtwigSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 		return false;
 	}
 
-	if (CurStarDescPtr->Index == BOMB_DEFINED
+	if (star().Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1))
 	{
 		assert (!campaign_.read(StoryFlag::UtwigBomb) && whichNode == 0);

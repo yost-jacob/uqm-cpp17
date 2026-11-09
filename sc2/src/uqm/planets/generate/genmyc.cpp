@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../lander.h"
@@ -88,25 +89,23 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
     auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-        if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
-                || CurStarDescPtr->Index == EGG_CASE0_DEFINED
-                || CurStarDescPtr->Index == EGG_CASE1_DEFINED
-                || CurStarDescPtr->Index == EGG_CASE2_DEFINED)
+        if (star().Index == SUN_DEVICE_DEFINED
+                || star().Index == EGG_CASE0_DEFINED
+                || star().Index == EGG_CASE1_DEFINED
+                || star().Index == EGG_CASE2_DEFINED)
             ConfigureArtifactEnergyBehavior (solarSys, 0, -1);
 
-		if ((CurStarDescPtr->Index == MYCON_DEFINED
-				|| CurStarDescPtr->Index == SUN_DEVICE_DEFINED)
+		if ((star().Index == MYCON_DEFINED
+				|| star().Index == SUN_DEVICE_DEFINED)
 				&& StartSphereTracking (MYCON_SHIP))
 		{
-			if (CurStarDescPtr->Index == MYCON_DEFINED
+			if (star().Index == MYCON_DEFINED
 					|| !campaign_.read(StoryFlag::SunDeviceUnguarded))
 			{
 				NotifyOthers (MYCON_SHIP, IPNL_ALL_CLEAR);
-				PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-				ReinitQueue (&GLOBAL (ip_group_q));
-				assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+				uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
-				if (CurStarDescPtr->Index == MYCON_DEFINED
+				if (star().Index == MYCON_DEFINED
 						|| !campaign_.read(StoryFlag::MyconFellForAmbush))
 				{
 					CloneShipFragment (MYCON_SHIP,
@@ -122,7 +121,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				}
 
 				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-				if (CurStarDescPtr->Index == MYCON_DEFINED)
+				if (star().Index == MYCON_DEFINED)
 				{
 					campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 				}
@@ -130,7 +129,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				{
 					campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 				}
-				InitCommunication (MYCON_CONVERSATION);
+				communicate(MYCON_CONVERSATION);
 
 				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 					return true;
@@ -142,8 +141,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 							GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
 
 					GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-					ReinitQueue (&GLOBAL (npc_built_ship_q));
-					GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+					encounter.restore();
 
 					if (MyconSurvivors)
 						return true;
@@ -154,7 +152,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			}
 		}
 
-		switch (CurStarDescPtr->Index)
+		switch (star().Index)
 		{
 			case SUN_DEVICE_DEFINED:
 				if (!campaign_.read(StoryFlag::SunDevice))
@@ -198,7 +196,7 @@ MyconSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
+	if (star().Index == SUN_DEVICE_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// This check is redundant since the retrieval bit will keep the
@@ -211,9 +209,9 @@ MyconSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 		return GenerateDefault_generateArtifact (solarSys, whichNode, info);
 	}
 
-	if ((CurStarDescPtr->Index == EGG_CASE0_DEFINED
-			|| CurStarDescPtr->Index == EGG_CASE1_DEFINED
-			|| CurStarDescPtr->Index == EGG_CASE2_DEFINED)
+	if ((star().Index == EGG_CASE0_DEFINED
+			|| star().Index == EGG_CASE1_DEFINED
+			|| star().Index == EGG_CASE2_DEFINED)
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// This check is redundant since the retrieval bit will keep the
@@ -236,7 +234,7 @@ MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
+	if (star().Index == SUN_DEVICE_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		assert (!campaign_.read(StoryFlag::SunDevice) && whichNode == 0);
@@ -256,9 +254,9 @@ MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
         return result.removeNode; // Physical retrieval is committed by the lander.
 	}
 
-	if ((CurStarDescPtr->Index == EGG_CASE0_DEFINED
-			|| CurStarDescPtr->Index == EGG_CASE1_DEFINED
-			|| CurStarDescPtr->Index == EGG_CASE2_DEFINED)
+	if ((star().Index == EGG_CASE0_DEFINED
+			|| star().Index == EGG_CASE1_DEFINED
+			|| star().Index == EGG_CASE2_DEFINED)
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		assert (whichNode == 0);
@@ -271,7 +269,7 @@ MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		switch (CurStarDescPtr->Index)
+		switch (star().Index)
 		{
 			case EGG_CASE0_DEFINED:
 				campaign_.set(StoryFlag::EggCase0OnShip, (1) != 0);

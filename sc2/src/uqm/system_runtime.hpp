@@ -10,6 +10,7 @@ struct UQM_SYSTEM_RUNTIME {
     uqm::CampaignState &campaign;
     std::shared_ptr<uqm::WorldState> world;
     std::unique_ptr<uqm::SolarSystem> system;
+    uqm::GameSession *session = nullptr;
     SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
 };
 namespace uqm {
@@ -24,7 +25,7 @@ SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
 // Mode-owned exploration lifetime. The campaign outlives this object.
 class SolarSystemExploration {
 public:
-    SolarSystemExploration(CampaignState &campaign, std::shared_ptr<WorldState> world);
+    explicit SolarSystemExploration(GameSession &session);
     void run();
     SolarSystemExploration(const SolarSystemExploration &) = delete;
     SolarSystemExploration &operator=(const SolarSystemExploration &) = delete;
@@ -33,5 +34,7 @@ private:
 };
 // Native engine entry, called only by SolarSystemExploration::run.
 void runExploration(UQM_SYSTEM_RUNTIME &runtime);
+// Run one native lander visit; owner and campaign must outlive every callback.
+void runLander(SOLARSYS_STATE &system, POINT planetLoc);
 }
 #endif

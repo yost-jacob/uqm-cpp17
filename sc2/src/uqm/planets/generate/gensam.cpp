@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../planets.h"
@@ -175,9 +176,7 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 	/* Samatra */
 	if (matchWorld (solarSys, world, 4, 0))
 	{
-		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 		if (!campaign_.read(StoryFlag::UrquanMessedUp))
 		{
@@ -202,7 +201,7 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 		campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 		campaign_.set(StoryFlag::UrquanProtectingSamatra, (1) != 0);
-		InitCommunication (URQUAN_CONVERSATION);
+		communicate(URQUAN_CONVERSATION);
 
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 		{
@@ -211,8 +210,7 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 			UrquanSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
 
 			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+			encounter.restore();
 			if (UrquanSurvivors)
 			{
 				campaign_.set(StoryFlag::UrquanProtectingSamatra, (0) != 0);
@@ -225,7 +223,7 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 				if (campaign_.read(StoryFlag::YehatCivilWar)
 						&& StartSphereTracking (YEHAT_SHIP)
 						&& EscortFeasibilityStudy (YEHAT_REBEL_SHIP))
-					InitCommunication (YEHAT_REBEL_CONVERSATION);
+					communicate(YEHAT_REBEL_CONVERSATION);
 			}
 		}
 		return true;

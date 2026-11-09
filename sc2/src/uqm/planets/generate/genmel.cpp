@@ -72,7 +72,7 @@ MelnormeSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 std::optional<StoryCounter>
 MelnormeSystemBehavior::SelectMelnormeRefVar(void)
 {
-	switch (CurStarDescPtr->Index)
+	switch (star().Index)
 	{
 		case MELNORME0_DEFINED: return StoryCounter::Melnorme0Grpoffs0;
 		case MELNORME1_DEFINED: return StoryCounter::Melnorme1Grpoffs0;

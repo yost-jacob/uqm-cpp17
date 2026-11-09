@@ -25,6 +25,7 @@
 #include "../../globdata.h"
 #include "../../state.h"
 #include "../../world_c.h"
+#include "../../system_runtime.hpp"
 #include "../../starmap.h"
 #include "../../nameref.h"
 #include "../../resinst.h"
@@ -80,7 +81,7 @@ AndrosynthSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
     auto *world = &body;
 	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
 	{
-        COUNT visits = PersonalDiscoveryCount ((COUNT)GetStarIndex(CurStarDescPtr), 1, -1);
+        COUNT visits = campaign_.discovery(solarSys->worlds->system->world(1).id()).visitedSites.count();
 
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =

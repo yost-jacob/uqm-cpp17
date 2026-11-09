@@ -1,9 +1,11 @@
 #ifndef UQM_SYSTEM_BEHAVIOR_HPP_
 #define UQM_SYSTEM_BEHAVIOR_HPP_
 #include "planets/planets.h"
+#include "comm.h"
 #include <memory>
 namespace uqm {
 class CampaignState;
+class GameSession;
 // One behavior per explored system. campaign must outlive this object. Hook
 // descriptors belong to the active C engine frame and are never retained.
 // Return meanings/order match the original generation hooks; node info may be null for counts.
@@ -11,6 +13,9 @@ class SystemBehavior {
 public:
     explicit SystemBehavior(CampaignState &campaign) noexcept : campaign_(campaign) {}
     virtual ~SystemBehavior() = default;
+    // Attach immutable catalogue context before hooks. It outlives exploration.
+    void attachStar(const STAR_DESC &star);
+    void attachSession(GameSession &session);
     SystemBehavior(const SystemBehavior &) = delete;
     SystemBehavior &operator=(const SystemBehavior &) = delete;
     // NPC lifecycle hooks run with the initialized system and encounter queues.
@@ -32,7 +37,12 @@ public:
     virtual bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &world, COUNT node);
     virtual bool pickupLife(SOLARSYS_STATE &system, PLANET_DESC &world, COUNT node);
 protected:
+    const STAR_DESC &star() const;
+    COUNT communicate(CONVERSATION conversation);
     CampaignState &campaign_;
+private:
+    const STAR_DESC *star_ = nullptr;
+    GameSession *session_ = nullptr;
 };
 // Catalogue special-system ID selects rules; story state is checked by hooks.
 std::unique_ptr<SystemBehavior> createSystemBehavior(BYTE specialSystem, CampaignState &campaign);

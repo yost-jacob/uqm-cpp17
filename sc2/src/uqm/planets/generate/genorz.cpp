@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../lander.h"
@@ -62,7 +63,7 @@ OrzSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	GenerateDefault_generatePlanets (solarSys);
 
-	if (CurStarDescPtr->Index == ORZ_DEFINED)
+	if (star().Index == ORZ_DEFINED)
 	{
 		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
 		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 156L / 100;
@@ -83,24 +84,22 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if ((CurStarDescPtr->Index == ORZ_DEFINED
+	if ((star().Index == ORZ_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
-			|| (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
+			|| (star().Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2)
 			&& !campaign_.read(StoryFlag::TaaloProtector)))
 	{
 		COUNT i;
 
-		if ((CurStarDescPtr->Index == ORZ_DEFINED
+		if ((star().Index == ORZ_DEFINED
 				|| !campaign_.read(StoryFlag::TaaloUnprotected))
 				&& StartSphereTracking (ORZ_SHIP))
 		{
 			NotifyOthers (ORZ_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
-			if (CurStarDescPtr->Index == ORZ_DEFINED)
+			if (star().Index == ORZ_DEFINED)
 			{
 				CloneShipFragment (ORZ_SHIP,
 						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
@@ -116,7 +115,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			InitCommunication (ORZ_CONVERSATION);
+			communicate(ORZ_CONVERSATION);
 
 			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 				return true;
@@ -125,12 +124,11 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				bool OrzSurvivors;
 
 				OrzSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q))
-						&& (CurStarDescPtr->Index == ORZ_DEFINED
+						&& (star().Index == ORZ_DEFINED
 						|| !campaign_.read(StoryFlag::TaaloUnprotected));
 
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				encounter.restore();
 
 				if (OrzSurvivors)
 					return true;
@@ -140,7 +138,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		}
 
 		campaign_.set(StoryFlag::TaaloUnprotected, (1) != 0);
-		if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED)
+		if (star().Index == TAALO_PROTECTOR_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
@@ -170,7 +168,7 @@ OrzSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
+	if (star().Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2))
 	{
 		// This check is redundant since the retrieval bit will keep the
@@ -183,7 +181,7 @@ OrzSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 		return GenerateDefault_generateArtifact (solarSys, whichNode, info);
 	}
 
-	if (CurStarDescPtr->Index == ORZ_DEFINED
+	if (star().Index == ORZ_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
@@ -197,7 +195,7 @@ OrzSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
+	if (star().Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2))
 	{
 		assert (!campaign_.read(StoryFlag::TaaloProtector) && whichNode == 0);
@@ -211,7 +209,7 @@ OrzSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 		return true; // picked up
 	}
 
-	if (CurStarDescPtr->Index == ORZ_DEFINED
+	if (star().Index == ORZ_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report

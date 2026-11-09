@@ -93,7 +93,7 @@ SyreenSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		/* Starbase */
-		InitCommunication (SYREEN_CONVERSATION);
+		communicate(SYREEN_CONVERSATION);
 		return true;
 	}
 

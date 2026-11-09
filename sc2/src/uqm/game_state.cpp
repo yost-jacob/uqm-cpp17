@@ -22,6 +22,11 @@ namespace {
 struct Field { int first, last; };
 Field field(StoryFlag flag) {
     switch (flag) {
+        case StoryFlag::KohrAhKilledAll: return {KOHR_AH_KILLED_ALL, END_KOHR_AH_KILLED_ALL};
+        case StoryFlag::PlanetaryLanding: return {PLANETARY_LANDING, END_PLANETARY_LANDING};
+        case StoryFlag::ImprovedLanderSpeed: return {IMPROVED_LANDER_SPEED, END_IMPROVED_LANDER_SPEED};
+        case StoryFlag::ImprovedLanderShot: return {IMPROVED_LANDER_SHOT, END_IMPROVED_LANDER_SHOT};
+        case StoryFlag::ImprovedLanderCargo: return {IMPROVED_LANDER_CARGO, END_IMPROVED_LANDER_CARGO};
         case StoryFlag::ArilouSpace: return {ARILOU_SPACE, END_ARILOU_SPACE};
         case StoryFlag::BroadcasterResponse: return {BROADCASTER_RESPONSE, END_BROADCASTER_RESPONSE};
         case StoryFlag::UsedBroadcaster: return {USED_BROADCASTER, END_USED_BROADCASTER};
@@ -88,6 +93,7 @@ Field field(StoryFlag flag) {
 }
 Field field(StoryCounter counter) {
     switch (counter) {
+        case StoryCounter::LanderShields: return {LANDER_SHIELDS, END_LANDER_SHIELDS};
         case StoryCounter::ArilouSpaceCounter: return {ARILOU_SPACE_COUNTER, END_ARILOU_SPACE_COUNTER};
         case StoryCounter::ArilouSpaceSide: return {ARILOU_SPACE_SIDE, END_ARILOU_SPACE_SIDE};
         case StoryCounter::EscapeCounter: return {ESCAPE_COUNTER, END_ESCAPE_COUNTER};

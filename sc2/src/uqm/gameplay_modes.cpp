@@ -27,7 +27,7 @@
 
 namespace uqm {
 namespace {
-std::unique_ptr<GameMode> selectMode(std::shared_ptr<GameState> state, PlayerId player);
+std::unique_ptr<GameMode> selectMode(GameSession &session);
 
 // Legacy clock/resources remain C-owned internally. This scope ends only after
 // every mode and nested menu has returned; no load runs with these frames alive.
@@ -54,54 +54,56 @@ public:
 private:
     bool input_ = false, structures_ = false, clock_ = false;
 };
-ModeResult finishMode(std::shared_ptr<GameState> state, PlayerId player) {
+ModeResult finishMode(GameSession &session) {
     SetFlashRect(nullptr);
     LastActivity = GLOBAL(CurrentActivity);
     if (QuitPosted) return SessionExit::shutdown();
-    if (auto exit = gameSession().menuExit()) return *exit;
+    if (auto exit = session.menuExit()) return *exit;
     if (GLOBAL(CurrentActivity) & CHECK_ABORT) return SessionExit::title();
     if (!(GLOBAL(CurrentActivity) & CHECK_LOAD)
             && (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
-                || GLOBAL_SIS(CrewEnlisted) == static_cast<COUNT>(~0u))) {
-        if (GET_GAME_STATE(KOHR_AH_KILLED_ALL)) InitCommunication(BLACKURQ_CONVERSATION);
+                || session.player().crew() == static_cast<COUNT>(~0u))) {
+        if (session.player().campaign().read(StoryFlag::KohrAhKilledAll)) InitCommunication(BLACKURQ_CONVERSATION);
         else if (GLOBAL(CurrentActivity) & CHECK_RESTART) GLOBAL(CurrentActivity) &= ~CHECK_RESTART;
         return SessionExit::title();
     }
-    return selectMode(std::move(state), player);
+    return selectMode(session);
 }
 class HyperSpaceMode final : public GameMode {
 public:
-    HyperSpaceMode(std::shared_ptr<GameState> state, PlayerId player)
-        : GameMode(state, player), navigation_(state->player(player)) {}
+    HyperSpaceMode(GameSession &session)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session), navigation_(session.player()) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(HYPERSPACE_CLOCK_RATE);
-        navigation_.run(gameSession());
-        return finishMode(stateOwner(), playerId());
+        navigation_.run(session_);
+        return finishMode(session_);
     }
 private:
+    GameSession &session_;
     HyperSpaceNavigation navigation_;
 };
 class SolarSystemMode final : public GameMode {
 public:
-    SolarSystemMode(std::shared_ptr<GameState> state, PlayerId player)
-        : GameMode(state, player), exploration_(state->player(player).campaign(), state->worldOwner()) {}
+    SolarSystemMode(GameSession &session)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session), exploration_(session) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(INTERPLANETARY_CLOCK_RATE);
         exploration_.run();
-        return finishMode(stateOwner(), playerId());
+        return finishMode(session_);
     }
 private:
+    GameSession &session_;
     SolarSystemExploration exploration_;
 };
 enum class EncounterKind { Communication, Starbase, InstallBomb };
 class EncounterMode final : public GameMode {
 public:
-    EncounterMode(std::shared_ptr<GameState> state, PlayerId player, EncounterKind kind)
-        : GameMode(std::move(state), player), kind_(kind) {}
+    EncounterMode(GameSession &session, EncounterKind kind)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session), kind_(kind) {}
     ModeResult run() override {
         if (kind_ == EncounterKind::InstallBomb) InstallBombAtEarth();
         else {
@@ -114,34 +116,41 @@ public:
             if (LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
                 GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
         }
-        return finishMode(stateOwner(), playerId());
+        return finishMode(session_);
     }
 private:
+    GameSession &session_;
     EncounterKind kind_;
 };
 class LoadMenuMode final : public GameMode {
 public:
-    using GameMode::GameMode;
+    explicit LoadMenuMode(GameSession &session)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session) {}
     ModeResult run() override {
-        if (auto exit = runGameOptionsMenu(gameSession())) return *exit;
+        if (auto exit = runGameOptionsMenu(session_)) return *exit;
         return SessionExit::title();
     }
+private:
+    GameSession &session_;
 };
 #ifdef DEBUG
 class DebugMode final : public GameMode {
 public:
-    using GameMode::GameMode;
+    explicit DebugMode(GameSession &session)
+        : GameMode(session.stateOwner(), session.playerId()), session_(session) {}
     ModeResult run() override {
         auto hook = debugHook;
         debugHook = nullptr;
         if (hook) hook();
-        return selectMode(stateOwner(), playerId());
+        return selectMode(session_);
     }
+private:
+    GameSession &session_;
 };
 #endif
-std::unique_ptr<GameMode> selectMode(std::shared_ptr<GameState> state, PlayerId player) {
+std::unique_ptr<GameMode> selectMode(GameSession &session) {
 #ifdef DEBUG
-    if (debugHook) return std::make_unique<DebugMode>(std::move(state), player);
+    if (debugHook) return std::make_unique<DebugMode>(session);
 #endif
     SetStatusMessageMode(SMM_DEFAULT);
     if (!((GLOBAL(CurrentActivity) | NextActivity) & CHECK_LOAD))
@@ -149,17 +158,17 @@ std::unique_ptr<GameMode> selectMode(std::shared_ptr<GameState> state, PlayerId 
     else if (GLOBAL(CurrentActivity) & CHECK_LOAD)
         GLOBAL(CurrentActivity) = NextActivity;
 
-    if ((GLOBAL(CurrentActivity) & START_ENCOUNTER) || GET_GAME_STATE(CHMMR_BOMB_STATE) == 2) {
-        const auto kind = GET_GAME_STATE(CHMMR_BOMB_STATE) == 2 && !GET_GAME_STATE(STARBASE_AVAILABLE)
+    if ((GLOBAL(CurrentActivity) & START_ENCOUNTER) || session.player().campaign().read(StoryCounter::BombProgress) == 2) {
+        const auto kind = session.player().campaign().read(StoryCounter::BombProgress) == 2 && !session.player().campaign().read(StoryFlag::StarbaseAccessGranted)
                 ? EncounterKind::InstallBomb
-                : GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == static_cast<BYTE>(~0u)
-                    || GET_GAME_STATE(CHMMR_BOMB_STATE) == 2
+                : session.player().campaign().read(StoryCounter::EncounterContext) == static_cast<BYTE>(~0u)
+                    || session.player().campaign().read(StoryCounter::BombProgress) == 2
                 ? EncounterKind::Starbase : EncounterKind::Communication;
-        return std::make_unique<EncounterMode>(std::move(state), player, kind);
+        return std::make_unique<EncounterMode>(session, kind);
     }
     if (GLOBAL(CurrentActivity) & START_INTERPLANETARY)
-        return std::make_unique<SolarSystemMode>(std::move(state), player);
-    return std::make_unique<HyperSpaceMode>(std::move(state), player);
+        return std::make_unique<SolarSystemMode>(session);
+    return std::make_unique<HyperSpaceMode>(session);
 }
 void logFailure(const SessionExit &exit) {
     try {
@@ -187,8 +196,8 @@ SessionExit GameSession::runCampaign(std::optional<unsigned> slot) {
             GLOBAL(CurrentActivity) |= CHECK_LOAD;
         }
         auto initial = !slot && LastActivity == CHECK_LOAD
-                ? std::unique_ptr<GameMode>(std::make_unique<LoadMenuMode>(state_, player_))
-                : selectMode(state_, player_);
+                ? std::unique_ptr<GameMode>(std::make_unique<LoadMenuMode>(*this))
+                : selectMode(*this);
         auto exit = run(std::move(initial));
         if (exit.kind == SessionExitKind::Failed) {
             LastActivity = 0;

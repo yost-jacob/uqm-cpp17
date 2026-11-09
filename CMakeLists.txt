@@ -83,7 +83,7 @@ if(BUILD_TESTING)
         # Executable design prototype; deliberately excluded from UQM_SOURCES.
         tests/combat_ownership.cpp docs/design/combat/projectile.cpp
         tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp tests/system_behavior.cpp
-        sc2/src/uqm/system_behavior.cpp sc2/src/uqm/system_runtime.cpp sc2/src/uqm/system_behavior_factory.cpp
+        sc2/src/uqm/system_behavior.cpp sc2/src/uqm/system_encounter.cpp sc2/src/uqm/orbital_encounter.cpp sc2/src/uqm/system_runtime.cpp sc2/src/uqm/system_behavior_factory.cpp
         sc2/src/uqm/planets/generate/genchmmr.cpp sc2/src/uqm/planets/generate/gensyr.cpp
         tests/hash_tables.cpp
         tests/hash_tables_c.c tests/memory_log.cpp tests/stringbank.cpp

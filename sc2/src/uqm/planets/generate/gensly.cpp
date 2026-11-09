@@ -59,7 +59,7 @@ SlylandroSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
     auto *world = &body;
 	if (matchWorld (solarSys, world, 3, MATCH_PLANET))
 	{
-		InitCommunication (SLYLANDRO_HOME_CONVERSATION);
+		communicate(SLYLANDRO_HOME_CONVERSATION);
 		return true;
 	}
 

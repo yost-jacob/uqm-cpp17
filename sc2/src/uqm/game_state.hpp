@@ -37,6 +37,11 @@ struct PlayerLocation {
     std::uint8_t planet, orbit;
 };
 enum class StoryFlag {
+    KohrAhKilledAll,
+    PlanetaryLanding,
+    ImprovedLanderSpeed,
+    ImprovedLanderShot,
+    ImprovedLanderCargo,
     ArilouSpace,
     BroadcasterResponse,
     UsedBroadcaster,
@@ -99,6 +104,7 @@ enum class StoryFlag {
     ZexIsDead,
 };
 enum class StoryCounter {
+    LanderShields,
     ArilouSpaceCounter,
     ArilouSpaceSide,
     EscapeCounter,
@@ -139,6 +145,7 @@ enum class StoryCounter {
 };
 constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
     switch (counter) {
+        case StoryCounter::LanderShields: return 15u;
         case StoryCounter::ArilouSpaceCounter: return 15u;
         case StoryCounter::ArilouSpaceSide: return 3u;
         case StoryCounter::EscapeCounter: return 255u;

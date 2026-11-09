@@ -85,7 +85,7 @@ RainbowWorldSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC 
 
 		which_rainbow = 0;
 		SDPtr = GetStar(0);
-		while (SDPtr != CurStarDescPtr)
+		while (SDPtr != &star())
 		{
 			if (SDPtr->Index == RAINBOW_DEFINED)
 				++which_rainbow;

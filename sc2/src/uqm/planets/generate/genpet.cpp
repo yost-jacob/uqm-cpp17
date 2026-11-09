@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../planets.h"
@@ -88,9 +89,7 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
 			|| StartSphereTracking (UMGAH_SHIP)))
 	{
 		NotifyOthers (UMGAH_SHIP, IPNL_ALL_CLEAR);
-		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 		if (StartSphereTracking (UMGAH_SHIP))
 		{
@@ -100,7 +99,7 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
 			{
 				CloneShipFragment (UMGAH_SHIP,
 						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-				InitCommunication (UMGAH_CONVERSATION);
+				communicate(UMGAH_CONVERSATION);
 			}
 			else
 			{
@@ -111,7 +110,7 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
 					CloneShipFragment (UMGAH_SHIP,
 							&GLOBAL (npc_built_ship_q), 0);
 				}
-				InitCommunication (TALKING_PET_CONVERSATION);
+				communicate(TALKING_PET_CONVERSATION);
 			}
 		}
 
@@ -129,17 +128,16 @@ TalkingPetSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
 					&& !UmgahSurvivors)
 			{
 				// Defeated the zombie fleet.
-				InitCommunication (TALKING_PET_CONVERSATION);
+				communicate(TALKING_PET_CONVERSATION);
 			}
 			else if (!(StartSphereTracking (UMGAH_SHIP)))
 			{
 				// The Kohr-Ah have destroyed the Umgah, but the
 				// talking pet survived.
-				InitCommunication (TALKING_PET_CONVERSATION);
+				communicate(TALKING_PET_CONVERSATION);
 			}
 
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+			encounter.restore();
 		}
 
 		return true;
@@ -240,8 +238,8 @@ TalkingPetSystemBehavior::ZapToUrquanEncounter(void)
 
 		GLOBAL (CurrentActivity) = MAKE_WORD (IN_HYPERSPACE, 0) | START_ENCOUNTER;
 
-		dx = CurStarDescPtr->star_pt.x - EncounterPtr->loc_pt.x;
-		dy = CurStarDescPtr->star_pt.y - EncounterPtr->loc_pt.y;
+		dx = star().star_pt.x - EncounterPtr->loc_pt.x;
+		dy = star().star_pt.y - EncounterPtr->loc_pt.y;
 		dx = (SIZE)square_root ((long)dx * dx + (long)dy * dy)
 				+ (FUEL_TANK_SCALE >> 1);
 

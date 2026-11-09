@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../lander.h"
@@ -62,7 +63,7 @@ ThraddashSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	GenerateDefault_generatePlanets (solarSys);
 
-	if (CurStarDescPtr->Index == AQUA_HELIX_DEFINED)
+	if (star().Index == AQUA_HELIX_DEFINED)
 	{
 		solarSys->PlanetDesc[0].data_index = PRIMORDIAL_WORLD;
 		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 65L / 100;
@@ -73,7 +74,7 @@ ThraddashSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 		solarSys->PlanetDesc[0].location.y =
 				SINE (angle, solarSys->PlanetDesc[0].radius);
 	}
-	else  /* CurStarDescPtr->Index == THRADD_DEFINED */
+	else  /* star().Index == THRADD_DEFINED */
 	{
 		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
 		solarSys->PlanetDesc[0].NumPlanets = 0;
@@ -96,20 +97,18 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (THRADDASH_SHIP)
-				&& (CurStarDescPtr->Index == THRADD_DEFINED
+				&& (star().Index == THRADD_DEFINED
 				|| (!campaign_.read(StoryFlag::HelixUnprotected)
 				&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3)))
 		{
 			NotifyOthers (THRADDASH_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 			CloneShipFragment (THRADDASH_SHIP, &GLOBAL (npc_built_ship_q),
 					INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			if (CurStarDescPtr->Index == THRADD_DEFINED)
+			if (star().Index == THRADD_DEFINED)
 			{
 				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
@@ -117,16 +116,15 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 			{
 				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
-			InitCommunication (THRADD_CONVERSATION);
+			communicate(THRADD_CONVERSATION);
 
 			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 				return true;
 
 			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+			encounter.restore();
 
-			if (CurStarDescPtr->Index == THRADD_DEFINED
+			if (star().Index == THRADD_DEFINED
 					|| (!campaign_.read(StoryFlag::HelixUnprotected)
 					&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3))
 				return true;
@@ -134,7 +132,7 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 			RepairSISBorder ();
 		}
 
-		if (CurStarDescPtr->Index == AQUA_HELIX_DEFINED
+		if (star().Index == AQUA_HELIX_DEFINED
 				&& !campaign_.read(StoryFlag::AquaHelix))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
@@ -143,7 +141,7 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (AQUA_STRTAB));
 		}
-		else if (CurStarDescPtr->Index == THRADD_DEFINED)
+		else if (star().Index == THRADD_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
@@ -162,13 +160,13 @@ ThraddashSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLAN
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == THRADD_DEFINED
+	if (star().Index == THRADD_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
 	}
 
-	if (CurStarDescPtr->Index == AQUA_HELIX_DEFINED
+	if (star().Index == AQUA_HELIX_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// This check is redundant since the retrieval bit will keep the
@@ -189,7 +187,7 @@ ThraddashSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == THRADD_DEFINED
+	if (star().Index == THRADD_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report
@@ -197,7 +195,7 @@ ThraddashSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 		return false;
 	}
 
-	if (CurStarDescPtr->Index == AQUA_HELIX_DEFINED
+	if (star().Index == AQUA_HELIX_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		assert (!campaign_.read(StoryFlag::AquaHelix) && whichNode == 0);

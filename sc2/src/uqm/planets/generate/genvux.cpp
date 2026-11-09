@@ -17,6 +17,7 @@
  */
 
 #include "genall.h"
+#include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
 #include "../lander.h"
@@ -68,7 +69,7 @@ VuxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	GenerateDefault_generatePlanets (solarSys);
 
-	if (CurStarDescPtr->Index == MAIDENS_DEFINED)
+	if (star().Index == MAIDENS_DEFINED)
 	{
 		GenerateDefault_generatePlanets (solarSys);
 				// XXX: this is the second time that this function is
@@ -85,14 +86,14 @@ VuxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	}
 	else
 	{
-		if (CurStarDescPtr->Index == VUX_DEFINED)
+		if (star().Index == VUX_DEFINED)
 		{
 			solarSys->PlanetDesc[0].data_index = REDUX_WORLD;
 			solarSys->PlanetDesc[0].NumPlanets = 1;
 			solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 42L / 100;
 			angle = HALF_CIRCLE + OCTANT;
 		}
-		else /* if (CurStarDescPtr->Index == VUX_BEAST_DEFINED) */
+		else /* if (star().Index == VUX_BEAST_DEFINED) */
 		{
 			memmove (&solarSys->PlanetDesc[1], &solarSys->PlanetDesc[0],
 					sizeof (solarSys->PlanetDesc[0])
@@ -122,19 +123,17 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
     auto *solarSys = &system;
     auto *world = &body;
 	if ((matchWorld (solarSys, world, 0, MATCH_PLANET)
-			&& (CurStarDescPtr->Index == VUX_DEFINED
-			|| (CurStarDescPtr->Index == MAIDENS_DEFINED
+			&& (star().Index == VUX_DEFINED
+			|| (star().Index == MAIDENS_DEFINED
 			&& !campaign_.read(StoryFlag::ZexIsDead))))
 			&& StartSphereTracking (VUX_SHIP))
 	{
 		NotifyOthers (VUX_SHIP, IPNL_ALL_CLEAR);
-		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 		CloneShipFragment (VUX_SHIP,
 				&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-		if (CurStarDescPtr->Index == VUX_DEFINED)
+		if (star().Index == VUX_DEFINED)
 		{
 			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
 		}
@@ -144,17 +143,16 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		}
 
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-		InitCommunication (VUX_CONVERSATION);
+		communicate(VUX_CONVERSATION);
 
 		if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			return true;
 
 		{
 			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+			encounter.restore();
 
-			if (CurStarDescPtr->Index == VUX_DEFINED
+			if (star().Index == VUX_DEFINED
 					|| !campaign_.read(StoryFlag::ZexIsDead))
 				return true;
 
@@ -164,7 +162,7 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		if (CurStarDescPtr->Index == MAIDENS_DEFINED)
+		if (star().Index == MAIDENS_DEFINED)
 		{
 			if (!campaign_.read(StoryFlag::ShofixtiMaidens))
 			{
@@ -176,7 +174,7 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 						LoadStringTable (MAIDENS_STRTAB));
 			}
 		}
-		else if (CurStarDescPtr->Index == VUX_BEAST_DEFINED)
+		else if (star().Index == VUX_BEAST_DEFINED)
 		{
 			if (!campaign_.read(StoryFlag::VuxBeast))
 			{
@@ -213,7 +211,7 @@ VuxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == MAIDENS_DEFINED
+	if (star().Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// This check is redundant since the retrieval bit will keep the
@@ -232,7 +230,7 @@ VuxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 		return 1; // only matters when count is requested
 	}
 
-	if (CurStarDescPtr->Index == VUX_DEFINED
+	if (star().Index == VUX_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
@@ -246,7 +244,7 @@ VuxSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == MAIDENS_DEFINED
+	if (star().Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		assert (!campaign_.read(StoryFlag::ShofixtiMaidens) && whichNode == 0);
@@ -260,7 +258,7 @@ VuxSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 		return true; // picked up
 	}
 
-	if (CurStarDescPtr->Index == VUX_DEFINED
+	if (star().Index == VUX_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report
@@ -277,7 +275,7 @@ VuxSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == MAIDENS_DEFINED
+	if (star().Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		static const SBYTE life[] =
@@ -290,7 +288,7 @@ VuxSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 		return GeneratePresetLife (&solarSys->SysInfo, life, whichNode, info);
 	}
 
-	if (CurStarDescPtr->Index == VUX_BEAST_DEFINED
+	if (star().Index == VUX_BEAST_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		static const SBYTE life[] =
@@ -312,7 +310,7 @@ VuxSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT w
 {
     auto *solarSys = &system;
     auto *world = &body;
-	if (CurStarDescPtr->Index == VUX_BEAST_DEFINED
+	if (star().Index == VUX_BEAST_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (whichNode == 0)

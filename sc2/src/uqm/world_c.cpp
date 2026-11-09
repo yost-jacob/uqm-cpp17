@@ -73,7 +73,7 @@ void GetPlanetInfo(void) {
     try {
         auto &native = runtime(*pSolarSysState);
         const auto world = orbitalId(*pSolarSysState, native);
-        importSystemDiscoveries(native, *CurStarDescPtr, *pSolarSysState->worlds); // Recheck after in-place checkpoint load.
+        importSystemDiscoveries(native, *GetStar(native.star().value), *pSolarSysState->worlds); // Recheck after in-place checkpoint load.
         const auto progress = native.progress(world);
         auto &masks = pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask;
         masks[MINERAL_SCAN] = static_cast<DWORD>(progress.minerals.to_ulong());
@@ -99,6 +99,8 @@ void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
         auto &context = *system->worlds;
         context.system = std::make_unique<uqm::SolarSystem>(id, context.world,
                 context.campaign, star->Index);
+        context.system->behavior().attachStar(*star);
+        if (context.session) context.system->behavior().attachSession(*context.session);
     } catch (...) { std::abort(); }
 }
 // Legacy debug tooling still owns an opaque heap handle. Production exploration

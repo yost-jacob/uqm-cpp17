@@ -173,6 +173,14 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
     } restore;
     struct Flag { StoryFlag id; int start, end; };
     const Flag flags[] = {
+        {StoryFlag::PlanetaryLanding, PLANETARY_LANDING, END_PLANETARY_LANDING},
+        {StoryFlag::ImprovedLanderSpeed, IMPROVED_LANDER_SPEED, END_IMPROVED_LANDER_SPEED},
+        {StoryFlag::ImprovedLanderShot, IMPROVED_LANDER_SHOT, END_IMPROVED_LANDER_SHOT},
+        {StoryFlag::ImprovedLanderCargo, IMPROVED_LANDER_CARGO, END_IMPROVED_LANDER_CARGO},
+        {StoryFlag::UsedBroadcaster, USED_BROADCASTER, END_USED_BROADCASTER},
+        {StoryFlag::BroadcasterResponse, BROADCASTER_RESPONSE, END_BROADCASTER_RESPONSE},
+        {StoryFlag::ArilouSpace, ARILOU_SPACE, END_ARILOU_SPACE},
+        {StoryFlag::KohrAhKilledAll, KOHR_AH_KILLED_ALL, END_KOHR_AH_KILLED_ALL},
         {StoryFlag::AquaHelix, AQUA_HELIX, END_AQUA_HELIX},
         {StoryFlag::AquaHelixOnShip, AQUA_HELIX_ON_SHIP, END_AQUA_HELIX_ON_SHIP},
         {StoryFlag::BombUnprotected, BOMB_UNPROTECTED, END_BOMB_UNPROTECTED},
@@ -235,6 +243,13 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
     }
     struct Counter { StoryCounter id; int start, bits; };
     const Counter counters[] = {
+        {StoryCounter::LanderShields, LANDER_SHIELDS, 4},
+        {StoryCounter::SlylandroMultiplier, SLYLANDRO_MULTIPLIER, 3},
+        {StoryCounter::PortalCounter, PORTAL_COUNTER, 4},
+        {StoryCounter::MelnormeAnger, MELNORME_ANGER, 2},
+        {StoryCounter::EscapeCounter, ESCAPE_COUNTER, 8},
+        {StoryCounter::ArilouSpaceSide, ARILOU_SPACE_SIDE, 2},
+        {StoryCounter::ArilouSpaceCounter, ARILOU_SPACE_COUNTER, 4},
         {StoryCounter::BattlePlanet, BATTLE_PLANET, 8},
         {StoryCounter::BombProgress, CHMMR_BOMB_STATE, 2},
         {StoryCounter::ColonyGrpoffs0, COLONY_GRPOFFS0, 32},

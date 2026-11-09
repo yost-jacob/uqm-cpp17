@@ -1,7 +1,18 @@
 #include "system_behavior.hpp"
 #include "gendef.h"
+#include "starmap.h"
+#include <stdexcept>
 #include "planets/generate/gendefault.h"
 namespace uqm {
+void SystemBehavior::attachStar(const STAR_DESC &star) {
+    if (star_ && star_ != &star) throw std::logic_error("cannot rebind system catalogue context");
+    star_ = &star;
+}
+const STAR_DESC &SystemBehavior::star() const {
+    if (!star_) throw std::logic_error("system behavior requires catalogue context");
+    return *star_;
+}
+
 bool SystemBehavior::initNpcs(SOLARSYS_STATE &system) { return GenerateDefault_initNpcs(&system); }
 bool SystemBehavior::reinitNpcs(SOLARSYS_STATE &system) { return GenerateDefault_reinitNpcs(&system); }
 bool SystemBehavior::uninitNpcs(SOLARSYS_STATE &system) { return GenerateDefault_uninitNpcs(&system); }
