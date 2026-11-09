@@ -22,6 +22,10 @@
 #include "libs/compiler.h"
 #include "libs/callback.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 #define ACCEL_SCROLL_SPEED 300
 
 extern void PlayTrack (void);
@@ -48,5 +52,9 @@ extern SUBTITLE_REF GetNextTrackSubtitle (SUBTITLE_REF LastRef);
 extern const UNICODE *GetTrackSubtitleText (SUBTITLE_REF SubRef);
 
 extern const UNICODE *GetTrackSubtitle (void);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif

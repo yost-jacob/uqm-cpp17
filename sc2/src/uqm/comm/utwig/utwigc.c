@@ -556,7 +556,7 @@ NeutralUtwig (RESPONSE_REF R)
 
 				GetAllianceName (buf, name_1);
 				construct_response (
-						shared_phrase_buf,
+						GetConversationPhraseBuffer(),
 						we_are_vindicator0,
 						GLOBAL_SIS (CommanderName),
 						we_are_vindicator1,
@@ -604,7 +604,7 @@ NeutralUtwig (RESPONSE_REF R)
 		if (pStr[LastStack] != we_are_vindicator0)
 			Response (pStr[LastStack], NeutralUtwig);
 		else
-			DoResponsePhrase (pStr[LastStack], NeutralUtwig, shared_phrase_buf);
+			DoResponsePhrase (pStr[LastStack], NeutralUtwig, GetConversationPhraseBuffer());
 	}
 	for (i = 0; i < 4; ++i)
 	{
@@ -613,7 +613,7 @@ NeutralUtwig (RESPONSE_REF R)
 			if (pStr[i] != we_are_vindicator0)
 				Response (pStr[i], NeutralUtwig);
 			else
-				DoResponsePhrase (pStr[i], NeutralUtwig, shared_phrase_buf);
+				DoResponsePhrase (pStr[i], NeutralUtwig, GetConversationPhraseBuffer());
 		}
 	}
 	if (GET_GAME_STATE (ULTRON_CONDITION))

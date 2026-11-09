@@ -99,10 +99,6 @@ enum
 	ATTACK
 };
 
-extern void EncounterBattle (void);
-extern void BuildBattle (COUNT which_player);
-extern COUNT InitEncounter (void);
-extern COUNT UninitEncounter (void);
 extern BOOLEAN FleetIsInfinite (COUNT playerNr);
 extern void UpdateShipFragCrew (STARSHIP *);
 

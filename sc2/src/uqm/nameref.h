@@ -21,7 +21,6 @@
 
 #include "libs/reslib.h"
 
-#define LoadCodeRes     LoadCodeResInstance
 #define LoadGraphic     (DRAWABLE)LoadGraphicInstance
 #define LoadFont        (FONT)LoadGraphicInstance
 #define LoadColorMap    LoadColorMapInstance

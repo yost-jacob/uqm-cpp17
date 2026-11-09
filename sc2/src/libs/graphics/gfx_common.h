@@ -24,6 +24,10 @@
 
 #include "libs/gfxlib.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // driver for TFB_InitGraphics
 enum
 {
@@ -108,5 +112,9 @@ extern int ScreenWidthActual;
 extern int ScreenHeightActual;
 extern int ScreenColorDepth;
 extern int GraphicsDriver;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

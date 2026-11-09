@@ -93,7 +93,7 @@ typedef struct planet_orbit PLANET_ORBIT;
 typedef struct solarsys_state SOLARSYS_STATE;
 
 
-#include "generate.h"
+#include "../world_c.h"
 #include "../menustat.h"
 #include "../units.h"
 
@@ -199,12 +199,12 @@ struct solarsys_state
 	PLANET_DESC SunDesc[MAX_SUNS];
 	PLANET_DESC PlanetDesc[MAX_PLANETS];
 			// Description of the planets in the system.
-			// Only defined after a call to (*genFuncs)->generatePlanets()
+			// Only defined after a call to SystemBehavior::generatePlanets()
 			// and overwritten by subsequent calls.
 	PLANET_DESC MoonDesc[MAX_MOONS];
 			// Description of the moons orbiting the planet pointed to
 			// by pBaseDesc.
-			// Only defined after a call to (*genFuncs)->generateMoons()
+			// Only defined after a call to SystemBehavior::generateMoons()
 			// as its argument, and overwritten by subsequent calls.
 	PLANET_DESC *pBaseDesc;
 			// In outer system: points to PlanetDesc[]
@@ -233,9 +233,7 @@ struct solarsys_state
 
 	SYSTEM_INFO SysInfo;
 
-	const GenerateFunctions *genFuncs;
-			// Functions to call to fill in various parts of this structure.
-			// See generate.h, doc/devel/generate
+    UQM_SYSTEM_RUNTIME *worlds; // Opaque owner of native World/EnergyBehavior objects.
 
 	FRAME PlanetSideFrame[3 + MAX_LIFE_VARIATION];
 			/* Frames for planet-side elements.
@@ -283,7 +281,6 @@ extern void FreePlanet (void);
 extern void LoadStdLanderFont (PLANET_INFO *info);
 extern void FreeLanderFont (PLANET_INFO *info);
 
-extern void ExploreSolarSys (void);
 extern void DrawStarBackGround (void);
 extern void XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);

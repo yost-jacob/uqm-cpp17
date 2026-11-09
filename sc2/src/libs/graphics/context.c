@@ -39,6 +39,12 @@ FONT _CurFontPtr;
 #define DEFAULT_DRAW_MODE   MAKE_DRAW_MODE (DRAW_DEFAULT, 255)
 
 CONTEXT
+GetContext (void)
+{
+    return _pCurContext;
+}
+
+CONTEXT
 SetContext (CONTEXT Context)
 {
 	CONTEXT LastContext;

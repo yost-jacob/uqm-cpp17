@@ -191,8 +191,21 @@ extern PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
 #define FreeDisplayPrim(p) SetPrimLinks (&DisplayArray[p], END_OF_LIST, DisplayFreeList); \
 								DisplayFreeList = (p)
 
+#ifdef __cplusplus
+struct STARSHIP;
+// C++ ship buffers use typed access; C also reuses pParent for IP_GROUP records.
+static inline void GetElementStarShip(const ELEMENT *element, struct STARSHIP **ship)
+{
+    *ship = static_cast<struct STARSHIP *>(element->pParent);
+}
+static inline void SetElementStarShip(ELEMENT *element, struct STARSHIP *ship)
+{
+    element->pParent = ship;
+}
+#else
 #define GetElementStarShip(e,ppsd) do { *(ppsd) = (e)->pParent; } while (0)
 #define SetElementStarShip(e,psd)  do { (e)->pParent = psd; } while (0)
+#endif
 
 #define MAX_CREW_SIZE 42
 #define MAX_ENERGY_SIZE 42

@@ -555,8 +555,8 @@ Intro (void)
 		NumVisits = GET_GAME_STATE (CHMMR_HOME_VISITS);
 		if (!GET_GAME_STATE (CHMMR_EMERGING))
 		{
-			CommData.AlienColorMap = SetAbsColorMapIndex (
-					CommData.AlienColorMap, 1
+			GetConversationData()->AlienColorMap = SetAbsColorMapIndex (
+					GetConversationData()->AlienColorMap, 1
 					);
 			switch (NumVisits++)
 			{
@@ -591,14 +591,14 @@ Intro (void)
 			{
 				NPCPhrase (WHO_ARE_YOU);
 
-				construct_response (shared_phrase_buf,
+				construct_response (GetConversationPhraseBuffer(),
 						i_am_captain0,
 						GLOBAL_SIS (CommanderName),
 						i_am_captain1,
 						GLOBAL_SIS (ShipName),
 						i_am_captain2,
 						(UNICODE*)NULL);
-				DoResponsePhrase (i_am_captain0, ChmmrFree, shared_phrase_buf);
+				DoResponsePhrase (i_am_captain0, ChmmrFree, GetConversationPhraseBuffer());
 				Response (i_am_savior, ChmmrFree);
 				Response (i_am_silly, ChmmrFree);
 			}

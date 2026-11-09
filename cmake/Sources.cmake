@@ -162,7 +162,12 @@ set(UQM_SOURCES
     sc2/src/uqm/clock.c
     sc2/src/uqm/cnctdlg.c
     sc2/src/uqm/collide.c
-    sc2/src/uqm/comm.c
+    sc2/src/uqm/conversation.cpp
+    sc2/src/uqm/conversation_mode.cpp
+    sc2/src/uqm/conversation_context.cpp
+    sc2/src/uqm/conversation_resources.cpp
+    sc2/src/uqm/conversation_lifetime.cpp
+    sc2/src/uqm/mode_rendering.cpp
     sc2/src/uqm/comm/arilou/arilouc.c
     sc2/src/uqm/comm/blackur/blackurc.c
     sc2/src/uqm/comm/chmmr/chmmrc.c
@@ -190,35 +195,57 @@ set(UQM_SOURCES
     sc2/src/uqm/comm/vux/vuxc.c
     sc2/src/uqm/comm/yehat/yehatc.c
     sc2/src/uqm/comm/zoqfot/zoqfotc.c
-    sc2/src/uqm/commanim.c
+    sc2/src/uqm/conversation_animation.cpp
     sc2/src/uqm/commglue.c
     sc2/src/uqm/confirm.c
     sc2/src/uqm/cons_res.c
     sc2/src/uqm/credits.c
-    sc2/src/uqm/cyborg.c
+    sc2/src/uqm/cyborg.cpp
     sc2/src/uqm/demo.c
     sc2/src/uqm/displist.cpp
-    sc2/src/uqm/dummy.c
-    sc2/src/uqm/encount.c
+    sc2/src/uqm/encount.cpp
+    sc2/src/uqm/encounter_runtime.cpp
+    sc2/src/uqm/encounter_context.cpp
     sc2/src/uqm/flash.c
     sc2/src/uqm/fmv.c
     sc2/src/uqm/galaxy.c
     sc2/src/uqm/gameev.c
     sc2/src/uqm/gameinp.c
     sc2/src/uqm/gameopt.c
-    sc2/src/uqm/gendef.c
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
+    sc2/src/uqm/game_state.cpp
+    sc2/src/uqm/ship_tuning.cpp
+    sc2/src/uqm/ship_tuning_c.cpp
+    sc2/src/uqm/ship_factory.cpp
+    sc2/src/uqm/ship_behavior.cpp
+    sc2/src/uqm/game_mode.cpp
+    sc2/src/uqm/game_menu.cpp
+    sc2/src/uqm/gameplay_modes.cpp
+    sc2/src/uqm/discovery_state.cpp
+    sc2/src/uqm/discovery_state_c.cpp
+    sc2/src/uqm/world_state.cpp
+    sc2/src/uqm/world.cpp
+    sc2/src/uqm/system_behavior.cpp
+    sc2/src/uqm/system_encounter.cpp
+    sc2/src/uqm/orbital_encounter.cpp
+    sc2/src/uqm/system_behavior_factory.cpp
+    sc2/src/uqm/system_runtime.cpp
+    sc2/src/uqm/exploration_rendering.cpp
+    sc2/src/uqm/energy_behavior.cpp
+    sc2/src/uqm/world_c.cpp
+    sc2/src/uqm/game_state_bits.c
     sc2/src/uqm/gravity.c
     sc2/src/uqm/grpinfo.c
-    sc2/src/uqm/hyper.c
+    sc2/src/uqm/hyper.cpp
+    sc2/src/uqm/navigation_context.cpp
     sc2/src/uqm/init.c
     sc2/src/uqm/intel.c
     sc2/src/uqm/intro.c
     sc2/src/uqm/ipdisp.c
     sc2/src/uqm/load.c
     sc2/src/uqm/load_legacy.c
-    sc2/src/uqm/loadship.c
+    sc2/src/uqm/loadship.cpp
     sc2/src/uqm/master.c
     sc2/src/uqm/menu.c
     sc2/src/uqm/misc.c
@@ -228,38 +255,39 @@ set(UQM_SOURCES
     sc2/src/uqm/plandata.c
     sc2/src/uqm/planets/calc.c
     sc2/src/uqm/planets/cargo.c
-    sc2/src/uqm/planets/devices.c
-    sc2/src/uqm/planets/generate/genand.c
-    sc2/src/uqm/planets/generate/genburv.c
-    sc2/src/uqm/planets/generate/genchmmr.c
-    sc2/src/uqm/planets/generate/gencol.c
-    sc2/src/uqm/planets/generate/gendefault.c
-    sc2/src/uqm/planets/generate/gendru.c
-    sc2/src/uqm/planets/generate/genilw.c
-    sc2/src/uqm/planets/generate/genmel.c
-    sc2/src/uqm/planets/generate/genmyc.c
-    sc2/src/uqm/planets/generate/genorz.c
-    sc2/src/uqm/planets/generate/genpet.c
-    sc2/src/uqm/planets/generate/genpku.c
-    sc2/src/uqm/planets/generate/genrain.c
-    sc2/src/uqm/planets/generate/gensam.c
-    sc2/src/uqm/planets/generate/genshof.c
-    sc2/src/uqm/planets/generate/gensly.c
-    sc2/src/uqm/planets/generate/gensol.c
-    sc2/src/uqm/planets/generate/genspa.c
-    sc2/src/uqm/planets/generate/gensup.c
-    sc2/src/uqm/planets/generate/gensyr.c
-    sc2/src/uqm/planets/generate/genthrad.c
-    sc2/src/uqm/planets/generate/gentrap.c
-    sc2/src/uqm/planets/generate/genutw.c
-    sc2/src/uqm/planets/generate/genvault.c
-    sc2/src/uqm/planets/generate/genvux.c
-    sc2/src/uqm/planets/generate/genwreck.c
-    sc2/src/uqm/planets/generate/genyeh.c
-    sc2/src/uqm/planets/generate/genzfpscout.c
-    sc2/src/uqm/planets/generate/genzoq.c
+    sc2/src/uqm/planets/devices.cpp
+    sc2/src/uqm/device_inventory.cpp
+    sc2/src/uqm/planets/generate/genand.cpp
+    sc2/src/uqm/planets/generate/genburv.cpp
+    sc2/src/uqm/planets/generate/genchmmr.cpp
+    sc2/src/uqm/planets/generate/gencol.cpp
+    sc2/src/uqm/planets/generate/gendefault.cpp
+    sc2/src/uqm/planets/generate/gendru.cpp
+    sc2/src/uqm/planets/generate/genilw.cpp
+    sc2/src/uqm/planets/generate/genmel.cpp
+    sc2/src/uqm/planets/generate/genmyc.cpp
+    sc2/src/uqm/planets/generate/genorz.cpp
+    sc2/src/uqm/planets/generate/genpet.cpp
+    sc2/src/uqm/planets/generate/genpku.cpp
+    sc2/src/uqm/planets/generate/genrain.cpp
+    sc2/src/uqm/planets/generate/gensam.cpp
+    sc2/src/uqm/planets/generate/genshof.cpp
+    sc2/src/uqm/planets/generate/gensly.cpp
+    sc2/src/uqm/planets/generate/gensol.cpp
+    sc2/src/uqm/planets/generate/genspa.cpp
+    sc2/src/uqm/planets/generate/gensup.cpp
+    sc2/src/uqm/planets/generate/gensyr.cpp
+    sc2/src/uqm/planets/generate/genthrad.cpp
+    sc2/src/uqm/planets/generate/gentrap.cpp
+    sc2/src/uqm/planets/generate/genutw.cpp
+    sc2/src/uqm/planets/generate/genvault.cpp
+    sc2/src/uqm/planets/generate/genvux.cpp
+    sc2/src/uqm/planets/generate/genwreck.cpp
+    sc2/src/uqm/planets/generate/genyeh.cpp
+    sc2/src/uqm/planets/generate/genzfpscout.cpp
+    sc2/src/uqm/planets/generate/genzoq.cpp
     sc2/src/uqm/planets/gentopo.c
-    sc2/src/uqm/planets/lander.c
+    sc2/src/uqm/planets/lander.cpp
     sc2/src/uqm/planets/orbits.c
     sc2/src/uqm/planets/oval.c
     sc2/src/uqm/planets/pl_stuff.c
@@ -268,8 +296,8 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/pstarmap.c
     sc2/src/uqm/planets/report.c
     sc2/src/uqm/planets/roster.c
-    sc2/src/uqm/planets/scan.c
-    sc2/src/uqm/planets/solarsys.c
+    sc2/src/uqm/planets/scan.cpp
+    sc2/src/uqm/planets/solarsys.cpp
     sc2/src/uqm/planets/surface.c
     sc2/src/uqm/process.c
     sc2/src/uqm/restart.c
@@ -277,35 +305,35 @@ set(UQM_SOURCES
     sc2/src/uqm/settings.c
     sc2/src/uqm/setup.c
     sc2/src/uqm/setupmenu.c
-    sc2/src/uqm/ship.c
-    sc2/src/uqm/ships/androsyn/androsyn.c
-    sc2/src/uqm/ships/arilou/arilou.c
-    sc2/src/uqm/ships/blackurq/blackurq.c
-    sc2/src/uqm/ships/chenjesu/chenjesu.c
-    sc2/src/uqm/ships/chmmr/chmmr.c
-    sc2/src/uqm/ships/druuge/druuge.c
-    sc2/src/uqm/ships/human/human.c
-    sc2/src/uqm/ships/ilwrath/ilwrath.c
-    sc2/src/uqm/ships/lastbat/lastbat.c
-    sc2/src/uqm/ships/melnorme/melnorme.c
-    sc2/src/uqm/ships/mmrnmhrm/mmrnmhrm.c
-    sc2/src/uqm/ships/mycon/mycon.c
-    sc2/src/uqm/ships/orz/orz.c
-    sc2/src/uqm/ships/pkunk/pkunk.c
-    sc2/src/uqm/ships/probe/probe.c
-    sc2/src/uqm/ships/shofixti/shofixti.c
-    sc2/src/uqm/ships/sis_ship/sis_ship.c
-    sc2/src/uqm/ships/slylandr/slylandr.c
-    sc2/src/uqm/ships/spathi/spathi.c
-    sc2/src/uqm/ships/supox/supox.c
-    sc2/src/uqm/ships/syreen/syreen.c
-    sc2/src/uqm/ships/thradd/thradd.c
-    sc2/src/uqm/ships/umgah/umgah.c
-    sc2/src/uqm/ships/urquan/urquan.c
-    sc2/src/uqm/ships/utwig/utwig.c
-    sc2/src/uqm/ships/vux/vux.c
-    sc2/src/uqm/ships/yehat/yehat.c
-    sc2/src/uqm/ships/zoqfot/zoqfot.c
+    sc2/src/uqm/ship.cpp
+    sc2/src/uqm/ships/androsyn/androsyn.cpp
+    sc2/src/uqm/ships/arilou/arilou.cpp
+    sc2/src/uqm/ships/blackurq/blackurq.cpp
+    sc2/src/uqm/ships/chenjesu/chenjesu.cpp
+    sc2/src/uqm/ships/chmmr/chmmr.cpp
+    sc2/src/uqm/ships/druuge/druuge.cpp
+    sc2/src/uqm/ships/human/human.cpp
+    sc2/src/uqm/ships/ilwrath/ilwrath.cpp
+    sc2/src/uqm/ships/lastbat/lastbat.cpp
+    sc2/src/uqm/ships/melnorme/melnorme.cpp
+    sc2/src/uqm/ships/mmrnmhrm/mmrnmhrm.cpp
+    sc2/src/uqm/ships/mycon/mycon.cpp
+    sc2/src/uqm/ships/orz/orz.cpp
+    sc2/src/uqm/ships/pkunk/pkunk.cpp
+    sc2/src/uqm/ships/probe/probe.cpp
+    sc2/src/uqm/ships/shofixti/shofixti.cpp
+    sc2/src/uqm/ships/sis_ship/sis_ship.cpp
+    sc2/src/uqm/ships/slylandr/slylandr.cpp
+    sc2/src/uqm/ships/spathi/spathi.cpp
+    sc2/src/uqm/ships/supox/supox.cpp
+    sc2/src/uqm/ships/syreen/syreen.cpp
+    sc2/src/uqm/ships/thradd/thradd.cpp
+    sc2/src/uqm/ships/umgah/umgah.cpp
+    sc2/src/uqm/ships/urquan/urquan.cpp
+    sc2/src/uqm/ships/utwig/utwig.cpp
+    sc2/src/uqm/ships/vux/vux.cpp
+    sc2/src/uqm/ships/yehat/yehat.cpp
+    sc2/src/uqm/ships/zoqfot/zoqfot.cpp
     sc2/src/uqm/shipstat.c
     sc2/src/uqm/shipyard.c
     sc2/src/uqm/sis.c
@@ -315,7 +343,6 @@ set(UQM_SOURCES
     sc2/src/uqm/star_map.cpp
     sc2/src/uqm/star_map_c.cpp
     sc2/src/uqm/starmap.c
-    sc2/src/uqm/state.c
     sc2/src/uqm/status.c
     sc2/src/uqm/supermelee/buildpick.c
     sc2/src/uqm/supermelee/loadmele.c
@@ -344,7 +371,7 @@ set(UQM_SOURCES
     sc2/src/uqm/supermelee/pickmele.c
     sc2/src/uqm/tactrans.c
     sc2/src/uqm/trans.cpp
-    sc2/src/uqm/uqmdebug.c
+    sc2/src/uqm/uqmdebug.cpp
     sc2/src/uqm/util.c
     sc2/src/uqm/velocity.c
     sc2/src/uqm/weapon.c

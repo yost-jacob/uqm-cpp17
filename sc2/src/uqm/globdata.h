@@ -199,11 +199,8 @@ START_GAME_STATE
 			 */
 	ADD_GAME_STATE (PLANETARY_LANDING, 1)
 	ADD_GAME_STATE (PLANETARY_CHANGE, 1)
-			/* Flag set to 1 when the planet information for the current
-			 * world is changed since it was last saved to the starinfo.dat
-			 * file. Set when picking up bio, mineral, or energy nodes.
-			 * When there's no current world, it should be 0.
-			 */
+            /* Reserved legacy save bit. Permanent retrieval is now published
+             * immediately; no deferred dirty-world flag is maintained. */
 
 		/* Spathi states */
 	ADD_GAME_STATE (SPATHI_VISITS, 3)
@@ -967,7 +964,11 @@ typedef struct
 	GAME_STATE Game_state;
 } GLOBDATA;
 
-extern GLOBDATA GlobData;
+/* Transitional C adapter: borrowed process-lifetime storage, reset in place.
+ * Keep sizeof/address/member expressions valid for legacy loaders and ship code.
+ * C++ gameplay should use game_state.hpp instead of this mutable buffer. */
+extern GLOBDATA *GetLegacyGlobData (void);
+#define GlobData (*GetLegacyGlobData ())
 #define GLOBAL(f) GlobData.Game_state.f
 #define GLOBAL_SIS(f) GlobData.SIS_state.f
 
@@ -998,13 +999,13 @@ enum {
 
 //#define STATE_DEBUG
 
-extern BYTE getGameState (BYTE *state, int startBit, int endBit);
+extern BYTE getGameState (const BYTE *state, int startBit, int endBit);
 extern void setGameState (BYTE *state, int startBit, int endBit, BYTE val
 #ifdef STATE_DEBUG
 		, const char *name
 #endif
 		);
-extern void copyGameState (BYTE *dest, DWORD target, BYTE *src, DWORD begin, DWORD end);
+extern void copyGameState (BYTE *dest, DWORD target, const BYTE *src, DWORD begin, DWORD end);
 
 #define GET_GAME_STATE(SName) getGameState (GLOBAL(GameState), (SName), (END_##SName))
 #ifdef STATE_DEBUG
@@ -1015,7 +1016,7 @@ extern void copyGameState (BYTE *dest, DWORD target, BYTE *src, DWORD begin, DWO
 			setGameState (GLOBAL(GameState), (SName), (END_##SName), (val))
 #endif
 
-extern DWORD getGameState32 (BYTE *state, int startBit);
+extern DWORD getGameState32 (const BYTE *state, int startBit);
 extern void setGameState32 (BYTE *state, int startBit, DWORD val
 #ifdef STATE_DEBUG
 		, const char *name

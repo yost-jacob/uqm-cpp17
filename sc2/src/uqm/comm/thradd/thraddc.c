@@ -487,7 +487,7 @@ ThraddCulture (RESPONSE_REF R)
 	NPCPhrase (WHAT_NAME_FOR_CULTURE);
 
 	construct_response (
-			shared_phrase_buf,
+			GetConversationPhraseBuffer(),
 			the_slave_empire0,
 			GLOBAL_SIS (CommanderName),
 			the_slave_empire1,
@@ -495,7 +495,7 @@ ThraddCulture (RESPONSE_REF R)
 
 	Response (you_decide, ThraddDemeanor);
 	Response (fat, ThraddDemeanor);
-	DoResponsePhrase (the_slave_empire0, ThraddDemeanor, shared_phrase_buf);
+	DoResponsePhrase (the_slave_empire0, ThraddDemeanor, GetConversationPhraseBuffer());
 }
 
 static void

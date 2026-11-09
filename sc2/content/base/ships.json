@@ -1,0 +1,660 @@
+{
+  "schema_version": 1,
+  "ships": {
+    "androsyn": {
+      "max_crew": 20,
+      "max_energy": 24,
+      "energy_regeneration": 1,
+      "energy_wait": 8,
+      "max_thrust": 24,
+      "thrust_increment": 3,
+      "thrust_wait": 0,
+      "turn_wait": 4,
+      "ship_mass": 6,
+      "weapon_energy_cost": 3,
+      "weapon_wait": 0,
+      "special_energy_cost": 2,
+      "special_wait": 0,
+      "melee_cost": 15,
+      "projectiles": {
+        "missile": {
+          "speed": 32,
+          "hit_points": 3,
+          "damage": 2,
+          "lifetime": 200
+        }
+      }
+    },
+    "arilou": {
+      "max_crew": 6,
+      "max_energy": 20,
+      "energy_regeneration": 1,
+      "energy_wait": 6,
+      "max_thrust": 40,
+      "thrust_increment": 40,
+      "thrust_wait": 0,
+      "turn_wait": 0,
+      "ship_mass": 1,
+      "weapon_energy_cost": 2,
+      "weapon_wait": 1,
+      "special_energy_cost": 3,
+      "special_wait": 2,
+      "melee_cost": 16,
+      "projectiles": {}
+    },
+    "blackurq": {
+      "max_crew": 42,
+      "max_energy": 42,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 30,
+      "thrust_increment": 6,
+      "thrust_wait": 6,
+      "turn_wait": 4,
+      "ship_mass": 10,
+      "weapon_energy_cost": 6,
+      "weapon_wait": 6,
+      "special_energy_cost": 21,
+      "special_wait": 9,
+      "melee_cost": 30,
+      "projectiles": {
+        "missile": {
+          "speed": 64,
+          "hit_points": 10,
+          "damage": 4,
+          "lifetime": 64
+        }
+      }
+    },
+    "chenjesu": {
+      "max_crew": 36,
+      "max_energy": 30,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 27,
+      "thrust_increment": 3,
+      "thrust_wait": 4,
+      "turn_wait": 6,
+      "ship_mass": 10,
+      "weapon_energy_cost": 5,
+      "weapon_wait": 0,
+      "special_energy_cost": 30,
+      "special_wait": 0,
+      "melee_cost": 28,
+      "projectiles": {
+        "fragment": {
+          "speed": 64,
+          "hit_points": 1,
+          "damage": 2,
+          "lifetime": 10
+        },
+        "missile": {
+          "speed": 64,
+          "hit_points": 10,
+          "damage": 6,
+          "lifetime": 90
+        }
+      }
+    },
+    "chmmr": {
+      "max_crew": 42,
+      "max_energy": 42,
+      "energy_regeneration": 1,
+      "energy_wait": 1,
+      "max_thrust": 35,
+      "thrust_increment": 7,
+      "thrust_wait": 5,
+      "turn_wait": 3,
+      "ship_mass": 10,
+      "weapon_energy_cost": 2,
+      "weapon_wait": 0,
+      "special_energy_cost": 1,
+      "special_wait": 0,
+      "melee_cost": 30,
+      "projectiles": {}
+    },
+    "druuge": {
+      "max_crew": 14,
+      "max_energy": 32,
+      "energy_regeneration": 1,
+      "energy_wait": 50,
+      "max_thrust": 20,
+      "thrust_increment": 2,
+      "thrust_wait": 1,
+      "turn_wait": 4,
+      "ship_mass": 5,
+      "weapon_energy_cost": 4,
+      "weapon_wait": 10,
+      "special_energy_cost": 16,
+      "special_wait": 30,
+      "melee_cost": 17,
+      "projectiles": {
+        "missile": {
+          "speed": 120,
+          "hit_points": 4,
+          "damage": 6,
+          "lifetime": 20
+        }
+      }
+    },
+    "human": {
+      "max_crew": 18,
+      "max_energy": 18,
+      "energy_regeneration": 1,
+      "energy_wait": 8,
+      "max_thrust": 24,
+      "thrust_increment": 3,
+      "thrust_wait": 4,
+      "turn_wait": 1,
+      "ship_mass": 6,
+      "weapon_energy_cost": 9,
+      "weapon_wait": 10,
+      "special_energy_cost": 4,
+      "special_wait": 9,
+      "melee_cost": 11,
+      "projectiles": {
+        "missile": {
+          "speed": 40,
+          "hit_points": 1,
+          "damage": 4,
+          "lifetime": 60
+        }
+      }
+    },
+    "ilwrath": {
+      "max_crew": 22,
+      "max_energy": 16,
+      "energy_regeneration": 4,
+      "energy_wait": 4,
+      "max_thrust": 25,
+      "thrust_increment": 5,
+      "thrust_wait": 0,
+      "turn_wait": 2,
+      "ship_mass": 7,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 0,
+      "special_energy_cost": 3,
+      "special_wait": 13,
+      "melee_cost": 10,
+      "projectiles": {
+        "missile": {
+          "speed": 25,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 8
+        }
+      }
+    },
+    "lastbat": {
+      "max_crew": 1,
+      "max_energy": 42,
+      "energy_regeneration": 1,
+      "energy_wait": 6,
+      "max_thrust": 0,
+      "thrust_increment": 0,
+      "thrust_wait": 0,
+      "turn_wait": 0,
+      "ship_mass": 100,
+      "weapon_energy_cost": 2,
+      "weapon_wait": 240,
+      "special_energy_cost": 3,
+      "special_wait": 72,
+      "melee_cost": 16,
+      "projectiles": {
+        "comet": {
+          "speed": 48,
+          "hit_points": 12,
+          "damage": 2,
+          "lifetime": 2
+        },
+        "sentinel": {
+          "speed": 32,
+          "hit_points": 10,
+          "damage": 1,
+          "lifetime": 2
+        }
+      }
+    },
+    "melnorme": {
+      "max_crew": 20,
+      "max_energy": 42,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 36,
+      "thrust_increment": 6,
+      "thrust_wait": 4,
+      "turn_wait": 4,
+      "ship_mass": 7,
+      "weapon_energy_cost": 5,
+      "weapon_wait": 1,
+      "special_energy_cost": 20,
+      "special_wait": 20,
+      "melee_cost": 18,
+      "projectiles": {
+        "cmissile": {
+          "speed": 120,
+          "hit_points": 200,
+          "damage": 0,
+          "lifetime": 20
+        }
+      }
+    },
+    "mmrnmhrm": {
+      "max_crew": 20,
+      "max_energy": 10,
+      "energy_regeneration": 2,
+      "energy_wait": 6,
+      "max_thrust": 20,
+      "thrust_increment": 5,
+      "thrust_wait": 1,
+      "turn_wait": 2,
+      "ship_mass": 3,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 0,
+      "special_energy_cost": 10,
+      "special_wait": 0,
+      "melee_cost": 19,
+      "projectiles": {
+        "missile": {
+          "speed": 80,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 40
+        }
+      }
+    },
+    "mycon": {
+      "max_crew": 20,
+      "max_energy": 40,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 27,
+      "thrust_increment": 9,
+      "thrust_wait": 6,
+      "turn_wait": 6,
+      "ship_mass": 7,
+      "weapon_energy_cost": 20,
+      "weapon_wait": 5,
+      "special_energy_cost": 40,
+      "special_wait": 0,
+      "melee_cost": 21,
+      "projectiles": {}
+    },
+    "orz": {
+      "max_crew": 16,
+      "max_energy": 20,
+      "energy_regeneration": 1,
+      "energy_wait": 6,
+      "max_thrust": 35,
+      "thrust_increment": 5,
+      "thrust_wait": 0,
+      "turn_wait": 1,
+      "ship_mass": 4,
+      "weapon_energy_cost": 6,
+      "weapon_wait": 4,
+      "special_energy_cost": 0,
+      "special_wait": 12,
+      "melee_cost": 23,
+      "projectiles": {
+        "missile": {
+          "speed": 120,
+          "hit_points": 2,
+          "damage": 3,
+          "lifetime": 12
+        }
+      }
+    },
+    "pkunk": {
+      "max_crew": 8,
+      "max_energy": 12,
+      "energy_regeneration": 0,
+      "energy_wait": 0,
+      "max_thrust": 64,
+      "thrust_increment": 16,
+      "thrust_wait": 0,
+      "turn_wait": 0,
+      "ship_mass": 1,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 0,
+      "special_energy_cost": 2,
+      "special_wait": 16,
+      "melee_cost": 20,
+      "projectiles": {
+        "missile": {
+          "speed": 96,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 5
+        }
+      }
+    },
+    "probe": {
+      "max_crew": 1,
+      "max_energy": 1,
+      "energy_regeneration": 0,
+      "energy_wait": 0,
+      "max_thrust": 0,
+      "thrust_increment": 0,
+      "thrust_wait": 0,
+      "turn_wait": 0,
+      "ship_mass": 0,
+      "weapon_energy_cost": 0,
+      "weapon_wait": 0,
+      "special_energy_cost": 0,
+      "special_wait": 0,
+      "melee_cost": 0,
+      "projectiles": {}
+    },
+    "shofixti": {
+      "max_crew": 6,
+      "max_energy": 4,
+      "energy_regeneration": 1,
+      "energy_wait": 9,
+      "max_thrust": 35,
+      "thrust_increment": 5,
+      "thrust_wait": 0,
+      "turn_wait": 1,
+      "ship_mass": 1,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 3,
+      "special_energy_cost": 0,
+      "special_wait": 0,
+      "melee_cost": 5,
+      "projectiles": {
+        "missile": {
+          "speed": 96,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 10
+        }
+      }
+    },
+    "sis_ship": {
+      "max_crew": 42,
+      "max_energy": 42,
+      "energy_regeneration": 1,
+      "energy_wait": 10,
+      "max_thrust": 10,
+      "thrust_increment": 4,
+      "thrust_wait": 6,
+      "turn_wait": 17,
+      "ship_mass": 10,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 6,
+      "special_energy_cost": 0,
+      "special_wait": 9,
+      "melee_cost": 16,
+      "projectiles": {
+        "blaster": {
+          "speed": 96,
+          "hit_points": 2,
+          "damage": 2,
+          "lifetime": 12
+        }
+      }
+    },
+    "slylandr": {
+      "max_crew": 12,
+      "max_energy": 20,
+      "energy_regeneration": 0,
+      "energy_wait": 10,
+      "max_thrust": 60,
+      "thrust_increment": 60,
+      "thrust_wait": 0,
+      "turn_wait": 0,
+      "ship_mass": 1,
+      "weapon_energy_cost": 2,
+      "weapon_wait": 17,
+      "special_energy_cost": 0,
+      "special_wait": 20,
+      "melee_cost": 17,
+      "projectiles": {}
+    },
+    "spathi": {
+      "max_crew": 30,
+      "max_energy": 10,
+      "energy_regeneration": 1,
+      "energy_wait": 10,
+      "max_thrust": 48,
+      "thrust_increment": 12,
+      "thrust_wait": 1,
+      "turn_wait": 1,
+      "ship_mass": 5,
+      "weapon_energy_cost": 2,
+      "weapon_wait": 0,
+      "special_energy_cost": 3,
+      "special_wait": 7,
+      "melee_cost": 18,
+      "projectiles": {
+        "discriminator": {
+          "speed": 32,
+          "hit_points": 1,
+          "damage": 2,
+          "lifetime": 30
+        },
+        "missile": {
+          "speed": 120,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 10
+        }
+      }
+    },
+    "supox": {
+      "max_crew": 12,
+      "max_energy": 16,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 40,
+      "thrust_increment": 8,
+      "thrust_wait": 0,
+      "turn_wait": 1,
+      "ship_mass": 4,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 2,
+      "special_energy_cost": 1,
+      "special_wait": 0,
+      "melee_cost": 16,
+      "projectiles": {
+        "missile": {
+          "speed": 120,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 10
+        }
+      }
+    },
+    "syreen": {
+      "max_crew": 12,
+      "max_energy": 16,
+      "energy_regeneration": 1,
+      "energy_wait": 6,
+      "max_thrust": 36,
+      "thrust_increment": 9,
+      "thrust_wait": 1,
+      "turn_wait": 1,
+      "ship_mass": 2,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 8,
+      "special_energy_cost": 5,
+      "special_wait": 20,
+      "melee_cost": 13,
+      "projectiles": {
+        "missile": {
+          "speed": 120,
+          "hit_points": 1,
+          "damage": 2,
+          "lifetime": 10
+        }
+      }
+    },
+    "thradd": {
+      "max_crew": 8,
+      "max_energy": 24,
+      "energy_regeneration": 1,
+      "energy_wait": 6,
+      "max_thrust": 28,
+      "thrust_increment": 7,
+      "thrust_wait": 0,
+      "turn_wait": 1,
+      "ship_mass": 7,
+      "weapon_energy_cost": 2,
+      "weapon_wait": 12,
+      "special_energy_cost": 1,
+      "special_wait": 0,
+      "melee_cost": 10,
+      "projectiles": {
+        "missile": {
+          "speed": 120,
+          "hit_points": 2,
+          "damage": 1,
+          "lifetime": 15
+        }
+      }
+    },
+    "umgah": {
+      "max_crew": 10,
+      "max_energy": 30,
+      "energy_regeneration": 30,
+      "energy_wait": 150,
+      "max_thrust": 18,
+      "thrust_increment": 6,
+      "thrust_wait": 3,
+      "turn_wait": 4,
+      "ship_mass": 1,
+      "weapon_energy_cost": 0,
+      "weapon_wait": 0,
+      "special_energy_cost": 1,
+      "special_wait": 2,
+      "melee_cost": 7,
+      "projectiles": {
+        "cone": {
+          "speed": 0,
+          "hit_points": 100,
+          "damage": 1,
+          "lifetime": 1
+        }
+      }
+    },
+    "urquan": {
+      "max_crew": 42,
+      "max_energy": 42,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 30,
+      "thrust_increment": 6,
+      "thrust_wait": 6,
+      "turn_wait": 4,
+      "ship_mass": 10,
+      "weapon_energy_cost": 6,
+      "weapon_wait": 6,
+      "special_energy_cost": 8,
+      "special_wait": 9,
+      "melee_cost": 30,
+      "projectiles": {
+        "missile": {
+          "speed": 80,
+          "hit_points": 10,
+          "damage": 6,
+          "lifetime": 20
+        }
+      }
+    },
+    "utwig": {
+      "max_crew": 20,
+      "max_energy": 20,
+      "energy_regeneration": 0,
+      "energy_wait": 255,
+      "max_thrust": 36,
+      "thrust_increment": 6,
+      "thrust_wait": 6,
+      "turn_wait": 1,
+      "ship_mass": 8,
+      "weapon_energy_cost": 0,
+      "weapon_wait": 7,
+      "special_energy_cost": 1,
+      "special_wait": 12,
+      "melee_cost": 22,
+      "projectiles": {
+        "missile": {
+          "speed": 120,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 10
+        }
+      }
+    },
+    "vux": {
+      "max_crew": 20,
+      "max_energy": 40,
+      "energy_regeneration": 1,
+      "energy_wait": 8,
+      "max_thrust": 21,
+      "thrust_increment": 7,
+      "thrust_wait": 4,
+      "turn_wait": 6,
+      "ship_mass": 6,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 0,
+      "special_energy_cost": 2,
+      "special_wait": 7,
+      "melee_cost": 12,
+      "projectiles": {
+        "limpet": {
+          "speed": 25,
+          "hit_points": 1,
+          "damage": 0,
+          "lifetime": 80
+        }
+      }
+    },
+    "yehat": {
+      "max_crew": 20,
+      "max_energy": 10,
+      "energy_regeneration": 2,
+      "energy_wait": 6,
+      "max_thrust": 30,
+      "thrust_increment": 6,
+      "thrust_wait": 2,
+      "turn_wait": 2,
+      "ship_mass": 3,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 0,
+      "special_energy_cost": 3,
+      "special_wait": 2,
+      "melee_cost": 23,
+      "projectiles": {
+        "missile": {
+          "speed": 80,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 10
+        }
+      }
+    },
+    "zoqfot": {
+      "max_crew": 10,
+      "max_energy": 10,
+      "energy_regeneration": 1,
+      "energy_wait": 4,
+      "max_thrust": 40,
+      "thrust_increment": 10,
+      "thrust_wait": 0,
+      "turn_wait": 1,
+      "ship_mass": 5,
+      "weapon_energy_cost": 1,
+      "weapon_wait": 0,
+      "special_energy_cost": 7,
+      "special_wait": 6,
+      "melee_cost": 6,
+      "projectiles": {
+        "missile": {
+          "speed": 40,
+          "hit_points": 1,
+          "damage": 1,
+          "lifetime": 10
+        }
+      }
+    }
+  }
+}

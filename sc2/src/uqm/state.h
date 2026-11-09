@@ -30,7 +30,20 @@ extern "C" {
 extern void InitPlanetInfo (void);
 extern void UninitPlanetInfo (void);
 extern void GetPlanetInfo (void);
-extern void PutPlanetInfo (void);
+
+/* Personal discovery adapter. Slots are zero-based; moon == -1 is the planet.
+ * World adapters import after layout generation. Reset on new/load campaign.
+ * Invalid identity or failed mutation is fatal, matching legacy state. */
+void ResetPersonalDiscoveries (void);
+COUNT PersonalDiscoveryCount (COUNT system, COUNT planet, int moon);
+
+/* Detached, immutable legacy save buffer. Capture can fail (NULL); release it
+ * after reading its native-endian DWORD values through the normal save encoder. */
+typedef struct PLANET_INFO_SNAPSHOT PLANET_INFO_SNAPSHOT;
+PLANET_INFO_SNAPSHOT *CapturePlanetInfoForSave (void);
+DWORD PlanetInfoSnapshotLength (const PLANET_INFO_SNAPSHOT *snapshot);
+const DWORD *PlanetInfoSnapshotData (const PLANET_INFO_SNAPSHOT *snapshot);
+void ReleasePlanetInfoSnapshot (PLANET_INFO_SNAPSHOT *snapshot);
 
 extern void InitGroupInfo (BOOLEAN FirstTime);
 extern void UninitGroupInfo (void);
@@ -52,24 +65,17 @@ extern void BuildGroups (void);
 
 typedef struct GAME_STATE_FILE GAME_STATE_FILE;
 
-#define STARINFO_FILE 0
-	//"starinfo.dat"
-#define STAR_BUFSIZE (NUM_SOLAR_SYSTEMS * sizeof (DWORD) \
-		+ 3800 * (3 * sizeof (DWORD)))
-#define RANDGRPINFO_FILE 1
-	//"randgrp.dat"
-#define RAND_BUFSIZE (4 * 1024)
-#define DEFGRPINFO_FILE 2
-	//"defgrp.dat"
-#define DEF_BUFSIZE (10 * 1024)
+// Stable legacy file IDs; capacity/growth is owned by std::vector in WorldState.
+enum { STARINFO_FILE = 0, RANDGRPINFO_FILE = 1, DEFGRPINFO_FILE = 2 };
 
-typedef enum
-{
-	STARINFO,
-	RANDGRPINFO,
-	DEFGRPINFO
-} INFO_TYPE;
-
+/* Borrowed handles remain at stable addresses in the active WorldState. Open
+ * resets the shared cursor; 'w' truncates, 'r' preserves. Valid modes start with
+ * r or w; all files permit reads and writes. Calls do not hold a lock between
+ * operations: callers must serialize each complete seek/read/write sequence.
+ * Read/write return complete element counts, 0 on empty/invalid requests or
+ * allocation/locking failure. Reads stop at logical EOF; writes zero-fill holes.
+ * Seek permits offsets beyond EOF up to UINT32_MAX; negative seeks clamp to 0
+ * and fail. Do not use handles after their WorldState owner is destroyed. */
 GAME_STATE_FILE* OpenStateFile (int stateFile, const char *mode);
 void CloseStateFile (GAME_STATE_FILE *fp);
 void DeleteStateFile (int stateFile);

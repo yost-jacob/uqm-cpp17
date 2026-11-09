@@ -35,7 +35,6 @@ typedef HLINK HSTARSHIP;
 extern "C" {
 #endif
 
-
 // TODO: remove RACES_PER_PLAYER remnant of SC1
 #define RACES_PER_PLAYER 7
 #define MAX_SHIPS_PER_SIDE 14
@@ -200,13 +199,7 @@ typedef struct
 	SOUND ship_sounds;
 } DATA_STUFF;
 
-
 typedef struct race_desc RACE_DESC;
-
-typedef void (PREPROCESS_FUNC) (ELEMENT *ElementPtr);
-typedef void (POSTPROCESS_FUNC) (ELEMENT *ElementPtr);
-typedef COUNT (INIT_WEAPON_FUNC) (ELEMENT *ElementPtr, HELEMENT Weapon[]);
-typedef void (UNINIT_FUNC) (RACE_DESC *pRaceDesc);
 
 struct race_desc
 {
@@ -216,14 +209,9 @@ struct race_desc
 	DATA_STUFF ship_data _ALIGNED_ANY;
 	INTEL_STUFF cyborg_control _ALIGNED_ANY;
 
-	UNINIT_FUNC *uninit_func;
-	PREPROCESS_FUNC *preprocess_func;
-	POSTPROCESS_FUNC *postprocess_func;
-	INIT_WEAPON_FUNC *init_weapon_func;
+	void* data;  // Borrowed view of a concrete ship's optional private value.
 
-	void* data;  // private ship data, ship code owns this
-
-	void *CodeRef;
+	void *ship_owner; // Native Ship owner for the C dispatch buffer; never free or copy it.
 };
 
 #define SHIP_BASE_COMMON \
@@ -240,7 +228,6 @@ typedef struct
 {
 	SHIP_BASE_COMMON;
 } SHIP_BASE;
-
 
 struct STARSHIP
 {
@@ -297,7 +284,6 @@ LockStarShip (const QUEUE *pq, HSTARSHIP h)
 #define UnlockStarShip(pq, h)  UnlockLink (pq, h)
 #define FreeStarShip(pq, h)    FreeLink (pq, h)
 
-
 typedef HLINK HSHIPFRAG;
 
 typedef struct
@@ -332,7 +318,6 @@ LockShipFrag (const QUEUE *pq, HSHIPFRAG h)
 
 #define UnlockShipFrag(pq, h)  UnlockLink (pq, h)
 #define FreeShipFrag(pq, h)    FreeLink (pq, h)
-
 
 typedef HLINK HFLEETINFO;
 

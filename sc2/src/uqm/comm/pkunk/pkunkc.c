@@ -307,11 +307,11 @@ DiscussConquer (RESPONSE_REF R)
 
 		GetAllianceName (buf, name_1);
 		construct_response (
-				shared_phrase_buf,
+				GetConversationPhraseBuffer(),
 				conquer_because_1,
 				buf,
 				(RESPONSE_REF)-1);
-		DoResponsePhrase (conquer_because_1, DiscussConquer, shared_phrase_buf);
+		DoResponsePhrase (conquer_because_1, DiscussConquer, GetConversationPhraseBuffer());
 #endif
 		Response(conquer_because_1, DiscussConquer);
 	}
@@ -621,14 +621,14 @@ PkunkHome (RESPONSE_REF R)
 	}
 	if (!GET_GAME_STATE (PKUNK_SHIP_MONTH))
 	{
-		construct_response (shared_phrase_buf,
+		construct_response (GetConversationPhraseBuffer(),
 				we_are_vindicator0,
 				GLOBAL_SIS (CommanderName),
 				we_are_vindicator1,
 				GLOBAL_SIS (ShipName),
 				we_are_vindicator2,
 				(UNICODE*)NULL);
-		DoResponsePhrase (we_are_vindicator0, OfferAlliance, shared_phrase_buf);
+		DoResponsePhrase (we_are_vindicator0, OfferAlliance, GetConversationPhraseBuffer());
 	}
 	if (PHRASE_ENABLED (what_about_you))
 	{

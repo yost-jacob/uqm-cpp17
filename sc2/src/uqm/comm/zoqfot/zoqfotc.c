@@ -126,18 +126,18 @@ SelectAlienZOQ (CallbackArg arg)
 	{
 		// Transition to neutral state first if Pik was talking
 		if (LastAlien != FOT_ALIEN)
-			CommData.AlienTransitionDesc.AnimFlags |= TALK_DONE;
+			GetConversationData()->AlienTransitionDesc.AnimFlags |= TALK_DONE;
 		LastAlien = ZOQ_ALIEN;
-		CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
-		CommData.AlienTransitionDesc.StartIndex = FOT_TO_ZOQ;
-		CommData.AlienTalkDesc.StartIndex = ZOQ_TALK_INDEX;
-		CommData.AlienTalkDesc.NumFrames = ZOQ_TALK_FRAMES;
-		CommData.AlienAmbientArray[1].AnimFlags &= ~WAIT_TALKING;
+		GetConversationData()->AlienTransitionDesc.AnimFlags |= TALK_INTRO;
+		GetConversationData()->AlienTransitionDesc.StartIndex = FOT_TO_ZOQ;
+		GetConversationData()->AlienTalkDesc.StartIndex = ZOQ_TALK_INDEX;
+		GetConversationData()->AlienTalkDesc.NumFrames = ZOQ_TALK_FRAMES;
+		GetConversationData()->AlienAmbientArray[1].AnimFlags &= ~WAIT_TALKING;
 
-		CommData.AlienTextBaseline.x = (SWORD)ZOQ_BASE_X;
-		CommData.AlienTextBaseline.y = ZOQ_BASE_Y;
-		CommData.AlienTextFColor = ZOQ_FG_COLOR;
-		CommData.AlienTextBColor = ZOQ_BG_COLOR;
+		GetConversationData()->AlienTextBaseline.x = (SWORD)ZOQ_BASE_X;
+		GetConversationData()->AlienTextBaseline.y = ZOQ_BASE_Y;
+		GetConversationData()->AlienTextFColor = ZOQ_FG_COLOR;
+		GetConversationData()->AlienTextBColor = ZOQ_BG_COLOR;
 	}
 
 	(void)arg; // ignored
@@ -151,18 +151,18 @@ SelectAlienPIK (CallbackArg arg)
 	{
 		// Transition to neutral state first if Zoq was talking
 		if (LastAlien != FOT_ALIEN)
-			CommData.AlienTransitionDesc.AnimFlags |= TALK_DONE;
+			GetConversationData()->AlienTransitionDesc.AnimFlags |= TALK_DONE;
 		LastAlien = PIK_ALIEN;
-		CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
-		CommData.AlienTransitionDesc.StartIndex = FOT_TO_PIK;
-		CommData.AlienTalkDesc.StartIndex = PIK_TALK_INDEX;
-		CommData.AlienTalkDesc.NumFrames = PIK_TALK_FRAMES;
-		CommData.AlienAmbientArray[1].AnimFlags |= WAIT_TALKING;
+		GetConversationData()->AlienTransitionDesc.AnimFlags |= TALK_INTRO;
+		GetConversationData()->AlienTransitionDesc.StartIndex = FOT_TO_PIK;
+		GetConversationData()->AlienTalkDesc.StartIndex = PIK_TALK_INDEX;
+		GetConversationData()->AlienTalkDesc.NumFrames = PIK_TALK_FRAMES;
+		GetConversationData()->AlienAmbientArray[1].AnimFlags |= WAIT_TALKING;
 
-		CommData.AlienTextBaseline.x = (SWORD)PIK_BASE_X;
-		CommData.AlienTextBaseline.y = PIK_BASE_Y;
-		CommData.AlienTextFColor = PIK_FG_COLOR;
-		CommData.AlienTextBColor = PIK_BG_COLOR;
+		GetConversationData()->AlienTextBaseline.x = (SWORD)PIK_BASE_X;
+		GetConversationData()->AlienTextBaseline.y = PIK_BASE_Y;
+		GetConversationData()->AlienTextFColor = PIK_FG_COLOR;
+		GetConversationData()->AlienTextBColor = PIK_BG_COLOR;
 	}
 
 	(void)arg; // ignored
@@ -423,7 +423,7 @@ AquaintZoqFot (RESPONSE_REF R)
 
 		GetAllianceName (buf, name_1);
 		construct_response (
-				shared_phrase_buf,
+				GetConversationPhraseBuffer(),
 				we_are_vindicator0,
 				buf,
 				we_are_vindicator1,
@@ -435,7 +435,7 @@ AquaintZoqFot (RESPONSE_REF R)
 	if (PHRASE_ENABLED (which_fot))
 		Response (which_fot, AquaintZoqFot);
 	if (PHRASE_ENABLED (we_are_vindicator0))
-		DoResponsePhrase (we_are_vindicator0, ZoqFotIntro, shared_phrase_buf);
+		DoResponsePhrase (we_are_vindicator0, ZoqFotIntro, GetConversationPhraseBuffer());
 	if (PHRASE_ENABLED (quiet_toadies))
 		Response (quiet_toadies, AquaintZoqFot);
 	Response (all_very_interesting, ExitConversation);

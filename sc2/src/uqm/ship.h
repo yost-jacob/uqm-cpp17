@@ -29,6 +29,8 @@ extern BOOLEAN GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side);
 extern BOOLEAN GetInitialStarShips (void);
 
 extern void animation_preprocess (ELEMENT *ElementPtr);
+/* ElementPtr must be a live ship element associated with a live STARSHIP and
+ * its native Ship descriptor. These C engine callbacks dispatch behavior in C++. */
 extern void ship_preprocess (ELEMENT *ElementPtr);
 extern void ship_postprocess (ELEMENT *ElementPtr);
 extern void collision (ELEMENT *ElementPtr0, POINT *pPt0,

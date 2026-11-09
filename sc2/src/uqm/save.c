@@ -591,29 +591,21 @@ SaveFlagshipState (void)
 static void
 SaveStarInfo (uio_Stream *fh)
 {
-	GAME_STATE_FILE *fp;
-	fp = OpenStateFile (STARINFO_FILE, "rb");
-	if (fp)
-	{
-		DWORD flen = LengthStateFile (fp);
-		if (flen % 4)
-		{
-			log_add (log_Warning, "Unexpected Star Info length! Expected an integral number of DWORDS.\n");
-		}
-		else
-		{
-			write_32 (fh, SCAN_TAG);
-			write_32 (fh, flen);
-			while (flen)
-			{
-				DWORD val;
-				sread_32 (fp, &val);
-				write_32 (fh, val);
-				flen -= 4;
-			}
-		}
-		CloseStateFile (fp);
-	}
+    PLANET_INFO_SNAPSHOT *snapshot = CapturePlanetInfoForSave ();
+    DWORD i, words;
+    const DWORD *data;
+    if (!snapshot)
+    {
+        io_ok = FALSE;
+        return;
+    }
+    words = PlanetInfoSnapshotLength (snapshot) / sizeof (DWORD);
+    data = PlanetInfoSnapshotData (snapshot);
+    write_32 (fh, SCAN_TAG);
+    write_32 (fh, words * sizeof (DWORD));
+    for (i = 0; i < words; ++i)
+        write_32 (fh, data[i]);
+    ReleasePlanetInfoSnapshot (snapshot);
 }
 
 static void

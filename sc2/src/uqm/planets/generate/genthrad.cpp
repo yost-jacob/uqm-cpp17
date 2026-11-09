@@ -1,0 +1,221 @@
+//Copyright Paul Reiche, Fred Ford. 1992-2002
+
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include "genall.h"
+#include "../../orbital_encounter.hpp"
+#include "../../system_builders.hpp"
+#include "../../game_state.hpp"
+#include "../lander.h"
+#include "../planets.h"
+#include "../../build.h"
+#include "../../comm.h"
+#include "../../gendef.h"
+#include "../../starmap.h"
+#include "../../globdata.h"
+#include "../../ipdisp.h"
+#include "../../nameref.h"
+#include "../../setup.h"
+#include "../../state.h"
+#include "libs/mathlib.h"
+namespace uqm {
+namespace {
+class ThraddashSystemBehavior final : public SystemBehavior {
+public:
+    using SystemBehavior::SystemBehavior;
+    bool generatePlanets(SOLARSYS_STATE &system) override;
+    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
+    COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
+    bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
+};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+bool
+ThraddashSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
+{
+    auto *solarSys = &system;
+	COUNT angle;
+
+	GenerateDefault_generatePlanets (solarSys);
+
+	if (star().Index == AQUA_HELIX_DEFINED)
+	{
+		solarSys->PlanetDesc[0].data_index = PRIMORDIAL_WORLD;
+		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 65L / 100;
+		angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
+				solarSys->PlanetDesc[0].location.y);
+		solarSys->PlanetDesc[0].location.x =
+				COSINE (angle, solarSys->PlanetDesc[0].radius);
+		solarSys->PlanetDesc[0].location.y =
+				SINE (angle, solarSys->PlanetDesc[0].radius);
+	}
+	else  /* star().Index == THRADD_DEFINED */
+	{
+		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
+		solarSys->PlanetDesc[0].NumPlanets = 0;
+		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 98L / 100;
+		angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
+				solarSys->PlanetDesc[0].location.y);
+		solarSys->PlanetDesc[0].location.x =
+				COSINE (angle, solarSys->PlanetDesc[0].radius);
+		solarSys->PlanetDesc[0].location.y =
+				SINE (angle, solarSys->PlanetDesc[0].radius);
+	}
+	return true;
+}
+
+bool
+ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
+{
+    auto *solarSys = &system;
+    auto *world = &body;
+	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
+	{
+		if (StartSphereTracking (THRADDASH_SHIP)
+				&& (star().Index == THRADD_DEFINED
+				|| (!campaign_.read(StoryFlag::HelixUnprotected)
+				&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3)))
+		{
+			NotifyOthers (THRADDASH_SHIP, IPNL_ALL_CLEAR);
+			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+
+			CloneShipFragment (THRADDASH_SHIP, &GLOBAL (npc_built_ship_q),
+					INFINITE_FLEET);
+
+			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			if (star().Index == THRADD_DEFINED)
+			{
+				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			}
+			else
+			{
+				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+			}
+			communicate(THRADD_CONVERSATION);
+
+			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				return true;
+
+			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+			encounter.restore();
+
+			if (star().Index == THRADD_DEFINED
+					|| (!campaign_.read(StoryFlag::HelixUnprotected)
+					&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3))
+				return true;
+
+			RepairSISBorder ();
+		}
+
+		if (star().Index == AQUA_HELIX_DEFINED
+				&& !campaign_.read(StoryFlag::AquaHelix))
+		{
+			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+			solarSys->PlanetSideFrame[1] =
+					CaptureDrawable (LoadGraphic (AQUA_MASK_PMAP_ANIM));
+			solarSys->SysInfo.PlanetInfo.DiscoveryString =
+					CaptureStringTable (LoadStringTable (AQUA_STRTAB));
+		}
+		else if (star().Index == THRADD_DEFINED)
+		{
+			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+			solarSys->PlanetSideFrame[1] =
+					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
+			solarSys->SysInfo.PlanetInfo.DiscoveryString =
+					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+		}
+	}
+
+	GenerateDefault_generateOrbital (solarSys, world);
+	return true;
+}
+
+COUNT
+ThraddashSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
+{
+    auto *solarSys = &system;
+    auto *world = &body;
+	if (star().Index == THRADD_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
+	{
+		return GenerateDefault_generateRuins (solarSys, whichNode, info);
+	}
+
+	if (star().Index == AQUA_HELIX_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
+	{
+		// This check is redundant since the retrieval bit will keep the
+		// node from showing up again
+		if (campaign_.read(StoryFlag::AquaHelix))
+		{	// already picked up
+			return 0;
+		}
+
+		return GenerateDefault_generateArtifact (solarSys, whichNode, info);
+	}
+
+	return 0;
+}
+
+bool
+ThraddashSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT whichNode)
+{
+    auto *solarSys = &system;
+    auto *world = &body;
+	if (star().Index == THRADD_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
+	{
+		// Standard ruins report
+		GenerateDefault_landerReportCycle (solarSys);
+		return false;
+	}
+
+	if (star().Index == AQUA_HELIX_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
+	{
+		assert (!campaign_.read(StoryFlag::AquaHelix) && whichNode == 0);
+
+		GenerateDefault_landerReport (solarSys);
+		SetLanderTakeoff ();
+
+		campaign_.set(StoryCounter::HelixVisits, 0);
+		campaign_.set(StoryFlag::AquaHelix, (1) != 0);
+		campaign_.set(StoryFlag::AquaHelixOnShip, (1) != 0);
+		campaign_.set(StoryFlag::HelixUnprotected, (1) != 0);
+
+		return true; // picked up
+	}
+
+	(void) whichNode;
+	return false;
+}
+
+std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(CampaignState &campaign) {
+    return std::make_unique<ThraddashSystemBehavior>(campaign);
+}
+} // namespace uqm

@@ -1337,7 +1337,7 @@ NatureOfConversation (RESPONSE_REF R)
 			NPCPhrase (BUY_OR_SELL);
 			AlienTalkSegue (1);
 			XFormColorMap (GetColorMapAddress (
-					SetAbsColorMapIndex (CommData.AlienColorMap, 1)
+					SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 1)
 					), ONE_SECOND / 2);
 			AlienTalkSegue ((COUNT)~0);
 		}
@@ -1402,7 +1402,7 @@ DoBluster (RESPONSE_REF R)
 	if (PLAYER_SAID (R, trade_is_for_the_weak))
 	{
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 2)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 2)
 				), ONE_SECOND / 2);
 
 		SET_GAME_STATE (MELNORME_YACK_STACK2, 4);
@@ -1475,11 +1475,11 @@ yack0_respond (void)
 
 			GetAllianceName (buf, name_1);
 			construct_response (
-					shared_phrase_buf,
+					GetConversationPhraseBuffer(),
 					we_are_from_alliance0,
 					buf,
 					(RESPONSE_REF)-1);
-			DoResponsePhrase (we_are_from_alliance0, DoFirstMeeting, shared_phrase_buf);
+			DoResponsePhrase (we_are_from_alliance0, DoFirstMeeting, GetConversationPhraseBuffer());
 			break;
 		}
 		case 1:
@@ -1598,7 +1598,7 @@ DoFirstMeeting (RESPONSE_REF R)
 	else if (PLAYER_SAID (R, yes_really_testing))
 	{
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 0)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 0)
 				), ONE_SECOND / 2);
 
 		NPCPhrase (TEST_RESULTS);
@@ -1607,7 +1607,7 @@ DoFirstMeeting (RESPONSE_REF R)
 	{
 		SET_GAME_STATE (MELNORME_ANGER, 0);
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 0)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 0)
 				), ONE_SECOND / 2);
 
 		NPCPhrase (APOLOGY_ACCEPTED);
@@ -1646,7 +1646,7 @@ DoMelnormeMiffed (RESPONSE_REF R)
 		SET_GAME_STATE (MELNORME_MIFFED_COUNT, miffed_count);
 
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 2)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 2)
 				), ONE_SECOND / 2);
 	}
 	else if (PLAYER_SAID (R, explore_relationship))
@@ -1718,7 +1718,7 @@ DoMelnormePissed (RESPONSE_REF R)
 		SET_GAME_STATE (MELNORME_PISSED_COUNT, pissed_count);
 
 		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 2)
+				SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 2)
 				), ONE_SECOND / 2);
 	}
 	else if (PLAYER_SAID (R, beg_forgiveness))
@@ -1773,7 +1773,7 @@ DoMelnormeHate (RESPONSE_REF R)
 	SET_GAME_STATE (MELNORME_HATE_COUNT, hate_count);
 
 	XFormColorMap (GetColorMapAddress (
-			SetAbsColorMapIndex (CommData.AlienColorMap, 2)
+			SetAbsColorMapIndex (GetConversationData()->AlienColorMap, 2)
 			), ONE_SECOND / 2);
 
 	Response (well_if_thats_the_way_you_feel, ExitConversation);

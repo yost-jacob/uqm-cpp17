@@ -1,3 +1,4 @@
+#include "uqm/gendef.h"
 #include <boost/test/unit_test.hpp>
 
 #include <algorithm>
@@ -344,4 +345,30 @@ BOOST_FIXTURE_TEST_CASE(star_map_content_loader_closes_files_and_exposes_c_names
     CurStarDescPtr = GetStar(0);
     FreeStarMap();
     BOOST_TEST(CurStarDescPtr == nullptr);
+}
+
+extern "C" int discovery_state_c_round_trip(void);
+BOOST_FIXTURE_TEST_CASE(discoveries_import_legacy_reports_and_export_a_detached_save, ResourceFixture) {
+    FreeStarMap();
+    std::ifstream input(UQM_TEST_STARMAP_PATH);
+    BOOST_REQUIRE(input.good());
+    files["base/starmap.json"].assign(std::istreambuf_iterator<char>(input), {});
+    BOOST_REQUIRE(LoadStarMap() == TRUE);
+    BOOST_TEST(discovery_state_c_round_trip() == 1);
+    FreeStarMap();
+}
+
+extern "C" int system_behavior_bridge_contract(STAR_DESC *star);
+BOOST_FIXTURE_TEST_CASE(system_behavior_bridge_uses_its_attached_campaign, ResourceFixture) {
+    FreeStarMap();
+    std::ifstream input(UQM_TEST_STARMAP_PATH);
+    BOOST_REQUIRE(input.good());
+    files["base/starmap.json"].assign(std::istreambuf_iterator<char>(input), {});
+    BOOST_REQUIRE(LoadStarMap() == TRUE);
+    STAR_DESC *chmmr = nullptr;
+    for (COUNT i = 0; i < NUM_SOLAR_SYSTEMS; ++i)
+        if (GetStar(i)->Index == CHMMR_DEFINED) { chmmr = GetStar(i); break; }
+    BOOST_REQUIRE(chmmr);
+    BOOST_TEST(system_behavior_bridge_contract(chmmr) == 1);
+    FreeStarMap();
 }

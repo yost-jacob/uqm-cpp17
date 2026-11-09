@@ -430,7 +430,6 @@ main (int argc, char *argv[])
 		optGamma = 1.0f; // failed or default
 	
 	InitColorMaps ();
-	init_communication ();
 	/* TODO: Once threading is gone, restore initAudio here.
 	   initAudio calls AssignTask, which currently blocks on
 	   ProcessThreadLifecycles... */
@@ -469,7 +468,6 @@ main (int argc, char *argv[])
 	{
 		TFB_UninitInput ();
 		unInitAudio ();
-		uninit_communication ();
 		
 		TFB_PurgeDanglingGraphics ();
 		// Purge above refers to colormaps which have to be still up

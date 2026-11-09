@@ -201,7 +201,14 @@ struct ConnectStateData {
 	} state;
 };
 
+#if defined(__cplusplus)
+}
+#endif
 #endif  /* NETCONNECTION_INTERNAL */
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 
 NetConnection *NetConnection_open(int player,

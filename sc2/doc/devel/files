@@ -8,33 +8,32 @@ comm.c         Handles communication with aliens.
 commglue.c     Helper functions for communication with aliens.
 confirm.c      Asks for confirmation on exit.
 credits.c      Shows the credits after a victory.
-cyborg.c       Handles combat AI.
+cyborg.cpp       Handles combat AI.
 debug.c        Debugging functions.
 demo.c         Code for demo mode and game journal.
 displist.c     Generic doubly linked list, which can keep its own pool
                of preallocated link structures.
                This generic list is used in various places throughout
                the game source, but without preallocaded link structures.
-dummy.c        
 encount.c      Handles what to do when a player encounters an alien.
 fmv.c          Handles video sequences.
 galaxy.c       Starmap? Hyperspace background?
 gameinp.c
 gameopt.c      Game options menu, including save and load selection.
-gendef.c       Defines functions to be called for generating star systems.
+system_behavior_factory.cpp Selects native special-system behavior classes.
 getchar.c      Routines for entering characters with the joystick.
 globdata.c     Sets up global data, creates the main ship, and the radar.
 gravity.c      Maths regarding gravity in combat.
 gravwell.c     Handles objects that generate gravity in combat.
 grpinfo.c      Handles battle groups.
-hyper.c        Handles hyperspace movement and actions.
+hyper.cpp        Handles hyperspace movement and actions.
 init.c         Initialization of various game data.
 intel.c        Passes input of computer or player along (?)
 intro.c        Alternative functions for beginning and ending sequences
                to those in fmv, unused. (PC version?)
 ipdisp.c       Something with spheres of influence?
 load.c         Loading a saved game.
-loadship.c     Loading of ship resource data.
+loadship.cpp     Loading of ship resource data.
 master.c       Preloading of all ships?
 melee.c        All supermelee menu related code.
 misc.c         Miscelaneous routines related to combat but not directly to
@@ -51,7 +50,7 @@ save.c         Saving of a game.
 settings.c     The back end of the game options.
 setup.c        Initialisations for key config, and loading of various
                resources.
-ship.c         Ship movement in combat.
+ship.cpp         Ship movement in combat.
 shipstat.c     Routines for showing information about ships in combat
                (name, crew, energy). (also status.c)
 shipyard.c     Things related to selection of your companion ships.
@@ -81,7 +80,6 @@ weapon.c       Routines for weapons fire in combat.
 
 build.h
 clock.h
-coderes.h
 collide.h
 commglue.h
 demo.h
@@ -113,3 +111,7 @@ units.h
 velocity.h
 weapon.h
 
+
+ship_factory.cpp  Direct SPECIES_ID-to-native-ship construction.
+ship_factory.hpp  Native unique_ptr<Ship> factory interface.
+ship_builders.hpp Internal concrete ship-builder declarations.

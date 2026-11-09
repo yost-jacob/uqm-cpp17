@@ -24,6 +24,10 @@
 
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 // If set to true, interactive routines that are called (indirectly) in debug
 // functions are a no-op.
@@ -195,6 +199,10 @@ void debugContexts (void);
 
 // To add some day:
 // - a function to fast forward the game clock to a specifiable time.
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* _DEBUG_H */
 

@@ -966,7 +966,7 @@ TellStarBase (RESPONSE_REF R)
 	{
 		case 0:
 			construct_response (
-					shared_phrase_buf,
+					GetConversationPhraseBuffer(),
 					tell_me_about_fuel0,
 					GLOBAL_SIS (ShipName),
 					tell_me_about_fuel1,
@@ -1008,7 +1008,7 @@ TellStarBase (RESPONSE_REF R)
 	if (pstack[0])
 		DoResponsePhrase (pstack[0], TellStarBase, buf0);
 	if (pstack[1])
-		DoResponsePhrase (pstack[1], TellStarBase, shared_phrase_buf);
+		DoResponsePhrase (pstack[1], TellStarBase, GetConversationPhraseBuffer());
 	if (pstack[2])
 		Response (pstack[2], TellStarBase);
 	if (pstack[3])

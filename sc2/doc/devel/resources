@@ -44,10 +44,6 @@ CONVERSATION: All data corresponding to an individual conversation
               found, and the timestamp file corresponding to those
               voiceovers. The second and third values are optional,
               but if either is present, both must be.
-SHIP:         This is an integer that specifies which ship corresponds
-              to a specified resource. The mapping of SHIP integers
-              to actual ship_info structures is done by the dummy.c
-              routines.
 STRING:       A string. The resource data is the string itself.
 INT32:        A 32-bit integer. The resource data is the integer as a
               string giving its representation in decimal.
@@ -194,3 +190,7 @@ resource library should be compiled with 'PACKAGING' defined for this.
 
 Initial version of this file 2002-10-23 by Serge van den Boom.
 Updated for the 0.7.0 system by Michael Martin.
+
+The former SHIP integer resource type is retired. Ship behavior is constructed
+by the native SPECIES_ID factory, not by a resource name or numeric code record.
+Graphics, sounds and text remain resources. Old SHIP records do not remap behavior.
