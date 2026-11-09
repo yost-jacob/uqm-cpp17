@@ -29,7 +29,8 @@ flowchart TD
 
     H --> B["Battle loop<br/>battle.c / process.c<br/>also used for HyperSpace movement"]:::legacy
     H --> HP["HyperSpaceNavigation<br/>owned visit; explicit player/campaign"]:::mixed
-    S --> EX["SolarSystemExploration<br/>owned descriptor; native scan / lander entry"]:::mixed
+    S --> EX["SolarSystemExploration<br/>owned descriptor; scan / resume hooks"]:::mixed
+    EX --> LM["LanderMode child<br/>RAII visit, bindings and effects"]:::mixed
     E --> EC["RaceCommunication / VisitStarBase<br/>communication, encounters, story actions"]:::legacy
     EC --> B
 

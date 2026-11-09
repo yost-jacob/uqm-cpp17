@@ -96,7 +96,7 @@ encounter scopes.
 
 ## Lander
 
-`runLander(system, location)` owns a private `LanderVisit`. The formerly public
+`LanderMode`, launched through `swapGameMode`, owns a private `LanderVisit`. The formerly public
 PLANETSIDE_DESC is removed from the C header. Crew, movement/weapon delays,
 damage, explosion and cargo data live in that visit rather than separate process
 statics. Surface callbacks use its borrowed system/campaign references; no
@@ -107,6 +107,13 @@ no userdata. It is restored before the visit owner disappears. Graphics/music
 caches retain their old resource lifetime. The existing `InitLander` C UI entry
 obtains the active campaign once because it can run outside a launched visit.
 Creature, mineral, hazard and projectile algorithms remain procedural.
+
+The dispatcher suspends parent services, destroys the completed child, restores
+borrowed bindings, and calls the parent `resume()` hook. Exploration owns the
+renderer snapshot and redraw policy. Lander members restore menu sounds and
+callback bindings and clean transient effects. Explicit normal completion applies
+cargo and crew changes; load/abort skips those outcomes. See
+[nested modes](nested-modes.md) for service lifecycle contracts.
 
 ## Remaining boundaries and verification
 
