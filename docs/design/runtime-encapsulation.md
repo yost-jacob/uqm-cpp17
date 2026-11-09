@@ -43,6 +43,18 @@ Melnorme selector use the attached record too. Androsynth discovery reads use th
 injected campaign. Catalogue records outlive every explored system and cannot
 be rebound midway through a visit.
 
+Exploration scan/render helpers now take `SOLARSYS_STATE&` (const when read-only).
+Both scan menus carry that descriptor in userdata, including the landing-site
+selection. Cursor position, saved image, flash phase and flight frame timing live
+in the exploration runtime rather than process statics. A scan scope releases
+its cursor image. Only the two remaining C planet-loop entry points recover
+`pSolarSysState`; native lander redraws pass their descriptor directly.
+
+Orbital entry/exit and NPC lifecycle helpers use the supplied campaign. Generation
+and body naming resolve the star from the system's bound catalogue ID. Planet
+progress reads and permanent-bit publication also take an explicit system; the
+lander no longer goes through a global `PutPlanetInfo` bridge.
+
 ## HyperSpace and QuasiSpace
 
 `HyperSpaceMode` owns one `HyperSpaceNavigation`, borrowing its player and
@@ -54,7 +66,8 @@ nonserialized lifetime semantics rather than changing the legacy save format.
 Navigation reads story fields through CampaignState and accesses flagship fuel,
 crew and logical coordinates through PlayerEntity methods. Its frame callback
 now receives an explicit context pointer in `BATTLE_STATE`. Combat callers with
-no callback pass null context. This runtime field is not serialized.
+no callback pass null context. The navigation menu callback borrows its navigation
+owner through MENU_STATE userdata rather than looking up the active session. This runtime field is not serialized.
 
 C entry points that cannot yet carry userdata use a scoped, checked session
 binding. It rejects another player's navigation object and restores the previous
@@ -71,8 +84,8 @@ and colormap caches keep their existing process/resource lifecycle.
 
 The explored behavior is attached to its production session. Its `communicate`
 method creates a `SystemEncounterMode` and calls `swapGameMode`. The child runs
-the existing `InitCommunication`, then returns its suspended parent or a pending
-session exit. It does not rerun the parent. The communication result borrows a
+a native `EncounterRuntime` with explicit campaign and catalogue context, then
+returns completion or a pending session exit. It does not rerun the parent. The communication result borrows a
 variable on the suspended caller's stack, whose lifetime spans the whole child.
 
 For load/title/shutdown requests, the helper translates the result to the legacy
@@ -93,6 +106,30 @@ hands state to the outer encounter mode, rather than restoring a temporary
 fleet within the orbital call. Its persistent group-save operation remains
 explicit. NPC lifecycle/archive operations also remain distinct from temporary
 encounter scopes.
+
+## Encounter orchestration and devices
+
+Root encounters own the same `EncounterRuntime` as orbital children. Race
+selection, saved-encounter reconstruction, combat setup, hail/attack routing and
+aftermath moved out of comm.c/encount.c into native procedures on that owner.
+The remaining C `InitCommunication` is a compatibility entry for starbase code.
+The dialogue engine still owns its existing callbacks/UI; `HailAlien` is its
+internal backend entry, not a new wrapper. Battle resources restore temporary
+sound, cyborg input and caller activity through a scope owner.
+
+`DeviceMenu` takes `CampaignState&` and optionally a borrowed explored system.
+Navigation and exploration call it directly; C planet menus use the compatibility
+entry. Its callbacks carry their owner through userdata. Broadcaster, Sun Device,
+Talking Pet, Ultron and portal actions use typed campaign access; system checks
+use the bound star. The pure inventory query returns `vector<BYTE>` in the old
+stable order; the C save adapter copies only the prefix that fits. The menu owns
+its vector and restores the caller's sound flags with RAII.
+
+This pass replaces or deletes 82 story macro uses, removes seven redundant C
+entry declarations/bridges, and converts device/encounter local macros to
+constants. It retains legacy activity flags, physical queues and graphics calls
+inside the backend, rather than exposing the campaign payload through a new
+untyped accessor. No save layout or story conditions are redesigned.
 
 ## Lander
 
@@ -136,14 +173,17 @@ Sources: [exploration owner](../../sc2/src/uqm/system_runtime.hpp),
 [navigation](../../sc2/src/uqm/hyper_navigation.hpp),
 [scoped navigation binding](../../sc2/src/uqm/navigation_context.cpp),
 [child encounter](../../sc2/src/uqm/system_encounter.cpp),
+[encounter owner](../../sc2/src/uqm/encounter_runtime.hpp),
+[device owner](../../sc2/src/uqm/device_menu.hpp),
 [fleet scope](../../sc2/src/uqm/orbital_encounter.hpp),
 [lander](../../sc2/src/uqm/planets/lander.cpp).
 
 ## Validation for this pass
 
 Debug and Release CMake/Ninja builds and CTest pass. A fresh legacy dependency
-regeneration and link pass, and the executable reports its version. The 142
-Boost.Test cases / 13,445 assertions pass under ASan/UBSan. Navigation, exploration,
+regeneration and link pass, and the executable reports its version. All 148 Boost.Test cases / 13,621 assertions pass under ASan/UBSan, including packed encounter
+fields, restored-encounter precedence, caller-campaign delivery, per-player device
+inventory and bounded legacy save-buffer copying. Navigation, exploration,
 scan, lander, mode and encounter/context sources pass strict warning checks.
 
 A focused GUI run started a new campaign in Sol, flew into HyperSpace, entered a
@@ -151,3 +191,7 @@ normal fleet encounter, saved slot zero from that encounter screen, and loaded
 it back to the same date/location/fuel/crew. Orbital child encounters and lander
 ownership are covered by dependency-isolated regression checks and compilation,
 not exhaustive interactive story or landing playthroughs.
+
+The current pass also loaded a saved HyperSpace fleet encounter, displayed the
+native encounter action screen, and entered probe dialogue. Special device/story
+outcomes and landing have not received exhaustive interactive playthroughs.

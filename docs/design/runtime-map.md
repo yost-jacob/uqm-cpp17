@@ -31,7 +31,12 @@ flowchart TD
     H --> HP["HyperSpaceNavigation<br/>owned visit; explicit player/campaign"]:::mixed
     S --> EX["SolarSystemExploration<br/>owned descriptor; scan / resume hooks"]:::mixed
     EX --> LM["LanderMode child<br/>RAII visit, bindings and effects"]:::mixed
-    E --> EC["RaceCommunication / VisitStarBase<br/>communication, encounters, story actions"]:::legacy
+    E --> ER["EncounterRuntime<br/>explicit campaign / star; setup and aftermath"]:::mixed
+    ER --> EC["HailAlien / legacy dialogue<br/>story callbacks and UI"]:::legacy
+    E --> BASE["VisitStarBase<br/>legacy starbase path"]:::legacy
+    BASE --> EC
+    H --> DEV["DeviceMenu / inventoryDevices<br/>explicit campaign; optional system"]:::mixed
+    EX --> DEV
     EC --> B
 
     B --> SE["ship.cpp / cyborg.cpp<br/>native dispatch; procedural execution / prediction"]:::mixed
@@ -42,7 +47,7 @@ flowchart TD
     EX --> GEN["SystemBehavior dispatch<br/>28 native special-system behaviors"]:::mixed
     EX --> WA["world_c.cpp / discovery_state_c.cpp<br/>world progress / archive compatibility"]:::adapter
     GEN --> CHILD["SystemEncounterMode<br/>swapGameMode retains exploration parent"]:::native
-    CHILD --> EC
+    CHILD --> ER
     GEN --> WA
     GEN --> SB["SolarSystem-owned behavior<br/>borrowed CampaignState reference"]:::native
     WA --> WO["SolarSystem / World / EnergyBehavior<br/>runtime ownership and selected energy rules"]:::native
@@ -132,8 +137,8 @@ transfer contracts; it is not redundant simply because its implementation is C++
 | --- | --- | --- |
 | Mode selection | Native dispatcher; mixed mode bodies | Move remaining C activity/transition flags into explicit results; production modes already receive their session. |
 | Solar-system generation | Scoped native ownership; all special-system behavior classes borrow campaign state | Replace remaining global runtime/queue access and C engine entry points. |
-| Navigation | Owned native HyperSpace state; procedural element/render backend | Move remaining selected-star, graphics and C input dependencies behind explicit interfaces. |
-| Encounters and communication | Native orbital child modes and scoped temporary fleets; legacy dialogue | Migrate conversation internals later; preserve existing root encounter/starbase handoffs. |
+| Navigation | Owned native HyperSpace state; menu userdata; explicit campaign device actions | Move remaining selected-star, graphics and C input dependencies behind explicit interfaces. |
+| Encounters and communication | Native encounter runtime and orbital children; scoped temporary fleets; legacy dialogue | Migrate conversation internals later; preserve existing root encounter/starbase handoffs. |
 | Combat | Native ships and callers over a legacy element engine | Encapsulate battle/element lifetime, collisions and projectile behaviors; preserve retirement and reincarnation ordering. |
 | Menus and saves | Typed exit request around legacy UI and decoder | Migrate menu callers; separately address transactional state decoding. |
 | State | Native lifetime around a legacy payload | Replace borrowed global access incrementally without introducing duplicate authoritative state. |
@@ -149,6 +154,7 @@ and all-special-system migration, scoped owner and remaining C engine boundary.
 
 - [Dispatcher](../../sc2/src/uqm/game_mode.cpp), [mode bodies and campaign lifecycle](../../sc2/src/uqm/gameplay_modes.cpp), [outer campaign caller](../../sc2/src/uqm/starcon.c).
 - [State ownership](../../sc2/src/uqm/game_state.hpp), [payload adapter](../../sc2/src/uqm/game_state.cpp), [world runtime](../../sc2/src/uqm/world.hpp).
+- [Encounter orchestration](../../sc2/src/uqm/encounter_runtime.hpp), [device menu](../../sc2/src/uqm/device_menu.hpp), [device inventory and save adapter](../../sc2/src/uqm/device_inventory.cpp).
 - [World adapter](../../sc2/src/uqm/world_c.cpp), [behavior selection](../../sc2/src/uqm/system_behavior_factory.cpp), [menu adapter](../../sc2/src/uqm/game_menu.cpp).
 - [Ship execution](../../sc2/src/uqm/ship.cpp), [cyborg prediction](../../sc2/src/uqm/cyborg.cpp), [native ship](../../sc2/src/uqm/ship_behavior.hpp), [asset boundary](../../sc2/src/uqm/loadship.cpp).
 - [Star catalogue adapter](../../sc2/src/uqm/star_map_c.cpp), [ship tuning loader](../../sc2/src/uqm/ship_tuning_c.cpp).
