@@ -626,7 +626,7 @@ DispatchLander (void)
 	SetContext (ScanContext);
 	drawPlanetCursor (FALSE);
 
-	PlanetSide (planetLoc);
+	uqm::runLander(*pSolarSysState, planetLoc);
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		return FALSE;
 

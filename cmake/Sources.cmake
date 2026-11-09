@@ -278,7 +278,7 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/generate/genzfpscout.cpp
     sc2/src/uqm/planets/generate/genzoq.cpp
     sc2/src/uqm/planets/gentopo.c
-    sc2/src/uqm/planets/lander.c
+    sc2/src/uqm/planets/lander.cpp
     sc2/src/uqm/planets/orbits.c
     sc2/src/uqm/planets/oval.c
     sc2/src/uqm/planets/pl_stuff.c

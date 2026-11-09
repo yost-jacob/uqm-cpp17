@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../system_runtime.hpp"
 #include "lander.h"
 #include "../state.h"
 
@@ -56,7 +57,7 @@ struct LanderInputState {
 	// Fields required by DoInput()
 	BOOLEAN (*InputFunc) (LanderInputState *pMS);
 
-	BOOLEAN Initialized;
+	bool Initialized;
 	TimeCount NextTime;
 			// Frame rate control
 };
@@ -152,23 +153,34 @@ extern PRIM_LINKS DisplayLinks;
 
 #define LANDER_SPEED_DENOM 10
 
-static BYTE lander_flags;
-static POINT curLanderLoc;
-static int crew_left;
-static int shieldHit;
-		// which shield was hit, assuming it helped
-static int damage_index;
-		// number of lander damage frames left
-static int explosion_index;
-		// lander explosion progression. Semantics are similar to an
-		// inverse of ELEMENT.life_span
-static int turn_wait;
-		// thus named for similar semantics to ELEMENT.turn_wait
-static int weapon_wait;
-		// semantics similar to STARSHIP.weapon_counter
+// Per-launch state, owned by runLander; C element callbacks only borrow it.
+struct LanderVisit {
+    explicit LanderVisit(SOLARSYS_STATE &owner) : system(owner), campaign(uqm::systemCampaign(owner)) {}
+    LanderVisit(const LanderVisit &) = delete;
+    LanderVisit &operator=(const LanderVisit &) = delete;
+    SOLARSYS_STATE &system;
+    uqm::CampaignState &campaign;
+    bool InTransit{};
+    COUNT ElementLevel{}, MaxElementLevel{}, BiologicalLevel{};
+    COUNT ElementAmounts[NUM_ELEMENT_CATEGORIES]{};
+    COUNT NumFrames{};
+    UNICODE AmountBuf[40]{};
+    TEXT MineralText[3]{};
+    Color ColorCycle[NUM_TEXT_FRAMES >> 1]{};
+    BYTE TectonicsChance{}, WeatherChance{}, FireChance{};
+    BYTE lander_flags{};
+    POINT curLanderLoc{};
+    int crew_left{};
+    int shieldHit{};
+    int damage_index{};
+    int explosion_index{};
+    int turn_wait{};
+    int weapon_wait{};
+};
+// Compatibility borrow for C element callbacks. The native lander entry owns
+// the descriptor and restores this binding before its owner leaves scope.
+static LanderVisit *planetSideDesc;
 
-// TODO: We may want to make the PLANETSIDE_DESC fields into static vars
-static PLANETSIDE_DESC *planetSideDesc;
 
 #define ON_THE_GROUND   0
 
@@ -254,8 +266,8 @@ object_animation (ELEMENT *ElementPtr)
 			/* A natural disaster */
 			if (ElementPtr->mass_points == DEATH_EXPLOSION)
 			{	// Lander explosion
-				++explosion_index;
-				if (explosion_index >= EXPLOSION_LIFE)
+				++planetSideDesc->explosion_index;
+				if (planetSideDesc->explosion_index >= EXPLOSION_LIFE)
 				{	// XXX: The last frame is drawn twice
 					pPrim->Object.Stamp.frame =
 							DecFrameIndex (pPrim->Object.Stamp.frame);
@@ -320,12 +332,12 @@ object_animation (ELEMENT *ElementPtr)
 				SIZE dx, dy;
 				COUNT old_angle;
 
-				dx = curLanderLoc.x - ElementPtr->next.location.x;
+				dx = planetSideDesc->curLanderLoc.x - ElementPtr->next.location.x;
 				if (dx < 0 && dx < -(MAP_WIDTH << (MAG_SHIFT - 1)))
 					dx += MAP_WIDTH << MAG_SHIFT;
 				else if (dx > (MAP_WIDTH << (MAG_SHIFT - 1)))
 					dx -= MAP_WIDTH << MAG_SHIFT;
-				dy = curLanderLoc.y - ElementPtr->next.location.y;
+				dy = planetSideDesc->curLanderLoc.y - ElementPtr->next.location.y;
 				angle = ARCTAN (dx, dy);
 				if (dx < 0)
 					dx = -dx;
@@ -423,7 +435,7 @@ object_animation (ELEMENT *ElementPtr)
 	if ((ElementPtr->state_flags & FINITE_LIFE)
 			&& ElementPtr->mass_points == DEATH_EXPLOSION
 			&& GetSuccLink (DisplayLinks) != ElementPtr->PrimIndex)
-		lander_flags |= ADD_AT_END;
+		planetSideDesc->lander_flags |= ADD_AT_END;
 }
 
 #define NUM_CREW_COLS 6
@@ -438,29 +450,29 @@ DeltaLanderCrew (SIZE crew_delta, COUNT which_disaster)
 	if (crew_delta > 0)
 	{
 		// Filling up the crew bar when landing.
-		crew_delta = crew_left;
-		crew_left += 1;
+		crew_delta = planetSideDesc->crew_left;
+		planetSideDesc->crew_left += 1;
 
 		s.frame = SetAbsFrameIndex (LanderFrame[0], 55);
 	}
 	else /* if (crew_delta < 0) */
 	{
-		if (crew_left < 1)
+		if (planetSideDesc->crew_left < 1)
 			return; // irrelevant -- all dead
 		
-		shieldHit = GET_GAME_STATE (LANDER_SHIELDS);
-		shieldHit &= 1 << which_disaster;
-		if (!shieldHit || TFB_Random () % 100 >= 95)
+		planetSideDesc->shieldHit = planetSideDesc->campaign.read(uqm::StoryCounter::LanderShields);
+		planetSideDesc->shieldHit &= 1 << which_disaster;
+		if (!planetSideDesc->shieldHit || TFB_Random () % 100 >= 95)
 		{	// No shield, or it did not help
-			shieldHit = 0;
-			--crew_left;
+			planetSideDesc->shieldHit = 0;
+			--planetSideDesc->crew_left;
 		}
 
-		damage_index = DAMAGE_CYCLE;
-		if (shieldHit)
+		planetSideDesc->damage_index = DAMAGE_CYCLE;
+		if (planetSideDesc->shieldHit)
 			return;
 
-		crew_delta = crew_left;
+		crew_delta = planetSideDesc->crew_left;
 		s.frame = SetAbsFrameIndex (LanderFrame[0], 56);
 
 		PlaySound (SetAbsSoundIndex (LanderSounds, LANDER_INJURED),
@@ -476,7 +488,7 @@ DeltaLanderCrew (SIZE crew_delta, COUNT which_disaster)
 }
 
 static void
-FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved)
+FillLanderHold (LanderVisit *pPSD, COUNT scan, COUNT NumRetrieved)
 {
 	COUNT start_count;
 	STAMP s;
@@ -497,7 +509,7 @@ FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved)
 	{
 		start_count = pPSD->ElementLevel;
 		pPSD->ElementLevel += NumRetrieved;
-		if (GET_GAME_STATE (IMPROVED_LANDER_CARGO))
+		if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderCargo))
 		{
 			start_count >>= 1;
 			NumRetrieved = (pPSD->ElementLevel >> 1) - start_count;
@@ -526,7 +538,7 @@ FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved)
 
 // returns true iff the node was picked up.
 static bool
-pickupMineralNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
+pickupMineralNode (LanderVisit *pPSD, COUNT NumRetrieved,
 		ELEMENT *ElementPtr, const INTERSECT_CONTROL *LanderControl,
 		const INTERSECT_CONTROL *ElementControl)
 {
@@ -585,7 +597,7 @@ pickupMineralNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 }
 
 static bool
-pickupBioNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved)
+pickupBioNode (LanderVisit *pPSD, COUNT NumRetrieved)
 {
 	if (pPSD->BiologicalLevel >= MAX_SCROUNGED)
 	{
@@ -622,7 +634,7 @@ shotCreature (ELEMENT *ElementPtr, BYTE value,
 		// Can creature.
 		ElementPtr->mass_points = value;
 		DisplayArray[ElementPtr->PrimIndex].Object.Stamp.frame =
-				pSolarSysState->PlanetSideFrame[0];
+				planetSideDesc->system.PlanetSideFrame[0];
 	}
 	else if (CreatureData[ElementPtr->mass_points & ~CREATURE_AWARE]
 			.Attributes & SPEED_MASK)
@@ -653,7 +665,7 @@ CheckObjectCollision (COUNT index)
 	DRAWABLE LanderHandle;
 	PRIMITIVE *pPrim;
 	PRIMITIVE *pLanderPrim;
-	PLANETSIDE_DESC *pPSD = planetSideDesc;
+	LanderVisit *pPSD = planetSideDesc;
 
 	if (index != END_OF_LIST)
 	{
@@ -722,7 +734,7 @@ CheckObjectCollision (COUNT index)
 				if (pLanderPrim == 0)
 				{
 					/* Collision of lander with another object */
-					if (crew_left == 0 || pPSD->InTransit)
+					if (planetSideDesc->crew_left == 0 || pPSD->InTransit)
 						break;
 
 					if (ElementPtr->state_flags & FINITE_LIFE)
@@ -824,10 +836,10 @@ CheckObjectCollision (COUNT index)
 				}
 
 				which_node = HIBYTE (ElementPtr->scan_node) - 1;
-				if (callPickupForScanType (pSolarSysState,
-						pSolarSysState->pOrbitalDesc, which_node, scan))
+				if (callPickupForScanType (&planetSideDesc->system,
+						planetSideDesc->system.pOrbitalDesc, which_node, scan))
 				{	// Node retrieved, remove from the surface
-					setNodeRetrieved (&pSolarSysState->SysInfo.PlanetInfo,
+					setNodeRetrieved (&planetSideDesc->system.SysInfo.PlanetInfo,
 							scan, which_node);
                     PutPlanetInfo (); // Publish accepted permanent retrieval immediately.
 					ElementPtr->state_flags |= DISAPPEARING;
@@ -875,11 +887,11 @@ lightning_process (ELEMENT *ElementPtr)
 			if (ElementPtr->mass_points == LIGHTNING_DISASTER)
 			{
 				/* This one always strikes the lander and can hurt */
-				if (crew_left && TFB_Random () % 100 < 10
+				if (planetSideDesc->crew_left && TFB_Random () % 100 < 10
 						&& !planetSideDesc->InTransit)
-					lander_flags |= KILL_CREW;
+					planetSideDesc->lander_flags |= KILL_CREW;
 
-				ElementPtr->next.location = curLanderLoc;
+				ElementPtr->next.location = planetSideDesc->curLanderLoc;
 			}
 
 			pPrim->Object.Stamp.frame =
@@ -891,7 +903,7 @@ lightning_process (ELEMENT *ElementPtr)
 	}
 
 	if (GetSuccLink (DisplayLinks) != ElementPtr->PrimIndex)
-		lander_flags |= ADD_AT_END;
+		planetSideDesc->lander_flags |= ADD_AT_END;
 }
 
 static void
@@ -917,11 +929,11 @@ AddLightning (void)
 
 		rand_val = TFB_Random ();
 		LightningElementPtr->life_span = 10 + (HIWORD (rand_val) % 10) + 1;
-		LightningElementPtr->next.location.x = (curLanderLoc.x
+		LightningElementPtr->next.location.x = (planetSideDesc->curLanderLoc.x
 				+ ((MAP_WIDTH << MAG_SHIFT) - ((SURFACE_WIDTH >> 1) - 6))
 				+ (LOBYTE (rand_val) % (SURFACE_WIDTH - 12))
 				) % (MAP_WIDTH << MAG_SHIFT);
-		LightningElementPtr->next.location.y = (curLanderLoc.y
+		LightningElementPtr->next.location.y = (planetSideDesc->curLanderLoc.y
 				+ ((MAP_HEIGHT << MAG_SHIFT) - ((SURFACE_HEIGHT >> 1) - 6))
 				+ (HIBYTE (rand_val) % (SURFACE_HEIGHT - 12))
 				) % (MAP_HEIGHT << MAG_SHIFT);
@@ -963,11 +975,11 @@ AddGroundDisaster (COUNT which_disaster)
 		GroundDisasterElementPtr->preprocess_func = object_animation;
 
 		rand_val = TFB_Random ();
-		GroundDisasterElementPtr->next.location.x = (curLanderLoc.x
+		GroundDisasterElementPtr->next.location.x = (planetSideDesc->curLanderLoc.x
 				+ ((MAP_WIDTH << MAG_SHIFT) - (SURFACE_WIDTH * 3 / 8))
 				+ (LOWORD (rand_val) % (SURFACE_WIDTH * 3 / 4))
 				) % (MAP_WIDTH << MAG_SHIFT);
-		GroundDisasterElementPtr->next.location.y = (curLanderLoc.y
+		GroundDisasterElementPtr->next.location.y = (planetSideDesc->curLanderLoc.y
 				+ ((MAP_HEIGHT << MAG_SHIFT) - (SURFACE_HEIGHT * 3 / 8))
 				+ (HIWORD (rand_val) % (SURFACE_HEIGHT * 3 / 4))
 				) % (MAP_HEIGHT << MAG_SHIFT);
@@ -1009,11 +1021,11 @@ BuildObjectList (void)
 	DWORD rand_val;
 	POINT org;
 	HELEMENT hElement, hNextElement;
-	PLANETSIDE_DESC *pPSD = planetSideDesc;
+	LanderVisit *pPSD = planetSideDesc;
 
 	DisplayLinks = MakeLinks (END_OF_LIST, END_OF_LIST);
 	
-	lander_flags &= ~KILL_CREW;
+	planetSideDesc->lander_flags &= ~KILL_CREW;
 
 	rand_val = TFB_Random ();
 	if (LOBYTE (HIWORD (rand_val)) < pPSD->FireChance)
@@ -1029,7 +1041,7 @@ BuildObjectList (void)
 	if (LOBYTE (LOWORD (rand_val)) < pPSD->WeatherChance)
 		AddLightning ();
 
-	org = curLanderLoc;
+	org = planetSideDesc->curLanderLoc;
 	for (hElement = GetHeadElement ();
 			hElement; hElement = hNextElement)
 	{
@@ -1050,7 +1062,7 @@ BuildObjectList (void)
 		else if (ElementPtr->state_flags & FINITE_LIFE)
 			--ElementPtr->life_span;
 
-		lander_flags &= ~ADD_AT_END;
+		planetSideDesc->lander_flags &= ~ADD_AT_END;
 
 		if (ElementPtr->preprocess_func)
 			(*ElementPtr->preprocess_func) (ElementPtr);
@@ -1101,7 +1113,7 @@ BuildObjectList (void)
 					ElementPtr->next.location.y
 					- org.y + (SURFACE_HEIGHT >> 1);
 
-			if (lander_flags & ADD_AT_END)
+			if (planetSideDesc->lander_flags & ADD_AT_END)
 				InsertPrim (&DisplayLinks, ElementPtr->PrimIndex, END_OF_LIST);
 			else
 				InsertPrim (&DisplayLinks, ElementPtr->PrimIndex, GetPredLink (DisplayLinks));
@@ -1119,29 +1131,29 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 	STAMP lander_s, shadow_s, shield_s;
 	CONTEXT OldContext;
 
-	new_pt.y = curLanderLoc.y + dy;
+	new_pt.y = planetSideDesc->curLanderLoc.y + dy;
 	if (new_pt.y < 0)
 	{
 		new_pt.y = 0;
-		dy = new_pt.y - curLanderLoc.y;
+		dy = new_pt.y - planetSideDesc->curLanderLoc.y;
 		dx = 0;
 		ZeroVelocityComponents (&GLOBAL (velocity));
 	}
 	else if (new_pt.y > (MAP_HEIGHT << MAG_SHIFT) - 1)
 	{
 		new_pt.y = (MAP_HEIGHT << MAG_SHIFT) - 1;
-		dy = new_pt.y - curLanderLoc.y;
+		dy = new_pt.y - planetSideDesc->curLanderLoc.y;
 		dx = 0;
 		ZeroVelocityComponents (&GLOBAL (velocity));
 	}
 
-	new_pt.x = curLanderLoc.x + dx;
+	new_pt.x = planetSideDesc->curLanderLoc.x + dx;
 	if (new_pt.x < 0)
 		new_pt.x += MAP_WIDTH << MAG_SHIFT;
 	else if (new_pt.x >= MAP_WIDTH << MAG_SHIFT)
 		new_pt.x -= MAP_WIDTH << MAG_SHIFT;
 	
-	curLanderLoc = new_pt;
+	planetSideDesc->curLanderLoc = new_pt;
 
 	OldContext = SetContext (PlanetContext);
 
@@ -1155,7 +1167,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 		ClearDrawable ();
 		s.origin.x = -new_pt.x + (SURFACE_WIDTH >> 1);
 		s.origin.y = -new_pt.y + (SURFACE_HEIGHT >> 1);
-		s.frame = pSolarSysState->Orbit.TopoZoomFrame;
+		s.frame = planetSideDesc->system.Orbit.TopoZoomFrame;
 		DrawStamp (&s);
 		s.origin.x += MAP_WIDTH << MAG_SHIFT;
 		DrawStamp (&s);
@@ -1169,7 +1181,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 
 	// Draw the lander while is still alive and keep drawing for a few
 	// frames while it is exploding
-	if (crew_left || damage_index || explosion_index < 3)
+	if (planetSideDesc->crew_left || planetSideDesc->damage_index || planetSideDesc->explosion_index < 3)
 	{
 		lander_s.origin.x = SURFACE_WIDTH >> 1;
 		lander_s.origin.y = (SURFACE_HEIGHT >> 1) + landingOffset;
@@ -1184,45 +1196,45 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 			DrawFilledStamp (&shadow_s);
 		}
 
-		if (damage_index == 0)
+		if (planetSideDesc->damage_index == 0)
 		{	// No damage -- normal lander
 			DrawStamp (&lander_s);
 		}
-		else if (shieldHit)
+		else if (planetSideDesc->shieldHit)
 		{	// Was protected by a shield
-			--damage_index;
-			if (damage_index > 0)
+			--planetSideDesc->damage_index;
+			if (planetSideDesc->damage_index > 0)
 			{
 				shield_s.origin = lander_s.origin;
 				shield_s.frame = SetEquFrameIndex (
 						LanderFrame[4], lander_s.frame);
 
-				// XXX: Shouldn't this color-cycle with damage_index?
-				//   damage_index is used, but only as a VGA index!
+				// XXX: Shouldn't this color-cycle with planetSideDesc->damage_index?
+				//   planetSideDesc->damage_index is used, but only as a VGA index!
 				/*SetContextForeGroundColor (BUILD_COLOR (
 						MAKE_RGB15 (0x1F, 0x1F, 0x1F) | 0x8000,
-						damage_index));*/
+						planetSideDesc->damage_index));*/
 				SetContextForeGroundColor (
-						BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), damage_index));
+						BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), planetSideDesc->damage_index));
 				DrawFilledStamp (&shield_s);
 			}
 			DrawStamp (&lander_s);
 		}
 		else
 		{	// Direct hit, no shield
-			--damage_index;
+			--planetSideDesc->damage_index;
 			SetContextForeGroundColor (
-					DamageColorCycle (BLACK_COLOR, damage_index));
+					DamageColorCycle (BLACK_COLOR, planetSideDesc->damage_index));
 			DrawFilledStamp (&lander_s);
 		}
 	}
 	
-	if (landingOffset == ON_THE_GROUND && crew_left
+	if (landingOffset == ON_THE_GROUND && planetSideDesc->crew_left
 			&& GetPredLink (DisplayLinks) != END_OF_LIST)
 		CheckObjectCollision (END_OF_LIST);
 
 	{
-		PLANETSIDE_DESC *pPSD = planetSideDesc;
+		LanderVisit *pPSD = planetSideDesc;
 		if (pPSD->NumFrames)
 		{
 			--pPSD->NumFrames;
@@ -1246,7 +1258,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 
 	RedrawSurfaceScan (&new_pt);
 
-	if (lander_flags & KILL_CREW)
+	if (planetSideDesc->lander_flags & KILL_CREW)
 		DeltaLanderCrew (-1, LIGHTNING_DISASTER);
 
 	UnbatchGraphics ();
@@ -1339,7 +1351,7 @@ AnimateLanderWarmup (void)
 
 	animationInterframe (&TimeIn, 2);
 
-	if (GET_GAME_STATE (IMPROVED_LANDER_SHOT))
+	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderShot))
 		s.frame = SetAbsFrameIndex (s.frame, 58);
 	else
 		s.frame = SetAbsFrameIndex (s.frame,
@@ -1348,7 +1360,7 @@ AnimateLanderWarmup (void)
 
 	animationInterframe (&TimeIn, 2);
 
-	if (GET_GAME_STATE (IMPROVED_LANDER_SPEED))
+	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderSpeed))
 		s.frame = SetAbsFrameIndex (s.frame, 57);
 	else
 	{
@@ -1362,7 +1374,7 @@ AnimateLanderWarmup (void)
 	}
 	DrawStamp (&s);
 
-	if (GET_GAME_STATE (IMPROVED_LANDER_CARGO))
+	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderCargo))
 	{
 		animationInterframe (&TimeIn, 2);
 
@@ -1395,7 +1407,7 @@ InitPlanetSide (POINT pt)
 	else if (pt.y >= (MAP_HEIGHT << MAG_SHIFT))
 		pt.y = (MAP_HEIGHT << MAG_SHIFT) - 1;
 
-	curLanderLoc = pt;
+	planetSideDesc->curLanderLoc = pt;
 
 	SetContext (PlanetContext);
 	SetContextFont (TinyFont);
@@ -1417,7 +1429,7 @@ InitPlanetSide (POINT pt)
 			ClearDrawable ();
 			s.origin.x = -pt.x + (SURFACE_WIDTH >> 1);
 			s.origin.y = -pt.y + (SURFACE_HEIGHT >> 1);
-			s.frame = pSolarSysState->Orbit.TopoZoomFrame;
+			s.frame = planetSideDesc->system.Orbit.TopoZoomFrame;
 			DrawStamp (&s);
 			s.origin.x += MAP_WIDTH << MAG_SHIFT;
 			DrawStamp (&s);
@@ -1430,7 +1442,7 @@ InitPlanetSide (POINT pt)
 	}
 
 
-	SET_GAME_STATE (PLANETARY_LANDING, 1);
+	planetSideDesc->campaign.set(uqm::StoryFlag::PlanetaryLanding);
 }
 
 static void
@@ -1452,7 +1464,7 @@ LanderFire (SIZE facing)
 	WeaponElementPtr->mass_points = 1;
 	WeaponElementPtr->life_span = 12;
 	WeaponElementPtr->state_flags = FINITE_LIFE;
-	WeaponElementPtr->next.location = curLanderLoc;
+	WeaponElementPtr->next.location = planetSideDesc->curLanderLoc;
 
 	SetPrimType (&DisplayArray[WeaponElementPtr->PrimIndex], STAMP_PRIM);
 	DisplayArray[WeaponElementPtr->PrimIndex].Object.Stamp.frame =
@@ -1499,7 +1511,7 @@ LanderExplosion (void)
 	ExplosionElementPtr->playerNr = PS_HUMAN_PLAYER;
 	ExplosionElementPtr->mass_points = DEATH_EXPLOSION;
 	ExplosionElementPtr->state_flags = FINITE_LIFE;
-	ExplosionElementPtr->next.location = curLanderLoc;
+	ExplosionElementPtr->next.location = planetSideDesc->curLanderLoc;
 	ExplosionElementPtr->preprocess_func = object_animation;
 	// Animation advances every 3rd frame
 	ExplosionElementPtr->turn_wait = MAKE_BYTE (2, 2);
@@ -1538,11 +1550,11 @@ DoPlanetSide (LanderInputState *pMS)
 
 		pMS->Initialized = TRUE;
 		
-		turn_wait = 0;
-		weapon_wait = 0;
+		planetSideDesc->turn_wait = 0;
+		planetSideDesc->weapon_wait = 0;
 
 		angle = FACING_TO_ANGLE (GetFrameIndex (LanderFrame[0]));
-		landerSpeedNumer = GET_GAME_STATE (IMPROVED_LANDER_SPEED) ?
+		landerSpeedNumer = planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderSpeed) ?
 				WORLD_TO_VELOCITY (2 * 14) :
 				WORLD_TO_VELOCITY (2 * 8);
 
@@ -1556,28 +1568,28 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 
 		return TRUE;
 	}
-	else if (crew_left /* alive and taking off */
+	else if (planetSideDesc->crew_left /* alive and taking off */
 			&& ((CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE] ||
 			CurrentInputState.key[PlayerControls[0]][KEY_SPECIAL])
 			|| planetSideDesc->InTransit))
 	{
 		return FALSE;
 	}
-	else if (!crew_left && !damage_index)
+	else if (!planetSideDesc->crew_left && !planetSideDesc->damage_index)
 	{	// Dead, damage dealt, and exploding
-		if (explosion_index > EXPLOSION_LIFE + EXPLOSION_WAIT_FRAMES)
+		if (planetSideDesc->explosion_index > EXPLOSION_LIFE + EXPLOSION_WAIT_FRAMES)
 			return FALSE;
 		
-		if (explosion_index > EXPLOSION_LIFE)
+		if (planetSideDesc->explosion_index > EXPLOSION_LIFE)
 		{	// Keep going until the wait expires
-			++explosion_index;
+			++planetSideDesc->explosion_index;
 		}
-		else if (explosion_index == 0)
+		else if (planetSideDesc->explosion_index == 0)
 		{	// Start the explosion animation
 			if (LanderExplosion ())
 			{
 				// Advance the state only once we've got the element
-				++explosion_index;
+				++planetSideDesc->explosion_index;
 			}
 			else
 			{	// We could not allocate because the queue was full, but
@@ -1589,11 +1601,11 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 	}
 	else
 	{
-		if (crew_left)
+		if (planetSideDesc->crew_left)
 		{
 			SIZE index = GetFrameIndex (LanderFrame[0]);
-			if (turn_wait)
-				--turn_wait;
+			if (planetSideDesc->turn_wait)
+				--planetSideDesc->turn_wait;
 			else if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT] ||
 					CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
 			{
@@ -1609,7 +1621,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 				LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
 
 				angle = FACING_TO_ANGLE (index);
-				landerSpeedNumer = GET_GAME_STATE (IMPROVED_LANDER_SPEED) ?
+				landerSpeedNumer = planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderSpeed) ?
 						WORLD_TO_VELOCITY (2 * 14) :
 						WORLD_TO_VELOCITY (2 * 8);
 
@@ -1621,7 +1633,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 						COSINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM,
 						SINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM);
 
-				turn_wait = SHUTTLE_TURN_WAIT;
+				planetSideDesc->turn_wait = SHUTTLE_TURN_WAIT;
 			}
 
 			if (!CurrentInputState.key[PlayerControls[0]][KEY_UP])
@@ -1632,15 +1644,15 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 			else
 				GetNextVelocityComponents (&GLOBAL (velocity), &dx, &dy, 1);
 
-			if (weapon_wait)
-				--weapon_wait;
+			if (planetSideDesc->weapon_wait)
+				--planetSideDesc->weapon_wait;
 			else if (CurrentInputState.key[PlayerControls[0]][KEY_WEAPON])
 			{
 				LanderFire (index);
 
-				weapon_wait = SHUTTLE_FIRE_WAIT;
-				if (GET_GAME_STATE (IMPROVED_LANDER_SHOT))
-					weapon_wait >>= 1;
+				planetSideDesc->weapon_wait = SHUTTLE_FIRE_WAIT;
+				if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderShot))
+					planetSideDesc->weapon_wait >>= 1;
 			}
 		}
 	}
@@ -1820,14 +1832,14 @@ KillLanderCrewSeq (COUNT numKilled, DWORD period)
 	COUNT i;
 
 	TimeOut = GetTimeCounter ();
-	for (i = 0; i < numKilled && crew_left; ++i)
+	for (i = 0; i < numKilled && planetSideDesc->crew_left; ++i)
 	{
 		TimeOut += period;
 		DeltaLanderCrew (-1, LANDER_INJURED);
 		SleepThreadUntil (TimeOut);
 	}
 	
-	return crew_left > 0;
+	return planetSideDesc->crew_left > 0;
 }
 
 // Maps a temperature to a (0-7) hazard rating.
@@ -1873,26 +1885,29 @@ GetHazardChance (int hazardType, unsigned HazardRating)
 }
 
 void
-PlanetSide (POINT planetLoc)
+uqm::runLander(SOLARSYS_STATE &system, POINT planetLoc)
 {
 	SIZE index;
 	LanderInputState landerInputState;
-	PLANETSIDE_DESC PSD;
-
-	memset (&PSD, 0, sizeof (PSD));
+    LanderVisit PSD{system};
+    struct Binding {
+        LanderVisit *previous = planetSideDesc;
+        ~Binding() { planetSideDesc = previous; }
+    } binding;
+    planetSideDesc = &PSD;
 	PSD.InTransit = TRUE;
 
 	// Set our chances of hazards occurring.
 	PSD.TectonicsChance = GetHazardChance (EARTHQUAKE_DISASTER,
-			pSolarSysState->SysInfo.PlanetInfo.Tectonics);
+			planetSideDesc->system.SysInfo.PlanetInfo.Tectonics);
 	PSD.WeatherChance = GetHazardChance (LIGHTNING_DISASTER,
-			pSolarSysState->SysInfo.PlanetInfo.Weather);
+			planetSideDesc->system.SysInfo.PlanetInfo.Weather);
 	PSD.FireChance = GetHazardChance (LAVASPOT_DISASTER, GetThermalHazardRating (
-			pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature));
+			planetSideDesc->system.SysInfo.PlanetInfo.SurfaceTemperature));
 
 	PSD.ElementLevel = GetStorageBayCapacity () - GLOBAL_SIS (TotalElementMass);
 	PSD.MaxElementLevel = MAX_SCROUNGED;
-	if (GET_GAME_STATE (IMPROVED_LANDER_CARGO))
+	if (planetSideDesc->campaign.read(uqm::StoryFlag::ImprovedLanderCargo))
 		PSD.MaxElementLevel <<= 1;
 	if (PSD.ElementLevel < PSD.MaxElementLevel)
 		PSD.MaxElementLevel = PSD.ElementLevel;
@@ -1924,9 +1939,9 @@ PlanetSide (POINT planetLoc)
 	
 	index = NORMALIZE_FACING (TFB_Random ());
 	LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
-	crew_left = 0;
-	damage_index = 0;
-	explosion_index = 0;
+	planetSideDesc->crew_left = 0;
+	planetSideDesc->damage_index = 0;
+	planetSideDesc->explosion_index = 0;
 
 	AnimateLanderWarmup ();
 	AnimateLaunch (LanderFrame[5]);
@@ -1943,7 +1958,7 @@ PlanetSide (POINT planetLoc)
 
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
 	{
-		if (crew_left == 0)
+		if (planetSideDesc->crew_left == 0)
 		{
 			--GLOBAL_SIS (NumLanders);
 			DrawLanders ();
@@ -1960,7 +1975,7 @@ PlanetSide (POINT planetLoc)
 			ReturnToOrbit ();
 			AnimateLaunch (LanderFrame[6]);
 			
-			DeltaSISGauges (crew_left, 0, 0);
+			DeltaSISGauges (planetSideDesc->crew_left, 0, 0);
 
 			if (PSD.ElementLevel)
 			{
@@ -1978,7 +1993,6 @@ PlanetSide (POINT planetLoc)
 		}
 	}
 
-	planetSideDesc = NULL;
 
 	{
 		HELEMENT hElement, hNextElement;
@@ -2010,6 +2024,8 @@ PlanetSide (POINT planetLoc)
 void
 InitLander (BYTE LanderFlags)
 {
+    auto &campaign = uqm::gameSession().player().campaign(); // Legacy C UI entry.
+
 	RECT r;
 
 	SetContext (RadarContext);
@@ -2035,8 +2051,8 @@ InitLander (BYTE LanderFlags)
 		DrawStamp (&s);
 		if (LanderFlags == 0)
 		{
-			ShieldFlags = GET_GAME_STATE (LANDER_SHIELDS);
-			capacity_shift = GET_GAME_STATE (IMPROVED_LANDER_CARGO);
+			ShieldFlags = campaign.read(uqm::StoryCounter::LanderShields);
+			capacity_shift = campaign.read(uqm::StoryFlag::ImprovedLanderCargo);
 		}
 		else
 		{

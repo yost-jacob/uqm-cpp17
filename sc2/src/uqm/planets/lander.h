@@ -35,33 +35,8 @@ extern "C" {
 
 #define NUM_TEXT_FRAMES 32
 
-// XXX: This is a private type now. Move it to lander.c?
-//   We may also want to merge it with LanderInputState.
-typedef struct
-{
-	BOOLEAN InTransit;
-			// Landing on or taking of from a planet.
-			// Setting it while landed will initiate takeoff.
-
-	COUNT ElementLevel;
-	COUNT MaxElementLevel;
-	COUNT BiologicalLevel;
-	COUNT ElementAmounts[NUM_ELEMENT_CATEGORIES];
-
-	COUNT NumFrames;
-	UNICODE AmountBuf[40];
-	TEXT MineralText[3];
-
-	Color ColorCycle[NUM_TEXT_FRAMES >> 1];
-
-	BYTE TectonicsChance;
-	BYTE WeatherChance;
-	BYTE FireChance;
-} PLANETSIDE_DESC;
-
 extern MUSIC_REF LanderMusic;
 
-extern void PlanetSide (POINT planetLoc);
 extern void DoDiscoveryReport (SOUND ReadOutSounds);
 extern void SetPlanetMusic (BYTE planet_type);
 extern void LoadLanderData (void);
