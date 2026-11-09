@@ -654,7 +654,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 		return FALSE;
 	}
 
-	GlobData.SIS_state = SummPtr->SS;
+	(*GetPlayerSISState()) = SummPtr->SS;
 
 	if ((fh = copen (in_fp, FILE_STREAM, STREAM_READ)) == 0)
 	{

@@ -4,7 +4,8 @@
 /* These exercise real C macros and whole-aggregate assignments used by legacy
  * code. No queue/resource handles are allocated by these fixtures. */
 static GLOBDATA saved;
-void game_state_c_reset(void) { memset(&GlobData, 0, sizeof(GlobData)); }
+static SIS_STATE saved_sis;
+void game_state_c_reset(void) { memset(&GlobData, 0, sizeof(GlobData)); memset(GetPlayerSISState(), 0, sizeof(SIS_STATE)); }
 void *game_state_c_address(void) { return &GlobData; }
 void game_state_c_seed(void)
 {
@@ -42,8 +43,8 @@ int game_state_c_observes_native_updates(void)
             && GET_GAME_STATE(CHMMR_BOMB_STATE) == 3 && GET_GAME_STATE(SHOFIXTI_VISITS) == 7
             && GET_GAME_STATE(SHOFIXTI_STACK1) == 2 && GET_GAME_STATE(SHOFIXTI_STACK2) == 6;
 }
-void game_state_c_save(void) { saved = GlobData; }
-void game_state_c_restore(void) { GlobData = saved; }
+void game_state_c_save(void) { saved = GlobData; saved_sis = *GetPlayerSISState(); }
+void game_state_c_restore(void) { GlobData = saved; *GetPlayerSISState() = saved_sis; }
 void game_state_c_unterminated_name(void)
 {
     memset(GLOBAL_SIS(ShipName), 'X', sizeof(GLOBAL_SIS(ShipName)));

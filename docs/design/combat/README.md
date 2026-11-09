@@ -150,3 +150,8 @@ Syntax-check the standalone header from the repository root:
 printf '#include "docs/design/combat/battle.hpp"\n' | \
   g++ -std=c++17 -Wall -Wextra -Wpedantic -fsyntax-only -x c++ -I. -
 ```
+
+The production SIS blaster implementation now uses native projectile factories
+and pool-owned behaviors; see [SIS/projectile ownership](../sis-projectiles.md).
+The broader Battle model here remains a design prototype, not a second runtime
+combat engine.

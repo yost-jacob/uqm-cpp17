@@ -18,7 +18,7 @@ flowchart TD
     Player --> Storage[Owned legacy payload]
     Player --> Story[StoryState value member]
     Story -->|view of existing packed bytes| Storage
-    Storage --> Ship[Ship and location fields]
+    Fleet --> SIS[Optional SIS: authoritative flagship and location fields]
     Storage --> Mixed[Unclassified story, world and runtime fields]
     C[Legacy C callers] --> Adapter[GetLegacyGlobData]
     Adapter -->|same storage| Storage
@@ -191,3 +191,7 @@ remain unchanged. See the [runtime encapsulation map](design/runtime-encapsulati
 Persistent escort ownership and identity-based combat results are described in
 [fleet ownership](design/fleet-ownership.md). The escort queue no longer belongs
 to the mutable legacy GAME_STATE payload.
+
+The persistent flagship now lives in Fleet's optional SIS rather than GLOBDATA.
+See [SIS/projectile ownership](design/sis-projectiles.md) for buffer and combat
+configuration contracts.

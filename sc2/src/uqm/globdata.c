@@ -326,6 +326,7 @@ InitGlobData (void)
 	i = GLOBAL (glob_flags);
     ResetPersonalDiscoveries ();
 	memset (&GlobData, 0, sizeof (GlobData));
+    memset (GetPlayerSISState(), 0, sizeof(SIS_STATE));
 	GLOBAL (glob_flags) = (BYTE)i;
 
 	GLOBAL (DisplayArray) = DisplayArray;

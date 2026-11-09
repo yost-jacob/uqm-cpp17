@@ -21,6 +21,11 @@
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include <optional>
+#include <functional>
+#include <utility>
+#include "uqm/sis_weapons.hpp"
+#include "uqm/projectile_legacy.hpp"
+#include "uqm/game_state.hpp"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -44,11 +49,7 @@ static const uqm::combat::ProjectileStats &blasterStats() {
 constexpr auto ShivaEnergyRegenInc = 1;
 constexpr auto MinEnergyWait = 4;
 constexpr auto DynamoUnitEnergyWaitDec = 2;
-constexpr auto MaxTracking = 3;
 constexpr auto TrackerEnergyCost = 3;
-constexpr auto BlasterOffset = 8;
-constexpr auto SisVertOffset = 28;
-constexpr auto SisHorzOffset = 20;
 constexpr auto AntimissileEnergyInc = 1;
 constexpr auto LaserRange = (UWORD)100;
 constexpr auto MaxDefense = 8;
@@ -58,7 +59,7 @@ constexpr auto MenuDelay = 10;
 // Crew pods determine capacity (including the captain). Furnaces/dynamos adjust
 // regeneration and delay; thrusters/jets adjust movement. Weapon modules multiply
 // base blaster damage/hit points and extend lifetime. Point defense adds energy cost.
-// SisVertOffset is used by forward/spread/rear guns; SisHorzOffset by side guns.
+// Mount geometry and projectile factories are configured in sis_weapons.cpp.
 
 static const RACE_DESC &sisDefinition() {
     static const RACE_DESC definition = {
@@ -130,24 +131,15 @@ static const RACE_DESC &sisDefinition() {
     return definition;
 }
 
-// Private per-instance SIS data
-typedef struct
-{
-	COUNT num_trackers;
-	COUNT num_blasters;
-	MISSILE_BLOCK MissileBlock[6];
+// Native per-combat mount/factory configuration, owned by Flagship.
+using SIS_DATA = uqm::combat::SISWeapons;
 
-} SIS_DATA;
-
-static void InitWeaponSlots (RACE_DESC *RaceDescPtr,
-		const BYTE *ModuleSlots);
 static void InitModuleSlots (RACE_DESC *RaceDescPtr,
 		const BYTE *ModuleSlots);
 static void InitDriveSlots (RACE_DESC *RaceDescPtr,
 		const BYTE *DriveSlots);
 static void InitJetSlots (RACE_DESC *RaceDescPtr,
 		const BYTE *JetSlots);
-static void uninit_sis (RACE_DESC *pRaceDesc);
 
 // Local typedef
 typedef SIS_DATA CustomShipData_t;
@@ -159,11 +151,9 @@ GetCustomShipData (RACE_DESC *pRaceDesc)
 	return static_cast<CustomShipData_t *>(pRaceDesc->data);
 }
 
-// Updates the concrete ship's optional value; no separate heap allocation.
-static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
 static void
-sis_hyper_preprocess (ELEMENT *ElementPtr)
+sis_hyper_preprocess (ELEMENT *ElementPtr, const uqm::SIS &source, const uqm::StoryState &story)
 {
 	SIZE udx = 0, udy = 0;
 	SIZE dx = 0, dy = 0;
@@ -185,8 +175,8 @@ LeaveAutoPilot:
 		(GLOBAL (autopilot)).x =
 				(GLOBAL (autopilot)).y = ~0;
 		if (!(StarShipPtr->cur_status_flags & THRUST)
-				|| (GLOBAL_SIS (FuelOnBoard) == 0
-				&& GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1))
+				|| (source.fuel() == 0
+				&& story.read(uqm::StoryCounter::ArilouSpaceSide) <= 1))
 		{
 			AccelerateDirection = -1;
 			GetCurrentVelocityComponents (&ElementPtr->velocity,
@@ -202,8 +192,8 @@ LeaveAutoPilot:
 		SIZE facing;
 		POINT universe;
 
-		universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-		universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+		universe.x = LOGX_TO_UNIVERSE (source.x());
+		universe.y = LOGY_TO_UNIVERSE (source.y());
 		udx = (GLOBAL (autopilot)).x - universe.x;
 		udy = -((GLOBAL (autopilot)).y - universe.y);
 		if ((dx = udx) < 0)
@@ -250,8 +240,8 @@ LeaveAutoPilot:
 		}
 
 		GetCurrentVelocityComponents (&ElementPtr->velocity, &dx, &dy);
-		if ((GLOBAL_SIS (FuelOnBoard)
-				|| GET_GAME_STATE (ARILOU_SPACE_SIDE) > 1)
+		if ((source.fuel()
+				|| story.read(uqm::StoryCounter::ArilouSpaceSide) > 1)
 				&& (int)facing == (int)StarShipPtr->ShipFacing)
 		{
 			StarShipPtr->cur_status_flags |= SHIP_AT_MAX_SPEED;
@@ -541,7 +531,6 @@ blaster_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 static void
 blaster_preprocess (ELEMENT *ElementPtr)
 {
-	BYTE wait;
 
 	switch (blasterTier(ElementPtr->mass_points))
 	{
@@ -564,59 +553,22 @@ blaster_preprocess (ELEMENT *ElementPtr)
 			break;
 	}
 
-	if (LONIBBLE (ElementPtr->turn_wait))
-		--ElementPtr->turn_wait;
-	else if ((wait = HINIBBLE (ElementPtr->turn_wait)))
-	{
-		COUNT facing;
-
-		facing = NORMALIZE_FACING (ANGLE_TO_FACING (
-				GetVelocityTravelAngle (&ElementPtr->velocity)));
-		if (TrackShip (ElementPtr, &facing) > 0)
-			SetVelocityVector (&ElementPtr->velocity, blasterStats().speed, facing);
-
-		ElementPtr->turn_wait = MAKE_BYTE (wait, wait);
-	}
 }
 
 static COUNT
-initialize_blasters (ELEMENT *ShipPtr, HELEMENT BlasterArray[])
+initialize_blasters(ELEMENT *ship, HELEMENT blasters[])
 {
-	BYTE nt;
-	COUNT i;
-	STARSHIP *StarShipPtr;
-	SIS_DATA *SisData;
-
-	GetElementStarShip (ShipPtr, &StarShipPtr);
-	SisData = GetCustomShipData (StarShipPtr->RaceDescPtr);
-
-	nt = (BYTE)((4 - SisData->num_trackers) & 3);
-
-	for (i = 0; i < SisData->num_blasters; ++i)
-	{
-		MISSILE_BLOCK MissileBlock = SisData->MissileBlock[i];
-
-		MissileBlock.cx = ShipPtr->next.location.x;
-		MissileBlock.cy = ShipPtr->next.location.y;
-		MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.weapon;
-		MissileBlock.sender = ShipPtr->playerNr;
-		MissileBlock.face = NORMALIZE_FACING (StarShipPtr->ShipFacing
-				+ MissileBlock.face);
-
-		BlasterArray[i] = initialize_missile (&MissileBlock);
-		if (BlasterArray[i])
-		{
-			ELEMENT *BlasterPtr;
-
-			LockElement (BlasterArray[i], &BlasterPtr);
-			BlasterPtr->collision_func = blaster_collision;
-			BlasterPtr->turn_wait = MAKE_BYTE (nt, nt);
-			UnlockElement (BlasterArray[i]);
-		}
-	
-	}
-
-	return SisData->num_blasters;
+    STARSHIP *participant;
+    GetElementStarShip(ship, &participant);
+    const auto &weapons = *GetCustomShipData(participant->RaceDescPtr);
+    COUNT count = 0;
+    for (const auto &mount : weapons.mounts) {
+        const auto launch = mount.launch(ship->next.location, participant->ShipFacing);
+        blasters[count++] = uqm::combat::publishProjectile(mount.factory().create(launch),
+            participant->RaceDescPtr->ship_data.weapon, ship->playerNr,
+            blaster_preprocess, blaster_collision);
+    }
+    return count;
 }
 
 static void
@@ -660,7 +612,7 @@ sis_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
-	if (SisData->num_trackers
+	if (SisData->trackingModules
 			&& StarShipPtr->weapon_counter == 0
 			&& !(StarShipPtr->ship_input_state & WEAPON)
 			&& lpEvalDesc->ObjectPtr
@@ -695,93 +647,12 @@ sis_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 }
 
 static void
-InitWeaponSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
-{
-	COUNT i;
-	SIS_DATA *SisData = GetCustomShipData (RaceDescPtr);
-	MISSILE_BLOCK *lpMB = SisData->MissileBlock;
-
-	SisData->num_blasters = 0;
-	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
-	{
-		COUNT which_gun;
-
-		if (i == 3)
-			i = NUM_MODULE_SLOTS - 1;
-		
-		which_gun = ModuleSlots[(NUM_MODULE_SLOTS - 1) - i];
-		
-		if (which_gun < GUN_WEAPON || which_gun > CANNON_WEAPON)
-			continue; /* not a gun */
-
-		which_gun -= GUN_WEAPON - 1;
-		RaceDescPtr->characteristics.weapon_energy_cost +=
-				which_gun * 2;
-		
-		lpMB->flags = IGNORE_SIMILAR;
-		lpMB->blast_offs = BlasterOffset;
-		lpMB->speed = blasterStats().speed;
-		lpMB->preprocess_func = blaster_preprocess;
-		lpMB->hit_points = blasterStats().hitPoints * which_gun;
-		lpMB->damage = blasterStats().damage * which_gun;
-		lpMB->life = blasterStats().lifetime + ((blasterStats().lifetime >> 2) * (which_gun - 1));
-
-		if (which_gun == 1)
-			lpMB->index = 0;
-		else if (which_gun == 2)
-			lpMB->index = 9;
-		else
-			lpMB->index = 16;
-
-		switch (i)
-		{
-			case 0: /* NOSE WEAPON */
-				RaceDescPtr->ship_info.ship_flags |= FIRES_FORE;
-				lpMB->pixoffs = SisVertOffset;
-				lpMB->face = 0;
-				break;
-			case 1: /* SPREAD WEAPON */
-				RaceDescPtr->ship_info.ship_flags |= FIRES_FORE;
-				lpMB->pixoffs = SisVertOffset;
-				lpMB->face = +1;
-				/* copy it because there are two */
-				lpMB[1] = lpMB[0];
-				++lpMB;
-				++SisData->num_blasters;
-				lpMB->face = NORMALIZE_FACING (-1);
-				break;
-			case 2: /* SIDE WEAPON */
-				RaceDescPtr->ship_info.ship_flags |=
-						FIRES_LEFT | FIRES_RIGHT;
-				lpMB->pixoffs = SisHorzOffset;
-				lpMB->face = ANGLE_TO_FACING (QUADRANT);
-				/* copy it because there are two */
-				lpMB[1] = lpMB[0];
-				++lpMB;
-				++SisData->num_blasters;
-				lpMB->face = NORMALIZE_FACING (-ANGLE_TO_FACING (QUADRANT));
-				break;
-			case NUM_MODULE_SLOTS - 1: /* TAIL WEAPON */
-				RaceDescPtr->ship_info.ship_flags |= FIRES_AFT;
-				lpMB->pixoffs = SisVertOffset;
-				lpMB->face = ANGLE_TO_FACING (HALF_CIRCLE);
-				break;
-		}
-
-		++lpMB;
-		++SisData->num_blasters;
-	}
-}
-
-static void
 InitModuleSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 {
 	COUNT i;
-	COUNT num_trackers;
 	SIS_DATA *SisData = GetCustomShipData (RaceDescPtr);
 
 	RaceDescPtr->ship_info.max_crew = 0;
-	num_trackers = 0;
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
 		BYTE which_mod;
@@ -791,9 +662,6 @@ InitModuleSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 		{
 			case CREW_POD:
 				RaceDescPtr->ship_info.max_crew += CREW_POD_CAPACITY;
-				break;
-			case TRACKING_SYSTEM:
-				++num_trackers;
 				break;
 			case ANTIMISSILE_DEFENSE:
 				RaceDescPtr->characteristics.special_energy_cost +=
@@ -812,11 +680,8 @@ InitModuleSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 		}
 	}
 
-	if (num_trackers > MaxTracking)
-		num_trackers = MaxTracking;
 	RaceDescPtr->characteristics.weapon_energy_cost +=
-			num_trackers * TrackerEnergyCost;
-	SisData->num_trackers = num_trackers;
+			SisData->trackingModules * TrackerEnergyCost;
 	if (RaceDescPtr->characteristics.special_energy_cost)
 	{
 		RaceDescPtr->ship_info.ship_flags |= POINT_DEFENSE;
@@ -869,25 +734,17 @@ InitJetSlots (RACE_DESC *RaceDescPtr, const BYTE *JetSlots)
 namespace {
 class Flagship final : public uqm::combat::Ship {
 public:
-    explicit Flagship(const RACE_DESC &definition, bool hyperspace) noexcept
-        : Ship(definition), hyperspace_(hyperspace) {
+    Flagship(const RACE_DESC &definition, bool hyperspace,
+            std::optional<std::reference_wrapper<uqm::SIS>> source,
+            const uqm::StoryState &story, CustomShipData_t data)
+        : Ship(definition), hyperspace_(hyperspace), source_(source),
+          story_(story), privateData_(std::move(data)) {
         if (!hyperspace_) legacyData().cyborg_control.intelligence_func = sis_intelligence;
-        legacyData().data = nullptr;
-        if (definition.data) setData(static_cast<const CustomShipData_t *>(definition.data));
-    }
-    void setData(const CustomShipData_t *data) noexcept {
-        if (data == legacyData().data) return;
-        if (data) {
-            privateData_ = *data;
-            legacyData().data = &*privateData_;
-        } else {
-            privateData_.reset();
-            legacyData().data = nullptr;
-        }
+        legacyData().data = &privateData_;
     }
 private:
     void beforeMotion(ELEMENT &element) noexcept override {
-        if (hyperspace_) sis_hyper_preprocess(&element);
+        if (hyperspace_) sis_hyper_preprocess(&element, source_->get(), story_);
         else sis_battle_preprocess(&element);
     }
     void afterMotion(ELEMENT &element) noexcept override {
@@ -898,17 +755,20 @@ private:
         return hyperspace_ ? 0 : initialize_blasters(&element, weapons.data());
     }
     void onFinish() noexcept override {
-        uninit_sis(&legacyData());
+        if (source_ && !hyperspace_) {
+            const auto crew = legacyData().ship_info.crew_level;
+            if (legacyData().ship_info.ship_flags & PLAYER_CAPTAIN)
+                source_->get().recordCombatCrew(crew);
+            else source_->get().setCrew(crew);
+        }
+        legacyData().data = nullptr;
     }
     bool hyperspace_;
-    std::optional<CustomShipData_t> privateData_;
+    std::optional<std::reference_wrapper<uqm::SIS>> source_; // Outlives this combat incarnation.
+    const uqm::StoryState &story_;
+    CustomShipData_t privateData_;
 };
 } // namespace
-
-static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data)
-{
-    static_cast<Flagship &>(uqm::combat::shipFor(*descriptor)).setData(data);
-}
 
 std::unique_ptr<uqm::combat::Ship>
 uqm::combat::makeFlagship()
@@ -916,7 +776,10 @@ uqm::combat::makeFlagship()
 	COUNT i;
 	// Build a per-instance definition, copied into the native owner.
 	RACE_DESC new_sis_desc;
-	SIS_DATA empty_data{};
+    auto &session = uqm::gameSession();
+    auto &source = session.player().sis();
+    const auto loadout = source.loadout();
+    auto weapons = uqm::combat::configureSISWeapons(loadout, blasterStats());
 
 	/* copy initial ship settings to new_sis_desc */
 	new_sis_desc = sisDefinition();
@@ -941,15 +804,16 @@ uqm::combat::makeFlagship()
 	else
 	{
 
-		if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 3)
-			SET_GAME_STATE (BOMB_CARRIER, 1);
+        if (session.player().story().read(uqm::StoryCounter::BombProgress) == 3)
+            session.player().story().set(uqm::StoryFlag::BombCarrier);
 	}
 
-	new_sis_desc.data = &empty_data;
-	InitModuleSlots (&new_sis_desc, GLOBAL_SIS (ModuleSlots));
-	InitWeaponSlots (&new_sis_desc, GLOBAL_SIS (ModuleSlots));
-	InitDriveSlots (&new_sis_desc, GLOBAL_SIS (DriveSlots));
-	InitJetSlots (&new_sis_desc, GLOBAL_SIS (JetSlots));
+    new_sis_desc.data = &weapons;
+    new_sis_desc.ship_info.ship_flags |= weapons.firingFlags;
+    new_sis_desc.characteristics.weapon_energy_cost += weapons.weaponEnergyCost;
+    InitModuleSlots(&new_sis_desc, loadout.modules.data());
+    InitDriveSlots(&new_sis_desc, loadout.drives.data());
+    InitJetSlots(&new_sis_desc, loadout.jets.data());
 	
 	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
 	{
@@ -959,25 +823,13 @@ uqm::combat::makeFlagship()
 	{
 		// Count the captain too.
 		new_sis_desc.ship_info.max_crew++;
-		new_sis_desc.ship_info.crew_level = GLOBAL_SIS (CrewEnlisted) + 1;
+		new_sis_desc.ship_info.crew_level = source.crew() + 1;
 		new_sis_desc.ship_info.ship_flags |= PLAYER_CAPTAIN;
 	}
 	
 	new_sis_desc.ship_info.energy_level = new_sis_desc.ship_info.max_energy;
 
-	return std::make_unique<Flagship>(new_sis_desc, inHQSpace());
+    std::optional<std::reference_wrapper<uqm::SIS>> persistent;
+    if (LOBYTE(GLOBAL(CurrentActivity)) != SUPER_MELEE) persistent = std::ref(source);
+    return std::make_unique<Flagship>(new_sis_desc, inHQSpace(), persistent, session.player().story(), std::move(weapons));
 }
-
-static void
-uninit_sis (RACE_DESC *pRaceDesc)
-{
-	if (!inHQSpace ())
-	{
-		GLOBAL_SIS (CrewEnlisted) = pRaceDesc->ship_info.crew_level;
-		if (pRaceDesc->ship_info.ship_flags & PLAYER_CAPTAIN)
-			GLOBAL_SIS (CrewEnlisted)--;
-	}
-
-	SetCustomShipData (pRaceDesc, NULL);
-}
-

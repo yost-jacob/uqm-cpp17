@@ -67,7 +67,8 @@ VelocitySquared (SIZE dx, SIZE dy)
 #define VELOCITY_SCALE (1<<VELOCITY_SHIFT)
 
 #define VELOCITY_TO_WORLD(v) ((v)>>VELOCITY_SHIFT)
-#define WORLD_TO_VELOCITY(l) ((l)<<VELOCITY_SHIFT)
+// Multiplication preserves negative components without signed-shift UB.
+#define WORLD_TO_VELOCITY(l) ((l) * VELOCITY_SCALE)
 
 #if defined(__cplusplus)
 }

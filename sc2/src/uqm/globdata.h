@@ -957,7 +957,6 @@ typedef struct
 
 typedef struct
 {
-	SIS_STATE SIS_state;
 	GAME_STATE Game_state;
 } GLOBDATA;
 
@@ -968,9 +967,11 @@ extern GLOBDATA *GetLegacyGlobData (void);
 // Borrow the active player's Fleet C buffer. Ownership stays in PlayerEntity;
 // implemented in game_state.cpp. Native callers use player.fleet().
 extern QUEUE *GetPlayerFleetQueue (void);
+// Borrow the same Fleet-owned SIS record used by native code; game_state.cpp.
+extern SIS_STATE *GetPlayerSISState (void);
 #define GlobData (*GetLegacyGlobData ())
 #define GLOBAL(f) GlobData.Game_state.f
-#define GLOBAL_SIS(f) GlobData.SIS_state.f
+#define GLOBAL_SIS(f) GetPlayerSISState()->f
 
 #define MAX_ENCOUNTERS  16
 #define MAX_BATTLE_GROUPS 32

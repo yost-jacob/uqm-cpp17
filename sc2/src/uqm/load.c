@@ -638,7 +638,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 		return TRUE;
 	}
 
-	GlobData.SIS_state = SummPtr->SS;
+	(*GetPlayerSISState()) = SummPtr->SS;
 
 	ReinitQueue (&GLOBAL (GameClock.event_q));
 	ReinitQueue (&GLOBAL (encounter_q));

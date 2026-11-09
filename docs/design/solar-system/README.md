@@ -48,11 +48,12 @@ classDiagram
     GameState *-- PlayerEntity : single member for now
     GameState o-- WorldState : shared_ptr
     PlayerEntity *-- UserProfile
-    PlayerEntity *-- FlagshipState
+    PlayerEntity ..> FlagshipState : detached snapshot
     PlayerEntity *-- PlayerPresence : accepted location
     PlayerEntity *-- StoryState : value member
     PlayerEntity *-- Fleet : unique owner
     Fleet *-- Ship : persistent vessels
+    Fleet *-- SIS : optional value
     StoryState *-- StorySnapshot
     WorldState *-- WorldSnapshot
     WorldSnapshot *-- WorldProgress : keyed by WorldId

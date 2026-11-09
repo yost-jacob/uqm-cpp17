@@ -1,6 +1,7 @@
 #ifndef UQM_FLEET_HPP_
 #define UQM_FLEET_HPP_
 #include "races.h"
+#include "sis_state.hpp"
 #include <functional>
 #include <optional>
 #include <vector>
@@ -48,9 +49,12 @@ struct ShipSpec {
 // Owns persistent vessels in a fixed-capacity pool. Destruction/reset invalidates
 // all borrows; IDs are never reused, including across loads and other fleets.
 // Ships borrow race graphics/text resources, whose owners outlive their use.
+enum class SISPresence { Absent, Present };
 class Fleet {
 public:
-    explicit Fleet(COUNT capacity);
+    explicit Fleet(COUNT capacity, SISPresence sis = SISPresence::Absent);
+    std::optional<std::reference_wrapper<SIS>> sis() noexcept;
+    std::optional<std::reference_wrapper<const SIS>> sis() const noexcept;
     ~Fleet();
     Fleet(const Fleet &) = delete;
     Fleet &operator=(const Fleet &) = delete;
@@ -67,6 +71,7 @@ private:
     friend struct detail::FleetAccess;
     QUEUE queue_{};
     COUNT capacity_;
+    std::optional<SIS> sis_;
 };
 }
 #endif

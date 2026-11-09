@@ -38,12 +38,21 @@ a load does not decode a replacement campaign while these objects remain alive.
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
 | Campaign combat | CampaignCombatMode borrows the session and campaign; backend scopes temporary sounds, cyborg input and activity | Battle loop, rosters, mechanics and engine resources retain existing ownership |
-| Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers, flagship storage and NPC queue ownership |
+| Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers and NPC queue ownership |
 | Lander | Child LanderMode owns LanderVisit with explicit system/campaign borrows | Element callbacks and graphics caches |
 | Session startup | RunGameSession C adapter invokes GameSession::runCampaign | C title loop; definition is in sc2/src/uqm/gameplay_modes.cpp |
 
 A C++ mode wrapper establishes a lifetime boundary; it does not by itself
 encapsulate every service or legacy payload accessed beneath that boundary.
+
+## SIS and projectiles
+
+Fleet owns an optional persistent SIS, separate from escorts. The flagship combat
+incarnation derives weapon mounts/factories from its equipment; published native
+projectiles own their flight configuration and steering timers. The element pool
+owns them with unique_ptr and releases them on free/reset/teardown. Other races'
+projectiles and the collision/render backend remain legacy. See
+[SIS and projectile ownership](sis-projectiles.md).
 
 ## State naming
 
@@ -75,7 +84,8 @@ Battle entry paths; HyperSpace uses Battle for navigation rather than combat.
 
 1. Continue fleet migration (#21): persistent escorts now belong to PlayerEntity's
    Fleet and combat results resolve stable vessel IDs. Next address native default/
-   resource construction, flagship integration, and enemy fleet ownership. See
+   resource construction and enemy fleet ownership. Fleet's optional SIS now
+   owns flagship persistence and configures native blaster factories. See
    [fleet ownership](fleet-ownership.md).
 2. Pass explicit campaign/player dependencies through combat callbacks and
    factor a shared combat interface usable by Super Melee (#17, #18, #22).
@@ -108,7 +118,8 @@ See [runtime details](runtime-encapsulation.md),
 [nested-mode contracts](nested-modes.md).
 
 For this increment, Debug and Release CMake/Ninja builds and all three CTest
-entries pass. The full Boost.Test suite has 164 cases / 13,779 assertions;
+entries pass. The full Boost.Test suite has 172 cases / 13,855 assertions;
 ASan/UBSan and the legacy SDL2 build also pass. Changed native sources pass
-`-Wall -Wextra -Werror`. A focused GUI check loaded an existing probe encounter into dialogue and started
-a fresh campaign in Sol. No exhaustive story/combat playthrough was performed.
+`-Wall -Wextra -Werror`. A focused GUI check loaded an older probe-encounter save, selected the flagship,
+and fired its native blasters in combat. No exhaustive story/combat playthrough
+was performed.

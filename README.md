@@ -74,7 +74,9 @@ The [runtime encapsulation roadmap](docs/design/encapsulation-roadmap.md) record
 current owners, remaining legacy boundaries, and the next steps in the active
 exploration → encounter → conversation/combat work. Persistent escorts now belong
 to the player's [Fleet](docs/design/fleet-ownership.md); combat crew updates use
-stable vessel IDs instead of matching queue order.
+stable vessel IDs instead of matching queue order. The fleet also owns an optional
+[SIS](docs/design/sis-projectiles.md), whose combat buildout configures native
+projectile factories and independently owned blaster flight behavior.
 
 Resource string tables (priority 8) use per-entry standard string storage and
 typed name lookup, retaining the C API and binary byte lengths.

@@ -760,7 +760,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		POINT starPt;
 
 		// Save the states because we will hack them
-		SaveSS = GlobData.SIS_state;
+		SaveSS = (*GetPlayerSISState());
 		SwapQueues (&player_q, GetPlayerFleetQueue());
 
 		OldContext = SetContext (StatusContext);
@@ -775,7 +775,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		SetContextClipRect (&r);
 
 		// Hack the states so that we can use standard SIS display funcs
-		GlobData.SIS_state = pSD->SS;
+		(*GetPlayerSISState()) = pSD->SS;
 		InitQueue (GetPlayerFleetQueue(),
 				MAX_BUILT_SHIPS, QUEUE_SHIP_FRAGMENT);
 		for (i = 0; i < pSD->NumShips; ++i)
@@ -931,7 +931,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 
 		// Restore the states because we hacked them
 		SwapQueues (GetPlayerFleetQueue(), &player_q);
-		GlobData.SIS_state = SaveSS;
+		(*GetPlayerSISState()) = SaveSS;
 	}
 
 	UnbatchGraphics ();
