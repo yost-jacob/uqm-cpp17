@@ -76,6 +76,10 @@ typedef struct tfb_pixelformat
 	DWORD Rloss, Gloss, Bloss, Aloss;
 } TFB_PixelFormat;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Drawing commands
 
 void TFB_DrawScreen_Line (int x1, int y1, int x2, int y2, Color color,
@@ -194,6 +198,10 @@ BOOLEAN TFB_DrawCanvas_SetPixelIndexes (TFB_Canvas, const BYTE *data,
 const char *TFB_DrawCanvas_GetError (void);
 
 TFB_Canvas TFB_GetScreenCanvas (SCREEN screen);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

@@ -49,13 +49,13 @@ private:
     bool throw_;
     Counts &counts_;
 };
-std::shared_ptr<GameState> state() {
+std::shared_ptr<GameState> makeState() {
     return std::make_shared<GameState>(UserProfile{SinglePlayerId, "Captain"});
 }
 }
 BOOST_AUTO_TEST_CASE(mode_transitions_are_flat_and_release_the_previous_mode)
 {
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     Counts counts;
     const auto exit = session.run(std::make_unique<CountingMode>(data, 10000, counts));
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(mode_transitions_are_flat_and_release_the_previous_mode)
 }
 BOOST_AUTO_TEST_CASE(mode_load_result_keeps_slot_zero_and_unwinds_before_the_caller_loads)
 {
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     session.player().setFuel(123);
     Counts counts;
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(mode_load_result_keeps_slot_zero_and_unwinds_before_the_cal
 }
 BOOST_AUTO_TEST_CASE(null_modes_and_cpp_exceptions_fail_the_session_without_leaking_modes)
 {
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     Counts counts;
     for (const bool throws : {false, true}) {
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(menu_requests_propagate_after_the_legacy_mode_returns_and_s
         bool shutdown_;
         Counts &counts_;
     };
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     Counts counts;
     for (bool shutdown : {false, true}) {
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(modes_validate_ownership_and_load_exits_require_a_slot)
     BOOST_CHECK_THROW((CountingMode{nullptr, 0, counts}), std::invalid_argument);
     auto wrongPlayer = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::PlayerId{2}, "Other"});
     BOOST_CHECK_THROW((CountingMode{wrongPlayer, 0, counts}), std::out_of_range);
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     const uqm::SessionExit invalid{uqm::SessionExitKind::LoadGame, {}, {}};
     BOOST_CHECK_THROW(session.requestMenuExit(invalid), std::invalid_argument);
@@ -168,7 +168,7 @@ private:
 }
 BOOST_AUTO_TEST_CASE(nested_modes_restore_suspended_parents_without_running_them_again)
 {
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     Counts counts;
     auto exit = session.run(std::make_unique<NestedMode>(data, session, counts, 2, true, false));
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_restore_suspended_parents_without_running_them
 }
 BOOST_AUTO_TEST_CASE(nested_load_requests_restore_ownership_and_unwind_before_loading)
 {
-    auto data = state();
+    auto data = makeState();
     uqm::GameSession session{data, uqm::SinglePlayerId};
     Counts counts;
     auto exit = session.run(std::make_unique<NestedMode>(data, session, counts, 2, true, true));
@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE(nested_child_exceptions_use_the_temporary_abort_policy)
                 return uqm::SessionExit::title();
             }
         };
-        auto data = state();
+        auto data = makeState();
         uqm::GameSession session{data, uqm::SinglePlayerId};
         Counts counts;
         session.run(std::make_unique<Parent>(data, session, counts));
@@ -228,7 +228,7 @@ BOOST_AUTO_TEST_CASE(dispatcher_automates_child_cleanup_renderer_restore_and_par
 {
     for (const bool load : {false, true}) {
         std::vector<std::string> events;
-        auto data = state();
+        auto data = makeState();
         uqm::GameSession session{data, uqm::SinglePlayerId};
         struct Token final : uqm::ModeSuspension {
             std::vector<std::string> &events;

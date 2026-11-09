@@ -81,7 +81,7 @@ enum { MAX_ZOOM_OUT = (1 << (ZOOM_SHIFT + MAX_REDUCTION - 1)) };
 enum { ONE_SHIFT = 2 };
 enum { BACKGROUND_SHIFT = 3 };
 enum { SCALED_ONE = (1 << ONE_SHIFT) };
-#define DISPLAY_TO_WORLD(x) ((x)<<ONE_SHIFT)
+#define DISPLAY_TO_WORLD(x) ((x) * (1 << ONE_SHIFT))
 #define WORLD_TO_DISPLAY(x) ((x)>>ONE_SHIFT)
 #define DISPLAY_ALIGN(x) ((COORD)(x)&~(SCALED_ONE-1))
 #define DISPLAY_ALIGN_X(x) ((COORD)((COUNT)(x)%LOG_SPACE_WIDTH)&~(SCALED_ONE-1))

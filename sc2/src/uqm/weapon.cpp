@@ -17,6 +17,8 @@
  */
 
 #include "weapon.h"
+#include "simulation_engine.hpp"
+extern "C" FRAME blast[];
 
 #include "colors.h"
 #include "globdata.h"
@@ -131,10 +133,10 @@ initialize_missile (MISSILE_BLOCK *pMissileBlock)
 	return (hMissileElement);
 }
 
-HELEMENT
-weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
-		ELEMENT *HitElementPtr, POINT *pHPt)
-{
+HELEMENT uqm::SimulationEngine::weaponHit(ELEMENT &weapon, POINT &point, ELEMENT &target, POINT &targetPoint) {
+    SimulationBinding binding{*this};
+    auto *WeaponElementPtr = &weapon; auto *pWPt = &point; auto *HitElementPtr = &target; auto *pHPt = &targetPoint;
+
 	SIZE damage;
 	HELEMENT hBlastElement;
 
@@ -187,7 +189,7 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 			SIZE blast_offs;
 			COUNT angle, num_blast_frames;
 			ELEMENT *BlastElementPtr;
-			extern FRAME blast[];
+
 
 			PutElement (hBlastElement);
 			LockElement (hBlastElement, &BlastElementPtr);
@@ -243,21 +245,24 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 
 	(void) pHPt;  /* Satisfying compiler (unused parameter) */
 	return ((HELEMENT)0);
+
 }
+HELEMENT weapon_collision(ELEMENT *weapon, POINT *point, ELEMENT *target, POINT *targetPoint) { return uqm::simulationEngine().weaponHit(*weapon, *point, *target, *targetPoint); }
+
 
 FRAME
 ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 		BYTE modify_flags)
 {
 	FRAME f;
-	RECT r, or;
+	RECT r, objectRect;
 	INTERSECT_CONTROL ShipIntersect, ObjectIntersect;
 	STARSHIP *StarShipPtr;
 	CONTEXT OldContext;
 
 	f = 0;
 	ObjectIntersect.IntersectStamp = *modify_stamp;
-	GetFrameRect (ObjectIntersect.IntersectStamp.frame, &or);
+	GetFrameRect (ObjectIntersect.IntersectStamp.frame, &objectRect);
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if (modify_flags & MODIFY_IMAGE)
@@ -275,11 +280,11 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 		do
 		{
 			ObjectIntersect.IntersectStamp.origin.x = ((COUNT)TFB_Random ()
-					% (r.extent.width - or.extent.width))
-					+ ((or.extent.width - r.extent.width) >> 1);
+					% (r.extent.width - objectRect.extent.width))
+					+ ((objectRect.extent.width - r.extent.width) >> 1);
 			ObjectIntersect.IntersectStamp.origin.y = ((COUNT)TFB_Random ()
-					% (r.extent.height - or.extent.height))
-					+ ((or.extent.height - r.extent.height) >> 1);
+					% (r.extent.height - objectRect.extent.height))
+					+ ((objectRect.extent.height - r.extent.height) >> 1);
 			ObjectIntersect.EndPoint = ObjectIntersect.IntersectStamp.origin;
 		} while (!DrawablesIntersect (&ObjectIntersect,
 				&ShipIntersect, MAX_TIME_VALUE));
@@ -293,10 +298,10 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 
 	if (modify_flags & MODIFY_SWAP)
 	{
-		or.corner.x += ObjectIntersect.IntersectStamp.origin.x;
-		or.corner.y += ObjectIntersect.IntersectStamp.origin.y;
+		objectRect.corner.x += ObjectIntersect.IntersectStamp.origin.x;
+		objectRect.corner.y += ObjectIntersect.IntersectStamp.origin.y;
 		InitShipStatus (&StarShipPtr->RaceDescPtr->ship_info,
-				StarShipPtr, &or);
+				StarShipPtr, &objectRect);
 	}
 	else
 	{
@@ -315,100 +320,5 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 // -1 if no target was found.
 // Cloaked ships won't be detected, except when the APPEARING flag is
 // set for the Tracker.
-SIZE
-TrackShip (ELEMENT *Tracker, COUNT *pfacing)
-{
-	SIZE best_delta_facing, best_delta;
-	HELEMENT hShip, hNextShip;
-	ELEMENT *Trackee;
 
-	best_delta = 0;
-	best_delta_facing = -1;
-
-	hShip = Tracker->hTarget;
-	if (hShip)
-	{
-		LockElement (hShip, &Trackee);
-		Tracker->hTarget = hNextShip = 0;
-
-		goto CheckTracking;
-	}
-
-	for (hShip = GetHeadElement (); hShip != 0; hShip = hNextShip)
-	{
-		LockElement (hShip, &Trackee);
-		hNextShip = GetSuccElement (Trackee);
-		if ((Trackee->state_flags & PLAYER_SHIP)
-				&& !elementsOfSamePlayer (Trackee, Tracker)
-				&& (!OBJECT_CLOAKED (Trackee)
-				|| ((Tracker->state_flags & PLAYER_SHIP)
-				&& (Tracker->state_flags & APPEARING))
-				))
-		{
-			STARSHIP *StarShipPtr;
-
-CheckTracking:
-			GetElementStarShip (Trackee, &StarShipPtr);
-			if (Trackee->life_span
-					&& StarShipPtr->RaceDescPtr->ship_info.crew_level)
-			{
-				SIZE delta_x, delta_y, delta_facing;
-
-				if (Tracker->state_flags & PRE_PROCESS)
-				{
-					delta_x = Trackee->next.location.x
-							- Tracker->next.location.x;
-					delta_y = Trackee->next.location.y
-							- Tracker->next.location.y;
-				}
-				else
-				{
-					delta_x = Trackee->current.location.x
-							- Tracker->current.location.x;
-					delta_y = Trackee->current.location.y
-							- Tracker->current.location.y;
-				}
-
-				delta_x = WRAP_DELTA_X (delta_x);
-				delta_y = WRAP_DELTA_Y (delta_y);
-				delta_facing = NORMALIZE_FACING (
-						ANGLE_TO_FACING (ARCTAN (delta_x, delta_y)) - *pfacing
-						);
-
-				if (delta_x < 0)
-					delta_x = -delta_x;
-				if (delta_y < 0)
-					delta_y = -delta_y;
-				delta_x += delta_y;
-						// 'delta_x + delta_y' is used as an approximation
-						// of the actual distance 'sqrt(sqr(delta_x) +
-						// sqr(delta_y))'.
-
-				if (best_delta == 0 || delta_x < best_delta)
-				{
-					best_delta = delta_x;
-					best_delta_facing = delta_facing;
-					Tracker->hTarget = hShip;
-				}
-			}
-		}
-		UnlockElement (hShip);
-	}
-
-	if (best_delta_facing > 0)
-	{
-		COUNT facing;
-
-		facing = *pfacing;
-		if (best_delta_facing == ANGLE_TO_FACING (HALF_CIRCLE))
-			facing += (((BYTE)TFB_Random () & 1) << 1) - 1;
-		else if (best_delta_facing < ANGLE_TO_FACING (HALF_CIRCLE))
-			++facing;
-		else
-			--facing;
-		*pfacing = NORMALIZE_FACING (facing);
-	}
-
-	return (best_delta_facing);
-}
-
+SIZE TrackShip(ELEMENT *tracker, COUNT *facing) { return uqm::simulationEngine().track(*tracker, *facing); }

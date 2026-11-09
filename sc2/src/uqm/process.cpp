@@ -19,6 +19,8 @@
 #include "process.h"
 
 #include "races.h"
+#include "simulation_engine.hpp"
+#include <stdexcept>
 #include "collide.h"
 #include "options.h"
 #include "settings.h"
@@ -37,8 +39,7 @@
 
 //#define DEBUG_PROCESS
 
-COUNT DisplayFreeList;
-PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
+
 extern POINT SpaceOrg;
 
 SIZE zoom_out = 1 << ZOOM_SHIFT;
@@ -780,7 +781,7 @@ InsertPrim (PRIM_LINKS *pLinks, COUNT primIndex, COUNT iPI)
 	SetPrimLinks (&DisplayArray[primIndex], Link, iPI);
 }
 
-PRIM_LINKS DisplayLinks;
+
 
 static inline COORD
 CalcDisplayCoord (COORD c, COORD orgc, SIZE reduction)
@@ -998,7 +999,7 @@ InitDisplayList (void)
 		opt_max_zoom_out = MAX_ZOOM_OUT;
 	}
 
-	ReinitQueue (&disp_q);
+	uqm::simulationEngine().reset();
 
 	for (i = 0; i < MAX_DISPLAY_PRIMS; ++i)
 		SetPrimLinks (&DisplayArray[i], END_OF_LIST, i + 1);
@@ -1007,18 +1008,23 @@ InitDisplayList (void)
 	DisplayLinks = MakeLinks (END_OF_LIST, END_OF_LIST);
 }
 
+void uqm::SimulationEngine::step() {
+    if (!entities_.storage) throw std::logic_error("simulation engine is not initialized");
+    SimulationBinding binding{*this};
+    SIZE scrollX, scrollY;
+    const auto view = PreProcessQueue(&scrollX, &scrollY);
+    PostProcessQueue(view, scrollX, scrollY);
+    ++ticks_;
+}
+
 UWORD nth_frame = 0;
 
 void
 RedrawQueue (BOOLEAN clear)
 {
-	SIZE scroll_x, scroll_y;
-	VIEW_STATE view_state;
-
 	SetContext (StatusContext);
 
-	view_state = PreProcessQueue (&scroll_x, &scroll_y);
-	PostProcessQueue (view_state, scroll_x, scroll_y);
+    uqm::simulationEngine().step();
 
 	if (optStereoSFX)
 		UpdateSoundPositions ();
@@ -1062,33 +1068,9 @@ RedrawQueue (BOOLEAN clear)
 
 // Set the hTarget field to 0 for all elements in the display list that
 // have hTarget set to ElementPtr.
-void
-Untarget (ELEMENT *ElementPtr)
-{
-	HELEMENT hElement, hNextElement;
 
-	for (hElement = GetHeadElement (); hElement; hElement = hNextElement)
-	{
-		HELEMENT hTarget;
-		ELEMENT *ListPtr;
+void Untarget(ELEMENT *element) { if (element) uqm::simulationEngine().clearTargets(*element); }
 
-		LockElement (hElement, &ListPtr);
-		hNextElement = GetSuccElement (ListPtr);
-
-		hTarget = ListPtr->hTarget;
-		if (hTarget)
-		{
-			ELEMENT *TargetElementPtr;
-
-			LockElement (hTarget, &TargetElementPtr);
-			if (TargetElementPtr == ElementPtr)
-				ListPtr->hTarget = 0;
-			UnlockElement (hTarget);
-		}
-
-		UnlockElement (hElement);
-	}
-}
 
 void
 RemoveElement (HLINK hLink)
