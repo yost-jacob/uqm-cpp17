@@ -37,9 +37,14 @@ public:
     GameMode(const GameMode &) = delete;
     GameMode &operator=(const GameMode &) = delete;
 protected:
+    // Finish a nested run by returning ownership of its suspended parent.
+    // Valid only for a child installed by GameSession::swapGameMode.
+    ModeResult resumeParent();
     const std::shared_ptr<GameState> &stateOwner() const noexcept;
     PlayerId playerId() const noexcept;
 private:
+    friend class GameSession;
+    std::unique_ptr<GameMode> parentMode_;
     std::shared_ptr<GameState> state_;
     PlayerId player_;
 };

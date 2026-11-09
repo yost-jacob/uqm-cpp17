@@ -180,3 +180,8 @@ those requests while legacy calls unwind. Actual load decoding runs only after
 old runtime cleanup. The C payload decoder remains nontransactional: a deep decode
 failure returns to title rather than restoring the previous campaign. Remaining
 orbital handlers can migrate within this established control-flow contract.
+
+[Synchronous nested modes](design/nested-modes.md) are also available: the child
+owns the suspended parent until returning it, and session exits propagate after
+ownership restoration. Child exceptions currently abort with a graceful-shutdown
+TODO. Existing legacy encounters have not yet been routed through this API.
