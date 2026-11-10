@@ -380,3 +380,39 @@ BOOST_FIXTURE_TEST_CASE(native_beam_handles_zero_length_segments_and_pool_exhaus
     BOOST_TEST(replacement == first);
     BOOST_REQUIRE(dynamic_cast<Beam *>(uqm::detail::borrowEntity(disp_q, replacement)));
 }
+
+BOOST_FIXTURE_TEST_CASE(specialized_beam_publishes_one_owner_with_expiration_and_default_collision, Pool)
+{
+    class Specialized final : public Beam {
+    public:
+        Specialized(unsigned &expired, unsigned &destroyed) : expired_(expired), destroyed_(destroyed) {}
+        ~Specialized() override { ++destroyed_; }
+        bool hasExpiration() const noexcept override { return true; }
+        void expire(ELEMENT &self) override { ++expired_; self.turn_wait = 7; }
+    private:
+        unsigned &expired_, &destroyed_;
+    };
+    unsigned expired = 0, destroyed = 0;
+    auto behavior = std::make_unique<Specialized>(expired, destroyed);
+    auto *identity = behavior.get();
+    const auto handle = publishBeam({}, std::move(behavior));
+    BOOST_REQUIRE(handle);
+    BOOST_TEST(uqm::detail::borrowEntity(disp_q, handle) == identity);
+    auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_REQUIRE(element.death_func);
+    element.death_func(&element);
+    BOOST_TEST(expired == 1u);
+    BOOST_TEST(element.turn_wait == 7u);
+    defaultCollisionCalls = 0;
+    ELEMENT target{}; POINT point{};
+    element.collision_func(&element, &point, &target, &point);
+    BOOST_TEST(defaultCollisionCalls == 1u);
+    BOOST_TEST(destroyed == 0u);
+    FreeLink(&disp_q, handle);
+    BOOST_TEST(destroyed == 1u);
+    const auto a = AllocLink(&disp_q), b = AllocLink(&disp_q);
+    BOOST_TEST(publishBeam({}, std::make_unique<Specialized>(expired, destroyed)) == nullptr);
+    BOOST_TEST(destroyed == 2u);
+    BOOST_TEST(expired == 1u); // Exhaustion destroys without publishing effects.
+    FreeLink(&disp_q, a); FreeLink(&disp_q, b);
+}

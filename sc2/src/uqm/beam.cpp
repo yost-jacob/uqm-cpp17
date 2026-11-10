@@ -11,8 +11,8 @@ namespace uqm::combat {
 void Beam::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     weapon_collision(&self, &point, &other, &otherPoint);
 }
-HELEMENT publishBeam(const BeamLaunch &launch) {
-    auto behavior = std::make_unique<Beam>();
+HELEMENT publishBeam(const BeamLaunch &launch, std::unique_ptr<Beam> behavior) {
+    if (!behavior) behavior = std::make_unique<Beam>();
     const auto handle = AllocElement();
     if (!handle) return nullptr;
     ELEMENT *element;
@@ -36,7 +36,9 @@ HELEMENT publishBeam(const BeamLaunch &launch) {
     SetVelocityComponents(&element->velocity,
         WORLD_TO_VELOCITY(launch.origin.x + launch.displacement.x - element->current.location.x),
         WORLD_TO_VELOCITY(launch.origin.y + launch.displacement.y - element->current.location.y));
-    detail::attachEntity(*element, std::move(behavior), detail::EntityHooks::Collision);
+    auto hooks = detail::EntityHooks::Collision;
+    if (behavior->hasExpiration()) hooks = hooks | detail::EntityHooks::Expiration;
+    detail::attachEntity(*element, std::move(behavior), hooks);
     UnlockElement(handle);
     return handle;
 }

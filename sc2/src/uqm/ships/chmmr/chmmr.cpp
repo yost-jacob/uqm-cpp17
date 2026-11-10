@@ -122,9 +122,9 @@ static const RACE_DESC &chmmrDefinition() {
 
 // Native autonomous unit; all engine records are borrowed for each hook.
 namespace {
-class ChmmrBeam final : public uqm::combat::CombatEntity {
+class ChmmrBeam final : public uqm::combat::Beam {
 public:
-    void update(ELEMENT &) override {}
+    bool hasExpiration() const noexcept override { return true; }
     void expire(ELEMENT &self) override;
 };
 }
@@ -229,7 +229,7 @@ initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 	beam.flags = IGNORE_SIMILAR;
 	beam.muzzleOffset = 0;
 	beam.color = cycle_array[StarShipPtr->special_counter];
-	LaserArray[0] = uqm::combat::publishBeam(beam);
+	LaserArray[0] = uqm::combat::publishBeam(beam, std::make_unique<ChmmrBeam>());
 
 	if (LaserArray[0])
 	{
@@ -238,7 +238,6 @@ initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 		LockElement (LaserArray[0], &LaserPtr);
 
 		LaserPtr->mass_points = 2;
-		uqm::detail::attachEntity(*LaserPtr, std::make_unique<ChmmrBeam>(), uqm::detail::EntityHooks::Expiration);
 		LaserPtr->turn_wait = (BYTE)((StarShipPtr->special_counter + 1)
 				% NumCycles);
 
