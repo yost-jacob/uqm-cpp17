@@ -603,8 +603,7 @@ BOOST_AUTO_TEST_CASE(
     c->choose(c->view().entry, "done");
     BOOST_CHECK(c->current() == c->graph().end());
 }
-BOOST_AUTO_TEST_CASE(
-    individually_owned_nodes_support_merges_and_iterative_cleanup_of_large_cycles) {
+BOOST_AUTO_TEST_CASE(contiguous_nodes_support_direct_pointer_links_merges_and_large_cycles) {
     TestState state;
     Json nodes = Json::array();
     constexpr std::size_t count = 10000;
@@ -623,13 +622,44 @@ BOOST_AUTO_TEST_CASE(
     auto cursor = c->graph().start();
     const auto first = cursor;
     bool sharedDestinations = true;
+    bool contiguous = true;
     for (std::size_t i = 0; i < count; ++i) {
+        contiguous = contiguous && cursor.operator->() == first.operator->() + i;
         const auto &node = std::get<cd::DecisionNode>(cursor->data);
         sharedDestinations = sharedDestinations && node.branches.front().next == node.otherwise;
         cursor.next(node.branches.front());
     }
     BOOST_CHECK(cursor == first);
     BOOST_CHECK(sharedDestinations);
+    BOOST_CHECK(contiguous);
     BOOST_TEST(state.mutations == 0u);
-    c.reset(); // ASan/LSan cover cyclic links and nonrecursive ownership cleanup.
+    c.reset(); // ASan/LSan cover cleanup despite cyclic non-owning connections.
+}
+BOOST_AUTO_TEST_CASE(compact_responses_keep_distinct_private_results_in_preallocated_storage) {
+    TestState state;
+    auto definition = compactPurchase();
+    auto second = definition["nodes"][0]["responses"][0];
+    second["id"] = "buy_again";
+    definition["nodes"][0]["responses"].push_back(second);
+    definition["nodes"][1]["next"] = "menu";
+    definition["nodes"][2]["next"] = "menu";
+    auto c = cd::Conversation::load(definition, state);
+    const auto menu = c->graph().start();
+    state.credits = 0;
+    c->advance();
+    c->finishDialogue(c->view().entry);
+    c->choose(c->view().entry, "buy");
+    c->finishDialogue(c->view().entry); // Return to the same menu after failure.
+    BOOST_CHECK(c->current() == menu);
+    state.credits = 100;
+    c->finishDialogue(c->view().entry);
+    c->choose(c->view().entry, "buy_again");
+    BOOST_TEST(state.purchases == 2u);
+    BOOST_TEST(c->memory().results.size() == 2u);
+    bool success = false, failure = false;
+    for (const auto &saved : c->memory().results) {
+        success = success || saved.second.code == "ok";
+        failure = failure || saved.second.code == "no_credit";
+    }
+    BOOST_CHECK(success && failure);
 }

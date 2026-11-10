@@ -35,6 +35,13 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
         throw std::invalid_argument("locals must be an object");
     for (const auto &item : locals.items())
         result->memory_.local.emplace(item.key(), item.value());
+    std::size_t count = source.size();
+    for (const auto &item : source)
+        for (const auto &edge : item.value("responses", Json::array()))
+            if (edge.contains("action"))
+                count += 2;
+    result->graph_.nodes_.resize(count); // No resizing after pointers are created.
+    std::size_t generatedResults = 0;
     std::unordered_map<std::string, Node *> ids;
     for (const auto &item : source)
         if (!ids.emplace(string(item.at("id")), result->graph_.emplace()).second)
@@ -88,7 +95,7 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
                     auto *decisionNode = result->graph_.emplace();
                     const auto save = edge.contains("save_as")
                                           ? string(edge.at("save_as"))
-                                          : "__response_" + std::to_string(result->graph_.size());
+                                          : "__response_" + std::to_string(++generatedResults);
                     if (save.find('.') != std::string::npos ||
                         (edge.contains("save_as") && save.rfind("__response_", 0) == 0))
                         throw std::invalid_argument("invalid or reserved response result name");

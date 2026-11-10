@@ -2,7 +2,7 @@
 #define UQM_DESIGN_CONVERSATION_GRAPH_HPP
 #include "verb_factory.hpp"
 #include <cstddef>
-#include <memory>
+
 #include <utility>
 #include <variant>
 #include <vector>
@@ -11,7 +11,7 @@ struct Node;
 struct Edge;
 struct DecisionBranch;
 class Conversation;
-// Owns individually allocated nodes. Outgoing graph links are non-owning pointers.
+// Owns contiguous nodes. Outgoing graph links are non-owning pointers.
 // Neither graph nor nodes move after loading. Cursors borrow this graph and must
 // not outlive it. Topology is immutable during traversal; response history is not.
 class ConversationGraph {
@@ -80,10 +80,10 @@ class ConversationGraph {
 
   private:
     friend class Conversation;
-    std::unique_ptr<Node> first_; // Ownership only; independent of graph connections.
-    size_type size_ = 0;
+    std::vector<Node> nodes_; // Sized once before resolving any connections.
+    size_type used_ = 0;
     iterator entry_;
-    Node *emplace(); // Loader only. A new node never moves existing nodes.
+    Node *emplace(); // Loader only; fills the next preallocated slot without resizing.
 };
 struct Edge {
     std::string id;
@@ -128,7 +128,6 @@ struct Node {
     friend class ConversationGraph;
     friend class ConversationGraph::iterator;
     const ConversationGraph *owner_ = nullptr;
-    std::unique_ptr<Node> ownedNext_; // Never used for graph traversal.
 };
 } // namespace uqm::design::conversation
 #endif

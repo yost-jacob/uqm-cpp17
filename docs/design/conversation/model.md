@@ -61,7 +61,7 @@ classDiagram
     Conversation --> State : borrowed session / player / galaxy adapter
     Conversation *-- Memory : local values / action results
     Conversation *-- ConversationGraph
-    ConversationGraph *-- Node : RAII ownership chain
+    ConversationGraph *-- Node : contiguous vector ownership
     Node --> Node : non-owning outgoing connections
     Node <.. DialogueNode
     Node <.. DecisionNode
@@ -120,8 +120,8 @@ See [compact responses](engine/README.md#authoring-a-response-as-one-interaction
 
 ## Graph container and current position
 
-`ConversationGraph` owns individually allocated nodes through a private RAII
-ownership chain. Edges contain direct non-owning node pointers, and `Conversation::current_` follows them directly. `start()`/`begin()`
+`ConversationGraph` owns nodes in a vector sized once before wiring connections.
+Edges contain direct non-owning node pointers, and `Conversation::current_` follows them directly. `start()`/`begin()`
 identify the entry and `end()` identifies completion. A cursor advances through
 an unconditional connection with `next()` or `++`; responses and decisions select
 an outgoing connection explicitly. Advancing the cursor does not execute a node.

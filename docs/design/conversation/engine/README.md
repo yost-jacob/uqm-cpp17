@@ -55,18 +55,21 @@ Explicit local/state actions control any actual pruning.
 
 ## Graph ownership and traversal
 
-[`ConversationGraph`](graph.hpp) owns individually allocated nodes through a
-private `std::unique_ptr` ownership chain. Nodes carry direct non-owning `Node*`
-connections: an action/automatic dialogue has one successor, while responses and
-decision branches hold their own destination pointers. No vector stores the graph
-nodes, and traversal performs no index lookup.
+[`ConversationGraph`](graph.hpp) owns nodes contiguously in a `std::vector<Node>`.
+Nodes carry direct non-owning `Node*` connections: an action/automatic dialogue has
+one successor, while responses and decision branches hold their own destination
+pointers. The cursor follows those pointers without index lookup or offset math.
 
-The ownership chain is separate from those outgoing connections. It exists only
-to release every node exactly once, including nodes with multiple incoming links
-or cyclic connections. Cleanup is iterative, so a large graph cannot overflow the
-stack through recursive ownership destruction. Only the loader adds nodes; their
-addresses remain stable as authored and generated nodes are allocated. The graph
-cannot be copied or moved, and cursors must not outlive it.
+The loader counts authored nodes and compact expansions, sizes the complete vector,
+then fills its slots and wires connections. It never resizes after creating a node
+pointer. Nodes remain at stable addresses, and the graph cannot be copied or moved.
+Cursors must not outlive it. All variant alternatives share the same `sizeof(Node)`;
+strings and branch lists may still have their own allocations. Contiguous ownership
+can improve locality, though graph connections need not follow physical storage order.
+
+Outgoing links do not own their targets. The vector releases every node once,
+including nodes with multiple incoming links or cyclic connections. No separate
+ownership chain or recursive graph cleanup is needed.
 
 The container provides `value_type`, `size_type`, `size()`, `empty()`, `begin()`,
 `end()`, `cbegin()`, `cend()` and `start()` (an alias for the entry cursor).
@@ -98,7 +101,7 @@ the same node; it guards against stale callbacks and is unrelated to graph size.
 ## Loading and binding
 
 `Conversation::load(definition, state)` creates a nonmovable conversation and its
-local memory first, allocates authored nodes and resolves destination names to direct node pointers, then invokes
+local memory first, preallocates authored/generated nodes and resolves destination names to direct node pointers, then invokes
 `VerbFactory` to bind all queries, conditions and actions. `std::bind` owns the
 arguments and borrows the state/memory through reference wrappers. The runtime
 uses `std::invoke`; it never parses a verb or searches JSON node IDs during play.

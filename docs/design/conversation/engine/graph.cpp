@@ -1,27 +1,20 @@
 #include "graph.hpp"
 namespace uqm::design::conversation {
 ConversationGraph::ConversationGraph() : entry_(this, nullptr) {}
-ConversationGraph::~ConversationGraph() {
-    // Iterative RAII cleanup: cycles/merges in outgoing links do not own nodes,
-    // and a long ownership chain must not recurse through unique_ptr destructors.
-    while (first_) {
-        auto remaining = std::move(first_->ownedNext_);
-        first_ = std::move(remaining);
-    }
-}
+ConversationGraph::~ConversationGraph() = default;
 ConversationGraph::size_type ConversationGraph::size() const noexcept {
-    return size_;
+    return nodes_.size();
 }
 bool ConversationGraph::empty() const noexcept {
-    return !first_;
+    return nodes_.empty();
 }
 Node *ConversationGraph::emplace() {
-    auto node = std::make_unique<Node>();
-    node->owner_ = this;
-    node->ownedNext_ = std::move(first_);
-    first_ = std::move(node);
-    ++size_;
-    return first_.get();
+    // The loader preallocates the complete vector, including compact expansions.
+    // Filling a slot cannot reallocate or invalidate existing node connections.
+    auto &node = nodes_.at(used_);
+    node.owner_ = this;
+    ++used_;
+    return &node;
 }
 const Node &ConversationGraph::iterator::operator*() const {
     if (!graph_ || !node_)
