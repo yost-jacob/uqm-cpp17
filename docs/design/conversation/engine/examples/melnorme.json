@@ -1736,56 +1736,6 @@
       "next": "fuel.intro.effects"
     },
     {
-      "id": "fuel.buy_1_fuel",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "fuel", 1]
-      },
-      "save_as": "fuel_purchase",
-      "next": "fuel.outcome"
-    },
-    {
-      "id": "fuel.buy_5_fuel",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "fuel", 5]
-      },
-      "save_as": "fuel_purchase",
-      "next": "fuel.outcome"
-    },
-    {
-      "id": "fuel.buy_10_fuel",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "fuel", 10]
-      },
-      "save_as": "fuel_purchase",
-      "next": "fuel.outcome"
-    },
-    {
-      "id": "fuel.buy_25_fuel",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "fuel", 25]
-      },
-      "save_as": "fuel_purchase",
-      "next": "fuel.outcome"
-    },
-    {
-      "id": "fuel.fill_me_up",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "fuel", "fill"]
-      },
-      "save_as": "fuel_purchase",
-      "next": "fuel.outcome"
-    },
-    {
       "id": "fuel.ask",
       "kind": "dialogue",
       "variants": [
@@ -1799,31 +1749,61 @@
           "id": "buy_1_fuel",
           "text": "melnorme.buy_1_fuel",
           "when": true,
-          "next": "fuel.buy_1_fuel"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "fuel", 1]
+          },
+          "save_as": "fuel_purchase",
+          "then": {"ok": "fuel.success", "no_room": "fuel.no_room", "no_credit": "fuel.no_credit"},
+          "otherwise": "error"
         },
         {
           "id": "buy_5_fuel",
           "text": "melnorme.buy_5_fuel",
           "when": true,
-          "next": "fuel.buy_5_fuel"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "fuel", 5]
+          },
+          "save_as": "fuel_purchase",
+          "then": {"ok": "fuel.success", "no_room": "fuel.no_room", "no_credit": "fuel.no_credit"},
+          "otherwise": "error"
         },
         {
           "id": "buy_10_fuel",
           "text": "melnorme.buy_10_fuel",
           "when": true,
-          "next": "fuel.buy_10_fuel"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "fuel", 10]
+          },
+          "save_as": "fuel_purchase",
+          "then": {"ok": "fuel.success", "no_room": "fuel.no_room", "no_credit": "fuel.no_credit"},
+          "otherwise": "error"
         },
         {
           "id": "buy_25_fuel",
           "text": "melnorme.buy_25_fuel",
           "when": true,
-          "next": "fuel.buy_25_fuel"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "fuel", 25]
+          },
+          "save_as": "fuel_purchase",
+          "then": {"ok": "fuel.success", "no_room": "fuel.no_room", "no_credit": "fuel.no_credit"},
+          "otherwise": "error"
         },
         {
           "id": "fill_me_up",
           "text": "melnorme.fill_me_up",
           "when": true,
-          "next": "fuel.fill_me_up"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "fuel", "fill"]
+          },
+          "save_as": "fuel_purchase",
+          "then": {"ok": "fuel.success", "no_room": "fuel.no_room", "no_credit": "fuel.no_credit"},
+          "otherwise": "error"
         },
         {
           "id": "done_buying_fuel",
@@ -1832,25 +1812,6 @@
           "next": "fuel.done"
         }
       ]
-    },
-    {
-      "id": "fuel.outcome",
-      "kind": "decision",
-      "branches": [
-        {
-          "when": {"eq": [{"get": ["result", "fuel_purchase.code"]}, "ok"]},
-          "next": "fuel.success"
-        },
-        {
-          "when": {"eq": [{"get": ["result", "fuel_purchase.code"]}, "no_room"]},
-          "next": "fuel.no_room"
-        },
-        {
-          "when": {"eq": [{"get": ["result", "fuel_purchase.code"]}, "no_credit"]},
-          "next": "fuel.no_credit"
-        }
-      ],
-      "otherwise": "error"
     },
     {
       "id": "fuel.success",
@@ -1974,7 +1935,13 @@
           "id": "buy_new_tech",
           "text": "melnorme.buy_new_tech",
           "when": {"query": "market.available", "args": ["melnorme", "technology"]},
-          "next": "tech.buy"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "next_technology", 1]
+          },
+          "save_as": "tech_purchase",
+          "then": {"ok": "tech.success", "no_credit": "tech.no_credit", "unavailable": "tech.none"},
+          "otherwise": "error"
         },
         {
           "id": "no_buy_new_tech",
@@ -1983,35 +1950,6 @@
           "next": "tech.done"
         }
       ]
-    },
-    {
-      "id": "tech.buy",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "next_technology", 1]
-      },
-      "save_as": "tech_purchase",
-      "next": "tech.outcome"
-    },
-    {
-      "id": "tech.outcome",
-      "kind": "decision",
-      "branches": [
-        {
-          "when": {"eq": [{"get": ["result", "tech_purchase.code"]}, "ok"]},
-          "next": "tech.success"
-        },
-        {
-          "when": {"eq": [{"get": ["result", "tech_purchase.code"]}, "no_credit"]},
-          "next": "tech.no_credit"
-        },
-        {
-          "when": {"eq": [{"get": ["result", "tech_purchase.code"]}, "unavailable"]},
-          "next": "tech.none"
-        }
-      ],
-      "otherwise": "error"
     },
     {
       "id": "tech.success",
@@ -2106,36 +2044,6 @@
       "next": "info.menu"
     },
     {
-      "id": "info.events",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "events", 1]
-      },
-      "save_as": "info_purchase",
-      "next": "info.outcome"
-    },
-    {
-      "id": "info.alien_races",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "alien_races", 1]
-      },
-      "save_as": "info_purchase",
-      "next": "info.outcome"
-    },
-    {
-      "id": "info.history",
-      "kind": "action",
-      "action": {
-        "verb": "trade.purchase",
-        "args": ["melnorme", "history", 1]
-      },
-      "save_as": "info_purchase",
-      "next": "info.outcome"
-    },
-    {
       "id": "info.menu",
       "kind": "dialogue",
       "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
@@ -2144,19 +2052,37 @@
           "id": "buy_current_events",
           "text": "melnorme.buy_current_events",
           "when": {"query": "market.available", "args": ["melnorme", "events"]},
-          "next": "info.events"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "events", 1]
+          },
+          "save_as": "info_purchase",
+          "then": {"ok": "info.success", "no_credit": "info.no_credit", "unavailable": "info.none"},
+          "otherwise": "error"
         },
         {
           "id": "buy_alien_races",
           "text": "melnorme.buy_alien_races",
           "when": {"query": "market.available", "args": ["melnorme", "alien_races"]},
-          "next": "info.alien_races"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "alien_races", 1]
+          },
+          "save_as": "info_purchase",
+          "then": {"ok": "info.success", "no_credit": "info.no_credit", "unavailable": "info.none"},
+          "otherwise": "error"
         },
         {
           "id": "buy_history",
           "text": "melnorme.buy_history",
           "when": {"query": "market.available", "args": ["melnorme", "history"]},
-          "next": "info.history"
+          "action": {
+            "verb": "trade.purchase",
+            "args": ["melnorme", "history", 1]
+          },
+          "save_as": "info_purchase",
+          "then": {"ok": "info.success", "no_credit": "info.no_credit", "unavailable": "info.none"},
+          "otherwise": "error"
         },
         {
           "id": "done_buying_info",
@@ -2165,25 +2091,6 @@
           "next": "info.done"
         }
       ]
-    },
-    {
-      "id": "info.outcome",
-      "kind": "decision",
-      "branches": [
-        {
-          "when": {"eq": [{"get": ["result", "info_purchase.code"]}, "ok"]},
-          "next": "info.success"
-        },
-        {
-          "when": {"eq": [{"get": ["result", "info_purchase.code"]}, "no_credit"]},
-          "next": "info.no_credit"
-        },
-        {
-          "when": {"eq": [{"get": ["result", "info_purchase.code"]}, "unavailable"]},
-          "next": "info.none"
-        }
-      ],
-      "otherwise": "error"
     },
     {
       "id": "info.success",

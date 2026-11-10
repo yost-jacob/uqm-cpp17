@@ -125,6 +125,40 @@ Dynamic argument types and game-domain identifiers/ranges require evaluation or
 native adapter validation. Loading does not execute getters to infer types or
 consume names, RNG, credit, or inventory.
 
+## Authoring a response as one interaction
+
+A response may contain its availability, action and result destinations together:
+
+```json
+{
+  "id": "buy_five",
+  "text": "melnorme.buy_5_fuel",
+  "when": {"gt": [{"query": "ship.free_fuel", "args": []}, 0]},
+  "action": {"verb": "trade.purchase", "args": ["melnorme", "fuel", 5]},
+  "save_as": "fuel_purchase",
+  "then": {"ok": "fuel.success", "no_credit": "fuel.no_credit", "no_room": "fuel.no_room"},
+  "otherwise": "error"
+}
+```
+
+`when` is optional and read-only. The action runs exactly once after selection,
+never while listing responses or redrawing. `then` maps result codes to dialogue
+or other node IDs. `otherwise` is optional: an unhandled code without a fallback
+throws and poisons the conversation, preventing a retry of a committed operation.
+`save_as` is optional; provide it when subsequent speech/conditions need the result
+payload. Otherwise the loader allocates a private result name. The prefix
+`__response_` is reserved for these generated names.
+
+A compact response uses `action` and a nonempty `then`, instead of `next`. Ordinary
+responses still use `next`; result-routing fields without an action are rejected.
+Loading validates every destination and binds the operation without executing it,
+then appends an ordinary action node and a decision node to the internal vector.
+No separate execution path or new runtime node type is introduced. Explicit nodes
+remain useful for shared branches, initialization and multi-step operations.
+
+The Melnorme purchase menus and Hayes mineral sale use this form. They retain
+existing result names, speech payloads and failure destinations.
+
 ## Action results
 
 ```json

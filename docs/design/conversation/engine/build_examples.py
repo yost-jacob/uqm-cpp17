@@ -103,6 +103,18 @@ class Graph:
     def edge(self, id, next, when=True, bank=None):
         return dict(id=id, text=self.p(id, bank), when=when, next=next)
 
+    def transaction(self, id, verb, args, then, save, when=True, bank=None):
+        """Keep one response's operation and result routing together for readers."""
+        return dict(
+            id=id,
+            text=self.p(id, bank),
+            when=when,
+            action={"verb": verb, "args": args},
+            save_as=save,
+            then=then,
+            otherwise="error",
+        )
+
     def say(
         self,
         id,
@@ -177,7 +189,10 @@ class Graph:
             "error",
         )
         return self.act(
-            id, "handlers.prepare_report", [topic, {"literal": args or {}}], id + ".check"
+            id,
+            "handlers.prepare_report",
+            [topic, {"literal": args or {}}],
+            id + ".check",
         )
 
     def end(self, id="end", outcome="peace"):
@@ -189,7 +204,9 @@ class Graph:
             refs = []
             if "next" in n:
                 refs.append(n["next"])
-            refs.extend(e["next"] for e in n.get("responses", []))
+            for edge in n.get("responses", []):
+                refs.extend(edge.get("then", {}).values())
+                refs.extend(edge[key] for key in ("next", "otherwise") if key in edge)
             refs.extend(b["next"] for b in n.get("branches", []))
             if "otherwise" in n:
                 refs.append(n["otherwise"])
@@ -732,9 +749,12 @@ def hayes():
         "starbase.menu",
         [],
         responses=[
-            g.edge(
+            g.transaction(
                 "have_minerals",
-                "starbase.sell",
+                "trade.sell",
+                ["starbase", "minerals", "all"],
+                {"ok": "starbase.sell.speech"},
+                "mineral_sale",
                 gt(query("inventory.quantity", "minerals"), 0),
                 "starbase",
             ),
@@ -760,18 +780,6 @@ def hayes():
         ("bulletins", "hayes.repeat_bulletins"),
     ]:
         g.report("starbase." + id, topic, "starbase.menu")
-    g.act(
-        "starbase.sell",
-        "trade.sell",
-        ["starbase", "minerals", "all"],
-        "starbase.sell.check",
-        save="mineral_sale",
-    )
-    g.decide(
-        "starbase.sell.check",
-        [(eq(result("mineral_sale", "code"), "ok"), "starbase.sell.speech")],
-        "error",
-    )
     g.say(
         "starbase.sell.speech",
         result("mineral_sale", "speech"),
@@ -1402,26 +1410,21 @@ def melnorme():
         ("buy_25_fuel", 25),
         ("fill_me_up", "fill"),
     ]:
-        node = "fuel." + r
-        fuel_responses.append(g.edge(r, node))
-        g.act(
-            node,
-            "trade.purchase",
-            ["melnorme", "fuel", quantity],
-            "fuel.outcome",
-            save="fuel_purchase",
+        fuel_responses.append(
+            g.transaction(
+                r,
+                "trade.purchase",
+                ["melnorme", "fuel", quantity],
+                {
+                    "ok": "fuel.success",
+                    "no_room": "fuel.no_room",
+                    "no_credit": "fuel.no_credit",
+                },
+                "fuel_purchase",
+            )
         )
     fuel_responses.append(g.edge("done_buying_fuel", "fuel.done"))
     g.say("fuel.ask", ["HOW_MUCH_FUEL"], responses=fuel_responses)
-    g.decide(
-        "fuel.outcome",
-        [
-            (eq(result("fuel_purchase", "code"), "ok"), "fuel.success"),
-            (eq(result("fuel_purchase", "code"), "no_room"), "fuel.no_room"),
-            (eq(result("fuel_purchase", "code"), "no_credit"), "fuel.no_credit"),
-        ],
-        "error",
-    )
     g.reply("fuel.success", ["GOT_FUEL"], "fuel.capacity_check")
     g.decide(
         "fuel.capacity_check",
@@ -1456,29 +1459,20 @@ def melnorme():
         "tech.menu",
         [],
         responses=[
-            g.edge(
+            g.transaction(
                 "buy_new_tech",
-                "tech.buy",
+                "trade.purchase",
+                ["melnorme", "next_technology", 1],
+                {
+                    "ok": "tech.success",
+                    "no_credit": "tech.no_credit",
+                    "unavailable": "tech.none",
+                },
+                "tech_purchase",
                 query("market.available", "melnorme", "technology"),
             ),
             g.edge("no_buy_new_tech", "tech.done"),
         ],
-    )
-    g.act(
-        "tech.buy",
-        "trade.purchase",
-        ["melnorme", "next_technology", 1],
-        "tech.outcome",
-        save="tech_purchase",
-    )
-    g.decide(
-        "tech.outcome",
-        [
-            (eq(result("tech_purchase", "code"), "ok"), "tech.success"),
-            (eq(result("tech_purchase", "code"), "no_credit"), "tech.no_credit"),
-            (eq(result("tech_purchase", "code"), "unavailable"), "tech.none"),
-        ],
-        "error",
     )
     g.say("tech.success", result("tech_purchase", "speech"), "tech.remaining")
     g.decide(
@@ -1517,28 +1511,21 @@ def melnorme():
         ("buy_history", "history"),
     ]:
         choices.append(
-            g.edge(
-                r, "info." + category, query("market.available", "melnorme", category)
+            g.transaction(
+                r,
+                "trade.purchase",
+                ["melnorme", category, 1],
+                {
+                    "ok": "info.success",
+                    "no_credit": "info.no_credit",
+                    "unavailable": "info.none",
+                },
+                "info_purchase",
+                query("market.available", "melnorme", category),
             )
-        )
-        g.act(
-            "info." + category,
-            "trade.purchase",
-            ["melnorme", category, 1],
-            "info.outcome",
-            save="info_purchase",
         )
     choices.append(g.edge("done_buying_info", "info.done"))
     g.say("info.menu", [], responses=choices)
-    g.decide(
-        "info.outcome",
-        [
-            (eq(result("info_purchase", "code"), "ok"), "info.success"),
-            (eq(result("info_purchase", "code"), "no_credit"), "info.no_credit"),
-            (eq(result("info_purchase", "code"), "unavailable"), "info.none"),
-        ],
-        "error",
-    )
     g.say("info.success", result("info_purchase", "speech"), "info.remaining")
     g.decide(
         "info.remaining",

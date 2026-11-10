@@ -47,6 +47,7 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
         return found->second;
     };
     VerbFactory factory{state, result->memory_};
+    std::vector<Node> generated; // Compact responses expand into ordinary silent nodes.
     for (const auto &item : source) {
         const auto kind = string(item.at("kind"));
         if (kind == "dialogue") {
@@ -72,13 +73,47 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
                 throw std::invalid_argument("responses must be an array");
             std::unordered_set<std::string> responseIds;
             for (const auto &edge : responses) {
-                fields(edge, {"id", "text", "when", "next"});
+                fields(edge,
+                       {"id", "text", "when", "next", "action", "then", "otherwise", "save_as"});
                 auto id = string(edge.at("id"));
                 if (!responseIds.emplace(id).second)
                     throw std::invalid_argument("duplicate response ID");
+                NodeId next;
+                if (edge.contains("action")) {
+                    if (edge.contains("next"))
+                        throw std::invalid_argument("response action uses then, not next");
+                    const auto &destinations = edge.at("then");
+                    if (!destinations.is_object() || destinations.empty())
+                        throw std::invalid_argument("response action needs result destinations");
+                    next = source.size() + generated.size();
+                    const auto save = edge.contains("save_as")
+                                          ? string(edge.at("save_as"))
+                                          : "__response_" + std::to_string(next);
+                    if (save.find('.') != std::string::npos ||
+                        (edge.contains("save_as") && save.rfind("__response_", 0) == 0))
+                        throw std::invalid_argument("invalid or reserved response result name");
+                    DecisionNode decision{{}, std::nullopt};
+                    if (edge.contains("otherwise"))
+                        decision.otherwise = resolve(edge.at("otherwise"));
+                    for (const auto &destination : destinations.items()) {
+                        if (destination.key().empty())
+                            throw std::invalid_argument("empty action result code");
+                        const Json condition = {
+                            {"eq", {{{"get", {"result", save + ".code"}}}, destination.key()}}};
+                        decision.branches.push_back(
+                            {factory.condition(condition), resolve(destination.value())});
+                    }
+                    generated.emplace_back(
+                        ActionNode{factory.action(edge.at("action")), save, next + 1});
+                    generated.emplace_back(std::move(decision));
+                } else {
+                    if (edge.contains("then") || edge.contains("otherwise") ||
+                        edge.contains("save_as"))
+                        throw std::invalid_argument("response result routing requires an action");
+                    next = resolve(edge.at("next"));
+                }
                 node.responses.push_back({std::move(id), factory.speech(edge.at("text")),
-                                          factory.condition(edge.value("when", Json(true))),
-                                          resolve(edge.at("next"))});
+                                          factory.condition(edge.value("when", Json(true))), next});
             }
             if (item.contains("next"))
                 node.next = resolve(item.at("next"));
@@ -90,7 +125,9 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
             result->nodes_.emplace_back(std::move(node));
         } else if (kind == "decision") {
             fields(item, {"id", "kind", "branches", "otherwise"});
-            DecisionNode node{{}, resolve(item.at("otherwise"))};
+            DecisionNode node{{}, std::nullopt};
+            if (item.contains("otherwise"))
+                node.otherwise = resolve(item.at("otherwise"));
             const auto &branches = item.at("branches");
             if (!branches.is_array() || branches.empty())
                 throw std::invalid_argument("decision needs branches");
@@ -102,7 +139,8 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
             result->nodes_.emplace_back(std::move(node));
         } else if (kind == "action") {
             fields(item, {"id", "kind", "action", "save_as", "next"});
-            if (string(item.at("save_as")).find('.') != std::string::npos)
+            if (string(item.at("save_as")).find('.') != std::string::npos ||
+                string(item.at("save_as")).rfind("__response_", 0) == 0)
                 throw std::invalid_argument("result names cannot contain dots");
             result->nodes_.emplace_back(ActionNode{factory.action(item.at("action")),
                                                    string(item.at("save_as")),
@@ -113,6 +151,8 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
         } else
             throw std::invalid_argument("unknown node kind: " + kind);
     }
+    for (auto &node : generated)
+        result->nodes_.emplace_back(std::move(node));
     result->current_ = resolve(definition.at("entry"));
     return result;
 }
@@ -141,12 +181,15 @@ void Conversation::advance(std::size_t silentBudget) {
                 throw std::logic_error("no matching dialogue variant");
             }
             if (const auto *decision = std::get_if<DecisionNode>(&node)) {
-                current_ = decision->otherwise;
+                auto next = decision->otherwise;
                 for (const auto &branch : decision->branches)
                     if (std::invoke(branch.when)) {
-                        current_ = branch.next;
+                        next = branch.next;
                         break;
                     }
+                if (!next)
+                    throw std::runtime_error("unhandled conversation decision or action result");
+                current_ = *next;
             } else if (const auto *action = std::get_if<ActionNode>(&node)) {
                 // Persist the outcome before moving on. Any exception poisons
                 // this instance so a partially committed operation cannot replay.

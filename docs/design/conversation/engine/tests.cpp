@@ -453,3 +453,78 @@ BOOST_AUTO_TEST_CASE(specialized_handler_namespace_preserves_query_action_separa
     BOOST_CHECK_THROW(queries.value({{"query", "handlers.unknown"}, {"args", Json::array()}}),
                       std::invalid_argument);
 }
+namespace {
+Json compactPurchase() {
+    auto definition = minimal(Json::parse(R"([
+      {"id":"menu","kind":"dialogue","variants":[{"speech":["FUEL"]}],"responses":[
+        {"id":"buy","text":"BUY_FIVE","when":{"get":["local","allowed",true]},
+         "action":{"verb":"trade.purchase","args":["melnorme","fuel",5]},
+         "then":{"ok":"success","no_credit":"failure"}}]},
+      {"id":"success","kind":"dialogue","variants":[{"speech":["GOT_FUEL"]}],"next":"end"},
+      {"id":"failure","kind":"dialogue","variants":[{"speech":["NEED_CREDIT"]}],"next":"end"},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    definition["entry"] = "menu";
+    return definition;
+}
+} // namespace
+BOOST_AUTO_TEST_CASE(compact_responses_expand_without_effects_and_execute_once_after_selection) {
+    for (const auto credit : {0, 100}) {
+        TestState state;
+        state.credits = credit;
+        auto c = cd::Conversation::load(compactPurchase(), state);
+        BOOST_TEST(c->nodeCount() == 6u); // Four authored nodes, two ordinary generated nodes.
+        BOOST_TEST(state.purchases == 0u);
+        c->advance();
+        auto entry = c->view().entry;
+        c->finishDialogue(entry);
+        BOOST_TEST(c->responses().size() == 1u);
+        BOOST_TEST(c->responses().size() == 1u);
+        BOOST_TEST(state.purchases == 0u);
+        c->choose(entry, "buy");
+        BOOST_TEST(state.purchases == 1u);
+        BOOST_TEST(c->view().speech[0].get<std::string>() == (credit ? "GOT_FUEL" : "NEED_CREDIT"));
+        c->advance();
+        BOOST_TEST(state.purchases == 1u);
+        BOOST_CHECK_THROW(c->choose(entry, "buy"), std::invalid_argument);
+    }
+}
+BOOST_AUTO_TEST_CASE(
+    compact_responses_validate_destinations_and_reject_ambiguous_fields_before_effects) {
+    TestState state;
+    auto bad = compactPurchase();
+    bad["nodes"][0]["responses"][0]["then"]["ok"] = "missing";
+    BOOST_CHECK_THROW(cd::Conversation::load(bad, state), std::invalid_argument);
+    bad = compactPurchase();
+    bad["nodes"][0]["responses"][0]["next"] = "end";
+    BOOST_CHECK_THROW(cd::Conversation::load(bad, state), std::invalid_argument);
+    bad = compactPurchase();
+    bad["nodes"][0]["responses"][0]["then"] = Json::object();
+    BOOST_CHECK_THROW(cd::Conversation::load(bad, state), std::invalid_argument);
+    BOOST_TEST(state.purchases == 0u);
+}
+BOOST_AUTO_TEST_CASE(compact_responses_handle_explicit_fallback_or_poison_on_unhandled_results) {
+    struct Unexpected : TestState {
+        cd::Result purchase(const std::string &, const std::string &, const Json &) override {
+            ++purchases;
+            return {"unexpected", Json::object()};
+        }
+    } state;
+    auto definition = compactPurchase();
+    auto c = cd::Conversation::load(definition, state);
+    c->advance();
+    auto entry = c->view().entry;
+    c->finishDialogue(entry);
+    BOOST_CHECK_THROW(c->choose(entry, "buy"), std::runtime_error);
+    BOOST_CHECK_THROW(c->advance(), std::logic_error);
+    BOOST_TEST(state.purchases == 1u);
+    definition["nodes"][0]["responses"][0]["otherwise"] = "failure";
+    definition["nodes"][0]["responses"][0]["save_as"] = "purchase";
+    c = cd::Conversation::load(definition, state);
+    c->advance();
+    entry = c->view().entry;
+    c->finishDialogue(entry);
+    c->choose(entry, "buy");
+    BOOST_TEST(c->view().speech[0].get<std::string>() == "NEED_CREDIT");
+    BOOST_TEST(c->memory().results.at("purchase").code == "unexpected");
+    BOOST_TEST(state.purchases == 2u);
+}

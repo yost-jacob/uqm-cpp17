@@ -30,7 +30,7 @@ struct DecisionBranch {
 };
 struct DecisionNode {
     std::vector<DecisionBranch> branches;
-    NodeId otherwise;
+    std::optional<NodeId> otherwise; // Missing fallback rejects an unhandled action result.
 };
 struct ActionNode {
     Action action;

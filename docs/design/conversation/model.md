@@ -10,7 +10,7 @@ existing behavior; prototype JSON does not yet replace those scripts.
 - **Dialogue:** select one text/animation/audio variant from ordered read-only
   conditions, then offer eligible player responses or continue after playback.
 - **Decision:** silently check state or a stored action result and follow the
-  first matching edge, with an explicit fallback.
+  first matching edge, with an optional fallback; no matching branch without one throws.
 - **Action:** silently invoke an operation once, retain its result, then continue.
 
 An end marker returns an outcome to the enclosing encounter. Combat remains that
@@ -98,9 +98,9 @@ was heard.” Persistent cross-visit history is not implemented by this design.
 ## Concrete design data and limits
 
 - [Commander Hayes](engine/examples/commander_hayes.json): first contact and
-  operational starbase, 295 proposed nodes and 399 original phrase records.
+  operational starbase, 293 authored nodes and 399 original phrase records.
 - [Melnorme](engine/examples/melnorme.json): introduction, commerce, hostility and
-  rescue, 166 proposed nodes and 282 original phrase records, plus market data.
+  rescue, 154 authored nodes and 282 original phrase records, plus market data.
 - [Presentation data](engine/presentation.json): extracted ambient/talk/transition
   layers and palette/music profiles for Hayes and Melnorme.
 - [Native contracts](engine/native-contracts.md): required query/action behavior,
@@ -110,3 +110,8 @@ The runtime prototype is tested with a test state adapter. Actual native binding
 report eligibility, commerce/rescue implementation, media formatting/playback,
 save compatibility and mode integration remain future implementation work. The
 gameplay source and existing content remain unchanged.
+
+The authored JSON can keep a response, its condition, its action and its result
+routes together. The loader expands this compact interaction into the same silent
+action/decision nodes; the internal graph need not dictate the authoring format.
+See [compact responses](engine/README.md#authoring-a-response-as-one-interaction).

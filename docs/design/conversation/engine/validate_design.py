@@ -131,7 +131,15 @@ def validate_example(name, scripts, banks):
         if "otherwise" in node:
             links[id].append(node["otherwise"])
         links[id].extend(b["next"] for b in node.get("branches", []))
-        links[id].extend(e["next"] for e in node.get("responses", []))
+        for edge in node.get("responses", []):
+            links[id].extend(edge.get("then", {}).values())
+            links[id].extend(edge[key] for key in ("next", "otherwise") if key in edge)
+            if "action" in edge:
+                assert "next" not in edge and edge.get("then"), (
+                    "invalid transaction",
+                    id,
+                )
+                assert all(isinstance(code, str) and code for code in edge["then"])
         assert all(target in by_id for target in links[id]), ("missing node", id)
         for variant in node.get("variants", []):
             phrase(variant["speech"])
@@ -140,11 +148,14 @@ def validate_example(name, scripts, banks):
         for edge in node.get("responses", []):
             selected.add(edge["id"])
             phrase(edge["text"])
-        action = node.get("action", {})
-        if action.get("verb") == "sequence.next":
-            phrase(action["args"][2])
-        if action.get("verb") == "handlers.prepare_report":
-            assert action["args"][0] in d["_coverage"]["native_reports"]
+        actions = [node.get("action", {})] + [
+            edge["action"] for edge in node.get("responses", []) if "action" in edge
+        ]
+        for action in actions:
+            if action.get("verb") == "sequence.next":
+                phrase(action["args"][2])
+            if action.get("verb") == "handlers.prepare_report":
+                assert action["args"][0] in d["_coverage"]["native_reports"]
     inspect(d)
     reached = set()
     pending = [d["entry"]]

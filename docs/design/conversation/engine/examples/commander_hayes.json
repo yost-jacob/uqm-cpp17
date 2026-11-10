@@ -3105,7 +3105,13 @@
           "id": "have_minerals",
           "text": "starbase.have_minerals",
           "when": {"gt": [{"query": "inventory.quantity", "args": ["minerals"]}, 0]},
-          "next": "starbase.sell"
+          "action": {
+            "verb": "trade.sell",
+            "args": ["starbase", "minerals", "all"]
+          },
+          "save_as": "mineral_sale",
+          "then": {"ok": "starbase.sell.speech"},
+          "otherwise": "error"
         },
         {
           "id": "new_devices",
@@ -3186,22 +3192,6 @@
       },
       "save_as": "starbase_bulletins",
       "next": "starbase.bulletins.check"
-    },
-    {
-      "id": "starbase.sell",
-      "kind": "action",
-      "action": {
-        "verb": "trade.sell",
-        "args": ["starbase", "minerals", "all"]
-      },
-      "save_as": "mineral_sale",
-      "next": "starbase.sell.check"
-    },
-    {
-      "id": "starbase.sell.check",
-      "kind": "decision",
-      "branches": [{"when": {"eq": [{"get": ["result", "mineral_sale.code"]}, "ok"]}, "next": "starbase.sell.speech"}],
-      "otherwise": "error"
     },
     {
       "id": "starbase.sell.speech",
