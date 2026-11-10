@@ -53,10 +53,44 @@ No response is automatically consumed. Selection history is visit-local and
 reported as `selectedBefore`; a presenter may gray it while keeping it selectable.
 Explicit local/state actions control any actual pruning.
 
+## Graph ownership and traversal
+
+[`ConversationGraph`](graph.hpp) owns a fixed `std::vector<Node>`. Loading allocates
+all authored and generated nodes before resolving any connection. Runtime edges
+store graph cursors rather than names or integer indices. The graph cannot be
+copied, moved or resized after loading, so those connections remain valid.
+
+The container provides `value_type`, `size_type`, `size()`, `empty()`, `begin()`,
+`end()`, `cbegin()`, `cend()` and `start()` (an alias for the entry cursor).
+`iterator` and `const_iterator` expose read-only nodes with `*` and `->`. They are
+branch-aware traversal cursors, not standard ForwardIterators: there is no linear
+node order or iterator category, and graph cycles need not terminate. `size()`
+counts owned nodes, including generated nodes; it does not count traversal steps.
+
+```cpp
+auto current = graph.start();
+current.next(response);     // Follow the response's resolved connection.
+current.next(branch);       // Follow an explicitly selected decision branch.
+++current;                 // Follow an unconditional connection.
+// After a terminal node, ++current reaches graph.end().
+```
+
+`next()` and `operator++` require an unconditional connection or terminal node.
+Menus and decisions require explicit branch selection. Moving a cursor does not
+execute actions, evaluate predicates or play speech; `Conversation` handles those
+operations before advancing its `current_`. A copied cursor is independent and
+must not outlive the graph. Foreign-graph connections and end dereferences throw.
+
+Conversation completion is `current_ == graph_.end()`, replacing `ended_`. The
+terminal node records the outcome before advancing to end. Response selection
+history lives on each `Edge`, replacing the separate set of node/response pairs.
+`dialogueGeneration_` identifies playback instances, including repeat visits to
+the same node; it guards against stale callbacks and is unrelated to vector size.
+
 ## Loading and binding
 
 `Conversation::load(definition, state)` creates a nonmovable conversation and its
-local memory first, resolves destination names to vector indices, then invokes
+local memory first, allocates all graph nodes and resolves destination names to direct graph cursors, then invokes
 `VerbFactory` to bind all queries, conditions and actions. `std::bind` owns the
 arguments and borrows the state/memory through reference wrappers. The runtime
 uses `std::invoke`; it never parses a verb or searches JSON node IDs during play.

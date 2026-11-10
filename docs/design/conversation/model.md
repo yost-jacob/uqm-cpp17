@@ -115,3 +115,13 @@ The authored JSON can keep a response, its condition, its action and its result
 routes together. The loader expands this compact interaction into the same silent
 action/decision nodes; the internal graph need not dictate the authoring format.
 See [compact responses](engine/README.md#authoring-a-response-as-one-interaction).
+
+## Graph container and current position
+
+`ConversationGraph` owns stable vector storage. Edges contain resolved traversal
+cursors, and `Conversation::current_` follows them directly. `start()`/`begin()`
+identify the entry and `end()` identifies completion. A cursor advances through
+an unconditional connection with `next()` or `++`; responses and decisions select
+an outgoing connection explicitly. Advancing the cursor does not execute a node.
+The session-bound `Conversation` remains responsible for invoking its behavior.
+See [graph ownership and traversal](engine/README.md#graph-ownership-and-traversal).

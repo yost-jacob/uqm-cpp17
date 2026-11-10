@@ -528,3 +528,78 @@ BOOST_AUTO_TEST_CASE(compact_responses_handle_explicit_fallback_or_poison_on_unh
     BOOST_TEST(c->memory().results.at("purchase").code == "unexpected");
     BOOST_TEST(state.purchases == 2u);
 }
+BOOST_AUTO_TEST_CASE(graph_cursors_follow_direct_connections_without_executing_nodes) {
+    TestState state;
+    auto c = cd::Conversation::load(compactPurchase(), state);
+    const auto &graph = c->graph();
+    BOOST_TEST(!graph.empty());
+    BOOST_TEST(graph.size() == 6u);
+    BOOST_CHECK(graph.begin() == graph.start());
+    BOOST_CHECK(c->current() == graph.start());
+    auto cursor = graph.start();
+    const auto &dialogue = std::get<cd::DialogueNode>(cursor->data);
+    cursor.next(dialogue.responses.front());
+    BOOST_CHECK(std::holds_alternative<cd::ActionNode>((*cursor).data));
+    const auto action = cursor++;
+    BOOST_CHECK(std::holds_alternative<cd::ActionNode>(action->data));
+    BOOST_CHECK(std::holds_alternative<cd::DecisionNode>(cursor->data));
+    const auto decision = cursor;
+    BOOST_CHECK_THROW(++cursor, std::logic_error); // Branching is explicit.
+    BOOST_CHECK(cursor == decision);
+    cursor.next(std::get<cd::DecisionNode>(cursor->data).branches.front());
+    BOOST_CHECK(std::holds_alternative<cd::DialogueNode>(cursor->data));
+    ++cursor; // Follow automatic dialogue continuation.
+    BOOST_CHECK(std::holds_alternative<cd::EndNode>(cursor->data));
+    ++cursor;
+    BOOST_CHECK(cursor == graph.end());
+    BOOST_CHECK_THROW(*cursor, std::logic_error);
+    BOOST_CHECK_THROW(++cursor, std::logic_error);
+    BOOST_CHECK(c->current() == graph.start()); // Cursor copies are independent.
+    BOOST_TEST(state.purchases == 0u);          // Moving a cursor never executes an operation.
+}
+BOOST_AUTO_TEST_CASE(graph_end_is_completion_and_cursors_reject_foreign_connections) {
+    cd::ConversationGraph empty;
+    BOOST_TEST(empty.empty());
+    BOOST_TEST(empty.size() == 0u);
+    BOOST_CHECK(empty.begin() == empty.end());
+    TestState state;
+    auto c = cd::Conversation::load(compactPurchase(), state);
+    auto other = cd::Conversation::load(compactPurchase(), state);
+    auto cursor = c->graph().start();
+    BOOST_CHECK_THROW(cursor.next(other->graph().start()), std::invalid_argument);
+    BOOST_CHECK(cursor == c->graph().start());
+    BOOST_CHECK_THROW(++cursor, std::logic_error); // Menu requires a response.
+    auto definition = minimal(Json::parse(R"([{"id":"a","kind":"end","outcome":"peace"}])"));
+    auto terminal = cd::Conversation::load(definition, state);
+    BOOST_TEST(!terminal->ended());
+    terminal->advance();
+    BOOST_TEST(terminal->ended());
+    BOOST_CHECK(terminal->current() == terminal->graph().end());
+    BOOST_TEST(terminal->outcome() == "peace");
+    terminal->advance();
+    BOOST_CHECK(terminal->current() == terminal->graph().end());
+}
+BOOST_AUTO_TEST_CASE(
+    graph_cycle_keeps_response_history_on_the_response_and_new_dialogue_generation) {
+    TestState state;
+    auto definition = minimal(Json::parse(R"([
+      {"id":"a","kind":"dialogue","variants":[{"speech":["AGAIN"]}],"responses":[
+        {"id":"repeat","text":"REPEAT","next":"a"},
+        {"id":"done","text":"DONE","next":"end"}]},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    auto c = cd::Conversation::load(definition, state);
+    c->advance();
+    const auto entry = c->view().entry;
+    c->finishDialogue(entry);
+    const auto node = c->current();
+    BOOST_TEST(!c->responses()[0].selectedBefore);
+    c->choose(entry, "repeat");
+    BOOST_CHECK(c->current() == node);
+    BOOST_TEST(c->view().entry > entry);
+    BOOST_CHECK_THROW(c->finishDialogue(entry), std::invalid_argument);
+    c->finishDialogue(c->view().entry);
+    BOOST_TEST(c->responses()[0].selectedBefore);
+    BOOST_TEST(!c->responses()[1].selectedBefore);
+    c->choose(c->view().entry, "done");
+    BOOST_CHECK(c->current() == c->graph().end());
+}
