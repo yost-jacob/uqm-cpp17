@@ -51,3 +51,23 @@ Remaining boundaries include the legacy surface/globe algorithms, graphics
 service bindings, descriptor arrays and shared system-wide star/planet artwork.
 This increment does not introduce an asset-cache framework or a second graphics
 state alongside the owning record.
+
+## System flight views
+
+SystemViewState belongs to SolarSystemExploration's runtime. It owns the prepared
+star field and cached flight-scene frames through unique_ptr with a drawable
+release deleter; exceptions and mode teardown release partially created views.
+Entering orbit invalidates only the cached flight scene. The star field remains
+available to orbit, scan and lander visits. These camera/view caches are separate
+from the body's generated graphics, which remain owned by World.
+
+The zoom rectangle and drawing order are also per visit. Drawing order is a
+vector of const descriptor references, rebuilt on generation and sorted with
+std::stable_sort. It explicitly includes the sun and uses no negative planet
+index or intrusive next-index fields. Equal-depth bodies retain generation order.
+Descriptor arrays outlive these borrows; replacing the generated layout requires
+rebuilding the order before drawing it.
+
+Native flight, transition, collision and drawing helpers receive their system
+by reference. C callers still resolve the scoped legacy binding at their adapter;
+shared artwork/music, display services and entity callbacks remain legacy.

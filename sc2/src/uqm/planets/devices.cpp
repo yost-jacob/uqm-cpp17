@@ -228,7 +228,7 @@ uqm::DeviceMenu::useCaster()
 		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
 
 		story_.set(uqm::StoryCounter::EncounterContext, 1 << 7);
-		SaveSolarSysLocation ();
+		uqm::saveSolarSystemLocation(*system_);
 		return TRUE;
 	}
 
@@ -273,7 +273,7 @@ uqm::DeviceMenu::useCaster()
 			}
 			
 			if (inOrbit())
-				SaveSolarSysLocation ();
+				uqm::saveSolarSystemLocation(*system_);
 			return TRUE;
 		}
 	}
@@ -380,7 +380,7 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 					story_.set(uqm::StoryFlag::ReadyToConfuseUrquan, 1);
 				}
 				if (inOrbit())
-					SaveSolarSysLocation ();
+					uqm::saveSolarSystemLocation(*system_);
 			}
 			return DeviceStatus::Success;
 		case AQUA_HELIX_DEVICE:

@@ -606,3 +606,90 @@ COUNT uqm::EncounterRuntime::communicate(CONVERSATION conversation) {
     encounterCampaign = nullptr;
     return result;
 }
+
+std::size_t liveTestDrawables() noexcept;
+BOOST_AUTO_TEST_CASE(exploration_view_frames_have_independent_scoped_ownership)
+{
+    const auto initial = liveTestDrawables();
+    auto frame = [] { return CaptureDrawable(static_cast<DRAWABLE>(LoadGraphicInstance("test.system"))); };
+    {
+        uqm::SystemViewState first, second;
+        first.stars.reset(frame());
+        first.scene.reset(frame());
+        second.stars.reset(frame());
+        first.zoomBounds.extent.width = 12;
+        second.zoomBounds.extent.width = 34;
+        BOOST_TEST(liveTestDrawables() == initial + 3u);
+        first.scene.reset(); // Entering orbit discards the old flight view only.
+        BOOST_TEST(liveTestDrawables() == initial + 2u);
+        BOOST_REQUIRE(first.stars);
+        BOOST_REQUIRE(second.stars);
+        BOOST_TEST(first.zoomBounds.extent.width == 12);
+        BOOST_TEST(second.zoomBounds.extent.width == 34);
+    }
+    BOOST_TEST(liveTestDrawables() == initial);
+    try {
+        uqm::SystemViewState partial;
+        partial.stars.reset(frame());
+        throw std::runtime_error("view generation interrupted");
+    } catch (const std::runtime_error &) {}
+    BOOST_TEST(liveTestDrawables() == initial);
+}
+
+BOOST_AUTO_TEST_CASE(system_coordinates_depend_on_the_supplied_system_not_a_selected_global)
+{
+    SOLARSYS_STATE first{}, second{};
+    first.SunDesc[0].radius = DISPLAY_FACTOR >> 1;
+    second.SunDesc[0].radius = 2 * first.SunDesc[0].radius;
+    first.pBaseDesc = first.PlanetDesc;
+    second.pBaseDesc = second.MoonDesc;
+    const auto center = uqm::locationToDisplay({0, 0}, first.SunDesc[0].radius);
+    BOOST_TEST(!uqm::inInnerSystem(first));
+    BOOST_TEST(uqm::inInnerSystem(second));
+    const auto a = uqm::transformLocation(first, {20, -10}, true);
+    const auto b = uqm::transformLocation(second, {20, -10}, true);
+    BOOST_TEST(a.x == center.x + 20);
+    BOOST_TEST(a.y == center.y - 10);
+    BOOST_TEST(b.x == center.x + 10);
+    BOOST_TEST(b.y == center.y - 5);
+    const auto restored = uqm::transformLocation(second, b, false);
+    BOOST_TEST(restored.x == 20);
+    BOOST_TEST(restored.y == -10);
+    first.PlanetDesc[0].image.origin = a;
+    second.PlanetDesc[0].image.origin = a;
+    BOOST_TEST(uqm::planetOuterLocation(first, 0).x == 20);
+    BOOST_TEST(uqm::planetOuterLocation(second, 0).x == 40);
+    BOOST_TEST(::locationToDisplay({20, -10}, first.SunDesc[0].radius).x == a.x);
+    BOOST_TEST(::displayToLocation(a, first.SunDesc[0].radius).y == -10);
+}
+
+BOOST_AUTO_TEST_CASE(system_draw_order_includes_the_sun_without_crossing_descriptor_arrays)
+{
+    SOLARSYS_STATE system{};
+    uqm::SystemViewState view;
+    view.orderBodies(system); // Empty systems still draw their sun.
+    BOOST_REQUIRE(view.bodyOrder.size() == 1u);
+    BOOST_TEST(&view.bodyOrder.front().get() == &system.SunDesc[0]);
+    system.SunDesc[0].NumPlanets = 3;
+    system.SunDesc[0].image.origin.y = 0;
+    system.PlanetDesc[0].image.origin.y = 10;
+    system.PlanetDesc[1].image.origin.y = -10;
+    system.PlanetDesc[2].image.origin.y = 0;
+    view.orderBodies(system);
+    BOOST_REQUIRE(view.bodyOrder.size() == 4u);
+    BOOST_TEST(&view.bodyOrder[0].get() == &system.PlanetDesc[1]);
+    BOOST_TEST(&view.bodyOrder[1].get() == &system.SunDesc[0]);
+    BOOST_TEST(&view.bodyOrder[2].get() == &system.PlanetDesc[2]);
+    BOOST_TEST(&view.bodyOrder[3].get() == &system.PlanetDesc[0]);
+    system.SunDesc[0].NumPlanets = MAX_PLANETS;
+    for (unsigned i = 0; i < MAX_PLANETS; ++i)
+        system.PlanetDesc[i].image.origin.y = static_cast<COORD>(MAX_PLANETS - i);
+    view.orderBodies(system); // The former link writer read one past its array here.
+    BOOST_REQUIRE(view.bodyOrder.size() == MAX_PLANETS + 1u);
+    BOOST_TEST(&view.bodyOrder.front().get() == &system.SunDesc[0]);
+    BOOST_TEST(&view.bodyOrder.back().get() == &system.PlanetDesc[0]);
+    system.SunDesc[0].NumPlanets = 0;
+    view.orderBodies(system);
+    BOOST_REQUIRE(view.bodyOrder.size() == 1u);
+    BOOST_TEST(&view.bodyOrder.front().get() == &system.SunDesc[0]);
+}

@@ -4,8 +4,23 @@
 #include "planets/planets.h"
 #include "game_state.hpp"
 #include <cassert>
+#include <type_traits>
+#include <functional>
+#include <vector>
 namespace uqm {
 enum class ExplorationView { Flight, Orbit, Scan };
+// Own captured drawable frames; borrows passed to the C renderer expire at reset
+// or mode destruction. ReleaseDrawable returns the original drawable to destroy.
+struct SystemFrameDeleter { void operator()(FRAME frame) const noexcept; };
+using SystemFrame = std::unique_ptr<std::remove_pointer_t<FRAME>, SystemFrameDeleter>;
+struct SystemViewState {
+    SystemFrame stars, scene;
+    RECT zoomBounds{}; // Local to this exploration visit, never shared with another system.
+    std::vector<std::reference_wrapper<const PLANET_DESC>> bodyOrder;
+    // Borrow the sun and generated planets in back-to-front order. The owning
+    // descriptor arrays must outlive this view. Refresh after regenerating them.
+    void orderBodies(const SOLARSYS_STATE &system);
+};
 struct SurfaceScanState {
     POINT location{}, previousFlashLocation{};
     RECT cursorRect{};
@@ -27,6 +42,7 @@ struct UQM_SYSTEM_RUNTIME {
     uqm::SurfaceScanState scan{};
     SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
     TimeCount nextFlightFrame = 0;
+    uqm::SystemViewState viewState{};
 };
 namespace uqm {
 // Compatibility helpers borrow the explicitly attached exploration context.
@@ -39,6 +55,18 @@ inline StoryState &systemStory(const SOLARSYS_STATE &system) {
 inline SolarSystemLocation &systemLocation(const SOLARSYS_STATE &system) {
     return std::get<SolarSystemLocation>(system.worlds->session->player().location());
 }
+// Pure coordinate helpers. Positions retain legacy integer units. A positive
+// scale radius is required; planet slots must refer to the generated layout.
+POINT locationToDisplay(POINT point, SIZE scaleRadius);
+POINT displayToLocation(POINT point, SIZE scaleRadius);
+POINT planetOuterLocation(const SOLARSYS_STATE &system, COUNT planet);
+POINT transformLocation(const SOLARSYS_STATE &system, POINT point, bool toDisplay);
+// The flight loop establishes the descriptor layout before these calls.
+bool inInnerSystem(const SOLARSYS_STATE &system) noexcept;
+// Draw the mode-owned star field using the caller's current drawing context.
+void drawStarBackground(const SOLARSYS_STATE &system);
+// Prepare legacy save markers from this visit; live orbit state stays separate.
+void saveSolarSystemLocation(SOLARSYS_STATE &system);
 // Borrowed lookup; system must have a prepared native runtime.
 SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
 // Mode-owned exploration lifetime. The story state outlives this object.

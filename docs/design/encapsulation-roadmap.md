@@ -34,7 +34,7 @@ a load does not decode a replacement campaign while these objects remain alive.
 
 | Area | Owner and state dependency | Remaining boundary |
 | --- | --- | --- |
-| Exploration | SolarSystemMode owns SolarSystemExploration and native systems; behaviors borrow campaign and catalogue star | Legacy planet/input/render descriptors and process services |
+| Exploration | SolarSystemMode owns exploration, native systems, per-visit view frames, zoom bounds and draw order; flight helpers borrow their system explicitly | Legacy descriptor arrays, entity callbacks, shared artwork and device services |
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
 | Campaign combat | CombatMode owns its engine and temporarily takes the encounter roster; backend scopes sounds, cyborg input and activity | Participant records, C entity callbacks and presentation services |
