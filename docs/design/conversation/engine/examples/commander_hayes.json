@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "node_count": 295,
   "id": "commander_hayes",
   "entry": "entry",
   "_status": "Design definition with real phrase banks and explicit native-operation contracts; not a completed gameplay port.",

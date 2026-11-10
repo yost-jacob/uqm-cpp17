@@ -81,6 +81,10 @@ assert sum(expected.values()) == manifest["occurrences"]
 def validate_example(name, scripts, banks):
     d = load("examples/" + name + ".json")
     nodes = d["nodes"]
+    expected_count = len(nodes) + 2 * sum(
+        "action" in edge for node in nodes for edge in node.get("responses", [])
+    )
+    assert type(d["node_count"]) is int and d["node_count"] == expected_count
     by_id = {n["id"]: n for n in nodes}
     assert len(by_id) == len(nodes) and d["entry"] in by_id
     assert d["initial_presentation"] in profiles["profiles"]

@@ -663,3 +663,17 @@ BOOST_AUTO_TEST_CASE(compact_responses_keep_distinct_private_results_in_prealloc
     }
     BOOST_CHECK(success && failure);
 }
+BOOST_AUTO_TEST_CASE(declared_node_count_includes_expansions_and_rejects_stale_or_invalid_values) {
+    TestState state;
+    auto definition = compactPurchase();
+    definition["node_count"] = 6;
+    auto c = cd::Conversation::load(definition, state);
+    BOOST_TEST(c->graph().size() == 6u);
+    for (const auto &bad : {Json(4), Json(7), Json(-1), Json(6.0), Json("6"), Json(true),
+                            Json(std::numeric_limits<std::uint64_t>::max())}) {
+        definition["node_count"] = bad;
+        BOOST_CHECK_THROW(cd::Conversation::load(definition, state), std::invalid_argument);
+    }
+    BOOST_TEST(state.mutations == 0u);
+    BOOST_TEST(state.purchases == 0u);
+}

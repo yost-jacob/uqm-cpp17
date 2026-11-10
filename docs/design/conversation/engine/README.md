@@ -60,9 +60,15 @@ Nodes carry direct non-owning `Node*` connections: an action/automatic dialogue 
 one successor, while responses and decision branches hold their own destination
 pointers. The cursor follows those pointers without index lookup or offset math.
 
-The loader counts authored nodes and compact expansions, sizes the complete vector,
-then fills its slots and wires connections. It never resizes after creating a node
-pointer. Nodes remain at stable addresses, and the graph cannot be copied or moved.
+The JSON header declares `node_count`: the compiled count, including two generated
+nodes for every compact response action. The generator writes it automatically.
+The loader validates it against the definition before allocating the vector once,
+then fills the slots and wires connections. Invalid counts throw before binding
+or executing operations. Older/minimal definitions without the field still use
+the calculated count. Graph depth is not an allocation size, especially with cycles.
+
+It never resizes after creating a node pointer. Nodes remain at stable addresses,
+and the graph cannot be copied or moved.
 Cursors must not outlive it. All variant alternatives share the same `sizeof(Node)`;
 strings and branch lists may still have their own allocations. Contiguous ownership
 can improve locality, though graph connections need not follow physical storage order.

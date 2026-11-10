@@ -215,6 +215,13 @@ class Graph:
                     raise ValueError(f'{self.name}: {n["id"]} -> {ref}')
         data = {
             "version": 1,
+            "node_count": len(self.nodes)
+            + 2
+            * sum(
+                "action" in edge
+                for node in self.nodes
+                for edge in node.get("responses", [])
+            ),
             "id": self.name,
             "entry": self.entry,
             "_status": "Design definition with real phrase banks and explicit native-operation contracts; not a completed gameplay port.",

@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "node_count": 172,
   "id": "melnorme",
   "entry": "entry",
   "_status": "Design definition with real phrase banks and explicit native-operation contracts; not a completed gameplay port.",

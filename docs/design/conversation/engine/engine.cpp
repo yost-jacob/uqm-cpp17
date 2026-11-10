@@ -40,7 +40,14 @@ std::unique_ptr<Conversation> Conversation::load(const Json &definition, State &
         for (const auto &edge : item.value("responses", Json::array()))
             if (edge.contains("action"))
                 count += 2;
-    result->graph_.nodes_.resize(count); // No resizing after pointers are created.
+    if (definition.contains("node_count")) {
+        const auto &declared = definition.at("node_count");
+        if (!declared.is_number_integer() || declared != count)
+            throw std::invalid_argument(
+                "node_count must equal authored nodes plus compact expansions");
+        count = declared.get<std::size_t>();
+    }
+    result->graph_.nodes_.resize(count); // One allocation; no resizing after wiring pointers.
     std::size_t generatedResults = 0;
     std::unordered_map<std::string, Node *> ids;
     for (const auto &item : source)
