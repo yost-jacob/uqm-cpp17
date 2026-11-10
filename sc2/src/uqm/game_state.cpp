@@ -2,6 +2,7 @@
 #include "globdata.h"
 #include "fleet_legacy.hpp"
 #include "sis_legacy.hpp"
+#include "legacy_runtime.hpp"
 
 #include <cstdlib>
 #include <stdexcept>
@@ -9,6 +10,11 @@
 
 namespace uqm {
 namespace detail {
+namespace { thread_local LegacyRuntimeView *selectedRuntime = nullptr; }
+LegacyRuntimeBinding::LegacyRuntimeBinding(LegacyRuntimeView &view) noexcept
+    : previous_(selectedRuntime) { selectedRuntime = &view; }
+LegacyRuntimeBinding::~LegacyRuntimeBinding() { selectedRuntime = previous_; }
+LegacyRuntimeView *standaloneRuntime() noexcept { return selectedRuntime; }
 struct PlayerStorage { GLOBDATA legacy{}; };
 // Only the C boundary sees a mutable legacy aggregate. Native callers use the
 // player/campaign methods and detached ship/location values.
@@ -260,6 +266,7 @@ GameSession &gameSession() {
 } // namespace uqm
 
 extern "C" GLOBDATA *GetLegacyGlobData(void) {
+    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->data;
     try {
         return &uqm::detail::LegacyStateAccess::data(uqm::gameSession().player());
     } catch (...) {
@@ -270,11 +277,13 @@ extern "C" GLOBDATA *GetLegacyGlobData(void) {
 }
 
 extern "C" QUEUE *GetPlayerFleetQueue(void) {
+    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->fleet;
     try { return &uqm::detail::FleetAccess::queue(uqm::gameSession().player().fleet()); }
     catch (...) { std::abort(); }
 }
 
 extern "C" SIS_STATE *GetPlayerSISState(void) {
+    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->sis;
     try { return &uqm::detail::SISAccess::record(uqm::gameSession().player().sis()); }
     catch (...) { std::abort(); }
 }

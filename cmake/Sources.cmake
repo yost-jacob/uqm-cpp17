@@ -230,6 +230,7 @@ set(UQM_SOURCES
     sc2/src/uqm/gameopt.c
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
+    sc2/src/uqm/arcade_session.cpp
     sc2/src/uqm/game_state.cpp
     sc2/src/uqm/ship_tuning.cpp
     sc2/src/uqm/ship_tuning_c.cpp
@@ -362,7 +363,7 @@ set(UQM_SOURCES
     sc2/src/uqm/status.c
     sc2/src/uqm/supermelee/buildpick.c
     sc2/src/uqm/supermelee/loadmele.c
-    sc2/src/uqm/supermelee/melee.c
+    sc2/src/uqm/supermelee/melee.cpp
     sc2/src/uqm/supermelee/meleesetup.c
     sc2/src/uqm/supermelee/netplay/checkbuf.c
     sc2/src/uqm/supermelee/netplay/checksum.c

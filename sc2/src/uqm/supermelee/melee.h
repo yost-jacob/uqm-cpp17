@@ -98,7 +98,6 @@ struct melee_state
 	MUSIC_REF hMusic;
 };
 
-extern void Melee (void);
 
 // Some prototypes for use by loadmele.c:
 BOOLEAN DoMelee (MELEE_STATE *pMS);

@@ -21,6 +21,10 @@
 
 #include "libs/gfxlib.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	WIDGET_EVENT_UP,
 	WIDGET_EVENT_DOWN,
@@ -218,5 +222,9 @@ void Widget_Slider_DrawValue (WIDGET_SLIDER *self, int x, int y);
 
 /* Other implementations will need these values */
 extern WIDGET *widget_focus;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBS_GRAPHICS_WIDGETS_H_ */

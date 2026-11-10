@@ -73,7 +73,7 @@ The architectural choice was resolved in favor of the standard library and
 independent streams. The next implementation milestone is the battle driver,
 followed by startup/Super Melee mode ownership.
 
-## Next ownership checkpoint: non-campaign sessions
+## Resolved ownership checkpoint: non-campaign sessions
 
 The current GameSession requires a GameState and one PlayerId, and every GameMode
 validates that player binding. The C title loop invokes campaign sessions, while
@@ -81,10 +81,13 @@ StartGame also invokes Melee outside them. Melee begins with InitGlobData and ow
 two arcade fleet/control configurations. It cannot simply become a child of a
 live campaign mode: its legacy reset would mutate the suspended player's payload.
 
-Before removing the startup/Super Melee fallback owner, choose whether standalone
-modes have their own non-campaign session or GameSession becomes a general host
-with optional campaign state. The recommended boundary is a standalone arcade
-session above its two battle sides, leaving player-bound campaign sessions intact.
-A reusable dispatcher can serve both, but its mode/state validation contract needs
-a wireframe before changing ownership. Battle's shared navigation/combat frame
-runner can then be separated from combat-only round and fleet progression.
+Standalone modes now use a separate ArcadeSession, leaving the player-bound
+GameSession contract intact. The title boundary creates it only after campaign
+teardown. Its scoped C projection isolates temporary state and its own engine
+replaces the Super Melee fallback owner. The frontend has scoped C++ resource
+ownership; see [arcade session](arcade-session.md).
+
+The shared battle driver, generic dispatcher extraction and startup/title engine
+migration remain milestone 3. The current GameMode contract still requires a
+campaign player; arcade mode transitions must not be added by making every
+campaign access nullable. A shared runner should preserve both session contracts.
