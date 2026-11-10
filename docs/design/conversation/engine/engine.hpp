@@ -18,13 +18,13 @@ struct DialogueView {
 // Executable design prototype, intentionally independent of the game build.
 // The caller owns media playback/assets and calls finishDialogue() when voice
 // completes or is skipped. Reading a view or resuming never executes a node.
-class Conversation {
+template <class Graph = ConversationGraph> class BasicConversation {
   public:
-    static std::unique_ptr<Conversation> load(const Json &, State &);
-    Conversation(const Conversation &) = delete;
-    Conversation &operator=(const Conversation &) = delete;
-    Conversation(Conversation &&) = delete;
-    Conversation &operator=(Conversation &&) = delete;
+    static std::unique_ptr<BasicConversation> load(const Json &, State &);
+    BasicConversation(const BasicConversation &) = delete;
+    BasicConversation &operator=(const BasicConversation &) = delete;
+    BasicConversation(BasicConversation &&) = delete;
+    BasicConversation &operator=(BasicConversation &&) = delete;
     void advance(std::size_t silentBudget = 10000);
     const DialogueView &view() const;
     void finishDialogue(std::size_t entry);
@@ -39,10 +39,10 @@ class Conversation {
     const Memory &memory() const noexcept {
         return memory_;
     }
-    const ConversationGraph &graph() const noexcept {
+    const Graph &graph() const noexcept {
         return graph_;
     }
-    ConversationGraph::iterator current() const noexcept {
+    typename Graph::iterator current() const noexcept {
         return current_;
     }
     std::size_t nodeCount() const noexcept {
@@ -50,16 +50,19 @@ class Conversation {
     }
 
   private:
-    explicit Conversation(State &state) : state_(state) {}
+    explicit BasicConversation(State &state) : state_(state) {}
     State &state_;
     Memory memory_;
-    ConversationGraph graph_;
-    ConversationGraph::iterator current_;
+    Graph graph_;
+    typename Graph::iterator current_;
     std::size_t dialogueGeneration_ = 0;
     std::optional<DialogueView> view_;
     bool finishedSpeech_ = false, failed_ = false;
     std::string outcome_;
     void requireHealthy() const;
 };
+using Conversation = BasicConversation<>;
+extern template class BasicConversation<ConversationGraph>;
 } // namespace uqm::design::conversation
+#include "engine.tpp"
 #endif

@@ -8,7 +8,25 @@ ConversationGraph::size_type ConversationGraph::size() const noexcept {
 bool ConversationGraph::empty() const noexcept {
     return nodes_.empty();
 }
+void ConversationGraph::prepare(size_type count) {
+    if (sealed_ || !nodes_.empty())
+        throw std::logic_error("conversation graph storage is already prepared");
+    nodes_.resize(count);
+}
+void ConversationGraph::set_start(Node *entry) {
+    if (sealed_ || used_ != nodes_.size() || !entry || entry->owner_ != this)
+        throw std::invalid_argument("invalid or unfinished conversation graph entry");
+    entry_ = iterator(this, entry);
+    sealed_ = true;
+}
+Node &ConversationGraph::at(iterator position) {
+    if (position.graph_ != this || !position.node_)
+        throw std::invalid_argument("invalid conversation graph position");
+    return *position.node_;
+}
 Node *ConversationGraph::emplace() {
+    if (sealed_)
+        throw std::logic_error("conversation graph allocation is sealed");
     // The loader preallocates the complete vector, including compact expansions.
     // Filling a slot cannot reallocate or invalidate existing node connections.
     auto &node = nodes_.at(used_);

@@ -10,7 +10,6 @@ namespace uqm::design::conversation {
 struct Node;
 struct Edge;
 struct DecisionBranch;
-class Conversation;
 // Owns contiguous nodes. Outgoing graph links are non-owning pointers.
 // Neither graph nor nodes move after loading. Cursors borrow this graph and must
 // not outlive it. Topology is immutable during traversal; response history is not.
@@ -48,7 +47,6 @@ class ConversationGraph {
 
       private:
         friend class ConversationGraph;
-        friend class Conversation;
         iterator(const ConversationGraph *graph, Node *node) : graph_(graph), node_(node) {}
         const ConversationGraph *graph_ = nullptr;
         Node *node_ = nullptr;
@@ -75,15 +73,19 @@ class ConversationGraph {
     const_iterator cend() const noexcept {
         return end();
     }
+    // Loader hooks. prepare sizes storage once; set_start seals node allocation.
+    void prepare(size_type count);
+    Node *emplace();
+    void set_start(Node *entry);
+    Node &at(iterator position); // Mutable node data for the owning executor.
     size_type size() const noexcept;
     bool empty() const noexcept;
 
   private:
-    friend class Conversation;
     std::vector<Node> nodes_; // Sized once before resolving any connections.
     size_type used_ = 0;
     iterator entry_;
-    Node *emplace(); // Loader only; fills the next preallocated slot without resizing.
+    bool sealed_ = false;
 };
 struct Edge {
     std::string id;

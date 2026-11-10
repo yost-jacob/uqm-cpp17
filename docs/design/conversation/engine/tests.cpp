@@ -677,3 +677,64 @@ BOOST_AUTO_TEST_CASE(declared_node_count_includes_expansions_and_rejects_stale_o
     BOOST_TEST(state.mutations == 0u);
     BOOST_TEST(state.purchases == 0u);
 }
+namespace {
+// Test-only adapter: prove execution depends on the public graph contract rather
+// than private vector fields or a concrete graph/cursor constructor.
+struct ObservedGraph {
+    using iterator = cd::ConversationGraph::iterator;
+    cd::ConversationGraph storage;
+    std::size_t preparations = 0, allocations = 0;
+    void prepare(std::size_t count) {
+        ++preparations;
+        storage.prepare(count);
+    }
+    cd::Node *emplace() {
+        ++allocations;
+        return storage.emplace();
+    }
+    void set_start(cd::Node *node) {
+        storage.set_start(node);
+    }
+    cd::Node &at(iterator position) {
+        return storage.at(position);
+    }
+    iterator start() const {
+        return storage.start();
+    }
+    iterator end() const {
+        return storage.end();
+    }
+    std::size_t size() const {
+        return storage.size();
+    }
+};
+} // namespace
+BOOST_AUTO_TEST_CASE(conversation_accepts_an_alternative_graph_through_the_public_contract) {
+    TestState state;
+    state.credits = 0;
+    using ExperimentalConversation = cd::BasicConversation<ObservedGraph>;
+    auto c = ExperimentalConversation::load(compactPurchase(), state);
+    BOOST_TEST(c->graph().preparations == 1u);
+    BOOST_TEST(c->graph().allocations == 6u);
+    BOOST_TEST(state.purchases == 0u);
+    c->advance();
+    c->finishDialogue(c->view().entry);
+    c->choose(c->view().entry, "buy");
+    BOOST_TEST(c->view().speech[0].get<std::string>() == "NEED_CREDIT");
+    BOOST_TEST(state.purchases == 1u);
+    c->finishDialogue(c->view().entry);
+    BOOST_TEST(c->ended());
+    BOOST_CHECK(c->current() == c->graph().end());
+    BOOST_TEST(c->outcome() == "peace");
+}
+BOOST_AUTO_TEST_CASE(graph_loader_hooks_seal_storage_before_runtime_traversal) {
+    cd::ConversationGraph graph;
+    graph.prepare(1);
+    auto *node = graph.emplace();
+    node->data = cd::EndNode{"peace"};
+    graph.set_start(node);
+    BOOST_CHECK_THROW(graph.prepare(2), std::logic_error);
+    BOOST_CHECK_THROW(graph.emplace(), std::logic_error);
+    BOOST_CHECK_THROW(graph.set_start(node), std::invalid_argument);
+    BOOST_CHECK(&graph.at(graph.start()) == node);
+}

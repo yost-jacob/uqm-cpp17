@@ -104,6 +104,33 @@ history lives on each `Edge`, replacing the separate set of node/response pairs.
 `dialogueGeneration_` identifies playback instances, including repeat visits to
 the same node; it guards against stale callbacks and is unrelated to graph size.
 
+## Graph experiments without changing conversation behavior
+
+`BasicConversation<Graph>` owns its graph by value. Existing code uses the alias
+`Conversation = BasicConversation<ConversationGraph>`, retaining the contiguous
+vector-backed implementation. An experiment selects its backend explicitly:
+
+```cpp
+using ExperimentalConversation = BasicConversation<MyGraph>;
+auto conversation = ExperimentalConversation::load(definition, state);
+```
+
+The graph contract is deliberately small: `iterator`, `prepare(count)`, `emplace()`
+(returning a stable `Node*`), `set_start(Node*)`, `at(iterator)` (mutable `Node&` for
+the owning executor), `start()`, `end()` and `size()`. Cursors expose read-only
+`Node` access, equality and `next()`/`next(destination)`/`next(response)`.
+Backends share the existing node records and direct-pointer connections. All node
+addresses must remain valid until graph destruction, and graph destruction must
+release nodes before conversation memory. Neither the graph nor conversation moves.
+No inheritance or virtual graph interface is required.
+
+The default backend's `prepare` sizes storage once. `set_start` requires all slots
+to be initialized and seals allocation; later preparation or allocation throws.
+Runtime code uses the graph's public operations, with no access to backend storage
+fields or cursor internals. Definitions remain in `engine.tpp` so experiments can
+instantiate the same engine; `engine.cpp` explicitly instantiates the default.
+Tests exercise a separate graph adapter through this contract.
+
 ## Loading and binding
 
 `Conversation::load(definition, state)` creates a nonmovable conversation and its
