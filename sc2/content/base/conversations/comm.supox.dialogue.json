@@ -1,0 +1,816 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "supox",
+  "resource": "comm.supox.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "NEUTRAL_SPACE_HELLO_1",
+      "index": 0,
+      "text": "Greetings Fellow Carbon Creature, may your roots always be well watered.",
+      "voice": "supox-000.ogg",
+      "original_text_hash": 9042825987489283471
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_2",
+      "index": 1,
+      "text": "Hello, Voyager. May the light always reach your leaves.",
+      "voice": "supox-001.ogg",
+      "original_text_hash": 9056999743826172351
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_1",
+      "index": 2,
+      "text": "Greetings Fellow Carbon Creature, may your roots always be well watered.",
+      "voice": "supox-002.ogg",
+      "original_text_hash": 9042825987489283471
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_2",
+      "index": 3,
+      "text": "Hello, Voyager. May the light always reach your leaves.",
+      "voice": "supox-003.ogg",
+      "original_text_hash": 9056999743826172351
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_1",
+      "index": 4,
+      "text": "So it is you, the blockers of the warm green sunlight\nthe water poisoners\nthe heinous uprooters of flowering shrubbery.\nBegone before our wrath overcomes our peaceful nature.",
+      "voice": "supox-004.ogg",
+      "original_text_hash": 9318155174999247860
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_2",
+      "index": 5,
+      "text": "You diandrous malefic vegetarians!\nYour visage darkens our skies.\nMay your rotting bodies provide our nutrients for kinder generations.\nWe ignore you, as we ignore the pale, tasteless light of your wan home star.",
+      "voice": "supox-005.ogg",
+      "original_text_hash": 10768031611634794181
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_1",
+      "index": 6,
+      "text": "Hail Fellow and Well Met. We trust that your seed distributes widely.",
+      "voice": "supox-006.ogg",
+      "original_text_hash": 660544191673616134
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_2",
+      "index": 7,
+      "text": "Be Welcome Friendly Allies. We hope that the Good Green Sunlight warms you.",
+      "voice": "supox-007.ogg",
+      "original_text_hash": 15541699083533563870
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_3",
+      "index": 8,
+      "text": "Greetings and Salutations. May fertilizer flow on your roots.",
+      "voice": "supox-008.ogg",
+      "original_text_hash": 16296070596689360971
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_4",
+      "index": 9,
+      "text": "Hello there Good Folk. May your flowers always be pollinated.",
+      "voice": "supox-009.ogg",
+      "original_text_hash": 9751134805684335484
+    },
+    {
+      "id": "i_am0",
+      "index": 10,
+      "text": "I am Captain",
+      "voice": null,
+      "original_text_hash": 12400001958996011106
+    },
+    {
+      "id": "i_am1",
+      "index": 11,
+      "text": "from Earth. We come in peace.",
+      "voice": null,
+      "original_text_hash": 3653881914029240876
+    },
+    {
+      "id": "WE_ARE_SUPOX",
+      "index": 12,
+      "text": "I am Captain Ala-la'la. We come in peace.",
+      "voice": "supox-010.ogg",
+      "original_text_hash": 7198812653758187803
+    },
+    {
+      "id": "my_ship0",
+      "index": 13,
+      "text": "Our starship is called",
+      "voice": null,
+      "original_text_hash": 12885797852434981324
+    },
+    {
+      "id": "my_ship1",
+      "index": 14,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "OUR_SHIP",
+      "index": 15,
+      "text": "Our starship is called the Tender Shoot.",
+      "voice": "supox-011.ogg",
+      "original_text_hash": 16757125831356231018
+    },
+    {
+      "id": "from_alliance0",
+      "index": 16,
+      "text": "We are",
+      "voice": null,
+      "original_text_hash": 12464823743787377651
+    },
+    {
+      "id": "from_alliance1",
+      "index": 17,
+      "text": "From Earth.",
+      "voice": null,
+      "original_text_hash": 7865937335079506629
+    },
+    {
+      "id": "FROM_SUPOX",
+      "index": 18,
+      "text": "We are the Supox Utricularia from Earth.",
+      "voice": "supox-012.ogg",
+      "original_text_hash": 9811279814620355396
+    },
+    {
+      "id": "are_you_copying",
+      "index": 19,
+      "text": "You're from Earth??? Hey! Are you just copying whatever I say?",
+      "voice": null,
+      "original_text_hash": 8881355056519593981
+    },
+    {
+      "id": "YEAH_SORRY",
+      "index": 20,
+      "text": "Oh yes, we apologize for the confusion, our homeworld is also called `Earth',\nor more properly `Vlik', which means `Perfectly Good and Nutritious Dirt'.\n`Earth' is pretty close, is it not?",
+      "voice": "supox-013.ogg",
+      "original_text_hash": 11544711326295282774
+    },
+    {
+      "id": "why_copy",
+      "index": 21,
+      "text": "Why do you copy our speech and mannerisms?",
+      "voice": null,
+      "original_text_hash": 10753731457915998129
+    },
+    {
+      "id": "SYMBIOTS",
+      "index": 22,
+      "text": "We learn and we adapt. We are symbionts.\nOur first step in making friends is always to copy them.\nThis is our idiom.",
+      "voice": "supox-014.ogg",
+      "original_text_hash": 9715054925992892054
+    },
+    {
+      "id": "tell_us_of_your_species",
+      "index": 23,
+      "text": "Symbionts, how interesting! Please tell us more.",
+      "voice": null,
+      "original_text_hash": 15356918575005359540
+    },
+    {
+      "id": "OUR_SPECIES",
+      "index": 24,
+      "text": "Our kind evolved on a beautiful planet orbiting the wonderfully green-hued star, Root.\nFrom the canopy of the great jungles to the shores of the azure seas\nOur species has flowered and grown well.\nEarly in our evolution, we adapted to exist in symbiosis with other, hardier life, both flora and fauna,\nwho supplied us with nutrients while we supplied them with reproductive assistance.",
+      "voice": "supox-015.ogg",
+      "original_text_hash": 18316070015061832598
+    },
+    {
+      "id": "plants_arent_intelligent",
+      "index": 25,
+      "text": "C'mon, plants can't be intelligent! Our top scientists and science fiction writers have proven it!",
+      "voice": null,
+      "original_text_hash": 6967639861354530300
+    },
+    {
+      "id": "PROVES_WERE_SPECIAL",
+      "index": 26,
+      "text": "Yes. This has been confirmed by our people as well. Strange, is it not?\nMany of our people regard this inconsistency as proof of our divine origin.",
+      "voice": "supox-016.ogg",
+      "original_text_hash": 6906839197573651383
+    },
+    {
+      "id": "anyone_around_here",
+      "index": 27,
+      "text": "So this is your neighborhood, huh? Any other sentients nearby?",
+      "voice": null,
+      "original_text_hash": 14753842823077956895
+    },
+    {
+      "id": "UTWIG_NEARBY",
+      "index": 28,
+      "text": "We share this region of space with the Utwig, the Wearers of Masks.\nWe have a strong cultural bond with the Utwig.\nThey have been the foundation around which we have grown our starfaring culture.\nWe are not only allies, but we are also friends.\nYou should go meet with them. They could use some excitement.\nYou see, they are a little depressed and morose right now.\nUsually they are most festive and fun.",
+      "voice": "supox-017.ogg",
+      "original_text_hash": 17738390662784303707
+    },
+    {
+      "id": "what_relation_to_utwig",
+      "index": 29,
+      "text": "Are the Utwig friends of yours?",
+      "voice": null,
+      "original_text_hash": 3633946590214672283
+    },
+    {
+      "id": "UTWIG_ALLIES",
+      "index": 30,
+      "text": "Oh yes, we have a strong cultural bond with the Utwig.\nThey have been the foundation around which we have grown our starfaring culture.\nWe are not only allies, but we are also friends.\nYou should go meet with them. They could use some excitement.\nYou see, they are a little depressed and morose right now.\nUsually they are most festive and fun.",
+      "voice": "supox-018.ogg",
+      "original_text_hash": 11556734430683066182
+    },
+    {
+      "id": "whats_wrong_with_utwig",
+      "index": 31,
+      "text": "Oh dear, what has caused the Utwig such distress?",
+      "voice": null,
+      "original_text_hash": 16661181528447910147
+    },
+    {
+      "id": "BROKE_ULTRON",
+      "index": 32,
+      "text": "They broke their Ultron.",
+      "voice": "supox-019.ogg",
+      "original_text_hash": 14272179089241222026
+    },
+    {
+      "id": "whats_ultron",
+      "index": 33,
+      "text": "Ultron? What's an Ultron?",
+      "voice": null,
+      "original_text_hash": 9911241183843982948
+    },
+    {
+      "id": "TAKE_ULTRON",
+      "index": 34,
+      "text": "The Druuge, the cruel, sallow trading race who sold the device to the Utwig\ncalled the device the `Ultron' and claimed that it would give the Utwig super-powers.\nUnfortunately, the Utwig believed the Druuge and bought the Ultron.\nHowever, the device DID make the Utwig very happy.\nOf course, we didn't tell them what we REALLY thought of the Ultron\nthat they were vapid fools to buy a piece of junk for a planet's ransom.\nWe went along with the falsehood, and in doing so showed our own stupidity.\nThen, one sad day a few years ago, the Utwig Proctor dropped the Ultron\nduring a particularly energetic and festive ritual.\nNow the Utwig are morose and depressed.\nThey feel they cannot ever achieve greatness because they lost the powers of the Ultron.\nThey even gave the broken device to us, saying that they couldn't stand the sight of it anymore.\nWe are worried that the Utwig are so depressed that they may use their Ultimate Weapon.\nHere! You take the Ultron, maybe you can do something with it.",
+      "voice": "supox-020.ogg",
+      "original_text_hash": 15918402304479946230
+    },
+    {
+      "id": "what_do_i_do_now",
+      "index": 35,
+      "text": "Er, ah, thanks, I think. What do I do with it?",
+      "voice": null,
+      "original_text_hash": 14974896871571556632
+    },
+    {
+      "id": "FIX_IT",
+      "index": 36,
+      "text": "We thought that if we could get the Ultron working again, it would cheer them up.\nSo we tried to figure out how to fix the darn thing\nor at least get some of the flashing bits working again.\nBut for all the Druuge's falsehoods, the Ultron IS some kind of artifact\nand we could not synthesize the necessary replacement parts.\nPerhaps on your journeys you will find the elements necessary to repair the Ultron.\nThen you could give it to the Utwig and maybe they wouldn't be so depressed.",
+      "voice": "supox-021.ogg",
+      "original_text_hash": 12770382121594512879
+    },
+    {
+      "id": "thanks_now_we_eat_you",
+      "index": 37,
+      "text": "Why thanks. You know you remind me of Broccoli, and I'm rather partial to Broccoli with a light cheese sauce.",
+      "voice": null,
+      "original_text_hash": 14880790464834335552
+    },
+    {
+      "id": "HIDEOUS_MONSTERS",
+      "index": 38,
+      "text": "Arrgh, you hideous monsters, vegetarians, defilers of the leaf, uprooters.\nBegone, or we shall uproot you!",
+      "voice": "supox-022.ogg",
+      "original_text_hash": 3447293610596179704
+    },
+    {
+      "id": "got_fixed_ultron",
+      "index": 39,
+      "text": "This time we are sure we have repaired the Ultron completely.",
+      "voice": null,
+      "original_text_hash": 5722704323477499498
+    },
+    {
+      "id": "GOOD_GIVE_TO_UTWIG",
+      "index": 40,
+      "text": "Oh Wonderful, Oh Rapturous Light of the Green Sun!\nPlease convey it immediately to the Utwig, they will be elated!",
+      "voice": "supox-023.ogg",
+      "original_text_hash": 1524480384062674052
+    },
+    {
+      "id": "look_i_repaired_lots",
+      "index": 41,
+      "text": "We hope we have repaired the Ultron completely.",
+      "voice": null,
+      "original_text_hash": 15282574104593190006
+    },
+    {
+      "id": "ALMOST_THERE",
+      "index": 42,
+      "text": "Yes! Yes!\nBut, but no... it is still not quite as brightly lit as it once was.\nOne more repair job should do it!",
+      "voice": "supox-024.ogg",
+      "original_text_hash": 18074673488934778542
+    },
+    {
+      "id": "look_i_slightly_repaired",
+      "index": 43,
+      "text": "We have fixed the Ultron.",
+      "voice": null,
+      "original_text_hash": 10379503481707298260
+    },
+    {
+      "id": "GREAT_DO_MORE",
+      "index": 44,
+      "text": "Great! Great!\nOh, dear\nIt is true that you have repaired the Ultron... somewhat\nbut it is not yet in the condition which so enthralled the Utwig.\nYour efforts are valid, merely incomplete.",
+      "voice": "supox-025.ogg",
+      "original_text_hash": 16424137228145123953
+    },
+    {
+      "id": "where_get_repairs",
+      "index": 45,
+      "text": "Where do you think I can find repair materials for this `Ultron' thing?",
+      "voice": null,
+      "original_text_hash": 10459318399680563774
+    },
+    {
+      "id": "ANCIENT_RHYME",
+      "index": 46,
+      "text": "Perhaps a good place to start would be the Druuge\nsince they were the ones who sold it to the Utwig in the first place.",
+      "voice": "supox-026.ogg",
+      "original_text_hash": 13555621787067680738
+    },
+    {
+      "id": "bye_neutral",
+      "index": 47,
+      "text": "We're off now! See you later, Supox friends.",
+      "voice": null,
+      "original_text_hash": 11998170513267132863
+    },
+    {
+      "id": "GOODBYE_NEUTRAL",
+      "index": 48,
+      "text": "May Sunlight and Water always fall upon you.",
+      "voice": "supox-027.ogg",
+      "original_text_hash": 4885428818859786499
+    },
+    {
+      "id": "ABOUT_BATTLE",
+      "index": 49,
+      "text": "Hello Captain.\nWe fought the Kohr-Ah; our buddies the Utwig did some pretty serious damage\nto several fleets, but we mostly just watched helplessly.\nThe Ur-Quan did not seem to realize that we were helping them\nand as often as not they attacked us too!\nWe may have delayed the outcome of the fight, but it still seems clear that the Kohr-Ah are winning.",
+      "voice": "supox-028.ogg",
+      "original_text_hash": 3007158915145337975
+    },
+    {
+      "id": "HELLO_BEFORE_KOHRAH_SPACE_1",
+      "index": 50,
+      "text": "Hello Fellow Warriors. We go to uproot our enemies!",
+      "voice": "supox-029.ogg",
+      "original_text_hash": 14434842093956982642
+    },
+    {
+      "id": "HELLO_BEFORE_KOHRAH_SPACE_2",
+      "index": 51,
+      "text": "Greetings Garden Guardians. We shall block the Kohr-Ah's sunlight and frost their leaves!",
+      "voice": "supox-030.ogg",
+      "original_text_hash": 13336735999313305920
+    },
+    {
+      "id": "HELLO_DURING_KOHRAH_SPACE_1",
+      "index": 52,
+      "text": "Human! Your presence here is comforting, but perhaps you had better leave the area\nour combat with the Kohr-Ah is fierce, and you could be destroyed.",
+      "voice": "supox-031.ogg",
+      "original_text_hash": 5861074046272568530
+    },
+    {
+      "id": "HELLO_DURING_KOHRAH_SPACE_2",
+      "index": 53,
+      "text": "Greetings again, Captain. We hope you thrive.\nWe fight on bravely, but the course of events does not appear to be moving in our favor.",
+      "voice": "supox-032.ogg",
+      "original_text_hash": 7395826671970548605
+    },
+    {
+      "id": "HELLO_AFTER_KOHRAH_SPACE_1",
+      "index": 54,
+      "text": "Ah, our human friend... we are so tired... the battle so difficult...",
+      "voice": "supox-033.ogg",
+      "original_text_hash": 6731933858313321988
+    },
+    {
+      "id": "HELLO_AFTER_KOHRAH_SPACE_2",
+      "index": 55,
+      "text": "Hello again faunal comrade. We are spent, and must grow new bark.",
+      "voice": "supox-034.ogg",
+      "original_text_hash": 12095868461927479352
+    },
+    {
+      "id": "whats_up_after_space",
+      "index": 56,
+      "text": "Tell me more about the battle with the Kohr-Ah.",
+      "voice": null,
+      "original_text_hash": 11239423014135712294
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_SPACE_1",
+      "index": 57,
+      "text": "We met the Kohr-Ah at the sides of our Utwig allies.\nThe destructive power of the black ships was greater than anticipated\nhowever we did eventually develop tactics in conjunction with the Utwig\nthat were effective against them. We destroyed dozens of their battleships!\nAlas, we lost many of our brothers to the spinning blades and the fiery ring.",
+      "voice": "supox-035.ogg",
+      "original_text_hash": 16565485624008330172
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_SPACE_2",
+      "index": 58,
+      "text": "As dictated by the Utwig, our policy was to focus our weapons on the Kohr-Ah only.\nIn this way, we would reduce the strength of the black fleet, thus evening the balance of power\nbetween the Ur-Quan and the Kohr-Ah. The plan worked well, save for one slight factor.\nThe green ships failed to notice our efforts on their behalf\nand fired upon our vessels at every opportunity.",
+      "voice": "supox-036.ogg",
+      "original_text_hash": 7945106279476861739
+    },
+    {
+      "id": "what_now_after_space",
+      "index": 59,
+      "text": "What do you think we should do now?",
+      "voice": null,
+      "original_text_hash": 12713400295687295546
+    },
+    {
+      "id": "DO_THIS_AFTER_SPACE",
+      "index": 60,
+      "text": "We are but humble plants, mere saplings in knowledge of such things.\nIf you seek wisdom, visit the Utwig Proctors.",
+      "voice": "supox-037.ogg",
+      "original_text_hash": 8508515648171943056
+    },
+    {
+      "id": "bye_after_space",
+      "index": 61,
+      "text": "Goodbye Supox. Thanks for everything.",
+      "voice": null,
+      "original_text_hash": 14729769240108317250
+    },
+    {
+      "id": "GOODBYE_AFTER_SPACE",
+      "index": 62,
+      "text": "Fare thee well.",
+      "voice": "supox-038.ogg",
+      "original_text_hash": 9037560511911375495
+    },
+    {
+      "id": "whats_up_before_space",
+      "index": 63,
+      "text": "So what are you doing?",
+      "voice": null,
+      "original_text_hash": 8228922136790050218
+    },
+    {
+      "id": "GENERAL_INFO_BEFORE_SPACE_1",
+      "index": 64,
+      "text": "Our Utwig allies have instructed us to prepare for combat, and so we make ready!\nOur destination is Antares, where we shall face the Kohr-Ah in battle!",
+      "voice": "supox-039.ogg",
+      "original_text_hash": 5175812369864645839
+    },
+    {
+      "id": "GENERAL_INFO_BEFORE_SPACE_2",
+      "index": 65,
+      "text": "We make our way to an epic confrontation with the Kohr-Ah!",
+      "voice": "supox-040.ogg",
+      "original_text_hash": 7734759956132143589
+    },
+    {
+      "id": "what_now_before_space",
+      "index": 66,
+      "text": "So what should we do now?",
+      "voice": null,
+      "original_text_hash": 15215404341384984772
+    },
+    {
+      "id": "DO_THIS_BEFORE_SPACE",
+      "index": 67,
+      "text": "We must defer to the Utwig, who have superior knowledge of such things.\nThey specifically instructed us to inform you\nthat you should NOT endanger yourself by joining us in this battle.\nYour destiny lies along a more subtle though crucial course.",
+      "voice": "supox-041.ogg",
+      "original_text_hash": 9964889195631088954
+    },
+    {
+      "id": "bye_before_space",
+      "index": 68,
+      "text": "G'bye plant dudes.",
+      "voice": null,
+      "original_text_hash": 12653895336838490917
+    },
+    {
+      "id": "GOODBYE_BEFORE_SPACE",
+      "index": 69,
+      "text": "Wish us luck, human.",
+      "voice": "supox-042.ogg",
+      "original_text_hash": 4011816313372531202
+    },
+    {
+      "id": "how_went_war",
+      "index": 70,
+      "text": "What happened at Antares? Describe the struggle.",
+      "voice": null,
+      "original_text_hash": 8881237935034873641
+    },
+    {
+      "id": "how_goes_war",
+      "index": 71,
+      "text": "How fares the battle against the Kohr-Ah?",
+      "voice": null,
+      "original_text_hash": 8184147915578234514
+    },
+    {
+      "id": "BATTLE_HAPPENS_1",
+      "index": 72,
+      "text": "Fearsome, human, fearsome! We have not yet evolved tactics\nwhich are useful against the Kohr-Ah Marauder vessels.\nThe dark ships launch spinning wheels of metal... we are mown down like\nI don't even want to say it... and if we are fortunate enough to close with the ships\nports open up around its perimeter, jetting forth gouts of flaming plasma.\nNot only do these flames melt through our hulls like a scythe\nbut they are also an effective defense against our glob weapon.",
+      "voice": "supox-043.ogg",
+      "original_text_hash": 7139066546472977960
+    },
+    {
+      "id": "BATTLE_HAPPENS_2",
+      "index": 73,
+      "text": "We are having greater success, human, praise the light!\nWe have learned that we must work in tandem with our Utwig allies\nletting them absorb the brunt of the Kohr-Ah firepower on their shields\nwhile we play the role of opportunist, striking only when the Kohr-Ah is de-energized\nand then retreating to permit our Utwig allies to renew the cycle.",
+      "voice": "supox-044.ogg",
+      "original_text_hash": 7452694443614398121
+    },
+    {
+      "id": "FLEET_ON_WAY",
+      "index": 74,
+      "text": "Even as we speak, the Utwig and Supox fleets streak toward Horologii\nwhere they hope to strike a major blow against the Kohr-Ah forces.",
+      "voice": "supox-045.ogg",
+      "original_text_hash": 9913011180300910366
+    },
+    {
+      "id": "learn_new_info",
+      "index": 75,
+      "text": "Have your fighting forces learned anything I should know?",
+      "voice": null,
+      "original_text_hash": 3946832881690749283
+    },
+    {
+      "id": "NO_NEW_INFO",
+      "index": 76,
+      "text": "No, not as yet. Although the region of space they are fighting in is new to us\nour vessels are not engaging in any form of research\nreducing the Kohr-Ah's strength is their prime directive.",
+      "voice": "supox-046.ogg",
+      "original_text_hash": 7897326515318736325
+    },
+    {
+      "id": "SAMATRA",
+      "index": 77,
+      "text": "During the battle, one of our ships intercepted a signal\nfrom an Ur-Quan vessel to a Kohr-Ah ship.\nThe contents of the message was simple, `Sa-Matra'.\nImmediately after receiving the broadcast, the Kohr-Ah vessel disengaged from combat\nentered HyperSpace and sped off in the direction of the Crateris stars.",
+      "voice": "supox-047.ogg",
+      "original_text_hash": 10495289614389773431
+    },
+    {
+      "id": "what_now_homeworld",
+      "index": 78,
+      "text": "So now what do we do?",
+      "voice": null,
+      "original_text_hash": 2637510275734017134
+    },
+    {
+      "id": "HOPE_KILL_EACH_OTHER",
+      "index": 79,
+      "text": "We can only hope that the opposing forces of the Ur-Quan and Kohr-Ah\nare sufficiently even in power, that they reduce each other to insignificance.",
+      "voice": "supox-048.ogg",
+      "original_text_hash": 18115857138152937766
+    },
+    {
+      "id": "UP_TO_YOU",
+      "index": 80,
+      "text": "Our hopes that the Ur-Quan and Kohr-Ah would destroy each other have been in vain.\nOnce victorious, the Kohr-Ah will proceed on their grim cruise of destruction.\nI believe you and your people are our only hope now.\nYou must find some way to stop the Kohr-Ah.",
+      "voice": "supox-049.ogg",
+      "original_text_hash": 16845152712525549913
+    },
+    {
+      "id": "can_you_help",
+      "index": 81,
+      "text": "Two leaves pull water from the same root.",
+      "voice": null,
+      "original_text_hash": 16927280292715478152
+    },
+    {
+      "id": "HOW_HELP",
+      "index": 82,
+      "text": "Such wisdom! Your meanings run deep, we ponder their significance.\nAh, yes! You wish us to give you assistance... such as our fighting ships!",
+      "voice": "supox-050.ogg",
+      "original_text_hash": 4867680654627696826
+    },
+    {
+      "id": "DONT_NEED",
+      "index": 83,
+      "text": "Yet, you seem to possess a fleet in concert with your need.\nWe will reserve what few ships we have left for our final defense against the Kohr-Ah.",
+      "voice": "supox-051.ogg",
+      "original_text_hash": 15481777745239944459
+    },
+    {
+      "id": "HAVE_4_SHIPS",
+      "index": 84,
+      "text": "Your words have merit. We shall dispatch a pod of our starships to join your fleet.",
+      "voice": "supox-052.ogg",
+      "original_text_hash": 16838993929506658276
+    },
+    {
+      "id": "give_info",
+      "index": 85,
+      "text": "Is there any knowledge which you alone possess?",
+      "voice": null,
+      "original_text_hash": 15657835859998289053
+    },
+    {
+      "id": "GOOD_HINTS",
+      "index": 86,
+      "text": "Knowledge is the purview of the Utwig. We Supox are but the effectuators.\nIn truth though, we have learned a fact or two unknown to others.\nWe did not think anyone would care in the slightest, but since you ask, listen.\nWe have not fared far from our region of space, but we have explored this region thoroughly.\nOf all the oddities we have found, from the firefalls of Nalnar to the servants of Mali\nthe truest mystery was the nature of a world we found at the orange star, Beta Leporis.\nAs a general rule, we prefer not to dwell in such long-wavelength regions\nbut we were on a mapping mission. That was when we found the planet.\nAt first we thought our scanners had failed, for they showed us a world of chromatic aspect.\nThen we located the source of our malfunction... the planet itself!\nSomehow the planet generates a field of unusual radiations which scramble delicate circuitry.\nThough blazing hot, we attempted a landing. Before we were forced off the surface by the intense heat\nwe registered the presence of huge amounts of processed radioactives.\nStrange, is it not?",
+      "voice": "supox-053.ogg",
+      "original_text_hash": 2541435400829456404
+    },
+    {
+      "id": "how_is_ultron",
+      "index": 87,
+      "text": "So how are the Utwig liking their Ultron?",
+      "voice": null,
+      "original_text_hash": 3545584166921196241
+    },
+    {
+      "id": "ULTRON_IS_GREAT",
+      "index": 88,
+      "text": "They are beyond ecstatic, well into the range of rapture or perhaps even pegged on epiphany.\nIf you wish to learn the true depth of their joy, talk with them yourself.",
+      "voice": "supox-054.ogg",
+      "original_text_hash": 1704606909500756207
+    },
+    {
+      "id": "bye_allied_homeworld",
+      "index": 89,
+      "text": "Goodbye Leafy Ones.",
+      "voice": null,
+      "original_text_hash": 142570082452395410
+    },
+    {
+      "id": "GOODBYE_ALLIED_HOMEWORLD",
+      "index": 90,
+      "text": "Farewell Friendly Folk.",
+      "voice": "supox-055.ogg",
+      "original_text_hash": 3023308103075611484
+    },
+    {
+      "id": "name_1",
+      "index": 91,
+      "text": "The New Alliance of Free Stars",
+      "voice": null,
+      "original_text_hash": 2930717857211576419
+    },
+    {
+      "id": "name_2",
+      "index": 92,
+      "text": "The Concordance of Alien Nations",
+      "voice": null,
+      "original_text_hash": 16943543974912230107
+    },
+    {
+      "id": "name_3",
+      "index": 93,
+      "text": "The United Federation of Worlds",
+      "voice": null,
+      "original_text_hash": 7156419825357983966
+    },
+    {
+      "id": "name_40",
+      "index": 94,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 95,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 96,
+      "text": "Whew! I'm glad that's all over.\nThat was tough, playing second banana to the Utwig.\nNow I'm hungry, but I'm sick and tired of sunlight, sunlight, sunlight!\nI want some REAL food!!!\nLike a hamburger or a steak... better yet\nhow about a dog!",
+      "voice": "supox-056.ogg",
+      "original_text_hash": 18209885363366542943
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["supox", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["supox", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

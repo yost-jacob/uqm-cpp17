@@ -1,0 +1,956 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "utwig",
+  "resource": "comm.utwig.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "NEUTRAL_SPACE_HELLO_1",
+      "index": 0,
+      "text": "Ugh. I suppose, as a courtesy, I should extend an appropriate greeting.\nOn behalf of the Utwig Proctors I truly hope, for your sake\nthat your day has been better than ours\nalthough this really isn't saying that much.",
+      "voice": "utwig-000.ogg",
+      "original_text_hash": 9540773199865248902
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_2",
+      "index": 1,
+      "text": "Just go away. Leave us to ponder our grief.",
+      "voice": "utwig-001.ogg",
+      "original_text_hash": 16026186239012377696
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_1",
+      "index": 2,
+      "text": "Yagh! Your attitude toward us is not acceptable!\nWe apologize for having to deal with you this way,\nbut since the loss of the Ultron, we have no choice.\nAs we prepare to die, so should you.",
+      "voice": "utwig-002.ogg",
+      "original_text_hash": 16078977813941155709
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_2",
+      "index": 3,
+      "text": "You have caught us in a private, dark moment.\nWe must guarantee your silence with your complete and total destruction.",
+      "voice": "utwig-003.ogg",
+      "original_text_hash": 4495236609520164483
+    },
+    {
+      "id": "BOMB_WORLD_HELLO_1",
+      "index": 4,
+      "text": "Attention alien vessel: this world is under the full jurisdiction of the Utwig Proctorate.\nWe extend a subdued but civil greeting.",
+      "voice": "utwig-004.ogg",
+      "original_text_hash": 14321168387106002058
+    },
+    {
+      "id": "BOMB_WORLD_HELLO_2",
+      "index": 5,
+      "text": "You have arrived at a most inopportune time.\nCollectively, our species is dealing with a great remorse.\nNevertheless in order to foster a spirit of interspecies good will\nwe pull ourselves from our intense cycle of self-analysis\nand offer this greeting which, we hope, will suffice.",
+      "voice": "utwig-005.ogg",
+      "original_text_hash": 200381849452727924
+    },
+    {
+      "id": "HOSTILE_BOMB_HELLO_1",
+      "index": 6,
+      "text": "Oh, woe! We find your presence here disconcerting.\nIn order to deal with the situation in such a way that we maintain some semblance of authority\nwe are forced to deploy our forces against your armada.\nPrepare yourselves for battle.",
+      "voice": "utwig-006.ogg",
+      "original_text_hash": 12516499701681899902
+    },
+    {
+      "id": "HOSTILE_BOMB_HELLO_2",
+      "index": 7,
+      "text": "In a fit of depression I find it necessary to vent my irreconcilable frustration on you.\nI normally do not engage in such fervent activities\nbut I now find myself inspired to do my best to annihilate you with expediency.",
+      "voice": "utwig-007.ogg",
+      "original_text_hash": 12300835024415083491
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_1",
+      "index": 8,
+      "text": "Normally we would not bother to acknowledge your presence\nbut you find us in a state of moderate depression\ninstead of our normal cycle of self-destructive tendencies.",
+      "voice": "utwig-008.ogg",
+      "original_text_hash": 11984784537861155588
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_2",
+      "index": 9,
+      "text": "Alien vessel, grieve for the loss of both the Utwig and the Universe at large.",
+      "voice": "utwig-009.ogg",
+      "original_text_hash": 17430099407639110759
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_3",
+      "index": 10,
+      "text": "You disturb our routine of eternal grieving\nyet we extend to you the courtesy of acknowledgment.",
+      "voice": "utwig-010.ogg",
+      "original_text_hash": 5170347921642345379
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_4",
+      "index": 11,
+      "text": "I am so depressed. You can try to cheer me up if you want to.",
+      "voice": "utwig-011.ogg",
+      "original_text_hash": 4484533654238030017
+    },
+    {
+      "id": "HOSTILE_HOMEWORLD_HELLO_1",
+      "index": 12,
+      "text": "You have angered the spirit of the Utwig.\nAlthough depressed almost to the point of an inability to perform any actions whatsoever\nwe find within ourselves the verve required to engage you in a duel to the death.\nIndeed, we will find satisfaction in your demise or in our release from our mortal burden.",
+      "voice": "utwig-012.ogg",
+      "original_text_hash": 4406009663758198291
+    },
+    {
+      "id": "HOSTILE_HOMEWORLD_HELLO_2",
+      "index": 13,
+      "text": "Attention offending vessel! Your presence here is deeply appreciated!\nYou have stirred us from our depression-induced apathy\nto the point where our desire actually registers as a sensation!\nWe look forward to either finding personal release in the netherworld\nor obliterating you successfully.\nWe thank you for this opportunity!",
+      "voice": "utwig-013.ogg",
+      "original_text_hash": 12830165754058344003
+    },
+    {
+      "id": "why_you_here",
+      "index": 14,
+      "text": "For what purpose do you linger at this location?",
+      "voice": null,
+      "original_text_hash": 11950108760364489094
+    },
+    {
+      "id": "WE_GUARD_BOMB",
+      "index": 15,
+      "text": "We are the stewards of the Bomb.\nWe keep it from those who would use it unwisely.\nIn addition, we are prepared to act under the direction of the Proctorate\nshould we decide to make a final atonement for our most grievous blunder.",
+      "voice": "utwig-014.ogg",
+      "original_text_hash": 6247700078055334591
+    },
+    {
+      "id": "what_about_bomb",
+      "index": 16,
+      "text": "Hmm, this must be a pretty special Bomb to have all of you keeping an eye on it.",
+      "voice": null,
+      "original_text_hash": 13557204997434989978
+    },
+    {
+      "id": "ABOUT_BOMB",
+      "index": 17,
+      "text": "You are correct. It is a relic of Precursor origin.\nIt has the power to destroy entire planetary objects, perhaps even galaxies.\nThe Utwig have been entrusted by fate to watch over this device\nso that it will be used in the way that it was intended by destiny.",
+      "voice": "utwig-015.ogg",
+      "original_text_hash": 2939973237943865165
+    },
+    {
+      "id": "give_us_bomb_or_die",
+      "index": 18,
+      "text": "We have an urgent need for this device. Give us the Bomb.",
+      "voice": null,
+      "original_text_hash": 12178523890445807050
+    },
+    {
+      "id": "GUARDS_WARN",
+      "index": 19,
+      "text": "We cannot relinquish control of this instrument of power!\nYou cannot have the Bomb.\nAny attempt on your part to change this current arrangement\nwill be met with fearsome Utwig resistance!",
+      "voice": "utwig-016.ogg",
+      "original_text_hash": 11345314669159954766
+    },
+    {
+      "id": "demand_bomb",
+      "index": 20,
+      "text": "We will now take the Bomb. Give it to us.",
+      "voice": null,
+      "original_text_hash": 10956995935926514108
+    },
+    {
+      "id": "GUARDS_FIGHT",
+      "index": 21,
+      "text": "Our anguish serves only to fuel our resolve concerning the jurisdiction of this device.\nWe stand ready!",
+      "voice": "utwig-017.ogg",
+      "original_text_hash": 9813139866817052728
+    },
+    {
+      "id": "may_we_have_bomb",
+      "index": 22,
+      "text": "Wow, that is pretty neat! May we have the Bomb?",
+      "voice": null,
+      "original_text_hash": 1520556703019874867
+    },
+    {
+      "id": "NO_BOMB",
+      "index": 23,
+      "text": "Yes, it IS a remarkable device.\nIt is understandable that you would like to possess it yourselves.\nOur mandate, however, requires that we maintain full control of the Bomb.",
+      "voice": "utwig-018.ogg",
+      "original_text_hash": 9296702650876505974
+    },
+    {
+      "id": "please",
+      "index": 24,
+      "text": "Oh, please can't we have it? It would make us really happy!",
+      "voice": null,
+      "original_text_hash": 4976290644338710577
+    },
+    {
+      "id": "SORRY_NO_BOMB",
+      "index": 25,
+      "text": "No, we are sorry. You cannot have the Bomb.\nBesides being against our orders, imagine what would happen if for some reason\nour Proctors decide to use it to destroy our civilization.\nHow would we explain its absence?",
+      "voice": "utwig-019.ogg",
+      "original_text_hash": 753897873800377064
+    },
+    {
+      "id": "whats_up_bomb",
+      "index": 26,
+      "text": "Tell us about the Bomb. What's the scoop?",
+      "voice": null,
+      "original_text_hash": 15710035323587587262
+    },
+    {
+      "id": "GENERAL_INFO_BOMB_1",
+      "index": 27,
+      "text": "During standard exploration procedures we came across what appeared to be\nan ancient Precursor supply base.\nIt had been dismantled and appeared to be empty.\nIn the staging area there was a collection of what appeared to be refuse.\nDuring the cataloging of these various items, this device was discovered in a damaged container.\nFrom what our scientists can tell, it appears to be a planeteering tool\ncapable of reducing moon-sized objects to particulate dust clouds.\nWe believe that it was either accidentally forgotten\nor simply left because of a lack of room on the departing vessel.",
+      "voice": "utwig-020.ogg",
+      "original_text_hash": 8628071073293530030
+    },
+    {
+      "id": "GENERAL_INFO_BOMB_2",
+      "index": 28,
+      "text": "The Bomb may have been left here by mistake.\nWe suspect that if activated, it will turn this entire planet\ninto nothing more than an expanding mass of tiny dirt clods.\nThe Utwig have considered carefully that perhaps it would be best to use this device\nto put us out of our collective misery.\nAlthough this may sound extreme, I will point out that our mishandling of the Ultron\nis a disaster of epic proportions.",
+      "voice": "utwig-021.ogg",
+      "original_text_hash": 9044549670442650371
+    },
+    {
+      "id": "bye_bomb",
+      "index": 29,
+      "text": "This Bomb is pretty dangerous and you guys are crazy. I'm getting out of here!",
+      "voice": null,
+      "original_text_hash": 13348102079939086239
+    },
+    {
+      "id": "GOODBYE_BOMB",
+      "index": 30,
+      "text": "Ha ha, don't worry. Hey! I laughed! How could I do that?\nNow I sink into a depression that leaves me speechless.",
+      "voice": "utwig-022.ogg",
+      "original_text_hash": 5850377136155222695
+    },
+    {
+      "id": "hey_wait_got_ultron",
+      "index": 31,
+      "text": "Whoa there, hold your horses! Look at this! We've got your Ultron!",
+      "voice": null,
+      "original_text_hash": 4487540418960058590
+    },
+    {
+      "id": "TAUNT_US_BUT_WE_LOOK",
+      "index": 32,
+      "text": "Taunting us buys you nothing except to steel our resolve to end your existence.\nIn fact, we will humor you in your little game.\nYou have seconds to show us whatever bric-a-brac you possess.\nWe will then commence with the cessation of your existence.",
+      "voice": "utwig-023.ogg",
+      "original_text_hash": 18028768602671475701
+    },
+    {
+      "id": "TRICKED_US_1",
+      "index": 33,
+      "text": "I expected no less.\nYou hold before us nothing more than a reminder of a past mistake that offends us to no end.\nWe now commence your termination.",
+      "voice": "utwig-024.ogg",
+      "original_text_hash": 15992676786093058624
+    },
+    {
+      "id": "TRICKED_US_2",
+      "index": 34,
+      "text": "I am speechless with rage... and yet, I must speak!\nHow dare you flaunt the collective embarrassment of the Utwig?!\nYou will now pay for your severe breach of etiquette!",
+      "voice": "utwig-025.ogg",
+      "original_text_hash": 17245008126617134320
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 35,
+      "text": "This is Captain",
+      "voice": null,
+      "original_text_hash": 6667870528634419371
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 36,
+      "text": ", representing",
+      "voice": null,
+      "original_text_hash": 11155583164552323745
+    },
+    {
+      "id": "we_are_vindicator2",
+      "index": 37,
+      "text": ". Please respond.",
+      "voice": null,
+      "original_text_hash": 1910511380570003446
+    },
+    {
+      "id": "WOULD_BE_HAPPY_BUT",
+      "index": 38,
+      "text": "What good would that do -- I mean, why should we?\nWe agonized for hours wondering if it was a cruel twist of fate\nor simply a serious case of butterfingery.\nAh, the lifetimes that have been spent in the pursuit of the elusive answer\nto this deceptively simple question has driven many of us down the dark road of self-destruction.\nIndeed, even as these words strike the ears of any who care to listen\nthe real question is, Does It Matter? I cannot say, I wallow in a quandary\nunable to determine what better atones for my part of the Great Sin.\nShould I engage in slow and painful self-termination?\nShould I commit myself to a long life of painful self-flagellation?\nShould I throw myself with enthusiastic verve at the problem of collective annihilation?\nI do not know. Even now my mind writhes in anguish of indecision, lest the outcome be inadequate.",
+      "voice": "utwig-026.ogg",
+      "original_text_hash": 1847709944038461444
+    },
+    {
+      "id": "why_sad",
+      "index": 39,
+      "text": "Hmm, I detect that recent events have not gone your way. Why don't you start at the beginning?",
+      "voice": null,
+      "original_text_hash": 10314626527748751417
+    },
+    {
+      "id": "ULTRON_BROKE",
+      "index": 40,
+      "text": "*Sigh* All right, I'll try, but you know, it really doesn't matter.\nAfter all, we have a famous Utwig saying: when one loses the reason for existence\none tends to get less motivated.\nThis goes hand-in-hand with the painfully appropriate credo\n`We broke it so we are paying for it'.\nOf course, this isn't really accurate; the situation is so much more hideous!\nImagine, if you can, holding within your hands The Answer!...\n...only to have it taunt you with its former potential!\nAh, cruel irony! The loss of the Ultron grieves us all!",
+      "voice": "utwig-027.ogg",
+      "original_text_hash": 1269938364758623207
+    },
+    {
+      "id": "what_ultron",
+      "index": 41,
+      "text": "Um, yes, of course, the Ultron. We grieve. How sad. Now, what was it again?",
+      "voice": null,
+      "original_text_hash": 4951297686166236314
+    },
+    {
+      "id": "GLORIOUS_ULTRON",
+      "index": 42,
+      "text": "Bah! It doesn't matter! Besides being of no concern to you\nI find discussion of this matter, well, distasteful.\n*Sigh.* The Ultron was not only the thing which assures total and complete meaning of life for you and I\nit is Universal; I'm sure that you too are aware of this thing if only in legend!\nIt granted us all limitless power and knowledge.\nIt has been since, well, rendered inoperative.",
+      "voice": "utwig-028.ogg",
+      "original_text_hash": 5740897188823248095
+    },
+    {
+      "id": "dont_be_babies",
+      "index": 43,
+      "text": "Just because you busted your Ultra-thingy, don't be a bunch of cry-babies!",
+      "voice": null,
+      "original_text_hash": 6452196791789483773
+    },
+    {
+      "id": "MOCK_OUR_PAIN",
+      "index": 44,
+      "text": "Gah! Now you've really done it!\nYour blatant transgressions have me hopping mad!\nHop hop hop! Okay, that's it! Put up your dukes! Nobody makes fun of the Ultron!",
+      "voice": "utwig-029.ogg",
+      "original_text_hash": 1502500253793699851
+    },
+    {
+      "id": "real_sorry_about_ultron",
+      "index": 45,
+      "text": "Sniff. That reminds me when my pet dog Splib ran in front of a... rock chipper!",
+      "voice": null,
+      "original_text_hash": 11196887810112775745
+    },
+    {
+      "id": "APPRECIATE_SYMPATHY",
+      "index": 46,
+      "text": "You are kind. If we could wield the Ultron to resurrect your Splib, we would.\nBut I suddenly am overcome with waves of depression.\nI must retire now to perform rituals of anguish.\nWaves of trauma wash across my being even now. I must go.",
+      "voice": "utwig-030.ogg",
+      "original_text_hash": 14118462711151082152
+    },
+    {
+      "id": "what_about_you_1",
+      "index": 47,
+      "text": "A truly unique set of events put you in your current state. Am I right?",
+      "voice": null,
+      "original_text_hash": 17473965368998418727
+    },
+    {
+      "id": "ABOUT_US_1",
+      "index": 48,
+      "text": "Hah, to say the least!\nOur past is one of a glorious and proud people coupled with a cataclysm that rocks the Universe\nto its very core!\nIt all began when the Chimt rose from the Murky Bog and the Utwig emerged as well.\nIn these primitive times we cavorted about our world oblivious to any sort of higher purpose\nwe took everything at face value.\nMeanwhile, the tendrils of the Chimt infiltrated the vast sky canopies of Fahz and then the veils fell!\nSuddenly, the Utwig were stunned by a collective realization!\nAll immediately and urgently donned veils of every description! Hides, leaves, shells, rocks\neven living drells were donned in the early days.\nYou see, the face is the mechanism that expresses many of the primitive qualities that hinder sentience.\nNow rid of constant reminders of greed, rage, hatred, and lust\nthe wisdom of the Utwig was no longer hampered by constant reminders of the primitive urge.\nOver many generations mask etiquette was refined to a rock-solid foundation of our society.\nSure, the Morality Riots were expensive, both in lives and infrastructure\nbut the result was better mask regulation; specification from your basic Mask of Gruelling but Neccessary Activity\nto the most highly decorated Countenance of Stellar Representation. These were clearly defined.\nRecognizing the importance of flexibility, clear-cut and efficient procedures for revision and redesign\ndealt with the few anomalies.  From that moment when we covered the source of our intellectual oppression\nwe knew that it was a grand purpose that defined our destiny.\nAre you still listening?!\nOur entire development as a sentient species was coordinated to coincide with the appearance of a remarkable device\nthe Ultron!\nWe were oblivious to its tragic implication.",
+      "voice": "utwig-031.ogg",
+      "original_text_hash": 14164572536828227652
+    },
+    {
+      "id": "what_about_you_2",
+      "index": 49,
+      "text": "Yow! Absolutely fascinating. But what exactly do you mean by tragic?",
+      "voice": null,
+      "original_text_hash": 10125198011974472106
+    },
+    {
+      "id": "ABOUT_US_2",
+      "index": 50,
+      "text": "In order for you to truly understand the situation, you need to know more about the Ultron\nand its unique capabilities.\nYou see, when the Druuge discovered the Ultron they knew that it was ours.\nThe Druuge were compelled by intrinsic universal direction to take it to where it has always belonged.\nThey brought it to us.\nOh, the Ultron!\nIt assured total and complete meaning of life for All -- the Universal!\nWith the Ultron in hand I could sense not only your motivations and desires, but your purpose.\nI could act upon these things in ways that would most likely seem mysterious if not, well, daft.\nYears later, you would herald our participation in your development as the turning point for your species.\nThe Druuge were only one of the few to benefit in this way.\nEven now, they are puzzled by the way we rewarded them for the delivery of the Ultron to its correct place.\nIn twenty-four years, two months and three days they will all dance the dance of Jubilation.\nIndeed, the Ultron has allowed us to fundamentally change the Druuge forever!\nThe Supox too received many benefits from our use of the Ultron.\nThey can testify to its power!",
+      "voice": "utwig-032.ogg",
+      "original_text_hash": 11372049175182081796
+    },
+    {
+      "id": "what_about_you_3",
+      "index": 51,
+      "text": "Hmm, sounds like things were going pretty well. So what happened?",
+      "voice": null,
+      "original_text_hash": 13833392802637044916
+    },
+    {
+      "id": "ABOUT_US_3",
+      "index": 52,
+      "text": "Yes, things were perfect. What happened is, well, I... it is difficult to talk about.\nBut I saw it happen. I witnessed the Chinz-Rahl celebration.\nI felt the Ultron fill the empty place that I did not know was there.\nI saw the Grand Proctor pass it to\nwell, they say that the Chief Groo did not know that it was so heavy and slippery.\nPerhaps it was a combination of factors.\nSome who have reviewed the records claim it was actually a conspiracy!\nThe commission investigation officially stated that the Ultron was rendered inoperative by the fall to the ground,\nyet many feel that the whole story has not yet been told!\nAs it struck the ground, I saw its glow fade, and then the painful void incapacitated all.\nAll Utwig immediately donned the mask of Ultimate Embarrassment and Shame with a vow to wear it forever!\nBonfires all over Fahz consumed all but this mask; no other mask was spared!\nThe Visage of Ceremonial Orations in all of its contexts and revisions,\nas I'm sure you understand,\nall of the courting masks from the clever and intriguing Veil of Flirtatious Prancing\nto the infamous Lewd Monacle... all consumed by the hungry flames.\nEven the most fundamental fixtures were committed to this irreversible fate.\nThe Mask of Natural Bodily Excretions once hung in every lavatory!\nMost of the public facilities have removed the disposable mask dispensers\nbut every once in a while I still see such a repository... always empty.\nIn despair, we gave the broken device to our allies, the Supox, who live at Beta Librae.\nWe just couldn't stand to look at it any longer.\nAt that time, many suggested that we use the Precursor relic as a form of self punishment.\nThe proposal was that we collectively go to the second moon of the sixth planet of Zeta Hyades\nand use the ancient planeteering device to end our existence.\nAfter much discussion, we decided that we deserved to suffer.\nWe can use the Bomb if we ever decide the time is right\nin the meantime, we atone for our grievous mistake with our collective misery.\nI suddenly sink into a chasm of depression. I must go.",
+      "voice": "utwig-033.ogg",
+      "original_text_hash": 1731116098108714182
+    },
+    {
+      "id": "what_about_urquan_1",
+      "index": 53,
+      "text": "Do you know anything about the enslaving Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 209744949837493201
+    },
+    {
+      "id": "ABOUT_URQUAN_1",
+      "index": 54,
+      "text": "We know nothing of this species that you mention.\nHowever, while we are on the subject of evil and powerful species\nwe have encountered a particularly gruesome race that seemed to come from the direction of Arcturus.\nWhen we hailed them, they responded with mighty weapons that sent our delegation to their deaths\nlucky fools.\nThe alien's dark crusty battleships are capable of guiding spinning mines into almost any location\nand should an enemy get too close, a fiery corona emerges to inflict fearsome damage.\nIn our skirmishes with the race, who called themselves the Kohr-Ah\nwe found that by using our own shielding capability we could sweep through the mines, absorb the corona\nand then get close enough to the dark ships to give a lick of our own.\nIn truth, however, they are very powerful and ruthless.\nWhen the Kohr-Ah started to press toward our homeworld\nwe thought that our deserved punishment was being administered.\nBut then, a mystery? They suddenly became disinterested and veered away. Bah! Confounding frustration!\nWith the Ultron I could speak knowledgeably on this subject!\nTo have this quality torn from our grasp emphasizes how meaningless our existence really is.\nThis lack of meaning is what drives my species to the serious contemplation of a quick end!",
+      "voice": "utwig-034.ogg",
+      "original_text_hash": 5738146815983511789
+    },
+    {
+      "id": "what_about_urquan_2",
+      "index": 55,
+      "text": "Yes, that is really a pity. So what more do you know about the Kohr-Ah?",
+      "voice": null,
+      "original_text_hash": 10441238462260781070
+    },
+    {
+      "id": "ABOUT_URQUAN_2",
+      "index": 56,
+      "text": "Aagghh! Your query once again painfully reminds me of the Ultron and what it was for the Universe!\nI could tell you all and correct ALL that is wrong in the Universe!\nAll I can tell you is that the Kohr-Ah live to kill.\nTheir stated purpose is to seek out new life and new civilizations\nand then annihilate them.\nWe seemed to qualify as such and that is why it is puzzling that after pursuing us with some tenacity\nthey suddenly turned away and headed toward Crateris.\nAangh! All this speculation would be unnecessary if only we had saved the Ultron!\nIt would not have taken much; a diving catch, a thrown pillow\neven a fuzzy wumpus would have broken the fall satisfactorily!\nIndeed, a panel convened to analyze the possibilities\nconcluded there were at least 623 ways that the Ultron could have been saved\nif we had been prepared! Aagghh!\nLet us cease our discussion concerning these matters.",
+      "voice": "utwig-035.ogg",
+      "original_text_hash": 8212193789002476162
+    },
+    {
+      "id": "got_ultron",
+      "index": 57,
+      "text": "Hey guys, guess what we've got! We've got THE ULTRON! Wanna see it?",
+      "voice": null,
+      "original_text_hash": 10867294979146466057
+    },
+    {
+      "id": "DONT_WANT_TO_LOOK",
+      "index": 58,
+      "text": "Gaaah! Should I set my gaze upon such a sight I might suffer sleepless nights for years on end!\nIt is a symbol of the collective Utwig failure.\nIt is our ultimate tragedy!",
+      "voice": "utwig-036.ogg",
+      "original_text_hash": 10044412979175463585
+    },
+    {
+      "id": "SICK_TRICK_1",
+      "index": 59,
+      "text": "Why do you flaunt the husk which once was the Ultron?\nCan't you see how much we suffer? Is this not enough?\nThis thing you possess... this husk of lost destiny, it is the symbol of the Ultimate Utwig Anguish!\nDo - Not - Tor - ment - Me - So!",
+      "voice": "utwig-037.ogg",
+      "original_text_hash": 11331668329847744641
+    },
+    {
+      "id": "SICK_TRICK_2",
+      "index": 60,
+      "text": "AAAHHH!! Stop! I know that I deserve it but I cannot bear it.\nStop, please! To view this thing... I would rather bare my face\nand work all of its parts in a grotesque display of self-degradation! Leave now!",
+      "voice": "utwig-038.ogg",
+      "original_text_hash": 12677428306427346066
+    },
+    {
+      "id": "bye_neutral",
+      "index": 61,
+      "text": "We now terminate communication in a civil, yet efficient manner.",
+      "voice": null,
+      "original_text_hash": 2703465546153965191
+    },
+    {
+      "id": "GOODBYE_NEUTRAL",
+      "index": 62,
+      "text": "As do we. Go now with neither malice nor joy.",
+      "voice": "utwig-039.ogg",
+      "original_text_hash": 4503204669341037875
+    },
+    {
+      "id": "TOO_LATE",
+      "index": 63,
+      "text": "BUT WAIT!!\nThe Ultron moans and hums! Matters of significance are being relayed to our brains.\nIt has been so long since we communicated with the Ultimate in such a manner\nbut slowly, the truth is revealed!!...\nSomething dire is afoot in the galaxy\nThe Kohr-Ah, the dark cousins of the Ur-Quan, have won their Doctrinal Conflict\nand are even now moving through the stars on a mission of universal genocide.\nThe Ultron reveals that our participation is required to stop the Kohr-Ah\nbefore they destroy all life in this part of the galaxy.\nWe will grant you the boon of our nigh invincible Jugger starship designs\nas well as a supply of trained starship commanders.\nIf our allies, the Supox, are still alive, I am certain they will give you the same assistance.",
+      "voice": "utwig-040.ogg",
+      "original_text_hash": 12797834769535443481
+    },
+    {
+      "id": "name_1",
+      "index": 64,
+      "text": "The New Alliance of Free Stars",
+      "voice": null,
+      "original_text_hash": 2930717857211576419
+    },
+    {
+      "id": "name_2",
+      "index": 65,
+      "text": "The Concordance of Alien Nations",
+      "voice": null,
+      "original_text_hash": 16943543974912230107
+    },
+    {
+      "id": "name_3",
+      "index": 66,
+      "text": "The United Federation of Worlds",
+      "voice": null,
+      "original_text_hash": 7156419825357983966
+    },
+    {
+      "id": "name_40",
+      "index": 67,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 68,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "HAPPY_DAYS",
+      "index": 69,
+      "text": "AAAHHH!! Every divot, every crack on Its surface is etched forever in my soul!\nRemove It from my sight lest I purge my... hey!\nthat is not the devastated Ultron\nit is the image of the Ultron BEFORE!... a trick? A TRICK?!\nOooh! I had no idea that any species could sink so low!\nHow dare you try to manipulate me with that cheap stage prop?!... why it's not even\nHey, wait a second, it looks like... CAN IT BE?... YES, IT IS!...A MIRACLE!!\nOH HAPPY DAY!!  JOYOUS OCCASION!!\nYou have our eternal thanks, good Captain!\nYou will be immortalized as the blessed figure that delivered unto us our future!\nWe will revere your very likeness!\nLet me take the Ultron...yes, I feel the link...the knowledge, and... the Power.\nHmm, it seems that there is much to do.\nIndeed, it seems that you should proceed to the second moon of the sixth planet of Zeta Hyades\nand take what you find there; we no longer have need for it\nbut the Ultron reveals that YOU will!\nI thank you for your part in the grand scheme. We now recover that which is ours via destiny\nand proceed to perform our essential service for the universe.",
+      "voice": "utwig-041.ogg",
+      "original_text_hash": 1571552637726108510
+    },
+    {
+      "id": "OK_ATTACK_KOHRAH",
+      "index": 70,
+      "text": "BUT WAIT!!\nThe Ultron throbs and whistles! Matters of significance are being relayed to our brains.\nIt has been so long since we communicated with the ultimate in such a manner\nbut slowly, the truth is revealed... our destiny!!\nWe have been directed to join with our Supox allies and attack...\nYOU!...\n...no wait, that's wrong. Sorry.\nWe attack... YOUR ENEMIES... the Ur-Quan and the Kohr-Ah!...\n...no, that's not quite right either... what? Oh, okay.\nWe must strike ONLY the black ships... only the Kohr-Ah!\nIN ADDITION! We will grant you the boon of our Jugger starship designs\nas well as a supply of trained starship commanders.\nOur Juggers are nigh invincible!\nI can also say with certainty that our allies, the Supox, will give you the same assistance.\nTogether, we shall defeat the Kohr-Ah!... or at least provide you with a few more months\nto find a more permanent solution.\nNow, Captain, we must leave to prepare our battle fleets. Wish us luck!",
+      "voice": "utwig-042.ogg",
+      "original_text_hash": 595129270504050509
+    },
+    {
+      "id": "whats_up_after_space",
+      "index": 71,
+      "text": "Tell us what events have transpired since we last met.",
+      "voice": null,
+      "original_text_hash": 6695474902399226191
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_SPACE_1",
+      "index": 72,
+      "text": "We have met the Kohr-Ah in battle, and... well, let me explain.\nInitially, when our forces swept to the Horologii stars\nthey proved effective against the armaments of the Kohr-Ah.\nWith our shield-absorption technology we were able to sweep clear the Kohr-Ah's spinning blades\nand absorb the brunt of their fiery corona, allowing our Supox allies to concentrate on the vessels themselves.\nHowever, the costs were high... very high.\nI should don the facial effigy of Remorse For Lost Comrades.",
+      "voice": "utwig-043.ogg",
+      "original_text_hash": 12752927477316614985
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_SPACE_2",
+      "index": 73,
+      "text": "As you know, we were forced to withdraw from the Kohr-Ah offensive.\nAlthough we were able to make good account of ourselves, our casualties were high.\nIn our attempt to balance the Doctrinal Conflict between the Kohr-Ah and the Ur-Quan\nwe avoided the Ur-Quan; however, they continued to engage us whenever possible.\nWe had no choice but to take whatever losses were handed to us.\nI can think of no mask that properly expresses how I feel concerning this situation.",
+      "voice": "utwig-044.ogg",
+      "original_text_hash": 16047931537603469094
+    },
+    {
+      "id": "what_now_after_space",
+      "index": 74,
+      "text": "Given what you have learned, what do you think we should do now?",
+      "voice": null,
+      "original_text_hash": 10760664492502231253
+    },
+    {
+      "id": "DO_THIS_AFTER_SPACE",
+      "index": 75,
+      "text": "We have done all that we can. There are no others capable of significant intervention.\nCertain doom grows imminent for all of us. We lament.\nBut wait!...listen closely! The Ultron intervenes! There is a solution!\nYOU are the solution!\nOnly YOU may halt the Kohr-Ah's seemingly inevitable advance upon life.\nThey CAN be defeated and you MUST do it!\nOh, my spirit is lifted! If only my mask of Confident and Lofty Posture had not been burned\nI would don it with rash impudence ignoring all etiquette and procedures!",
+      "voice": "utwig-045.ogg",
+      "original_text_hash": 4566468158040673371
+    },
+    {
+      "id": "bye_after_space",
+      "index": 76,
+      "text": "We thank you for your aid. We go now to address the matters at hand.",
+      "voice": null,
+      "original_text_hash": 5872195819755875586
+    },
+    {
+      "id": "GOODBYE_AFTER_SPACE",
+      "index": 77,
+      "text": "Excellent! The Ultron's coruscations indicate that your future actions are laced with great potential!\nProceed with our heartiest endorsement!",
+      "voice": "utwig-046.ogg",
+      "original_text_hash": 5315790277033074246
+    },
+    {
+      "id": "whats_up_before_space",
+      "index": 78,
+      "text": "We are pleased that we were of assistance in the recovery of your Ultron.",
+      "voice": null,
+      "original_text_hash": 5496088373433304667
+    },
+    {
+      "id": "GENERAL_INFO_BEFORE_SPACE_1",
+      "index": 79,
+      "text": "Indeed! We are in the process of reacclimating our brains to its metawave gyrations.\nEven now we are compelled to implement a plan of interference, thwarting the goals of the Kohr-Ah.\nWe sense through the influence of the Ultron that these creatures of evil\nhave goals which are mutually exclusive with our existence, and your own.\nEven now, aided by the intangible guidance of the Ultron, we formulate a plan\nthat will serve to preserve the diversity in the galaxy.\nWe prepare an armada composed of the collective might of both the Utwig and Supox forces\nthat will pursue the invaders with the intent of foiling their plan of doom.",
+      "voice": "utwig-047.ogg",
+      "original_text_hash": 16076016572694697938
+    },
+    {
+      "id": "GENERAL_INFO_BEFORE_SPACE_2",
+      "index": 80,
+      "text": "We have determined that the Kohr-Ah are engaging in battle with the species you call Ur-Quan.\nWe are unable to determine the cause of this conflict.\nEven meticulous employment of the Ultron in this matter has yielded only minimal insight.\nIn any case, after interpreting the direction provided by the Ultron\nwe must let the two species cancel each other out via attrition through combat.",
+      "voice": "utwig-048.ogg",
+      "original_text_hash": 8885307301839536827
+    },
+    {
+      "id": "what_now_before_space",
+      "index": 81,
+      "text": "Does the remarkable device suggest to us a potential course of action?",
+      "voice": null,
+      "original_text_hash": 9360409733649320112
+    },
+    {
+      "id": "DO_THIS_BEFORE_SPACE",
+      "index": 82,
+      "text": "Your request is within our capabilities. One moment\nMmmm, emanations from the Ultron... orange furry air breathes tender yawns\nYes, it all becomes clear now... you must do something with the great Bomb\nthe Precursor relic we kept at Zeta Hyades VI-B.\nIt seems that this Bomb must be, ah...\neaten?... no. Hugged?... no\nAh! IMPROVED! That's it!  The Bomb must be improved to fulfill its final destiny!",
+      "voice": "utwig-049.ogg",
+      "original_text_hash": 6773255734283600429
+    },
+    {
+      "id": "bye_before_space",
+      "index": 83,
+      "text": "We anticipate an era of glory for the Utwig! Farewell!",
+      "voice": null,
+      "original_text_hash": 16058995092693973014
+    },
+    {
+      "id": "GOODBYE_BEFORE_SPACE",
+      "index": 84,
+      "text": "There is much for us to do. May the Ultron be with you!",
+      "voice": "utwig-050.ogg",
+      "original_text_hash": 14544849595933997636
+    },
+    {
+      "id": "how_went_war",
+      "index": 85,
+      "text": "What were the results of your actions against the Ur-Quan and Kohr-Ah?",
+      "voice": null,
+      "original_text_hash": 6037432732717628859
+    },
+    {
+      "id": "ABOUT_BATTLE",
+      "index": 86,
+      "text": "Ah Captain! The battle against the Kohr-Ah was fearsome.\nAs we and our allied Supox approached the main force\nwe found that the Kohr-Ah and the species you call the Ur-Quan\nwere engaged in a conflict of fundamental doctrine in which the Kohr-Ah thesis seemed superior.\nActing under the guidance of the Ultron, we engaged the Kohr-Ah in an effort to balance the battle.\nWe met with some success. We would sweep the mines clear and deplete the energy reserves of the Kohr-Ah vessels.\nThen, the brave Supox would dart in and direct their weapons against the black ships.\nTiming was critical. Our losses were high.\nBattered in the extreme, we were forced to withdraw.",
+      "voice": "utwig-051.ogg",
+      "original_text_hash": 6513253078006098737
+    },
+    {
+      "id": "how_goes_war",
+      "index": 87,
+      "text": "How is your engagement with the Kohr-Ah and Ur-Quan going?",
+      "voice": null,
+      "original_text_hash": 4630283800425616879
+    },
+    {
+      "id": "BATTLE_HAPPENS_1",
+      "index": 88,
+      "text": "Even as I speak, brave Utwig and noble Supox launch themselves against the merciless arsenal of the Kohr-Ah.\nWe continue to refine our tactics.\nAlas, the Kohr-Ah are winning their war with the Ur-Quan.\nWe grow uncomfortable with the success that the Kohr-Ah are currently enjoying,\nso we fight only the Kohr-Ah in hopes of weakening their stand against the Ur-Quan.\nThe Ur-Quan complicate matters by blasting our vessels with fusion bolts\nthus we have made it a policy to avoid Ur-Quan ships whenever possible.",
+      "voice": "utwig-052.ogg",
+      "original_text_hash": 17147366843974305118
+    },
+    {
+      "id": "BATTLE_HAPPENS_2",
+      "index": 89,
+      "text": "We have discovered that the Kohr-Ah, in addition to their formidable battle vessels\nwill soon possess an immense ship capable of inflicting destruction on a vast scale.\nI do not need to examine the pulsations of the Ultron to know that they will use this instrument\nto implement their stated objective: the elimination of all intelligent life besides their own.",
+      "voice": "utwig-053.ogg",
+      "original_text_hash": 8728140141341588540
+    },
+    {
+      "id": "FLEET_ON_WAY",
+      "index": 90,
+      "text": "Even as I utter these words, the combined military resource of both the Utwig and Supox\nproceed toward Horologii to intercept the Kohr-Ah.\nBesides the importance of our efforts, the Ultron indicates\nall futures which include our survival are contingent on the actions that you now take.",
+      "voice": "utwig-054.ogg",
+      "original_text_hash": 12256120724241550993
+    },
+    {
+      "id": "learn_new_info",
+      "index": 91,
+      "text": "I'm glad things are looking up. Anything in the way of new developments?",
+      "voice": null,
+      "original_text_hash": 541947762923048892
+    },
+    {
+      "id": "NO_NEW_INFO",
+      "index": 92,
+      "text": "Even now we acclimate to the great power of the Ultron\nbut are overwhelmed with the resources that the Ultron offers\nin effect, we have grown rusty in its use.\nAs soon as we regain our proficiency, we will be able to accommodate all your requests.",
+      "voice": "utwig-055.ogg",
+      "original_text_hash": 12328915437677087639
+    },
+    {
+      "id": "SAMATRA",
+      "index": 93,
+      "text": "The Kohr-Ah will soon possess a seemingly invincible vessel called the Sa-Matra.\nI cannot give you specifics regarding this matter other than its general location\nsomewhere in the Crateris constellation.\nThe Sa-Matra is seemingly invincible, able to lay waste to an entire planet in less than an eyeblink.\nThe Ultron indicates that you must somehow destroy this thing or the Kohr-Ah will destroy all known life.",
+      "voice": "utwig-056.ogg",
+      "original_text_hash": 737166290422962420
+    },
+    {
+      "id": "what_now_homeworld",
+      "index": 94,
+      "text": "What course of action does the Ultron, your powerful attribute amplifier, recommend for us now?",
+      "voice": null,
+      "original_text_hash": 8989559592402725383
+    },
+    {
+      "id": "HOPE_KILL_EACH_OTHER",
+      "index": 95,
+      "text": "We can only hope that our efforts to balance the forces of the Ur-Quan and the Kohr-Ah\nwill permit them to mutually annihilate each other.",
+      "voice": "utwig-057.ogg",
+      "original_text_hash": 7753783370282940777
+    },
+    {
+      "id": "how_is_ultron",
+      "index": 96,
+      "text": "It seems that you are making good use of the Ultron. Is this so?",
+      "voice": null,
+      "original_text_hash": 77840686452368237
+    },
+    {
+      "id": "ULTRON_IS_GREAT",
+      "index": 97,
+      "text": "You ask a question that I hesitate to answer. You see, normally at this point\nI would don the mask of Rampant Jubilation and Jumping With Ecstatic Glee.\nThis mask is seldom worn, for few events merit its complexity.\nSince I do not currently possess this mask\nlet me just say that the Ultron is everything it could ever possibly be and MORE!\nEven now I sense that your curiosity is piqued to an extreme.\nYou wish to ask more questions.\nHowever, these questions are probably best left unasked.\nIt is through the potent yet harmonious force of the Ultron\nthat I will now cause you to drop the subject altogether.",
+      "voice": "utwig-058.ogg",
+      "original_text_hash": 8683551051812450464
+    },
+    {
+      "id": "bye_allied_homeworld",
+      "index": 98,
+      "text": "We acknowledge the celestial Ultron and your assistance. We will now be on our way.",
+      "voice": null,
+      "original_text_hash": 4007532565560358407
+    },
+    {
+      "id": "GOODBYE_ALLIED_HOMEWORLD",
+      "index": 99,
+      "text": "It is as the Ultron wills. So be it. We bid you the very best luck.\nAlthough it is true that all possibilities can be realized through proper utilization of the Ultron\nwe are, as yet, deficient operators of this grand device.\nWe will, however, make a best attempt to help you from afar.",
+      "voice": "utwig-059.ogg",
+      "original_text_hash": 6812755941517773656
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_1",
+      "index": 100,
+      "text": "Ah! It is the legendary Earth Captain! A grand celebration is in order!\nWe prepare now for the festivities!\nMany will bow before you and offer their profuse thanks!\nProceed now to our main spaceport and then on to the parade!\nThe two week celebration of great thanks will begin! Joy!\nWhat? You are too busy? Alas... perhaps another time.",
+      "voice": "utwig-060.ogg",
+      "original_text_hash": 1941881286858307474
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_2",
+      "index": 101,
+      "text": "Our spirits are lifted by your visit!\nI sense through the Ultron's powers that you are curious\nabout the status of your well-deserved facial appliance. Fear not!\nEven though we currently have no masks worthy of your stature\nwith the re-establishment of the Ultron within the structure of the Utwig wholeness\nwe proceed with the design and implementation of what will truly be the pinnacle of Utwig ingenuity.\nAt long last, you will be able to cover your unsightly mug with distinction!",
+      "voice": "utwig-061.ogg",
+      "original_text_hash": 3039585473449621062
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_3",
+      "index": 102,
+      "text": "Ah, I see that it is the great Earth Captain honoring my lowly self with undeserved attention.\nEven now my skin prickles with embarrassment since I am unable to don a mask\nthat accurately indicates my awed and respectful attitude toward you.\nI am glad to say, however, that we are in a process\nof redefining and restructuring our entire countenance catalog.\nThe results will be dramatic since the Ultron is now integrated in this process.\nIn the meantime, I beg that you bear with us while we complete this task.",
+      "voice": "utwig-062.ogg",
+      "original_text_hash": 4580727027051345299
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_4",
+      "index": 103,
+      "text": "I am honored to encounter your greatness!\nCurrently, our collective creative force is engaged in a project to honor you.\nWe are in the process of transforming a planetary body\nin a location that will remain secret\ninto a Great Mask. This mask will be worn by one individual and ONLY one individual!\nIt is the mask of the great Captain! It is YOU that wears this mask.\nWhen you don this mask, we will see the eyes come alive.\nWhen you speak, all will hear. When you smile, we will rejoice!\nI sense your excitement concerning this project!",
+      "voice": "utwig-063.ogg",
+      "original_text_hash": 7736600347618403547
+    },
+    {
+      "id": "HELLO_BEFORE_KOHRAH_SPACE_1",
+      "index": 104,
+      "text": "Suddenly I am overcome with embarrassment!\nI possess the distinguished honor of addressing the legendary Earth Captain!\nPlease excuse my lack of proper facial appliance.\nThis occasion ideally calls for me to don the Expression of Ultimate Gratitude.\nEegh! I am compelled by the forceful Emanations of the Ultron to describe the appearance of the mask.\nIts foundation is composed entirely of a matrix of beetle secretions and Trooba Fern\nin an intricate and complex texture.\nThe process is extremely time-consuming since even the best-trained beetle colonies\nwill build a thousand rejects for every successful foundation.\nAlas, it will be many years before any of the Utwig will be able to wear such a mask.",
+      "voice": "utwig-064.ogg",
+      "original_text_hash": 9000899027347983467
+    },
+    {
+      "id": "HELLO_BEFORE_KOHRAH_SPACE_2",
+      "index": 105,
+      "text": "Do my eyes deceive me? Am I a victim of a glorious vision?\nI believe that I see before me the legendary Earth Captain!\nWe have conducted a complete survey of the Utwig\nand we have convened the committee that will guide the formation of your Saintly Facade.\nWe eagerly anticipate the delivery of an appliance!\nImagine, when development is completed in perhaps less than ten years\nyou may esthetically conceal the constant reminder of your bestial aspects\nand walk with pride amongst those of sophisticated intellect!",
+      "voice": "utwig-065.ogg",
+      "original_text_hash": 6411239655606686987
+    },
+    {
+      "id": "HELLO_DURING_KOHRAH_SPACE_1",
+      "index": 106,
+      "text": "The Ultron indicates that you must leave the area immediately! You are in extreme danger!\nThis area is currently controlled by either the Ur-Quan or the Kohr-Ah, we are not sure.\nWe are currently engaging the Kohr-Ah in an attempt to balance the conflict. Stay clear!",
+      "voice": "utwig-066.ogg",
+      "original_text_hash": 12040938009059860741
+    },
+    {
+      "id": "HELLO_DURING_KOHRAH_SPACE_2",
+      "index": 107,
+      "text": "Battle rages in the immediate area. Beware!\nThe Ur-Quan and the Kohr-Ah are engaged in a conflict of doctrinal extremes.\nThe Ur-Quan argument seems inferior.\nYou must clear the area before you become a victim of either the Ur-Quan or Kohr-Ah.\nLeave now! We shall remain in an attempt to balance the conflict\nso that the two forces of evil might more effectively negate each other.",
+      "voice": "utwig-067.ogg",
+      "original_text_hash": 2571798360712205996
+    },
+    {
+      "id": "HELLO_AFTER_KOHRAH_SPACE_1",
+      "index": 108,
+      "text": "We extend our sincere greetings to the remarkable being\nthat returned to the Utwig the meaning for our continued existence.\nWe have returned from a conflict of a grand scale with our fleet battered\nbut our masks of Valor and Derring-Do held high!",
+      "voice": "utwig-068.ogg",
+      "original_text_hash": 14437640416962256265
+    },
+    {
+      "id": "HELLO_AFTER_KOHRAH_SPACE_2",
+      "index": 109,
+      "text": "Ah, it is the most recently appointed Ultron Saint -- the Captain from Earth!\nWe flick our facial appliances collectively in a smart salute indicating both respect and gratitude.\nHow can we assist you?",
+      "voice": "utwig-069.ogg",
+      "original_text_hash": 10446096985010417397
+    },
+    {
+      "id": "UP_TO_YOU",
+      "index": 110,
+      "text": "The prognosticating harmonics of the Ultron reveal a truth.\nWe Utwig have done all that CAN be done to aid you.\nOur tasks must now be confined to directing the many channels of causation.\nFeel confident that we are using the Ultron to this end.",
+      "voice": "utwig-070.ogg",
+      "original_text_hash": 5928357755892023543
+    },
+    {
+      "id": "can_you_help",
+      "index": 111,
+      "text": "Material aid from you would tilt the balance in the favor of Good.",
+      "voice": null,
+      "original_text_hash": 3288921246606526340
+    },
+    {
+      "id": "HOW_HELP",
+      "index": 112,
+      "text": "Hmm... a reasonable request. Give us a second while we consult the Ultimate.",
+      "voice": "utwig-071.ogg",
+      "original_text_hash": 3110338026346625284
+    },
+    {
+      "id": "DONT_NEED",
+      "index": 113,
+      "text": "The Ultron confirms the evidence of our ocularities\nyou are strong, smart and capable.\nYour fleet is at maximum strength and your ethics are sound.\nFurther assistance would be redundant.",
+      "voice": "utwig-072.ogg",
+      "original_text_hash": 9818123397296768939
+    },
+    {
+      "id": "HAVE_4_SHIPS",
+      "index": 114,
+      "text": "Just so. The Ultron has hummed its assent.\nTake possession of four of our Jugger craft this instant!",
+      "voice": "utwig-073.ogg",
+      "original_text_hash": 2906938360502687381
+    },
+    {
+      "id": "NO_ULTRON_AT_BOMB",
+      "index": 115,
+      "text": "Foolish tricksters! Don't you know the Druuge tried that ploy on us just a few days ago?\nYou say you have the Ultron, that you wish to return it to us... LIES!\nThe moment our back is turned, you will sneak down to the surface of this world\nand deprive us of our destructive device of dignity.\nIf you truly had our Ultron, repaired to its state of perfection\nyou would surely take it to the Proctors at our homeworld at Beta Aquarii.\nSpeak no more of this subject.",
+      "voice": "utwig-074.ogg",
+      "original_text_hash": 12943282698218747985
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 116,
+      "text": "Hello again, heroic humanoid!\nEver since you returned the Ultron to us\neverything has been WONDERFUL... just perfect!\nWithin just two days our factories will begin churning out\nappropriate facial appliances, and I have already picked out my first mask\nthe Domino of Unrivaled Merriment!\nYes, we are all ecstatic... even the High Proctor gambols\nas she performs the Exultant Caper of Revelation!\nLook how she leaps with the Ultron held high!\nHow she twists, how she twirls, how she slips and tosses the Ultron into the air... OH NOOooooo!!!\n(CRASH!!)",
+      "voice": "utwig-075.ogg",
+      "original_text_hash": 15433057866958729091
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["utwig", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["utwig", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

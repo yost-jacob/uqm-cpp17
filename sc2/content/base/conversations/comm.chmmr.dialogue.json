@@ -1,0 +1,683 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "chmmr",
+  "resource": "comm.chmmr.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "WHY_YOU_HERE_1",
+      "index": 0,
+      "text": "we are the chenjesu... we are the mmrnmhrm\nwe do not understand how you have penetrated the slave shield or why\nbut in doing so you have interrupted the process\nexplain this intrusion.",
+      "voice": "chmmr-000.ogg",
+      "original_text_hash": 836459179369380551
+    },
+    {
+      "id": "WHY_YOU_HERE_2",
+      "index": 1,
+      "text": "once more you interfere with the process... why?",
+      "voice": "chmmr-001.ogg",
+      "original_text_hash": 4844265183402152099
+    },
+    {
+      "id": "WHY_YOU_HERE_3",
+      "index": 2,
+      "text": "your presence here is painful to us... what is it you wish?",
+      "voice": "chmmr-002.ogg",
+      "original_text_hash": 15028933046892471747
+    },
+    {
+      "id": "WHY_YOU_HERE_4",
+      "index": 3,
+      "text": "your presence here is painful to us... what is it you wish?",
+      "voice": "chmmr-003.ogg",
+      "original_text_hash": 15028933046892471747
+    },
+    {
+      "id": "find_out_whats_up",
+      "index": 4,
+      "text": "We came here to find out what you're doing down there.",
+      "voice": null,
+      "original_text_hash": 13686170188259626105
+    },
+    {
+      "id": "HYBRID_PROCESS",
+      "index": 5,
+      "text": "though your ship's design is unfamiliar to us\nwe now understand that you are of human origin and so we will share with you\nour reasons for accepting the status of ur-quan slave\nin 2135, our great alliance burned within the crucible of sentience\nthough our fleets of armed starships held back the hierarchy's grotesque armada for many years\nin the end, the ur-quan unleashed a power upon us that was so overwhelming\nwe knew we would be annihilated if we did not submit\nthis unstoppable power, this ultimate weapon was a huge starship\nan unstoppable battle platform built by the precursors in the ancient past\nyour vessel shares some similarities in design to the ur-quan's battle platform\nwhich they call `sa-matra', meaning `great trophy'\nthe sa-matra was many times larger than your ship, and bore weapons and defensive systems\nthat made it invulnerable to all of our technologies\nit remains a mystery to us why the ur-quan fought us for so long without using the sa-matra\nbut when they finally brought the ship into combat\nthe sa-matra incinerated our finest broodhome vessels from ten times our own ships' weapon range.\nwe had no choices beyond submission or devastation\nbefore the ur-quan arrived to accept our surrender, we sent one last message to your people\na message suggesting that your species do as we chenjesu and mmrnmhrm planned to do\nwe would accept the ur-quan's demands and become slaves\nuntil such a time as we found a way to destroy or neutralize the sa-matra.",
+      "voice": "chmmr-004.ogg",
+      "original_text_hash": 3924997017029110129
+    },
+    {
+      "id": "need_help",
+      "index": 6,
+      "text": "We are struggling against the Ur-Quan. Can't you help us?",
+      "voice": null,
+      "original_text_hash": 6427488672543739260
+    },
+    {
+      "id": "CANT_HELP",
+      "index": 7,
+      "text": "we cannot be of any assistance now... we are in the middle of the process.\ni will explain\nafter we chenjesu and mmrnmhrm were defeated by the ur-quan\nwe chose to be encased in a single slave shield on this world\nas soon as the ur-quan departed, we began the process\nwe initiated a synthesis of our two species, our two cultures\none crystalline, the other purely mechanical\nthis process, fueled only by the radiant energy of our sun\nwill eventually produce a new hybrid race\nand when the process is complete, we will crack the ur-quan slave shield\nand emerge from our chrysalis like a winged insect unleashed from its cocoon\nthen we will be ready and capable to deal with the ur-quan, their battle thralls\nand their dreaded sa-matra.",
+      "voice": "chmmr-005.ogg",
+      "original_text_hash": 5655625747081305236
+    },
+    {
+      "id": "why_no_help",
+      "index": 8,
+      "text": "But why can't you help us now?!",
+      "voice": null,
+      "original_text_hash": 2627807050157038657
+    },
+    {
+      "id": "LONG_TIME",
+      "index": 9,
+      "text": "the complete synthetic hybridization of the chenjesu and the mmrnmhrm species\nwill require approximately thirty-five of your earth years\nthis extended duration is necessary because our synthesis mechanisms\nare dependent exclusively on the light of our sun for energy.",
+      "voice": "chmmr-006.ogg",
+      "original_text_hash": 9525462704004866762
+    },
+    {
+      "id": "what_if_more_energy",
+      "index": 10,
+      "text": "What if we could find some way to get you more energy? Would that speed things up?",
+      "voice": null,
+      "original_text_hash": 17679172649024501823
+    },
+    {
+      "id": "DANGER_TO_US",
+      "index": 11,
+      "text": "what you describe is theoretically possible\nbut it would pose a great danger to us\nthe process must be executed as planned... or it may fail catastrophically\nwe would be destroyed.",
+      "voice": "chmmr-007.ogg",
+      "original_text_hash": 7010246090685279777
+    },
+    {
+      "id": "need_advice",
+      "index": 12,
+      "text": "We really need advice from you.",
+      "voice": null,
+      "original_text_hash": 1090756222368207263
+    },
+    {
+      "id": "WHAT_ADVICE",
+      "index": 13,
+      "text": "our wisdom is available... detail your need.",
+      "voice": "chmmr-008.ogg",
+      "original_text_hash": 1626407048479937161
+    },
+    {
+      "id": "how_defeat_urquan",
+      "index": 14,
+      "text": "How do you think we can defeat the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 14633711919543767377
+    },
+    {
+      "id": "DEFEAT_LIKE_SO",
+      "index": 15,
+      "text": "you must find some way to destroy the sa-matra\nto do this you will need a powerful weapon capable of destroying an entire planet\nbut that is not all\nyou will also require some way to distract the ur-quan\nto give you the opportunity to use the weapon.",
+      "voice": "chmmr-009.ogg",
+      "original_text_hash": 2176578598172962319
+    },
+    {
+      "id": "what_about_tpet",
+      "index": 16,
+      "text": "I seem to have acquired a Dnyarri. What do you make of it?",
+      "voice": null,
+      "original_text_hash": 9894273919115367828
+    },
+    {
+      "id": "SCARY_BUT_USEFUL",
+      "index": 17,
+      "text": "we know the dnyarri only from legend\nwhere they are described as the embodiment of evil and cruelty\nif ever there was a devil, captain, it was the dnyarri\nhowever, if in fact the creature you possess is one of this ancient breed\nits mental power may be useful to help confuse the ur-quan.",
+      "voice": "chmmr-010.ogg",
+      "original_text_hash": 4247924695673621282
+    },
+    {
+      "id": "what_about_bomb",
+      "index": 18,
+      "text": "I got this huge bomb-thing from a race called the Utwig. Is it really a weapon?",
+      "voice": null,
+      "original_text_hash": 15109864361794490802
+    },
+    {
+      "id": "ABOUT_BOMB",
+      "index": 19,
+      "text": "the device you speak of is a huge matter-antimatter bomb\nif you had activated it, the weapon would have annihilated your ship and everything else within five hundred kilometers\nthe destructive power of this weapon makes it suitable for the most important task you will ever undertake\nthe neutralization of the sa-matra, the ur-quan's nearly invincible battle platform.",
+      "voice": "chmmr-011.ogg",
+      "original_text_hash": 791898514713785252
+    },
+    {
+      "id": "what_about_sun_device",
+      "index": 20,
+      "text": "I er... borrowed a device from the Mycon. Do you know what it is?",
+      "voice": null,
+      "original_text_hash": 6653297388004280706
+    },
+    {
+      "id": "ABOUT_SUN_DEVICE",
+      "index": 21,
+      "text": "we do not recognize this device\nbut it appears to be a precursor tool which can radiate a great amount of energy.",
+      "voice": "chmmr-012.ogg",
+      "original_text_hash": 9444202239636479853
+    },
+    {
+      "id": "what_about_samatra",
+      "index": 22,
+      "text": "What more can you tell me about this Sa-Matra?",
+      "voice": null,
+      "original_text_hash": 11169637888766330466
+    },
+    {
+      "id": "ABOUT_SAMATRA",
+      "index": 23,
+      "text": "we only glimpsed it once, when it devastated our most powerful fleet\nit was several times the size of your vessel\nwith a host of unusual weapons protruding from its scabrous hull\nbut the most dangerous feature of the sa-matra was its annihilation toroids...\nwith this weapon they could vaporize ships from the far side of a solar system\nor cut broad swaths of devastation across a planet in seconds.",
+      "voice": "chmmr-013.ogg",
+      "original_text_hash": 9415837661154000639
+    },
+    {
+      "id": "enough_advice",
+      "index": 24,
+      "text": "Thanks! That's enough advice for now.",
+      "voice": null,
+      "original_text_hash": 12352345227357824737
+    },
+    {
+      "id": "OK_ENOUGH_ADVICE",
+      "index": 25,
+      "text": "though your presence here is a painful intrusion\nwe will always provide advice whenever you request it, captain.",
+      "voice": "chmmr-014.ogg",
+      "original_text_hash": 16700282253517404714
+    },
+    {
+      "id": "bye_shielded",
+      "index": 26,
+      "text": "Goodbye Chenjesu. Goodbye Mmrnmhrm.",
+      "voice": null,
+      "original_text_hash": 12087148889258674014
+    },
+    {
+      "id": "GOODBYE_SHIELDED",
+      "index": 27,
+      "text": "goodbye once and future ally, human... when the process is complete and we emerge from our chrysalis\ni shall tell your grandchildren of our conversation this day.",
+      "voice": "chmmr-015.ogg",
+      "original_text_hash": 2139755994442270499
+    },
+    {
+      "id": "WE_ARE_FREE",
+      "index": 28,
+      "text": "WE ARE FREE!\nYOU HAVE FLOODED OUR SYNTHESIS MECHANISMS WITH A WEALTH OF RADIANT ENERGY.\nWHAT WAS SUPPOSED TO TAKE DECADES HAS BEEN ACCOMPLISHED IN SECONDS.\nTHE PROCESS IS INCOMPLETE, YET WE HAVE EMERGED.\nWE ARE THE CHMMR.",
+      "voice": "chmmr-016.ogg",
+      "original_text_hash": 10926499101727333158
+    },
+    {
+      "id": "WHO_ARE_YOU",
+      "index": 29,
+      "text": "WHO ARE YOU?",
+      "voice": "chmmr-017.ogg",
+      "original_text_hash": 16168841979774736987
+    },
+    {
+      "id": "i_am_captain0",
+      "index": 30,
+      "text": "I am captain",
+      "voice": null,
+      "original_text_hash": 14688836276797222658
+    },
+    {
+      "id": "i_am_captain1",
+      "index": 31,
+      "text": "of the starship",
+      "voice": null,
+      "original_text_hash": 17080357129670027863
+    },
+    {
+      "id": "i_am_captain2",
+      "index": 32,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "i_am_savior",
+      "index": 33,
+      "text": "I am the guy who's trying to save the Galaxy.",
+      "voice": null,
+      "original_text_hash": 1867439600004407144
+    },
+    {
+      "id": "i_am_silly",
+      "index": 34,
+      "text": "Who am I? Me? Er... dang! I just forgot.",
+      "voice": null,
+      "original_text_hash": 9810064384513961354
+    },
+    {
+      "id": "WHY_HAVE_YOU_FREED_US",
+      "index": 35,
+      "text": "WHY HAVE YOU INTERRUPTED THE PROCESS?!!!",
+      "voice": "chmmr-018.ogg",
+      "original_text_hash": 2965186810700028856
+    },
+    {
+      "id": "serious_1",
+      "index": 36,
+      "text": "We struggle to free all races from the Ur-Quan. We need your help.",
+      "voice": null,
+      "original_text_hash": 9339950058190721170
+    },
+    {
+      "id": "serious_2",
+      "index": 37,
+      "text": "You are the key to winning back the freedom of our Alliance.",
+      "voice": null,
+      "original_text_hash": 3358393633323181835
+    },
+    {
+      "id": "silly",
+      "index": 38,
+      "text": "I wanted to see what you looked like without all that orange junk.",
+      "voice": null,
+      "original_text_hash": 6939622686557849815
+    },
+    {
+      "id": "WILL_HELP_ANALYZE_LOGS",
+      "index": 39,
+      "text": "YOUR NEED MUST BE GREAT FOR YOU TO HAVE RISKED SO MUCH\nJUST TO BRING US FROM BENEATH THE SHIELD.\nWE WERE NOT READY... BUT THIS IS NOW IN THE PAST.\nWHAT IS DONE IS DONE.\nYOU ARE INTENT ON STOPPING THE UR-QUAN... VERY WELL.\nWE ARE PREPARED TO ASSIST YOU IN WHATEVER WAY WE CAN.\nWE MUST FIRST TELL YOU THAT EVEN BEFORE WE WERE PLACED UNDER THE SLAVE SHIELD\nWE REALIZED THAT THE ONLY WAY TO TRULY DEFEAT THE UR-QUAN\nWAS TO FIRST DESTROY THEIR PRECURSOR BATTLE PLATFORM... THE SA-MATRA.\nTHIS VESSEL WAS RESPONSIBLE FOR THE VICTORY OF THE HIERARCHY OVER THE ALLIANCE.\nWHEN IT WAS BROUGHT TO BEAR AGAINST OUR WORLDS, WE COULD NOT RESIST IT.\nTHIS MUST BE YOUR PRIORITY. THIS MUST BE YOUR EVENTUAL GOAL.\nWE KNOW WHAT IS NECESSARY TO ACHIEVE THIS END\nBUT FIRST WE MUST KNOW WHAT YOU HAVE ALREADY LEARNED\nSO WE WILL SCAN THE DATABANKS AND LOGS ABOARD YOUR SHIP.\nTHERE.\nTHE PROCESS IS COMPLETE. NOW WE CAN DISCUSS WHAT YOU MUST DO.",
+      "voice": "chmmr-019.ogg",
+      "original_text_hash": 8053881297462784136
+    },
+    {
+      "id": "YOU_KNOW_SAMATRA",
+      "index": 40,
+      "text": "YOU ALREADY HAVE THE DATA NECESSARY TO TELL YOU THAT THE SA-MATRA VESSEL\nIS LOCATED IN THE DELTA CRATERIS STAR SYSTEM.",
+      "voice": "chmmr-020.ogg",
+      "original_text_hash": 10695730711507409581
+    },
+    {
+      "id": "DONT_KNOW_ABOUT_SAMATRA",
+      "index": 41,
+      "text": "YOU NEED TO LOCATE THE UR-QUAN'S SA-MATRA VESSEL.\nIF YOU CANNOT FIND IT YOURSELF, ASK THOSE OTHERS WHO ARE NEAR THE UR-QUAN.\nPERHAPS THEY WILL KNOW.",
+      "voice": "chmmr-021.ogg",
+      "original_text_hash": 1760753877390533608
+    },
+    {
+      "id": "NEED_DISTRACTION",
+      "index": 42,
+      "text": "THE SA-MATRA IS SURE TO BE HEAVILY GUARDED.\nTO ALLOW YOU TO GET CLOSE ENOUGH TO THE SA-MATRA\nYOU WILL HAVE TO CREATE SOME TYPE OF DIVERSION.",
+      "voice": "chmmr-022.ogg",
+      "original_text_hash": 11813762885724471455
+    },
+    {
+      "id": "HAVE_TALKING_PET",
+      "index": 43,
+      "text": "WE HAVE DETECTED THE PRESENCE OF A DNYARRI ABOARD YOUR SHIP.\nTHOUGH THE BEING IS DARKLY EVIL, AND INCREDIBLY DANGEROUS\nTHE TAALO DEVICE YOU POSSESS HAS EFFECTIVELY NULLIFIED THE CREATURE'S POWER OVER YOU.\nHOWEVER, IT WILL DO A MOST EXCELLENT JOB DISTRACTING THE UR-QUAN LONG ENOUGH\nFOR YOU TO APPROACH THE SA-MATRA AND DESTROY IT.",
+      "voice": "chmmr-023.ogg",
+      "original_text_hash": 14967190158298813662
+    },
+    {
+      "id": "NEED_WEAPON",
+      "index": 44,
+      "text": "TO DEFEAT THE UR-QUAN YOU MUST FIRST DESTROY THE SA-MATRA BATTLE PLATFORM.\nTHE ONLY WAY WE CAN ENVISION THIS OCCURRING IS FOR YOU TO DETONATE A HUGE EXPLOSIVE DEVICE\nADJACENT TO THE BATTLE PLATFORM, AT POINT BLANK RANGE.\nWE BELIEVE THAT THE ONLY WEAPON WHICH CAN GENERATE SUFFICIENT DESTRUCTIVE FORCE\nIS A MATTER-ANTIMATTER BOMB, BUT WE CANNOT BUILD ONE OURSELVES.",
+      "voice": "chmmr-024.ogg",
+      "original_text_hash": 7096281200562607326
+    },
+    {
+      "id": "HAVE_BOMB",
+      "index": 45,
+      "text": "YOU POSSESS AN ANTI-MATTER BOMB. THIS IS GOOD.\nBUT HAD YOU ACTIVATED IT, THE DEVICE WOULD HAVE ANNIHILATED YOUR SHIP\nAND EVERYTHING ELSE WITHIN FIVE HUNDRED KILOMETERS.\nEVEN SO, WE WILL HAVE TO IMPROVE THIS DEVICE, MAGNIFY ITS POWER WITH OUR CRYSTAL TECHNOLOGY.\nTHE DESTRUCTIVE POTENTIAL OF THIS WEAPON WILL THEN MAKE IT SUITABLE\nFOR THE MOST IMPORTANT TASK YOU WILL EVER UNDERTAKE\nTHE NEUTRALIZATION OF THE SA-MATRA, THE UR-QUAN'S NEARLY INVINCIBLE BATTLE PLATFORM.",
+      "voice": "chmmr-025.ogg",
+      "original_text_hash": 11416136464538796467
+    },
+    {
+      "id": "RETURN_WHEN_READY",
+      "index": 46,
+      "text": "RETURN WHEN YOU HAVE GATHERED THE RESOURCES WE HAVE DESCRIBED.",
+      "voice": "chmmr-026.ogg",
+      "original_text_hash": 11683961831338620517
+    },
+    {
+      "id": "YOU_ARE_READY",
+      "index": 47,
+      "text": "YOU ARE READY...",
+      "voice": "chmmr-027.ogg",
+      "original_text_hash": 13089095635186195549
+    },
+    {
+      "id": "further_assistance",
+      "index": 48,
+      "text": "Can you give us further assistance now?",
+      "voice": null,
+      "original_text_hash": 14648299640206993810
+    },
+    {
+      "id": "NO_FURTHER_ASSISTANCE",
+      "index": 49,
+      "text": "WE CANNOT HELP YOU UNTIL YOU HAVE GATHERED THE NECESSARY RESOURCES.",
+      "voice": "chmmr-028.ogg",
+      "original_text_hash": 16683588585739397972
+    },
+    {
+      "id": "tech_help",
+      "index": 50,
+      "text": "You seem to have superior technology. Would you share this with us?",
+      "voice": null,
+      "original_text_hash": 643587127848194014
+    },
+    {
+      "id": "USE_OUR_SHIPS_BEFORE",
+      "index": 51,
+      "text": "WE WILL PROVIDE YOU WITH THE DESIGNS FOR A NEW CLASS OF FIGHTING SHIP... THE AVATAR\nALONG WITH ENOUGH CHMMR TO COMMAND HOWEVER MANY VESSELS YOU MAY BUILD.\nAVATAR BATTLESHIPS ARE MUCH MORE EFFECTIVE THAN OUR BROODHOME OR X-FORM VESSELS.\nIN COMPETENT HANDS, THESE SHIPS CAN DEFEAT ANY SHIP IN SPACE.",
+      "voice": "chmmr-029.ogg",
+      "original_text_hash": 6925064170950487352
+    },
+    {
+      "id": "where_weapon",
+      "index": 52,
+      "text": "Where can I find the super-weapon you described?",
+      "voice": null,
+      "original_text_hash": 11494932389184028704
+    },
+    {
+      "id": "PRECURSOR_WEAPON",
+      "index": 53,
+      "text": "THERE ARE RUMORS OF SUCH A DEVICE, A PRECURSOR PLANETEERING TOOL\nTO BE FOUND SOMEWHERE FAR TOWARDS THE CORE\nIN THE POSSESSION OF A NON-HOSTILE ALIEN RACE.\nWE CANNOT PROVIDE ANY MORE INFORMATION AT THIS TIME.",
+      "voice": "chmmr-030.ogg",
+      "original_text_hash": 10178626282075025625
+    },
+    {
+      "id": "where_distraction",
+      "index": 54,
+      "text": "What can possibly distract an Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 13914370632199036003
+    },
+    {
+      "id": "PSYCHIC_WEAPONRY",
+      "index": 55,
+      "text": "IN OUR STUDIES WE HAVE LEARNED THAT THE UR-QUAN ARE ESPECIALLY SENSITIVE TO PSYCHIC MANIPULATION.\nYOUR BEST STRATEGY WOULD BE TO FIND A WEAPON OF THIS TYPE.\nBE AWARE THAT MOST PSYCHIC WEAPONS ARE NOT MECHANICAL CONSTRUCTS.\nTHEY ARE USUALLY INTELLIGENT LIFE FORMS, OFTEN INIMICAL.",
+      "voice": "chmmr-031.ogg",
+      "original_text_hash": 14871307811325141649
+    },
+    {
+      "id": "what_now",
+      "index": 56,
+      "text": "So what happens now?",
+      "voice": null,
+      "original_text_hash": 8291997198169269295
+    },
+    {
+      "id": "WE_WILL_IMPROVE_BOMB",
+      "index": 57,
+      "text": "YOU ARE FULLY PREPARED FOR THE UNDERTAKING.\nTHERE IS EVERY CHANCE THAT YOU WILL BE ABLE TO DESTROY THE SA-MATRA\nAND STOP BOTH THE UR-QUAN AND THE KOHR-AH.",
+      "voice": "chmmr-032.ogg",
+      "original_text_hash": 12373515092279118507
+    },
+    {
+      "id": "MODIFY_VESSEL",
+      "index": 58,
+      "text": "WE WILL NOW FIT THE PRECURSOR WEAPON AND OUR OWN CRYSTAL AMPLIFICATION SYSTEM TO YOUR VESSEL.\nBY ROUTING A PORTION OF YOUR FLAGSHIP'S FUSION POWER THROUGH THE WEAPON'S IGNITION CHAMBER\nITS DESTRUCTIVE FORCE WILL BE MULTIPLIED BY A LARGE FACTOR.",
+      "voice": "chmmr-033.ogg",
+      "original_text_hash": 2279579821054085392
+    },
+    {
+      "id": "wont_hurt_my_ship",
+      "index": 59,
+      "text": "We'll fire this weapon at the Sa-Matra, right? It's not going to hurt my ship, is it?",
+      "voice": null,
+      "original_text_hash": 5965406346348581439
+    },
+    {
+      "id": "WILL_DESTROY_IT",
+      "index": 60,
+      "text": "YOUR VESSEL WILL BE TOTALLY ANNIHILATED.",
+      "voice": "chmmr-034.ogg",
+      "original_text_hash": 30958766504344123
+    },
+    {
+      "id": "bummer_about_my_ship",
+      "index": 61,
+      "text": "Whoa. Gee, that's bad. I don't suppose there's anything we can do to change that, is there?",
+      "voice": null,
+      "original_text_hash": 16978603016317024019
+    },
+    {
+      "id": "DEAD_SILENCE",
+      "index": 62,
+      "text": "NO.",
+      "voice": "chmmr-035.ogg",
+      "original_text_hash": 3960700478637691068
+    },
+    {
+      "id": "other_assistance",
+      "index": 63,
+      "text": "Can you provide us with any other assistance?",
+      "voice": null,
+      "original_text_hash": 8371010623133389554
+    },
+    {
+      "id": "USE_OUR_SHIPS_AFTER",
+      "index": 64,
+      "text": "BECAUSE YOUR FLAGSHIP WILL BE SUBSTANTIALLY WEAKENED BY OUR MODIFICATIONS\nYOU MAY REQUIRE ADDITIONAL COMBAT VEHICLES FOR PROTECTION\nSO THAT YOU CAN APPROACH CLOSE ENOUGH TO THE SA-MATRA TO DETONATE THE WEAPON.\nWE WILL PROVIDE YOU WITH THE DESIGNS FOR OUR NEW AVATAR-CLASS FIGHTING SHIPS.\nIN COMPETENT HANDS, THESE SHIPS ARE A MATCH FOR BOTH THE UR-QUAN AND KOHR-AH VESSELS.",
+      "voice": "chmmr-036.ogg",
+      "original_text_hash": 2701567884605275215
+    },
+    {
+      "id": "proceed",
+      "index": 65,
+      "text": "Very well. Proceed with the modifications.",
+      "voice": null,
+      "original_text_hash": 15045061466102820109
+    },
+    {
+      "id": "TAKE_2_WEEKS",
+      "index": 66,
+      "text": "THE COMPLETION DATE FOR YOUR VESSEL'S MODIFICATION IS ROUGHLY TWO WEEKS HENCE.\nSO THAT YOU AND YOUR HUMAN COMPANIONS MAY MAKE ANY NECESSARY PREPARATIONS AT YOUR STARBASE\nWE WILL NOW TRANSPORT YOU AND YOUR CREW BACK TO EARTH IMMEDIATELY.\nGOOD LUCK, CAPTAIN.",
+      "voice": "chmmr-037.ogg",
+      "original_text_hash": 9879045390176855434
+    },
+    {
+      "id": "HELLO_AFTER_BOMB_1",
+      "index": 67,
+      "text": "WE GREET YOU HUMAN CAPTAIN. WHAT DO YOU NEED FROM US?",
+      "voice": "chmmr-038.ogg",
+      "original_text_hash": 12053121419062425237
+    },
+    {
+      "id": "HELLO_AFTER_BOMB_2",
+      "index": 68,
+      "text": "WELCOME BACK HUMAN. WHY HAVE YOU RETURNED?",
+      "voice": "chmmr-039.ogg",
+      "original_text_hash": 3510171126973504654
+    },
+    {
+      "id": "whats_up_after_bomb",
+      "index": 69,
+      "text": "Have you learned anything new since I was here last?",
+      "voice": null,
+      "original_text_hash": 4242987234480394452
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_BOMB_1",
+      "index": 70,
+      "text": "YES. WE HAVE REACHED TWO CONCLUSIONS\nONE: THE LOCATION OF THE SA-MATRA CAN BE CONFINED TO THE STARS IN THE CRATERIS CONSTELLATION.\nSEEK THE VEHICLE IN THIS REGION.\nTWO: BECAUSE THE UR-QUAN LOST SO MANY SHIPS WHEN THE SHOFIXTI CAUSED THEIR OWN SUN TO FLARE\nTHE KOHR-AH'S FORCES ARE GROSSLY SUPERIOR TO THE UR-QUAN.\nIF THE WAR IS NOT OVER BETWEEN THE UR-QUAN AND THE KOHR-AH, IT SHALL BE SOON, WITH THE KOHR-AH VICTORIOUS.\nWHEN THIS HAPPENS THE KOHR-AH WILL MOVE THROUGH SPACE\nDESTROYING ALL INTELLIGENT RACES ONE BY ONE UNTIL NONE REMAIN.\nYOU MUST NOT BE DISTRACTED! THE SA-MATRA IS THE KEY TO THEIR DOMINANCE!\nDESTROY THEIR SACRED TROPHY, AND UNITED WITH OUR ALLIES, WE CAN DEFEAT THEIR STAR FLEET.",
+      "voice": "chmmr-040.ogg",
+      "original_text_hash": 14675505590266784062
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_BOMB_2",
+      "index": 71,
+      "text": "WE HAVE TOLD YOU EVERYTHING WE KNOW.\nGO TO THE CRATERIS CONSTELLATION. FIND THE SA-MATRA. USE THE POWERS OF THE DNYARRI.\nDESTROY THE SA-MATRA!",
+      "voice": "chmmr-041.ogg",
+      "original_text_hash": 1951919691462354884
+    },
+    {
+      "id": "what_do_after_bomb",
+      "index": 72,
+      "text": "So NOW what do I do?",
+      "voice": null,
+      "original_text_hash": 18106100994377540433
+    },
+    {
+      "id": "DO_AFTER_BOMB",
+      "index": 73,
+      "text": "SEEK THE LOCATION OF THE SA-MATRA. FLY THERE WITH GREATEST SPEED!\nUSE THE POWERS OF THE DNYARRI, AND WHILE THE UR-QUAN ARE IN CHAOS, DESTROY THE SA-MATRA!",
+      "voice": "chmmr-042.ogg",
+      "original_text_hash": 18228252766078398063
+    },
+    {
+      "id": "bye_after_bomb",
+      "index": 74,
+      "text": "I'll see you when it's over, I hope.",
+      "voice": null,
+      "original_text_hash": 14410134528488279803
+    },
+    {
+      "id": "GOODBYE_AFTER_BOMB",
+      "index": 75,
+      "text": "YOU ARE PREPARED. WITH COURAGE AND FORTUNE AT YOUR SIDE YOU WILL BE VICTORIOUS.",
+      "voice": "chmmr-043.ogg",
+      "original_text_hash": 17657293602959717961
+    },
+    {
+      "id": "bye",
+      "index": 76,
+      "text": "Farewell. We will be back when we've got everything we need.",
+      "voice": null,
+      "original_text_hash": 6677917215301637264
+    },
+    {
+      "id": "GOODBYE",
+      "index": 77,
+      "text": "WE AWAIT YOUR RETURN.",
+      "voice": "chmmr-044.ogg",
+      "original_text_hash": 1029722543714858622
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["chmmr", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["chmmr", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

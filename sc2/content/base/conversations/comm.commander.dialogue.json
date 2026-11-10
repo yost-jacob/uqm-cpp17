@@ -1,0 +1,830 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "comandr",
+  "resource": "comm.commander.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "GLAD_WHEN_YOU_COME_BACK",
+      "index": 0,
+      "text": "Hurry back, Captain.",
+      "voice": "commander-000.ogg",
+      "original_text_hash": 18295462112747213542
+    },
+    {
+      "id": "GIVE_FUEL",
+      "index": 1,
+      "text": "We do have a small amount of Starship fuel which is of no use to our power systems.\nWe will now transport 5 units to your vessel.",
+      "voice": "commander-001.ogg",
+      "original_text_hash": 5909287474875618360
+    },
+    {
+      "id": "GIVE_FUEL_AGAIN",
+      "index": 2,
+      "text": "We are almost out of fuel now, but we do have a BIT more.\nYou will have to be more careful with this supply.\nTransporting fuel now.",
+      "voice": "commander-002.ogg",
+      "original_text_hash": 15689761278012145989
+    },
+    {
+      "id": "ARE_YOU_SUPPLY_SHIP",
+      "index": 3,
+      "text": "Attention unidentified space vessel!\nI am Starbase Commander Hayes of the slave planet Earth.\nour HyperWave broadcasts -- extremely weak\nsituation critical -- energy cores exhausted\nscanners and deep radar are non-functional\nwe cannot identify your vessel\nAre you the scheduled Hierarchy resupply ship?\nRepeat, are you the resupply vessel?",
+      "voice": "commander-003.ogg",
+      "original_text_hash": 7878994544800580229
+    },
+    {
+      "id": "DO_YOU_HAVE_RADIO_THIS_TIME",
+      "index": 4,
+      "text": "Did you find any radioactive elements for our power cores?",
+      "voice": "commander-004.ogg",
+      "original_text_hash": 4605109196430714333
+    },
+    {
+      "id": "HERE_IS_ANOTHER_LANDER",
+      "index": 5,
+      "text": "What!!!\nYou lost another lander!?\nWe'll build another, but DON'T LOSE THIS ONE, OKAY!",
+      "voice": "commander-005.ogg",
+      "original_text_hash": 13843919877233150345
+    },
+    {
+      "id": "THE_WHAT_FROM_WHERE",
+      "index": 6,
+      "text": "The starship what?\nNever mind -- look, we won't last much longer. Here is our situation\nAccording to our Oath of Fealty to the Ur-Quan, we must maintain this starbase\nbut, we have no space vessels of our own\nand the shield prevents us from contacting Earth\nso we are totally dependent on the Ur-Quan supply vessels for everything we need up here.\nWe know there is a Hierarchy base on the surface of the moon, but we can't contact them.\nThe Ur-Quan were supposed to resupply the base at regular, five year intervals\nbut we haven't received anything in almost eight years!\nWhat we don't recycle we can usually synthesize\nbut to do so, we need replacement radioactives for our generator energy cores.\nIf you could bring us some radioactive elements, we can fabricate the cores ourselves.\nAre you willing to help us!?",
+      "voice": "commander-006.ogg",
+      "original_text_hash": 2165913050626499042
+    },
+    {
+      "id": "ABOUT_TIME",
+      "index": 7,
+      "text": "Well, it's about damn time!\nIn the Fealty agreement the Ur-Quan promised that this station would be resupplied\nat least every five years, and its been over eight since we saw you!\nIf you had arrived a few weeks later, there wouldn't have been anyone alive on this station\nnever mind...just begin your transfer of materials immediately, starting with the radioactives.",
+      "voice": "commander-007.ogg",
+      "original_text_hash": 8109562850137476980
+    },
+    {
+      "id": "MESSAGE_GARBLED_1",
+      "index": 8,
+      "text": "I'm sorry, Captain, your message was garbled. Our receivers have very little power.",
+      "voice": "commander-008.ogg",
+      "original_text_hash": 13746610483295161640
+    },
+    {
+      "id": "MESSAGE_GARBLED_2",
+      "index": 9,
+      "text": "I couldn't quite make it out, Captain. Could you please repeat?",
+      "voice": "commander-009.ogg",
+      "original_text_hash": 8075358782891643383
+    },
+    {
+      "id": "HERE_IS_A_NEW_LANDER",
+      "index": 10,
+      "text": "Manufacturing a new lander for you will use most of what little resources we have left\nbut I suppose we have no choice.\nWe will transport the new lander vehicle immediately.",
+      "voice": "commander-010.ogg",
+      "original_text_hash": 11205675503382514080
+    },
+    {
+      "id": "THIS_MAY_SEEM_SILLY",
+      "index": 11,
+      "text": "By the way Captain, I think we need a name for this new alliance we're going to forge.\nAnd since it was your idea, it's only fair that you get the honor of naming it.\nSo, what will it be?",
+      "voice": "commander-011.ogg",
+      "original_text_hash": 1128217589787371077
+    },
+    {
+      "id": "OK_THE_NAFS",
+      "index": 12,
+      "text": "Okay, that sounds pretty inspiring. So be it - The New Alliance of Free Stars!",
+      "voice": "commander-012.ogg",
+      "original_text_hash": 4932045152000869813
+    },
+    {
+      "id": "OK_THE_CAN",
+      "index": 13,
+      "text": "Very well.  From this day forward, we are The Concordance of Alien Nations!",
+      "voice": "commander-013.ogg",
+      "original_text_hash": 4584305455267818861
+    },
+    {
+      "id": "OK_THE_UFW",
+      "index": 14,
+      "text": "That has a familiar ring to it... nonetheless, we will make it so - The United Federation of Worlds!",
+      "voice": "commander-014.ogg",
+      "original_text_hash": 1474435872466135436
+    },
+    {
+      "id": "OK_THE_NAME_IS_EMPIRE0",
+      "index": 15,
+      "text": "Ulp!  Well... you're the one with the big starship.\nSo be it - The Empire of",
+      "voice": "commander-015.ogg",
+      "original_text_hash": 260174313151303031
+    },
+    {
+      "id": "OK_THE_NAME_IS_EMPIRE1",
+      "index": 16,
+      "text": "!",
+      "voice": null,
+      "original_text_hash": 12638116831811436492
+    },
+    {
+      "id": "FUEL_UP0",
+      "index": 17,
+      "text": "We are initiating transfer of radioactives, Captain.\nNow, as soon as our engineers can refit the energy cores...",
+      "voice": "commander-016.ogg",
+      "original_text_hash": 16893567625409795695
+    },
+    {
+      "id": "FUEL_UP1",
+      "index": 18,
+      "text": "...there, that's much better. Power ratings are climbing, life support is coming back into the green.\nDeep radar systems and sensors are now online and I can scan your vessel.\n!!!? -- WHAT THE HELL KIND OF SHIP IS THAT!?\nJust who ARE you, Captain?",
+      "voice": "commander-017.ogg",
+      "original_text_hash": 17069715177398755031
+    },
+    {
+      "id": "WHAT_KIND_OF_IDIOT",
+      "index": 19,
+      "text": "WHAT!\nWhat kind of idiot sent you out here without replacements for our energy cores!?\nIt's amazing that we've kept the generators online for as long as we have!\nLook, you had better get those radioactives right away\nor all the other supplies are pretty damn pointless, since we'll all be too dead to use them!",
+      "voice": "commander-018.ogg",
+      "original_text_hash": 10309901780318184091
+    },
+    {
+      "id": "DONT_KNOW_WHO_YOU_ARE",
+      "index": 20,
+      "text": "Look, I don't know who you are or why you're here\nbut right now the only thing I'm worried about\nis saving the lives of the 1900 men and women aboard this starbase\nand right now you're our only hope.\nI can't keep the transmitter on too much longer -- we need the power for heat and air\nso if you don't have any radioactives on board your vessel\nplease get some and bring them back here before it's too late.",
+      "voice": "commander-019.ogg",
+      "original_text_hash": 7594760546900560866
+    },
+    {
+      "id": "THATS_IMPOSSIBLE",
+      "index": 21,
+      "text": "Star Control science mission, eh?\nCaptain, I served as a Star Control officer during the war, aboard several cruisers in the Coreward Front\nand if there had been any `scientific mission' to Vela\nI would have heard about it.",
+      "voice": "commander-020.ogg",
+      "original_text_hash": 14241467069962001197
+    },
+    {
+      "id": "ASK_AWAY",
+      "index": 22,
+      "text": "Okay, what do you want to know?",
+      "voice": "commander-021.ogg",
+      "original_text_hash": 11895382321163732312
+    },
+    {
+      "id": "RADIOS_ON_MERCURY",
+      "index": 23,
+      "text": "The fastest way to get radioactives in this system would be to land on Mercury\nand scour the surface for deposits of radioactive elements.\nBut be careful. Mercury is a pretty inhospitable place!\nWatch out for earthquakes and those high-temperature areas!",
+      "voice": "commander-022.ogg",
+      "original_text_hash": 7778385602039684552
+    },
+    {
+      "id": "THANKS_FOR_HELPING",
+      "index": 24,
+      "text": "Thanks! I'll make sure to mention this the next time I talk with our masters\nI'm sure they will reward you.",
+      "voice": "commander-023.ogg",
+      "original_text_hash": 7787818305264854044
+    },
+    {
+      "id": "STARBASE_IS",
+      "index": 25,
+      "text": "Ur-Quan slave law requires that we maintain an orbital space platform\nto assist Hierarchy vessels which are in need of repairs or fuel.\nSince the shield around the Earth cuts us off completely from the planet\nwe are dependent on Ur-Quan resupply ships for our non-renewable resources.\nThe resupply vessels are supposed to arrive every five years\nat which time the Ur-Quan somehow penetrate the shield and exchange those of us up here\nwith replacement personnel from the surface.",
+      "voice": "commander-024.ogg",
+      "original_text_hash": 16065269255664424136
+    },
+    {
+      "id": "HAPPENED_TO_EARTH",
+      "index": 26,
+      "text": "When the Alliance lost the war, the Ur-Quan gave Earth a single choice\njoin the Hierarchy as Battle Thralls and fight for the Ur-Quan to enslave other sentient species\nor become `fallow' slaves, and be forever imprisoned on a single world\nencased in an impenetrable energy shield here on Earth.\nWe choose not to fight for the Ur-Quan.",
+      "voice": "commander-025.ogg",
+      "original_text_hash": 10090346448209654438
+    },
+    {
+      "id": "URQUAN_LEFT",
+      "index": 27,
+      "text": "Soon after Earth accepted the Ur-Quan's Oath of Fealty, they departed,\nleaving behind a battle group of Spathi and Ilwrath ships based on the moon.",
+      "voice": "commander-026.ogg",
+      "original_text_hash": 4475880900481652555
+    },
+    {
+      "id": "BASE_ON_MOON",
+      "index": 28,
+      "text": "Ahh...fight the Ur-Quan! Win back our freedom!\nI remember having such thoughts myself...once, a long time ago.\nBut that was in the first years after the defeat, when it was still terrifying to look up\nand see the bloody glow of the pulsating slave shield overhead.\nThrough day and night we gazed up at the impenetrable wall\nas though the sheer power of our hatred would pull it down.\nBut over the years, I spent so much of my time struggling\ndown on the surface under the shield and then later up here, trying to keep this station alive\nthat I'd forgotten what it means to be free... to hate our Ur-Quan Masters! \nAnd now, here you are, in an alien ship of unknown power,\noffering me your assistance to fight against the Hierarchy again, after all these years.\nCaptain, your offer is intriguing.\nIt's tempting to think that with your advanced Precursor technology\nwe can somehow crack Earth's slave shield\nand reassemble the Alliance to attack the Hierarchy, and THIS time win the damn war!\nBut... consider the consequences if we should fail.\nThe Ur-Quan won't just punish us here on the station.\nThey will exact a gruesome retribution on the surface below as well.\nBefore I commit this station to helping you attack the Ur-Quan\nand accepting the risk of annihilation if we are defeated\nI have to make sure that you and your ship have what it takes to oppose the Hierarchy.\nI'll make you a deal.\nIf you can eliminate the alien base on the moon, and get rid of that threat, at least\nI will seriously consider your offer.",
+      "voice": "commander-027.ogg",
+      "original_text_hash": 12966954707320912682
+    },
+    {
+      "id": "ACKNOWLEDGE_SECRET",
+      "index": 29,
+      "text": "Hmmm... you know, come to think of it\nthere were some rumors that Corridor Nine, the special operations division of Star Control\nwas directing some hush-hush operation near Androsynth space.\nThe Vela star system... yes, that would be the right direction\nSo, Captain... if you say it's true\nhow do you explain that huge, alien starship you're flying\nand why are you here? What do you want from us?",
+      "voice": "commander-028.ogg",
+      "original_text_hash": 12431355206988652880
+    },
+    {
+      "id": "ABOUT_BASE",
+      "index": 30,
+      "text": "After the Ur-Quan erected the slave shield around Earth, and established this space station\nthey decided to leave a contingent of combat ships close to the Earth\nto keep watch on our planet and confirm that we were obeying the Ur-Quan slave laws.\nI'm certain they're still out there on the surface of the moon\nbecause we can pick up a constant stream of alien broadcasts.",
+      "voice": "commander-029.ogg",
+      "original_text_hash": 11454393047064613214
+    },
+    {
+      "id": "GOOD_LUCK_WITH_BASE",
+      "index": 31,
+      "text": "Be careful, Captain.\nThere are probably a dozen Spathi Eluders and Ilwrath Avengers down there on the lunar surface.\nI don't know why they haven't come after you yet\nbut when they do, you'd better have your weapons armed, and your thrusters burning hot.",
+      "voice": "commander-030.ogg",
+      "original_text_hash": 14911802094756721498
+    },
+    {
+      "id": "DEALT_WITH_BASE_YET",
+      "index": 32,
+      "text": "Have you dealt with the base yet?",
+      "voice": "commander-031.ogg",
+      "original_text_hash": 3931507573318446965
+    },
+    {
+      "id": "HERE_COMES_ILWRATH",
+      "index": 33,
+      "text": "Captain, listen closely!\nLong range sensors show a ship closing on this station, fast!\nOur computer identifies it as Ilwrath, Avenger-class.\nI think you've got a fight on your hands, Captain.\nYour best bet is to wait until you have point bl-nk r-nge\nC-pt-in! It's ja-min- ou- s-gn-l!...",
+      "voice": "commander-032.ogg",
+      "original_text_hash": 8290733744044784807
+    },
+    {
+      "id": "VERY_IMPRESSIVE",
+      "index": 34,
+      "text": "What a beautiful sight, Captain!\nI haven't seen an Avenger blown away like that since the Battle in Draco.\nI guess you've shown that you can handle yourself in battle, Captain\nso my last reservation about helping you has been dissolved.\nI will commit this station to helping free Earth and defeat the Ur-Quan.\nWe may get our atoms rearranged in the process, but by God, Captain, we're going to try!\nSo, the obvious first step is to get your Precursor equipment and software over here\nso that we can make it work with our ship repair fabricators.\nBut then what, Captain?",
+      "voice": "commander-033.ogg",
+      "original_text_hash": 8599266618652077960
+    },
+    {
+      "id": "IT_WAS_ABANDONED",
+      "index": 35,
+      "text": "I'll be darned!\nAll these years we've been listening to their incoherent broadcasts, and we never even guessed.",
+      "voice": "commander-034.ogg",
+      "original_text_hash": 8390871394056193087
+    },
+    {
+      "id": "YOU_REALLY_FOUGHT_BASE",
+      "index": 36,
+      "text": "You fought them, Captain!?  I hope you didn't suffer serious casualties?",
+      "voice": "commander-035.ogg",
+      "original_text_hash": 2884492833668050249
+    },
+    {
+      "id": "IM_GLAD_YOU_WON",
+      "index": 37,
+      "text": "I'm delighted to hear it, Captain.  I wish I could have been there.",
+      "voice": "commander-036.ogg",
+      "original_text_hash": 685720656551952314
+    },
+    {
+      "id": "IM_SURE_IT_WAS_DIFFICULT",
+      "index": 38,
+      "text": "I'm sure the experience was disturbing",
+      "voice": "commander-037.ogg",
+      "original_text_hash": 7801148572818945496
+    },
+    {
+      "id": "THAT_WAS_PROBE",
+      "index": 39,
+      "text": "That was the Ur-Quan Security Drone. It keeps an eye on us.\nCaptain, what happened to the spy drone!?",
+      "voice": "commander-038.ogg",
+      "original_text_hash": 352321572270291918
+    },
+    {
+      "id": "DEEP_TROUBLE",
+      "index": 40,
+      "text": "Oh no. Right now it's probably cruising through HyperSpace\nheading right towards the closest Hierarchy outpost.\nWhen the Ur-Quan find out that you are here, they will send a combat fleet instantly!",
+      "voice": "commander-039.ogg",
+      "original_text_hash": 2863983416143578708
+    },
+    {
+      "id": "GOOD_NEWS",
+      "index": 41,
+      "text": "Whew!  That was a close one.  If that probe had gotten away -- up into HyperSpace\nwe'd be up to our ears in Dreadnoughts in no time.\nWhat a relief!",
+      "voice": "commander-040.ogg",
+      "original_text_hash": 10346516863712364099
+    },
+    {
+      "id": "SURE_HOPE",
+      "index": 42,
+      "text": "If that probe gets back to the Ur-Quan, Captain, we are BOTH in deep trouble!",
+      "voice": "commander-041.ogg",
+      "original_text_hash": 16631200835275508682
+    },
+    {
+      "id": "ABOUT_BASE_AGAIN",
+      "index": 43,
+      "text": "As I said before, after the Ur-Quan erected the slave shield around the Earth and assembled this space station\nthey decided to leave a contingent of Spathi and Ilwrath ships stationed on the moon.\nWe have looked at the moonbase through our telescopes and can confirm that there is still substantial activity down there\nbut we have never been able to make contact with the base using either HyperWave 'Caster\nor traditional radio signals.",
+      "voice": "commander-042.ogg",
+      "original_text_hash": 882937583149304295
+    },
+    {
+      "id": "COOK_BUTTS",
+      "index": 44,
+      "text": "Ha-ha.. yes, Captain, we'll do just that!",
+      "voice": "commander-043.ogg",
+      "original_text_hash": 12606187749084333369
+    },
+    {
+      "id": "OVERTHROW_ALIENS",
+      "index": 45,
+      "text": "If you feel it's necessary Captain, I understand.",
+      "voice": "commander-044.ogg",
+      "original_text_hash": 15354935980474935820
+    },
+    {
+      "id": "KILL_MONSTERS",
+      "index": 46,
+      "text": "A sensible plan, Captain.  Let's get to work.",
+      "voice": "commander-045.ogg",
+      "original_text_hash": 15446287223334517157
+    },
+    {
+      "id": "GOOD_LUCK_AGAIN",
+      "index": 47,
+      "text": "Hurry back, Captain.",
+      "voice": "commander-046.ogg",
+      "original_text_hash": 18295462112747213542
+    },
+    {
+      "id": "STARBASE_WILL_BE_READY",
+      "index": 48,
+      "text": "Now Captain, I expect the configuration process for the starbase\nto take at least 2 weeks, so let's get to work...",
+      "voice": "commander-047.ogg",
+      "original_text_hash": 2643917975610921016
+    },
+    {
+      "id": "overthrow_evil_aliens",
+      "index": 49,
+      "text": "Er... trust me Commander, I have a plan... a really good plan!  But for now it must remain a secret.",
+      "voice": null,
+      "original_text_hash": 10320205652162935575
+    },
+    {
+      "id": "annihilate_those_monsters",
+      "index": 50,
+      "text": "We will slowly build our strength, unify an allied starfleet, and bring the Ur-Quan to their knee-equivalents.",
+      "voice": null,
+      "original_text_hash": 6666752727406052970
+    },
+    {
+      "id": "cook_their_butts",
+      "index": 51,
+      "text": "Then, Commander, we will proceed to kick some major alien butt!",
+      "voice": null,
+      "original_text_hash": 13009779780389066083
+    },
+    {
+      "id": "where_get_radios",
+      "index": 52,
+      "text": "Where can we acquire radioactives?",
+      "voice": null,
+      "original_text_hash": 16054937355328750877
+    },
+    {
+      "id": "well_go_get_them_now",
+      "index": 53,
+      "text": "We will leave now and bring back the elements you require.",
+      "voice": null,
+      "original_text_hash": 460265064563631234
+    },
+    {
+      "id": "we_will_transfer_now",
+      "index": 54,
+      "text": "We are ready to transfer radioactives.",
+      "voice": null,
+      "original_text_hash": 13572720261208261452
+    },
+    {
+      "id": "what_will_you_give_us",
+      "index": 55,
+      "text": "What will you give us in exchange for radioactives?",
+      "voice": null,
+      "original_text_hash": 7474384962093446109
+    },
+    {
+      "id": "before_radios_we_need_info",
+      "index": 56,
+      "text": "Before we help you, we require certain information.",
+      "voice": null,
+      "original_text_hash": 18306659062449097341
+    },
+    {
+      "id": "no_but_well_help0",
+      "index": 57,
+      "text": "No, this is the starship",
+      "voice": null,
+      "original_text_hash": 10057198280054816093
+    },
+    {
+      "id": "no_but_well_help1",
+      "index": 58,
+      "text": ", but we stand ready to assist you.",
+      "voice": null,
+      "original_text_hash": 14490188929292705930
+    },
+    {
+      "id": "yes_this_is_supply_ship",
+      "index": 59,
+      "text": "Uh.. yes, this IS the resupply vessel. What do you need resupplied?",
+      "voice": null,
+      "original_text_hash": 2736337523977215472
+    },
+    {
+      "id": "what_slave_planet",
+      "index": 60,
+      "text": "`Slave planet!' `Hierarchy resupply vessel!'  What is going on here?",
+      "voice": null,
+      "original_text_hash": 15779701977002918841
+    },
+    {
+      "id": "i_lied",
+      "index": 61,
+      "text": "Actually I lied, this isn't the resupply vessel. Sorry.",
+      "voice": null,
+      "original_text_hash": 15304731858574694714
+    },
+    {
+      "id": "plumb_out",
+      "index": 62,
+      "text": "Er..., oh dang!  Wouldn't you know it; we're plumb out of those.",
+      "voice": null,
+      "original_text_hash": 10640867795794304676
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 63,
+      "text": "I am Captain",
+      "voice": null,
+      "original_text_hash": 12400001958996011106
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 64,
+      "text": "of the starship",
+      "voice": null,
+      "original_text_hash": 17080357129670027863
+    },
+    {
+      "id": "we_are_vindicator2",
+      "index": 65,
+      "text": ". We are the survivors of a Star Control science research team to the Vela star system.",
+      "voice": null,
+      "original_text_hash": 5428541566340339203
+    },
+    {
+      "id": "first_give_info",
+      "index": 66,
+      "text": "I need you to explain a few things.",
+      "voice": null,
+      "original_text_hash": 4579974905494203355
+    },
+    {
+      "id": "we_must_go_now",
+      "index": 67,
+      "text": "We must leave now. I shall tell you more when we return.",
+      "voice": null,
+      "original_text_hash": 16308044783598249753
+    },
+    {
+      "id": "where_can_i_get_radios",
+      "index": 68,
+      "text": "Where can we find the radioactive elements you need?",
+      "voice": null,
+      "original_text_hash": 9680729903103381906
+    },
+    {
+      "id": "ok_i_will_get_radios",
+      "index": 69,
+      "text": "We will leave now to find the elements you require.",
+      "voice": null,
+      "original_text_hash": 14821843413800840650
+    },
+    {
+      "id": "whats_this_starbase",
+      "index": 70,
+      "text": "To begin with, what is the purpose of this starbase?",
+      "voice": null,
+      "original_text_hash": 2326100708671624723
+    },
+    {
+      "id": "what_about_earth",
+      "index": 71,
+      "text": "What is that strange red glow around Earth?",
+      "voice": null,
+      "original_text_hash": 12484714864511245820
+    },
+    {
+      "id": "where_are_urquan",
+      "index": 72,
+      "text": "Where are the Ur-Quan now?",
+      "voice": null,
+      "original_text_hash": 15411130438184780787
+    },
+    {
+      "id": "our_mission_was_secret",
+      "index": 73,
+      "text": "The mission was highly secret.",
+      "voice": null,
+      "original_text_hash": 3899261730213436516
+    },
+    {
+      "id": "we_are_here_to_help",
+      "index": 74,
+      "text": "We have returned to Earth to give you the technological secrets of the Precursors, and to help you fight the Hierarchy.",
+      "voice": null,
+      "original_text_hash": 1109040346118835492
+    },
+    {
+      "id": "tell_me_about_base",
+      "index": 75,
+      "text": "What details can you give us about the base on the moon?",
+      "voice": null,
+      "original_text_hash": 6661409174878622870
+    },
+    {
+      "id": "we_will_take_care_of_base",
+      "index": 76,
+      "text": "We shall go now and neutralize the base.",
+      "voice": null,
+      "original_text_hash": 11601867207213784543
+    },
+    {
+      "id": "tell_me_again",
+      "index": 77,
+      "text": "Could you tell me again about the Hierarchy base on the moon?",
+      "voice": null,
+      "original_text_hash": 18304475711586210596
+    },
+    {
+      "id": "base_was_abandoned",
+      "index": 78,
+      "text": "We found the base, but it was abandoned years ago.",
+      "voice": null,
+      "original_text_hash": 8877317874996047465
+    },
+    {
+      "id": "we_fought_them",
+      "index": 79,
+      "text": "We, uh... attacked the moonbase, and completely destroyed the enemy!",
+      "voice": null,
+      "original_text_hash": 2653999746536563810
+    },
+    {
+      "id": "oh_yes_big_fight",
+      "index": 80,
+      "text": "Er... oh, yes! It was a very vicious fight.",
+      "voice": null,
+      "original_text_hash": 1985948004943235338
+    },
+    {
+      "id": "i_lied_it_was_abandoned",
+      "index": 81,
+      "text": "Actually I lied. We found it abandoned.",
+      "voice": null,
+      "original_text_hash": 4460349227641949512
+    },
+    {
+      "id": "i_cant_talk_about_it",
+      "index": 82,
+      "text": "It was too horrible for words. I just can't talk about it right now.",
+      "voice": null,
+      "original_text_hash": 646413995478312886
+    },
+    {
+      "id": "name_1",
+      "index": 83,
+      "text": "The New Alliance of Free Stars!",
+      "voice": null,
+      "original_text_hash": 1852351784121909286
+    },
+    {
+      "id": "name_2",
+      "index": 84,
+      "text": "The Concordance of Alien Nations!",
+      "voice": null,
+      "original_text_hash": 7489421728147082958
+    },
+    {
+      "id": "name_3",
+      "index": 85,
+      "text": "The United Federation of Worlds!",
+      "voice": null,
+      "original_text_hash": 14462777983857353037
+    },
+    {
+      "id": "name_40",
+      "index": 86,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 87,
+      "text": "!",
+      "voice": null,
+      "original_text_hash": 12638116831811436492
+    },
+    {
+      "id": "i_lost_my_lander",
+      "index": 88,
+      "text": "Due to circumstances beyond our control, our only landing vehicle was destroyed.  Can you replace it?",
+      "voice": null,
+      "original_text_hash": 13404126779759779172
+    },
+    {
+      "id": "i_lost_another_lander",
+      "index": 89,
+      "text": "Um... er... well... We lost another lander.",
+      "voice": null,
+      "original_text_hash": 8210281094933671683
+    },
+    {
+      "id": "need_fuel_mercury",
+      "index": 90,
+      "text": "We are unable to land on Mercury and retrieve radioactives due to an unforeseen fuel shortage.",
+      "voice": null,
+      "original_text_hash": 8051575582039239606
+    },
+    {
+      "id": "need_fuel_luna",
+      "index": 91,
+      "text": "We are unable to land on the moon and neutralize the base due to an unforeseen fuel shortage.",
+      "voice": null,
+      "original_text_hash": 8341751813712925498
+    },
+    {
+      "id": "need_fuel_again",
+      "index": 92,
+      "text": "Boy, mileage sure does vary. Could you spare us some more fuel?",
+      "voice": null,
+      "original_text_hash": 6711342484326147398
+    },
+    {
+      "id": "what_was_red_thing",
+      "index": 93,
+      "text": "Commander, what was that red, fast-moving object in orbit around Earth?",
+      "voice": null,
+      "original_text_hash": 3404910962290917215
+    },
+    {
+      "id": "it_went_away",
+      "index": 94,
+      "text": "When we approached, it transmitted a warning and warped into HyperSpace.",
+      "voice": null,
+      "original_text_hash": 8163964814927526147
+    },
+    {
+      "id": "we_destroyed_it",
+      "index": 95,
+      "text": "Er... we destroyed it! Yessiree, blew it to bits.",
+      "voice": null,
+      "original_text_hash": 11844454800244120638
+    },
+    {
+      "id": "what_probe",
+      "index": 96,
+      "text": "Uh, I meant a different red thing. Never mind.",
+      "voice": null,
+      "original_text_hash": 10119345041154717089
+    },
+    {
+      "id": "take_care_of_base_again",
+      "index": 97,
+      "text": "Now we're ready to take care of the moon base, Commander. Goodbye.",
+      "voice": null,
+      "original_text_hash": 15041663819280282926
+    },
+    {
+      "id": "goodbye_commander",
+      "index": 98,
+      "text": "Goodbye Commander.",
+      "voice": null,
+      "original_text_hash": 6464468745623387700
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["comandr", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["comandr", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

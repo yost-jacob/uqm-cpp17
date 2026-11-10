@@ -8,7 +8,7 @@ from pycparser import c_ast, c_parser
 
 D = Path(__file__).resolve().parent
 ROOT = D.parents[3]
-s = (D / "verb_factory.cpp").read_text()
+s = (ROOT / "sc2/src/uqm/dialogue/verb_factory.cpp").read_text()
 
 
 def specs(section):
@@ -67,6 +67,7 @@ aargs = {
     "handlers.prepare_report": ["report", "parameters"],
     "encounter.set_outcome": ["outcome"],
     "random.draw": ["exclusive_upper_bound"],
+    "handlers.legacy_turn": ["script", "response_slot_or_null"],
 }
 qmethod = [
     "hasShip",
@@ -112,6 +113,7 @@ amethod = [
     "Handlers::prepareReport",
     "setOutcome",
     "randomBelow",
+    "Handlers::legacyTurn",
 ]
 assert len(specs("queries")) == len(qmethod) == len(qargs)
 assert len(specs("actions")) == len(amethod) == len(aargs)
@@ -207,7 +209,10 @@ external = {
     "GetConversationPhraseBuffer": ("graph", ["immutable text composition"]),
     "GetHeadLink": ("query", ["fleet.count / encounter.read"]),
     "GetPlayerFleetQueue": ("query", ["fleet.count"]),
-    "GetPlayerSISState": ("state projection", ["get / handlers.strip_ship / handlers.accept_rescue"]),
+    "GetPlayerSISState": (
+        "state projection",
+        ["get / handlers.strip_ship / handlers.accept_rescue"],
+    ),
     "GetPlayerTravelPosition": (
         "state projection",
         ["location.distance / get / validated state.set"],
@@ -226,8 +231,14 @@ external = {
     "NPCPhrase_splice": ("presentation", ["speech composition"]),
     "PHRASE_ENABLED": ("query", ["get (local topic availability)"]),
     "PLAYER_SAID": ("graph", ["destination edge"]),
-    "RandomContext_Random": ("implementation", ["handlers.prepare_rescue seeded proposal"]),
-    "RandomContext_SeedRandom": ("implementation", ["handlers.prepare_rescue seeded proposal"]),
+    "RandomContext_Random": (
+        "implementation",
+        ["handlers.prepare_rescue seeded proposal"],
+    ),
+    "RandomContext_SeedRandom": (
+        "implementation",
+        ["handlers.prepare_rescue seeded proposal"],
+    ),
     "RemoveEscortShips": ("action", ["fleet.take"]),
     "Response": ("graph", ["response edge"]),
     "SET_GAME_STATE": ("action", ["state.set / state.add / state.bits"]),
@@ -261,7 +272,10 @@ external = {
     "square_root": ("implementation", ["location.distance / handlers.prepare_rescue"]),
 }
 helper = {
-    "AnalyzeCondition": ("action", ["handlers.prepare_report (hayes.flagship_analysis)"]),
+    "AnalyzeCondition": (
+        "action",
+        ["handlers.prepare_report (hayes.flagship_analysis)"],
+    ),
     "AnyInfoLeftToSell": ("query", ["market.available"]),
     "CheckBulletins": (
         "action",
@@ -299,9 +313,15 @@ helper = {
     "SetAvailableCredits": ("action", ["state.set / currency.adjust"]),
     "ShipWorth": ("query", ["ship.salvage_value"]),
     "ShipsReady": ("query", ["story condition AND calendar.reached"]),
-    "StripShip": ("action", ["handlers.prepare_rescue / handlers.accept_rescue / handlers.strip_ship"]),
+    "StripShip": (
+        "action",
+        ["handlers.prepare_rescue / handlers.accept_rescue / handlers.strip_ship"],
+    ),
     "ZFPTalkSegue": ("presentation", ["speaker/composite sequence"]),
-    "getStripRandomSeed": ("implementation", ["handlers.prepare_rescue deterministic seed"]),
+    "getStripRandomSeed": (
+        "implementation",
+        ["handlers.prepare_rescue deterministic seed"],
+    ),
     "sayCoord": ("presentation", ["coordinate speech segments"]),
 }
 rows = []

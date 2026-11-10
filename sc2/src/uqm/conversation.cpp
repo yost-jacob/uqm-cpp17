@@ -840,9 +840,11 @@ uqm::ConversationRuntime::SelectResponse(ENCOUNTER_STATE *pES)
 	FadeMusic (backgroundVolume(), ONE_SECOND);
 
 	TalkingFinished = FALSE;
-	pES->num_responses = 0;
-	(*pES->response_list[pES->cur_response].response_func)
-			(pES->response_list[pES->cur_response].response_ref);
+    if (!graph_ || graph_->ended())
+        throw std::logic_error("response selected outside a live conversation graph");
+    if (!nativeGraph_) pES->num_responses = 0;
+    graph_->choose(graph_->view().entry, graphResponseIds_.at(pES->cur_response));
+    if (!nativeGraph_) queueGraphSpeech();
 }
 
 // Called when the player presses the cancel button in comm.
@@ -988,6 +990,7 @@ uqm::ConversationRuntime::DoCommunication(ENCOUNTER_STATE *pES)
 		return TRUE;
 	}
 
+    if (!exiting() && finishGraphSpeech()) return TRUE;
 	if (exiting())
 		;
 	else if (pES->num_responses == 0)
@@ -1094,6 +1097,7 @@ uqm::ConversationRuntime::run()
     if (!resources_.playerFont || !data_.AlienFrame || !data_.AlienFont || !data_.ConversationPhrases) {
         throw std::runtime_error("could not load required conversation resources");
     }
+    loadGraph();
 	SubtitleText.baseline = data_.AlienTextBaseline;
 	SubtitleText.align = data_.AlienTextAlign;
 
@@ -1167,7 +1171,8 @@ uqm::ConversationRuntime::run()
 
 	LastActivity |= CHECK_LOAD; /* prevent spurious input */
     playback_ = true;
-	(*data_.init_encounter_func) ();
+    graph_->advance();
+    if (!nativeGraph_) queueGraphSpeech();
 	DoInput (&ES, FALSE);
     finishScript();
 }

@@ -1,0 +1,746 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "umgah",
+  "resource": "comm.umgah.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "HWLD_PRE_ZOMBIE_HELLO_1",
+      "index": 0,
+      "text": "Why HELLO human Earthling! Har! Har! Har!\nMust say, your appearance here comes as quite surprise to us!\nWe never expected to see any of you ever again\nafter our Ur-Quan masters put your species under slave shield!",
+      "voice": "umgah-000.ogg",
+      "original_text_hash": 2690153421162292575
+    },
+    {
+      "id": "HWLD_PRE_ZOMBIE_HELLO_2",
+      "index": 1,
+      "text": "Hey look everybody! Human Earthling came back!\nHar! Har! Har! Say, I wonder we'll kill him this time?\nHar! Har! Har!",
+      "voice": "umgah-001.ogg",
+      "original_text_hash": 4006280206437251397
+    },
+    {
+      "id": "HWLD_PRE_ZOMBIE_HELLO_3",
+      "index": 2,
+      "text": "You're back? Har! Har! Har! More fun! More fun!",
+      "voice": "umgah-002.ogg",
+      "original_text_hash": 5995665435140423678
+    },
+    {
+      "id": "HWLD_PRE_ZOMBIE_HELLO_4",
+      "index": 3,
+      "text": "Howdy human Earthling! Back for more fun?",
+      "voice": "umgah-003.ogg",
+      "original_text_hash": 10000338055464508191
+    },
+    {
+      "id": "SPACE_PRE_ZOMBIE_HELLO_1",
+      "index": 4,
+      "text": "Well bloat my belly! It's a human Earthling!\nHar! Har! Har! Haven't seen a human Earthling since... since\nwhy heck! NEVER seen a human Earthling!\nWhat coincidence!",
+      "voice": "umgah-004.ogg",
+      "original_text_hash": 4570422457593448065
+    },
+    {
+      "id": "SPACE_PRE_ZOMBIE_HELLO_2",
+      "index": 5,
+      "text": "Hi there human! How old fluid sacks today?\nWhat?! You don't HAVE fluid sacks?\nHar! Har! Har! What do you call your mate then?!! Har! Har! Har!...\nyou don't HAVE a mate?\nTHAT'S EVEN FUNNIER! Har! Har! Har!",
+      "voice": "umgah-005.ogg",
+      "original_text_hash": 10811843855297837016
+    },
+    {
+      "id": "SPACE_PRE_ZOMBIE_HELLO_3",
+      "index": 6,
+      "text": "Hi there, human Earthling! What'cha here for today?\nWhat? Can't quite hear you? You'll have to speak up!\nHey! What problem here?\nHuman Earthling making fun of me?\nTHIS SOME KIND OF STUPID HUMAN EARTHLING TRICK? BECAUSE IF IS\nHar! Har! Har!... fooled ya, didn't I?",
+      "voice": "umgah-006.ogg",
+      "original_text_hash": 6243009532632025044
+    },
+    {
+      "id": "SPACE_PRE_ZOMBIE_HELLO_4",
+      "index": 7,
+      "text": "Yo! Human Earthling! What up?!  Har! Har! Har!",
+      "voice": "umgah-007.ogg",
+      "original_text_hash": 838985224040216109
+    },
+    {
+      "id": "UNKNOWN_ZOMBIE_HELLO_1",
+      "index": 8,
+      "text": "HELLO. HUMAN. EARTHLING.\nHAR.  HAR.  HAR.",
+      "voice": "umgah-008.ogg",
+      "original_text_hash": 2093210983697181191
+    },
+    {
+      "id": "UNKNOWN_ZOMBIE_HELLO_2",
+      "index": 9,
+      "text": "HAPPY. GREETINGS. AND. WELCOME. EARTHLING. HUMAN.\nHAR.  HAR.  HAR.",
+      "voice": "umgah-009.ogg",
+      "original_text_hash": 7392708591155211104
+    },
+    {
+      "id": "UNKNOWN_ZOMBIE_HELLO_3",
+      "index": 10,
+      "text": "WHAT. SO. FUNNY. HUMAN. EARTHLING. YOUR. FACE. FUNNY. THING.\nHAR.  HAR.  HAR.",
+      "voice": "umgah-010.ogg",
+      "original_text_hash": 12706204808226423745
+    },
+    {
+      "id": "UNKNOWN_ZOMBIE_HELLO_4",
+      "index": 11,
+      "text": "WE. FUNNY. UMGAH. SO. FUNNY.\nHAR.  HAR.  HAR.",
+      "voice": "umgah-011.ogg",
+      "original_text_hash": 4696284877023076984
+    },
+    {
+      "id": "DESTROY_INTERFERER_1",
+      "index": 12,
+      "text": "THE. HUMAN. INTERFERES. WITH. PLAN.\nKILL. IT.",
+      "voice": "umgah-012.ogg",
+      "original_text_hash": 9556868649540006720
+    },
+    {
+      "id": "DESTROY_INTERFERER_2",
+      "index": 13,
+      "text": "STOP. THE. HUMAN. DESTROY. VESSEL.",
+      "voice": "umgah-013.ogg",
+      "original_text_hash": 10879423849419012891
+    },
+    {
+      "id": "DESTROY_INTERFERER_3",
+      "index": 14,
+      "text": "NO. DELAYS. IN. PLAN. TOLERATED.\nELIMINATE. HUMAN.",
+      "voice": "umgah-014.ogg",
+      "original_text_hash": 9202862527932360333
+    },
+    {
+      "id": "DESTROY_INTERFERER_4",
+      "index": 15,
+      "text": "DESTROY. HUMAN. IMMEDIATELY.",
+      "voice": "umgah-015.ogg",
+      "original_text_hash": 16314037793349141834
+    },
+    {
+      "id": "REVEALED_ZOMBIE_HELLO_1",
+      "index": 16,
+      "text": "HUMAN. KNOWS. TOO. MUCH. IT. MUST. NOT. ESCAPE.",
+      "voice": "umgah-016.ogg",
+      "original_text_hash": 14084243368432785439
+    },
+    {
+      "id": "REVEALED_ZOMBIE_HELLO_2",
+      "index": 17,
+      "text": "HUMAN. EARTHLING. CEASE. MOTION. AND. DE-ENERGIZE. SHIP. SO. WE. CAN. GIVE. GIFT.",
+      "voice": "umgah-017.ogg",
+      "original_text_hash": 8737849514652350080
+    },
+    {
+      "id": "REVEALED_ZOMBIE_HELLO_3",
+      "index": 18,
+      "text": "CEASE. HOSTILITIES. WE. HAVE. CHANGED. OUR. MINDS. WE. LIKE. YOU. COME. CLOSER.",
+      "voice": "umgah-018.ogg",
+      "original_text_hash": 6319723750057541702
+    },
+    {
+      "id": "REVEALED_ZOMBIE_HELLO_4",
+      "index": 19,
+      "text": "RESISTANCE. IS. USELESS. HUMAN. EARTHLING.",
+      "voice": "umgah-019.ogg",
+      "original_text_hash": 12063646845355944209
+    },
+    {
+      "id": "HOSTILE_HELLO_1",
+      "index": 20,
+      "text": "Hello human Earthling savior!\nAlthough we appreciate your efforts on our behalf\nwe really hate `Eternal Gratitude' stuff, so we've decided to kill you now.\nHar! Har! Har! We pretty crazy blobbies, no?!",
+      "voice": "umgah-020.ogg",
+      "original_text_hash": 5704485194077583194
+    },
+    {
+      "id": "HOSTILE_HELLO_2",
+      "index": 21,
+      "text": "Well pop my pupae! It human Earthling again!\nIt just doesn't learn, does it? To Arms! To Arms!... wait a minute! Don't HAVE any arms!\nAIEE!! MY ARMS!! MY ARMS!! WHO HAS STOLEN MY ARMS!!! AIEEE!! ARM THIEF!!!\nHar! Har! Har!... Never HAD any arms! Har! Har! Har!",
+      "voice": "umgah-021.ogg",
+      "original_text_hash": 18106968037464917462
+    },
+    {
+      "id": "HOSTILE_HELLO_3",
+      "index": 22,
+      "text": "Look, we all decided that our treating you this way,\nattacking you without mercy all time,\nwell, we decided that it just plain unfair.\nREALLY, after all things you've done for our people!\nSo we decided to make you our honorary KING! Congratulations!\nBraankk!!\nWhat that sound, officer Flubbo? It was? You sure? King-Killing Horn?\nHar! Har! Har! What a sad coincidence, eh, Captain King?",
+      "voice": "umgah-022.ogg",
+      "original_text_hash": 8740609883455854802
+    },
+    {
+      "id": "HOSTILE_HELLO_4",
+      "index": 23,
+      "text": "Ho-ho! Human Earthling has returned to claim its reward!\nWhat reward you ask? Why this reward, of course!",
+      "voice": "umgah-023.ogg",
+      "original_text_hash": 13450768176920477946
+    },
+    {
+      "id": "REWARD_AT_HOMEWORLD_1",
+      "index": 24,
+      "text": "Hurray! Hurray! It human Earthling! Our Savior!!\nOh hurry, human Earthling, HURRY! Your reward awaits at our homeworld!\nIn case you have forgotten, that at Beta Orionis!\nHurry, human Earthling, HURRY!",
+      "voice": "umgah-024.ogg",
+      "original_text_hash": 1423273239443991961
+    },
+    {
+      "id": "REWARD_AT_HOMEWORLD_2",
+      "index": 25,
+      "text": "Hust! Hust! You must make haste, human Earthling!\nSooner you go to our homeworld at Beta Orionis\nsooner you shall receive your reward!",
+      "voice": "umgah-025.ogg",
+      "original_text_hash": 2775445243181679424
+    },
+    {
+      "id": "POST_ZOMBIE_HWLD_HELLO",
+      "index": 26,
+      "text": "HAIL! HAIL! Human Earthling! GREAT HERO HAS RETURNED!\nOh, my lipids quivering just looking at him on monitor!\nWhat smile! What sparkling eyes! What nice bony structure!\nHe one who has saved us from mental compulsion of evil Talking Pet!\nHAIL! HAIL! HAIL!\nOh Great Hero! We grateful species! Speak to us! How we reward you?!",
+      "voice": "umgah-026.ogg",
+      "original_text_hash": 7969751615595360030
+    },
+    {
+      "id": "owe_me_big_time",
+      "index": 27,
+      "text": "Yup! That's right! You guys owe me BIG time.",
+      "voice": null,
+      "original_text_hash": 9779040766007931369
+    },
+    {
+      "id": "our_largesse",
+      "index": 28,
+      "text": "Gentle blobbies, please calm yourselves. We act solely from largesse. Rewards are unnecessary.",
+      "voice": null,
+      "original_text_hash": 12580544298650035644
+    },
+    {
+      "id": "GIVE_LIFEDATA",
+      "index": 29,
+      "text": "We must reward your deeds of courage!\nKilling Talking Pet was a feat none of our species could perform!\nYou superior! You Hero!\nHAIL! HAIL! HAIL!\nWe MUST reward you!... but what do we have to give?\nProtoplasm?... no, no, not easily appreciated.\nVigorous esters?... no, too common.\nHAVE IT! HAVE IT! GENETIC MODIFICATION!! YES! IT PERFECT GIFT!!\nListen human Earthling! We add some extra eyes! A few tentacles!\nOther organs of whatever size and shape you desire!!\nWhat?! You not want more organs?... You sure?... How strange... how sad.\nThis was best gift. We Umgah have nothing but vast supply of biological skills and data.\nHuh? What you say?\nYou want Biological Data?! Just plain raw Biological Data?\nWhat you do with it?\nOh, well, you Hero. Whatever you want, you get.",
+      "voice": "umgah-027.ogg",
+      "original_text_hash": 696023513578583491
+    },
+    {
+      "id": "THANKS",
+      "index": 30,
+      "text": "HAIL! HAIL! HAIL!\nYou right! We do owe you! We MUST reward you!... but what do we have to give?\nProtoplasm?... no, no, not easily appreciated.\nVigorous esters?... no, too common.\nHAVE IT! HAVE IT! GENETIC MODIFICATION!! YES! IT PERFECT GIFT!!\nListen human Earthling! We add some extra eyes! A few tentacles!\nOther organs of whatever size and shape you desire!!\nWhat?! You not want more organs?... You sure?... How strange... how sad.\nThis was best gift. We Umgah have nothing but vast supply of biological skills and data.\nHuh? What you say?\nYou want Biological Data?! Just plain raw Biological Data?\nWhat you do with it?\nOh, well, you Hero. Whatever you want, you get.",
+      "voice": "umgah-028.ogg",
+      "original_text_hash": 3020298927867952917
+    },
+    {
+      "id": "what_do_with_tpet",
+      "index": 31,
+      "text": "So how did that Talking Pet get control of your species?",
+      "voice": null,
+      "original_text_hash": 1020051768356976194
+    },
+    {
+      "id": "TRICK_URQUAN",
+      "index": 32,
+      "text": "Ah, well Arilou Lalee'lay, who kind of our neighbors, gave us Talking Pet\nhoping we could heal it more severe injuries, which we did.\nWhile we working on it, we do routine brain structure scan\nand discovered that creature have extremely sophisticated set of neural pathways\neven more complex than own!\nFurther analysis showed that with minor genetic manipulations\nTalking Pet intelligence greatly expanded, perhaps even to sentience!\nLittle did know what monster we creating.\nOnly few hours after injected nanots with modification program, creature wakes up.\nAlmost immediately, took control of Hospital... then city... then whole planet.\nWe try to resist, but creature, even in drugged, weakened state, too strong.\nFrom that day on, we just mindless slaves who live only serve Talking Pet, and `Big Plan'.\nWhat `Big Plan'?\nWe never quite sure about details of `Big Plan', except it involved getting revenge\nand mean LOTS of revenge...\nagainst Ur-Quan masters.",
+      "voice": "umgah-029.ogg",
+      "original_text_hash": 9134503029609447248
+    },
+    {
+      "id": "any_jokes",
+      "index": 33,
+      "text": "Why the Ur-Quan? What did it have against them?",
+      "voice": null,
+      "original_text_hash": 15964608353955893508
+    },
+    {
+      "id": "SURE",
+      "index": 34,
+      "text": "We don't know, but whatever it was, must been pretty bad\nbecause Talking Pet mad... REAL mad! How mad, you ask?\nBlowing up planets and eating juveniles mad! That how mad.\nWe got impression Ur-Quan did something awful to Talking Pet or maybe even whole species.\nWhatever it was, it worse than slavery\nmaybe even worse than death.",
+      "voice": "umgah-030.ogg",
+      "original_text_hash": 3326444412692614025
+    },
+    {
+      "id": "what_before_tpet",
+      "index": 35,
+      "text": "So what should I do with the Talking Pet?",
+      "voice": null,
+      "original_text_hash": 12917449191427430615
+    },
+    {
+      "id": "TRKD_SPATHI_AND_ILWRATH",
+      "index": 36,
+      "text": "You mean, CORPSE of Talking Pet, don't you Captain?!\nDID kill it, didn't you?!",
+      "voice": "umgah-031.ogg",
+      "original_text_hash": 2873306804673042145
+    },
+    {
+      "id": "where_caster",
+      "index": 37,
+      "text": "Er... yeah! That's right. Real dead. So what should I do with its corpse?",
+      "voice": null,
+      "original_text_hash": 1430585461689307083
+    },
+    {
+      "id": "SPATHI_TOOK_THEM",
+      "index": 38,
+      "text": "Hmmm... as general rule, corpses aren't too much fun.\nWhen we were first starting to mess with its brain\nour intention to get it smart enough to accept orders from us\nand then repeat them as though they legitimate Ur-Quan commands.\nHar! Har! Har! Har! We going to play little joke this way!\nWe going to use Talking Pet to order Spathi to attack VUX!\nHar! Har Har! That been great! ZAP! ZAP! KABOOM!!! Har! Har! Har!...\n...even better than old Dogar and Kazon routine we pull on Ilwrath few years back\nbefore those spoil-sport Spathi stole super cool HyperWave 'Caster.",
+      "voice": "umgah-032.ogg",
+      "original_text_hash": 14770736111556380082
+    },
+    {
+      "id": "so_what_for_now",
+      "index": 39,
+      "text": "So, since I'm your Great Hero Guy, tell me all your secrets.",
+      "voice": null,
+      "original_text_hash": 1278827141657343823
+    },
+    {
+      "id": "DO_THIS_NOW",
+      "index": 40,
+      "text": "Secrets, huh? You want secrets? OUR SECRETS!? YOU MADE FATAL MISTAKE, HUMAN!!\n... Har! Har! Har! Good joke, eh? Scared you!\nSure! We'll tell our secrets. Now let me see... what ARE secrets?\nOh, yes!... remember! It about Mycons!\nYou see, Mycons only other race we know of\nthat have same kind of biotechnical skills as Umgah.\nBut amazing thing, they do all with their own bodies, don't need tools.\nThey just THINK genetic modification, and it happen!\nWe found that pretty hard understand, so when nobody looking, we clonk one on head\nbring it back here to homeworld and slice it up for detailed study.\nThose guys not product of ANY natural evolutionary process\nthey constructs!... some kind of multi-purpose biological tool.\nWe don't know who made them or for what purpose\nbut they WAY beyond anything we ever heard of.\nWe not figure out much more before tissue samples all gross\nso guess that pretty much all of big secret.\nOh... do us favor? Please not tell anybody about clonking Mycon.\nIt kind of against Ur-Quan Laws, and not want get Mycons mad at us.",
+      "voice": "umgah-033.ogg",
+      "original_text_hash": 18085418743751957986
+    },
+    {
+      "id": "bye_post_zombie",
+      "index": 41,
+      "text": "Well, your Great Hero must leave now, but rest assured, I'll be back.",
+      "voice": null,
+      "original_text_hash": 6750894320351204417
+    },
+    {
+      "id": "FUNNY_IDEA",
+      "index": 42,
+      "text": "You know, Great Hero... I getting this funny feeling.\nWould like to know what feeling is? Good, I tell you.\nMy feeling that Great Hero stuff... well, boring... not funny at all.\nYou only say HAIL! HAIL! HAIL! so many times before starts to lose appeal,\nso... instituting slight deviation in course of our relationship.\nSpecifically, instead of being dull and lifeless Great Hero\nyou now glamorous and exciting... Great Enemy!\nWe give you some our Drone ships to make even more interesting!\nYes! This going to be LOTS more fun!\nHere... let me show you.",
+      "voice": "umgah-034.ogg",
+      "original_text_hash": 17513820106692131196
+    },
+    {
+      "id": "whats_up_pre_zombie",
+      "index": 43,
+      "text": "Umgah! Reveal your secrets!",
+      "voice": null,
+      "original_text_hash": 14706384876874117712
+    },
+    {
+      "id": "GENERAL_INFO_PRE_ZOMBIE",
+      "index": 44,
+      "text": "Okay, since you ask so nicely, we will tell you a thing or two.\nFor instance, did know that even now we performing surgery on Talking Pet?\nArilou found it alone and dying in wreck of Ur-Quan Dreadnought on Alpha Pavonis.\nThey couldn't heal so they brought to us.\nWe discovered that animal has potential for high intelligence\nprovided we make few minor genetic modifications.",
+      "voice": "umgah-035.ogg",
+      "original_text_hash": 15645405519060501143
+    },
+    {
+      "id": "evil_blobbies_give_up",
+      "index": 45,
+      "text": "Evil blobbies. You must submit to our overwhelming power!",
+      "voice": null,
+      "original_text_hash": 12226450863019147401
+    },
+    {
+      "id": "NOT_EVIL_BLOBBIES",
+      "index": 46,
+      "text": "Har! Har! Har! GOOD JOKE!!\nWe use it on someone else real soon.",
+      "voice": "umgah-036.ogg",
+      "original_text_hash": 13548159723104557100
+    },
+    {
+      "id": "evil_blobbies_must_die",
+      "index": 47,
+      "text": "No! I was serious. You ARE evil blobbies. You MUST die.",
+      "voice": null,
+      "original_text_hash": 3000899521436119762
+    },
+    {
+      "id": "OH_NO_WE_WONT",
+      "index": 48,
+      "text": "Har! Har! Har! Even funnier!",
+      "voice": "umgah-037.ogg",
+      "original_text_hash": 11950123721566868813
+    },
+    {
+      "id": "can_we_be_friends",
+      "index": 49,
+      "text": "Look, I know we've had our differences in the past, but can't we be friends?",
+      "voice": null,
+      "original_text_hash": 6548508577511048868
+    },
+    {
+      "id": "SURE_FRIENDS",
+      "index": 50,
+      "text": "Sure! Sure! Friends for sure!\nWho cares about boring old Ur-Quan and their slave laws? Har! Har! Har!\nHere we come to say hello to new friends!",
+      "voice": "umgah-038.ogg",
+      "original_text_hash": 1707521739855355276
+    },
+    {
+      "id": "want_to_defeat_urquan",
+      "index": 51,
+      "text": "Here's our credo: Freedom from Ur-Quan! What do you say?",
+      "voice": null,
+      "original_text_hash": 4856743200220339876
+    },
+    {
+      "id": "FINE_BY_US",
+      "index": 52,
+      "text": "Har! Har! Har! Freedom very good thing!\nIt so much easier to make good jokes without boring old Ur-Quan slave laws!\nWe wanting to pull real good one on those stupid nosers from Draconis for long time\nbut since they battle thralls too, we not allowed do even small pranks on them\nlike, say... dropping planetoid in their ocean.\nBig waves! Big waves! Har! Har! Har!",
+      "voice": "umgah-039.ogg",
+      "original_text_hash": 5451609054533031735
+    },
+    {
+      "id": "bye_pre_zombie",
+      "index": 53,
+      "text": "Well Umgah. It has been fascinating, but I must go.",
+      "voice": null,
+      "original_text_hash": 3188792803599402760
+    },
+    {
+      "id": "GOODBYE_PRE_ZOMBIE",
+      "index": 54,
+      "text": "Har! Har! Har! Hey wait human Earthling! Here best part!",
+      "voice": "umgah-040.ogg",
+      "original_text_hash": 2762435771937019126
+    },
+    {
+      "id": "threat",
+      "index": 55,
+      "text": "Evil blobbies, your craven nature is revealed! Submit!",
+      "voice": null,
+      "original_text_hash": 7071543534761132800
+    },
+    {
+      "id": "NO_THREAT",
+      "index": 56,
+      "text": "IF. COMPREHEND. TRUE. NATURE. MUST. BE. ELIMINATED.",
+      "voice": "umgah-041.ogg",
+      "original_text_hash": 17757051535951060280
+    },
+    {
+      "id": "whats_up_zombies",
+      "index": 57,
+      "text": "So Umgah, what have you been up to these past twenty years?",
+      "voice": null,
+      "original_text_hash": 5204643190777328089
+    },
+    {
+      "id": "GENERAL_INFO_ZOMBIE",
+      "index": 58,
+      "text": "NOTHING. HAPPEN. LAST. TWENTY. YEARS. VERY. BORING.",
+      "voice": "umgah-042.ogg",
+      "original_text_hash": 12283377331601054196
+    },
+    {
+      "id": "how_goes_tpet",
+      "index": 59,
+      "text": "So how goes your work on that Talking Pet?",
+      "voice": null,
+      "original_text_hash": 4858592351049052253
+    },
+    {
+      "id": "WHAT_TPET",
+      "index": 60,
+      "text": "WHAT. TALKING. PET. DO. NOT. UNDERSTAND. REFERENCE.",
+      "voice": "umgah-043.ogg",
+      "original_text_hash": 6283484739075708193
+    },
+    {
+      "id": "you_told_us",
+      "index": 61,
+      "text": "You told us you were modifying a Talking Pet, didn't you?",
+      "voice": null,
+      "original_text_hash": 1870635059557858875
+    },
+    {
+      "id": "SADLY_IT_DIED",
+      "index": 62,
+      "text": "SADLY. IT. DIED.\nNO. MORE. TALK. ABOUT. IT.",
+      "voice": "umgah-044.ogg",
+      "original_text_hash": 8133545995935303185
+    },
+    {
+      "id": "dont_believe",
+      "index": 63,
+      "text": "You know, I just don't believe you. What are you hiding?",
+      "voice": null,
+      "original_text_hash": 3818428754363142872
+    },
+    {
+      "id": "THEN_DIE",
+      "index": 64,
+      "text": "HUMAN. POSSESSES. FORBIDDEN. KNOWLEDGE.\nNO. INTERFERENCE. IN. PLAN. CAN. BE. TOLERATED.\nHUMAN. MUST. BE. ELIMINATED.",
+      "voice": "umgah-045.ogg",
+      "original_text_hash": 3937539478296489330
+    },
+    {
+      "id": "bye_unknown",
+      "index": 65,
+      "text": "If I try to leave, are you going to attack me?",
+      "voice": null,
+      "original_text_hash": 2901544740580728085
+    },
+    {
+      "id": "GOODBYE_UNKNOWN",
+      "index": 66,
+      "text": "NO. LEAVE.",
+      "voice": "umgah-046.ogg",
+      "original_text_hash": 6510595753181440367
+    },
+    {
+      "id": "evil_blobbies",
+      "index": 67,
+      "text": "You are evil blobbies, I say! Avast!",
+      "voice": null,
+      "original_text_hash": 14837266640350895815
+    },
+    {
+      "id": "YES_VERY_EVIL",
+      "index": 68,
+      "text": "YES. WE. ARE. VERY. EVIL.\nYOUR. BEST. PLAN. IS. TO. DEPART. AND. NEVER. RETURN.",
+      "voice": "umgah-047.ogg",
+      "original_text_hash": 6290499655637522872
+    },
+    {
+      "id": "give_up_or_die",
+      "index": 69,
+      "text": "Surrender to me HERE and NOW or I shall vaporize you!",
+      "voice": null,
+      "original_text_hash": 5937240367230867543
+    },
+    {
+      "id": "NOT_GIVE_UP",
+      "index": 70,
+      "text": "HUMAN. INTERFERENCE. REACHES. INTOLERABLE. LEVEL.\nPLAN. MUST. NOT. BE. DELAYED.\nELIMINATE. HUMAN.",
+      "voice": "umgah-048.ogg",
+      "original_text_hash": 8252643893811100079
+    },
+    {
+      "id": "we_vindicator0",
+      "index": 71,
+      "text": "I am Captain",
+      "voice": null,
+      "original_text_hash": 12400001958996011106
+    },
+    {
+      "id": "we_vindicator1",
+      "index": 72,
+      "text": ", of the starship",
+      "voice": null,
+      "original_text_hash": 243560670124472899
+    },
+    {
+      "id": "we_vindicator2",
+      "index": 73,
+      "text": ". What is your response?",
+      "voice": null,
+      "original_text_hash": 8667344292075464834
+    },
+    {
+      "id": "GOOD_FOR_YOU_1",
+      "index": 74,
+      "text": "WE. RESPOND. WITH. APPROPRIATE. AWE. AND. RESPECT.\nNOW. GO. AWAY.",
+      "voice": "umgah-049.ogg",
+      "original_text_hash": 11975156471312313999
+    },
+    {
+      "id": "come_in_peace",
+      "index": 75,
+      "text": "Our message is Peace Between All Species!... blobbies included.",
+      "voice": null,
+      "original_text_hash": 14644272963615019522
+    },
+    {
+      "id": "GOOD_FOR_YOU_2",
+      "index": 76,
+      "text": "YES. PEACE. GOOD. WE. WANT. PEACE. ALSO.\nDEMONSTRATE. PEACE. NOW. BY. DEPARTING. OUR. SPACE. IMMEDIATELY.",
+      "voice": "umgah-050.ogg",
+      "original_text_hash": 8631803526249435169
+    },
+    {
+      "id": "know_any_jokes",
+      "index": 77,
+      "text": "Umgah humor is renowned across space, so... know any good jokes?!",
+      "voice": null,
+      "original_text_hash": 14051337818111519419
+    },
+    {
+      "id": "JOKE_1",
+      "index": 78,
+      "text": "JOKE. YES. JOKE. HERE. IS. JOKE.\nWHEN. IS. A. SLAVE. NOT. A. SLAVE.\nANSWER.\nWHEN. HE. IS. A. SLAVE. MASTER.\nHAR.  HAR.  HAR.",
+      "voice": "umgah-051.ogg",
+      "original_text_hash": 9930413089276100770
+    },
+    {
+      "id": "better_joke",
+      "index": 79,
+      "text": "Uh... that wasn't very funny. Can't you do better?",
+      "voice": null,
+      "original_text_hash": 7919321268630312819
+    },
+    {
+      "id": "JOKE_2",
+      "index": 80,
+      "text": "BETTER. JOKE. YES. BETTER. JOKE. HERE. IT. IS\nWHAT. YOU. GET. WHEN. COMBINE. DEUTERIUM. PELLET. TERAWATT. LASER.\nAND. PRIMITIVE. EARTH. LEADER. FROM. ASIAN. STEPPES.\nANSWER.\nKHAN. FUSION.\nHAR.  HAR.  HAR.",
+      "voice": "umgah-052.ogg",
+      "original_text_hash": 16866292489759053366
+    },
+    {
+      "id": "not_very_funny",
+      "index": 81,
+      "text": "Ugh! That wasn't a very good joke either. I don't think you guys are very funny.",
+      "voice": null,
+      "original_text_hash": 7495182048360132613
+    },
+    {
+      "id": "YES_WE_ARE",
+      "index": 82,
+      "text": "UMGAH. ARE. FUNNY. WE. ARE. UMGAH. WE. ARE FUNNY.\nTHERE. IS. NO. ALTERNATIVE.",
+      "voice": "umgah-053.ogg",
+      "original_text_hash": 16992720672358713079
+    },
+    {
+      "id": "what_about_tpet",
+      "index": 83,
+      "text": "So how's that Talking Pet getting along?",
+      "voice": null,
+      "original_text_hash": 1771006442317311239
+    },
+    {
+      "id": "arilou_told_us",
+      "index": 84,
+      "text": "The Arilou told us they had given it to you... they did, right?",
+      "voice": null,
+      "original_text_hash": 16836468235896198598
+    },
+    {
+      "id": "bye_zombie",
+      "index": 85,
+      "text": "Goodbye Umgah. I wish I could say it's been fun.",
+      "voice": null,
+      "original_text_hash": 15296007878421052101
+    },
+    {
+      "id": "GOODBYE_ZOMBIE",
+      "index": 86,
+      "text": "GOODBYE. HUMAN. EARTHLING. DO. NOT. RETURN.",
+      "voice": "umgah-054.ogg",
+      "original_text_hash": 4445482166890171231
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["umgah", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["umgah", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

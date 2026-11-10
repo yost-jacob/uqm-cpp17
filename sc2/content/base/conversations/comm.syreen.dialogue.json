@@ -1,0 +1,1054 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "syreen",
+  "resource": "comm.syreen.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "HELLO_BEFORE_AMBUSH_1",
+      "index": 0,
+      "text": "Attention unidentified space vessel!\nBe warned! This slave world and its inhabitants belong to the Ur-Quan.\nI am Starbase Commander Talana of the slave planet Gaia.\nYour ship is not responding to standard Hierarchy identification sequences.\nYou are therefore classed as Independent and... WHAT?!\nIs my monitor display correct?!\nIs that a human commanding that vessel?\nWho are you?",
+      "voice": "syreen-000.ogg",
+      "original_text_hash": 10451853138919786337
+    },
+    {
+      "id": "HELLO_BEFORE_AMBUSH_2",
+      "index": 1,
+      "text": "Hello again, pleasant Human.\nIt warms me to greet you again.",
+      "voice": "syreen-001.ogg",
+      "original_text_hash": 12749645012509279230
+    },
+    {
+      "id": "HELLO_BEFORE_AMBUSH_3",
+      "index": 2,
+      "text": "Welcome back, Earthling.\nWhat do you wish of us?",
+      "voice": "syreen-002.ogg",
+      "original_text_hash": 8007324221679582491
+    },
+    {
+      "id": "HELLO_BEFORE_AMBUSH_4",
+      "index": 3,
+      "text": "Yes, Captain?",
+      "voice": "syreen-003.ogg",
+      "original_text_hash": 8819965995944618357
+    },
+    {
+      "id": "we_are_vice_squad",
+      "index": 4,
+      "text": "We're the Ethics Police. Justify that costume... Immediately!",
+      "voice": null,
+      "original_text_hash": 12104713067779227204
+    },
+    {
+      "id": "OK_VICE",
+      "index": 5,
+      "text": "Huh? What ARE you talking about?\nThis is the uniform of a Syreen Commander.\nThe climate aboard this starbase is maintained at a constant 22 degrees C.\nWhat are we supposed to wear in here... parkas?",
+      "voice": "syreen-004.ogg",
+      "original_text_hash": 8873339565876087280
+    },
+    {
+      "id": "we_are_the_one_for_you_baby",
+      "index": 6,
+      "text": "I am the right one for you, baby!",
+      "voice": null,
+      "original_text_hash": 15432393746366865838
+    },
+    {
+      "id": "MAYBE_CAPTAIN",
+      "index": 7,
+      "text": "Ah, yes... I had almost forgotten the sophistication of human social graces.\nManners were never the Earthlings' strong point, were they?\nYour species' undeniable appeal can be found... elsewhere.",
+      "voice": "syreen-005.ogg",
+      "original_text_hash": 1205719630860703039
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 8,
+      "text": "I am Captain",
+      "voice": null,
+      "original_text_hash": 12400001958996011106
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 9,
+      "text": "of the flagship",
+      "voice": null,
+      "original_text_hash": 3401887803347617705
+    },
+    {
+      "id": "we_are_vindicator2",
+      "index": 10,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "WELCOME_VINDICATOR0",
+      "index": 11,
+      "text": "Hello, Captain",
+      "voice": "syreen-006.ogg",
+      "original_text_hash": 6167358916095532401
+    },
+    {
+      "id": "WELCOME_VINDICATOR1",
+      "index": 12,
+      "text": "from the Starship",
+      "voice": null,
+      "original_text_hash": 13495017426475851972
+    },
+    {
+      "id": "WELCOME_VINDICATOR2",
+      "index": 13,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "we_are_impressed",
+      "index": 14,
+      "text": "We're... we're.. we're greatly impressed!",
+      "voice": null,
+      "original_text_hash": 16989586397094455000
+    },
+    {
+      "id": "SO_AM_I_CAPTAIN",
+      "index": 15,
+      "text": "So am I, Captain. So am I.\nEarthlings are so... so... earthy!",
+      "voice": "syreen-007.ogg",
+      "original_text_hash": 4268090446877411536
+    },
+    {
+      "id": "HOW_CAN_YOU_BE_HERE",
+      "index": 16,
+      "text": "But you haven't answered my question fully.\nWhy are you here? Where are you from?\nHas the slave shield been lifted from Earth?\nAre the Ur-Quan finally defeated?\nSimply put, Captain...what do you want from us?",
+      "voice": "syreen-008.ogg",
+      "original_text_hash": 17182224551899840858
+    },
+    {
+      "id": "we_here_to_help",
+      "index": 17,
+      "text": "We have come here to free you from slavery to the Ur-Quan!",
+      "voice": null,
+      "original_text_hash": 10101869729205067641
+    },
+    {
+      "id": "NO_NEED_HELP",
+      "index": 18,
+      "text": "Look friend, I appreciate your offer, but we don't want your help.\nWhy? I'll tell you why\nbecause we're not going to do anything to antagonize the Ur-Quan. That's why.\nWe may not like slavery, but it's a damn sight better than our alternatives.\nBelow us we have a beautiful world... maybe it's not Syra, but at least it's a home.\nThat's a lot more than we ever had before the War... before the Ur-Quan became our masters.",
+      "voice": "syreen-009.ogg",
+      "original_text_hash": 7591390442343705938
+    },
+    {
+      "id": "we_need_help",
+      "index": 19,
+      "text": "To be honest, we need your help to destroy the Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 7529785155013754413
+    },
+    {
+      "id": "CANT_GIVE_HELP",
+      "index": 20,
+      "text": "Look Captain... I like you... even though you're an obnoxious human... I like you.\nIn another time, we might have become good friends... perhaps more\nbut that's a fantasy, and my job is dealing with reality.\nWe're not going to do anything to jeopardize what we've got here.\nWe've come too far... lost too much, to ever risk losing Gaia, our new home.\nDon't get all judgmental on me, Captain... you don't know what we've been through.",
+      "voice": "syreen-010.ogg",
+      "original_text_hash": 14272607955980383624
+    },
+    {
+      "id": "i_need_you",
+      "index": 21,
+      "text": "Hey, baby... what I need is you!",
+      "voice": null,
+      "original_text_hash": 16705098486324918880
+    },
+    {
+      "id": "OK_NEED",
+      "index": 22,
+      "text": "Look. Human. Get this through your head.\nUnder other circumstances, I might be interested in your antics, you're kind of cute\nbut we've got a serious situation here and we don't have time to fool around.\nOur lives are at stake, and so are yours. If the Ur-Quan discover that you have been here\nI don't know what they will do to us... much less you!\nNow get serious... please.",
+      "voice": "syreen-011.ogg",
+      "original_text_hash": 9822384170870229799
+    },
+    {
+      "id": "i_need_touch_o_vision",
+      "index": 23,
+      "text": "What I need right now, is a Touch-o-Vision.",
+      "voice": null,
+      "original_text_hash": 2777352909177746793
+    },
+    {
+      "id": "TOUCH_O_VISION",
+      "index": 24,
+      "text": "Look. Human. Get this through your head.\nUnder other circumstances, I might be interested in your antics, you're kind of cute\nbut we've got a serious situation here and we don't have time to fool around.\nOur lives are at stake, and so are yours. If the Ur-Quan discover that you have been here\nI don't know what they will do to us... much less to you!\nNow get serious... please.",
+      "voice": "syreen-012.ogg",
+      "original_text_hash": 16494667689918723012
+    },
+    {
+      "id": "know_about_deep_children",
+      "index": 25,
+      "text": "Talana, have you ever heard of the `Deep Children?'",
+      "voice": null,
+      "original_text_hash": 9434333994929959302
+    },
+    {
+      "id": "WHAT_ABOUT_DEEP_CHILDREN",
+      "index": 26,
+      "text": "Yes, I think so. Aren't they part of the Mycon religion somehow?\nWe have recordings of Mycon HyperWave transmissions from the War... pretty weird stuff.\nThe Mycons just kind of.. rambled, never making much sense.\nThey talked a lot about `Deep Children', and `Spears of Light',\nbut we couldn't ever understand what they were talking about.",
+      "voice": "syreen-013.ogg",
+      "original_text_hash": 9195343129548540186
+    },
+    {
+      "id": "mycons_involved",
+      "index": 27,
+      "text": "What if I told you that Mycon Deep Children shatter planet crusts... like your Syra?",
+      "voice": null,
+      "original_text_hash": 11714023217537909968
+    },
+    {
+      "id": "WHAT_PROOF",
+      "index": 28,
+      "text": "What?! What did you say?!\nHuman, you had better not be joking. Syra is not a subject for Earth humor.\nNow what do you mean, shatter planet crusts? How?\nThat IS what happened to Syra, yes, but we presumed it was a natural cataclysm... a meteor.\nDo you have proof that it was something else... these Deep Children?",
+      "voice": "syreen-014.ogg",
+      "original_text_hash": 2339102447581796102
+    },
+    {
+      "id": "have_no_proof",
+      "index": 29,
+      "text": "I don't have proof YET, but I am certain the Mycons destroyed your world.",
+      "voice": null,
+      "original_text_hash": 3503998528466113606
+    },
+    {
+      "id": "NEED_PROOF",
+      "index": 30,
+      "text": "Captain, if what you say is true, it would turn my world upside down.\nYou have no sorrow to match what each of us Syreen feels every day of our lives\nwhen we remember what we have lost... Syra... our Eden.\nThe very idea that the Mycons, or any alien race, may have been responsible for Syra's destruction\nfills me with BURNING RAGE!\nIf it were true, none of us here would rest until we had avenged ourselves on the perpetrators.\nWe would find some way to leave this starbase, locate our starships, and hunt down the evil monsters!\nCaptain, if you ever gather proof of what you say, you MUST inform us immediately.\nBut until then... do not mention the subject again. It is too painful.",
+      "voice": "syreen-015.ogg",
+      "original_text_hash": 3840015883831020038
+    },
+    {
+      "id": "have_proof",
+      "index": 31,
+      "text": "Talana. I have brought proof that the Mycon Deep Children destroyed your world Syra.",
+      "voice": null,
+      "original_text_hash": 10018226142922868654
+    },
+    {
+      "id": "SEE_PROOF",
+      "index": 32,
+      "text": "Let me see this proof, Captain!",
+      "voice": "syreen-016.ogg",
+      "original_text_hash": 572249348238447968
+    },
+    {
+      "id": "look_at_egg_sacks",
+      "index": 33,
+      "text": "Look at these fungal egg sacks. We found them near a crustal puncture on a shattered world.",
+      "voice": null,
+      "original_text_hash": 7914274605307661524
+    },
+    {
+      "id": "HORRIBLE_TRUTH",
+      "index": 34,
+      "text": "Great gods! These fragments... they are IDENTICAL to the debris we found near the punctures on Syra!\nWe never guessed that the fragments might be organic!\nTo have survived re-entry!... nothing organic would remain!... unless\nUNLESS, it was genetically constructed for this purpose!\nAND ONLY THE MYCONS POSSESS THIS CAPABILITY!!\nTHE MYCONS WILL PAY DEARLY FOR THEIR CRIMES!!!\nWe will not sit here and do nothing while the Mycon fiends are free to roam the galaxy, perpetrating their evil.\nYou wanted our cooperation in fighting the Ur-Quan. You've got it... \nprovided you first help us seek our revenge against the Mycon race... help us to destroy them!",
+      "voice": "syreen-017.ogg",
+      "original_text_hash": 7783627828097930298
+    },
+    {
+      "id": "what_doing_here",
+      "index": 35,
+      "text": "So, Commander Talana, what are you doing here?",
+      "voice": null,
+      "original_text_hash": 6137493423161097215
+    },
+    {
+      "id": "OUR_NEW_WORLD",
+      "index": 36,
+      "text": "When the Ur-Quan conquered us, over twenty years ago\nI was only a young girl living in Habitat Thirty-One.\nMy older sister, Diani, was a starship officer in the Space Patrol\nshe was part of the final defense at Raynet... she didn't make it back.\nWhen the Ur-Quan caught us in open space, we all thought we were going to die\nbut then, instead of killing us, the Ur-Quan offered us a choice:\nwe could join the ranks of their combat thralls, or we could be slave-shielded in our homeworld.\nLike the people of Earth, we chose peace. We became fallow slaves.\nWhen the Ur-Quan told us to return to our homeworld, we explained that we had none.\nUr-Quan Master Nine explained that they had encountered this situation before\nand if we would provide them with a list of our requirements\nthey would use their extensive astronomical datastores to find a planet for us!\nSo we told them about Syra... about the color of its sky... about the abundant lifeforms,\nabout the fertility of the soil and seas.\nLess than an hour later, we received a terse message from Master Nine\nwe were to proceed to these coordinates and disembark. This was to be our new home.\nBut our new world, Gaia, was everything we described.\nWe'd been searching for a home planet for seventy-five years\nand in the end, it was our enemies who gave one to us.\nI grew up on a small island off the main continent, and like all of my people\nwe lived each day under the sick, red glow of the slave shield.\nWhen the Ur-Quan arrived seven years ago to refurbish and recrew this starbase\nI was selected as the new commander.",
+      "voice": "syreen-018.ogg",
+      "original_text_hash": 8861245180911866141
+    },
+    {
+      "id": "what_about_war",
+      "index": 37,
+      "text": "So what happened to you at the end of the war?",
+      "voice": null,
+      "original_text_hash": 274308787334933444
+    },
+    {
+      "id": "ABOUT_WAR",
+      "index": 38,
+      "text": "When we first met your people, we'd been wandering through the stars for almost seventy-five years,\never since the death of Syra... our home planet.\nWe joined your Alliance, and I use the word `joined' loosely, because we had no other choice.\nThe VUX were raiding our slow Habitat columns, and we had nowhere else to go.\nWe fought for survival, Captain. Nothing more.\nWhen your people on Earth were defeated, the Alliance just plain fell apart.\nThe Yehat and Shofixti retreated to their native stars and didn't want us to follow.\nThe Arilou, those creepy little weasels, just plain bugged out -- vanished\nleaving us alone, with nowhere to go, smack in the path of the oncoming Ur-Quan Armada.\nWhat were we supposed to do? Fight? Two-thirds of our Habitat fleet was unarmed!\nMany aren't even super-luminal.\nWe were going to be annihilated if we resisted, and we knew it.\nWhen the Ur-Quan surrounded us and started giving orders that all ended with, `Or Die!'\nwe took them at face value. We obeyed.\nIn exchange they gave us Gaia, the planet below.\nIt's a beautiful world, Captain. I wish I could show it to you.\nSo don't misunderstand me. We love our freedom as much as anybody else\nbut we've got a good life here, and we don't want to lose it.",
+      "voice": "syreen-019.ogg",
+      "original_text_hash": 10868906178779980103
+    },
+    {
+      "id": "help_us",
+      "index": 39,
+      "text": "If you love freedom and hate the Ur-Quan, why won't you help us?",
+      "voice": null,
+      "original_text_hash": 17289170077645214172
+    },
+    {
+      "id": "WONT_HELP",
+      "index": 40,
+      "text": "Like I said before, Captain, we would like to help\nbut we are unwilling to risk losing Gaia.\nUnless you can find a much more compelling reason for us to get involved\nyou are on your own.",
+      "voice": "syreen-020.ogg",
+      "original_text_hash": 17124250380103975980
+    },
+    {
+      "id": "what_about_history",
+      "index": 41,
+      "text": "Would you tell me a bit about your people and your culture?",
+      "voice": null,
+      "original_text_hash": 12974540639716136570
+    },
+    {
+      "id": "BEFORE_WAR",
+      "index": 42,
+      "text": "Our species are almost identical, almost too close a match to be just a coincidence.\nOur bodies are very similar, Captain.\nHa! ha! Except for... certain parts...\nOur cultural development is also mostly parallel.\nLike you Earthlings, we evolved a society from primitive tribes\nwhose main function were to protect themselves from the large reptiles native to our old world.\nThe main difference between our two sets of cultures... the split in the paths of our development\noccurred in what would have been your prehistory, say 5000 BCE.\nIn your world, the agricultural communities were conquered by the more primitive but also more aggressive, migratory herding peoples.\nThis led to a particular kind of sexual and political dominance structure\nwhich pervaded almost all of your Earth Cultures until the early Twenty First century.\nOn Syra, our only primitive migratory tribes were confined to our mountainous regions.\nTheir herd beasts, the Yma, did not do well in the agricultural basins and plains.\nThe two cultures were isolated until much later\nwhen the technological superiority of the farmers curtailed any major conflict.",
+      "voice": "syreen-021.ogg",
+      "original_text_hash": 3104913241009851861
+    },
+    {
+      "id": "what_about_homeworld",
+      "index": 43,
+      "text": "What was Syra like?",
+      "voice": null,
+      "original_text_hash": 18422897956320008663
+    },
+    {
+      "id": "ABOUT_HOMEWORLD",
+      "index": 44,
+      "text": "It was our paradise, Captain, our Eden.\nYou would call our world Beta Copernicus I... we called it Syra.\nYou may wonder about our relationship with the Mycon, who now control that area of space.\nWhen we lived on Syra, their sphere of influence was much smaller.\nWe never laid eyes on a Mycon until we met them in combat during the War.\nBut back to our beloved Syra.\nEarth is the only world we know of whose variety and richness of life even comes close to Syra.\nAgain, like so many other things about our two species, our worlds were very much the same\nat least before you began encasing yours in concrete and plastic.\nSyra's gravity was a bit lighter than Earth's, and its day was fifty percent longer.\nOur diurnal cycle is therefore different from yours.\nWe spend twenty hours awake, followed by ten hours... horizontal.",
+      "voice": "syreen-022.ogg",
+      "original_text_hash": 4313775613939530000
+    },
+    {
+      "id": "what_happened",
+      "index": 45,
+      "text": "What happened to Syra?",
+      "voice": null,
+      "original_text_hash": 7455933549991349387
+    },
+    {
+      "id": "DONT_KNOW_HOW",
+      "index": 46,
+      "text": "This subject is very difficult for us, Captain,\nbut I will try to recount those sad days.\nLike your solar system, ours had a large population of comets and asteroids.\nLarge meteor impacts, though rare, were not unheard of on our planet.\nSo it was not a total shock when an asteroid penetrated our atmosphere and hit the surface.\nWhat was odd was that unlike most other meteors, this one was not pulverized on impact.\nIt penetrated the crust, and indeed went all the way through to the mantle\ncausing a `super volcano'.\nThe earthquakes caused by the impact were severe.\nThe magma pumped out of the caldera wreaked significant damage on the nearby terrain\nbut within a few weeks, it had cooled, forming a solid rock bandage over the wound.\nWithin a few months we had cleaned up the mess, the caldera was calming down nicely\nand things were pretty much back to normal.\nThen, just over a year after the impact, all hell broke loose on the surface of Syra.\nHuge calderas were opening all over... not just around the meteor impact, but everywhere!\nThe scope of the disaster is impossible to imagine\nEntire cities sliding into oceans of molten lava\nkilometer-wide sections of land pulverized by a cataclysmic explosion\nand clouds of poison gas and superheated steam created a death shroud around Syra.",
+      "voice": "syreen-023.ogg",
+      "original_text_hash": 14131329104644137062
+    },
+    {
+      "id": "what_about_outfit",
+      "index": 47,
+      "text": "Come on now, isn't that outfit, knife included, a bit absurd?",
+      "voice": null,
+      "original_text_hash": 12065755218542153914
+    },
+    {
+      "id": "HOPE_YOU_LIKE_IT",
+      "index": 48,
+      "text": "Maybe some other time, Captain, I can show you the hidden functionality of my uniform\nknife included!",
+      "voice": "syreen-024.ogg",
+      "original_text_hash": 9450221584106250124
+    },
+    {
+      "id": "where_mates",
+      "index": 49,
+      "text": "What happened to the males of your species?",
+      "voice": null,
+      "original_text_hash": 6825733318841764343
+    },
+    {
+      "id": "MATES_KILLED",
+      "index": 50,
+      "text": "When Syra was destroyed, the only people who survived were in orbit\nand most of them were members of our newly established, mostly female, Space Patrol.\nFrom their ships, their orbital platforms and their lunar outposts they watched Syra die.\nWithin three days after the cataclysm began, the surface temperature of Syra had risen by almost 75 degrees\nto above the boiling point of water.\nIt became clear that Syra, our paradise, our Eden, was gone.\nThe survivors spent years in orbit. They made a few missions to the surface\nand actually found a handful of survivors, but their main activity was to make preparations for departure.\nThe Space Patrol fitted makeshift drive units to anything that could hold air:\norbital factories, research pods, even hotels. When the fleet was ready, they left orbit and never looked back.\nThe final population of our species was less than ten thousand, with only five hundred males\nbut they were the best and the brightest.\nFor the next seventy-five years, our people wandered at sub-light speed through the stars\nlooking for a new home.",
+      "voice": "syreen-025.ogg",
+      "original_text_hash": 8878211586403286952
+    },
+    {
+      "id": "get_lonely",
+      "index": 51,
+      "text": "Don't you ever get... lonely? Hmmm?",
+      "voice": null,
+      "original_text_hash": 13297448362731707394
+    },
+    {
+      "id": "MAKE_OUT_ALL_RIGHT",
+      "index": 52,
+      "text": "Ha! ha! ha! Don't worry about us, Captain!\nWe make out all right.",
+      "voice": "syreen-026.ogg",
+      "original_text_hash": 11826227558248626279
+    },
+    {
+      "id": "bye",
+      "index": 53,
+      "text": "Goodbye, Commander Talana. I will be back.",
+      "voice": null,
+      "original_text_hash": 12896422358286377002
+    },
+    {
+      "id": "GOODBYE",
+      "index": 54,
+      "text": "Until then, Earthling.",
+      "voice": "syreen-027.ogg",
+      "original_text_hash": 3208599798020810532
+    },
+    {
+      "id": "MUST_ACT",
+      "index": 55,
+      "text": "Captain. The secret of the Mycon's monstrous murder of our planet has changed the attitudes of many of my people.\nWe will not sit here and do nothing while the Mycon fiends are free to roam the galaxy, perpetrating their evil.\nYou wanted our cooperation in fighting the Ur-Quan. You've got it... provided\nyou first help us seek our revenge against the Mycon race... help us to destroy them!",
+      "voice": null,
+      "original_text_hash": 1923384030485700298
+    },
+    {
+      "id": "whats_next_step",
+      "index": 56,
+      "text": "Okay. So what do you want us to do?",
+      "voice": null,
+      "original_text_hash": 11869573899799456738
+    },
+    {
+      "id": "OPEN_VAULT",
+      "index": 57,
+      "text": "Our first step is to get some mobility.\nWe have some fine starship officers on board, and they are all eager to go after the Mycons,\nbut without our Penetrator starships, we're totally ineffectual.\nSo our first step HAS to be recovering our Space Patrol combat fleet.\nWe know that the Ur-Quan didn't destroy them... they never waste anything\nbut we believe they have sealed them in some kind of deep vault in the surface of an alien planet.",
+      "voice": "syreen-028.ogg",
+      "original_text_hash": 13003715721839694328
+    },
+    {
+      "id": "where_is_it",
+      "index": 58,
+      "text": "Do you know where your ships are?",
+      "voice": null,
+      "original_text_hash": 11593471509070024446
+    },
+    {
+      "id": "DONT_KNOW_WHERE",
+      "index": 59,
+      "text": "No, that's your job.\nBut maybe we have some clues to help you find them.\nThe starship officers who flew the Penetrators to the vault did so with total sensor black-out.\nThe only thing they could use for navigation was the presence of the Dreadnought fleet surrounding them.\nWhen they arrived at their destination and lowered their ships into the immense vault\nthey were transported to the Dreadnoughts and only caught a split-second glimpse of the outside world.\nAs far as they could tell, the sun was either red or orange. Based on their trip-time calculations\nthe farthest they could have travelled is about 200 HyperSpace distance units.",
+      "voice": "syreen-029.ogg",
+      "original_text_hash": 1771391490456522638
+    },
+    {
+      "id": "been_there",
+      "index": 60,
+      "text": "I've already been there. The vault is on the moon of Epsilon Camelopardalis I, but I couldn't open it.",
+      "voice": null,
+      "original_text_hash": 13442554697693631292
+    },
+    {
+      "id": "GREAT",
+      "index": 61,
+      "text": "Wonderful! Then the job is already almost complete!",
+      "voice": "syreen-030.ogg",
+      "original_text_hash": 14079195710530071867
+    },
+    {
+      "id": "GIVE_SHUTTLE",
+      "index": 62,
+      "text": "Captain! We have assembled a small team of our most skilled officers.\nwe will send them to your ship on board their own small shuttle.\nWe feel that in the interests of efficiency, we keep our officers away from your crew\nat least until the mission is over.\nAs soon as you arrive at the vault, our people will take over, figure out a way to open the vault\nand bring our Penetrators back here.",
+      "voice": "syreen-031.ogg",
+      "original_text_hash": 5786001255704829650
+    },
+    {
+      "id": "im_on_my_way",
+      "index": 63,
+      "text": "Very well then, Commander Talana. I'm on my way.",
+      "voice": null,
+      "original_text_hash": 9509240008352311106
+    },
+    {
+      "id": "doing_this_for_you",
+      "index": 64,
+      "text": "Just remember, I'm doing this for you Sweet Cakes!",
+      "voice": null,
+      "original_text_hash": 1002458044819780362
+    },
+    {
+      "id": "if_i_die",
+      "index": 65,
+      "text": "If I die... just remember that I... I... really like you!",
+      "voice": null,
+      "original_text_hash": 1962181581939212315
+    },
+    {
+      "id": "GOOD_LUCK",
+      "index": 66,
+      "text": "Good luck, brave Earthling. When your mission is successful\nmaybe then we can... get to know each other better.",
+      "voice": "syreen-032.ogg",
+      "original_text_hash": 5186921872020650662
+    },
+    {
+      "id": "OK_FOUND_VAULT",
+      "index": 67,
+      "text": "Good, now we can proceed with our plan for REVENGE against the Mycon!\nFrom our analysis of the Deep Child fragments you showed to us\nand a review of the recorded Mycon transmissions from the War\nwe have established the kind of world the Mycons desire for their hideous Deep Children.\nThey need a planet like your Earth... or our Syra... one rich in water and oxygen\nand possessing a molten, active mantle.\nOur plan is to lure the Mycons to such a planet, and then attack them when they least expect it.\nWe know of just such a world.\nWhen the Ur-Quan were analyzing their mass of planetary data to find a new home for my people\none of the close candidates, ranked just below Gaia, was a blue world orbiting close to the star, Organon.\nCaptain, we need your services again. Here is what you must do.\nYou must go to the Mycon and tell them of this world.\nThey will find that the world is suitable, and when they go to Organon\nwe shall be there... waiting for them.\nThen we shall destroy them!",
+      "voice": "syreen-033.ogg",
+      "original_text_hash": 2058750292722254664
+    },
+    {
+      "id": "what_now",
+      "index": 68,
+      "text": "Are you sure the Mycon are going to fall for this? Why should they believe me?",
+      "voice": null,
+      "original_text_hash": 15587515846864765024
+    },
+    {
+      "id": "HERES_THE_PLAN",
+      "index": 69,
+      "text": "For all their evil, Captain, the Mycon are a naive race.\nThey have great difficulty understanding deception.\nIf you tell them what they wish to hear, they will believe you.",
+      "voice": "syreen-034.ogg",
+      "original_text_hash": 10440931224171300724
+    },
+    {
+      "id": "whats_my_reward",
+      "index": 70,
+      "text": "So! What if I die doing all this dangerous stuff? What about... us?",
+      "voice": null,
+      "original_text_hash": 14043847990255707599
+    },
+    {
+      "id": "HERES_REWARD",
+      "index": 71,
+      "text": "I'm afraid BOTH our duties will be dangerous, Captain.\nWe may never see each other again.\nBut for now, at least, there's this...",
+      "voice": "syreen-035.ogg",
+      "original_text_hash": 3546733301049124472
+    },
+    {
+      "id": "bye_after_vault",
+      "index": 72,
+      "text": "I'll miss you, Talana.",
+      "voice": null,
+      "original_text_hash": 123047389496942757
+    },
+    {
+      "id": "GOODBYE_AFTER_VAULT",
+      "index": 73,
+      "text": "Don't worry, my human. We will be together again... some day.",
+      "voice": "syreen-036.ogg",
+      "original_text_hash": 4352302346411210716
+    },
+    {
+      "id": "HELLO_AFTER_AMBUSH_1",
+      "index": 74,
+      "text": "SUCCESS, Captain! The Mycons' fleet is in shambles!\nJUSTICE IS OURS!\nWe have revenged ourselves against the heinous Mycons!\nThey fell for our trap so completely!\nWhen they approached Organon I, we were hiding behind its moon.\nAs they approached, their ships broke combat formation\nin preparation for their hideous implanting ceremony.\nWe waited until they were fully dispersed around the planet, then we attacked!\nThe standard Mycon tactic would have been to speed out of orbit using a gravity whip maneuver\nbut the Podships refused to abandon their slow-moving Deep Children spore pods.\nThey remained in the gravity well, and WE SLICED THEM TO RIBBONS!\nThey must have lost a dozen ships to their own stupidity... running into their own Plasmoids!\nThe rest?... well we took care of most of them... in our own special way.\nand Captain, now that we have taken our revenge on the Mycon\nwe give you our starship officers and Penetrator designs so that you can add our ships\nto your fleet.",
+      "voice": "syreen-037.ogg",
+      "original_text_hash": 9598499813462078664
+    },
+    {
+      "id": "HELLO_AFTER_AMBUSH_2",
+      "index": 75,
+      "text": "Hello brave Earthling. Your return is welcome.\nMy people, the Syreen, shall be forever in your debt.\nIn fact, many of my officers wish to thank you... personally... for your efforts on our behalf.\nI suggest you set aside a week sometime in the near future\nso that you can properly receive your hero's welcome aboard this starbase.",
+      "voice": "syreen-038.ogg",
+      "original_text_hash": 2371516670251893095
+    },
+    {
+      "id": "HELLO_AFTER_AMBUSH_3",
+      "index": 76,
+      "text": "Oh, Captain! The flush of victory still has my body quivering!\nFor so many years we have dreamed of putting the death of our beloved homeworld behind us\nand now this has finally come to pass!\nWe no longer live in the past... caught in memories of what COULD have been.\nNow each of us plans for the future... toward the bright tomorrow!\nAnd you know what, Captain?\nI have plans... Plans you would be most interested in hearing\nbut I shall save them for later... when we can meet... privately.",
+      "voice": "syreen-039.ogg",
+      "original_text_hash": 7508703938369748216
+    },
+    {
+      "id": "HELLO_AFTER_AMBUSH_4",
+      "index": 77,
+      "text": "Ah! My beautiful Captain from Earth!\nWhat can I do for you... please tell me.",
+      "voice": "syreen-040.ogg",
+      "original_text_hash": 4214868727203952600
+    },
+    {
+      "id": "what_now_after_ambush",
+      "index": 78,
+      "text": "Is there anything else I can do to you - um! - I mean, do FOR you.",
+      "voice": null,
+      "original_text_hash": 14504043884015371336
+    },
+    {
+      "id": "DO_THIS_AFTER_AMBUSH",
+      "index": 79,
+      "text": "Captain, the next step is to pull down the slave shield from our planet.\nIn my opinion, the only people who could do that are the Chenjesu\nand as far as I know, they are under a shield of their own.\nActually... I'm just dodging the real issue, Captain.\nYour agenda really has only one item... Destroy the Ur-Quan Hierarchy!\nHow to do that? I'm not sure\nbut I know you can't take them head-on, even with that amazing ship of yours.\nYou will have to find their weak spot, and then strike it with everything you've got.",
+      "voice": "syreen-041.ogg",
+      "original_text_hash": 8613131392755498324
+    },
+    {
+      "id": "what_about_you",
+      "index": 80,
+      "text": "So what happens to you now?",
+      "voice": null,
+      "original_text_hash": 14199141225936081393
+    },
+    {
+      "id": "ABOUT_ME",
+      "index": 81,
+      "text": "I expect I'm going to be pretty busy for the next few months\noverseeing repairs to our fleet of Penetrator starships\nand preparing some kind of defensive system for this starbase.\nIf and when the Ur-Quan return here, we want to have a little surprise ready for them.",
+      "voice": "syreen-042.ogg",
+      "original_text_hash": 1412617399262522424
+    },
+    {
+      "id": "whats_up_after_ambush",
+      "index": 82,
+      "text": "So, what's new Talana?",
+      "voice": null,
+      "original_text_hash": 14716650451978958451
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_AMBUSH_1",
+      "index": 83,
+      "text": "Not a great deal, Captain. You seem to be the biggest source of excitement around here.\nI've had requests from just about every officer under my command\nto be transferred to your Earth Starbase to serve under you.\nIf I wasn't running this Starbase, I'd be first in line.",
+      "voice": "syreen-043.ogg",
+      "original_text_hash": 16335774364916149833
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_AMBUSH_2",
+      "index": 84,
+      "text": "We have been intercepting a concentration of Hierarchy broadcasts\nbut we cannot translate their content.\nThey all appear to be originating from the direction of the Horologii constellation.",
+      "voice": "syreen-044.ogg",
+      "original_text_hash": 544566050927645090
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_AMBUSH_3",
+      "index": 85,
+      "text": "Nothing new to report, Captain.",
+      "voice": "syreen-045.ogg",
+      "original_text_hash": 15081045318398782507
+    },
+    {
+      "id": "GENERAL_INFO_AFTER_AMBUSH_4",
+      "index": 86,
+      "text": "Nothing new to report, Captain.",
+      "voice": "syreen-046.ogg",
+      "original_text_hash": 15081045318398782507
+    },
+    {
+      "id": "bye_after_ambush",
+      "index": 87,
+      "text": "Goodbye Talana.",
+      "voice": null,
+      "original_text_hash": 4551590800175550957
+    },
+    {
+      "id": "GOODBYE_AFTER_AMBUSH",
+      "index": 88,
+      "text": "Goodbye my human.",
+      "voice": "syreen-047.ogg",
+      "original_text_hash": 14363064890531738131
+    },
+    {
+      "id": "FOUND_VAULT_YET_1",
+      "index": 89,
+      "text": "Have you found the ship vault yet?",
+      "voice": "syreen-048.ogg",
+      "original_text_hash": 2260108754491746246
+    },
+    {
+      "id": "FOUND_VAULT_YET_2",
+      "index": 90,
+      "text": "Any success finding our ships, Captain?",
+      "voice": "syreen-049.ogg",
+      "original_text_hash": 6690366752193873847
+    },
+    {
+      "id": "vault_hint",
+      "index": 91,
+      "text": "Er... no. Have you got any idea where it is, even a guess?",
+      "voice": null,
+      "original_text_hash": 8057700718193772774
+    },
+    {
+      "id": "OK_HINT",
+      "index": 92,
+      "text": "Only that the vault is at a red or maybe orange star, and not too far from our position.",
+      "voice": "syreen-050.ogg",
+      "original_text_hash": 10388571074513156505
+    },
+    {
+      "id": "found_vault",
+      "index": 93,
+      "text": "Yes! We found it on the moon of Epsilon Camelopardalis I.",
+      "voice": null,
+      "original_text_hash": 4513546158012494170
+    },
+    {
+      "id": "bye_before_vault",
+      "index": 94,
+      "text": "Goodbye, Talana. I'm off to find the vault!",
+      "voice": null,
+      "original_text_hash": 2739109290350687223
+    },
+    {
+      "id": "GOODBYE_BEFORE_VAULT",
+      "index": 95,
+      "text": "Good luck, Captain.",
+      "voice": "syreen-051.ogg",
+      "original_text_hash": 3912213824974356295
+    },
+    {
+      "id": "what_do_i_get_for_this",
+      "index": 96,
+      "text": "So what do I get for this, eh? Hmm? Eh?",
+      "voice": null,
+      "original_text_hash": 9218631440995459195
+    },
+    {
+      "id": "GRATITUDE",
+      "index": 97,
+      "text": "You will receive more gratitude than you know what to do with, Captain.",
+      "voice": "syreen-052.ogg",
+      "original_text_hash": 13500746900768152988
+    },
+    {
+      "id": "not_sure",
+      "index": 98,
+      "text": "Uh... I'm just not sure. This sounds dangerous.",
+      "voice": null,
+      "original_text_hash": 1050475664459876505
+    },
+    {
+      "id": "PLEASE",
+      "index": 99,
+      "text": "Please, Captain, we need your help!",
+      "voice": "syreen-053.ogg",
+      "original_text_hash": 3610921289558565424
+    },
+    {
+      "id": "READY_FOR_AMBUSH",
+      "index": 100,
+      "text": "We will wait here for the Mycons.",
+      "voice": "syreen-054.ogg",
+      "original_text_hash": 12773661587777157061
+    },
+    {
+      "id": "repeat_plan",
+      "index": 101,
+      "text": "Could you repeat the plan again?",
+      "voice": null,
+      "original_text_hash": 2896631782372899911
+    },
+    {
+      "id": "OK_REPEAT_PLAN",
+      "index": 102,
+      "text": "Ok, here's the plan, again.\nYou must go to the Mycons and tell them about a world at the Organon star system.\nTell them that you have found the perfect world for their hideous Deep Children.\nWe will hide there and wait for them in ambush.\nThen we shall destroy them.",
+      "voice": "syreen-055.ogg",
+      "original_text_hash": 2152202692856580302
+    },
+    {
+      "id": "bye_before_ambush",
+      "index": 103,
+      "text": "Good luck, Talana.",
+      "voice": null,
+      "original_text_hash": 16227622517765529066
+    },
+    {
+      "id": "GOODBYE_BEFORE_AMBUSH",
+      "index": 104,
+      "text": "Same to you, my human.",
+      "voice": "syreen-056.ogg",
+      "original_text_hash": 1066644786090574246
+    },
+    {
+      "id": "what_about_us",
+      "index": 105,
+      "text": "I guess what I mean is... What about us, Talana?",
+      "voice": null,
+      "original_text_hash": 13400436131776040250
+    },
+    {
+      "id": "ABOUT_US",
+      "index": 106,
+      "text": "I'm afraid our duties will keep us apart, Captain\nBut for now, at least, there's this...",
+      "voice": "syreen-057.ogg",
+      "original_text_hash": 11607270113875471592
+    },
+    {
+      "id": "MORE_COMFORTABLE",
+      "index": 107,
+      "text": "That's more like it... now \nlet me help you off with this\nyes... now aren't you a lot more comfortable?",
+      "voice": "syreen-058.ogg",
+      "original_text_hash": 7633050088649562616
+    },
+    {
+      "id": "in_the_spirit",
+      "index": 108,
+      "text": "I see! Well, in the spirit of interspecies communication, let me just say, COWABUNGA!",
+      "voice": null,
+      "original_text_hash": 2204514109146409484
+    },
+    {
+      "id": "OK_SPIRIT",
+      "index": 109,
+      "text": "Oooh! Say that word again!\nIt makes me feel so excited!\nIt makes me want to do something nice for you\nlike this...\nand this...\nand especially, this!",
+      "voice": "syreen-059.ogg",
+      "original_text_hash": 10040845727975032009
+    },
+    {
+      "id": "what_in_mind",
+      "index": 110,
+      "text": "Hey... what have you got in mind here?",
+      "voice": null,
+      "original_text_hash": 12041878847124575106
+    },
+    {
+      "id": "SOMETHING_LIKE_THIS",
+      "index": 111,
+      "text": "Well to start off, I thought we'd do something like this\nunless your species isn't limber enough\nand then I thought we could move on to something a bit more like... Mmmm... this.\nand after you have recovered, I thought this might be fun!\nand if you're still conscious, I thought we could try this\neven though I've never done it before!",
+      "voice": "syreen-060.ogg",
+      "original_text_hash": 10732289825575825034
+    },
+    {
+      "id": "hands_off",
+      "index": 112,
+      "text": "Hey! Hands off lady! I'm not THAT kind of Captain.",
+      "voice": null,
+      "original_text_hash": 16711523113488933758
+    },
+    {
+      "id": "OK_WONT_USE_HANDS",
+      "index": 113,
+      "text": "Oh, Captain... I would never think of doing something unpleasant to you\nquite the opposite in fact.\nBut if you want me to keep my hands off... I can use other... things...\nlike this over here...\nand this right here...\nand this right about here.",
+      "voice": "syreen-061.ogg",
+      "original_text_hash": 14601562115320615463
+    },
+    {
+      "id": "why_lights_off",
+      "index": 114,
+      "text": "Ahh... why are the lights off?",
+      "voice": null,
+      "original_text_hash": 15131890339976546792
+    },
+    {
+      "id": "LIGHTS_OFF_BECAUSE",
+      "index": 115,
+      "text": "Because, my darling, if the light was on, I couldn't do this...\nor this...\nor this...\nor, umm... this.",
+      "voice": "syreen-062.ogg",
+      "original_text_hash": 12896541918371311264
+    },
+    {
+      "id": "evil_monster",
+      "index": 116,
+      "text": "You're not going to turn into some weird alien monster now, and bite my head off, are you?",
+      "voice": null,
+      "original_text_hash": 17060085412748814695
+    },
+    {
+      "id": "NOT_EVIL_MONSTER",
+      "index": 117,
+      "text": "Ha!-ha!-ha! An alien monster? Me?\nME?! WHY CAAPTAIN! WHYEVER DOO YOOU SAAY THAAAT!!!\nREEAARRGGGG!!!!\n...just kidding!",
+      "voice": "syreen-063.ogg",
+      "original_text_hash": 3588657028225887476
+    },
+    {
+      "id": "disease",
+      "index": 118,
+      "text": "Very funny. Look, I'd be more comfortable if we just turned the lights back on.",
+      "voice": null,
+      "original_text_hash": 6370060449590113281
+    },
+    {
+      "id": "JUST_RELAX",
+      "index": 119,
+      "text": "Just relax, my silly human Captain. Let me take care of everything.",
+      "voice": "syreen-064.ogg",
+      "original_text_hash": 7610414114055222998
+    },
+    {
+      "id": "what_happens_if_i_touch_this",
+      "index": 120,
+      "text": "Hmmm... what happens if I do this?",
+      "voice": null,
+      "original_text_hash": 11899911467971105465
+    },
+    {
+      "id": "THIS_HAPPENS",
+      "index": 121,
+      "text": "...mmm\nMMMm!...\nOhh!...\n...MMMMMmmmmmm!!!...\ndoes that answer your question?",
+      "voice": "syreen-065.ogg",
+      "original_text_hash": 655674809912997781
+    },
+    {
+      "id": "are_you_sure_this_is_ok",
+      "index": 122,
+      "text": "Are you sure this is okay? I'm nervous.",
+      "voice": null,
+      "original_text_hash": 2145900482191885071
+    },
+    {
+      "id": "YES_SURE",
+      "index": 123,
+      "text": "Please don't worry, my darling human\nwe have all the time in the world\nand my door locks securely.",
+      "voice": "syreen-066.ogg",
+      "original_text_hash": 1523184242558171266
+    },
+    {
+      "id": "boy_they_never_taught",
+      "index": 124,
+      "text": "Boy-oh-boy! They never taught me stuff like this back at Unzervalt!",
+      "voice": null,
+      "original_text_hash": 12763495181794666311
+    },
+    {
+      "id": "THEN_LET_ME_TEACH",
+      "index": 125,
+      "text": "Then let me teach you what you need to know\nwe will begin with the fundamentals of basic Syreen physiology...",
+      "voice": "syreen-067.ogg",
+      "original_text_hash": 4618978526214579638
+    },
+    {
+      "id": "not_much_more_to_say",
+      "index": 126,
+      "text": "Hmm, uh.. well, uh, I guess I don't have much more to say, do I?",
+      "voice": null,
+      "original_text_hash": 908585975828274025
+    },
+    {
+      "id": "THEN_STOP_TALKING",
+      "index": 127,
+      "text": "Then stop wasting your lips on words, you silly fool\nand come here!...",
+      "voice": "syreen-068.ogg",
+      "original_text_hash": 11131796495106640286
+    },
+    {
+      "id": "LATER",
+      "index": 128,
+      "text": "(...later...)\n(...much later...)\n(...quite a good bit later...)",
+      "voice": "syreen-069.ogg",
+      "original_text_hash": 10346694051012645838
+    },
+    {
+      "id": "SEX_GOODBYE",
+      "index": 129,
+      "text": "Goodbye Captain, darling... we each have our jobs to do\nnow you must go!\nBut you will remain always in my mind and heart\nand deep within me, I know that someday, when all this madness has come to an end\nwe will be together like this... again.",
+      "voice": "syreen-070.ogg",
+      "original_text_hash": 6019836046284355000
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 130,
+      "text": "In case you were wondering about me... don't worry! I'm doing fine!\nIn fact, I just talked with the designers and they have assured me\nthat the sequel will be all about me! Isn't that great!\nThey said they wanted to move away from the warrior mythos\nand expand more into the healer cycle.\nThis may be my big chance!\nThe only thing I'm not sure about is the new costume they want me to wear.\nThey said this one would be REALLY revealing.",
+      "voice": "syreen-071.ogg",
+      "original_text_hash": 14179163328467859353
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["syreen", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["syreen", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

@@ -1,0 +1,662 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "yehat",
+  "resource": "comm.yehat.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "HOMEWORLD_HELLO_1",
+      "index": 0,
+      "text": "It is sure and a true thing that the alien interloper has now been warned\nnot to approach Caer Zeep-Reep, the Queen's High Perch\nlest it be blasted without further warning!",
+      "voice": "yehat-000.ogg",
+      "original_text_hash": 3569272270528719916
+    },
+    {
+      "id": "HOMEWORLD_HELLO_2",
+      "index": 1,
+      "text": "It is a shocking thing to see the return of the human renegade!\nOne knows this will not be boding well with her Majesty today.",
+      "voice": "yehat-001.ogg",
+      "original_text_hash": 1580920815447002681
+    },
+    {
+      "id": "whats_up_homeworld",
+      "index": 2,
+      "text": "What has happened in the twenty years since our species last met?",
+      "voice": null,
+      "original_text_hash": 3835261532826783802
+    },
+    {
+      "id": "GENERAL_INFO_HOMEWORLD_1",
+      "index": 3,
+      "text": "It is a wondering thought that crosses my mind human starship Captain.\nAre ye not knowing that the cause of our Queen and empire\nis now allied with the fortunes of the mighty Ur-Quan?...\n...and that yer presence here is being only the end of yer life?\nHaven't ye got the sense, human, to know this simple thing?",
+      "voice": "yehat-002.ogg",
+      "original_text_hash": 12614784689203047376
+    },
+    {
+      "id": "GENERAL_INFO_HOMEWORLD_2",
+      "index": 4,
+      "text": "Ye are asking the words of a mindless child, human!\nHere, in the Hall of the Queen's High Perch\nye shall not be finding the sympathies ye so vainly seek.\nThere are none here but the nobles and battlemasters of the Yehat Clans.\nIt is a sure thing that we will not be casting flower petals in yer path of rebellion.",
+      "voice": "yehat-003.ogg",
+      "original_text_hash": 14236276822223419327
+    },
+    {
+      "id": "i_demand_you_ally_homeworld0",
+      "index": 5,
+      "text": "I,",
+      "voice": null,
+      "original_text_hash": 658640483500207480
+    },
+    {
+      "id": "i_demand_you_ally_homeworld1",
+      "index": 6,
+      "text": ", of",
+      "voice": null,
+      "original_text_hash": 16332679629803764340
+    },
+    {
+      "id": "i_demand_you_ally_homeworld2",
+      "index": 7,
+      "text": "commanding the",
+      "voice": null,
+      "original_text_hash": 13671401544638233705
+    },
+    {
+      "id": "i_demand_you_ally_homeworld3",
+      "index": 8,
+      "text": ", demand that you uphold your duties as allies of the human species!",
+      "voice": null,
+      "original_text_hash": 16565046167397058831
+    },
+    {
+      "id": "ENEMY_MUST_DIE",
+      "index": 9,
+      "text": "Are ye DAFT human!? Have ye not heard our words?\nYou and yer kind are slaves, just as we\nbut you humans have been confined within a shield of slaves!\nTo be found outside this selfsame shield is surely yer own doom!\nIt is NOT a permitted thing fer ye to be a-travelling through space\nand now, we must be conforming to our Queen's oath to the Ur-Quan.\nWe must be getting about the business of killing you!",
+      "voice": "yehat-004.ogg",
+      "original_text_hash": 12888051826222588082
+    },
+    {
+      "id": "at_least_help_us_homeworld",
+      "index": 10,
+      "text": "You must help us. Surely you owe us this much, at least!",
+      "voice": null,
+      "original_text_hash": 10989312651318080926
+    },
+    {
+      "id": "NO_HELP_ENEMY",
+      "index": 11,
+      "text": "It is an unbelievable thing!\nYe speak the words that ruffle our feathers and cause our blood to boil!\nWe, the loyal servants of our Queen, bless her Beak, will not be helping the likes of you\nor any of the traitor Yehat bastards ye may have found among the ranks of the starship Clans!",
+      "voice": "yehat-005.ogg",
+      "original_text_hash": 857000080554685655
+    },
+    {
+      "id": "give_info",
+      "index": 12,
+      "text": "Surely giving us some scraps of information would be okay, wouldn't it?",
+      "voice": null,
+      "original_text_hash": 16246082009070452624
+    },
+    {
+      "id": "NO_INFO_FOR_ENEMY",
+      "index": 13,
+      "text": "Our Queen has spoken the commands to us, and we are obeying her words!\nNo assistance, of any kind at all, shall be given to you, human\nso do not be making the assumptions, that ye know a right thing from a wrong!\nAre ye smarter than the Queen, is that what yer saying, human?\nWe shall not be giving ye a SCRAP OF MEAT!... much less our secrets.",
+      "voice": "yehat-006.ogg",
+      "original_text_hash": 8577083058077860620
+    },
+    {
+      "id": "what_about_pkunk_royalist",
+      "index": 14,
+      "text": "We have encountered an offshoot of your species, the Pkunk. Tell us about them.",
+      "voice": null,
+      "original_text_hash": 1116946743862235248
+    },
+    {
+      "id": "PKUNK_ABSORBED_ROYALIST",
+      "index": 15,
+      "text": "The Pkunk have been absorbed.\nThey are no more. This is how it should be.\nNow the matter is settled, human. Do not be bringing it up again...",
+      "voice": "yehat-007.ogg",
+      "original_text_hash": 16185989880761224721
+    },
+    {
+      "id": "HATE_PKUNK_ROYALIST",
+      "index": 16,
+      "text": "The cowards live?!! This is unbelievable!!\nIt is a SAD, SAD day to be hearing this thing from ye, human.\nThe P... the Pku... I canna even say their vile name!\nThe Pku... PKU-NK! are the greatest embarrassment our species has ever suffered!\nDo not be calling these wretched creatures an offshoot of our species!\nBetter it is that ye be calling them GARBAGE or DROPPINGS!\nOr better yet do not be talking about them at all!",
+      "voice": "yehat-008.ogg",
+      "original_text_hash": 2884401358564689852
+    },
+    {
+      "id": "bye_homeworld",
+      "index": 17,
+      "text": "You disappoint us. We expected more from you. Goodbye.",
+      "voice": null,
+      "original_text_hash": 3780556062904279634
+    },
+    {
+      "id": "GOODBYE_AND_DIE_HOMEWORLD",
+      "index": 18,
+      "text": "So human, now ye be thinking that ye shall slink away\nto commit some vile treason and dirty our Queen's good name. Isn't this true?\nDo not be answering! We know the truth.\nWe will not let ye pass!",
+      "voice": "yehat-009.ogg",
+      "original_text_hash": 14781240059555017007
+    },
+    {
+      "id": "SPACE_HELLO_1",
+      "index": 19,
+      "text": "What am I seeing on my view screen!?\nIt is none other than the flattened old face of our friends the human!\nBut old ally, are ye not knowing that we, the Yehat are allied with the Ur-Quan now?...\nand yer presence outside the slave shield, and in an armed starship\nare clear violations of yer Oath of Fealty?!\nWhatever shall we do? It just isn't a right thing to kill you, human,\nbut as a loyal member of my Clan, I must obey the wishes of our Queen!",
+      "voice": "yehat-010.ogg",
+      "original_text_hash": 9275833735553168584
+    },
+    {
+      "id": "SPACE_HELLO_2",
+      "index": 20,
+      "text": "Human, what are you doing back here!? Are you totally off yer perch!?\nWe have sympathies fer yer cause, tis true\nbut we must obey the orders of our Queen, however much we may disagree with them!",
+      "voice": "yehat-011.ogg",
+      "original_text_hash": 13269932302527914206
+    },
+    {
+      "id": "SPACE_HELLO_3",
+      "index": 21,
+      "text": "Human! I am beginning to think that ye are touched, fer sure!\nYe tempt fate and our sympathy too much, I think.\nThis time, perhaps we cannot be as much yer friends as ye would like.",
+      "voice": "yehat-012.ogg",
+      "original_text_hash": 1560931161457566512
+    },
+    {
+      "id": "SPACE_HELLO_4",
+      "index": 22,
+      "text": "Human! Human. You try our souls with yer return!\nWhat is it ye be wanting now?",
+      "voice": "yehat-013.ogg",
+      "original_text_hash": 10070246320374133962
+    },
+    {
+      "id": "whats_up_space_1",
+      "index": 23,
+      "text": "We should be allies... friends! Explain why this cannot be.",
+      "voice": null,
+      "original_text_hash": 6765580737794556748
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_1",
+      "index": 24,
+      "text": "Your words are flying in the face of the facts, human.\nWe are no longer being your allies.\nBut unlike the nobles of our homeworld, we, of the Starship Clans\nare bereaved at this course of events.\nThe Queen's decision to be joining the Hierarchy, pains us!",
+      "voice": "yehat-014.ogg",
+      "original_text_hash": 10531021872560348632
+    },
+    {
+      "id": "whats_up_space_2",
+      "index": 25,
+      "text": "How did the Ur-Quan defeat you? What happened?",
+      "voice": null,
+      "original_text_hash": 11752228340518023039
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_2",
+      "index": 26,
+      "text": "WE - WERE - NOT - DEFEATED, HUMAN!!!!\nNever! Never in the two-thousand years of the Veep-Neep Queens\nhave the Yehat ever, EVER suffered a defeat!\nIt is this fact ALONE that is making our loyalty to the Queen so strong!\nThis is the unbreakable bond that keeps the Clans together!\nWhen the Ur-Quan were entering our home star system at Gamma Serpentis\nwe had a thousand starships prepared to defend our home\nand then... the Queen... She... she\nallied with the Ur-Quan\nand the fight is over before it is even begun. AWK!",
+      "voice": "yehat-015.ogg",
+      "original_text_hash": 4710553975910560089
+    },
+    {
+      "id": "whats_up_space_3",
+      "index": 27,
+      "text": "What about your legendary honor? Your courage? What would the Shofixti think?!",
+      "voice": null,
+      "original_text_hash": 15121629460600584289
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_3",
+      "index": 28,
+      "text": "(sob!)... (whimper) We have fallen so far. (sob!)\nWe are not being the same (whimper!) great birds of prey your people were once knowing and trusting.\nWe have each betrayed the honor of our Clan, (whimper!)... just as our Queen\nis betraying each of us with her association with the Ur-Quan...\nIf the valiant child species, the (sob-gulp!)... Shofixti were being here today\nthe shame!... Oh the shame!... it would be unbearable!\n(whimper!)... awk!",
+      "voice": "yehat-016.ogg",
+      "original_text_hash": 10983412185358816912
+    },
+    {
+      "id": "whats_up_space_4",
+      "index": 29,
+      "text": "Aren't you just slaves to the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 10778329346922780865
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_4",
+      "index": 30,
+      "text": "NO!  WE ARE NOT SLAVES!! WE ARE!... We are!... we are...\nBattle Thralls.",
+      "voice": "yehat-017.ogg",
+      "original_text_hash": 3897684968781550038
+    },
+    {
+      "id": "i_demand_you_ally_space0",
+      "index": 31,
+      "text": "By your honor, Yehat captain, I,",
+      "voice": null,
+      "original_text_hash": 1340508730152520195
+    },
+    {
+      "id": "i_demand_you_ally_space1",
+      "index": 32,
+      "text": ", master of the",
+      "voice": null,
+      "original_text_hash": 3065278485801839267
+    },
+    {
+      "id": "i_demand_you_ally_space2",
+      "index": 33,
+      "text": ", in the name of",
+      "voice": null,
+      "original_text_hash": 68765451015296141
+    },
+    {
+      "id": "i_demand_you_ally_space3",
+      "index": 34,
+      "text": "call upon the Starship Clans to honor their word and fight for our cause!",
+      "voice": null,
+      "original_text_hash": 10970146434046332340
+    },
+    {
+      "id": "WE_CANNOT_1",
+      "index": 35,
+      "text": "As much as my heart cries to aid ye, valiant human, I cannot!\nEach of us is sworn first to our Queen who\nhas commanded us to treat ye as an enemy of the Crown!",
+      "voice": "yehat-018.ogg",
+      "original_text_hash": 1119029555945646638
+    },
+    {
+      "id": "obligation",
+      "index": 36,
+      "text": "Your species' obligation cannot simply be forgotten! What about your honor, your pride!?",
+      "voice": null,
+      "original_text_hash": 9251536495830336837
+    },
+    {
+      "id": "WE_CANNOT_2",
+      "index": 37,
+      "text": "Can't ye see that ye are killing me human?\nThe shame!... the awful shame of it!\nWhat ye say is true, we SHOULD be under the same wing\nbut DAMN YER EYES!... our Queen has given the Ur-Quan our allegiance\nand there is nothing I can be doing about it now!",
+      "voice": "yehat-019.ogg",
+      "original_text_hash": 15983662752745884912
+    },
+    {
+      "id": "at_least_help_us_space",
+      "index": 38,
+      "text": "At least help us with materials for our struggle!",
+      "voice": null,
+      "original_text_hash": 9026700611849142409
+    },
+    {
+      "id": "SORRY_CANNOT",
+      "index": 39,
+      "text": "We cannot!\nTo be doing so would be a direct violation of our royal Queen's commands!",
+      "voice": "yehat-020.ogg",
+      "original_text_hash": 8063263707141560676
+    },
+    {
+      "id": "dishonor",
+      "index": 40,
+      "text": "Think Yehat. The sheer dishonor of it all.",
+      "voice": null,
+      "original_text_hash": 533370975714124081
+    },
+    {
+      "id": "HERES_A_HINT",
+      "index": 41,
+      "text": "We cannot be giving ye material aid, Captain.\nBut perhaps ye can make use of this information, Captain.\nWhen we were fighting the Great War against the Mycons\nwe encountered a number of odd worlds which seemed to be having their crust shattered.\nMolten lava ran across the surface in huge rivers, and dense metallic elements were abundant.\nBut the strangest world we found was the first planet at the star at coordinates 639.5 : 231.2.\nThe Mycons were guarding this planet with an almost limitless number of their Podships\nas though there were something of great value there.\nWe could never break through their forces, though we destroyed scores of their ships.\nPerhaps, if ye fare better than us, or can somehow trick the Mycons to let ye land\nyou may discover this secret, and it may help ye in yer quest.",
+      "voice": "yehat-021.ogg",
+      "original_text_hash": 2967006825356229279
+    },
+    {
+      "id": "what_about_pkunk_space",
+      "index": 42,
+      "text": "Tell us about the Pkunk.",
+      "voice": null,
+      "original_text_hash": 8035633011383342163
+    },
+    {
+      "id": "PKUNK_ABSORBED_SPACE",
+      "index": 43,
+      "text": "This is a matter for the Yehat, human, and ONLY for the Yehat.\nThe Pkunk have been absorbed... and that is being the end of it.\nDo not ask further about this matter.",
+      "voice": "yehat-022.ogg",
+      "original_text_hash": 456446710048293683
+    },
+    {
+      "id": "HATE_PKUNK_SPACE",
+      "index": 44,
+      "text": "You have met them!?? The wretched creatures are alive?!!\nYou should be telling us where they are, Captain!\nTell us so that we can be correcting the mistake made a thousand years ago\nwhen we permitted the Pkunk to leave our Nest alive.\nBy all rights, we should have eliminated the craven cowards down to the last bird!",
+      "voice": "yehat-023.ogg",
+      "original_text_hash": 17855364103726498911
+    },
+    {
+      "id": "bye_space",
+      "index": 45,
+      "text": "Goodbye Yehat... our allies and friends.",
+      "voice": null,
+      "original_text_hash": 954313995209030417
+    },
+    {
+      "id": "GO_IN_PEACE",
+      "index": 46,
+      "text": "Though honoring our past commitment we are not,\nwe will be letting you go in peace.",
+      "voice": "yehat-024.ogg",
+      "original_text_hash": 457625253156106956
+    },
+    {
+      "id": "GOODBYE_AND_DIE_SPACE",
+      "index": 47,
+      "text": "You are causing us sorrow, human, sorrow indeed,\nbecause now we must obey the commands of our Queen and destroy you.",
+      "voice": "yehat-025.ogg",
+      "original_text_hash": 17807551203946777368
+    },
+    {
+      "id": "shofixti_alive_1",
+      "index": 48,
+      "text": "This may come as a shock, but the Shofixti are reborn.",
+      "voice": null,
+      "original_text_hash": 7331584144423430911
+    },
+    {
+      "id": "shofixti_alive_2",
+      "index": 49,
+      "text": "We have a Shofixti Captain here with us. Now do you believe?",
+      "voice": null,
+      "original_text_hash": 7024968939150326805
+    },
+    {
+      "id": "SEND_HIM_OVER_1",
+      "index": 50,
+      "text": "If this is being a true thing, there will be many changes.\nBut we are a species long wise in the ways of deceit.\nYe must be proving these words ye say, Captain.\nSend the Shofixti to us as a way of proof.",
+      "voice": "yehat-026.ogg",
+      "original_text_hash": 7716618704331572723
+    },
+    {
+      "id": "SEND_HIM_OVER_2",
+      "index": 51,
+      "text": "Ye are lying to us once, Captain. Now we need the hard evidence.\nOrder yer supposed Shofixti to come to us, Captain.",
+      "voice": "yehat-027.ogg",
+      "original_text_hash": 2095436919346723442
+    },
+    {
+      "id": "not_here",
+      "index": 52,
+      "text": "Well I don't have one right HERE.",
+      "voice": null,
+      "original_text_hash": 4381790775105753500
+    },
+    {
+      "id": "not_send",
+      "index": 53,
+      "text": "I will not subject one of my officers to such danger. How do I know you won't just kill him?",
+      "voice": null,
+      "original_text_hash": 11477716017432662984
+    },
+    {
+      "id": "JUST_A_TRICK_1",
+      "index": 54,
+      "text": "It is a trick then, isn't it! And nothing more.\nHuman, we have been patient with ye up to this point, but now ye have gone too far.\nYe have most skillfully rubbed the salt into our wounds, and ye shall pay fer it in blood!",
+      "voice": "yehat-028.ogg",
+      "original_text_hash": 1498378399671268604
+    },
+    {
+      "id": "JUST_A_TRICK_2",
+      "index": 55,
+      "text": "Another TRICK!\nYer lying tongue has doomed ye!",
+      "voice": "yehat-029.ogg",
+      "original_text_hash": 15569577510236381428
+    },
+    {
+      "id": "ok_send",
+      "index": 56,
+      "text": "All right, I'll send over the Shofixti... but don't mess with him, okay?",
+      "voice": null,
+      "original_text_hash": 9979274220074374913
+    },
+    {
+      "id": "WE_REVOLT",
+      "index": 57,
+      "text": "We are scanning the separation of a vessel from yer fleet, Captain\nand indeed, its configuration matches that of a Shofixti Scout vessel.\nThis had better not be a trick, Captain!\nWe are knowing the power of a Glory Device, and if you detonate the weapon near us\nthe price for you shall be dear, very dear.\nThe Scout has docked, and we await the pilot's appearance at the airlock.\nThe atmosphere cycle is complete... the door slides open... and\nIT IS TRUE!!! THE SHOFIXTI ARE ALIVE!!!\nLook at that furred muzzle, those shining black eyes, the sweet claws!\nOur children have returned from oblivion!!\nBut now we are faced with the cruellest truth!...\n...We who have sacrificed our honor! We who have lain with the enemy!\nWE ARE NOT WORTHY! WE ARE NOTHING!...We are less than nothing.\nBut wait! We are not Spathi. We are Yehat... OF THE STARSHIP CLANS!\nWe will NOT live this lie any longer!\nListen as I speak these words! If our Queen makes the dishonorable command\nthen it is THE QUEEN WHO HAS NO HONOR!\nAnd a dishonorable Queen is NO QUEEN AT ALL!\nWe, the Zeep-Zeep, are the only Clan who remember the TRUE MEANING of honor\nwe shall TEAR THE QUEEN FROM HER THRONE!\nThe two-thousand year reign of the Veep-Neep Queens IS OVER!\nTHE REVOLUTION HAS BEGUN!",
+      "voice": "yehat-030.ogg",
+      "original_text_hash": 17285173172355010415
+    },
+    {
+      "id": "ROYALIST_SPACE_HELLO_1",
+      "index": 58,
+      "text": "Human... ye shall never be fully comprehending the damage you are doing now to our Yehat culture.\nFor fully TWO THOUSAND YEARS there has been peace between the Clans!...\n...and now you have cast the ancient seed of dissension between our beaks!\nThe bloody Wars of Ascension are renewed, and YOU are the cause, Captain!\nWhile the Zeep-Zeep traitors may be your allies, Captain\nI can be assuring you that we, of the Feep-Eeep Starship Clan\nare wanting nothing more dearly than your death!",
+      "voice": "yehat-031.ogg",
+      "original_text_hash": 14026700782719555876
+    },
+    {
+      "id": "ROYALIST_SPACE_HELLO_2",
+      "index": 59,
+      "text": "It is the human Agitator who would see Her Radiant Majesty pulled from the High Perch!\nYe will rue the day ye devised this wicked scheme!",
+      "voice": "yehat-032.ogg",
+      "original_text_hash": 15615607334634633166
+    },
+    {
+      "id": "ROYALIST_HOMEWORLD_HELLO_1",
+      "index": 60,
+      "text": "Human! Like all heroes, ye be as brainless as ye are brave.\nDo ye not know, that here there be none of the traitorous Zeep-Zeep Starship Clans!\nYe are as good as dead, human.",
+      "voice": "yehat-033.ogg",
+      "original_text_hash": 4943582620957513125
+    },
+    {
+      "id": "ROYALIST_HOMEWORLD_HELLO_2",
+      "index": 61,
+      "text": "Cease yer bloody taunting, human!\nYe dance like a sick breeg, never engaging us in battle-to-the-death\nas honor and true courage are demanding!",
+      "voice": "yehat-034.ogg",
+      "original_text_hash": 9745581115976005518
+    },
+    {
+      "id": "how_is_rebellion",
+      "index": 62,
+      "text": "So, how's the revolution going for you guys?",
+      "voice": null,
+      "original_text_hash": 4815125842119321958
+    },
+    {
+      "id": "ROYALIST_REBELLION_1",
+      "index": 63,
+      "text": "Revolution!? Ye compliment yerself unnecessarily, Captain.\nThis is nothing more than a... band of thugs trying to undo the peace of a hundred generations!\nWe will roast the traitors in their ships, and crack the eggs in their Clanhome\nso that never again will the Zeep-Zeep criminals be flying though our stars.",
+      "voice": "yehat-035.ogg",
+      "original_text_hash": 8333357404685678290
+    },
+    {
+      "id": "ROYALIST_REBELLION_2",
+      "index": 64,
+      "text": "Do not be worrying yerself, Captain! Victory is almost within our grasp.",
+      "voice": "yehat-036.ogg",
+      "original_text_hash": 6954828377017793376
+    },
+    {
+      "id": "sorry_about_revolution",
+      "index": 65,
+      "text": "Gosh, I'm sorry about this revolution thing. I didn't mean any harm.",
+      "voice": null,
+      "original_text_hash": 14451018213072071856
+    },
+    {
+      "id": "ALL_YOUR_FAULT",
+      "index": 66,
+      "text": "The pain and suffering of this useless conflict are being nothing but a tragic waste of life.\nCongratulate yourself, Captain. The source of all this death and misery is yerself.",
+      "voice": "yehat-037.ogg",
+      "original_text_hash": 11512818298315541684
+    },
+    {
+      "id": "bye_royalist",
+      "index": 67,
+      "text": "Goodbye Royalist fool!",
+      "voice": null,
+      "original_text_hash": 9225251441600419862
+    },
+    {
+      "id": "GOODBYE_AND_DIE_ROYALIST",
+      "index": 68,
+      "text": "Now ye must pay fer yer crimes, human!",
+      "voice": "yehat-038.ogg",
+      "original_text_hash": 297481315841457694
+    },
+    {
+      "id": "name_1",
+      "index": 69,
+      "text": "The New Alliance of Free Stars",
+      "voice": null,
+      "original_text_hash": 2930717857211576419
+    },
+    {
+      "id": "name_2",
+      "index": 70,
+      "text": "The Concordance of Alien Nations",
+      "voice": null,
+      "original_text_hash": 16943543974912230107
+    },
+    {
+      "id": "name_3",
+      "index": 71,
+      "text": "The United Federation of Worlds",
+      "voice": null,
+      "original_text_hash": 7156419825357983966
+    },
+    {
+      "id": "name_40",
+      "index": 72,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 73,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 74,
+      "text": "So, I suppose you are wondering what I'm doing at this control console\nwell, I guess I can tell you now.\nI'm writing a screenplay!\nIt's an existential thriller!\nKind of a cross between a Woody Allen angst-fest mixed with some of Tobe Hooper's best work.\nBut actually, this is just my way of getting my wing in the door, you see\nwhat I really want to do is DIRECT!",
+      "voice": "yehat-039.ogg",
+      "original_text_hash": 2302327908609831175
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["yehat", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["yehat", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

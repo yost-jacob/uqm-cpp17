@@ -375,3 +375,15 @@ BOOST_FIXTURE_TEST_CASE(location_save_projection_restores_markers_without_live_v
     BOOST_TEST(!restored.orbit.has_value());
     BOOST_TEST(!restored.surface.has_value());
 }
+BOOST_AUTO_TEST_CASE(story_data_names_share_typed_storage_and_reject_bad_writes) {
+    uqm::GameState state{uqm::UserProfile{{777}, "dialogue"}};
+    auto &story = state.player({777}).story();
+    story.setNamed("PROBE_MESSAGE_DELIVERED", 1);
+    BOOST_TEST(story.read(uqm::StoryFlag::ProbeMessageDelivered));
+    story.setNamed("SLYLANDRO_PROBE_VISITS", 7);
+    BOOST_TEST(story.readNamed("SLYLANDRO_PROBE_VISITS") == 7u);
+    BOOST_CHECK_THROW(story.setNamed("SLYLANDRO_PROBE_VISITS", 8), std::out_of_range);
+    BOOST_TEST(story.readNamed("SLYLANDRO_PROBE_VISITS") == 7u);
+    BOOST_CHECK_THROW(story.readNamed("UNKNOWN_STORY_FLAG"), std::invalid_argument);
+    BOOST_CHECK_THROW(story.setNamed("UNKNOWN_STORY_FLAG", 1), std::invalid_argument);
+}

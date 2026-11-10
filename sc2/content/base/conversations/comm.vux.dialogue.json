@@ -1,0 +1,851 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "vux",
+  "resource": "comm.vux.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "ZEX_HELLO_1",
+      "index": 0,
+      "text": "Ah! Human visitors! What a treat!\nI am Admiral ZEX. Please do not be frightened. Unlike the rest of my species, I... enjoy humans.\nYou may know me by my reputation, my leadership of VUX forces during the war with your Alliance.\nI assure you that this behavior, a sad necessity of those times, belies a much kinder, gentler being.\nPlease be welcome! We can get to know one another... expand our interspecies relationship.\nBut wait. How silly of me. You aren't here for polite repartee.\nYou have come for my Shofixti Maidens.",
+      "voice": "vux-000.ogg",
+      "original_text_hash": 11088980390692341370
+    },
+    {
+      "id": "ZEX_HELLO_2",
+      "index": 1,
+      "text": "Why I am so blessed! My favorite friends, the humans, are back.\nCaptain, it is good to see you again.\nYou Humans are so interesting, so... beautiful.\nYou know, I have many pictures of your species!\nI keep them on my walls to... inspire me.",
+      "voice": "vux-001.ogg",
+      "original_text_hash": 11808608003971392716
+    },
+    {
+      "id": "ZEX_HELLO_3",
+      "index": 2,
+      "text": "Captain! You are back so soon!\nWe had better be discreet (hee! hee!), or my countrymen will begin whispering about us.",
+      "voice": "vux-002.ogg",
+      "original_text_hash": 18007594500571915669
+    },
+    {
+      "id": "ZEX_HELLO_4",
+      "index": 3,
+      "text": "Luscious, robust human... I have eagerly awaited your return.",
+      "voice": "vux-003.ogg",
+      "original_text_hash": 10602454166694725856
+    },
+    {
+      "id": "FIGHT_OR_TRADE_1",
+      "index": 4,
+      "text": "Captain! You escaped after all! How remarkable!",
+      "voice": "vux-004.ogg",
+      "original_text_hash": 14567757847634755485
+    },
+    {
+      "id": "FIGHT_OR_TRADE_2",
+      "index": 5,
+      "text": "Human... we should be friends, not enemies!\nThe scope of our relationship can grow as close as you wish.",
+      "voice": "vux-005.ogg",
+      "original_text_hash": 11827148098839670316
+    },
+    {
+      "id": "what_you_do_here",
+      "index": 6,
+      "text": "What are you doing here, Admiral ZEX?",
+      "voice": null,
+      "original_text_hash": 13309250909763649803
+    },
+    {
+      "id": "MY_MENAGERIE",
+      "index": 7,
+      "text": "Ah, such a good question! But you always were a bright species.\nI will explain.\nAfter the Great War, in which I played some small part\nthe VUX high council, in recognition for my services\ngranted me this planet, so that I might pursue my... hobby\nwithout disturbing the general VUX populace.\nI am a collector, you see.\nI have the finest menagerie of... beautiful... creatures in all space.",
+      "voice": "vux-006.ogg",
+      "original_text_hash": 18048954348591335620
+    },
+    {
+      "id": "what_about_menagerie",
+      "index": 8,
+      "text": "A menagerie? Is this a collection of animals, like a zoo?",
+      "voice": null,
+      "original_text_hash": 11875312832888642930
+    },
+    {
+      "id": "NEED_NEW_CREATURE",
+      "index": 9,
+      "text": "Animals? Hee! Hee! Hee! Oh, no, Captain! Not mere animals!\nMy menagerie contains only the most... beautiful... creatures in the galaxy!\nEach of my children, as I like to call them, has a wonderful set of traits\nwhich make them unique and special... especially to me!\nI have a complete variety of beasts from as far away as Procyon and Vega.\nNo, this is not just some `zoo'!\nI have worked diligently for many years to craft my menagerie, to gradually improve it.\nPerhaps you can't tell, but I am rather proud of it!\nAlas, there is one creature, one GORGEOUS animal which I do not yet possess.\nI would give almost ANYTHING for that creature, Captain.",
+      "voice": "vux-007.ogg",
+      "original_text_hash": 7260683944046346385
+    },
+    {
+      "id": "what_about_creature",
+      "index": 10,
+      "text": "If we went and got this little critter for you, would you give us the Shofixti Maidens?",
+      "voice": null,
+      "original_text_hash": 10380353700572389628
+    },
+    {
+      "id": "ABOUT_CREATURE",
+      "index": 11,
+      "text": "Hmmm... what an interesting proposal!\nI never would have thought of such a wonderful idea myself.\nYou are a genius, Captain!\nIn answer to your question, yes! I accept your offer.\nDeliver the creature to me, and I shall give you the Shofixti Maidens.\nI will even provide you with a clue to finding the creature's native planet!\nMy source for this information is an ancient wildlife handbook\nwritten millennia ago by some unknown alien author. The pertinent passage goes as follows\n`... demise, It(!) basks in yellow light within the constellation Linch-Nas-Ploh.'\nWe have translated `Linch-Nas-Ploh' to mean approximately\n`the long, thin creature who has swallowed the huge beast.'\nI am afraid this is all that I know.\nI hope it is sufficient.",
+      "voice": "vux-008.ogg",
+      "original_text_hash": 15100012316943659480
+    },
+    {
+      "id": "about_creature_again",
+      "index": 12,
+      "text": "Would you tell me again where I can find that creature you want so badly?",
+      "voice": null,
+      "original_text_hash": 9914076542865213243
+    },
+    {
+      "id": "CREATURE_AGAIN",
+      "index": 13,
+      "text": "Certainly, my smooth-skinned friend!\nMy source for this information is an ancient wildlife handbook\nwritten millennia ago by some unknown alien author. The pertinent passage goes as follows\n`... demise, It(!) basks in yellow light within the constellation Linch-Nas-Ploh.'\nWe have translated `Linch-Nas-Ploh' to mean approximately\n`the long, thin creature who has swallowed the huge beast.'\nI am afraid this is all that I know.\nI hope it is sufficient.",
+      "voice": "vux-009.ogg",
+      "original_text_hash": 10857026180094426091
+    },
+    {
+      "id": "i_have_beast",
+      "index": 14,
+      "text": "Admiral ZEX, we have captured the hideous monster from Delta Lyncis. Let us make an exchange.",
+      "voice": null,
+      "original_text_hash": 11025098636123515729
+    },
+    {
+      "id": "GIVE_BEAST",
+      "index": 15,
+      "text": "Ah, a most excellent piece of news! My chiton rasps and moistens with excitement!\nI have been looking forward to this for so long! Hee! Hee! Hee!\nMy subordinates stand ready to receive the beast from your ship, Captain.\nEffect its transfer and then... we shall give you the Maidens you desire.",
+      "voice": "vux-010.ogg",
+      "original_text_hash": 9750601091973244814
+    },
+    {
+      "id": "ok_take_beast",
+      "index": 16,
+      "text": "Okay, the beast is ALL yours! But be careful, it's a killer!",
+      "voice": null,
+      "original_text_hash": 15053345768304742481
+    },
+    {
+      "id": "FOOL_AIEE0",
+      "index": 17,
+      "text": "Ah! My new child is on board. Such a big one, isn't he!?...\n...and so frisky!\nI am delighted beyond words that you have given me the beast, Captain\nbut I am afraid that there has been a slight change in our plans. Regrettable, but necessary.\nOh, my beautiful, luscious human, I had thought that the hideous, violent monster you have given me\nwould complete my collection of Ugliness, my Menagerie of Monsters... I was wrong!\nYOU, my human love, are the most vile, the most fierce and wretched!\nMy collection could never be complete without you. I need you, Captain.\nBut alas, I fear you will not give your consent willingly. Am I right?\nTherefore, sub-commander DAX, terminate communications... warm up my modified Intruder.\nEngage the Precursor warp nullifier. Hee! Hee! Hee!... prepare for battle!",
+      "voice": "vux-011.ogg",
+      "original_text_hash": 3793476532442353986
+    },
+    {
+      "id": "FOOL_AIEE1",
+      "index": 18,
+      "text": "Sub-commander? Why has my main console become inoperative?\nThe transmit mode is locked!\nWhat do you mean the central system computer is damaged? How!?...\n...the Beast!?... Escaped!!\nNo, Sub-Commander, this is impossible. It couldn't escape from our strongest containment system\nIT'S WHAT?!! Decks five and six?! Eleven Crewmen!!\nSound the alarms, you fool! Where is it now?! Engineering, report!... Engineering?!\nSub-Commander, seal Bulkhe-- Sub-Commander... are you listening to me? What are you staring at?\nPAY ATTENTION, Sub-Commander! Give me a report on its posit-- WHAT ARE YOU STARING AT!...\nbehind me?\nWH- Wh- what- wh- AIEEEEE!!!!!...",
+      "voice": "vux-012.ogg",
+      "original_text_hash": 13506478715971783141
+    },
+    {
+      "id": "why_trust_1",
+      "index": 19,
+      "text": "Ah, Admiral ZEX, aren't you forgetting something? The Shofixti Maidens?",
+      "voice": null,
+      "original_text_hash": 15919475539011194026
+    },
+    {
+      "id": "TRUST_1",
+      "index": 20,
+      "text": "Oh yes, no problem. Even now my subordinates are bringing them up from the surface.\nSo let's not waste time. Send that delightful beast over, immediately!",
+      "voice": "vux-013.ogg",
+      "original_text_hash": 15729180761184459867
+    },
+    {
+      "id": "why_trust_2",
+      "index": 21,
+      "text": "Look, we believe in 1 for 1 trades. We will transfer the beast when we see the Maidens.",
+      "voice": null,
+      "original_text_hash": 16663386038364544617
+    },
+    {
+      "id": "TRUST_2",
+      "index": 22,
+      "text": "Captain, Captain, we are both creatures of honor.\nIf I say that the Shofixti Maidens are on their way up from the surface, then they are.\nYou will have them shortly, accept my word... now please, Captain, the beast?",
+      "voice": "vux-014.ogg",
+      "original_text_hash": 13476586451638931156
+    },
+    {
+      "id": "why_trust_3",
+      "index": 23,
+      "text": "Now see here ZEX! Humans and VUX have had a pretty stormy relationship. Why should we trust you?",
+      "voice": null,
+      "original_text_hash": 518628122608494283
+    },
+    {
+      "id": "TRUST_3",
+      "index": 24,
+      "text": "Really, Captain! My honor is impugned!\nYou have maligned me and I am deeply hurt.\nI thought we had built some trust between us, different though we may be\nbut no, I perceive now the same bigotry and misunderstanding\nwhich brought our two species to war!\nThis was our chance to cement a good relationship between Human and VUX.\nWith my influence, the High Council could easily have been swayed to view\nthe Human cause in a more favorable light.",
+      "voice": "vux-015.ogg",
+      "original_text_hash": 5213759202115630740
+    },
+    {
+      "id": "why_dont_you_attack",
+      "index": 25,
+      "text": "Admiral ZEX, why don't you attack us, as all other VUX have?",
+      "voice": null,
+      "original_text_hash": 6174180645419272864
+    },
+    {
+      "id": "LIKE_YOU",
+      "index": 26,
+      "text": "Because I like Humans, Captain. I respect and admire your species.\nI do not share the bigoted views of most of my people.",
+      "voice": "vux-016.ogg",
+      "original_text_hash": 7492195502627604235
+    },
+    {
+      "id": "why_like_me",
+      "index": 27,
+      "text": "Ah, Admiral ZEX? Why do you like us? We thought all VUX hated humans.",
+      "voice": null,
+      "original_text_hash": 1900697902678835081
+    },
+    {
+      "id": "LIKE_BECAUSE",
+      "index": 28,
+      "text": "No, No, not all VUX, Captain! Most... but not all.\nIt is true when the majority of my people view one of your species\nthey are forced to regurgitate\nbut there are those among us who have grown beyond such childishness to take a more liberal view.\nWe, the few sophisticates, are not subject to the whims and fads of current fashion.\nOur likes and dislikes are strictly based on personal preference.\nWe see the... beauty in you Humans. The value in a long-term... relationship.\nYou are different, yes. But personally, I like difference.\nIn fact, I ADORE it.\nYour physique is so wonderfully varied! Your multitudinous rigid appendages, your tiny double eyes\nyour varied skin coloration, and the delightful patchwork of hair covering only parts of your bodies\nleaving other parts bare and smooth! Mmmmmm!\nI value your species, Captain. I see you as just `people'... like us VUX.",
+      "voice": "vux-017.ogg",
+      "original_text_hash": 3873432399518905884
+    },
+    {
+      "id": "are_you_a_pervert",
+      "index": 29,
+      "text": "Whoa, Admiral ZEX! This is just a bit too weird. Are you some kind of perv-- er... aesthete?",
+      "voice": null,
+      "original_text_hash": 13186658093283194419
+    },
+    {
+      "id": "CALL_ME_WHAT_YOU_WISH",
+      "index": 30,
+      "text": "You have talked with my VUX countrymen, haven't you?\nThey are closed-minded fools... bigoted in all ways.\nCall me what you wish, Captain. I choose to view myself as, well\nsimply open-minded... free to experience the full range of life's possibilities.\nThe VUX rulers could not refuse my military genius, couldn't ignore the many victories I gave them.\nBut they would not tolerate my behavior, accept my desires as natural\nso they sent me out here... a hero's exile! Where  I won't `poison' the minds of youth\nwith my `bizarre' ideas and `perverted' lifestyle. Hmmph... bigoted fools.\nYou see, Captain, we are not all that different, you and I.\nWe are different from the majority of VUX, and so we, in VUX eyes, are both monsters.",
+      "voice": "vux-018.ogg",
+      "original_text_hash": 8445572713503685247
+    },
+    {
+      "id": "take_by_force",
+      "index": 31,
+      "text": "We require the Shofixti Maidens. We are prepared to use force if necessary.",
+      "voice": null,
+      "original_text_hash": 1535778874711720730
+    },
+    {
+      "id": "PRECURSOR_DEVICE",
+      "index": 32,
+      "text": "Hee! Hee! Hee! Oh, Captain, that would be such an unfortunate mistake\na grave error on both our parts.\nWe have so much to learn from each other, so much to give each other.\nIt would be such a sad loss if we were to fall back to the mindless blasting and killing\nthat has marred our two species' relationship up to this point.\nAdmittedly, as THE acknowledged VUX military genius\nI would find it interesting to face your ONE powerful, alien starship\nwith my huge personal fleet of Intruders, but oh! What a mistake it would be.\nAlso... I think it only fair to warn you, Captain\nthat in my campaigns I collected many interesting items.\nAmongst these treasures is a Precursor artifact, a warp nullification field\nthat prevents nearby ships from making emergency HyperSpace maneuvers... from running away.\nI note by the scars on the rear of your vessel that you have made many such escapes.\nSo you see, Captain, if you attack me, you will face the greatest military tactician in VUX history\ncommanding an almost infinite number of enemy combat ships\nand the battle will be to the Death!\nSurely we can find an alternative.",
+      "voice": "vux-019.ogg",
+      "original_text_hash": 14220368536066890849
+    },
+    {
+      "id": "regardless",
+      "index": 33,
+      "text": "We will fight you regardless of your Precursor Artifact!",
+      "voice": null,
+      "original_text_hash": 6433784542813439582
+    },
+    {
+      "id": "THEN_FIGHT",
+      "index": 34,
+      "text": "Very well... to the Death!",
+      "voice": "vux-020.ogg",
+      "original_text_hash": 9024814294838415564
+    },
+    {
+      "id": "you_lied",
+      "index": 35,
+      "text": "You lied, Admiral ZEX!!! There was no `warp nullification field'! Cheater!",
+      "voice": null,
+      "original_text_hash": 11056565591685923630
+    },
+    {
+      "id": "YUP_LIED",
+      "index": 36,
+      "text": "Yes, I lied.\nSurely, if a small falsehood can prevent hundreds of unnecessary deaths, this is acceptable.\nUnfortunately, you saw through my falsehood and no doubt lives were lost.\nLet us cease this mindless aggression, before it is our undoing.",
+      "voice": "vux-021.ogg",
+      "original_text_hash": 11828885109929690047
+    },
+    {
+      "id": "kill_you",
+      "index": 37,
+      "text": "We have no fear of any of your `devices'. Now we kill you!",
+      "voice": null,
+      "original_text_hash": 15595762903258783537
+    },
+    {
+      "id": "FIGHT_AGAIN",
+      "index": 38,
+      "text": "Unfortunate. Dreary... and unfortunate.\nCaptain, even without such a device, you must understand the overwhelming forces I have at my command!\nYou cannot beat me here. It is impossible.\nBut... if a fight is what you demand, so be it.",
+      "voice": "vux-022.ogg",
+      "original_text_hash": 6970820220740660622
+    },
+    {
+      "id": "bye_zex",
+      "index": 39,
+      "text": "Goodbye, Admiral ZEX.",
+      "voice": null,
+      "original_text_hash": 6097312340826676181
+    },
+    {
+      "id": "GOODBYE_ZEX",
+      "index": 40,
+      "text": "Goodbye, beautiful human. I hope we can meet someday as friends... perhaps even more.",
+      "voice": "vux-023.ogg",
+      "original_text_hash": 9565808762529659657
+    },
+    {
+      "id": "HOMEWORLD_HELLO_1",
+      "index": 41,
+      "text": "Welcome to the end of your life, courtesy of VUX technology.\nOur infinite supply of Intruder vessels are even now locking their vaporizers onto your position\nand we shall end your painful, grotesque existence for you as soon as possible.\nIn the meantime, here is a little music...",
+      "voice": "vux-024.ogg",
+      "original_text_hash": 14833521875159939527
+    },
+    {
+      "id": "HOMEWORLD_HELLO_2",
+      "index": 42,
+      "text": "Hello again.  We trust you are enjoying trespassing in VUX space\nand look forward to removing you from existence at our earliest possible convenience.\nIf you believe you can fight your way past our invincible forces to our surface, you are correct.\nSome ash and a few wisps of pungent vapor are sure to make it at least that far.\nOur special today is particle fragmentation!\nSo if you will kindly open your feeding orifice and start screaming, we will begin.",
+      "voice": "vux-025.ogg",
+      "original_text_hash": 12561673913347111942
+    },
+    {
+      "id": "HOMEWORLD_HELLO_3",
+      "index": 43,
+      "text": "Welcome back to total annihilation, where, as they say\nonce is silatious, twice is phlagrant melons\nbut the third time is when it really hurts.\nPlease stay seated until your vessel starts smoking\nthen feel free to dash your head painfully against the floor.",
+      "voice": "vux-026.ogg",
+      "original_text_hash": 7968089828165886026
+    },
+    {
+      "id": "HOMEWORLD_HELLO_4",
+      "index": 44,
+      "text": "Congratulations for exhausting the VUX vocabulary of greetings to despicable life-forms.\nMay we take this opportunity to lock our femoral scrapers onto your ship\nand to wish you an unpleasant afterlife.",
+      "voice": "vux-027.ogg",
+      "original_text_hash": 12273366905734636604
+    },
+    {
+      "id": "SPACE_HELLO_1",
+      "index": 45,
+      "text": "Greetings from VUX!... the last word in life form destruction!\nTo gain an intimate knowledge of our engines of war\nsimply place both hands over your eyes and count to three.",
+      "voice": "vux-028.ogg",
+      "original_text_hash": 16315024440250649389
+    },
+    {
+      "id": "SPACE_HELLO_2",
+      "index": 46,
+      "text": "Salutations, and may your sense of self-preservation always be so dim.\nAs our Intruders surround your vessel, you may care to raise both hands into the air above you\nand practice the ancient chant of the prancing oowee master, ZEN DUX, which begins...\n`AAAAAAAAA AAAAAAHH!!!'",
+      "voice": "vux-029.ogg",
+      "original_text_hash": 11430313366171303354
+    },
+    {
+      "id": "SPACE_HELLO_3",
+      "index": 47,
+      "text": "This is VUX Commander YAX.  On behalf of the team here\nI would like to say how very much we have all enjoyed taunting you\nand to congratulate you on plumbing the limits of VUX courtesy\nwhich you have now exhausted. Therefore, let me just say\nDie, you two-eyed loathsome faceless slug!",
+      "voice": "vux-030.ogg",
+      "original_text_hash": 910999245405669338
+    },
+    {
+      "id": "SPACE_HELLO_4",
+      "index": 48,
+      "text": "Welcome back. All our coherent destructors are currently off-line\nbut if you'd care to hold your present course and speed\none will be free to annihilate you shortly.",
+      "voice": "vux-031.ogg",
+      "original_text_hash": 586439918473131930
+    },
+    {
+      "id": "kill_you_squids_1",
+      "index": 49,
+      "text": "You grotesque squids! We will kill you for your insolence!",
+      "voice": null,
+      "original_text_hash": 17918297316703770257
+    },
+    {
+      "id": "kill_you_squids_2",
+      "index": 50,
+      "text": "You are the most vile, repulsive creature I've ever seen!",
+      "voice": null,
+      "original_text_hash": 13053438457659458519
+    },
+    {
+      "id": "kill_you_squids_3",
+      "index": 51,
+      "text": "I must say, your rating on the vomit-meter would be AT LEAST ninety six.",
+      "voice": null,
+      "original_text_hash": 12267807958380359450
+    },
+    {
+      "id": "kill_you_squids_4",
+      "index": 52,
+      "text": "You bloated bag of protoplasm! You worm!",
+      "voice": null,
+      "original_text_hash": 13566728863571930199
+    },
+    {
+      "id": "WE_FIGHT",
+      "index": 53,
+      "text": "Watch everybody! We're going to kill the repulsive little monster now!",
+      "voice": "vux-032.ogg",
+      "original_text_hash": 16549691838172334162
+    },
+    {
+      "id": "why_so_mean",
+      "index": 54,
+      "text": "Why are you so hostile toward our species?",
+      "voice": null,
+      "original_text_hash": 3530065993832936016
+    },
+    {
+      "id": "URQUAN_SLAVES",
+      "index": 55,
+      "text": "Augh! You are even uglier than I had thought possible!\nCan't you see you are making me sick?\nPlease, foul creature, turn your head, or better yet, put a sack over it.\nNever mind, I have adjusted my display so it is dim enough to be tolerable.\nIn answer to your question, our response is simple.\nWe must attack you because our masters the Ur-Quan wish it so!\nNow if you don't mind, stop nodding your head like that.\nWe VUX do not share this range of motion\nand it appears as though your neck is broken\nand you are a jabbering corpse. Ugh.",
+      "voice": "vux-033.ogg",
+      "original_text_hash": 18104871075390170284
+    },
+    {
+      "id": "deeper_reason",
+      "index": 56,
+      "text": "Is there another reason you hate us? Come on, tell me the truth.",
+      "voice": null,
+      "original_text_hash": 3734275907353598276
+    },
+    {
+      "id": "OLD_INSULT",
+      "index": 57,
+      "text": "Do we need another reason?\nAh! I understand. You refer to the First Human Encounter\nthe Insult!\nWhat more can be said? On that day, your species proved its true crass nature.\nYou see, we VUX pride ourselves on our open-mindedness\nour ability to see beyond even the most bizarre and disgusting face like yours\nbut that insult was so low, so totally reprehensible that we will never forget it.\nYes, to be honest, that event pretty much fixed our attitude setting at `ABHOR'.\nI suspect we will despise you forever.",
+      "voice": "vux-034.ogg",
+      "original_text_hash": 1043356019743852579
+    },
+    {
+      "id": "if_we_apologize",
+      "index": 58,
+      "text": "What if we apologized? Could we talk truce then?",
+      "voice": null,
+      "original_text_hash": 14954458886309821543
+    },
+    {
+      "id": "PROBABLY_NOT",
+      "index": 59,
+      "text": "Er... probably not. You see, although we VUX are highly reasonable beings\nwho would never judge a race solely on its (urk!) appearance\nthe magnitude of your Captain Rand's insult was such that we will probably never forgive your species.",
+      "voice": "vux-035.ogg",
+      "original_text_hash": 12712270655178172951
+    },
+    {
+      "id": "try_any_way",
+      "index": 60,
+      "text": "Well, I'll try anyway. The People of Earth Hereby Apologize To The VUX!",
+      "voice": null,
+      "original_text_hash": 11719765707034681687
+    },
+    {
+      "id": "NOPE",
+      "index": 61,
+      "text": "Nope. I didn't think that would be sufficient. It lacked conviction.\nSorry, but I'm afraid we'll just have to kill you now.",
+      "voice": "vux-036.ogg",
+      "original_text_hash": 13622686682994508867
+    },
+    {
+      "id": "APOLOGIZE_IN_SPACE",
+      "index": 62,
+      "text": "Because the Human named Rand offended one of our starship commanders\napologizing here at the Homeworld is useless.\nBesides, we have decided that you are just too disgusting to live\nso we have decided to vaporize you.",
+      "voice": "vux-037.ogg",
+      "original_text_hash": 9001547382737107253
+    },
+    {
+      "id": "apology_1",
+      "index": 63,
+      "text": "Let's try that again. We, The People Of Earth, Really Truly Apologize For The Stupid Insult Made By Captain Rand!",
+      "voice": null,
+      "original_text_hash": 16822500012944253750
+    },
+    {
+      "id": "NOT_ACCEPTED_1",
+      "index": 64,
+      "text": "No. That didn't cut it either.",
+      "voice": "vux-038.ogg",
+      "original_text_hash": 18197615865206070207
+    },
+    {
+      "id": "apology_2",
+      "index": 65,
+      "text": "You were RIGHT! We WERE wrong. We see it all so clearly now!",
+      "voice": null,
+      "original_text_hash": 16337020846819871000
+    },
+    {
+      "id": "NOT_ACCEPTED_2",
+      "index": 66,
+      "text": "I don't think your heart is in it.",
+      "voice": "vux-039.ogg",
+      "original_text_hash": 16267281048162950211
+    },
+    {
+      "id": "apology_3",
+      "index": 67,
+      "text": "Pleeeeeeeeease forgive us!",
+      "voice": null,
+      "original_text_hash": 5109209281914973250
+    },
+    {
+      "id": "NOT_ACCEPTED_3",
+      "index": 68,
+      "text": "You said that just because you want stuff from us VUX. You didn't really mean it.",
+      "voice": "vux-040.ogg",
+      "original_text_hash": 7686245064411212310
+    },
+    {
+      "id": "apology_4",
+      "index": 69,
+      "text": "We - are - sorry! May a thousand insects sting my softest parts if I lie!",
+      "voice": null,
+      "original_text_hash": 10270419053134210400
+    },
+    {
+      "id": "NOT_ACCEPTED_4",
+      "index": 70,
+      "text": "It's pointless. Why even bother trying again?",
+      "voice": "vux-041.ogg",
+      "original_text_hash": 14388347399503311071
+    },
+    {
+      "id": "apology_5",
+      "index": 71,
+      "text": "We would like to present a petition of 1 million signatures! Each one says, `I'm sorry!'",
+      "voice": null,
+      "original_text_hash": 15311947846124871911
+    },
+    {
+      "id": "NOT_ACCEPTED_5",
+      "index": 72,
+      "text": "A good try, Captain... but not good enough.",
+      "voice": "vux-042.ogg",
+      "original_text_hash": 16426792964015948707
+    },
+    {
+      "id": "apology_6",
+      "index": 73,
+      "text": "Wrong? Yes we were wrong. Oh, so wrong! Boy, were we wrong! The wrongest.",
+      "voice": null,
+      "original_text_hash": 6747976471403675018
+    },
+    {
+      "id": "NOT_ACCEPTED_6",
+      "index": 74,
+      "text": "We detect a hint of genuine regret, but not enough to forgive you.",
+      "voice": "vux-043.ogg",
+      "original_text_hash": 1078002513369606553
+    },
+    {
+      "id": "apology_7",
+      "index": 75,
+      "text": "(Let's try reverse psychology) Listen VUX! You are right! We cannot ever atone for Rand's cruel barb!",
+      "voice": null,
+      "original_text_hash": 8242496729836206583
+    },
+    {
+      "id": "NOT_ACCEPTED_7",
+      "index": 76,
+      "text": "Oh? I was just thinking that maybe we should consider forgiving you\nbut I guess you're right.\nThere's no going back.",
+      "voice": "vux-044.ogg",
+      "original_text_hash": 4892512332115959816
+    },
+    {
+      "id": "apology_8",
+      "index": 77,
+      "text": "If sorrow were a pebble, our remorse would be... would be!... a great big boulder!",
+      "voice": null,
+      "original_text_hash": 7271169832644925920
+    },
+    {
+      "id": "NOT_ACCEPTED_8",
+      "index": 78,
+      "text": "Hey! That was pretty good!\nI could sense the true sadness in your voice for your species' past stupidity.\nUnfortunately, it was not good enough.",
+      "voice": "vux-045.ogg",
+      "original_text_hash": 3079666195198299774
+    },
+    {
+      "id": "apology_9",
+      "index": 79,
+      "text": "If there is ANYTHING we can do to gain your forgiveness, we shall do it a thousand times.",
+      "voice": null,
+      "original_text_hash": 10369448233447067792
+    },
+    {
+      "id": "NOT_ACCEPTED_9",
+      "index": 80,
+      "text": "Um..., er... that was about as good as it gets, I think\nbut we don't accept it because... because... well, just BECAUSE!",
+      "voice": "vux-046.ogg",
+      "original_text_hash": 3446061773235816532
+    },
+    {
+      "id": "apology_10",
+      "index": 81,
+      "text": "Please, for the love of reason. Heed these words: We, the People of Earth Apologize To The VUX.",
+      "voice": null,
+      "original_text_hash": 1207252995086556600
+    },
+    {
+      "id": "TRUTH",
+      "index": 82,
+      "text": "AIEEE! Human! You have hounded and hounded and hounded us with your pitiful apologies!\nIt's driving us crazy! STOP! Please STOP!\nWe give up. We accept! We accept! We will no longer hold Rand's insult against your species.\nYou are forgiven for all eternity, just stop apologizing!\nBut now you have forced us to reveal our REAL reason for hating you humans\nan embarrassing reason with no acceptable justification, but nonetheless undeniable!\nHuman! You are SOOO ugly, SOOO hideous to us that we will NEVER be able to find peace with your species!\nWhenever we see your kind, we just want to kick you!... stomp on you!... squish you!...\n...vaporize your ugly faces from the entire universe!\nWe know its unreasonable! We know that you had no choice about how you look!\nWe know that it is cruel fate that the Creator made you appear like putrid excretion\nbut WE JUST CAN'T HANDLE IT!\nWhy right now, because of your insufferable wretchedness\nI am faced with a grotesque choice: keep talking to you and regurgitate uncontrollably\nor break off communication and attack your vessel...",
+      "voice": "vux-047.ogg",
+      "original_text_hash": 17497859084942514938
+    },
+    {
+      "id": "whats_up_hostile",
+      "index": 83,
+      "text": "VUX. We seek to learn more about you. Maybe then we can see eye to... eyes.",
+      "voice": null,
+      "original_text_hash": 8258737808319642522
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_1",
+      "index": 84,
+      "text": "Look, vomitous alien. If you want to talk to one of our species\nwithout making them sick\nwhy don't you go see Admiral ZEX at his world in Alpha Cerenkov.\nHe (urp!) likes humans.",
+      "voice": "vux-048.ogg",
+      "original_text_hash": 6066214160977626153
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_2",
+      "index": 85,
+      "text": "Look at those yellowish-white hard things in your mouth!\nHow do you keep from biting off that pulpy organ... Gross!",
+      "voice": "vux-049.ogg",
+      "original_text_hash": 17524722128034132314
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_3",
+      "index": 86,
+      "text": "Yuck! Don't show your tongue like that. It makes me sick.",
+      "voice": "vux-050.ogg",
+      "original_text_hash": 977723631271849264
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_4",
+      "index": 87,
+      "text": "Forget it, human. We can't think straight when we have to look at you.\nIf you're lonely, go to Alpha Cerenkov and talk with that pervert, Admiral ZEX.",
+      "voice": "vux-051.ogg",
+      "original_text_hash": 4028280506996965169
+    },
+    {
+      "id": "cant_we_be_friends_1",
+      "index": 88,
+      "text": "Why can't we be friends? I like YOU.",
+      "voice": null,
+      "original_text_hash": 9278470524486491352
+    },
+    {
+      "id": "NEVER_UGLY_HUMANS_1",
+      "index": 89,
+      "text": "I listened. I heard. I know you like ME.\nBut the problem is, I DESPISE you!\nWhich is why I am attacking, in case you were wondering.",
+      "voice": "vux-052.ogg",
+      "original_text_hash": 9779696199344242718
+    },
+    {
+      "id": "cant_we_be_friends_2",
+      "index": 90,
+      "text": "We have too much to gain through cooperation. Just try.",
+      "voice": null,
+      "original_text_hash": 15094300448644071015
+    },
+    {
+      "id": "NEVER_UGLY_HUMANS_2",
+      "index": 91,
+      "text": "Okay, I'll try to like you.\nI'm really trying.\nNaw! This is never going to work.\nEvery time I try to think of your friendly smiling face\n(urp!) I want to blow chunks.\nI have a better idea. I'll just kill you.",
+      "voice": "vux-053.ogg",
+      "original_text_hash": 8752485338653210670
+    },
+    {
+      "id": "cant_we_be_friends_3",
+      "index": 92,
+      "text": "Didn't anyone ever tell you, `you can't judge a book by its cover?'",
+      "voice": null,
+      "original_text_hash": 11090384379837132368
+    },
+    {
+      "id": "NEVER_UGLY_HUMANS_3",
+      "index": 93,
+      "text": "Do you want to know how ugly you are to us VUX? I'll tell you.\nYou humans are SO ugly, that I get my kids to behave by holding a picture of you behind my back\nand I tell the kids that if they aren't good, I'll show it to them!\nI am such a bad father (sob!) I must destroy you... for the children!",
+      "voice": "vux-054.ogg",
+      "original_text_hash": 15552461328915410255
+    },
+    {
+      "id": "cant_we_be_friends_4",
+      "index": 94,
+      "text": "You are just a bunch of bigots. I thought you were better than that.",
+      "voice": null,
+      "original_text_hash": 13008706218827975808
+    },
+    {
+      "id": "NEVER_UGLY_HUMANS_4",
+      "index": 95,
+      "text": "This IS embarrassing. We pride ourselves on being rational!\nBut you are so disgusting that we feel we just HAVE to kill you!\nLike right now!",
+      "voice": "vux-055.ogg",
+      "original_text_hash": 2305879066486423721
+    },
+    {
+      "id": "bye_hostile_space",
+      "index": 96,
+      "text": "Well, THIS has been useless. Goodbye.",
+      "voice": null,
+      "original_text_hash": 9816171904234628562
+    },
+    {
+      "id": "GOODBYE_AND_DIE_HOSTILE_SPACE_1",
+      "index": 97,
+      "text": "Human, based upon our commitment to the Ur-Quan\nand your general disgusting demeanor, we have decided to blow you to bits.",
+      "voice": "vux-056.ogg",
+      "original_text_hash": 8648889867144528034
+    },
+    {
+      "id": "GOODBYE_AND_DIE_HOSTILE_SPACE_2",
+      "index": 98,
+      "text": "Wait! I have one last thing to say\nDie!",
+      "voice": "vux-057.ogg",
+      "original_text_hash": 15207648120766205523
+    },
+    {
+      "id": "GOODBYE_AND_DIE_HOSTILE_SPACE_3",
+      "index": 99,
+      "text": "For the good of the whole, I will now erase your putrid presence.",
+      "voice": "vux-058.ogg",
+      "original_text_hash": 3873530277291319150
+    },
+    {
+      "id": "GOODBYE_AND_DIE_HOSTILE_SPACE_4",
+      "index": 100,
+      "text": "We have no choice. You are too wretched. We shall eliminate you.",
+      "voice": "vux-059.ogg",
+      "original_text_hash": 1771922331418372661
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 101,
+      "text": "Oh no! It's one of those ultra-gross humans again!\nQuick, hide your eye!\nAGGH! Look at the pulpy red thing in its mouth\nhow it wriggles and writhes like a wet blood worm\nand plays over the hard white nubs that protrude from its headbone!\nI think I'm going to be sick.",
+      "voice": "vux-060.ogg",
+      "original_text_hash": 14836552296515309988
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["vux", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["vux", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 #define UQM_CONVERSATION_HPP_
 #include "conversation_animation.hpp"
 #include "conversation_resources.hpp"
+#include "dialogue/legacy_turn.hpp"
 #include "game_mode.hpp"
 #include "sounds.h"
 #include "libs/sound/trackplayer.h"
@@ -116,6 +117,11 @@ private:
     void ClearSubtitles();
     void CheckSubtitles();
     bool exiting() const; // Pending session exits stop every dialogue input loop.
+    void queueGraphSpeech();
+    COUNT graphPhrase(const std::string &name) const;
+    void loadGraph(); // Validate the live JSON before invoking any story callbacks.
+    dialogue::Result runNativeTurn(std::optional<std::size_t> selection);
+    bool finishGraphSpeech(); // Playback completion, independent of replay controls.
     void finishScript();
     void stopPlayback();
     GameSession &session_;
@@ -136,6 +142,11 @@ private:
     CONTEXT oldContext_ = nullptr;
     MENU_SOUND_FLAGS oldArrows_{}, oldSelect_{};
     bool started_ = false, playback_ = false, fontBound_ = false, scriptFinished_ = false;
+    std::vector<std::string> graphResponseIds_, graphResponseText_;
+    std::unordered_map<std::string, COUNT> graphPhrases_;
+    bool nativeGraph_ = true;
+    std::unique_ptr<dialogue::LegacyTurnState> graphState_;
+    std::unique_ptr<dialogue::Conversation> graph_; // Destroy before borrowed state/resources.
     std::optional<ConversationBinding> binding_; // Unbind before owned script storage dies.
 };
 // The child returns completion/session exit; EncounterRuntime selects combat.

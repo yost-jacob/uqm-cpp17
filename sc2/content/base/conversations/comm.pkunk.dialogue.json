@@ -1,0 +1,1411 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "pkunk",
+  "resource": "comm.pkunk.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "GIVE_SPINDLE",
+      "index": 0,
+      "text": "WAIT!... a spirit voice rings within my soul\nit tells me that I must give you something\nsomething to aid you on your noble quest!\nWhat, spirit? What must we give this young human?\nMineral resources?... no.\nImportant secrets?... no.\nStarships?...  no.\nThen what IS it spirit, spit it out!\nWhat?!... that thing? Are you sure? Okay.\nHere you go, Captain. Take this Clear Spindle.\nIt is an ancient and powerful device built by the Precursors hundreds of thousands of years ago.\nWhat does it do, you ask?\nI haven't the slightest idea.",
+      "voice": "pkunk-000.ogg",
+      "original_text_hash": 7367239684300395633
+    },
+    {
+      "id": "name_1",
+      "index": 1,
+      "text": "The New Alliance of Free Stars",
+      "voice": null,
+      "original_text_hash": 2930717857211576419
+    },
+    {
+      "id": "name_2",
+      "index": 2,
+      "text": "The Concordance of Alien Nations",
+      "voice": null,
+      "original_text_hash": 16943543974912230107
+    },
+    {
+      "id": "name_3",
+      "index": 3,
+      "text": "The United Federation of Worlds",
+      "voice": null,
+      "original_text_hash": 7156419825357983966
+    },
+    {
+      "id": "name_40",
+      "index": 4,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 5,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_1",
+      "index": 6,
+      "text": "Welcome to our home stars. We are the Pkunk. Pkunk we are.\nSeekers of the deepest truths, askers of interesting and significant questions.\nEven now a question of great transcendental significance comes unbidden to our minds:\n`Who are you and what do you want?'",
+      "voice": "pkunk-001.ogg",
+      "original_text_hash": 13262515152117448088
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_3",
+      "index": 7,
+      "text": "Greetings and various apropos felicitations!  We are Pkunk.\nHatchlings of light, spritual soul beings of the vast cosmic oneness\nwayfarers on the river of destiny, students of the mystical dimensions\npurveyors of blissful love, birdlike manifestations of glorious light energies from the astral plane.\nHow about yourselves?",
+      "voice": "pkunk-002.ogg",
+      "original_text_hash": 5760306594931601702
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_2",
+      "index": 8,
+      "text": "Do not be frightened.  We are powerful creatures, yes,\nbut we could not hurt you any more than we could squish the helpless Pootworm.\nWe love the Pootworm.  We are one with the Pootworm.  We are one with you.\nOf course you realize this means you are one with the Pootworm. Rejoice!!\nTo be one with the Pootworm is to be alive, and why not be alive?\nIs that not what living is for?",
+      "voice": "pkunk-003.ogg",
+      "original_text_hash": 10787560045151040669
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_4",
+      "index": 9,
+      "text": "I sense that you are cautious.\nYou feel that you are not yet ready to enter into the fullness of our compassion. \nI say to you, Let go!!\nTravel to our planet of love at the star you call Gamma Krueger\nand share the brightness of your soul with us.\nUnburden yourself of fears, become as a child once again\nrelease yourself to tears of joy!\nGo. Go now, young one. Go quickly!",
+      "voice": "pkunk-004.ogg",
+      "original_text_hash": 5759314066600745916
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_1",
+      "index": 10,
+      "text": "Whoopdy Dee and Trolly Bazoo!  What a good day I am having.\nFirst, my nest mate surprises me with extra fat and spicy grubs for earlymeal.\nThen I am complimented on my fine display of ceremonial tongs.\nTo top it off, I encounter the human friend, loved by all Pkunk.\nCan things get any better?",
+      "voice": "pkunk-005.ogg",
+      "original_text_hash": 7675950174654627605
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_2",
+      "index": 11,
+      "text": "The stars are in auspicious alignment, the various significant moons\nare in the correct houses, and ambient psychic energies are in balance.\nAll is well, and the universe is at peace.\nWell, actually 2/3 of our civilization has been decimated by the Ilwrath\nbut besides that, all is well.  It is good to see you again.",
+      "voice": "pkunk-006.ogg",
+      "original_text_hash": 10971282207458381859
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_3",
+      "index": 12,
+      "text": "Human!  I was just thinking of you!\nAh, but I see you are not surprised, and why should you be?\nAmazing psychic occurrences are commonplace for us Pkunk.\nI am filled with love at the sight of you.\nPerhaps we can converse together, or just coexist for a few special moments.",
+      "voice": "pkunk-007.ogg",
+      "original_text_hash": 12376850164119474306
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_4",
+      "index": 13,
+      "text": "So fledgling, you have returned for your spiritual training.\nYou seek to be as we Pkunk are.  An admirable if somewhat naive goal.\nOf course, as a loving parent I must push you from the nest.\nTry as you might to cling to the side, I must step on your fingers and kick you over the edge.\nAh, but I cannot.  I see those sad Human eyes, and I must give in.\nMy love gushes forth.",
+      "voice": "pkunk-008.ogg",
+      "original_text_hash": 12783639444614295894
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_5",
+      "index": 14,
+      "text": "Ah, Captain human! I was hoping you would return. I have great news!\nWere you aware that in one of your previous lives, you were Duke Franz Ferdinand?\nIt's true! And before that, you were the Egyptian god-pharaoh Atum-ta, the sixth!\nThis is amazing, Captain, just fantastic. Imagine, having been so many important people!\nWell, to be frank, your case is not all that unusual.\nIt just so happens that almost everyone's past lives were as famous, rich or interesting people.\nIt seems that if you are a turnip farmer, a salesman, or something boring like that\nyou aren't reincarnated. When you die you just kind of... cease.\nIsn't the universe a wacky place?",
+      "voice": "pkunk-009.ogg",
+      "original_text_hash": 369101213650920440
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_6",
+      "index": 15,
+      "text": "Ah. So once again you come to our region of space.\nAll are welcome to our nest. We are Pkunk, we cannot help but love all.\nShare our joy. Share our love. Are we not Pkunk?\nYes, I said we were and so we are.  Ha ha!!\nI must laugh and sing for the sheer joy of it!\nThis is our way.",
+      "voice": "pkunk-010.ogg",
+      "original_text_hash": 15836241402643122729
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_7",
+      "index": 16,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-011.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_8",
+      "index": 17,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-012.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_1",
+      "index": 18,
+      "text": "Auspicious portents and serendipitous omens have foretold your arrival.\nWelcome alien guest to the home of the gentle and playful Pkunk\nChildren of the Cosmic Light\nHobgoblins of Joy\nSeekers of Spiritual Truth\nand other neat stuff like that.",
+      "voice": "pkunk-013.ogg",
+      "original_text_hash": 3890716801003623904
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_2",
+      "index": 19,
+      "text": "Oh jubilation and moderate amounts of spiritual-type ecstasy!\nOur sensitive friend and intimate soulmate has returned to our homeworld,\nbringing with him his most beautiful aura and radiant smile.\nHow do you fare, Captain?",
+      "voice": "pkunk-014.ogg",
+      "original_text_hash": 14153715986718418115
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_3",
+      "index": 20,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-015.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_4",
+      "index": 21,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-016.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_1",
+      "index": 22,
+      "text": "Captain. We have been expecting you, of course.\nIn fact, you are here because we wished you to be here.\nBy channeling our psychic energies through a transdimensional flux inducer\nwe are able to affect the low frequency stream of a soul particle such as yourself, and direct its course.\nThe only thing is, we can't remember why we brought you here.",
+      "voice": "pkunk-017.ogg",
+      "original_text_hash": 3745712011691985965
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_2",
+      "index": 23,
+      "text": "Welcome back, Captain, to our humble planet.\nIt is good, once again, to merge our chakras with the totality of your spiritual essence.\nWe speak, of course, metaphorically. How can we best be of aid to you?",
+      "voice": "pkunk-018.ogg",
+      "original_text_hash": 11148592790996286898
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_3",
+      "index": 24,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-019.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_4",
+      "index": 25,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-020.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_5",
+      "index": 26,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-021.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_6",
+      "index": 27,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-022.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_7",
+      "index": 28,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-023.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "FRIENDLY_HOMEWORLD_HELLO_8",
+      "index": 29,
+      "text": "Hello human! We are warm and fuzzy with the news of your return.\nWhat wisdom do you seek today?",
+      "voice": "pkunk-024.ogg",
+      "original_text_hash": 12910056667225120642
+    },
+    {
+      "id": "whats_up_neutral",
+      "index": 30,
+      "text": "We are seekers of truth. Enlighten us!",
+      "voice": null,
+      "original_text_hash": 12007583290201531656
+    },
+    {
+      "id": "GENERAL_INFO_NEUTRAL_1",
+      "index": 31,
+      "text": "Since you are a perceptive individual, you have noticed that we are physiologically similar to the Yehat.\nThis relationship is not coincidence, for indeed in the Harmonic Realm of Creation, there IS no coincidence.\nTo be more specific, we are an off-shoot of the Yehat species\n -- a peaceful, empathetic off-shoot! --\nwhich fractured from the Yehat race early in its Space Age.\nYou see, we create Peace, Tranquility and Harmony\nwhereas, the Yehat are birds of prey\nwho live in a constant balance of terror with their fellow creatures.",
+      "voice": "pkunk-025.ogg",
+      "original_text_hash": 4676753704531176273
+    },
+    {
+      "id": "GENERAL_INFO_NEUTRAL_2",
+      "index": 32,
+      "text": "Earth Captain. You would be well advised to use caution when traveling in this area.\nWe must warn you about the presence of a spiritually corrupt and violent race... the Ilwrath.\nAh! I see you already know of them.\nThe Ilwrath appeared almost eight years ago, following a powerful HyperWave broadcast\nsupposedly from Dogar and Kazon, the dark gods of Death and Pain.\nEver since, they have ceaselessly attacked our ships and planets.",
+      "voice": "pkunk-026.ogg",
+      "original_text_hash": 2359464813293146235
+    },
+    {
+      "id": "GENERAL_INFO_NEUTRAL_3",
+      "index": 33,
+      "text": "Over many long years, we have investigated the mysteries of the Universe\nthe powers of crystal energy\nregression into past lives\nthe truth behind crop circles\nand how to keep largely free of lice and other annoying parasites that tend to get into your feathers.",
+      "voice": "pkunk-027.ogg",
+      "original_text_hash": 15099272306110506332
+    },
+    {
+      "id": "GENERAL_INFO_NEUTRAL_4",
+      "index": 34,
+      "text": "You may wonder about our name... Pkunk.\n`Pkunk' means `Peace' in our language, and we are devoted to this joyous concept.",
+      "voice": "pkunk-028.ogg",
+      "original_text_hash": 1079501948971849561
+    },
+    {
+      "id": "good_reason_1",
+      "index": 35,
+      "text": "Turn back! Our most mystical device, the, er... Ouija Board, gave a definite NO when we asked it about your trip.",
+      "voice": null,
+      "original_text_hash": 17078797841755681834
+    },
+    {
+      "id": "WE_GO_HOME_1",
+      "index": 36,
+      "text": "Hmm... this is an ominous portent.\nWe must consult our spirit guides before proceeding.\nUnfortunately, we will have to return home to do this properly.\nThank you for your concern.",
+      "voice": "pkunk-029.ogg",
+      "original_text_hash": 6932966735433077402
+    },
+    {
+      "id": "good_reason_2",
+      "index": 37,
+      "text": "Didn't you know this is the, um... year of the Swollen Moon?  Bad time to travel!",
+      "voice": null,
+      "original_text_hash": 9059490493688925631
+    },
+    {
+      "id": "WE_GO_HOME_2",
+      "index": 38,
+      "text": "It IS?!\nWe are so glad you warned us!\nNo time to lose!  We'll see you back in our home star systems.\nBye!",
+      "voice": "pkunk-030.ogg",
+      "original_text_hash": 14669309540748682419
+    },
+    {
+      "id": "bad_reason_1",
+      "index": 39,
+      "text": "Your trip is fruitless. The Yehat will blow you out of the stars.",
+      "voice": null,
+      "original_text_hash": 120093746564191562
+    },
+    {
+      "id": "NO_GO_HOME_1",
+      "index": 40,
+      "text": "No, we are certain that our Yehat siblings are spiritually prepared for our reunion.\nWe shall proceed.",
+      "voice": "pkunk-031.ogg",
+      "original_text_hash": 18383972782604790471
+    },
+    {
+      "id": "bad_reason_2",
+      "index": 41,
+      "text": "You have left your home star systems unguarded! What if they are invaded?",
+      "voice": null,
+      "original_text_hash": 14371213140170366958
+    },
+    {
+      "id": "NO_GO_HOME_2",
+      "index": 42,
+      "text": "Nothing but material possessions, Captain.\nWe Pkunk, having risen to the ninty-ninth psychic plane, plus a tad\nare far beyond trapping our spiritual needs with crude matter.",
+      "voice": "pkunk-032.ogg",
+      "original_text_hash": 11143423086630093376
+    },
+    {
+      "id": "SENSE_KOHRAH_VICTORY",
+      "index": 43,
+      "text": "Before we proceed Captain, I must speak.\nMany of my people have not been sleeping well these past few nights.\nIn fact, I myself did not sleep well last night.\nWell, actually I slept okay in the first part of the night, and then had a little trouble a little later on\nmaybe halfway through, until I got up and had something to eat.\nAnyway, the reason we're not sleeping is because of a dream. Yes, a dream.\nWe have seen that in the center of this region of space, near stars that form the shape of a cup\nand are in a constellation that begins with the letter C and ends with the letter S\nand whose letters rearranged spell `Asteric', two great armadas fight.\nOne of black ships, the other of green.\nOur dream tells us that if the black ships should win this fight, they will destroy all life in this region.\nCaptain, they are winning now. If there is anything you can do to stop them you must do it... please!\nOkay, that's all I wanted to say.",
+      "voice": "pkunk-033.ogg",
+      "original_text_hash": 5360678756625063424
+    },
+    {
+      "id": "SPIRITUAL_PROBLEMS_1",
+      "index": 44,
+      "text": "We welcome you to our space, perversely misguided spirits of hostile intent that you are.\nPerhaps it is simply that your species does not comprehend such subtle concepts\nas the unification of the inner self child with the universal love stream.\nSo sad.\nPerhaps if we put it in terms you could understand:\nKilling bad, bad.\nIs that better?",
+      "voice": "pkunk-034.ogg",
+      "original_text_hash": 8325039255433325680
+    },
+    {
+      "id": "SPIRITUAL_PROBLEMS_2",
+      "index": 45,
+      "text": "Greetings aggressive ones.\nWe extend our wing tip to you in a gesture of unwarranted compassion.\nOpen your heart and become one with your happy self.\nLet us help you.  Let us heal you.  Let us love you.\nDon't be afraid of love.  Are you afraid of love?\nAre you afraid of yourself?  We love you... friend.",
+      "voice": "pkunk-035.ogg",
+      "original_text_hash": 11903944180925690777
+    },
+    {
+      "id": "SPIRITUAL_PROBLEMS_3",
+      "index": 46,
+      "text": "Whoopdy Dee and Trolly Bazoo!\nThis is what I say when I am in a good mood.\nAre you in a good mood today?\nPlease allow me to give you some advice.\nRather than become tense, and fire weapons at other people's ships\nsimply say, `Whoopdy Dee and Trolly Bazoo!'\nYou will feel much better and you will be much more popular.",
+      "voice": "pkunk-036.ogg",
+      "original_text_hash": 3829382570817947753
+    },
+    {
+      "id": "SPIRITUAL_PROBLEMS_4",
+      "index": 47,
+      "text": "You are what we Pkunk call the `spiritually disenfranchised'.\nI'm not sure why we call you that, because you don't seem disenfranchised to me\njust incredibly violent.\nAnyway, my empathic senses tell me that there is yet hope for you\nif only you would admit to your emotional depravity.",
+      "voice": "pkunk-037.ogg",
+      "original_text_hash": 12172354013472616415
+    },
+    {
+      "id": "HATE_YOU_FOREVER_1",
+      "index": 48,
+      "text": "Wait! Say nothing, loathsome creature of dark and unnatural vibrations\nlest you disturb my peaceful and loving state of mind.\nAh... but it is too late.  I must quickly destroy you\nso that I may return to my state of compassionate bliss.",
+      "voice": "pkunk-038.ogg",
+      "original_text_hash": 2812671048418145981
+    },
+    {
+      "id": "HATE_YOU_FOREVER_2",
+      "index": 49,
+      "text": "Cosmic Disturbance! Cosmic Disturbance!!\nIt is arising from something in the vicinity - some creature of unwholesome habits and loathsome nature.\nWait!  The trance of PLAM PRIKKY overcomes me and clarifies my vision.\nI open my eyes and turn my head...YES.  There it is before me.  The creature I sensed.\nNow I am exhausted and must rest.\nEnsign, destroy this creature's ship at once.\nI shall be in my chambers, recuperating.",
+      "voice": "pkunk-039.ogg",
+      "original_text_hash": 13614606317379010285
+    },
+    {
+      "id": "HATE_YOU_FOREVER_3",
+      "index": 50,
+      "text": "Yes. Yes. This is just as it was foretold.\nYou will now open fire on our peaceful, and all but harmless ship\nmissing us by 2.7 of your metric units.\nWe will then regrettably, but efficiently, destroy you and continue on our way.\nAh, but perhaps you are alarmed by our prescience.\nYes. Sometimes it amazes even us Pkunk.",
+      "voice": "pkunk-040.ogg",
+      "original_text_hash": 9228463770446028070
+    },
+    {
+      "id": "HATE_YOU_FOREVER_4",
+      "index": 51,
+      "text": "So it is you!\nOnce again your negative energy threatens to overwhelm my delicate senses.\nI reel.\nAlmost I am unable to press the button to activate my ship's armaments.\nThe pain, the agony!\nFor the sake of all that is good and lovely, I must reach the button\nmust reach it!...",
+      "voice": "pkunk-041.ogg",
+      "original_text_hash": 2747055730109164538
+    },
+    {
+      "id": "MIGRATING_SPACE_1",
+      "index": 52,
+      "text": "We have decided that our Yehat siblings are in need of our love and good counsel.\nWe have waited far too long to return home and heal the wound that has kept our race apart these many centuries.\nWhen we arrive in the Serpentis constellation, we will greet our Yehat brethren with warm hugs of affection\nwhich I am sure shall be returned in kind.",
+      "voice": "pkunk-042.ogg",
+      "original_text_hash": 6909277861783664856
+    },
+    {
+      "id": "MIGRATING_SPACE_2",
+      "index": 53,
+      "text": "Once more we have set out to return home -- home to our loving, but misguided brothers and sisters.\nPlease do not try to stop us this time.  We are firm in our resolve.",
+      "voice": "pkunk-043.ogg",
+      "original_text_hash": 6739816682943946441
+    },
+    {
+      "id": "MIGRATING_SPACE_3",
+      "index": 54,
+      "text": "We are dedicated to returning home to heal our dysfunctional species structure.\nWe understand that you mean well, but there is nothing you can do to dissuade us this time.",
+      "voice": "pkunk-044.ogg",
+      "original_text_hash": 2851421787443996104
+    },
+    {
+      "id": "MIGRATING_SPACE_4",
+      "index": 55,
+      "text": "We are dedicated to returning home to heal our dysfunctional species structure.\nWe understand that you mean well, but there is nothing you can do to dissuade us this time.",
+      "voice": "pkunk-045.ogg",
+      "original_text_hash": 2851421787443996104
+    },
+    {
+      "id": "MIGRATING_SPACE_5",
+      "index": 56,
+      "text": "We are dedicated to returning home to heal our dysfunctional species structure.\nWe understand that you mean well, but there is nothing you can do to dissuade us this time.",
+      "voice": "pkunk-046.ogg",
+      "original_text_hash": 2851421787443996104
+    },
+    {
+      "id": "MIGRATING_SPACE_6",
+      "index": 57,
+      "text": "We are dedicated to returning home to heal our dysfunctional species structure.\nWe understand that you mean well, but there is nothing you can do to dissuade us this time.",
+      "voice": "pkunk-047.ogg",
+      "original_text_hash": 2851421787443996104
+    },
+    {
+      "id": "MIGRATING_SPACE_7",
+      "index": 58,
+      "text": "We are dedicated to returning home to heal our dysfunctional species structure.\nWe understand that you mean well, but there is nothing you can do to dissuade us this time.",
+      "voice": "pkunk-048.ogg",
+      "original_text_hash": 2851421787443996104
+    },
+    {
+      "id": "MIGRATING_SPACE_8",
+      "index": 59,
+      "text": "We are dedicated to returning home to heal our dysfunctional species structure.\nWe understand that you mean well, but there is nothing you can do to dissuade us this time.",
+      "voice": "pkunk-049.ogg",
+      "original_text_hash": 2851421787443996104
+    },
+    {
+      "id": "die_idiot_fools",
+      "index": 60,
+      "text": "I have no patience for this absurd idiocy. Prepare yourselves for battle!",
+      "voice": null,
+      "original_text_hash": 1572850552829645651
+    },
+    {
+      "id": "VERY_WELL",
+      "index": 61,
+      "text": "So, you choose the dark path.\nI am saddened, and yet I feel a certain exhilaration, for with your destruction\nthe universe will be a better place, and it will be I who caused the change.",
+      "voice": "pkunk-050.ogg",
+      "original_text_hash": 10133411276269643182
+    },
+    {
+      "id": "why_insults",
+      "index": 62,
+      "text": "Just tell me one thing.  Why do you transmit insults during the course of a battle?",
+      "voice": null,
+      "original_text_hash": 1673241492784054014
+    },
+    {
+      "id": "RELEASE_TENSION",
+      "index": 63,
+      "text": "Unlike certain other species, we Pkunk are an inherently peaceful and loving people.\nCombat does not come easily to us.\nIn order to be at all effective, we find it necessary to whip ourselves into an emotional frenzy.",
+      "voice": "pkunk-051.ogg",
+      "original_text_hash": 7127574993214898606
+    },
+    {
+      "id": "what_about_you_angry",
+      "index": 64,
+      "text": "I require information regarding your species. Comply at once or be destroyed.",
+      "voice": null,
+      "original_text_hash": 7324868273214378974
+    },
+    {
+      "id": "ABOUT_US_ANGRY",
+      "index": 65,
+      "text": "Information about our species? How nice of you to ask.\nWell, first of all, our species doesn't go around demanding information from other species.\nDo you know why? Because it's not nice.\nIn fact, I don't think it's going too far to say really RATHER rude.",
+      "voice": "pkunk-052.ogg",
+      "original_text_hash": 10927369951361986616
+    },
+    {
+      "id": "what_about_you",
+      "index": 66,
+      "text": "Suddenly I find myself very curious about your species.",
+      "voice": null,
+      "original_text_hash": 412076835213169479
+    },
+    {
+      "id": "should_be_friends",
+      "index": 67,
+      "text": "You are right. Perhaps we should be friends after all. Please forgive my past actions.",
+      "voice": null,
+      "original_text_hash": 4302834337377991208
+    },
+    {
+      "id": "YES_FRIENDS",
+      "index": 68,
+      "text": "Forgive? We Pkunk are hardly in a position to forgive.\nWe ourselves are but spiritual wayfarers on the road to perfection.\nAdmittedly, we are approaching the end of the road, while you are still leaving the driveway\nbut we are all travellers together.",
+      "voice": "pkunk-053.ogg",
+      "original_text_hash": 18282710106218699822
+    },
+    {
+      "id": "try_to_be_nicer",
+      "index": 69,
+      "text": "Well, I feel pretty bad about killing you guys and stuff. I'll try not to blow up any more of your ships.",
+      "voice": null,
+      "original_text_hash": 12178072860732808128
+    },
+    {
+      "id": "CANT_ASK_FOR_MORE",
+      "index": 70,
+      "text": "That's all anyone can do... try. We absolve you of all your past wrong-doings.\nAnd please, do not thank us.\nWe have taken pity on you and helped you to change your inner self because we have chosen to heal ourselves\nand we are you and you are us, therefore we help only those who heal themselves, and are thereby helping others.\nYou see?",
+      "voice": "pkunk-054.ogg",
+      "original_text_hash": 12750224774937075097
+    },
+    {
+      "id": "VISIT_OUR_HOMEWORLD",
+      "index": 71,
+      "text": "If you wish our assistance, you should consult with our wise ones\nat our homeworld. Its coordinates are 52.2, 52.5.",
+      "voice": "pkunk-055.ogg",
+      "original_text_hash": 158805315681263859
+    },
+    {
+      "id": "CAN_BE_FRIENDS",
+      "index": 72,
+      "text": "Now that we've cleared the air and can completely trust each other\nwe'll just tell you where our home planet is located.\nIt is the first planet in the Gamma Krueger system, located at 52.2, 52.5 on the standard HyperSpace starmap.\nAh, now that feels so much better, doesn't it, friend?",
+      "voice": "pkunk-056.ogg",
+      "original_text_hash": 2700585299575569020
+    },
+    {
+      "id": "bye_angry",
+      "index": 73,
+      "text": "Hello! Is anybody in there? You are a sentient species aren't you? Oh forget it. I'm leaving.",
+      "voice": null,
+      "original_text_hash": 12494054817380598263
+    },
+    {
+      "id": "GOODBYE_ANGRY",
+      "index": 74,
+      "text": "Violent fool! Begone!\nMy feathers are ruffled! Away!",
+      "voice": "pkunk-057.ogg",
+      "original_text_hash": 14799824200830344084
+    },
+    {
+      "id": "we_conquer",
+      "index": 75,
+      "text": "Avast! Delinquent Alien Birds. You are now being conquered. Submit!",
+      "voice": null,
+      "original_text_hash": 8642226327284859200
+    },
+    {
+      "id": "WHY_CONQUER",
+      "index": 76,
+      "text": "Ah. Yes. Well. At least you are honest.\nUh, excuse me if I may be so bold, but exactly why do you want to conquer us?",
+      "voice": "pkunk-058.ogg",
+      "original_text_hash": 14267495862584558718
+    },
+    {
+      "id": "conquer_because_1",
+      "index": 77,
+      "text": "I conquer for the greater glory of the human race!",
+      "voice": null,
+      "original_text_hash": 556843845445697
+    },
+    {
+      "id": "NOT_CONQUER_1",
+      "index": 78,
+      "text": "Did you say the humans?\nWe Pkunk have long loved the humans!\nWhy they're our favorite, uh... non-feathered friends!",
+      "voice": "pkunk-059.ogg",
+      "original_text_hash": 1623928525709616104
+    },
+    {
+      "id": "conquer_because_2",
+      "index": 79,
+      "text": "It is regrettable, but your resources are needed to fight the war against the Ur-Quan",
+      "voice": null,
+      "original_text_hash": 12691279308197025052
+    },
+    {
+      "id": "NOT_CONQUER_2",
+      "index": 80,
+      "text": "It sounds like a good cause\nbut perhaps attacking a peaceful race is not the best way to begin a new, enlightened order.",
+      "voice": "pkunk-060.ogg",
+      "original_text_hash": 2463658135010719270
+    },
+    {
+      "id": "must_conquer",
+      "index": 81,
+      "text": "Enough! One more word and I will simply open fire. I have come here to conquer you and conquered you shall be.",
+      "voice": null,
+      "original_text_hash": 2479517604126331018
+    },
+    {
+      "id": "BAD_IDEA",
+      "index": 82,
+      "text": "You have chosen unwisely, Captain.",
+      "voice": "pkunk-061.ogg",
+      "original_text_hash": 11620311801962937998
+    },
+    {
+      "id": "no_conquest",
+      "index": 83,
+      "text": "Oh heck. Let's just forget it. I couldn't hurt you guys.",
+      "voice": null,
+      "original_text_hash": 6213955194733976903
+    },
+    {
+      "id": "GOOD_IDEA",
+      "index": 84,
+      "text": "When I first looked at you, Captain, I knew that you were an advanced soul.\nI turned to my first officer, Chrupp, and said\n`Chrupp, would you just look at that creature's aura! It's magnificent!'\n`the soft blues... the gentle greens... the unusual shades of chartreuse and ocher!'\n`This human must be on the side of Truth and Light, Chrupp, he must!'\nAnd then Chrupp said, `Just in case, I am raising the shields and warming up the guns.'\nI don't think Chrupp likes you, Captain.",
+      "voice": "pkunk-062.ogg",
+      "original_text_hash": 7535108516900336032
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 85,
+      "text": "Perhaps we should introduce ourselves. I am Captain",
+      "voice": null,
+      "original_text_hash": 4153663122593023589
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 86,
+      "text": "in command of the",
+      "voice": null,
+      "original_text_hash": 338367437855528751
+    },
+    {
+      "id": "we_are_vindicator2",
+      "index": 87,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "WHY_YOU_HERE",
+      "index": 88,
+      "text": "Yes, yes.  We know all that.\nWe are not known throughout the galactic sector as powerful psychics for nothing!\nOf course we already know the answer to this next question too, but we enjoy conversation.\nWhy have you come here?",
+      "voice": "pkunk-063.ogg",
+      "original_text_hash": 15523730926895860398
+    },
+    {
+      "id": "we_here_to_help",
+      "index": 89,
+      "text": "We have come to your homeworld to offer you aid and assistance.  This vessel and its crew are at your service.",
+      "voice": null,
+      "original_text_hash": 13260402485410797626
+    },
+    {
+      "id": "NEED_HELP",
+      "index": 90,
+      "text": "I am forming a psychic link with you.\nI sense that you refer to our conflict with the Ilwrath.\nI sense that you are offering to venture singlehandedly deep into Ilwrath space\nand do battle with their vast numbers\nand I can see that you give not even a thought to the danger you would be in.\nYou are noble indeed, and I accept your offer of aid, but in spirit alone.\nThe karmic burden of your gruesome death would be too great.\nStill, I say thank you, Captain.",
+      "voice": "pkunk-064.ogg",
+      "original_text_hash": 9947868565440648003
+    },
+    {
+      "id": "we_need_help",
+      "index": 91,
+      "text": "I have come to ask you for your help in the fight against the Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 18394541704403788405
+    },
+    {
+      "id": "GIVE_HELP",
+      "index": 92,
+      "text": "The fight.  Always the fight.  We Pkunk are Yin and you are Yang.\nI suppose the problem is that the Ur-Quan are a little more Yang than you are.\nWell, be that as it may, we are sympathetic to your concerns.\nWe were not always the mystical, aloof -- and yet caring -- enlightened beings that we are now.\nIf need be, we can still kick some serious butt!",
+      "voice": "pkunk-065.ogg",
+      "original_text_hash": 15371779296870025320
+    },
+    {
+      "id": "exploring_universe",
+      "index": 93,
+      "text": "We are on a five year mission, to seek out new life and new civilizations to boldly go where no.....well you get the idea.  We're kind of exploring.",
+      "voice": null,
+      "original_text_hash": 12069475378698364863
+    },
+    {
+      "id": "SENSE_DEEPER_CONFLICT",
+      "index": 94,
+      "text": "I sense a deeper reason, a deeper conflict.\nA conflict of immense proportion, a proportion of... deeper reason.\nA deeper thing that is... not too terribly deep.\nA conflicting deeper thing... uh, I'm not really sure what I sense.\nAre you sure there isn't something you want to say to me?",
+      "voice": "pkunk-066.ogg",
+      "original_text_hash": 12381946115433512908
+    },
+    {
+      "id": "fun_cruise",
+      "index": 95,
+      "text": "Oh ....uh, no reason.  We thought we'd just take this baby out for a little cruise and would you look at where we ended up.",
+      "voice": null,
+      "original_text_hash": 12578105241132494233
+    },
+    {
+      "id": "REPRESS",
+      "index": 96,
+      "text": "My telepathic sensors are telling me that you are repressing something.\nRepress, repress, repress.  What is it?  Come on.\nWhat is it?  I see a smile.\nYou're smiling.  Tell Pkunky the secret.\nCome on, nasty alien gonna tell Birdy Pkunky big secret?",
+      "voice": "pkunk-067.ogg",
+      "original_text_hash": 5007095644519143118
+    },
+    {
+      "id": "why_ilwrath_fight",
+      "index": 97,
+      "text": "This is just my impression, but they seem rather hostile. Why is that?",
+      "voice": null,
+      "original_text_hash": 8376760078959517935
+    },
+    {
+      "id": "ILWRATH_FIGHT_BECAUSE",
+      "index": 98,
+      "text": "We have delved most deeply into the dark and greasy heart of the Ilwrath.\nAnd what do you suppose we found there?\nWell, we found a torpid, vile, malign, odious, spiteful spirit.\nRight, no surprises there.\nWhat did surprise us though, was what we saw when we regressed into their past lives!\nIt turns out that in their last lives, the Ilwrath were all shining beings of pure light and blissful love.\nThey had reached the pinnacle of spiritual evolution and could go no further.\nThey were perfection.\nAnd then, somehow they got just a tiny bit better\nand WHAM, they were all of a sudden totally evil.\nWouldn't you know it, get too perfect and you wrap right around to evil.\nThat is why us Pkunk strive to be perfect\nbut always do little bad and annoying things to keep from ending up like the Ilwrath.",
+      "voice": "pkunk-068.ogg",
+      "original_text_hash": 12703901403847488493
+    },
+    {
+      "id": "when_fight_start",
+      "index": 99,
+      "text": "When was it that they started attacking you?",
+      "voice": null,
+      "original_text_hash": 14586629899965437323
+    },
+    {
+      "id": "FIGHT_START_WHEN",
+      "index": 100,
+      "text": "When? That's easy.\nIt was exactly 27 thousand rotations of the 7th planet in the house of Plarty Fum\nBEFORE the first alignment of the auspicious constellation of Bis Bis\nwith the heavenly body of Shamla Sool, which was really only a partial alignment.\nI guess you would say 8 years ago.",
+      "voice": "pkunk-069.ogg",
+      "original_text_hash": 14507474296471741640
+    },
+    {
+      "id": "how_goes_fight",
+      "index": 101,
+      "text": "How are you faring in the fight against them?",
+      "voice": null,
+      "original_text_hash": 11215503081137347631
+    },
+    {
+      "id": "FIGHT_GOES",
+      "index": 102,
+      "text": "We have calculated that at our present rate of attrition\nwe will exist only on the spiritual plane in a matter of a year or so.\nOf course, the physical realm does hold a certain coarse attraction\na material quaintness, if you will.\nWe will be somewhat disappointed to have to leave it.",
+      "voice": "pkunk-070.ogg",
+      "original_text_hash": 12835079571303746196
+    },
+    {
+      "id": "how_goes_war",
+      "index": 103,
+      "text": "I seem to be having a little trouble defeating the Ur-Quan Hierarchy. Do you have any helpful advice for me?",
+      "voice": null,
+      "original_text_hash": 4562532124196053177
+    },
+    {
+      "id": "WAR_GOES_1",
+      "index": 104,
+      "text": "Well, not advice exactly, but I can offer you plenty of moral support.\nAlso, I can tell you about another dream.  Yes, perhaps I will tell you about my dream.\nIn this dream there was a small creature, fragile and weak.\nAbove it loomed a much larger creature, dark and foreboding.\nThe large creature was preparing to take the smaller one into its slavering jaws\nwhen the little one looked up and said,\n`Hold!  Why do you do this!  What you are doing is wrong!'\nThis made the large creature pause, while it pondered the question.\nThen I woke up, and I'm not sure if the little creature got eaten or not.\nCome to think of it, it really wasn't much of a dream.\nI would have much preferred Awkky Birdy's dream.\nAnyway, just thought I would tell you about that.",
+      "voice": "pkunk-071.ogg",
+      "original_text_hash": 4199887839936744811
+    },
+    {
+      "id": "WAR_GOES_2",
+      "index": 105,
+      "text": "I can only tell you to contemplate the small gobbet stone.\nThe stone is spewed forth from the gullet of a Wart Wumpet to land in a moving stream.\nDoes a fish swallow the stone? Perhaps, but that is not the point.\nIs the stone round? Yes!\nDoes it have little disgusting nodules on it filled with slimy viscous fluid?\nOnly sometimes!\nWhat is the point?  The point is clear! Make friends with other species.\nEven the nasty Charg beast cannot defeat a pack of Ibids\nwithout the help of 7 or 8 Wrinkle Dogs.\nI think you see what I am getting at.",
+      "voice": "pkunk-072.ogg",
+      "original_text_hash": 12364166667727920248
+    },
+    {
+      "id": "WAR_GOES_3",
+      "index": 106,
+      "text": "Avoid being disincarnated before your soul is adequately prepared for the transformation.",
+      "voice": "pkunk-073.ogg",
+      "original_text_hash": 7235610806135836362
+    },
+    {
+      "id": "WAR_GOES_4",
+      "index": 107,
+      "text": "Seek the path of the trumble cart.\nHeavily laden, it rocks and weaves, but does it turn over?\nOnly occasionally. You see?\nAlso, one other bit of advice, Captain.\nFor mundane material concerns, seek the help of the one-eyed beings.\nThey may be found in supergiant stellar systems.",
+      "voice": "pkunk-074.ogg",
+      "original_text_hash": 4334744665296784890
+    },
+    {
+      "id": "how_stop_fight",
+      "index": 108,
+      "text": "Is there any way to stop the Ilwrath?",
+      "voice": null,
+      "original_text_hash": 13395266147902896686
+    },
+    {
+      "id": "STOP_FIGHT_LIKE_SO",
+      "index": 109,
+      "text": "Hmmm. An interesting question.  The answer would be..YES!\nIf some benign and loving, yet incredibly destructive and powerful force\nwere to simultaneously rip off all of their legs and drop their putrid egg sacs into steaming pools of molten metal\nthat would have the desired result of ending the conflict.\nAh...but I jest.  Of course I bear the Ilwrath no ill will\nhow could I, when I am filled only with love.",
+      "voice": "pkunk-075.ogg",
+      "original_text_hash": 3720406162213666315
+    },
+    {
+      "id": "enough_ilwrath",
+      "index": 110,
+      "text": "Let's talk about something else.",
+      "voice": null,
+      "original_text_hash": 14256351449031807846
+    },
+    {
+      "id": "OK_ENOUGH_ILWRATH",
+      "index": 111,
+      "text": "Yes, you're right.  Why dwell on the heinous Ilwrath\nwhen we could speak of flowers, rainbows, fairies, and crystal magic.\nDid you know, for example, that there is an invisible fairy spirit at this moment sitting on your head\nand making humorous faces at me?  Ah, the mysteries of the Universe.\nTry to understand 'em, but can you?\nNope, they're mysteries!",
+      "voice": "pkunk-076.ogg",
+      "original_text_hash": 2004473418245488533
+    },
+    {
+      "id": "what_about_history",
+      "index": 112,
+      "text": "What can you tell us of the history of the Pkunk?",
+      "voice": null,
+      "original_text_hash": 6529831244847587497
+    },
+    {
+      "id": "ABOUT_HISTORY",
+      "index": 113,
+      "text": "Ah. An intelligent question. But where to begin?\nSurely you know that we Pkunk were once one and the same species as the Yehat.\nYes, it's true. We were once brutal birds of prey, oblivious to the mysteries of crystal magic\nor the 7 dimensions of psychic beings.\nIt was not until Weeny Wikki Beeki Birdi sat on the mystical egg of Icelike Temperature\nand gave the Original Squawk\n`Rup-Rup-Rup-BGAK!'\nthat our transformation began.  It was the Squawk\n`Rup-Rup-Rup-BGAK!'\nthat triggered the Harmonic Oscillations that would lead us to become the enlightened avians that we are.",
+      "voice": "pkunk-077.ogg",
+      "original_text_hash": 1019553574279196178
+    },
+    {
+      "id": "what_about_yehat",
+      "index": 114,
+      "text": "What about the Yehat? Are you friendly with them?",
+      "voice": null,
+      "original_text_hash": 6099706901969519952
+    },
+    {
+      "id": "ABOUT_YEHAT",
+      "index": 115,
+      "text": "That depends on how you define friendly.\nWe love our Yehat brethren, whereas they open fire on our vessels on sight.\nFortunately, our psychic abilities allow us to sense the deep, abiding love\nand yes, even shyness in our Yehat brothers and sisters.\nHow we must have hurt them when we left so long ago.\nSoon though, it will be time for the loving reunion\nas our destiny is fulfilled and we are once again reunited as one people.",
+      "voice": "pkunk-078.ogg",
+      "original_text_hash": 4039203050876934824
+    },
+    {
+      "id": "what_about_culture",
+      "index": 116,
+      "text": "What interesting things can you tell us about your culture?",
+      "voice": null,
+      "original_text_hash": 3970336762471457229
+    },
+    {
+      "id": "ABOUT_CULTURE",
+      "index": 117,
+      "text": "Just off the top of my beak, I suppose I would say\nthat our culture could be defined as the ultimate unification\nor Oneness if you will\nof the extradimensional convergent-chakra being-energies\nto form a togetherness self\nwhich both is and is not a culmination of the now essence.",
+      "voice": "pkunk-079.ogg",
+      "original_text_hash": 14758029517487817496
+    },
+    {
+      "id": "elaborate_culture",
+      "index": 118,
+      "text": "Do you refer to the Now Essence as an extension of the Cosmic Whole, or as a subset of the totality of Oneness?",
+      "voice": null,
+      "original_text_hash": 15799145425479622715
+    },
+    {
+      "id": "OK_ELABORATE_CULTURE",
+      "index": 119,
+      "text": "An excellent question. The answer is in itself, an answer, containing the explanation you seek.\nAnd more!\nLet me say the revelation includes the mysteries of Pyramid Power\nwhich is merely a subset of the greater and more general Pointy Power.\nUFO's and FO's are significant, but their role should not be overplayed.\nI'm sorry, but I can be no more specific than that.",
+      "voice": "pkunk-080.ogg",
+      "original_text_hash": 13528576307800774152
+    },
+    {
+      "id": "what_about_future",
+      "index": 120,
+      "text": "Is it true that you can really see into the future?",
+      "voice": null,
+      "original_text_hash": 18269746142711399115
+    },
+    {
+      "id": "ABOUT_FUTURE",
+      "index": 121,
+      "text": "Yes it's... uh... wait... a vision comes upon me!\nA shining light -- a crack in the egg!\nA swirling vortex... a tunnel. I see my past lives! Your past lives!\nMore shining light! Ah, there it is now, the future!\nIt's coming in clearer. Yes. I see tears. Tears of joy!\nThey are coming from our Yehat brothers and sisters\nwho welcome us back to the nest, wings outstretched, beaks stuffed with grubs!\nSoon we shall return. Soon.",
+      "voice": "pkunk-081.ogg",
+      "original_text_hash": 11828644970307547092
+    },
+    {
+      "id": "enough_about_you",
+      "index": 122,
+      "text": "I'd love to hear more about your culture, but... the... uh... Oh, would you look at the time. Bye!",
+      "voice": null,
+      "original_text_hash": 16621750412681555450
+    },
+    {
+      "id": "OK_ENOUGH_ABOUT_US",
+      "index": 123,
+      "text": "Yes, you are right. I should be careful not to overwhelm you with my psychic intensities\nPerhaps we could talk something less overwhelming, albeit less interesting.",
+      "voice": "pkunk-082.ogg",
+      "original_text_hash": 6588753155039345236
+    },
+    {
+      "id": "ABOUT_US",
+      "index": 124,
+      "text": "Not at all, we are after all a fascinating species.\nOf course, modesty prevents me from talking at length\nalthough perhaps if you were to ask me specific questions, propriety might be better served.",
+      "voice": "pkunk-083.ogg",
+      "original_text_hash": 9840412472219979562
+    },
+    {
+      "id": "where_fleet_1",
+      "index": 125,
+      "text": "Where are all your ships?",
+      "voice": null,
+      "original_text_hash": 6603532962358076176
+    },
+    {
+      "id": "where_fleet_2",
+      "index": 126,
+      "text": "Your starfleet has left again, why?",
+      "voice": null,
+      "original_text_hash": 1592449643441198072
+    },
+    {
+      "id": "where_fleet_3",
+      "index": 127,
+      "text": "Please don't tell me your fleet has left again to go to the Yehat!",
+      "voice": null,
+      "original_text_hash": 17831070583131646747
+    },
+    {
+      "id": "MIGRATING_HOMEWORLD_1",
+      "index": 128,
+      "text": "The time has come, Captain, for our reunification with the Yehat.\nWe must proceed.",
+      "voice": "pkunk-084.ogg",
+      "original_text_hash": 838227494591753039
+    },
+    {
+      "id": "MIGRATING_HOMEWORLD_2",
+      "index": 129,
+      "text": "We have checked all our chakras and observed our auras.\nWe are prepared for the great melding of we Pkunk with our Yehat siblings.\nRejoice with us, Captain!",
+      "voice": "pkunk-085.ogg",
+      "original_text_hash": 1655872254223960877
+    },
+    {
+      "id": "MIGRATING_HOMEWORLD_3",
+      "index": 130,
+      "text": "Twice before we have been dissuaded from returning to our ancestral nest\nfrom joining our long-lost Yehat brothers and sisters.\nThis time we shall not fail.",
+      "voice": "pkunk-086.ogg",
+      "original_text_hash": 12711608630233758531
+    },
+    {
+      "id": "RETURNING_FROM_YEHAT_1",
+      "index": 131,
+      "text": "We have consulted with our inner chickadees, and must hurry home.\nFarewell, somewhat-enlightened mammal.",
+      "voice": "pkunk-087.ogg",
+      "original_text_hash": 8425316465676280392
+    },
+    {
+      "id": "RETURNING_FROM_YEHAT_2",
+      "index": 132,
+      "text": "We must make haste, Captain!\nTo the nest!  The nest!",
+      "voice": "pkunk-088.ogg",
+      "original_text_hash": 910727499570587757
+    },
+    {
+      "id": "am_worried_1",
+      "index": 133,
+      "text": "Frankly, Pkunk, I believe the Yehat will barbecue your peaceful crusaders. Recall them, please!",
+      "voice": null,
+      "original_text_hash": 6987685064981665521
+    },
+    {
+      "id": "am_worried_2",
+      "index": 134,
+      "text": "Um..., why don't you wait until next year?",
+      "voice": null,
+      "original_text_hash": 5784958928757710774
+    },
+    {
+      "id": "am_worried_3",
+      "index": 135,
+      "text": "Look. When your ships get to the Yehat, they will be slaughtered. Order them home.",
+      "voice": null,
+      "original_text_hash": 667281837569817425
+    },
+    {
+      "id": "DONT_WORRY_1",
+      "index": 136,
+      "text": "Your concern for our well-being touches us... makes us love you even more.\nCome here, Captain. Give us a hug.\nThere. Feel better?\nCan't you see now that we are right, and you are wrong?\nPlease don't worry. Everything will turn out all right.",
+      "voice": "pkunk-089.ogg",
+      "original_text_hash": 12143786128615629466
+    },
+    {
+      "id": "DONT_WORRY_2",
+      "index": 137,
+      "text": "Captain... young, immature, naive Captain. We know what we are doing.\nTrust us.",
+      "voice": "pkunk-090.ogg",
+      "original_text_hash": 13586988128493565264
+    },
+    {
+      "id": "DONT_WORRY_3",
+      "index": 138,
+      "text": "Perhaps you are right. Maybe this whole thing is a stupid mistake.\nI know what I should do! I should call up all our ships right now and...\nWait! What was that? What just flew past my window?\nWhy it was a sneegel bird! What would a sneegel bird be doing so far from its flock this time of year?\nI have never seen such a thing... it must be... AN OMEN!\nYes! An omen! Can't you see, Captain?!\nWe are the sneegel! We have been separated from our flock, from our Yehat family!\nOh joyous day! Oh happy BGAK! Our path is carved in holy stone!\nWe cannot be moved. Farewell Captain, farewell!",
+      "voice": "pkunk-091.ogg",
+      "original_text_hash": 7776716110500845734
+    },
+    {
+      "id": "form_alliance",
+      "index": 139,
+      "text": "We are friendly beings who seek to establish friendly relations with your species.",
+      "voice": null,
+      "original_text_hash": 2496861891296369939
+    },
+    {
+      "id": "GO_TO_HOMEWORLD",
+      "index": 140,
+      "text": "Although we Pkunk have no rank, no pecking order, no arbitrary scheme of dominance\nwe do recognize that some of the souls in this universe have lived many lives\nwhile others are but spiritual chickadees.\nI, Captain, have lived thirty-eight lives\na paltry number compared to those wise and ancient souls who guide our race.\nYou must consult them, Captain. They will help you to understand yourself\nand in doing so, understand others... who in turn may or may not understand other things.\nSeek those wise birds at our homeworld, at Gamma Krueger I. They have all the answers.",
+      "voice": "pkunk-092.ogg",
+      "original_text_hash": 1318553071167592562
+    },
+    {
+      "id": "can_you_help",
+      "index": 141,
+      "text": "We are dedicated to fighting the Ur-Quan Hierarchy. Can you help us?",
+      "voice": null,
+      "original_text_hash": 6920890416303797071
+    },
+    {
+      "id": "GO_TO_HOMEWORLD_AGAIN",
+      "index": 142,
+      "text": "See the wise ones at our homeworld, Captain.\nGo to Gamma Krueger for your answers.",
+      "voice": "pkunk-093.ogg",
+      "original_text_hash": 2813579240436442912
+    },
+    {
+      "id": "hostile_greeting",
+      "index": 143,
+      "text": "Hey! Bird-brains! Got any fruit loops? Har-har-har!",
+      "voice": null,
+      "original_text_hash": 13584191861844575046
+    },
+    {
+      "id": "DONT_BE_HOSTILE",
+      "index": 144,
+      "text": "Ah, an insult... a sometimes necessary and constructive release of tension.\nNow perhaps you feel better, and we can deal with your real problems.",
+      "voice": "pkunk-094.ogg",
+      "original_text_hash": 5743390417505978688
+    },
+    {
+      "id": "obey",
+      "index": 145,
+      "text": "You must obey my commands. Fulfill my every whim!",
+      "voice": null,
+      "original_text_hash": 671073782062182025
+    },
+    {
+      "id": "NO_OBEY",
+      "index": 146,
+      "text": "Though you are far too crude and stupid to realize this, Captain\nwe ARE fulfilling your every whim, your every desire.\nIt is just that you don't know what you really want. We do.\nWhy even now, your soul touches mine and I become aware that deep down inside\nyou wish us to punish you for your arrogance and bellicosity.",
+      "voice": "pkunk-095.ogg",
+      "original_text_hash": 3718010511034349275
+    },
+    {
+      "id": "neutral_bye_space",
+      "index": 147,
+      "text": "Duty calls. I must go now.",
+      "voice": null,
+      "original_text_hash": 14458956428599836522
+    },
+    {
+      "id": "NEUTRAL_GOODBYE_SPACE",
+      "index": 148,
+      "text": "Yes, by all means, if duty is calling. I'm sure we'll see each other again.\nPerhaps when the stars are aligned in an appropriate configuration.\nYes, my inner voice is telling me that is correct. When the stars align, Captain...",
+      "voice": "pkunk-096.ogg",
+      "original_text_hash": 1352467726458080838
+    },
+    {
+      "id": "SHIP_GIFT",
+      "index": 149,
+      "text": "Since you are our friends\nour good friends!\nwe want to give you a gift... several Pkunk Fury starships, fully crewed.\nIf you return in a year's time, perhaps we will be able to give you some more.",
+      "voice": "pkunk-097.ogg",
+      "original_text_hash": 8352672068113771962
+    },
+    {
+      "id": "NO_ROOM",
+      "index": 150,
+      "text": "Alas, you do not possess sufficient room in your fleet for all of the ships we wish to give you.\nAh, well. We shall have to do the best we can.",
+      "voice": "pkunk-098.ogg",
+      "original_text_hash": 12829595617644663833
+    },
+    {
+      "id": "friendly_bye_space",
+      "index": 151,
+      "text": "Adios Pkunkos.",
+      "voice": null,
+      "original_text_hash": 17089746020191559178
+    },
+    {
+      "id": "FRIENDLY_GOODBYE_SPACE",
+      "index": 152,
+      "text": "Goodbye Captain. When the crystal spheres once more rotate into harmonic union\nwe shall meet again.",
+      "voice": "pkunk-099.ogg",
+      "original_text_hash": 5964272508660727331
+    },
+    {
+      "id": "bye_friendly",
+      "index": 153,
+      "text": "Goodbye guys. See ya later.",
+      "voice": null,
+      "original_text_hash": 9851189989189759103
+    },
+    {
+      "id": "GOODBYE_FRIENDLY",
+      "index": 154,
+      "text": "Farewell kind human. Return soon.",
+      "voice": "pkunk-100.ogg",
+      "original_text_hash": 17958415817268360627
+    },
+    {
+      "id": "ALMOST_ALLIANCE",
+      "index": 155,
+      "text": "Let us unite and form an alliance!!\nWe will provide you with all of the crew, ships, and resources you desire.\nWe will give you.....wait!\nI sense that you are offended by our crass material offer.\nYes, I am ashamed.  Any war mongering species could offer this... we are Pkunk!...Children of the Stellar Breeze!\nWe shall give you what all others could not! The greatest of gifts!\nWe shall give you our love.\nAh, you are speechless.  Do not talk now.  I can feel the energy connecting us.\nLet us part while the silence remains. Farewell...",
+      "voice": "pkunk-101.ogg",
+      "original_text_hash": 2467156783225249435
+    },
+    {
+      "id": "INIT_NO_ROOM",
+      "index": 156,
+      "text": "But wait!  Before we go, we would give you a small token of our love,\n4 of our meager ships, fully crewed\nbut alas, you do not possess sufficient room in your fleet for all of the ships we wish to give you.\nAh, well. Such are the vagaries of life...",
+      "voice": "pkunk-102.ogg",
+      "original_text_hash": 1792524397209124702
+    },
+    {
+      "id": "INIT_SHIP_GIFT",
+      "index": 157,
+      "text": "But wait!  Before we go, as a small token of our love,\nnot as a material gift, mind you, we give you 4 of our meager ships, fully crewed.\nGood luck!",
+      "voice": "pkunk-103.ogg",
+      "original_text_hash": 9258617892981642443
+    },
+    {
+      "id": "suit_yourself",
+      "index": 158,
+      "text": "Suit yourself.",
+      "voice": null,
+      "original_text_hash": 13742782662152260033
+    },
+    {
+      "id": "GOODBYE_MIGRATION",
+      "index": 159,
+      "text": "And now we return to the golden path. Our Yehat brethren await.",
+      "voice": "pkunk-104.ogg",
+      "original_text_hash": 4854698618540191277
+    },
+    {
+      "id": "what_about_ilwrath",
+      "index": 160,
+      "text": "Would you mind if I asked you a few things about the Ilwrath?",
+      "voice": null,
+      "original_text_hash": 9127733255133816874
+    },
+    {
+      "id": "ABOUT_ILWRATH",
+      "index": 161,
+      "text": "Why should we mind? We bear the spidery creatures no ill will.\nWithout darkness there is no light. Without death there is no birth\nand thanks to the Ilwrath there's lots of birth.",
+      "voice": "pkunk-105.ogg",
+      "original_text_hash": 3399990220370301365
+    },
+    {
+      "id": "whats_up_space",
+      "index": 162,
+      "text": "What's news?",
+      "voice": null,
+      "original_text_hash": 6103781631857157613
+    },
+    {
+      "id": "SHIPS_AT_HOME",
+      "index": 163,
+      "text": "If there was such a thing as a coincidence I would say\n`What a coincidence that you should ask!'\nAs it is, everything is for a reason. Clearly you ask because you are meant to ask.\nJust as I am meant to tell you that there are several fine Pkunk ships\nwaiting for you at our homeworld.  Use them in good health, and with love.",
+      "voice": "pkunk-106.ogg",
+      "original_text_hash": 16158546009263870655
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_1",
+      "index": 164,
+      "text": "Ahh, vague omens and mysterious portents.  Tangled webs of fate\nintertwined with the branches of destiny, blown by the capricious winds of happenstance.\nNews, news....uh, actually there is some news!\nIt just so happens that it has come to our attention that Dogar and Kazon\nthe two gods of the Ilwrath, may actually be a hoax.\nWe don't know who this hoax would have been perpetrated by\nbut it seems someone has used these fictitious gods\nto send the Ilwrath down on us.",
+      "voice": "pkunk-107.ogg",
+      "original_text_hash": 2763899734403087362
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_2",
+      "index": 165,
+      "text": "Well, we are quite sure now that Dogar and Kazon are a hoax.\nAside from never having seen them on the 4th astral plane where most gods like to hang out\nwe also recently went back and listened carefully to a recording of one of their broadcasts\nwhich was sent to the Ilwrath on HyperWave channel 44.\nWe were able to detect some giggling at the end of the message.\nSomeone out there is playing some kind of joke on the Ilwrath. Or is it a joke on us?\nWe're not quite sure, but what with all the vaporized planets and total carnage\nit may be a while before we can look back and fully appreciate the humor.",
+      "voice": "pkunk-108.ogg",
+      "original_text_hash": 9305482808366180371
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_3",
+      "index": 166,
+      "text": "News? Here is news.  Did you know that the lovely clear spindle which we gave you\nis actually part of a larger device which has two other pieces?\nThe function and origin of this alien artifact are unknown to us\nbut we thought that the charming little spindle, on its own, made quite a handy paperweight\nnot to mention a catchy conversation starter. So clear and so pretty.\nWe hope you like it.",
+      "voice": "pkunk-109.ogg",
+      "original_text_hash": 8253653463604007079
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_4",
+      "index": 167,
+      "text": "I believe we may have mentioned that the clear spindle thing-a-ma-jig\nhas two other pieces that fit together with it.\nJust the other day one of our psychics, while in the Trance of Plam Prikky\ncried out the location of one of these curious alien widgy-whatsits.\nPerhaps you are interested.  Just before she fainted she said\n`A Sphere of Rosy Color, a Ball of Red\ngrasped by the greedy hands of a Foul Race deep in Persei. The sphere waits.\nIn a tiny voice it calls for its two mates.\n`Where are you, where are you, Clear Spindle Thing-a-ma-jig and other thing?'",
+      "voice": "pkunk-110.ogg",
+      "original_text_hash": 2932418514661793187
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_5",
+      "index": 168,
+      "text": "Back to the Clear Spindle business, we have had another telepathic revelation regarding this.\nThis time, an old and venerable Pkunk named Awkky Birdy has had a dream sent to him by his spirit guide, Bosco.\nIn the dream, Awkky Birdy is surrounded by a sea of young Pkunk Females\nwho all want nothing more than to mate with him, in a passionate ceremony of Blissful Yompin.\nAwkky Birdy is overcome.  He hesitates, and the females rush forward and swarm over him.\nUh...the Clear Spindle, yes I am coming to that.\nJust as he is about to pass out, Awkky Birdy sees a Clear Spindle, a red orb, and a blue twisty thing\nall spinning about each other above his head.\nIn a fit of ecstasy he screams out the word, `DRACONIS!!!!'\nand then the lights dim, and with a smile on his face Awkky Birdy sleeps.\nQuite a dream, eh?",
+      "voice": "pkunk-111.ogg",
+      "original_text_hash": 1503693210647813239
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_6",
+      "index": 169,
+      "text": "Yes.  We have good news!  Well, that is to say, we have no news.\nBut it is good news.\nHmmmmm. This is your expression, human Captain. We Pkunk do not pretend to understand it.",
+      "voice": "pkunk-112.ogg",
+      "original_text_hash": 12085915921233343256
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_7",
+      "index": 170,
+      "text": "I am afraid that our good, no-news is still the same.",
+      "voice": "pkunk-113.ogg",
+      "original_text_hash": 12622412294077398275
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_8",
+      "index": 171,
+      "text": "I am afraid that our good, no-news is still the same.",
+      "voice": "pkunk-114.ogg",
+      "original_text_hash": 12622412294077398275
+    },
+    {
+      "id": "tell_my_fortune",
+      "index": 172,
+      "text": "I've always wanted my fortune told.  Would you mind?",
+      "voice": null,
+      "original_text_hash": 8602365700716673561
+    },
+    {
+      "id": "FORTUNE_IS_1",
+      "index": 173,
+      "text": "Not at all. You are an open book to me.\nAhhh, how quaint your little life is. So refreshing.\nAnyway, I see in your future, that you will be jumping across the galaxy\nthrough dimensional doorways which are at your beck and call.\nThis ability you shall receive from a mysterious, and yet somehow I sense, lovable alien race\ncalled ArilouLaleelay, or LalilouArilay, or LoopylooHappyday, or something like that.\nAlso I sense that you will have 14 children, and die at an early age.",
+      "voice": "pkunk-115.ogg",
+      "original_text_hash": 6332780464466958360
+    },
+    {
+      "id": "FORTUNE_IS_2",
+      "index": 174,
+      "text": "Let me call upon the spirits of light.\nSpirits of Light! Hellooo!\nSpirits!! Ah yes, I feel them approaching. Spirits of Liiiight\nwhat is in store for this strange but not altogether unpleasing alien creature?....\nThe Spirits now speak through me - I gaze with a strange intensity\nOhhhhmmmm....\nYou will have a greaaat baaattllllle\nYou will almost be destroyyyyed\nbut because you made friends with a certain birdlike race\nthey will come to help you at the last minuuuute.\nAh, the trance is past.",
+      "voice": "pkunk-116.ogg",
+      "original_text_hash": 12911607190221213139
+    },
+    {
+      "id": "FORTUNE_IS_3",
+      "index": 175,
+      "text": "I gaze into all that will be.\nI follow the tiny thread that is you, Captain.\nI see shining rocks that sleep. They are annoyed.\nSomeone is making a great explosion of light. They awaken!\nThey are powerful. They face the one who disturbed them.\nCaptain, that one wears your face.",
+      "voice": "pkunk-117.ogg",
+      "original_text_hash": 13198446364297043991
+    },
+    {
+      "id": "FORTUNE_IS_4",
+      "index": 176,
+      "text": "Through the haze I see beautiful humanoid women\nwho have been driven from their home.\nI see a leg moving back and forth. I see their home planet.\nIt is ill, infected with a burning disease.\nI see you handing the fetching humanoid female a piece of fungus.\nShe is angry... but not at you Captain. You are smiling at the beautiful woman.\nShe is smiling back. I see you and the woman... oh... um\nI didn't know humans could do that!\nThe vision ends there.",
+      "voice": "pkunk-118.ogg",
+      "original_text_hash": 16844771851772573076
+    },
+    {
+      "id": "FORTUNE_IS_5",
+      "index": 177,
+      "text": "I'm afraid that the spirits haven't been particularly cooperative in the past few days.\nAs a matter of fact, our last successful contact with the world beyond\nwas when my cousin Braky channeled an angry 5000 year-old warrior named Rumdumdaddy.\nHe explained that the spirits have been so busy answering summonings\npushing around the little Ouija thingies and acting as guides to Astral travellers\nthat they haven't had a speck of time to themselves.\nThrough Braky's voice, Rumdumdaddy complained that we should all be more respectful of the dead\nand stop hassling them all the time, and just leave them alone.\nEver since then, we can't get squat out of the spirit world.",
+      "voice": "pkunk-119.ogg",
+      "original_text_hash": 18430126959073605680
+    },
+    {
+      "id": "FORTUNE_IS_6",
+      "index": 178,
+      "text": "Sorry, no can do. The spirits still refuse to answer our calls\nI think they're on strike or something.",
+      "voice": "pkunk-120.ogg",
+      "original_text_hash": 12076181007030514002
+    },
+    {
+      "id": "FORTUNE_IS_7",
+      "index": 179,
+      "text": "We have finally made contact with the `other side'\nand I'm unhappy to say that the terms we've negotiated with them\ndon't really allow for any more looking into your future.\nSorry.",
+      "voice": "pkunk-121.ogg",
+      "original_text_hash": 3262927838337277056
+    },
+    {
+      "id": "FORTUNE_IS_8",
+      "index": 180,
+      "text": "We have exhausted our capacity to foretell your future, Captain. Sorry.",
+      "voice": "pkunk-122.ogg",
+      "original_text_hash": 5383506697259544043
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 181,
+      "text": "Ah, a final parting with our favorite seeker of enlightenment... how sad.\nBut wait! This doesn't have to be the end!\nWe have established a conduit from the reams of our Harmonic Awareness directly to you!\nYou can use this channel to ask us questions about your past lives, or your future destiny!\nJust call 1-900-PKUNKRA\nThat's 1-900-PKUNKRA, 24 hours a day!\nOnly two bucks per minute.\n(children under 18 must have parental permission before calling.)",
+      "voice": "pkunk-124.ogg",
+      "original_text_hash": 17016518192102984097
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["pkunk", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["pkunk", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

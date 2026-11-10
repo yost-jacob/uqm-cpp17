@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <limits>
 #include <utility>
-namespace uqm::design::conversation {
+namespace uqm::dialogue {
 namespace {
 enum class QueryVerb {
     FleetContains,
@@ -47,7 +47,8 @@ enum class ActionVerb {
     RememberDate,
     PrepareReport,
     SetOutcome,
-    RandomDraw
+    RandomDraw,
+    LegacyTurn
 };
 struct Spec {
     const char *name;
@@ -84,7 +85,8 @@ const std::vector<Spec> actions = {{"fleet.give", 1, 3},
                                    {"calendar.remember", 1, 1},
                                    {"handlers.prepare_report", 2, 2},
                                    {"encounter.set_outcome", 1, 1},
-                                   {"random.draw", 1, 1}};
+                                   {"random.draw", 1, 1},
+                                   {"handlers.legacy_turn", 2, 2}};
 std::size_t find(const std::vector<Spec> &specs, const std::string &name) {
     for (std::size_t i = 0; i < specs.size(); ++i)
         if (name == specs[i].name)
@@ -624,6 +626,9 @@ Action VerbFactory::action(const Json &definition) const {
     case ActionVerb::SetOutcome:
         fn = [](State &s, const Json &a) { return s.setOutcome(text(a[0])); };
         break;
+    case ActionVerb::LegacyTurn:
+        fn = [](State &s, const Json &a) { return Handlers::legacyTurn(s, text(a[0]), a[1]); };
+        break;
     case ActionVerb::RandomDraw:
         fn = [](State &s, const Json &a) {
             return Result{"ok", {{"value", s.randomBelow(positive(a[0]))}}};
@@ -634,4 +639,4 @@ Action VerbFactory::action(const Json &definition) const {
     }
     return std::bind(&VerbFactory::invokeAction, fn, std::ref(state_), std::move(args));
 }
-} // namespace uqm::design::conversation
+} // namespace uqm::dialogue

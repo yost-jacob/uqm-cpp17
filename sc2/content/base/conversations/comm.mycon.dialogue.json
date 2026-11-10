@@ -1,0 +1,900 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "mycon",
+  "resource": "comm.mycon.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "TELL_US_ABOUT_WORLD",
+      "index": 0,
+      "text": "Your suggestion is appropriate.\nAcceptable new worlds are a priority for the rapid and complete spread of Juffo-Wup.\nWe wish to know more for our suitability assessment.\nTell us of this world.",
+      "voice": "mycon-000.ogg",
+      "original_text_hash": 7991388610420952838
+    },
+    {
+      "id": "BYE_AND_DIE_HOMEWORLD",
+      "index": 1,
+      "text": "You impede the flow of Juffo-Wup through the Universe.\nWe will now remove this clog.\nWe will now aid Juffo-Wup by eliminating you!",
+      "voice": "mycon-001.ogg",
+      "original_text_hash": 16686065030885705814
+    },
+    {
+      "id": "RAMBLE_1",
+      "index": 2,
+      "text": "A single spore lands, finds nourishment in decay and soon attains maturity..\nIn turn it exhales a cloud of new life, a thousand spores, each lands, finds nourishment in decay\nso progresses Juffo-Wup.",
+      "voice": "mycon-002.ogg",
+      "original_text_hash": 17101914656050364758
+    },
+    {
+      "id": "RAMBLE_2",
+      "index": 3,
+      "text": "Our bodies seethe with the passion of our genes.\nA thousand of your species do not possess the richness in one of my cells.",
+      "voice": "mycon-003.ogg",
+      "original_text_hash": 9320380762562425322
+    },
+    {
+      "id": "RAMBLE_3",
+      "index": 4,
+      "text": "I fill with my parents' parents' parents' parents' parents\nI am they -- and they are us. Then, and now.",
+      "voice": "mycon-004.ogg",
+      "original_text_hash": 18293032259583724474
+    },
+    {
+      "id": "RAMBLE_4",
+      "index": 5,
+      "text": "The Deep Children are part of Juffo-Wup -- home builders.\nThe dwellers in the Mohorovichic.",
+      "voice": "mycon-005.ogg",
+      "original_text_hash": 4135788851480737630
+    },
+    {
+      "id": "RAMBLE_5",
+      "index": 6,
+      "text": "I am Dugee\nI am the purity monitor\nI choose what buds are permitted to mature\nand which must be eradicated.\nI died of general misfunction 57,283 years ago.",
+      "voice": "mycon-006.ogg",
+      "original_text_hash": 4724196920426408693
+    },
+    {
+      "id": "RAMBLE_6",
+      "index": 7,
+      "text": "A cold rock, spinning silently in the Void, a womb for the Children.",
+      "voice": "mycon-007.ogg",
+      "original_text_hash": 1231279108149686068
+    },
+    {
+      "id": "RAMBLE_7",
+      "index": 8,
+      "text": "Pulsing hot liquid flows through my outstretched tendrils, sending thrills into my interior.\nThe moment has come. I swell and burst.\nAbove me a cloud of whispering life whirls through the air.\nI am content.",
+      "voice": "mycon-008.ogg",
+      "original_text_hash": 900704955248218212
+    },
+    {
+      "id": "RAMBLE_8",
+      "index": 9,
+      "text": "The Juffo-Wup is strong in this place.",
+      "voice": "mycon-009.ogg",
+      "original_text_hash": 9365872146218454364
+    },
+    {
+      "id": "RAMBLE_9",
+      "index": 10,
+      "text": "Your simple sexual process produces random mosaics of genetic instructions\nyet with the simplicity of breath, I modify my own patterns.\nYou humans improve a tool and double your capabilities.\nWe Mycon improve ourselves and increase a thousand-fold.",
+      "voice": "mycon-010.ogg",
+      "original_text_hash": 13627985890564409075
+    },
+    {
+      "id": "RAMBLE_10",
+      "index": 11,
+      "text": "The Deep Children!\nSpears of light in the darkness! \nTheir discarded husks speak of joy to come.",
+      "voice": "mycon-011.ogg",
+      "original_text_hash": 4435676399941572180
+    },
+    {
+      "id": "RAMBLE_11",
+      "index": 12,
+      "text": "I have chosen my offsprings' memories carefully from my set of remembrances\nthe sweet and warm times of my existence and those of my parents' parents' parents\nthe bits of a million lifetimes coalesced into a birth gift of complete awareness.",
+      "voice": "mycon-012.ogg",
+      "original_text_hash": 4680804561189366256
+    },
+    {
+      "id": "RAMBLE_12",
+      "index": 13,
+      "text": "In the dark they grow, the deep fire feeds the Children.\nTheir birth breathes warmth across a cold world.",
+      "voice": "mycon-013.ogg",
+      "original_text_hash": 9678426714250836068
+    },
+    {
+      "id": "RAMBLE_13",
+      "index": 14,
+      "text": "`...the system requires more energy. A convenient source lies beneath the crust...'",
+      "voice": "mycon-014.ogg",
+      "original_text_hash": 13788678483380046264
+    },
+    {
+      "id": "RAMBLE_14",
+      "index": 15,
+      "text": "We look to Juffo-Wup for direction, and it provides the pattern\nendless expansion with purity of achievement and intolerance of error.",
+      "voice": "mycon-015.ogg",
+      "original_text_hash": 11028195705704111295
+    },
+    {
+      "id": "RAMBLE_15",
+      "index": 16,
+      "text": "I am Shloosh\nI was incinerated fourteen thousand Earth years ago\nI live now, for but a moment\nand then, I am gone.",
+      "voice": "mycon-016.ogg",
+      "original_text_hash": 15979927192719061849
+    },
+    {
+      "id": "RAMBLE_16",
+      "index": 17,
+      "text": "`...incorporation of dense amphibole fibers ensure survival in environmental extremes...'",
+      "voice": "mycon-017.ogg",
+      "original_text_hash": 14719194522847328147
+    },
+    {
+      "id": "RAMBLE_17",
+      "index": 18,
+      "text": "I yearn for magma\nthe flowing warm basalts\nthe red glow of the lava pools.",
+      "voice": "mycon-018.ogg",
+      "original_text_hash": 2291118767588310319
+    },
+    {
+      "id": "RAMBLE_18",
+      "index": 19,
+      "text": "When we encounter the Non, we must absorb the Non or reject the Non so that it is no longer Non.",
+      "voice": "mycon-019.ogg",
+      "original_text_hash": 10951316710440585799
+    },
+    {
+      "id": "RAMBLE_19",
+      "index": 20,
+      "text": "`...entry of noise into the signal is unavoidable. We must include a filtering mechanism...'",
+      "voice": "mycon-020.ogg",
+      "original_text_hash": 13373338327840123315
+    },
+    {
+      "id": "RAMBLE_20",
+      "index": 21,
+      "text": "Cessation of an individual is unavoidable\na consequence of existence\nyet with the birth of life, individuality is transferred in part\nand may occasionally gain dominance for an interval\nachieving a kind of shared immortality.",
+      "voice": "mycon-021.ogg",
+      "original_text_hash": 6356062537857867583
+    },
+    {
+      "id": "RAMBLE_21",
+      "index": 22,
+      "text": "`...Survival is a priority. Expansion is a priority. Processing is a priority...'",
+      "voice": "mycon-022.ogg",
+      "original_text_hash": 14512279102726093549
+    },
+    {
+      "id": "RAMBLE_22",
+      "index": 23,
+      "text": "Juffo-Wup acknowledges the existence of un-Voidable Non\nwhen we are faced with such, we join, absorb and wait for our opportunity\nto learn the weakness that will allow us to Void the Non.",
+      "voice": "mycon-023.ogg",
+      "original_text_hash": 15726792128993819491
+    },
+    {
+      "id": "RAMBLE_23",
+      "index": 24,
+      "text": "At times, I meet another, who shares with me the life of a parent inside the mind\nand if we speak this fragment becomes predominant in the both of us\nand self meets self with occasionally enlightening results.",
+      "voice": "mycon-024.ogg",
+      "original_text_hash": 13774408680042759268
+    },
+    {
+      "id": "RAMBLE_24",
+      "index": 25,
+      "text": "The Podships thrum with the plasma containment field\nwhose offspring seek to transform the Non to Void\nthe fields grow tighter, and tighter\nthe bass rumble of the generators rises gradually to a high burning scream\nsudden silence and a flash of light announce release\nthe hot pulsing subsides slowly.",
+      "voice": "mycon-025.ogg",
+      "original_text_hash": 16992185950922962984
+    },
+    {
+      "id": "RAMBLE_25",
+      "index": 26,
+      "text": "The Deep Children fall from the Void, gathering speed for the penetration\nThe tough casing warms as it passes through the atmosphere, glowing white as it hits the surface\nsolid rock flows like liquid, and the child slips into the warm, safe depths beneath the crust.",
+      "voice": "mycon-026.ogg",
+      "original_text_hash": 10695628126158194239
+    },
+    {
+      "id": "RAMBLE_26",
+      "index": 27,
+      "text": "`...look... think... act... look... learn... remember... teach... repeat...'",
+      "voice": "mycon-027.ogg",
+      "original_text_hash": 3225316379387217215
+    },
+    {
+      "id": "RAMBLE_27",
+      "index": 28,
+      "text": "The implantation fleet has assembled in orbit above the green world\nthe patterns of weakness reveal the point of introduction.\nThe Child is prepared for its birthing trip.\nRelease!",
+      "voice": "mycon-028.ogg",
+      "original_text_hash": 17033017687166451356
+    },
+    {
+      "id": "RAMBLE_28",
+      "index": 29,
+      "text": "I am Gussh\nI attend the birthing nodes\nI died 343 Earth years ago\nI do not know how.",
+      "voice": "mycon-029.ogg",
+      "original_text_hash": 13528684560824686894
+    },
+    {
+      "id": "RAMBLE_29",
+      "index": 30,
+      "text": "When Juffo-Wup is complete\nwhen at last there is no Void, no Non\nwhen the Creators return\nthen we can finally rest.",
+      "voice": "mycon-030.ogg",
+      "original_text_hash": 1943539618949573879
+    },
+    {
+      "id": "RAMBLE_30",
+      "index": 31,
+      "text": "Darkness is Void\nJuffo-Wup is light.",
+      "voice": "mycon-031.ogg",
+      "original_text_hash": 1784001663267477267
+    },
+    {
+      "id": "RAMBLE_31",
+      "index": 32,
+      "text": "`... planetary transformer biot 94-18: take your place at the transporter dais...'",
+      "voice": "mycon-032.ogg",
+      "original_text_hash": 4098796696108674766
+    },
+    {
+      "id": "RAMBLE_32",
+      "index": 33,
+      "text": "You are the Non. You must go now, and never return.",
+      "voice": "mycon-033.ogg",
+      "original_text_hash": 10994754447889471469
+    },
+    {
+      "id": "question_1",
+      "index": 34,
+      "text": "What can you tell me about your species?",
+      "voice": null,
+      "original_text_hash": 2252048262868042230
+    },
+    {
+      "id": "question_2",
+      "index": 35,
+      "text": "Well then, what can you tell us of your history?",
+      "voice": null,
+      "original_text_hash": 12574167205238394739
+    },
+    {
+      "id": "question_3",
+      "index": 36,
+      "text": "Why are you unwilling to address my questions?",
+      "voice": null,
+      "original_text_hash": 16377048759949271054
+    },
+    {
+      "id": "question_4",
+      "index": 37,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_5",
+      "index": 38,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_6",
+      "index": 39,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_7",
+      "index": 40,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_8",
+      "index": 41,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_9",
+      "index": 42,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_10",
+      "index": 43,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_11",
+      "index": 44,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_12",
+      "index": 45,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_13",
+      "index": 46,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_14",
+      "index": 47,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_15",
+      "index": 48,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_16",
+      "index": 49,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "bye_space",
+      "index": 50,
+      "text": "Don't trouble yourself. I'll see myself out.",
+      "voice": null,
+      "original_text_hash": 3285281165266195672
+    },
+    {
+      "id": "BYE_AND_DIE_SPACE",
+      "index": 51,
+      "text": "Juffo-Wup fills in my fibers and I grow turgid. Violent action ensues.",
+      "voice": "mycon-034.ogg",
+      "original_text_hash": 5975744725000276364
+    },
+    {
+      "id": "gonna_die",
+      "index": 52,
+      "text": "Time to die.",
+      "voice": null,
+      "original_text_hash": 7329521521547695307
+    },
+    {
+      "id": "insult_1",
+      "index": 53,
+      "text": "I wonder how you would taste, fried in butter?",
+      "voice": null,
+      "original_text_hash": 2923894323096897326
+    },
+    {
+      "id": "insult_2",
+      "index": 54,
+      "text": "You know, I probably have some of your relatives between my toes!",
+      "voice": null,
+      "original_text_hash": 9139991257010232332
+    },
+    {
+      "id": "insult_3",
+      "index": 55,
+      "text": "Is that a rock you're sitting on, or do you just have a big butt?",
+      "voice": null,
+      "original_text_hash": 13083333365689284106
+    },
+    {
+      "id": "insult_4",
+      "index": 56,
+      "text": "I don't suppose there's a chance that you'll actually respond to what I am saying, is there?",
+      "voice": null,
+      "original_text_hash": 12935155372155228447
+    },
+    {
+      "id": "insult_5",
+      "index": 57,
+      "text": "I can't believe I'm trying to have a conversation with a hot fungus.",
+      "voice": null,
+      "original_text_hash": 17786174462843164198
+    },
+    {
+      "id": "insult_6",
+      "index": 58,
+      "text": "Stop wiggling those... those... whatever they are!",
+      "voice": null,
+      "original_text_hash": 2228057919615289708
+    },
+    {
+      "id": "insult_7",
+      "index": 59,
+      "text": "Where's the Absorbine Junior when you need it?",
+      "voice": null,
+      "original_text_hash": 15814322168095585082
+    },
+    {
+      "id": "insult_8",
+      "index": 60,
+      "text": "Helloo? Ugly! Can you hear me?",
+      "voice": null,
+      "original_text_hash": 6648047725064935193
+    },
+    {
+      "id": "come_in_peace",
+      "index": 61,
+      "text": "Mycon. Please try to understand. We wish peace between our peoples.",
+      "voice": null,
+      "original_text_hash": 17273442387028463376
+    },
+    {
+      "id": "HELLO_HOMEWORLD_1",
+      "index": 62,
+      "text": "Juffo-Wup is All... omni-existent, spreading and changing the Non into Juffo-Wup.\nYou are Non, who must become Juffo-Wup or Void.\nWe are the agents of Juffo-Wup.\nWe are the Mycon.",
+      "voice": "mycon-035.ogg",
+      "original_text_hash": 4103196878224758709
+    },
+    {
+      "id": "HELLO_HOMEWORLD_2",
+      "index": 63,
+      "text": "We are the Mycon.",
+      "voice": "mycon-036.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_3",
+      "index": 64,
+      "text": "We are the Mycon.",
+      "voice": "mycon-037.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_4",
+      "index": 65,
+      "text": "We are the Mycon.",
+      "voice": "mycon-038.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_5",
+      "index": 66,
+      "text": "We are the Mycon.",
+      "voice": "mycon-039.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_6",
+      "index": 67,
+      "text": "We are the Mycon.",
+      "voice": "mycon-040.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_7",
+      "index": 68,
+      "text": "We are the Mycon.",
+      "voice": "mycon-041.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_8",
+      "index": 69,
+      "text": "We are the Mycon.",
+      "voice": "mycon-042.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_1",
+      "index": 70,
+      "text": "We are part of Juffo-Wup.\nJuffo-Wup is the hot light in the darkness.\nAll else is unfulfilled Void.\nThe source of Juffo-Wup is at 629.1, 220.8.\nWe are the Mycon.",
+      "voice": "mycon-043.ogg",
+      "original_text_hash": 905178738910664260
+    },
+    {
+      "id": "HELLO_SPACE_2",
+      "index": 71,
+      "text": "We are the Mycon.",
+      "voice": "mycon-044.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_3",
+      "index": 72,
+      "text": "We are the Mycon.",
+      "voice": "mycon-045.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_4",
+      "index": 73,
+      "text": "We are the Mycon.",
+      "voice": "mycon-046.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_5",
+      "index": 74,
+      "text": "We are the Mycon.",
+      "voice": "mycon-047.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_6",
+      "index": 75,
+      "text": "We are the Mycon.",
+      "voice": "mycon-048.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_7",
+      "index": 76,
+      "text": "We are the Mycon.",
+      "voice": "mycon-049.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_8",
+      "index": 77,
+      "text": "We are the Mycon.",
+      "voice": "mycon-050.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "lets_be_friends",
+      "index": 78,
+      "text": "Let's be friends.",
+      "voice": null,
+      "original_text_hash": 5061594325911537466
+    },
+    {
+      "id": "came_to_homeworld",
+      "index": 79,
+      "text": "We have come to your homeworld to seek a truce.",
+      "voice": null,
+      "original_text_hash": 1271311682284574319
+    },
+    {
+      "id": "submit_to_us",
+      "index": 80,
+      "text": "Heinous fungus! Submit to our will!",
+      "voice": null,
+      "original_text_hash": 9420528638911696427
+    },
+    {
+      "id": "bye_sun_device",
+      "index": 81,
+      "text": "We'll just be going now.",
+      "voice": null,
+      "original_text_hash": 5002625005893152655
+    },
+    {
+      "id": "GOODBYE_SUN_DEVICE",
+      "index": 82,
+      "text": "Begone from our special place.",
+      "voice": "mycon-051.ogg",
+      "original_text_hash": 5385509540828615887
+    },
+    {
+      "id": "RESPONSE_1",
+      "index": 83,
+      "text": "This is good.",
+      "voice": "mycon-052.ogg",
+      "original_text_hash": 7917500191479170210
+    },
+    {
+      "id": "RESPONSE_2",
+      "index": 84,
+      "text": "This is good.",
+      "voice": "mycon-053.ogg",
+      "original_text_hash": 7917500191479170210
+    },
+    {
+      "id": "RESPONSE_3",
+      "index": 85,
+      "text": "This is good.",
+      "voice": "mycon-054.ogg",
+      "original_text_hash": 7917500191479170210
+    },
+    {
+      "id": "clue_1",
+      "index": 86,
+      "text": "Its air is pure and sweet.",
+      "voice": null,
+      "original_text_hash": 1227712301410936172
+    },
+    {
+      "id": "clue_2",
+      "index": 87,
+      "text": "Abundant life covers its surface.",
+      "voice": null,
+      "original_text_hash": 4120620282862246583
+    },
+    {
+      "id": "clue_3",
+      "index": 88,
+      "text": "The sun gently warms the surface.",
+      "voice": null,
+      "original_text_hash": 18121742092940025253
+    },
+    {
+      "id": "what_about_shattered",
+      "index": 89,
+      "text": "Why are the Shattered Worlds found only in your region of space?",
+      "voice": null,
+      "original_text_hash": 5136077000006556765
+    },
+    {
+      "id": "ABOUT_SHATTERED",
+      "index": 90,
+      "text": "These are the homes of the Deep Children.",
+      "voice": "mycon-055.ogg",
+      "original_text_hash": 17054699889846637214
+    },
+    {
+      "id": "HELLO_SUN_DEVICE_WORLD_1",
+      "index": 91,
+      "text": "This is a special place\nfilled with Juffo-Wup.\nBut it is not the source.\nJuffo-Wup springs forth from 629.1, 220.8.\nWe must not allow this place to be soiled by the Non.\nYou must go. Now.",
+      "voice": "mycon-056.ogg",
+      "original_text_hash": 3312411681038514809
+    },
+    {
+      "id": "HELLO_SUN_DEVICE_WORLD_2",
+      "index": 92,
+      "text": "You have returned to our special place.\nThis is not permissible.\nLeave.",
+      "voice": "mycon-057.ogg",
+      "original_text_hash": 186156947208489273
+    },
+    {
+      "id": "whats_up_sun_device",
+      "index": 93,
+      "text": "What makes this world so special to you?",
+      "voice": null,
+      "original_text_hash": 13324903788675816902
+    },
+    {
+      "id": "GENERAL_INFO_SUN_DEVICE",
+      "index": 94,
+      "text": "Juffo-Wup is the power of life... hot warmth in the cold Void. \nIt flows through all things, binding them together, making them one.\nYou are Non-Juffo-Wup, you cannot understand.\nBelow is the pod of Juffo-Wup -- there for a thousand centuries.\nWhen we are cold, the pod opens and warms us.\nWhen it is dark, the pod clenches and lo, there is light.\nYou are the Non. The pod is not for you. You must leave.",
+      "voice": "mycon-058.ogg",
+      "original_text_hash": 7842377036480118536
+    },
+    {
+      "id": "like_to_land",
+      "index": 95,
+      "text": "I have business on this world.  Move aside.",
+      "voice": null,
+      "original_text_hash": 11531770024170394604
+    },
+    {
+      "id": "NEVER_LET_LAND",
+      "index": 96,
+      "text": "Juffo-Wup flows through Time and Space. It cannot be stopped by mere energy blasts.\nHowever, you are Non -- not part of Juffo-Wup.\nYou CAN be destroyed by energy blasts.\nLet us demonstrate.",
+      "voice": "mycon-059.ogg",
+      "original_text_hash": 3381907298168537209
+    },
+    {
+      "id": "bye_homeworld",
+      "index": 97,
+      "text": "Goodbye fungus-boys!",
+      "voice": null,
+      "original_text_hash": 16857307676813836001
+    },
+    {
+      "id": "i_have_a_cunning_plan",
+      "index": 98,
+      "text": "There is a world at the star Organon. I believe it is perfect for your Deep Children.",
+      "voice": null,
+      "original_text_hash": 16013866890367369862
+    },
+    {
+      "id": "DIE_LIAR",
+      "index": 99,
+      "text": "You are an obstruction to Juffo-Wup.\nYou must be removed.",
+      "voice": "mycon-060.ogg",
+      "original_text_hash": 5984450765858483930
+    },
+    {
+      "id": "how_goes_implanting",
+      "index": 100,
+      "text": "Have you visited the planet I told you about?",
+      "voice": null,
+      "original_text_hash": 9049723819823852202
+    },
+    {
+      "id": "UNFORSEEN_DELAYS",
+      "index": 101,
+      "text": "We have experienced unforeseen delays implanting Deep Children beneath the crust of Organon 1.\nHowever, Juffo-Wup is inevitable.  The Deep Children WILL be born.",
+      "voice": "mycon-061.ogg",
+      "original_text_hash": 8027493569844914622
+    },
+    {
+      "id": "DIE_THIEF",
+      "index": 102,
+      "text": "You have taken something from us which we value\nsomething which is important to Juffo-Wup.\nWe require the Solar Manipulator.\nWe will take it back from you now!",
+      "voice": "mycon-062.ogg",
+      "original_text_hash": 16868237556258907938
+    },
+    {
+      "id": "DIE_THIEF_AGAIN",
+      "index": 103,
+      "text": "You have taken something from us which we value... which is important to Juffo-Wup.\nReturn the Solar Manipulator immediately.",
+      "voice": "mycon-063.ogg",
+      "original_text_hash": 2789128342167217720
+    },
+    {
+      "id": "GOODBYE_AND_DIE",
+      "index": 104,
+      "text": "Juffo-Wup is All\nbut you are not a part of Juffo-Wup\ntherefore you must cease existence.\nWe shall make you cease to exist, for Juffo-Wup.",
+      "voice": "mycon-064.ogg",
+      "original_text_hash": 11414623119296493393
+    },
+    {
+      "id": "AMBUSH_TAIL",
+      "index": 105,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "RAMBLE_TAIL",
+      "index": 106,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "WE_GO_TO_IMPLANT",
+      "index": 107,
+      "text": "If your words are true, we will gladly spread Juffo-Wup to a new world!\nWe will assemble the Birthing Fleet and send them to this planet.\nWe will send many ships to protect the Children as they grow.\nYou have been of service to us.\nYour insight into the ineffable Juffo-Wup is encouraging.\nPerhaps, if we were to plant spore sacs in your brain organ\nand let its tendrils spread through your flesh\nthen you would truly understand Juffo-Wup... become part of Juffo-Wup.\nYou WOULD be happier and more fulfilled.  Consider our offer.",
+      "voice": "mycon-065.ogg",
+      "original_text_hash": 17261573256258251725
+    },
+    {
+      "id": "WONT_FALL_FOR_TRICK",
+      "index": 108,
+      "text": "We do not interpret the will of Juffo-Wup.\nOnly the source is so empowered.\nUntil instructed otherwise, Juffo-Wup requires that we remain here.",
+      "voice": "mycon-066.ogg",
+      "original_text_hash": 14916200612461996960
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["mycon", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["mycon", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

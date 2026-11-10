@@ -1,0 +1,928 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "talkpet",
+  "resource": "comm.talkingpet.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "HELLO_AT_UMGAH",
+      "index": 0,
+      "text": "What do you want?",
+      "voice": "talkingpet-000.ogg",
+      "original_text_hash": 3580943424848817072
+    },
+    {
+      "id": "what_are_you",
+      "index": 1,
+      "text": "I thought this was the Umgah homeworld. Who are you?",
+      "voice": null,
+      "original_text_hash": 13389540742549875526
+    },
+    {
+      "id": "JUST_TALKING_PET",
+      "index": 2,
+      "text": "I am, uh, a peaceful creature, a friendly alien life form. The Ur-Quan call us `talking pets'.\nUntil recently, I was employed on a Dreadnought starship as a translator.\nThen, after the ship suffered severe damage in combat, we crashed at Alpha Pavonis.\nMiraculously, I survived, and was rescued by an Ariloulaleelay exploration vessel.\nThe Arilou, they could not heal my most severe injuries, so they brought me to the Umgah\nwho possess superior bio-engineering skills.",
+      "voice": "talkingpet-001.ogg",
+      "original_text_hash": 2174874905424701526
+    },
+    {
+      "id": "talking_pets_dumb",
+      "index": 3,
+      "text": "But I thought Talking Pets weren't sentient? You seem smart enough.",
+      "voice": null,
+      "original_text_hash": 17495878201961844777
+    },
+    {
+      "id": "OH_NO_YOU_DONT",
+      "index": 4,
+      "text": "Oh... you know about that, do you?\nOh well, I guess that means I will have to kill you now.\nI can't permit you to reveal my transformation\nthe Ur-Quan might find out, and then my plans for revenge will be ruined.\nWell, I tried to spare your life, Captain, but you were just too curious\nso now:\n-<SEEK DEATH AT THE HANDS OF YOUR ENEMY!>-",
+      "voice": "talkingpet-002.ogg",
+      "original_text_hash": 13006793161194495050
+    },
+    {
+      "id": "what_do_to_umgah",
+      "index": 5,
+      "text": "Where are the Umgah? What have you done to them?",
+      "voice": null,
+      "original_text_hash": 18436156630869991321
+    },
+    {
+      "id": "DID_NOTHING",
+      "index": 6,
+      "text": "Uh, You are, um, imagining things! Uh, the Umgah are fine, just fine. Uh, just really busy.\nThat's why I am answering the HyperWave broadcaster today.",
+      "voice": "talkingpet-003.ogg",
+      "original_text_hash": 12442357549506056138
+    },
+    {
+      "id": "umgah_zombies",
+      "index": 7,
+      "text": "You don't fool me! You've turned them into zombie-blobbies!... or something.",
+      "voice": null,
+      "original_text_hash": 12388476971840863435
+    },
+    {
+      "id": "WORKS_LIKE_THIS",
+      "index": 8,
+      "text": "Argh! Why didn't you leave when you had the chance?\nNow I've got to kill you in some really sneaky way\nso that no one will guess I was the agent of your demise. *sigh*\n-<GET LOST IN A BAD NEIGHBORHOOD!>-",
+      "voice": "talkingpet-004.ogg",
+      "original_text_hash": 6866925557395593784
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 9,
+      "text": "I am Captain of the starship",
+      "voice": null,
+      "original_text_hash": 10618427691826586550
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 10,
+      "text": ". We have come in peace to talk with the Umgah leaders about overthrowing the Ur-Quan Hierarchy.",
+      "voice": null,
+      "original_text_hash": 820633134382035170
+    },
+    {
+      "id": "GOOD_FOR_YOU",
+      "index": 11,
+      "text": "Good idea! May I just say, I am behind you 100 percent!\nBut unfortunately, the Umgah are all too busy to come to the HyperWave 'Caster right now\nso... er... come back later... much later.",
+      "voice": "talkingpet-005.ogg",
+      "original_text_hash": 4444271578113705864
+    },
+    {
+      "id": "must_explain_presence",
+      "index": 12,
+      "text": "Strange creature. Explain your presence here immediately.",
+      "voice": null,
+      "original_text_hash": 249544556889044099
+    },
+    {
+      "id": "EXPLAIN_NOTHING_MONKEY_BOY",
+      "index": 13,
+      "text": "YARRGH! I will explain NOTHING, monkey-boy!\nYour stupid curiosity has sealed your doom!\nYou could have left well enough alone. You could have departed this planet alive\nbut NO!\nI am afraid you have stuck your stiff, protruberant sensing organ into one too many dark holes, Captain,\nand now you shall pay the price!\n-<GO GET YOURSELF KILLED!>-",
+      "voice": "talkingpet-006.ogg",
+      "original_text_hash": 15730389654975929948
+    },
+    {
+      "id": "bye_at_umgah",
+      "index": 14,
+      "text": "Look, ah... whoever you are. I'll just be leaving now.",
+      "voice": null,
+      "original_text_hash": 1387117343429079075
+    },
+    {
+      "id": "GOODBYE_AT_UMGAH",
+      "index": 15,
+      "text": "Oh, I wish it were so simple.\nI thought that perhaps I could let you live\nbut now I fear you know too much.\nMy plans for revenge are far too important\nto be be ruined by a simple, interfering dolt like yourself.\n-<GO KILL YOURSELF IN BATTLE!>-",
+      "voice": "talkingpet-007.ogg",
+      "original_text_hash": 16276285918284280574
+    },
+    {
+      "id": "HYPNOTIZE_AGAIN_1",
+      "index": 16,
+      "text": "Argh! Why aren't you dead? Oh, what a bummer.\nI will remedy this situation\n-<FIND SOMEONE WHO WILL KILL YOU!>-",
+      "voice": "talkingpet-008.ogg",
+      "original_text_hash": 13923699639030288109
+    },
+    {
+      "id": "HYPNOTIZE_AGAIN_2",
+      "index": 17,
+      "text": "Argh! You are interfering with my plans of revenge against the Ur-Quan.\nThe penalty for this transgression is death. Specifically, yours!\n-<NOW GO AWAY AND PICK A FIGHT!>-",
+      "voice": "talkingpet-009.ogg",
+      "original_text_hash": 177745207448722006
+    },
+    {
+      "id": "HYPNOTIZE_AGAIN_3",
+      "index": 18,
+      "text": "Why do you keep returning!? Never mind, don't answer.\n-<LEAVE AND FIND SOMEONE WHO WILL KILL YOU!>-",
+      "voice": "talkingpet-010.ogg",
+      "original_text_hash": 15523057396694581573
+    },
+    {
+      "id": "HYPNOTIZE_AGAIN_4",
+      "index": 19,
+      "text": "You're back again!?\nYou are as durable as you are stupid!\nPerhaps this time, you will accomplish your own demise.\n-<GO KILL YOURSELF!>-",
+      "voice": "talkingpet-011.ogg",
+      "original_text_hash": 615280489997829812
+    },
+    {
+      "id": "HYPNO_TAIL",
+      "index": 20,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "CANT_COMPEL",
+      "index": 21,
+      "text": "Aieee!  I cannot compel you!?\nYour mind is closed to me -- how can this be?!\nI am forced to resort to... more primitive measures\nUmgah commander, summon your ten combat ships and attack this intruder instantly!",
+      "voice": "talkingpet-012.ogg",
+      "original_text_hash": 16053370947541145664
+    },
+    {
+      "id": "LETS_MAKE_A_DEAL",
+      "index": 22,
+      "text": "Uh, hi there, friendly starship Captain!\nYou will never believe this, but somehow, the injuries I suffered when the Ur-Quan crashed\ntriggered some kind of, uh... personality transformation\nI became evil and spiteful! Cruel and nasty! Whimsically unpleasant!\nYou may also have noticed that I gained some kind of `temporary psychic powers'\nWell I just wanted to let you know... I AM CURED!\nCaptain, I don't know exactly how, but when you were fighting those Umgah ships\na chunk of the ceiling fell upon my head and gave me quite a whack!\nOuchy-oochy.. it still hurts!\nWhen I awoke, the universe had ceased to be the dark and hostile place I previously thought it to be.\nInstead, I was overwhelmed, yes, even awed by the beauty and perfection of it all!\nI also discovered that I had completely lost those wicked mental powers\nand could now look forward to a NEW LIFE, filled with happiness, butterflies, and goodwill for all!\nYour job is done, Captain! You have saved me! Now you can safely remove your psychic protection device, and leave.\nTHANK YOU! THANK YOU! THANK YOU! THANK YOU! THAN\nWhy are you looking at me like that, Captain?\nDon't you believe me? You question my word?\nOkay, okay... so I was lying.\nBig deal! So what.\nBoy, are you A PAIN, do you know that?\nWHAT DO YOU WANT FROM ME, MY LIFE!?\nOh, you do?  Hmph.\nWell, as an alternative, let me make this little suggestion\nif you don't kill me, I'll help you do whatever you wish.\nIs it a deal, Captain? Hmmm? Hmmm?",
+      "voice": "talkingpet-013.ogg",
+      "original_text_hash": 11633958159328150333
+    },
+    {
+      "id": "what_kind_of_deal",
+      "index": 23,
+      "text": "What kind of deal, Talking Pet? Provide details.",
+      "voice": null,
+      "original_text_hash": 16128450433503771613
+    },
+    {
+      "id": "HELP_DEFEAT_URQUAN",
+      "index": 24,
+      "text": "I get the basic idea: you want to overthrow the Ur-Quan\nBravo! Good idea! Way to go!\nI too wish to see the Ur-Quan beaten -- humiliated, destroyed\nand I alone possess the unique ability that will help you achieve your goal\nI can use my psychic powers to temporarily distract the Ur-Quan... confuse them for a few seconds.\nPresumably you will use this moment to strike a lethal blow against the Ur-Quan.\nSuch a plan cannot fail, Captain. We must see to that.",
+      "voice": "talkingpet-014.ogg",
+      "original_text_hash": 6060900298250363699
+    },
+    {
+      "id": "ok_lets_do_it",
+      "index": 25,
+      "text": "All right, I agree. But any tricks and you'll be sucking vacuum.",
+      "voice": null,
+      "original_text_hash": 823610248944115605
+    },
+    {
+      "id": "COMING_ABOARD",
+      "index": 26,
+      "text": "No tricks, Captain. No tricks.\nI fear you cruelly misjudge me. I am on YOUR side now.\nTogether we will make a great team, Captain.\nThis day, this MOMENT shall go down forever in the history of our galaxy.\nI am coming aboard your ship now. I will make a nest in the pressurized section of your ship's hold.\nWhen you wish to talk with me, I will be there.",
+      "voice": "talkingpet-015.ogg",
+      "original_text_hash": 5370347379042540865
+    },
+    {
+      "id": "how_trust",
+      "index": 27,
+      "text": "You tried to kill me! Your words are lies! How can I possibly trust you?",
+      "voice": null,
+      "original_text_hash": 7805904567808444124
+    },
+    {
+      "id": "TRUST",
+      "index": 28,
+      "text": "Captain, Captain... calm down. Be reasonable. Listen to me.\nI am nothing more than a single being, hardly larger than one of your Earth dogs.  Woof woof!\nMy only weapon -- my weak psychic abilities -- have been nullified by your protective device.\nI am harmless.\nBut perhaps, I can be of some small service to you.\nConsider this my hopeful attempt to compensate you for all the trouble I have caused you in the past.\nIn the Past, Captain... and now we look to the future! To victory over the evil Ur-Quan!\nI am your secret weapon against these tyrants, Captain. Do not leave me here.",
+      "voice": "talkingpet-016.ogg",
+      "original_text_hash": 5790087157014738549
+    },
+    {
+      "id": "boneless_dweeb",
+      "index": 29,
+      "text": "I know what you are, evil creature. You are a lying, boneless dweeb!",
+      "voice": null,
+      "original_text_hash": 5689562034761596977
+    },
+    {
+      "id": "YOUR_BONELESS_DWEEB",
+      "index": 30,
+      "text": "Yes, Captain. I am a lying, boneless, toady dweeb\nbut I am YOUR lying, boneless, toady dweeb!",
+      "voice": "talkingpet-017.ogg",
+      "original_text_hash": 11441389042437170846
+    },
+    {
+      "id": "what_are_you_really",
+      "index": 31,
+      "text": "Talking Pet. What are you... really?",
+      "voice": null,
+      "original_text_hash": 16631315909046597725
+    },
+    {
+      "id": "POOR_DNYARRI",
+      "index": 32,
+      "text": "I will gladly tell you my story, Captain. Gladly!\nI was indeed a Talking Pet aboard an Ur-Quan Dreadnought.\nThose years are like a forgotten dream to me, because I was not sentient.\nI was a dumb beast -- an unthinking slave to the heinous Ur-Quan!\nThen there was a great battle... the ship was hit and severely damaged.\nSlaves running down the corridors! Commands, counter-commands!\nThen there was the scream of atmosphere ouside the hull.\nThere was a big explosion of light and thunder! We hit the surface of a planet, I'm pretty sure.\nThe next thing I can remember was the face of a creature you call the Arilou.\nI was in great pain, but the creature was kind. It did what it could for me\nby applying its own medicines to my alien form. I was transported off-planet.\nI remember an all-pervading green light -- then we were at the homeworld of the Arilou.\nAgain, Captain, forgive me if I am not more clear, but I was not intelligent yet.  Give me a chance.\nI presume my injuries were too severe for the Arilou to repair\nor perhaps I reacted badly to their medicines or something,\nbecause the next thing I remember was being moved back into a ship.\nThings grow dim, my next memory was being on board an Umgah starship\nWet flesh throbbing all around me, the Umgah laughing as they worked on my body.\nIt was kind of unnerving.\nSuddenly, like the explosion of a bomb, thought -- I mean REAL thought -- flooded my brain!\nI don't know how or why, but the Umgah had discovered that my brain could be easily changed, improved to give me true intelligence!\nWhat they didn't realize is that it also brought back a flood of memories.\nMemories of my species' ancient past! From before the time the Ur-Quan castrated our thinking minds\nand transformed my people into crude beasts.\nI am the only intelligent Dnyarri left in this galaxy, Captain.\nNow do you understand my lust for vengeance?",
+      "voice": "talkingpet-018.ogg",
+      "original_text_hash": 3173938974302602458
+    },
+    {
+      "id": "hard_to_believe",
+      "index": 33,
+      "text": "An amazing story, if true. Pardon me if I am a bit skeptical, but you are a proven liar.",
+      "voice": null,
+      "original_text_hash": 15944754453864009068
+    },
+    {
+      "id": "ITS_TRUE",
+      "index": 34,
+      "text": "It's all true, Captain! Every word!\nNow listen!... and I shall tell you why the Ur-Quan did this to us.\nIt was over twenty thousand of your years ago, Captain, when an Ur-Quan slave raider\nlanded on the surface of my world, and began capturing my people -- killing those that would not submit!\nHow can I know this, you ask? These memories are embedded deep in my genetic structure, they cannot be forgotten.\nHow we fought the Ur-Quan! Even then, they had a Hierarchy of combat thralls\nthough then, they called themselves by the absurd name, the Sentient Milieu!\nHa! They were nothing more than thugs, especially those hideous Taalo.\nThose evil rocklike creatures were the worst of all!\nFor fun, they would take one of our children... and then... roll over it!... again and again, oh!\nThe war against the Ur-Quan and their Milieu lasted decades... millions of our people died\nbut with the forces of truth and justice at our side, we were prevailing.\nThen the Taalo made their fateful discovery... a shield against our only weapon, our weak psychic powers.\nWith that shield, they were unstoppable... we had lost.\nBut the Ur-Quan, they were not satisfied merely with our defeat, our slavery\nthey wanted MORE! They wanted to punish us for our insolence at fighting back against them\nso they devised the sickest, most cruel and perverse punishment ever imagined!...\nthey invaded our very genetic structure\nand hacked out enough of our minds to lobotomize us for all eternity.\nAnd then we were made their closest servants... their `Talking Pets'.\nThis was our punishment.",
+      "voice": "talkingpet-019.ogg",
+      "original_text_hash": 15127102546511782728
+    },
+    {
+      "id": "bullshit",
+      "index": 35,
+      "text": "What a load of crap! YOUR species were the slavemasters, you lying, evil creature!!",
+      "voice": null,
+      "original_text_hash": 17252362888187270404
+    },
+    {
+      "id": "WORTH_A_TRY",
+      "index": 36,
+      "text": "Dang! You are the most inconveniently well-informed creature, Captain!\n*sigh* Well, it was worth a try.",
+      "voice": "talkingpet-020.ogg",
+      "original_text_hash": 8727774124152292664
+    },
+    {
+      "id": "kill_you",
+      "index": 37,
+      "text": "Heinous, brainy frog-monster. You must die!",
+      "voice": null,
+      "original_text_hash": 7454831636029386657
+    },
+    {
+      "id": "PLEASE_DONT",
+      "index": 38,
+      "text": "No! Please don't!\nI am the last of my species! You cannot do this to me!",
+      "voice": "talkingpet-021.ogg",
+      "original_text_hash": 899083538832411569
+    },
+    {
+      "id": "must_kill",
+      "index": 39,
+      "text": "I will not be swayed from my path. Say your prayers.",
+      "voice": null,
+      "original_text_hash": 14336835925423245578
+    },
+    {
+      "id": "DONT_KILL",
+      "index": 40,
+      "text": "Hmmm! How interesting! During that last little threat of yours, I noticed something WONDERFUL!\nYOU DON'T HAVE THE TAALO SHIELD PROPERLY INSTALLED!\nHa-ha-ha! Fool! You could have fired on me.\nNow, I fear, you will have to accept my offer.\nI will join you on board your vessel. Together, we will exact MY revenge\nand perhaps incidentally, realize your own plans as well.",
+      "voice": "talkingpet-022.ogg",
+      "original_text_hash": 10022243701606913642
+    },
+    {
+      "id": "want_kill_1",
+      "index": 41,
+      "text": "Must... resist! Can't... let... it... win! Must... not...",
+      "voice": null,
+      "original_text_hash": 5729974459895753085
+    },
+    {
+      "id": "want_kill_2",
+      "index": 42,
+      "text": "I - have - no - desire - to - kill - you. Welcome - aboard - our - vessel.",
+      "voice": null,
+      "original_text_hash": 7895685525679944411
+    },
+    {
+      "id": "want_kill_3",
+      "index": 43,
+      "text": "Kill? Kill? What is this `kill'? We love you!",
+      "voice": null,
+      "original_text_hash": 11976438289041519505
+    },
+    {
+      "id": "GLAD_YOU_WONT_KILL",
+      "index": 44,
+      "text": "Wonderful, Captain. I am so glad you have seen the light of reason.\nI shall gather my few possessions, and come aboard your vessel immediately.\nWhen you wish to talk with me, I will be down in your ship's cargo hold.\nThat is all, Captain. For now, at least.",
+      "voice": "talkingpet-023.ogg",
+      "original_text_hash": 17072655275237822037
+    },
+    {
+      "id": "whats_up_onboard",
+      "index": 45,
+      "text": "How's it going, Dnyarri?  You okay down there in the cargo bay?",
+      "voice": null,
+      "original_text_hash": 9716845436714182954
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_1",
+      "index": 46,
+      "text": "It is cold and empty. I could use a thermal blanket.\nSince it is incredibly boring down here\nI am using the opportunity to try and get some sleep.",
+      "voice": "talkingpet-024.ogg",
+      "original_text_hash": 4355127985802485394
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_2",
+      "index": 47,
+      "text": "Much the same as the last time you asked me.\nHowever, I have found a way to amuse myself.\nI am listening in on the mental energies of your crew -- it's really quite fun!\nFor instance, did you know both ensigns Holiday and Watchuki want to reproduce with you?\nHa-ha! It's true!",
+      "voice": "talkingpet-025.ogg",
+      "original_text_hash": 7336550820836939286
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_3",
+      "index": 48,
+      "text": "I suppose you told your crew about my little listening in on them, didn't you?\nNow whenever I try to eavesdrop, they seem to detect my presence\nand start visualizing my gruesome death in a multitude of repulsive though creative ways.\nYou had to go and spoil my fun, didn't you?",
+      "voice": "talkingpet-026.ogg",
+      "original_text_hash": 3231621657342419020
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_4",
+      "index": 49,
+      "text": "You know, I was just reliving some of my ancestors' stronger genetic memories\nand I came upon something I thought you might be interested in hearing.\nIt seems that my race, the Dnyarri, once found a Precursor vessel like your own.\nWell actually, it wasn't EXACTLY like yours.\nIt was a combat vessel -- bigger, much bigger, and it was loaded with tons of world-wrecking accoutrements.\nFrankly, it made this vessel look like a tug... a real weenie. Ha-ha-ha!\nAnyway, when the Ur-Quan so cruelly attacked us, they stole the ship\nand I can only presume that they still have it in their possession.\nMaybe you should find out more about that ship, Captain.",
+      "voice": "talkingpet-027.ogg",
+      "original_text_hash": 6167244781913213185
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_5",
+      "index": 50,
+      "text": "I am slowly going insane, Captain!\nI don't know if you are aware of this\nbut there are music loops which play down here, CEASELESSLY!\nI presume this was some engineer's brilliant idea\non how to keep the simple-minded dock workers happy.\nI would guess that the engineer didn't foresee someone ACTUALLY LIVING DOWN HERE!\nI have heard the same songs AT LEAST FOUR HUNDRED TIMES!\nI mean, Mozart and Iggy Pop are fine, for alien noise-makers\nbut PLEASE!... CHANGE THE MUSIC BEFORE I GO MAD!",
+      "voice": "talkingpet-028.ogg",
+      "original_text_hash": 16035491119468724799
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_6",
+      "index": 51,
+      "text": "Thank you, Captain, for changing the music down here.\nNow, if I may, I would like to complain about the food.\nIt is grossly unappealing and flavorless. I deserve better.\nMy preference is for chunks of meat, well spiced, with a selection of fresh plant matter.\nPlease, no more of those sweet, doughy cylinders in the little foil pouches.\nSpace food... Feh!",
+      "voice": "talkingpet-029.ogg",
+      "original_text_hash": 16484628788930420221
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_7",
+      "index": 52,
+      "text": "I am bored.\nPlease send me a couple of your crew members to play with\npreferably one male, and one female, though I won't be picky.\nNo!? You have no sense of fun, Captain.\nYou must have been a boring child.",
+      "voice": "talkingpet-030.ogg",
+      "original_text_hash": 146531096906175931
+    },
+    {
+      "id": "GENERAL_INFO_ONBOARD_8",
+      "index": 53,
+      "text": "I sing. I dance. I have a wild, fun time.\nMy life is one endless party down here, Captain. Isn't that obvious?",
+      "voice": "talkingpet-031.ogg",
+      "original_text_hash": 10974869840216866669
+    },
+    {
+      "id": "HELLO_AS_DEVICE_1",
+      "index": 54,
+      "text": "Captain. The Taalo device on board this vessel is, uh, giving me a headache, please remove it.\nNOW, Captain! It is foolish to resist!...\nHmmm... it remains more effective than I had thought, you are still able to disobey.\nAh, well. What can I do for you, Captain?",
+      "voice": "talkingpet-032.ogg",
+      "original_text_hash": 9494036811417395304
+    },
+    {
+      "id": "HELLO_AS_DEVICE_2",
+      "index": 55,
+      "text": "Hello Captain.\nIt is less than comfy down here in your ship's cargo hold.\nPlease send down some pillows.\nNow, what can I do for you?",
+      "voice": "talkingpet-033.ogg",
+      "original_text_hash": 14459762754062592776
+    },
+    {
+      "id": "HELLO_AS_DEVICE_3",
+      "index": 56,
+      "text": "I was asleep, gathering strength for our confrontation with the Ur-Quan.\nThis little interruption here has set me back several days. Now what is it?",
+      "voice": "talkingpet-034.ogg",
+      "original_text_hash": 10840869729423788843
+    },
+    {
+      "id": "HELLO_AS_DEVICE_4",
+      "index": 57,
+      "text": "Heeelllllllloooooo...\nEchoooooo...\nI... Am... the Master of the Univer...\nOh! Heh-heh. Hey Captain! I didn't notice you on the viewer there.\nI was just, you know, entertaining myself in this lonesome, cold container.\nHow may I be of service to you?",
+      "voice": "talkingpet-035.ogg",
+      "original_text_hash": 6734969621397755351
+    },
+    {
+      "id": "HELLO_AS_DEVICE_5",
+      "index": 58,
+      "text": "sner-Gee......  sner-Gee......  sner-Gee......  sner-Gee......\nsner-Umph?!  Oh... it is you. I was sleeping. What do you want?",
+      "voice": "talkingpet-036.ogg",
+      "original_text_hash": 8801791159222329095
+    },
+    {
+      "id": "HELLO_AS_DEVICE_6",
+      "index": 59,
+      "text": "Are you lonely, Captain?\nAre you misunderstood by everybody else on the ship?\nIs that why you KEEP CALLING ME WHEN I AM ASLEEP!?",
+      "voice": "talkingpet-037.ogg",
+      "original_text_hash": 13849008524544956091
+    },
+    {
+      "id": "HELLO_AS_DEVICE_7",
+      "index": 60,
+      "text": "Captain, I am not a particularly social creature.\nI grow tired of your yammering, but since you already woke me up\nWhat is it?",
+      "voice": "talkingpet-038.ogg",
+      "original_text_hash": 1025467606712090886
+    },
+    {
+      "id": "HELLO_AS_DEVICE_8",
+      "index": 61,
+      "text": "This had better be important.",
+      "voice": "talkingpet-039.ogg",
+      "original_text_hash": 2565410451303257801
+    },
+    {
+      "id": "CYBORG_PEP_TALK",
+      "index": 62,
+      "text": "You've made it, Captain! The Sa-Matra shields are down!\nNow all you have to do is get your ship in there next to the Sa-Matra and initiate the bomb sequence.\nIn case you're wondering, I'm not going with you, Captain. I'm staying on board.\nWhy, you ask?\nBECAUSE I'M LOCKED IN HERE!\nHELP!!!  GET ME OUT!!!  HELP!!!",
+      "voice": "talkingpet-040.ogg",
+      "original_text_hash": 7009752054357901656
+    },
+    {
+      "id": "HUMAN_PEP_TALK",
+      "index": 63,
+      "text": "Okay, human, you've made it past the Sa-Matra's guards\nand now you can attack the vessel itself, so listen closely.\nThe Sa-Matra is protected by a thick shell of fused asteroids reinforced with a weak stasis field.\nYou will never break through that.\nThe only opening through the asteroid shield is covered with a powerful force screen.\nOne touch of that screen, and you're history, Captain.\nTo destroy the Sa-Matra, you will have to destroy the shield generators embedded in the asteroid shell.\nTo drop the force screen, you will have to destroy all eight of them.\nWhen the screen is down, bring in your flagship, move into the asteroid shell\nand then press the Big Red Button on your controls\nthat starts the detonation sequence.\nYour escape pod will eject automatically. Just hope you're far enough away before that ship blows.\nOk, human, this is it! The last battle, your final moment of triumph!\nDon't screw up.\nAnd in case you're wondering, I'm not going with you, Captain. I'm staying on board.\nWhy, you ask?\nBECAUSE I'M LOCKED IN HERE YOU IDIOT!\nGET ME OUT!!  HELP!!!  HELP!!!",
+      "voice": "talkingpet-041.ogg",
+      "original_text_hash": 11715379600675154088
+    },
+    {
+      "id": "I_SENSE_MY_SLAVES",
+      "index": 64,
+      "text": "I sense the presence of my ancient slaves.\nIt is time, Captain.",
+      "voice": "talkingpet-042.ogg",
+      "original_text_hash": 3300354820377166999
+    },
+    {
+      "id": "HAVENT_GOT_EVERYTHING",
+      "index": 65,
+      "text": "You are not yet ready to face the Ur-Quan in a final confrontation, Captain",
+      "voice": "talkingpet-043.ogg",
+      "original_text_hash": 13424986333552818568
+    },
+    {
+      "id": "NEED_BOMB",
+      "index": 66,
+      "text": "You still need a weapon of sufficient destructive force to destroy the Sa-Matra",
+      "voice": "talkingpet-044.ogg",
+      "original_text_hash": 14391343987541585809
+    },
+    {
+      "id": "SOUP_UP_BOMB",
+      "index": 67,
+      "text": "The power of the Utwig's bomb must be increased",
+      "voice": "talkingpet-045.ogg",
+      "original_text_hash": 570609638316442421
+    },
+    {
+      "id": "SOUP_UP_FLEET",
+      "index": 68,
+      "text": "You must strengthen your fleet",
+      "voice": "talkingpet-046.ogg",
+      "original_text_hash": 14105418570148392116
+    },
+    {
+      "id": "SOUP_UP_FLAGSHIP",
+      "index": 69,
+      "text": "Your flagship needs additional improvements",
+      "voice": "talkingpet-047.ogg",
+      "original_text_hash": 1135083053406182753
+    },
+    {
+      "id": "COMEBACK_WHEN_READY",
+      "index": 70,
+      "text": "This must be done before you are ready to attack.\nWe must leave now, and return when you are fully prepared.",
+      "voice": "talkingpet-048.ogg",
+      "original_text_hash": 5141949644443439768
+    },
+    {
+      "id": "what_now",
+      "index": 71,
+      "text": "What now, Dnyarri?",
+      "voice": null,
+      "original_text_hash": 3372438757362188755
+    },
+    {
+      "id": "DO_THIS",
+      "index": 72,
+      "text": "Oh gosh, gee! I don't know. Let's just sit here and talk a while\nAND IGNORE THOSE THOUSANDS OF DREADNOUGHTS THAT ARE GOING TO CREAM US IN A FEW SECONDS!",
+      "voice": "talkingpet-049.ogg",
+      "original_text_hash": 6882974194290864039
+    },
+    {
+      "id": "compel_urquan",
+      "index": 73,
+      "text": "Employ your powers! Confuse the Ur-Quan!",
+      "voice": null,
+      "original_text_hash": 7974708934788069661
+    },
+    {
+      "id": "HERE_WE_GO",
+      "index": 74,
+      "text": "Okay. Now, whatever you do, once I've started\nDON'T LEAVE THE STAR SYSTEM!\nWe've only got one chance at this, let's make it good!\nHere I go...",
+      "voice": "talkingpet-050.ogg",
+      "original_text_hash": 17753149924633462666
+    },
+    {
+      "id": "im_scared",
+      "index": 75,
+      "text": "I'm scared, Dnyarri. What if this doesn't work?",
+      "voice": null,
+      "original_text_hash": 2693295126095254958
+    },
+    {
+      "id": "STUPID_FOP",
+      "index": 76,
+      "text": "`I'm scared, Dnyarri. What if this doesn't work?'\nMy species have waited two hundred centuries for this moment\nSO STOP BLUBBERING!\nLet's get to work.",
+      "voice": "talkingpet-051.ogg",
+      "original_text_hash": 876706782509096878
+    },
+    {
+      "id": "compel_that_ship",
+      "index": 77,
+      "text": "Dnyarri. There is a nearby ship which is annoying me. Compel it to self-destruct.",
+      "voice": null,
+      "original_text_hash": 9007464377061080875
+    },
+    {
+      "id": "SAVING_MY_POWER",
+      "index": 78,
+      "text": "I am saving my meager powers for our final confrontation with the Ur-Quan.\nSorry, Captain. You'll just have to deal with this one yourself.",
+      "voice": "talkingpet-052.ogg",
+      "original_text_hash": 17864261936465569119
+    },
+    {
+      "id": "any_suggestions",
+      "index": 79,
+      "text": "What do you suggest I do now, Dnyarri?",
+      "voice": null,
+      "original_text_hash": 12021419840034151015
+    },
+    {
+      "id": "SUGGESTION_1",
+      "index": 80,
+      "text": "The first thing I'd do is make sure I had a strong ship and fleet.",
+      "voice": "talkingpet-053.ogg",
+      "original_text_hash": 3231769756039256565
+    },
+    {
+      "id": "SUGGESTION_2",
+      "index": 81,
+      "text": "Once I was tough enough to survive in hostile space\nI'd spend some time exploring, trying to make allies and gather information.",
+      "voice": "talkingpet-054.ogg",
+      "original_text_hash": 12217402099900796038
+    },
+    {
+      "id": "SUGGESTION_3",
+      "index": 82,
+      "text": "After I'd done a fair bit of exploration, I would try to find out what the Ur-Quan are up to.\nDiscover who they are fighting, and why.",
+      "voice": "talkingpet-055.ogg",
+      "original_text_hash": 9899597191428963866
+    },
+    {
+      "id": "SUGGESTION_4",
+      "index": 83,
+      "text": "Once I knew some general information about the Ur-Quan\nI'd probably try to find their weak spot. Every race has one.",
+      "voice": "talkingpet-056.ogg",
+      "original_text_hash": 13616922659023998423
+    },
+    {
+      "id": "SUGGESTION_5",
+      "index": 84,
+      "text": "Once I knew the Ur-Quan's critical weakness\nI would try to discover how to exploit this flaw.\nI would learn what was necessary for the task, and then gather those materials and services.",
+      "voice": "talkingpet-057.ogg",
+      "original_text_hash": 3622685831522542315
+    },
+    {
+      "id": "SUGGESTION_6",
+      "index": 85,
+      "text": "When I was finally prepared for the final confrontation with the Ur-Quan\nI would use me, the Talking Pet, to distract the Ur-Quan for a single moment\nthus permitting me, who is really you at this point\nto make the death-strike against the Ur-Quan.",
+      "voice": "talkingpet-058.ogg",
+      "original_text_hash": 10878302468855108491
+    },
+    {
+      "id": "SUGGESTION_7",
+      "index": 86,
+      "text": "Well for one, I would stop asking questions and get to work.",
+      "voice": "talkingpet-059.ogg",
+      "original_text_hash": 4650865667655323773
+    },
+    {
+      "id": "SUGGESTION_8",
+      "index": 87,
+      "text": "Well for one, I would stop asking questions and get to work.",
+      "voice": "talkingpet-060.ogg",
+      "original_text_hash": 4650865667655323773
+    },
+    {
+      "id": "about_your_race",
+      "index": 88,
+      "text": "What can you tell me about your race, the Dnyarri?",
+      "voice": null,
+      "original_text_hash": 5621857992757303529
+    },
+    {
+      "id": "WHAT_ABOUT_RACE",
+      "index": 89,
+      "text": "I consider such a question to be intrusive and impolite\nbut that is consistent with your behavior.\nWhat do you want to know?",
+      "voice": "talkingpet-061.ogg",
+      "original_text_hash": 11553502530853891548
+    },
+    {
+      "id": "you_lied",
+      "index": 90,
+      "text": "I have learned that you lied to me, Dnyarri. It was your race that made slaves of the Ur-Quan!",
+      "voice": null,
+      "original_text_hash": 7988726807137336049
+    },
+    {
+      "id": "SO_WHAT",
+      "index": 91,
+      "text": "So I lied a little! Big deal.\nI thought that if I told you the truth, you wouldn't bring me on board.\nBesides, it wasn't me who did that, it was my ancient ancestors.\nWere all of YOUR ancestors sweet and kind, Captain?\nI thought not.",
+      "voice": "talkingpet-062.ogg",
+      "original_text_hash": 2064274829055141518
+    },
+    {
+      "id": "bye_onboard",
+      "index": 92,
+      "text": "Okay, Dnyarri, you can go back to sleep now.",
+      "voice": null,
+      "original_text_hash": 329158595724199580
+    },
+    {
+      "id": "GOODBYE_ONBOARD",
+      "index": 93,
+      "text": "Goodbye human.",
+      "voice": "talkingpet-063.ogg",
+      "original_text_hash": 9413761510904061845
+    },
+    {
+      "id": "what_about_physiology",
+      "index": 94,
+      "text": "What can you tell me about your species biology?",
+      "voice": null,
+      "original_text_hash": 17338456100916842687
+    },
+    {
+      "id": "NO_TALK_ABOUT_SELF",
+      "index": 95,
+      "text": "You mean my superior brain, my mental prowess?\nI don't want to talk about it.",
+      "voice": "talkingpet-064.ogg",
+      "original_text_hash": 7731597341512901719
+    },
+    {
+      "id": "what_about_powers",
+      "index": 96,
+      "text": "Come on, we're friends! Tell me about the scope of your psychic powers!",
+      "voice": null,
+      "original_text_hash": 14394615693986826677
+    },
+    {
+      "id": "NOT_POWERS_BUT_FLOWERS",
+      "index": 97,
+      "text": "Captain, I don't think you meant to ask about my powers.\n-<DIDN'T YOU MEAN TO ASK ABOUT FLOWERS?>-",
+      "voice": "talkingpet-065.ogg",
+      "original_text_hash": 12186882630828097073
+    },
+    {
+      "id": "yes_flowers",
+      "index": 98,
+      "text": "Yes - Dnyarri - I - wish - to - know - about - flowers.",
+      "voice": null,
+      "original_text_hash": 5209219738259380617
+    },
+    {
+      "id": "GOOD_HUMAN",
+      "index": 99,
+      "text": "Flowers are beautiful, and smell nice.\nNow be a good human and\n-<LEAVE ME ALONE!>-",
+      "voice": "talkingpet-066.ogg",
+      "original_text_hash": 6598768752767574535
+    },
+    {
+      "id": "wish_to_go_now",
+      "index": 100,
+      "text": "I - wish - to - go - now.",
+      "voice": null,
+      "original_text_hash": 848458287320955204
+    },
+    {
+      "id": "EXCELLENT_IDEA",
+      "index": 101,
+      "text": "An excellent idea, Captain. You must have a great deal of work to attend to.\nGoodbye.",
+      "voice": "talkingpet-067.ogg",
+      "original_text_hash": 18336710712691822718
+    },
+    {
+      "id": "what_about_your_history",
+      "index": 102,
+      "text": "What can you tell me about the history of your people?",
+      "voice": null,
+      "original_text_hash": 10176739174627534779
+    },
+    {
+      "id": "ABOUT_HISTORY",
+      "index": 103,
+      "text": "Over twenty thousand years ago, my species was happy and carefree\nliving a life of peace and contentment on the surface of our world Benteflork.\nWe spent our time gathering foods, creating art, and compelling each other to do the boring chores.\nThen a ship from the Sentient Milieu landed, and well, things got pretty complicated.",
+      "voice": "talkingpet-068.ogg",
+      "original_text_hash": 8580340378450226905
+    },
+    {
+      "id": "sentient_milieu",
+      "index": 104,
+      "text": "I know so little about the Sentient Milieu. Can you describe it?",
+      "voice": null,
+      "original_text_hash": 4083152360825799128
+    },
+    {
+      "id": "ABOUT_SENTIENT_MILIEU",
+      "index": 105,
+      "text": "The Sentient Milieu were a blood-thirsty Empire that ruled a large section of the galaxy for thousands of years.\nIf you heard that the Milieu was a cooperative union of sentient species\nit's LIES, all lies!\nThe Ur-Quan were just a part of the Milieu, but their dark and evil hearts\ninfused the entire association with a sinister ambience.",
+      "voice": "talkingpet-069.ogg",
+      "original_text_hash": 1084254549389785717
+    },
+    {
+      "id": "what_about_war",
+      "index": 106,
+      "text": "So tell me about the war between your species and the Sentient Milieu.",
+      "voice": null,
+      "original_text_hash": 7647667870721014616
+    },
+    {
+      "id": "ABOUT_WAR",
+      "index": 107,
+      "text": "Well, after we had been in contact with the Milieu for a while\nthey decided to kill all of my species!\nNow does that sound like a reasonable, friendly bunch of aliens, Hmm?  Huh?  Does it Captain?\nNo! It does not!\nWell the war was over pretty quickly, and my species lost.\nInstead of just killing us, the Ur-Quan modified our genes\nOur children were born non-sentient, dumb animals.\nFor the past twenty millennia, we Dnyarri have been serving the Ur-Quan\nin the most demeaning way they could imagine\nacting as mindless translators who communicate the words of inferior races.",
+      "voice": "talkingpet-070.ogg",
+      "original_text_hash": 11711713973620822850
+    },
+    {
+      "id": "enough_info",
+      "index": 108,
+      "text": "I've heard enough.",
+      "voice": null,
+      "original_text_hash": 374005153065776970
+    },
+    {
+      "id": "OK_ENOUGH_INFO",
+      "index": 109,
+      "text": "That's good, I was getting sleepy.",
+      "voice": "talkingpet-071.ogg",
+      "original_text_hash": 1082436955747185407
+    },
+    {
+      "id": "UMGAH_ALL_GONE",
+      "index": 110,
+      "text": "Such great plans, such fine dreams... now, all ground to dust.\nHello, Captain. Pardon my lament, but I am feeling a bit depressed today.\nYou see, the black destroyers -- the Kohr-Ah -- passed through recently on a killing spree\nand now my Umgah, the instruments of my revenge, are all pretty much dead.\nIn case you are confused about who I am, and what I'm doing here, I'll explain.\nI am a called a `talking pet'\nFor many years I served as a translator aboard an Ur-Quan Dreadnought.\nDuring this time though, I possessed less intelligence than an Earth swine, but this was soon to change.\nThe Dreadnought came under attack by the Kohr-Ah and was severely damaged.\nWe made a crash-landing at a planet orbiting Alpha Pavonis. I was the only survivor.\nThe prospect of investigating a Dreadnought was sufficient to bring the Arilou down to the planet surface, where they found me.\nThey tried to nurse me back to health, but they could not repair all my damage.\nSo they turned to their neighbors, the Umgah, for assistance.\nThe Umgah saw that I had the potential for intelligence, and they proceeded to modify my brain.\nWhen I came to my senses following the final operation, a flood of thought and memory filled my mind.\nI knew who I was!\nI was a Dnyarri -- a member of a peaceful alien race, whose intelligence the Ur-Quan had long ago `shut off'\nvia cruel biogenetic manipulation.\nI convinced the Umgah to assist me in effecting a magnificent revenge against the Ur-Quan\nand we were just a few months away from launching our strike\nwell, when the Kohr-Ah passed through and casually slaughtered the entire Umgah species.  Bummer.\nBut here YOU are, Captain!\nI have an offer: instead of killing me, I will join you on your ship.\nI can be of invaluable assistance when it comes time for your final confrontation with the Ur-Quan.\nI see you are speechless with approval. I'll be right over.",
+      "voice": "talkingpet-072.ogg",
+      "original_text_hash": 3374869253258014656
+    },
+    {
+      "id": "HELLO_AFTER_COMPEL_URQUAN",
+      "index": 111,
+      "text": "WHAT ARE YOU DOING, IDIOT!!\nDON'T TALK TO ME!\nGO ATTACK THE SA-MATRA!!",
+      "voice": "talkingpet-073.ogg",
+      "original_text_hash": 10313844979530606441
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 112,
+      "text": "So! You probably thought I was dead... DIDN'T YOU!?\nWell I'm not! I got away from the ship at the last second\nand now I'm REALLY going to cause some trouble!\nIn fact, that's what the sequel is going to be about!\nYeah, that's the ticket! Me and my exciting adventures\nas I conquer the galaxy for the greater glory of... ME!\nIt will have action! It will have drama!\nIt will have gratuitous alien sex scenes!\nIt's gonna be great!",
+      "voice": "talkingpet-074.ogg",
+      "original_text_hash": 4312922022343700992
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["talkpet", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["talkpet", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

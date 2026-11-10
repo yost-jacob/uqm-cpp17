@@ -1,0 +1,1680 @@
+{
+  "version": 1,
+  "node_count": 106,
+  "id": "urquan",
+  "resource": "comm.urquan.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native asset configuration, hypnosis intro fade and post-visit hypnosis reset remain. All dialogue branches and ordinary story effects are graph data."
+  },
+  "phrases": [
+    {
+      "id": "HELLO_SAMATRA",
+      "index": 0,
+      "text": "You may not approach the ancient Sa-Matra, the symbol of Ur-Quan dominance!\nYour presence here is further violation of the slave laws\nwhich your species have already violated so flagrantly.\nWe cannot tolerate such insubordination!\nYour species' penalty shall be annihilation!",
+      "voice": "urquan-000.ogg",
+      "original_text_hash": 7525330575573204236
+    },
+    {
+      "id": "SENSE_EVIL",
+      "index": 1,
+      "text": "There is something wrong here... something which makes my sheath retract and my talons ooze.\nI sense the ugliness of a thousand evil thoughts\nand I have located the source of these fetid emanations.\nThey come from aboard your vessel!\nFoolish renegade human, why have you come here? All that you have found\nis your inevitable punishment.",
+      "voice": "urquan-001.ogg",
+      "original_text_hash": 5601629092198288951
+    },
+    {
+      "id": "INIT_URQUAN_WAKE_UP",
+      "index": 2,
+      "text": "...in addition, your refusal to answer our transmissions is taken as an insult\nwhich shall earn you the reward of Death unless you respond immediately!",
+      "voice": "urquan-002.ogg",
+      "original_text_hash": 6020600259832785238
+    },
+    {
+      "id": "where_am_i",
+      "index": 3,
+      "text": "Hey!? Where am I?",
+      "voice": null,
+      "original_text_hash": 16836248482356673756
+    },
+    {
+      "id": "YOU_ARE_HERE",
+      "index": 4,
+      "text": "Your insubordination is intolerable!\nYou MUST obey the slave laws, or face our gruesome punishment!",
+      "voice": "urquan-003.ogg",
+      "original_text_hash": 14069019282310240961
+    },
+    {
+      "id": "why_does_my_head_hurt",
+      "index": 5,
+      "text": "Why does my head hurt?",
+      "voice": null,
+      "original_text_hash": 480469081240139696
+    },
+    {
+      "id": "HURTS_BECAUSE",
+      "index": 6,
+      "text": "You forget that the consequences of your misbehavior\nwill cause great suffering for your entire people.",
+      "voice": "urquan-004.ogg",
+      "original_text_hash": 11060245701950942053
+    },
+    {
+      "id": "what_about_2_weeks",
+      "index": 7,
+      "text": "Wow!? Where did the last two weeks go?",
+      "voice": null,
+      "original_text_hash": 12311517748641484923
+    },
+    {
+      "id": "ABOUT_2_WEEKS",
+      "index": 8,
+      "text": "We have been lenient with your species, because you are so immature.\nNow this attitude has changed.\nYou WILL be held responsible for your malfeasance!",
+      "voice": "urquan-005.ogg",
+      "original_text_hash": 16846662689253876418
+    },
+    {
+      "id": "compulsion",
+      "index": 9,
+      "text": "Whoa! I must have been under some form of weird mental compulsion.",
+      "voice": null,
+      "original_text_hash": 1203304821789879065
+    },
+    {
+      "id": "WHAT_COMPULSION",
+      "index": 10,
+      "text": "WHAT DID YOU SAY?!\nCOMPULSION!?\nWHAT HAPPENED?! EXPLAIN!",
+      "voice": "urquan-006.ogg",
+      "original_text_hash": 6100888506125124788
+    },
+    {
+      "id": "wascally_little_guy",
+      "index": 11,
+      "text": "It was this wascally little guy in Umgah space. He did it!",
+      "voice": null,
+      "original_text_hash": 1772623769546040619
+    },
+    {
+      "id": "WHAT_IT_LOOK_LIKE",
+      "index": 12,
+      "text": "WHAT DID THE CREATURE LOOK LIKE?!",
+      "voice": "urquan-007.ogg",
+      "original_text_hash": 9389550254117802928
+    },
+    {
+      "id": "terran_amphibian",
+      "index": 13,
+      "text": "It resembled a large, terran amphibian.",
+      "voice": null,
+      "original_text_hash": 4397232638120550538
+    },
+    {
+      "id": "talking_pet_on_steroids",
+      "index": 14,
+      "text": "It looked like one of your Talking Pets on brain steroids.",
+      "voice": null,
+      "original_text_hash": 18369702924076298693
+    },
+    {
+      "id": "BAD_NEWS",
+      "index": 15,
+      "text": "A Talking Pet with compulsion powers!\nThis is grave news indeed, the worst in millennia!\nWe will speed the war against our cousins, the Kohr-Ah\nthen we shall deal with this neo-Dnyarri, this Talking Pet.\nAlien Captain! You have done a service for us greater than you can possibly imagine.\nYour reward is continued survival, and if you return to Earth and destroy your vessel IMMEDIATELY\nwe will abolish all punishment against you and your species.\nNow leave!... and never return.",
+      "voice": "urquan-008.ogg",
+      "original_text_hash": 16502141891876691732
+    },
+    {
+      "id": "turd_and_toad",
+      "index": 16,
+      "text": "Kind of like a cross between a turd and a toad.",
+      "voice": null,
+      "original_text_hash": 14849493886425987328
+    },
+    {
+      "id": "WHAT_IS_TURD_AND_TOAD",
+      "index": 17,
+      "text": "These references are obscure. Respecify.",
+      "voice": "urquan-009.ogg",
+      "original_text_hash": 16599849672308273083
+    },
+    {
+      "id": "alien_mind_control",
+      "index": 18,
+      "text": "I think I was attacked by some form of alien mind control!",
+      "voice": null,
+      "original_text_hash": 8963956839785205172
+    },
+    {
+      "id": "WHAT_FELT_LIKE",
+      "index": 19,
+      "text": "WHAT?!! OH NO!!!\nIT CANNOT BE!\nQUICK HUMAN! TELL ME: WHAT DID IT FEEL LIKE, THIS COMPULSION?",
+      "voice": "urquan-010.ogg",
+      "original_text_hash": 1798553734831664830
+    },
+    {
+      "id": "possessed_by_devil",
+      "index": 20,
+      "text": "I am fairly sure that I was possessed by the devil.",
+      "voice": null,
+      "original_text_hash": 15524362272891095784
+    },
+    {
+      "id": "STUPID_DEVIL",
+      "index": 21,
+      "text": "Devil? The only real devils are the ones flying the dark ships, human\nthe murderous Kohr-Ah.\nNOW GIVE ME THE INFORMATION I DEMAND!",
+      "voice": "urquan-011.ogg",
+      "original_text_hash": 13758786601727021716
+    },
+    {
+      "id": "falling_asleep",
+      "index": 22,
+      "text": "It was like I fell asleep, or was unconscious.",
+      "voice": null,
+      "original_text_hash": 10401787450258720001
+    },
+    {
+      "id": "someone_else_controlled",
+      "index": 23,
+      "text": "I felt like someone had control of my mind and my body.",
+      "voice": null,
+      "original_text_hash": 9490174367683177346
+    },
+    {
+      "id": "SOUNDS_FAMILIAR",
+      "index": 24,
+      "text": "This sounds all too familiar... yes, the nightmare begins again.\nPerhaps we should contact the Kohr-Ah Primat, explain to her.\nNo, they will not believe. They are too stubborn and simple-minded.\nThey will not see the danger until it is too late!\nHuman, begone! Leave my sight! We must defeat the Kohr-Ah speedily\nso that we can attend to this new Dnyarri menace.",
+      "voice": "urquan-012.ogg",
+      "original_text_hash": 7642938073958586430
+    },
+    {
+      "id": "before_coffee",
+      "index": 25,
+      "text": "Kind of like the screen went dark, and then POW! here you were.",
+      "voice": null,
+      "original_text_hash": 18084582360205238237
+    },
+    {
+      "id": "EXPLAIN",
+      "index": 26,
+      "text": "WHAT DO YOU MEAN?! ELUCIDATE!",
+      "voice": "urquan-013.ogg",
+      "original_text_hash": 11868131958048689363
+    },
+    {
+      "id": "why_explain",
+      "index": 27,
+      "text": "Why should I explain this to you? You're just going to try to kill me!",
+      "voice": null,
+      "original_text_hash": 6410111062058889994
+    },
+    {
+      "id": "MUST_EXPLAIN",
+      "index": 28,
+      "text": "Human. We Ur-Quan never lie. NEVER!\nIt is a weakness to lie, and as you haven't noticed, the Ur-Quan are not weak!\nSo listen, and believe these words\nif what you say is true, you were in contact with a creature so horrible, so evil\nthat it makes ANYTHING else you have ever known TRIVIAL by comparison.\nThere is no equal to the Dnyarri's cruelty, to its love for torment.\nDying a THOUSAND TIMES would be preferable to what is in store for you\nif we do not stop that creature.\nSo tell me what I want to know, human. NOW!",
+      "voice": "urquan-014.ogg",
+      "original_text_hash": 15121883230047510574
+    },
+    {
+      "id": "bye_init_hypno",
+      "index": 29,
+      "text": "Look, ah... this was all a mistake. A weird mistake. Bye!",
+      "voice": null,
+      "original_text_hash": 5689685863320908021
+    },
+    {
+      "id": "GOODBYE_AND_DIE_INIT_HYPNO",
+      "index": 30,
+      "text": "Your insolence knows no bounds!\nYou will be punished.",
+      "voice": "urquan-015.ogg",
+      "original_text_hash": 13312663495893837451
+    },
+    {
+      "id": "SUBSEQUENT_URQUAN_WAKE_UP",
+      "index": 31,
+      "text": "...and again you have violated our great battlefield\ninterfered with our Doctrinal War!\nWe were tolerant last time, and permitted you to escape.\nThis time, you shall not be so fortunate.",
+      "voice": "urquan-016.ogg",
+      "original_text_hash": 7129552213201225562
+    },
+    {
+      "id": "uh_oh",
+      "index": 32,
+      "text": "Uh oh.",
+      "voice": null,
+      "original_text_hash": 9198111724309590571
+    },
+    {
+      "id": "NO_UH_OH",
+      "index": 33,
+      "text": "It is as though your species' brain is too small to hold a simple thought\nsuch as, WE WILL KILL YOU FOR DISOBEYING!\nThis is not a complex idea.",
+      "voice": "urquan-017.ogg",
+      "original_text_hash": 17866032723589403838
+    },
+    {
+      "id": "stop_meeting",
+      "index": 34,
+      "text": "We have just GOT to stop meeting like this!",
+      "voice": null,
+      "original_text_hash": 10872812876233934851
+    },
+    {
+      "id": "NO_STOP_MEETING",
+      "index": 35,
+      "text": "You boldly enter our space! Approach this Dreadnought as though it were a recreation base\nand then play the dumb hominid?\nWho do you take us for, Captain... Spathi!?",
+      "voice": "urquan-018.ogg",
+      "original_text_hash": 10458111206493891288
+    },
+    {
+      "id": "bye_sub_hypno",
+      "index": 36,
+      "text": "Look, ah... big mistake! We're in a hurry! Goodbye.",
+      "voice": null,
+      "original_text_hash": 11389861604205525220
+    },
+    {
+      "id": "GOODBYE_AND_DIE_SUB_HYPNO",
+      "index": 37,
+      "text": "We cannot permit such disobedience from our slaves.\nYou will make an example for the rest of our subordinates.",
+      "voice": "urquan-019.ogg",
+      "original_text_hash": 9188668075057615360
+    },
+    {
+      "id": "CAUGHT_YA",
+      "index": 38,
+      "text": "SO! THE OFFSPRING HAS RETURNED TO ITS NEST!\nWhen you left this system, our ship was near enough to detect your translation into HyperSpace.\nThough we lost your HyperSpace spoor, we were able to backtrack your path here to this star system.\nAnd what did we FIND? An outlaw culture! Humans outside of a slave shield!\nYou will note that this oversight has been rectified.\nNow, we shall finish the job.",
+      "voice": "urquan-020.ogg",
+      "original_text_hash": 13394027937187212728
+    },
+    {
+      "id": "INIT_FLEE_HUMAN",
+      "index": 39,
+      "text": "So... it is the human slave.\nHow strange. I would have thought your species was extinct by now.\nWe have a suggestion for you.\nFLEE! Run as fast and as far as your ship will take you.",
+      "voice": "urquan-021.ogg",
+      "original_text_hash": 15433639309775994020
+    },
+    {
+      "id": "SUBSEQUENT_FLEE_HUMAN",
+      "index": 40,
+      "text": "Human? You are a fool! Why are you still here?\nFlee!... before the Kohr-Ah find you!",
+      "voice": "urquan-022.ogg",
+      "original_text_hash": 5004571454073696498
+    },
+    {
+      "id": "why_flee",
+      "index": 41,
+      "text": "Why should we run away?",
+      "voice": null,
+      "original_text_hash": 14890716918604712690
+    },
+    {
+      "id": "FLEE_BECAUSE",
+      "index": 42,
+      "text": "Because you are doomed if you remain here!\nOur Doctrinal War is over. We, the Kzer-Za, have lost.\nRUN HUMAN!\nBecause if you do not run -- do not find somewhere to hide and nurture your species\nyou are extinct, and we, who have tried to protect you\nare now powerless to stop the killing frenzy of the Kohr-Ah.",
+      "voice": "urquan-023.ogg",
+      "original_text_hash": 7992696181562227528
+    },
+    {
+      "id": "what_happens_now",
+      "index": 43,
+      "text": "So what happens now?",
+      "voice": null,
+      "original_text_hash": 8291997198169269295
+    },
+    {
+      "id": "HAPPENS_NOW",
+      "index": 44,
+      "text": "Now the Kohr-Ah and their Eternal Doctrine have free reign in these stars.\nThe Kohr-Ah will visit each of our slave races, staying only long enough\nto ensure than not one of the species remains alive.",
+      "voice": "urquan-024.ogg",
+      "original_text_hash": 14183165161410390887
+    },
+    {
+      "id": "what_about_you",
+      "index": 45,
+      "text": "So what happens to you?",
+      "voice": null,
+      "original_text_hash": 7829300133688768897
+    },
+    {
+      "id": "ABOUT_US",
+      "index": 46,
+      "text": "Human, days ago, I would have killed you for your insolence\nbut now... what is the use? You and your kind will receive the ultimate punishment soon enough.\nI will tell you what you wish to know.\nWhile the Kohr-Ah move through space, killing your neighboring species\nwe shall remain here, guarding the trophy... the Sa-Matra.\nWhen the Kohr-Ah are done with their dark business\nthey will take possession of the Sa-Matra, and then we will part ways\ntraversing the galaxy in opposite directions, fulfilling our doctrines\nand preparing for our next Doctrinal War.",
+      "voice": "urquan-025.ogg",
+      "original_text_hash": 515374638612692564
+    },
+    {
+      "id": "bye_wars_over",
+      "index": 47,
+      "text": "Well, it's been less than uplifting. Bye.",
+      "voice": null,
+      "original_text_hash": 10612783430165439076
+    },
+    {
+      "id": "GOODBYE_WARS_OVER",
+      "index": 48,
+      "text": "Farewell human. I hope your species survives.",
+      "voice": "urquan-026.ogg",
+      "original_text_hash": 16440926371022168469
+    },
+    {
+      "id": "SEND_MESSAGE",
+      "index": 49,
+      "text": "Attention interloper - heed this recorded message!\nThis drone-vessel speaks with the voice and authority of the Ur-Quan.\nYou are trespassing within Ur-Quan space.\nThis world, Earth, may not be approached for any reason.\nNor will hostilities against our orbital platform be tolerated.\nIn addition, your ship does not respond to standard Hierarchy identification transmissions\nand is therefore deemed to be... independent.\nThis is not permissible -- only subservience shall be tolerated.\nThis drone now leaves to inform the Ur-Quan of your transgressions.\nYou are commanded to remain here and await the arrival of the Ur-Quan.\nDisobedience will be punished.",
+      "voice": "urquan-027.ogg",
+      "original_text_hash": 1115887516267390342
+    },
+    {
+      "id": "INIT_HELLO",
+      "index": 50,
+      "text": "WHAT! A human in a Precursor service vehicle?!\nHow did you escape the slave shield, human?\nOr are you a rogue?",
+      "voice": "urquan-028.ogg",
+      "original_text_hash": 1592439909402215244
+    },
+    {
+      "id": "SUBSEQUENT_HELLO_1",
+      "index": 51,
+      "text": "Human, you have ignored our commands and now you will be punished.",
+      "voice": "urquan-029.ogg",
+      "original_text_hash": 195353559132235852
+    },
+    {
+      "id": "SUBSEQUENT_HELLO_2",
+      "index": 52,
+      "text": "Your insubordination is intolerable!\nYou MUST obey our slave laws!\nFurther disobedience will result in punitive measures against your homeworld.",
+      "voice": "urquan-030.ogg",
+      "original_text_hash": 10547310631430065994
+    },
+    {
+      "id": "SUBSEQUENT_HELLO_3",
+      "index": 53,
+      "text": "We will give you no more warnings, renegade human.",
+      "voice": "urquan-031.ogg",
+      "original_text_hash": 16067043739640672588
+    },
+    {
+      "id": "SUBSEQUENT_HELLO_4",
+      "index": 54,
+      "text": "We will give you no more warnings, renegade human.",
+      "voice": "urquan-032.ogg",
+      "original_text_hash": 16067043739640672588
+    },
+    {
+      "id": "you_must_surrender",
+      "index": 55,
+      "text": "Uh... surrender foul creature!",
+      "voice": null,
+      "original_text_hash": 12800126866090773214
+    },
+    {
+      "id": "NOPE",
+      "index": 56,
+      "text": "Submit or die foolish human!",
+      "voice": "urquan-033.ogg",
+      "original_text_hash": 16114008852173053704
+    },
+    {
+      "id": "i_surrender",
+      "index": 57,
+      "text": "Okay. I guess I surrender.",
+      "voice": null,
+      "original_text_hash": 11008461748172050760
+    },
+    {
+      "id": "DISOBEDIENCE_PUNISHED",
+      "index": 58,
+      "text": "We will not kill your entire crew\nonly those responsible for decision making\nspecifically YOU, Captain, and your officers.",
+      "voice": "urquan-034.ogg",
+      "original_text_hash": 5801560573461628202
+    },
+    {
+      "id": "i_wont_surrender",
+      "index": 59,
+      "text": "Nope! I won't surrender!",
+      "voice": null,
+      "original_text_hash": 2135720982049726469
+    },
+    {
+      "id": "BAD_CHOICE",
+      "index": 60,
+      "text": "You have made the incorrect choice\nand now you must suffer the consequences of your mistake.",
+      "voice": "urquan-035.ogg",
+      "original_text_hash": 13709056417706945633
+    },
+    {
+      "id": "i_will_surrender",
+      "index": 61,
+      "text": "I really, really, honestly surrender. I mean it. No kidding.",
+      "voice": null,
+      "original_text_hash": 14467714077637847970
+    },
+    {
+      "id": "GOOD_CHOICE",
+      "index": 62,
+      "text": "Your wise decision has spared many of your crew the pain of death.\nHowever, as the commanding officer of your renegade vessel\nyou will bear the full extent of the defined punishment\nwhich is death...",
+      "voice": "urquan-036.ogg",
+      "original_text_hash": 3064999594707144152
+    },
+    {
+      "id": "key_phrase",
+      "index": 63,
+      "text": "Hold! What you are doing to us is wrong! Why do you do this thing?",
+      "voice": null,
+      "original_text_hash": 2360172588683059766
+    },
+    {
+      "id": "URQUAN_STORY",
+      "index": 64,
+      "text": "Alien, you have spoken the Words, and you have spoken them rightly.\nWe will tell you our reasons why we enslave all other sentient life.\nWe evolved on a hostile world, the descendants of solitary hunters.\nIn those ancient days, there was no Kohr-Ah or Kzer-Za, only the Ur-Quan.\nWe explored our world, and then the space beyond.\nHere we met the six races of the Sentient Milieu, which we joined as partners.\nIt was on a routine planetfall that one of our Milieu scoutships first met the Dnyarri.\nThey were evilly intelligent creatures who could control the minds of others.\nThey wanted to rule the universe. We had no choice but to give it to them.\nFor thousands of years, we were unthinking slaves to the Dnyarri.\nThe Dnyarri had a special liking for us Ur-Quan\nso they began to tinker with our genes. They built two Ur-Quan sub-races\none Green, the thinkers and planners\nthe other Black, the warriors and laborers.\nWhen the martyred genius Kzer-Za gave us the secret to defeating the Dnyarri, we destroyed them.\nThen we decided that we would never again be slaves.\nWe would follow the Path of Now and Forever.\nWe decided to enslave or imprison all other intelligent life in the galaxy.\nWe had slave-shielded one world, when we learned that the Black Ur-Quan\nunder a new leader, Kohr-Ah, had devised the Eternal Doctrine\nwhich called for the `cleansing', the annihilation, of all non-Ur-Quan sentient life.\nBefore we could stop them, they burned the Yuptar race's homeworld\nand were on their way to the planet of the last remaining free race.\nWe met the Kohr-Ah in orbit above that planet. We confronted them. They would not submit. We fought.\nWhen our battle was done, the Kohr-Ah were defeated.\nWe exiled them, sent the remnant of the Kohr-Ah fleet into the unknown reaches of the galaxy.\nThen we began our own migration, moving around the galaxy in the opposite direction of the Kohr-Ah.\nCaptain. You have heard our words. Now you have a decision to make.\nSubmit to us, the Ur-Quan Kzer-Za, or face our wrath.",
+      "voice": "urquan-037.ogg",
+      "original_text_hash": 443681125594626269
+    },
+    {
+      "id": "like_to_leave",
+      "index": 65,
+      "text": "I will leave now.",
+      "voice": null,
+      "original_text_hash": 18149260346540966979
+    },
+    {
+      "id": "INDEPENDENCE_IS_BAD",
+      "index": 66,
+      "text": "Your independence is too dangerous for us to tolerate.\nYou shall be punished.",
+      "voice": "urquan-038.ogg",
+      "original_text_hash": 4026930582462244212
+    },
+    {
+      "id": "whats_up_1",
+      "index": 67,
+      "text": "Why do you wish to enslave us?",
+      "voice": null,
+      "original_text_hash": 1315330710030305098
+    },
+    {
+      "id": "GENERAL_INFO_1",
+      "index": 68,
+      "text": "Although you consider us the enemy, these conclusions are flawed. We are your salvation.\nWe bring you peace\na peace built upon OUR social framework imposed upon your planet\na new world order in which your prosperity and security are assured by the Ur-Quan.\nWe will protect you from the hazards of this hostile universe, from dangers so hideous\nyour simple minds cannot imagine their dark scope.\nToday, we are the enemy. In time, this will change.\nSoon, you will come to understand the boon of slavery we force upon you\nand then, you will revere and even love us for this gift.",
+      "voice": "urquan-039.ogg",
+      "original_text_hash": 1917399925244775712
+    },
+    {
+      "id": "whats_up_2",
+      "index": 69,
+      "text": "You didn't answer my question. What's your problem?",
+      "voice": null,
+      "original_text_hash": 8525930937844956625
+    },
+    {
+      "id": "GENERAL_INFO_2",
+      "index": 70,
+      "text": "You have intruded upon the battleground of our Doctrinal conflict with the Kohr-Ah.\nThis is not tolerable.\nWe must maintain our concentration on this war. We must win.\nShould we lose, the consequences to you and all other sentient life in this part of the galaxy\nwould be very grave.\nSince you have refused to depart willingly\nit appears that we must eliminate you ourselves.",
+      "voice": "urquan-040.ogg",
+      "original_text_hash": 11076831806751635382
+    },
+    {
+      "id": "whats_up_3",
+      "index": 71,
+      "text": "Hello? Ur-Quan? Are you paying attention to me?",
+      "voice": null,
+      "original_text_hash": 2224448840229094591
+    },
+    {
+      "id": "GENERAL_INFO_3",
+      "index": 72,
+      "text": "In our twenty thousand years along the Path of Now and Forever\nwe have dominated thousands of species, yes\nbut we have saved hundreds from extinction.\nYou imagine the threat of unknown invaders, or alien pestilence borne on the solar wind.\nWe have seen these. But you do not acknowledge your own worst enemy, yourselves.\nWe have found dead worlds without number, planets ravaged by atomic fire or gaian collapse.\nThese planets were not rendered sterile by outside forces.\nThey bear sad testament to the effects of unrestrained instinct and emotion\nor simple ignorance.\nWe will prevent such mistakes.",
+      "voice": "urquan-041.ogg",
+      "original_text_hash": 151420070987733927
+    },
+    {
+      "id": "whats_up_4",
+      "index": 73,
+      "text": "You aren't much of a listener, are you?",
+      "voice": null,
+      "original_text_hash": 1780835026825496240
+    },
+    {
+      "id": "GENERAL_INFO_4",
+      "index": 74,
+      "text": "A final command human, but it is more of a plea.\nYour insubordination has guaranteed your death, there can be no alternative\nbut your species has not yet crossed the threshold of disobedience\nthat would require us to decimate Earth.\nYou have survived combat with us before. You may survive the ensuing battle.\nIf this happens, leave! Return to your home. Await our arrival there.\nIf you interfere with us here, we may lose the Doctrinal conflict with the Kohr-Ah.\nIf we are defeated, you are defeated as well.\nThe Kohr-Ah will be unleashed. They will begin a genocidal orgy, cleansing all known sentience.\nThey will crack the slave shield around Earth and reduce the surface of your blue world to cinders.",
+      "voice": "urquan-042.ogg",
+      "original_text_hash": 4865349422219275191
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 75,
+      "text": "Blah, blah, blah!\nMary had a little lamb!\nI like to hold fuzzy little animals and give them huggie-wuggies.\nYou are probably wondering why an Ur-Quan is saying such stupid things.\nWell, he isn't saying them. I am... that's right -- ME\nthe little guy down in the corner.\nSince I've been stuck down here for this entire game\ntranslating `Submit or Die!' into about a hundred different languages\nI just thought I'd take this opportunity to express MY feelings.\nYou want to know what I think?\nI think this whole game would have been better\nif they'd done it as a musical!\nThat's what I think, but do the designers listen to me? NO!",
+      "voice": "urquan-043.ogg",
+      "original_text_hash": 9216067415525115078
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"get": ["encounter", "at_probe_message", false]},
+          "next": "probe.message"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "PLAYER_HYPNOTIZED", 0]}, 0]},
+          "next": "hypno.fade"
+        }
+      ],
+      "otherwise": "evil.check"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "probe.message.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SEND_MESSAGE"]}],
+      "next": "end"
+    },
+    {
+      "id": "probe.message",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_MESSAGE_DELIVERED", 1]
+      },
+      "save_as": "probe_message",
+      "next": "probe.message.speech"
+    },
+    {
+      "id": "hypno.fade",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.prepare_report",
+        "args": ["urquan.hypno_intro", {"literal": {}}]
+      },
+      "save_as": "hypno_fade",
+      "next": "hypno.choose"
+    },
+    {
+      "id": "hypno.choose",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "URQUAN_HYPNO_VISITS", 0]}, 0]}, "next": "hypno.first"}],
+      "otherwise": "hypno.again"
+    },
+    {
+      "id": "hypno.first",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INIT_URQUAN_WAKE_UP"]}],
+      "next": "hypno.first.menu"
+    },
+    {
+      "id": "hypno.again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SUBSEQUENT_URQUAN_WAKE_UP"]}],
+      "next": "hypno.again.menu"
+    },
+    {
+      "id": "where_am_i.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_ARE_HERE"]}],
+      "next": "hypno.first.menu"
+    },
+    {
+      "id": "where_am_i",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_am_i", true]
+      },
+      "save_as": "where_am_i",
+      "next": "where_am_i.speech"
+    },
+    {
+      "id": "why_does_my_head_hurt.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HURTS_BECAUSE"]}],
+      "next": "hypno.first.menu"
+    },
+    {
+      "id": "why_does_my_head_hurt",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_does_my_head_hurt", true]
+      },
+      "save_as": "why_does_my_head_hurt",
+      "next": "why_does_my_head_hurt.speech"
+    },
+    {
+      "id": "what_about_2_weeks.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_2_WEEKS"]}],
+      "next": "hypno.first.menu"
+    },
+    {
+      "id": "what_about_2_weeks",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_2_weeks", true]
+      },
+      "save_as": "what_about_2_weeks",
+      "next": "what_about_2_weeks.speech"
+    },
+    {
+      "id": "hypno.first.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "where_am_i",
+          "text": "where_am_i",
+          "when": {"not": {"get": ["local", "where_am_i", false]}},
+          "next": "where_am_i"
+        },
+        {
+          "id": "why_does_my_head_hurt",
+          "text": "why_does_my_head_hurt",
+          "when": {"not": {"get": ["local", "why_does_my_head_hurt", false]}},
+          "next": "why_does_my_head_hurt"
+        },
+        {
+          "id": "what_about_2_weeks",
+          "text": "what_about_2_weeks",
+          "when": {"not": {"get": ["local", "what_about_2_weeks", false]}},
+          "next": "what_about_2_weeks"
+        },
+        {
+          "id": "compulsion",
+          "text": "compulsion",
+          "when": true,
+          "next": "compulsion"
+        },
+        {
+          "id": "bye_init_hypno",
+          "text": "bye_init_hypno",
+          "when": true,
+          "next": "hypno.bye.first"
+        }
+      ]
+    },
+    {
+      "id": "uh_oh.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_UH_OH"]}],
+      "next": "hypno.again.menu"
+    },
+    {
+      "id": "uh_oh",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "uh_oh", true]
+      },
+      "save_as": "uh_oh",
+      "next": "uh_oh.speech"
+    },
+    {
+      "id": "stop_meeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_STOP_MEETING"]}],
+      "next": "hypno.again.menu"
+    },
+    {
+      "id": "stop_meeting",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "stop_meeting", true]
+      },
+      "save_as": "stop_meeting",
+      "next": "stop_meeting.speech"
+    },
+    {
+      "id": "hypno.again.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "uh_oh",
+          "text": "uh_oh",
+          "when": {"not": {"get": ["local", "uh_oh", false]}},
+          "next": "uh_oh"
+        },
+        {
+          "id": "stop_meeting",
+          "text": "stop_meeting",
+          "when": {"not": {"get": ["local", "stop_meeting", false]}},
+          "next": "stop_meeting"
+        },
+        {
+          "id": "compulsion",
+          "text": "compulsion",
+          "when": {"not": {"ne": [{"get": ["story", "MENTIONED_PET_COMPULSION", 0]}, 0]}},
+          "next": "compulsion"
+        },
+        {
+          "id": "bye_sub_hypno",
+          "text": "bye_sub_hypno",
+          "when": true,
+          "next": "hypno.bye.again"
+        }
+      ]
+    },
+    {
+      "id": "hypno.bye.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_INIT_HYPNO"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypno.bye.first.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hypno_bye_first_effect1",
+      "next": "hypno.bye.first.speech"
+    },
+    {
+      "id": "hypno.bye.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_HYPNO_VISITS", 1]
+      },
+      "save_as": "hypno_bye_first",
+      "next": "hypno.bye.first.effect1"
+    },
+    {
+      "id": "hypno.bye.again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_SUB_HYPNO"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypno.bye.again",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hypno_bye_again",
+      "next": "hypno.bye.again.speech"
+    },
+    {
+      "id": "compulsion.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_COMPULSION"]}],
+      "next": "compulsion.menu"
+    },
+    {
+      "id": "compulsion",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MENTIONED_PET_COMPULSION", 1]
+      },
+      "save_as": "compulsion",
+      "next": "compulsion.speech"
+    },
+    {
+      "id": "possessed_by_devil.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["STUPID_DEVIL"]}],
+      "next": "compulsion.menu"
+    },
+    {
+      "id": "possessed_by_devil",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "possessed_by_devil", true]
+      },
+      "save_as": "possessed_by_devil",
+      "next": "possessed_by_devil.speech"
+    },
+    {
+      "id": "why_explain.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MUST_EXPLAIN"]}],
+      "next": "compulsion.menu"
+    },
+    {
+      "id": "why_explain",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_explain", true]
+      },
+      "save_as": "why_explain",
+      "next": "why_explain.speech"
+    },
+    {
+      "id": "compulsion.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "wascally_little_guy",
+          "text": "wascally_little_guy",
+          "when": true,
+          "next": "pet.description"
+        },
+        {
+          "id": "alien_mind_control",
+          "text": "alien_mind_control",
+          "when": true,
+          "next": "mind.description"
+        },
+        {
+          "id": "possessed_by_devil",
+          "text": "possessed_by_devil",
+          "when": {"not": {"get": ["local", "possessed_by_devil", false]}},
+          "next": "possessed_by_devil"
+        },
+        {
+          "id": "why_explain",
+          "text": "why_explain",
+          "when": {"not": {"get": ["local", "why_explain", false]}},
+          "next": "why_explain"
+        }
+      ]
+    },
+    {
+      "id": "pet.description",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_IT_LOOK_LIKE"]}],
+      "next": "pet.menu"
+    },
+    {
+      "id": "mind.description",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_FELT_LIKE"]}],
+      "next": "mind.menu"
+    },
+    {
+      "id": "terran_amphibian.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BAD_NEWS"]}],
+      "next": "end"
+    },
+    {
+      "id": "terran_amphibian.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "terran_amphibian_effect1",
+      "next": "terran_amphibian.speech"
+    },
+    {
+      "id": "terran_amphibian",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_HYPNO_VISITS", 1]
+      },
+      "save_as": "terran_amphibian",
+      "next": "terran_amphibian.effect1"
+    },
+    {
+      "id": "talking_pet_on_steroids.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BAD_NEWS"]}],
+      "next": "end"
+    },
+    {
+      "id": "talking_pet_on_steroids.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "talking_pet_on_steroids_effect1",
+      "next": "talking_pet_on_steroids.speech"
+    },
+    {
+      "id": "talking_pet_on_steroids",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_HYPNO_VISITS", 1]
+      },
+      "save_as": "talking_pet_on_steroids",
+      "next": "talking_pet_on_steroids.effect1"
+    },
+    {
+      "id": "falling_asleep.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SOUNDS_FAMILIAR"]}],
+      "next": "end"
+    },
+    {
+      "id": "falling_asleep.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "falling_asleep_effect1",
+      "next": "falling_asleep.speech"
+    },
+    {
+      "id": "falling_asleep",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_HYPNO_VISITS", 1]
+      },
+      "save_as": "falling_asleep",
+      "next": "falling_asleep.effect1"
+    },
+    {
+      "id": "someone_else_controlled.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SOUNDS_FAMILIAR"]}],
+      "next": "end"
+    },
+    {
+      "id": "someone_else_controlled.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "someone_else_controlled_effect1",
+      "next": "someone_else_controlled.speech"
+    },
+    {
+      "id": "someone_else_controlled",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_HYPNO_VISITS", 1]
+      },
+      "save_as": "someone_else_controlled",
+      "next": "someone_else_controlled.effect1"
+    },
+    {
+      "id": "turd_and_toad.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_IS_TURD_AND_TOAD"]}],
+      "next": "pet.menu"
+    },
+    {
+      "id": "turd_and_toad",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "turd_and_toad", true]
+      },
+      "save_as": "turd_and_toad",
+      "next": "turd_and_toad.speech"
+    },
+    {
+      "id": "pet.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "terran_amphibian",
+          "text": "terran_amphibian",
+          "when": true,
+          "next": "terran_amphibian"
+        },
+        {
+          "id": "talking_pet_on_steroids",
+          "text": "talking_pet_on_steroids",
+          "when": true,
+          "next": "talking_pet_on_steroids"
+        },
+        {
+          "id": "turd_and_toad",
+          "text": "turd_and_toad",
+          "when": {"not": {"get": ["local", "turd_and_toad", false]}},
+          "next": "turd_and_toad"
+        }
+      ]
+    },
+    {
+      "id": "before_coffee.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["EXPLAIN"]}],
+      "next": "mind.menu"
+    },
+    {
+      "id": "before_coffee",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "before_coffee", true]
+      },
+      "save_as": "before_coffee",
+      "next": "before_coffee.speech"
+    },
+    {
+      "id": "mind.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "falling_asleep",
+          "text": "falling_asleep",
+          "when": true,
+          "next": "falling_asleep"
+        },
+        {
+          "id": "someone_else_controlled",
+          "text": "someone_else_controlled",
+          "when": true,
+          "next": "someone_else_controlled"
+        },
+        {
+          "id": "before_coffee",
+          "text": "before_coffee",
+          "when": {"not": {"get": ["local", "before_coffee", false]}},
+          "next": "before_coffee"
+        }
+      ]
+    },
+    {
+      "id": "evil.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "URQUAN_SENSES_EVIL", 0]}, 0]}},
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "evil.mark"
+        }
+      ],
+      "otherwise": "location"
+    },
+    {
+      "id": "evil.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_SENSES_EVIL", 1]
+      },
+      "save_as": "evil_mark",
+      "next": "evil.prefix"
+    },
+    {
+      "id": "evil.prefix",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "evil_prefix", true]
+      },
+      "save_as": "evil_prefix",
+      "next": "location"
+    },
+    {
+      "id": "location",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "at_colony", false]},
+          "next": "colony.outcome"
+        },
+        {
+          "when": {"get": ["encounter", "at_samatra", false]},
+          "next": "samatra.mark"
+        }
+      ],
+      "otherwise": "manner"
+    },
+    {
+      "id": "colony.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "colony_outcome",
+      "next": "colony.speech"
+    },
+    {
+      "id": "colony.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", ["CAUGHT_YA"]]
+        },
+        {
+          "speech": ["CAUGHT_YA"]
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "samatra.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "AWARE_OF_SAMATRA", 1]
+      },
+      "save_as": "samatra_mark",
+      "next": "samatra.outcome"
+    },
+    {
+      "id": "samatra.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "samatra_outcome",
+      "next": "samatra.speech"
+    },
+    {
+      "id": "samatra.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", ["HELLO_SAMATRA"]]
+        },
+        {
+          "speech": ["HELLO_SAMATRA"]
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "manner",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}, "next": "flee.choose"}],
+      "otherwise": "normal.greet"
+    },
+    {
+      "id": "normal.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "URQUAN_VISITS",
+          [
+            ["INIT_HELLO"],
+            ["SUBSEQUENT_HELLO_1"],
+            ["SUBSEQUENT_HELLO_2"],
+            ["SUBSEQUENT_HELLO_3"],
+            ["SUBSEQUENT_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "normal.greeting"
+    },
+    {
+      "id": "normal.greeting",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", {"get": ["result", "greeting.speech"]}]
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech"]}
+        }
+      ],
+      "next": "normal.menu"
+    },
+    {
+      "id": "surrender.demand.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOPE"]}],
+      "next": "end"
+    },
+    {
+      "id": "surrender.demand",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "surrender_demand",
+      "next": "surrender.demand.speech"
+    },
+    {
+      "id": "key.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_STORY"]}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "key",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_URQUAN_STORY", 2]
+      },
+      "save_as": "key",
+      "next": "key.speech"
+    },
+    {
+      "id": "whats_up_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_1_effect1",
+      "next": "whats_up_1.speech"
+    },
+    {
+      "id": "whats_up_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_INFO", 1]
+      },
+      "save_as": "whats_up_1",
+      "next": "whats_up_1.effect1"
+    },
+    {
+      "id": "whats_up_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_2_effect1",
+      "next": "whats_up_2.speech"
+    },
+    {
+      "id": "whats_up_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_INFO", 2]
+      },
+      "save_as": "whats_up_2",
+      "next": "whats_up_2.effect1"
+    },
+    {
+      "id": "whats_up_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_3_effect1",
+      "next": "whats_up_3.speech"
+    },
+    {
+      "id": "whats_up_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_INFO", 3]
+      },
+      "save_as": "whats_up_3",
+      "next": "whats_up_3.effect1"
+    },
+    {
+      "id": "whats_up_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_4_effect1",
+      "next": "whats_up_4.speech"
+    },
+    {
+      "id": "whats_up_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_INFO", 3]
+      },
+      "save_as": "whats_up_4",
+      "next": "whats_up_4.effect1"
+    },
+    {
+      "id": "leave.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INDEPENDENCE_IS_BAD"]}],
+      "next": "end"
+    },
+    {
+      "id": "leave",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "leave",
+      "next": "leave.speech"
+    },
+    {
+      "id": "normal.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "you_must_surrender",
+          "text": "you_must_surrender",
+          "when": true,
+          "next": "surrender.demand"
+        },
+        {
+          "id": "key_phrase",
+          "text": "key_phrase",
+          "when": {"eq": [{"get": ["story", "KNOW_URQUAN_STORY", 0]}, 1]},
+          "next": "key"
+        },
+        {
+          "id": "whats_up_1",
+          "text": "whats_up_1",
+          "when": {"eq": [{"get": ["story", "URQUAN_INFO", 0]}, 0]},
+          "next": "whats_up_1"
+        },
+        {
+          "id": "whats_up_2",
+          "text": "whats_up_2",
+          "when": {"eq": [{"get": ["story", "URQUAN_INFO", 0]}, 1]},
+          "next": "whats_up_2"
+        },
+        {
+          "id": "whats_up_3",
+          "text": "whats_up_3",
+          "when": {"eq": [{"get": ["story", "URQUAN_INFO", 0]}, 2]},
+          "next": "whats_up_3"
+        },
+        {
+          "id": "whats_up_4",
+          "text": "whats_up_4",
+          "when": {"eq": [{"get": ["story", "URQUAN_INFO", 0]}, 3]},
+          "next": "whats_up_4"
+        },
+        {
+          "id": "i_surrender",
+          "text": "i_surrender",
+          "when": true,
+          "next": "surrender.menu"
+        },
+        {
+          "id": "like_to_leave",
+          "text": "like_to_leave",
+          "when": true,
+          "next": "leave"
+        }
+      ]
+    },
+    {
+      "id": "surrender.no.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BAD_CHOICE"]}],
+      "next": "end"
+    },
+    {
+      "id": "surrender.no",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "surrender_no",
+      "next": "surrender.no.speech"
+    },
+    {
+      "id": "surrender.yes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_CHOICE"]}],
+      "next": "end"
+    },
+    {
+      "id": "surrender.yes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["defeat"]
+      },
+      "save_as": "surrender_yes",
+      "next": "surrender.yes.speech"
+    },
+    {
+      "id": "surrender.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DISOBEDIENCE_PUNISHED"]}],
+      "responses": [
+        {
+          "id": "i_wont_surrender",
+          "text": "i_wont_surrender",
+          "when": true,
+          "next": "surrender.no"
+        },
+        {
+          "id": "i_will_surrender",
+          "text": "i_will_surrender",
+          "when": true,
+          "next": "surrender.yes"
+        }
+      ]
+    },
+    {
+      "id": "flee.choose",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "URQUAN_VISITS", 0]}, 0]},
+          "next": "flee.first.mark"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "URQUAN_VISITS", 0]}, 1]},
+          "next": "flee.again"
+        }
+      ],
+      "otherwise": "flee.silent"
+    },
+    {
+      "id": "flee.first.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_VISITS", 1]
+      },
+      "save_as": "flee_first_mark",
+      "next": "flee.first"
+    },
+    {
+      "id": "flee.first",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", ["INIT_FLEE_HUMAN"]]
+        },
+        {
+          "speech": ["INIT_FLEE_HUMAN"]
+        }
+      ],
+      "next": "flee.menu"
+    },
+    {
+      "id": "flee.again",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "flee_again",
+      "next": "flee.again.speech"
+    },
+    {
+      "id": "flee.again.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", ["SUBSEQUENT_FLEE_HUMAN"]]
+        },
+        {
+          "speech": ["SUBSEQUENT_FLEE_HUMAN"]
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "flee.silent",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_VISITS", {"min": [{"add": [{"get": ["story", "URQUAN_VISITS", 0]}, 1]}, 7]}]
+      },
+      "save_as": "flee_silent",
+      "next": "flee.silent.speech"
+    },
+    {
+      "id": "flee.silent.speech",
+      "kind": "dialogue",
+      "variants": [{"when": {"get": ["local", "evil_prefix", false]}, "speech": ["SENSE_EVIL", []]}, {"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "why_flee.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FLEE_BECAUSE"]}],
+      "next": "flee.menu"
+    },
+    {
+      "id": "why_flee",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_flee", true]
+      },
+      "save_as": "why_flee",
+      "next": "why_flee.speech"
+    },
+    {
+      "id": "what_happens_now.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAPPENS_NOW"]}],
+      "next": "flee.menu"
+    },
+    {
+      "id": "what_happens_now",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_happens_now", true]
+      },
+      "save_as": "what_happens_now",
+      "next": "what_happens_now.speech"
+    },
+    {
+      "id": "what_about_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US"]}],
+      "next": "flee.menu"
+    },
+    {
+      "id": "what_about_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_you", true]
+      },
+      "save_as": "what_about_you",
+      "next": "what_about_you.speech"
+    },
+    {
+      "id": "flee.bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_WARS_OVER"]}],
+      "next": "end"
+    },
+    {
+      "id": "flee.bye",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "flee_bye",
+      "next": "flee.bye.speech"
+    },
+    {
+      "id": "flee.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_flee",
+          "text": "why_flee",
+          "when": {"not": {"get": ["local", "why_flee", false]}},
+          "next": "why_flee"
+        },
+        {
+          "id": "what_happens_now",
+          "text": "what_happens_now",
+          "when": {"not": {"get": ["local", "what_happens_now", false]}},
+          "next": "what_happens_now"
+        },
+        {
+          "id": "what_about_you",
+          "text": "what_about_you",
+          "when": {"not": {"get": ["local", "what_about_you", false]}},
+          "next": "what_about_you"
+        },
+        {
+          "id": "bye_wars_over",
+          "text": "bye_wars_over",
+          "when": true,
+          "next": "flee.bye"
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 #include "graph.hpp"
-namespace uqm::design::conversation {
+namespace uqm::dialogue {
 ConversationGraph::ConversationGraph() : entry_(this, nullptr) {}
 ConversationGraph::~ConversationGraph() = default;
 ConversationGraph::size_type ConversationGraph::size() const noexcept {
@@ -72,4 +72,4 @@ ConversationGraph::iterator &ConversationGraph::iterator::next() {
         return next(graph_->end());
     throw std::logic_error("decision requires a branch selection");
 }
-} // namespace uqm::design::conversation
+} // namespace uqm::dialogue

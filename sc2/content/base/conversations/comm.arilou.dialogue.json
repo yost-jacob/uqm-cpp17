@@ -1,0 +1,2704 @@
+{
+  "version": 1,
+  "node_count": 129,
+  "id": "arilou",
+  "resource": "comm.arilou.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native resource configuration and post-encounter consequences remain; all dialogue, portal exchange and topic ordering are graph data.",
+    "known_difference": "The always-offered angry-homeworld leave response retains its readable label after repetition instead of blanking it."
+  },
+  "phrases": [
+    {
+      "id": "INIT_HELLO",
+      "index": 0,
+      "text": "Hello my little one. I am so pleased to see you!\nYou have done well for yourself.\nIt is gratifying.",
+      "voice": "arilou-000.ogg",
+      "original_text_hash": 14028939700492841098
+    },
+    {
+      "id": "confused_by_hello",
+      "index": 1,
+      "text": "You sound as if you know me. Have we met?",
+      "voice": null,
+      "original_text_hash": 392128463218717011
+    },
+    {
+      "id": "CONFUSED_RESPONSE",
+      "index": 2,
+      "text": "I forget myself. Of course you don't know me. You are from Unzervalt, not Earth.\nWe are, however, how shall I say, related.\nIt has been many of your years since I have been to our planet Earth.\nWe are known among your kind by many names... some of them flattering, some of them not.\nThe one we use most often was given to us by the children of the Celts. A wonderful culture!\nThey called us the Arilou... the Arilou Lalee'lay.\nMore recently we were part of the Alliance of Free Stars, along with your kind\nuntil we decided to return to our own....oh, how would you say... reality\nwhen it became clear that your people would be safe enough under the Ur-Quan slave shield.",
+      "voice": "arilou-001.ogg",
+      "original_text_hash": 10257552531080260376
+    },
+    {
+      "id": "happy_by_hello",
+      "index": 3,
+      "text": "I know who you are! You're Arilou!! We've wondered what happened to your people for a long time.",
+      "voice": null,
+      "original_text_hash": 8266266921039967213
+    },
+    {
+      "id": "HAPPY_RESPONSE",
+      "index": 4,
+      "text": "You are very clever!\nYes, I am Arilou Lalee'lay and I suppose it has been a very long time since you've met one of my kind.\nI imagine you humans are still very short lived. How sad.\nAh well. To answer your question, we chose to cease our efforts with the Alliance of Free Stars\nwhen it seemed that there was no longer any threat to our Earthlings.\nI am pleased to see that you, from outside the slave shield, survived. You seem healthy.",
+      "voice": "arilou-002.ogg",
+      "original_text_hash": 6057349133433511919
+    },
+    {
+      "id": "miffed_by_hello",
+      "index": 5,
+      "text": "I'll be. It's the Arilou. Why the hell did you run out on the Alliance of Free Stars? What happened?",
+      "voice": null,
+      "original_text_hash": 12838422281444158823
+    },
+    {
+      "id": "MIFFED_RESPONSE",
+      "index": 6,
+      "text": "You're annoyed. How interesting.\nIt has been so long since I dealt with Humans. I had forgotten what it was like.\nNow let's see, how shall I best appease you? Yes, if I remember, an honest answer would help.\nWe didn't exactly `run out' on the Alliance.\nWe chose to leave when there was no longer a reason to stay.\nYou humans seemed safe enough under the Ur-Quan slave shield.\nIn fact, we rather liked the idea and wished we had thought of it ourselves.\nFor your safety of course.",
+      "voice": "arilou-003.ogg",
+      "original_text_hash": 13732387772824768076
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_1",
+      "index": 7,
+      "text": "Ah... our human friend. Please, let us chat a while.\nIt has been so many years since I last visited your Earth\nso long since I glided across your open fields under the light of a full moon.\nTell me of Earth. Tell me what I have... oh, I forget myself... how silly.\nYou were born on the distant world Unzervalt.\nI have visited there much more recently.",
+      "voice": "arilou-004.ogg",
+      "original_text_hash": 8912680208369824818
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_2",
+      "index": 8,
+      "text": "Hello my clever child. We have met again and I am pleased.\nYour people are so beautiful... so unspoiled.\nYour instincts are like perfume... your motives a shimmering crystal.",
+      "voice": "arilou-005.ogg",
+      "original_text_hash": 13433191932441292809
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_3",
+      "index": 9,
+      "text": "Last night as you slept, I touched your face and you smiled!...\nbut now you frown. A pity. Smiling is healthier.",
+      "voice": "arilou-006.ogg",
+      "original_text_hash": 14862377364986692008
+    },
+    {
+      "id": "FRIENDLY_SPACE_HELLO_4",
+      "index": 10,
+      "text": "Did you desire this meeting, Captain, or did we?",
+      "voice": "arilou-007.ogg",
+      "original_text_hash": 3522326365736105099
+    },
+    {
+      "id": "FRDLY_HOMEWORLD_HELLO_1",
+      "index": 11,
+      "text": "Ha-ha! Our clever ward has found our nook in *time*!\nYou are the first, brave human! No others have made the trip.\nThis is our homeworld, Falayalaralfali, nestled safe in this TrueSpace eddy.\nThe portal you passed through is a rarity, a natural point of interdimensional fatigue.\nWe use these phenomena to speed our transit through the realities.\nWe are wondering, have you met with the Umgah recently?\nWe entrusted an injured Talking Pet into their care\nand we were curious about its progress.",
+      "voice": "arilou-008.ogg",
+      "original_text_hash": 18269486871612056365
+    },
+    {
+      "id": "FRDLY_HOMEWORLD_HELLO_2",
+      "index": 12,
+      "text": "Welcome back to Falayalaralfali, Captain.\nPerhaps, in the fullness of time we will let you visit the surface of our world.\nThere are many beauties here unmatched anywhere... the Mountain Clouds of Thought\nthe Tangible Wish... the Dark. Unfortunately, you are not yet... acclimated.\nPremature exposure to these would render you... numb.",
+      "voice": "arilou-009.ogg",
+      "original_text_hash": 6243179648896780123
+    },
+    {
+      "id": "FRDLY_HOMEWORLD_HELLO_3",
+      "index": 13,
+      "text": "Hello. We are pleased to see you again. Have you any numbness yet?\nGood. It should be too soon for that. Too soon by far.",
+      "voice": "arilou-010.ogg",
+      "original_text_hash": 13050996320650852339
+    },
+    {
+      "id": "FRDLY_HOMEWORLD_HELLO_4",
+      "index": 14,
+      "text": "Yes, Captain? What can the Arilou Lalee'lay of Falayalaralfali do for you this day?",
+      "voice": "arilou-011.ogg",
+      "original_text_hash": 13098318801724925325
+    },
+    {
+      "id": "whats_up_1",
+      "index": 15,
+      "text": "What exactly IS your connection with Earth and Humans, anyway?",
+      "voice": null,
+      "original_text_hash": 11680459199921267213
+    },
+    {
+      "id": "whats_up_2",
+      "index": 16,
+      "text": "I'm still confused about our relationship. Please elaborate.",
+      "voice": null,
+      "original_text_hash": 16200448961672798081
+    },
+    {
+      "id": "GENERAL_INFO_1",
+      "index": 17,
+      "text": "You are curious. That is a promising quality.\nHow can I describe our relation to Humans?...\nNever doubt our motives, Captain. Your well-being is of paramount concern to every Arilou.\nSurely you know, that it was the day after Humanity joined the Alliance Of Free Stars\nthat we appeared in the open for the first time. This was no coincidence.\nWe wanted to protect you. Once we saw that you were...well, safe\nwe decided to tend to other business for a short while.\nBelieve me, Captain, we have known each other for a very long time.\nYou might even say that we knew the first human.",
+      "voice": "arilou-012.ogg",
+      "original_text_hash": 11107194180485512625
+    },
+    {
+      "id": "GENERAL_INFO_2",
+      "index": 18,
+      "text": "You have painted our pictures on cave walls, erected standing stones and pyramids for us.\nYou have wondered at our signs to each other in your wheat fields\nand written books about our more personal endeavors\nwhen we allowed you to recall our examinations.\nWe have a history together, Captain, and you have come a long way.\nBut I must tread carefully. You are not ready for everything\nand I fear that you would not understand what was best for you.",
+      "voice": "arilou-013.ogg",
+      "original_text_hash": 2233444829528246743
+    },
+    {
+      "id": "GENERAL_INFO_3",
+      "index": 19,
+      "text": "As you know, we never revealed where in the galaxy one could find our homeworld.\nThere was a good reason. We are not from your space, or your... *time*.\nSome of your more broad thinkers refer to such realms as other dimensions.\nThough trivialized, this is a suitable metaphor for your intellect.\nPerhaps you know of the Orz. Like us, they are dimensional travellers\nbut that is where our similarity ends.\nDo not trust the Orz, my Human Captain. They are dangerous.\nBut as to your question... our relationship\nTo call our interaction with your kind an experiment would be much too simple and impersonal.\nLet us just say that we have a vested interest in your... development.\nYou are one of our... extended family, just as other sentients in other dimensions\nhave their extended families.\nWe are proud of you as you would be of your children, and some day\nwell, I have said too much already.",
+      "voice": "arilou-014.ogg",
+      "original_text_hash": 15456355099098628100
+    },
+    {
+      "id": "GENERAL_INFO_4",
+      "index": 20,
+      "text": "You already know more than is appropriate. In fact, you may represent an unfortunate complication.\nYou have been in the stars for much time. Do you seek the doorway, or are you just passing through?\nRemember, you can only go over naturally for the three days it is open.\nHow to find it? Look on your starmap from 17 through 20. The variable star shall be your guide.",
+      "voice": "arilou-015.ogg",
+      "original_text_hash": 12844668639773397806
+    },
+    {
+      "id": "why_you_here",
+      "index": 21,
+      "text": "What are you doing here, in this region of space?",
+      "voice": null,
+      "original_text_hash": 18082198694256816058
+    },
+    {
+      "id": "LEARN_THINGS",
+      "index": 22,
+      "text": "We are many places, at many *times*. This place is an easy place... one of the ten easy places.\nAt different times, we explore different easy places. That is our way.\nOh! I can see from the look in your eyes that I have confused you.  I am silly.\nPlease disregard my words.",
+      "voice": "arilou-016.ogg",
+      "original_text_hash": 5785699332261923054
+    },
+    {
+      "id": "what_things",
+      "index": 23,
+      "text": "What are you exploring for in these `easy places'?",
+      "voice": null,
+      "original_text_hash": 9507292024210070217
+    },
+    {
+      "id": "THESE_THINGS",
+      "index": 24,
+      "text": "We seek to trap *Nnngn*, but they dart and leap.\nYOU cannot trap *Nnngn*... do not even try.\nI do not think you can even touch them; you are not quite solid enough.",
+      "voice": "arilou-017.ogg",
+      "original_text_hash": 16117639960604220987
+    },
+    {
+      "id": "why_do_it",
+      "index": 25,
+      "text": "Okay, you trap these nungy things. Then what?",
+      "voice": null,
+      "original_text_hash": 1970423534593569152
+    },
+    {
+      "id": "DO_IT_BECAUSE",
+      "index": 26,
+      "text": "Why we let them go, of course! *Nnngn* do not like to be confined!\nCaptain, these things we talk about... they are unimportant to you... they are as dreams.\nOur words should address your universe... not ours.",
+      "voice": "arilou-018.ogg",
+      "original_text_hash": 3589564405170604976
+    },
+    {
+      "id": "give_me_info_1",
+      "index": 27,
+      "text": "We still struggle against the Ur-Quan. Can you help us?",
+      "voice": null,
+      "original_text_hash": 8292714965079908434
+    },
+    {
+      "id": "ARILOU_HINTS_1",
+      "index": 28,
+      "text": "With ships and weapons... blood and bones... no.\nToo many shipmates were forcibly... discorporated.. in the last conflict.\nOur cooperation is not necessary. You are the focus.\nHowever, knowledge transcends reality perimeters, and this we can share with you.\nAn example: to discover the nature of the red probes\nseek creatures who inhabit a world with no surface.",
+      "voice": "arilou-019.ogg",
+      "original_text_hash": 9902835412243271556
+    },
+    {
+      "id": "give_me_info_2",
+      "index": 29,
+      "text": "Can you give us any more information?",
+      "voice": null,
+      "original_text_hash": 3354834025618512819
+    },
+    {
+      "id": "ARILOU_HINTS_2",
+      "index": 30,
+      "text": "The Mycon change and reform worlds with their Deep Children.\nThese changes affect others unfortunately.\nThe fate of your world and your heart relate to these matters.",
+      "voice": "arilou-020.ogg",
+      "original_text_hash": 13398635914168518746
+    },
+    {
+      "id": "ARILOU_HINTS_3",
+      "index": 31,
+      "text": "The carnate forces of Ur-Quan and Kohr-Ah are twined about the memory of pain.\nThey respond to these words:\n`Hold! What you are doing to us is wrong! Why do you do this thing?'",
+      "voice": "arilou-021.ogg",
+      "original_text_hash": 8395288759968228102
+    },
+    {
+      "id": "ARILOU_HINTS_4",
+      "index": 32,
+      "text": "The enemy of your enemy is your friend... at least for a time.",
+      "voice": "arilou-022.ogg",
+      "original_text_hash": 513842627826688950
+    },
+    {
+      "id": "bye_friendly_space",
+      "index": 33,
+      "text": "Goodbye Arilou.",
+      "voice": null,
+      "original_text_hash": 4060738041688581324
+    },
+    {
+      "id": "GOODBYE_FRIENDLY_SPACE",
+      "index": 34,
+      "text": "Farewell child.",
+      "voice": "arilou-023.ogg",
+      "original_text_hash": 7802308093037923299
+    },
+    {
+      "id": "GOT_PART_YET_1",
+      "index": 35,
+      "text": "The prospect of sharing the easy way with you excites us.\nIf you have found the Ur-Quan Warp Pod, this prospect can be made a reality.",
+      "voice": "arilou-024.ogg",
+      "original_text_hash": 9896153873945188575
+    },
+    {
+      "id": "GOT_PART_YET_2",
+      "index": 36,
+      "text": "We are so eager to give you our means to traverse reality.\nHave you obtained the Warp Pod yet?",
+      "voice": "arilou-025.ogg",
+      "original_text_hash": 18413124156946242529
+    },
+    {
+      "id": "INIT_ANGRY_HWLD_HELLO",
+      "index": 37,
+      "text": "You have found our world. We did not see this\nand now it is too late to adjust without damage\nbut perhaps the situation can be resolved in another way.\nThe answer lies within your next statement.",
+      "voice": "arilou-026.ogg",
+      "original_text_hash": 6653792891424286769
+    },
+    {
+      "id": "invaders_from_mars",
+      "index": 38,
+      "text": "You guys are like... invaders from Mars! Weird evil monsters!",
+      "voice": null,
+      "original_text_hash": 9261057415970769810
+    },
+    {
+      "id": "HAD_OUR_REASONS",
+      "index": 39,
+      "text": "No. We seek not to invade, but to pervade. There is a difference.\nYour stories of evil creatures... these are just... side effects.\nPay them no heed.",
+      "voice": "arilou-027.ogg",
+      "original_text_hash": 10044006383016870208
+    },
+    {
+      "id": "bug_eyed_fruitcakes",
+      "index": 40,
+      "text": "No-no-no-no-no! I'll stop you! You bug-eyed fruitcakes have mutilated your last cow!",
+      "voice": null,
+      "original_text_hash": 4782841147858069749
+    },
+    {
+      "id": "WE_NEVER_FRIENDS",
+      "index": 41,
+      "text": "We have sought amiable companionship with you, Captain\nwhen we just as easily could have performed such experiments on you.\nWe shall not fight with our children. Goodbye.",
+      "voice": "arilou-028.ogg",
+      "original_text_hash": 2133643694977714081
+    },
+    {
+      "id": "ok_lets_be_friends",
+      "index": 42,
+      "text": "Look, I'm sorry. I made some mistakes. We need you as allies, not as enemies.",
+      "voice": null,
+      "original_text_hash": 17344401236288835317
+    },
+    {
+      "id": "NO_ALLY_BUT_MUCH_GIVE",
+      "index": 43,
+      "text": "We have never been your enemy, though your people may once have thought so.\nBut we are also not your ally. That would require a degree of involvement in this *time*\nwhich is not presently permissible.\nFor now, we are simply your friends... who have much to give.",
+      "voice": "arilou-029.ogg",
+      "original_text_hash": 15581687271081076729
+    },
+    {
+      "id": "why_should_i_trust",
+      "index": 44,
+      "text": "Why should I trust you? You did funny things to that horror writer a while ago, right?",
+      "voice": null,
+      "original_text_hash": 192424701086776075
+    },
+    {
+      "id": "TRUST_BECAUSE",
+      "index": 45,
+      "text": "We do many things, few of them funny... at least by our standards.\nYou do not, CANNOT understand some of what we do, or why.\nTherefore, it may be best if you simply consider us... quirky.",
+      "voice": "arilou-030.ogg",
+      "original_text_hash": 18197113812947583862
+    },
+    {
+      "id": "what_about_interference",
+      "index": 46,
+      "text": "What gives your people the right to interfere with mine?",
+      "voice": null,
+      "original_text_hash": 124273387091572023
+    },
+    {
+      "id": "INTERFERENCE_NECESSARY",
+      "index": 47,
+      "text": "What gives you the right to move, the right to fall?\nSome acts are motivated, others are automatic.\nDo not presume that you can decide which is which for anyone but yourself\nor you will be... disappointed.",
+      "voice": "arilou-031.ogg",
+      "original_text_hash": 1748649925360119922
+    },
+    {
+      "id": "i_just_like_to_leave",
+      "index": 48,
+      "text": "Ok, fine, whatever. Just let me leave now, okay?",
+      "voice": null,
+      "original_text_hash": 17369284146910215774
+    },
+    {
+      "id": "SORRY_NO_LEAVE",
+      "index": 49,
+      "text": "This matter must be resolved, or many event strands will grow... more complicated.\nYour presence is required.",
+      "voice": "arilou-032.ogg",
+      "original_text_hash": 11779813600365224229
+    },
+    {
+      "id": "what_about_war",
+      "index": 50,
+      "text": "So what DID happen at the end of the War?",
+      "voice": null,
+      "original_text_hash": 9668056505719091524
+    },
+    {
+      "id": "ABOUT_WAR",
+      "index": 51,
+      "text": "Forgive us if we forget the importance you attach to such events as this.\nOur... context, is infinitely broader than yours in scope, both in space and *time*.\nNevertheless, to please you I shall try to recall.\nYes, now I remember. Here is the sequence:\nThe Ur-Quan fleets have moved through your solar system and you are defeated.\nYour people make the choice not to fight with and for the Ur-Quan.\nA shield is cast about your world. Your people are now safe. This makes us happy.\nThe Armada departs your star system and moves toward the remaining Alliance members\nourselves, the Syreen, the Yehat and their adopted Shofixti.\nThe Yehat and Shofixti withdraw to Delta Gorno, but they do not permit the Syreen to follow.\nWe are content with the flow of events and leave the area to return here.\nFrom our perspective, this sequence of events ends here.",
+      "voice": "arilou-033.ogg",
+      "original_text_hash": 12200297772739854558
+    },
+    {
+      "id": "what_about_urquan",
+      "index": 52,
+      "text": "Well what about the Ur-Quan? What are they up to?",
+      "voice": null,
+      "original_text_hash": 1208115098321349202
+    },
+    {
+      "id": "ABOUT_URQUAN",
+      "index": 53,
+      "text": "Soon after the Ur-Quan defeated the Yehat and imprisoned the Syreen in Betelgeuse\ntheir siblings arrived to initiate the Doctrinal Conflict.\nThis battle continues as we speak.",
+      "voice": "arilou-034.ogg",
+      "original_text_hash": 7321779815544943457
+    },
+    {
+      "id": "best_if_i_killed_you",
+      "index": 54,
+      "text": "I think it would be best if I killed you now.",
+      "voice": null,
+      "original_text_hash": 1398589216538385763
+    },
+    {
+      "id": "WICKED_HUMAN",
+      "index": 55,
+      "text": "Instinct. Instinct. Instinct. Always the instinct.",
+      "voice": "arilou-035.ogg",
+      "original_text_hash": 4393311650096524107
+    },
+    {
+      "id": "what_did_on_earth",
+      "index": 56,
+      "text": "What, exactly, have you been doing on Earth?",
+      "voice": null,
+      "original_text_hash": 17575991971018723299
+    },
+    {
+      "id": "DID_THIS",
+      "index": 57,
+      "text": "You desire honesty. It is given.\nWe have visited your world for many thousands of years into your species' past.\nWe have changed things... made modifications.",
+      "voice": "arilou-036.ogg",
+      "original_text_hash": 1191506458035786676
+    },
+    {
+      "id": "why_did_this",
+      "index": 58,
+      "text": "What did you change and modify on Earth, AND WHY?!",
+      "voice": null,
+      "original_text_hash": 7058641973439321424
+    },
+    {
+      "id": "IDF_PARASITES",
+      "index": 59,
+      "text": "Our motives are multiple, our desires complex.\nPart of what we do on Earth is for your own protection.\nThere are parasites. Creatures who dwell Beyond.\nThey have names, but you do not know them. They would like to find you\nbut they are blind to your presence... unless you show yourselves.\nThe Androsynth showed themselves, and something noticed them.\nThere are no more Androsynth now. Only Orz.",
+      "voice": "arilou-037.ogg",
+      "original_text_hash": 3392910361133292654
+    },
+    {
+      "id": "tell_more",
+      "index": 60,
+      "text": "This sounds creepy. Please go on.",
+      "voice": null,
+      "original_text_hash": 3105529033287784876
+    },
+    {
+      "id": "NOT_NOW",
+      "index": 61,
+      "text": "No. In a way, ignorance is your armor, your best protection.\nThey cannot see you now. They cannot smell you.\nMuch of our work with your people involved making you invisible... changing your smell.\nIf I tell you more, you will look where you could never look before\nand while you are looking you can and will be seen.\nYou do not want to be seen.",
+      "voice": "arilou-038.ogg",
+      "original_text_hash": 13558204985921058501
+    },
+    {
+      "id": "umgah_acting_weird",
+      "index": 62,
+      "text": "We have met the Umgah, and they are acting extremely weird, like zombie-blobbies!",
+      "voice": null,
+      "original_text_hash": 11791310801660632268
+    },
+    {
+      "id": "learned_about_umgah",
+      "index": 63,
+      "text": "Have you learned anything about the Umgah yet?",
+      "voice": null,
+      "original_text_hash": 8724236386898849390
+    },
+    {
+      "id": "WELL_GO_CHECK",
+      "index": 64,
+      "text": "Hmmm... this is disturbing news. They are normally rambunctious to an extreme.\nWe will send ships to Umgah space to investigate.\nWe should have some answers in a few days time.",
+      "voice": "arilou-039.ogg",
+      "original_text_hash": 15988553593408730152
+    },
+    {
+      "id": "NO_NEWS_YET",
+      "index": 65,
+      "text": "Our exploration skiffs have not returned. We are concerned.\nPerhaps if you ask later, we will know then.",
+      "voice": "arilou-040.ogg",
+      "original_text_hash": 540405849144270365
+    },
+    {
+      "id": "UMGAH_UNDER_COMPULSION",
+      "index": 66,
+      "text": "We have discovered something strange and frightening about the Umgah\nWhen we approached their vessels, we were instantly attacked\nand the Umgah made no attempts to contact our ships or respond to our hails.\nUsing our own psionic sensitivities, we determined that they are under some form of psychic compulsion.\nThe source of psionic control commands appears to be Beta Orionis, the Umgah's home star.\nWe sent vessels to investigate this location, but none have returned... we fear they are destroyed.",
+      "voice": "arilou-041.ogg",
+      "original_text_hash": 17842027894160585387
+    },
+    {
+      "id": "what_do_now",
+      "index": 67,
+      "text": "So what can we do about the psychically zombified blobbies?",
+      "voice": null,
+      "original_text_hash": 13673252711260121471
+    },
+    {
+      "id": "GO_FIND_OUT",
+      "index": 68,
+      "text": "We have had no success with our own investigations.\nWhatever controls the Umgah is a threat, but we seem unprepared to deal with it.\nPerhaps you and your crew are better suited to this mission.\nIf you choose to go to Beta Orionis, take care, child.\nWhatever controls the Umgah now knows of our presence\nand it may take measures against us.",
+      "voice": "arilou-042.ogg",
+      "original_text_hash": 7233726113907464477
+    },
+    {
+      "id": "tell_arilou_about_tpet",
+      "index": 69,
+      "text": "The source of the Umgah's compulsion is the Talking Pet you gave the Umgah,\nbut now it is intelligent and exhibits strange powers.",
+      "voice": null,
+      "original_text_hash": 8609960324662593229
+    },
+    {
+      "id": "BAD_NEWS_ABOUT_TPET",
+      "index": 70,
+      "text": "That is very bad news. This creature, a super-intelligent, psychically coercive creature\nis very similar to a race of beings which was thought to have vanished over 20,000 years ago.\nThey were called the Dnyarri, and history tells that they ruled a wide region of this galaxy\nfor many thousands of years. The Dnyarri were cruel and devious\nand when they were finally overthrown by one of their slave-races\nthey were supposedly exterminated.\nPerhaps this Talking Pet is the degenerate product of the Dnyarri.",
+      "voice": "arilou-043.ogg",
+      "original_text_hash": 7605540820498967519
+    },
+    {
+      "id": "what_do_about_tpet",
+      "index": 71,
+      "text": "So what should we do about this Dnyarri creature?",
+      "voice": null,
+      "original_text_hash": 14727867051810653371
+    },
+    {
+      "id": "DANGEROUS_BUT_USEFUL",
+      "index": 72,
+      "text": "The Dnyarri were the most inimical race this galaxy has known.\nIn other dimensions, other *times*, there are far, far worse beings\nbut they do not threaten you at the present time.\nDuring their reign, the Dnyarri possessed absolute power over all intelligent species in this region.\nThey used their slaves for all menial tasks and many forms of depraved entertainment.\nIf the Talking Pet we gave to the Umgah has attained the coercive abilities of its ancestors\nwe must assume that other Talking Pets can do likewise.\nTherefore the creature must be considered the most dangerous being in the galaxy.\nIts destruction is necessary... unless\nyou can find some way to gain control over the creature!\nIf you could do this you would have a powerful weapon against the Ur-Quan.\nOf course, if you made one mistake, you would be the Dnyarri's slave forever.",
+      "voice": "arilou-044.ogg",
+      "original_text_hash": 11207859679021899402
+    },
+    {
+      "id": "what_give_me",
+      "index": 73,
+      "text": "You said you had much to give my people. Can you be more specific?",
+      "voice": null,
+      "original_text_hash": 1187419853461917401
+    },
+    {
+      "id": "ABOUT_PORTAL",
+      "index": 74,
+      "text": "As you know, we live in a dimension adjacent to HyperSpace which we call QuasiSpace.\nOur ships move between these dimensions through weaknesses in the inter-dimensional fabric.\nAlthough many such weaknesses, or Portals, exist which lead from our dimension, QuasiSpace\nto various locations in HyperSpace, there is only one naturally occurring Portal\nwhich will transport a ship from HyperSpace to QuasiSpace.\nWe therefore find it convenient to generate our own Portals artificially\nwith focused dimensional fatigue rays.\nAs a sign of our long-standing relationship with your species\nwe would happily fit your vessel with a Portal Spawner of its own\nbut your ship is so massive, our units would be ineffective. However\nwe suspect you may find a sufficiently powerful warp pod, the key element in a Portal Spawner\nin the wreck of the Ur-Quan Dreadnought on the seventh world at Alpha Pavonis.\nBring that warp pod back here, and we will prepare a Portal Spawner for your vessel.",
+      "voice": "arilou-045.ogg",
+      "original_text_hash": 17640223488570590221
+    },
+    {
+      "id": "what_about_tpet",
+      "index": 75,
+      "text": "You mentioned a Talking Pet. How did you find one?",
+      "voice": null,
+      "original_text_hash": 9176583668453969767
+    },
+    {
+      "id": "ABOUT_TPET",
+      "index": 76,
+      "text": "We are an endlessly curious species, and we spend much of our time on\nhow should I say, reconnaissance missions.\nDuring one such trip, we witnessed the crash landing of an Ur-Quan Dreadnought\non the surface of Alpha Pavonis VII.\nNormally, when an Ur-Quan vessel is disabled, it automatically engages self-annihilation circuits\nto prevent other species from learning the Ur-Quan's technological secrets.\nIn this case, however, these circuits must have failed. The Dreadnought did not disintegrate on impact.\nWe landed to explore the wreckage, and were amazed to find a survivor... a Talking Pet!\nAs you may know, the Ur-Quan use these non-sentient creatures for the task of inter-species translation\na task the Ur-Quan find ultimately demeaning.\nThe Talking Pet was severely injured, and we did what we could for the poor creature\nbut it grew clear that without superior measures, the Talking Pet would die.\nWe turned to the Umgah, whom we have known for many centuries.\nTheir bioscience skills are far superior to our own.\nThe Umgah promised to do what they could, and let us know how the Pet fared.\nWe have not heard from the Umgah since.\nPerhaps, if you are travelling through their stars, you can ask them for us.",
+      "voice": "arilou-046.ogg",
+      "original_text_hash": 17393707661557686273
+    },
+    {
+      "id": "about_portal_again",
+      "index": 77,
+      "text": "Can you tell me about that Portal Spawner thing again?",
+      "voice": null,
+      "original_text_hash": 12499126894519533794
+    },
+    {
+      "id": "PORTAL_AGAIN",
+      "index": 78,
+      "text": "Certainly. As a sign of our long-standing friendship with your species\nwe would be happy to fit your vessel with a Portal Spawner\nallowing you to jump from place to place in HyperSpace, without travelling the intervening distance.\nHowever, your ship is so massive, our normal warp pod units are insufficient\nbut you will find a sufficiently powerful warp pod in the wreck of the Ur-Quan Dreadnought\non Alpha Pavonis VII. Bring that warp pod back here, and we will prepare a Portal Spawner for your vessel.",
+      "voice": "arilou-047.ogg",
+      "original_text_hash": 5635080737748579909
+    },
+    {
+      "id": "got_it",
+      "index": 79,
+      "text": "I have obtained the Warp Pod unit from the Ur-Quan wreck.",
+      "voice": null,
+      "original_text_hash": 10832191403581970328
+    },
+    {
+      "id": "CLEVER_HUMAN",
+      "index": 80,
+      "text": "What a surprise!\nAs we have always said, Humans are a MOST resourceful and clever species.\nWe are so proud of you! But don't worry that you shall have to wait.",
+      "voice": "arilou-048.ogg",
+      "original_text_hash": 9705107930261236958
+    },
+    {
+      "id": "GIVE_PORTAL",
+      "index": 81,
+      "text": "We are prepared. Even now our technical personnel are equipping your ship\nwith a custom version of our Portal Spawner device.\nThe device is useable only in HyperSpace. Whenever it is activated\nthe Spawner will focus several inter-dimensional fatigue beams adjacent to your vessel\nopening a temporary hole into QuasiSpace. Move quickly through the Portal!\nAfter your ship has passed into QuasiSpace, you can choose any of the nearby Portals\nwhich lead back to HyperSpace, thus saving you needless transit time.\nBe keenly aware of this fact! The Spawner requires a great deal of energy to function.\nWe estimate that each time you use the device, it will consume ten of your fuel units.",
+      "voice": "arilou-049.ogg",
+      "original_text_hash": 6141086578871853185
+    },
+    {
+      "id": "bye_friendly_homeworld",
+      "index": 82,
+      "text": "Goodbye my Arilou friends.",
+      "voice": null,
+      "original_text_hash": 9533531718740070485
+    },
+    {
+      "id": "GOODBYE_FRDLY_HOMEWORLD",
+      "index": 83,
+      "text": "Goodbye clever child.",
+      "voice": "arilou-050.ogg",
+      "original_text_hash": 16556853024192789137
+    },
+    {
+      "id": "HOSTILE_GOODBYE_1",
+      "index": 84,
+      "text": "We have said all there is to be said.\nWe would prefer your immediate departure, but are prepared for your attack.",
+      "voice": "arilou-051.ogg",
+      "original_text_hash": 3170688254279096801
+    },
+    {
+      "id": "HOSTILE_GOODBYE_2",
+      "index": 85,
+      "text": "Your behavior is clearly inimical. We resist discorporation.\nFurther contact between ourselves is pointless.",
+      "voice": "arilou-052.ogg",
+      "original_text_hash": 8741161717908998297
+    },
+    {
+      "id": "HOSTILE_GOODBYE_3",
+      "index": 86,
+      "text": "Seek death in other corners. Leave us.",
+      "voice": "arilou-053.ogg",
+      "original_text_hash": 2104822355554060033
+    },
+    {
+      "id": "HOSTILE_GOODBYE_4",
+      "index": 87,
+      "text": "Seek death in other corners. Leave us.",
+      "voice": "arilou-054.ogg",
+      "original_text_hash": 2104822355554060033
+    },
+    {
+      "id": "ANGRY_SPACE_HELLO_1",
+      "index": 88,
+      "text": "We cannot fathom your reason, therefore you must be acting upon simple instinct.\nPerhaps this is our fault. We have always loved instinct\neven though we possess none ourselves.\nDo you have too much instinct, human? Does your species? We shall see.",
+      "voice": "arilou-055.ogg",
+      "original_text_hash": 4302544218163259377
+    },
+    {
+      "id": "ANGRY_SPACE_HELLO_2",
+      "index": 89,
+      "text": "Human. You flail at the wind. Cease your violence.\nWould you hurt your pet? Your child? Your beast?\nPlease... rethink your posture.",
+      "voice": "arilou-056.ogg",
+      "original_text_hash": 11227076669690862877
+    },
+    {
+      "id": "lets_fight",
+      "index": 90,
+      "text": "C'mon, let's fight... Freak Face!",
+      "voice": null,
+      "original_text_hash": 15593628508293557065
+    },
+    {
+      "id": "NO_FIGHT",
+      "index": 91,
+      "text": "We will never choose to fight you, child.",
+      "voice": "arilou-057.ogg",
+      "original_text_hash": 4666419429271557398
+    },
+    {
+      "id": "im_sorry",
+      "index": 92,
+      "text": "Aughhh! I am sorry! WHAT WAS I THINKING?!!",
+      "voice": null,
+      "original_text_hash": 6878593787172331301
+    },
+    {
+      "id": "APOLOGIZE_AT_HOMEWORLD",
+      "index": 93,
+      "text": "If you wish to make atonement... seek a strangely shaped rock or plant.\nHowever, should you wish to change the nature of our relationship\nseek the Arilou in QuasiSpace. You can make the transit at 43.8 : 637.2\nbut only when the door is open.",
+      "voice": "arilou-058.ogg",
+      "original_text_hash": 17966344891270434297
+    },
+    {
+      "id": "bye_angry_space",
+      "index": 94,
+      "text": "G'bye.",
+      "voice": null,
+      "original_text_hash": 9406162177117111181
+    },
+    {
+      "id": "GOODBYE_ANGRY_SPACE",
+      "index": 95,
+      "text": "When you have resolved your conflict, we shall speak again.",
+      "voice": "arilou-059.ogg",
+      "original_text_hash": 10525113241309322491
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 96,
+      "text": "Do you really believe Project Bluebook revealed EVERYTHING the Army Air Corps knew?\nDo you know what REALLY happened at Roswell, New Mexico in the late 1940's?\nHave you even heard about the Men in Black?\nDo you have any friends who have `missing days'?\nDo you sleep with your window unlocked?\nBe seeing you...",
+      "voice": "arilou-060.ogg",
+      "original_text_hash": 14129709944979139779
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MET_ARILOU", 0]}, 0]}},
+          "next": "first.mark"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ARILOU_MANNER", 0]}, 2]},
+          "next": "hostile.sequence"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ARILOU_MANNER", 0]}, 1]},
+          "next": "angry.location"
+        }
+      ],
+      "otherwise": "friendly.location"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "first.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MET_ARILOU", 1]
+      },
+      "save_as": "first_mark",
+      "next": "first.location"
+    },
+    {
+      "id": "first.location",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"get": ["story", "ARILOU_SPACE_SIDE", 0]}, 1]}, "next": "first.home.mark"}],
+      "otherwise": "first.space"
+    },
+    {
+      "id": "first.home.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_HOME_VISITS", 1]
+      },
+      "save_as": "first_home_mark",
+      "next": "first.home"
+    },
+    {
+      "id": "first.space.confused_by_hello.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CONFUSED_RESPONSE"]}],
+      "next": "space.menu"
+    },
+    {
+      "id": "first.space.happy_by_hello.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAPPY_RESPONSE"]}],
+      "next": "space.menu"
+    },
+    {
+      "id": "first.space.miffed_by_hello.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MIFFED_RESPONSE"]}],
+      "next": "space.menu"
+    },
+    {
+      "id": "first.space",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INIT_HELLO"]}],
+      "responses": [
+        {
+          "id": "confused_by_hello",
+          "text": "confused_by_hello",
+          "when": true,
+          "next": "first.space.confused_by_hello.speech"
+        },
+        {
+          "id": "happy_by_hello",
+          "text": "happy_by_hello",
+          "when": true,
+          "next": "first.space.happy_by_hello.speech"
+        },
+        {
+          "id": "miffed_by_hello",
+          "text": "miffed_by_hello",
+          "when": true,
+          "next": "first.space.miffed_by_hello.speech"
+        }
+      ]
+    },
+    {
+      "id": "first.home.confused_by_hello.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CONFUSED_RESPONSE"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "first.home.happy_by_hello.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAPPY_RESPONSE"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "first.home.miffed_by_hello.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MIFFED_RESPONSE"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "first.home",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRDLY_HOMEWORLD_HELLO_1"]}],
+      "responses": [
+        {
+          "id": "confused_by_hello",
+          "text": "confused_by_hello",
+          "when": true,
+          "next": "first.home.confused_by_hello.speech"
+        },
+        {
+          "id": "happy_by_hello",
+          "text": "happy_by_hello",
+          "when": true,
+          "next": "first.home.happy_by_hello.speech"
+        },
+        {
+          "id": "miffed_by_hello",
+          "text": "miffed_by_hello",
+          "when": true,
+          "next": "first.home.miffed_by_hello.speech"
+        }
+      ]
+    },
+    {
+      "id": "hostile.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ARILOU_VISITS",
+          [["HOSTILE_GOODBYE_1"], ["HOSTILE_GOODBYE_2"], ["HOSTILE_GOODBYE_3"], ["HOSTILE_GOODBYE_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "hostile.outcome"
+    },
+    {
+      "id": "hostile.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "hostile_outcome",
+      "next": "hostile.speech"
+    },
+    {
+      "id": "hostile.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "end"
+    },
+    {
+      "id": "angry.location",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"get": ["story", "ARILOU_SPACE_SIDE", 0]}, 1]}, "next": "angry.home.mark"}],
+      "otherwise": "angry.space.sequence"
+    },
+    {
+      "id": "angry.home.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_HOME_VISITS", 1]
+      },
+      "save_as": "angry_home_mark",
+      "next": "angry.home.greeting"
+    },
+    {
+      "id": "angry.home.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INIT_ANGRY_HWLD_HELLO"]}],
+      "next": "angry.home.menu"
+    },
+    {
+      "id": "angry.space.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ARILOU_VISITS", [["ANGRY_SPACE_HELLO_1"], ["ANGRY_SPACE_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "angry.space.greeting"
+    },
+    {
+      "id": "angry.space.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "angry.space.menu"
+    },
+    {
+      "id": "friendly.location",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"get": ["story", "ARILOU_SPACE_SIDE", 0]}, 1]}, "next": "friendly.home.portal"}],
+      "otherwise": "friendly.space.sequence"
+    },
+    {
+      "id": "friendly.space.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ARILOU_VISITS",
+          [
+            ["FRIENDLY_SPACE_HELLO_1"],
+            ["FRIENDLY_SPACE_HELLO_2"],
+            ["FRIENDLY_SPACE_HELLO_3"],
+            ["FRIENDLY_SPACE_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "friendly.space.greeting"
+    },
+    {
+      "id": "friendly.space.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "space.menu"
+    },
+    {
+      "id": "friendly.home.portal",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "PORTAL_SPAWNER", 0]}, 0]}},
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]}
+            ]
+          },
+          "next": "portal.reminder"
+        }
+      ],
+      "otherwise": "friendly.home.sequence"
+    },
+    {
+      "id": "portal.reminder",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "NO_PORTAL_VISITS", [["GOT_PART_YET_1"], ["GOT_PART_YET_1"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "friendly.home.greeting"
+    },
+    {
+      "id": "friendly.home.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ARILOU_HOME_VISITS",
+          [
+            ["FRDLY_HOMEWORLD_HELLO_1"],
+            ["FRDLY_HOMEWORLD_HELLO_2"],
+            ["FRDLY_HOMEWORLD_HELLO_3"],
+            ["FRDLY_HOMEWORLD_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "friendly.home.greeting"
+    },
+    {
+      "id": "friendly.home.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "home.route"
+    },
+    {
+      "id": "exit.bye_angry_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ANGRY_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_angry_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_angry_space",
+      "next": "exit.bye_angry_space.speech"
+    },
+    {
+      "id": "exit.bye_friendly_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FRIENDLY_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_friendly_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_friendly_space",
+      "next": "exit.bye_friendly_space.speech"
+    },
+    {
+      "id": "exit.bye_friendly_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FRDLY_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_friendly_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_friendly_homeworld",
+      "next": "exit.bye_friendly_homeworld.speech"
+    },
+    {
+      "id": "exit.lets_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_FIGHT"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.lets_fight",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_lets_fight",
+      "next": "exit.lets_fight.speech"
+    },
+    {
+      "id": "exit.bug_eyed_fruitcakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_NEVER_FRIENDS"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bug_eyed_fruitcakes.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bug_eyed_fruitcakes_effect1",
+      "next": "exit.bug_eyed_fruitcakes.speech"
+    },
+    {
+      "id": "exit.bug_eyed_fruitcakes",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_MANNER", 2]
+      },
+      "save_as": "exit_bug_eyed_fruitcakes",
+      "next": "exit.bug_eyed_fruitcakes.effect1"
+    },
+    {
+      "id": "exit.best_if_i_killed_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WICKED_HUMAN"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.best_if_i_killed_you.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_best_if_i_killed_you_effect1",
+      "next": "exit.best_if_i_killed_you.speech"
+    },
+    {
+      "id": "exit.best_if_i_killed_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_MANNER", 2]
+      },
+      "save_as": "exit_best_if_i_killed_you",
+      "next": "exit.best_if_i_killed_you.effect1"
+    },
+    {
+      "id": "space.why_you_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LEARN_THINGS"]}],
+      "next": "space.menu"
+    },
+    {
+      "id": "space.why_you_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_5", 1]
+      },
+      "save_as": "space_why_you_here",
+      "next": "space.why_you_here.speech"
+    },
+    {
+      "id": "space.what_things.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THESE_THINGS"]}],
+      "next": "space.menu"
+    },
+    {
+      "id": "space.what_things",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_5", 2]
+      },
+      "save_as": "space_what_things",
+      "next": "space.what_things.speech"
+    },
+    {
+      "id": "space.why_do_it.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_IT_BECAUSE"]}],
+      "next": "space.menu"
+    },
+    {
+      "id": "space.why_do_it",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_5", 3]
+      },
+      "save_as": "space_why_do_it",
+      "next": "space.why_do_it.speech"
+    },
+    {
+      "id": "space.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_2", true]
+      },
+      "save_as": "space_info",
+      "next": "space.info.sequence"
+    },
+    {
+      "id": "space.info.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ARILOU_INFO",
+          [["GENERAL_INFO_1"], ["GENERAL_INFO_2"], ["GENERAL_INFO_3"], ["GENERAL_INFO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.info.speech"
+    },
+    {
+      "id": "space.info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "space.menu"
+    },
+    {
+      "id": "space.hints",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "give_me_info_2", true]
+      },
+      "save_as": "space_hints",
+      "next": "space.hints.effects"
+    },
+    {
+      "id": "space.hints.effects",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ARILOU_HINTS", 0]}, 1]},
+          "next": "space.hints.shattered"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ARILOU_HINTS", 0]}, 2]},
+          "next": "space.hints.urquan"
+        }
+      ],
+      "otherwise": "space.hints.sequence"
+    },
+    {
+      "id": "space.hints.shattered",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_ABOUT_SHATTERED", {"max": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]}]
+      },
+      "save_as": "space_hints_shattered",
+      "next": "space.hints.sequence"
+    },
+    {
+      "id": "space.hints.urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_URQUAN_STORY", 1]
+      },
+      "save_as": "space_hints_urquan",
+      "next": "space.hints.kohrah"
+    },
+    {
+      "id": "space.hints.kohrah",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_KOHR_AH_STORY", 1]
+      },
+      "save_as": "space_hints_kohrah",
+      "next": "space.hints.sequence"
+    },
+    {
+      "id": "space.hints.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ARILOU_HINTS",
+          [["ARILOU_HINTS_1"], ["ARILOU_HINTS_2"], ["ARILOU_HINTS_3"], ["ARILOU_HINTS_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.hints.speech"
+    },
+    {
+      "id": "space.hints.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "space.menu"
+    },
+    {
+      "id": "space.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_you_here",
+          "text": "why_you_here",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_5", 0]}, 0]},
+          "next": "space.why_you_here"
+        },
+        {
+          "id": "what_things",
+          "text": "what_things",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_5", 0]}, 1]},
+          "next": "space.what_things"
+        },
+        {
+          "id": "why_do_it",
+          "text": "why_do_it",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_5", 0]}, 2]},
+          "next": "space.why_do_it"
+        },
+        {
+          "id": "whats_up_1",
+          "text": "whats_up_1",
+          "when": {"all": [{"not": {"get": ["local", "whats_up_2", false]}}, {"eq": [{"get": ["story", "ARILOU_INFO", 0]}, 0]}]},
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_2",
+          "text": "whats_up_2",
+          "when": {"all": [{"not": {"get": ["local", "whats_up_2", false]}}, {"gt": [{"get": ["story", "ARILOU_INFO", 0]}, 0]}]},
+          "next": "space.info"
+        },
+        {
+          "id": "give_me_info_1",
+          "text": "give_me_info_1",
+          "when": {
+            "all": [{"not": {"get": ["local", "give_me_info_2", false]}}, {"eq": [{"get": ["story", "ARILOU_HINTS", 0]}, 0]}]
+          },
+          "next": "space.hints"
+        },
+        {
+          "id": "give_me_info_2",
+          "text": "give_me_info_2",
+          "when": {
+            "all": [{"not": {"get": ["local", "give_me_info_2", false]}}, {"gt": [{"get": ["story", "ARILOU_HINTS", 0]}, 0]}]
+          },
+          "next": "space.hints"
+        },
+        {
+          "id": "bye_friendly_space",
+          "text": "bye_friendly_space",
+          "when": true,
+          "next": "exit.bye_friendly_space"
+        }
+      ]
+    },
+    {
+      "id": "sorry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["APOLOGIZE_AT_HOMEWORLD"]}],
+      "next": "angry.space.menu"
+    },
+    {
+      "id": "sorry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "im_sorry", true]
+      },
+      "save_as": "sorry",
+      "next": "sorry.speech"
+    },
+    {
+      "id": "angry.space.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "lets_fight",
+          "text": "lets_fight",
+          "when": true,
+          "next": "exit.lets_fight"
+        },
+        {
+          "id": "im_sorry",
+          "text": "im_sorry",
+          "when": {"not": {"get": ["local", "im_sorry", false]}},
+          "next": "sorry"
+        },
+        {
+          "id": "bye_angry_space",
+          "text": "bye_angry_space",
+          "when": true,
+          "next": "exit.bye_angry_space"
+        }
+      ]
+    },
+    {
+      "id": "angry.invaders_from_mars.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAD_OUR_REASONS"]}],
+      "next": "angry.home.menu"
+    },
+    {
+      "id": "angry.invaders_from_mars",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "invaders_from_mars", true]
+      },
+      "save_as": "angry_invaders_from_mars",
+      "next": "angry.invaders_from_mars.speech"
+    },
+    {
+      "id": "angry.why_should_i_trust.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUST_BECAUSE"]}],
+      "next": "angry.home.menu"
+    },
+    {
+      "id": "angry.why_should_i_trust",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_should_i_trust", true]
+      },
+      "save_as": "angry_why_should_i_trust",
+      "next": "angry.why_should_i_trust.speech"
+    },
+    {
+      "id": "angry.what_about_interference.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INTERFERENCE_NECESSARY"]}],
+      "next": "angry.home.menu"
+    },
+    {
+      "id": "angry.what_about_interference",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_interference", true]
+      },
+      "save_as": "angry_what_about_interference",
+      "next": "angry.what_about_interference.speech"
+    },
+    {
+      "id": "home.ok_lets_be_friends.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ALLY_BUT_MUCH_GIVE"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.ok_lets_be_friends",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_ok_lets_be_friends",
+      "next": "home.ok_lets_be_friends.speech"
+    },
+    {
+      "id": "angry.leave.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SORRY_NO_LEAVE"]}],
+      "next": "angry.home.menu"
+    },
+    {
+      "id": "angry.home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "invaders_from_mars",
+          "text": "invaders_from_mars",
+          "when": {"not": {"get": ["local", "invaders_from_mars", false]}},
+          "next": "angry.invaders_from_mars"
+        },
+        {
+          "id": "bug_eyed_fruitcakes",
+          "text": "bug_eyed_fruitcakes",
+          "when": {"not": {"not": {"get": ["local", "invaders_from_mars", false]}}},
+          "next": "exit.bug_eyed_fruitcakes"
+        },
+        {
+          "id": "why_should_i_trust",
+          "text": "why_should_i_trust",
+          "when": {"not": {"get": ["local", "why_should_i_trust", false]}},
+          "next": "angry.why_should_i_trust"
+        },
+        {
+          "id": "what_about_interference",
+          "text": "what_about_interference",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "why_should_i_trust", false]}}},
+              {"not": {"get": ["local", "what_about_interference", false]}}
+            ]
+          },
+          "next": "angry.what_about_interference"
+        },
+        {
+          "id": "ok_lets_be_friends",
+          "text": "ok_lets_be_friends",
+          "when": true,
+          "next": "home.ok_lets_be_friends"
+        },
+        {
+          "id": "i_just_like_to_leave",
+          "text": "i_just_like_to_leave",
+          "when": true,
+          "next": "angry.leave.speech"
+        }
+      ]
+    },
+    {
+      "id": "home.what_about_war.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_WAR"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_about_war.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_what_about_war_effect1",
+      "next": "home.what_about_war.speech"
+    },
+    {
+      "id": "home.what_about_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_1", 1]
+      },
+      "save_as": "home_what_about_war",
+      "next": "home.what_about_war.effect1"
+    },
+    {
+      "id": "home.what_about_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_about_urquan.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_what_about_urquan_effect1",
+      "next": "home.what_about_urquan.speech"
+    },
+    {
+      "id": "home.what_about_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_1", 2]
+      },
+      "save_as": "home_what_about_urquan",
+      "next": "home.what_about_urquan.effect1"
+    },
+    {
+      "id": "home.what_did_on_earth.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DID_THIS"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_did_on_earth.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 2]
+      },
+      "save_as": "home_what_did_on_earth_effect1",
+      "next": "home.what_did_on_earth.speech"
+    },
+    {
+      "id": "home.what_did_on_earth",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_3", 1]
+      },
+      "save_as": "home_what_did_on_earth",
+      "next": "home.what_did_on_earth.effect1"
+    },
+    {
+      "id": "home.why_did_this.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IDF_PARASITES"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.why_did_this.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 2]
+      },
+      "save_as": "home_why_did_this_effect1",
+      "next": "home.why_did_this.speech"
+    },
+    {
+      "id": "home.why_did_this",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_3", 2]
+      },
+      "save_as": "home_why_did_this",
+      "next": "home.why_did_this.effect1"
+    },
+    {
+      "id": "home.tell_more.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_NOW"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.tell_more.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 2]
+      },
+      "save_as": "home_tell_more_effect1",
+      "next": "home.tell_more.speech"
+    },
+    {
+      "id": "home.tell_more",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_3", 3]
+      },
+      "save_as": "home_tell_more",
+      "next": "home.tell_more.effect1"
+    },
+    {
+      "id": "home.tell_arilou_about_tpet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BAD_NEWS_ABOUT_TPET"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.tell_arilou_about_tpet.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 1]
+      },
+      "save_as": "home_tell_arilou_about_tpet_effect1",
+      "next": "home.tell_arilou_about_tpet.speech"
+    },
+    {
+      "id": "home.tell_arilou_about_tpet",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_2", 1]
+      },
+      "save_as": "home_tell_arilou_about_tpet",
+      "next": "home.tell_arilou_about_tpet.effect1"
+    },
+    {
+      "id": "home.what_do_about_tpet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DANGEROUS_BUT_USEFUL"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_do_about_tpet.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 1]
+      },
+      "save_as": "home_what_do_about_tpet_effect1",
+      "next": "home.what_do_about_tpet.speech"
+    },
+    {
+      "id": "home.what_do_about_tpet",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_2", 2]
+      },
+      "save_as": "home_what_do_about_tpet",
+      "next": "home.what_do_about_tpet.effect1"
+    },
+    {
+      "id": "home.umgah_acting_weird.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WELL_GO_CHECK"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.umgah_acting_weird.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_umgah_acting_weird_effect3",
+      "next": "home.umgah_acting_weird.speech"
+    },
+    {
+      "id": "home.umgah_acting_weird.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "umgah_acting_weird", true]
+      },
+      "save_as": "home_umgah_acting_weird_effect2",
+      "next": "home.umgah_acting_weird.effect3"
+    },
+    {
+      "id": "home.umgah_acting_weird.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ARILOU_UMGAH_CHECK", 0, 10, 0]
+      },
+      "save_as": "home_umgah_acting_weird_effect1",
+      "next": "home.umgah_acting_weird.effect2"
+    },
+    {
+      "id": "home.umgah_acting_weird",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_CHECKED_UMGAH", 1]
+      },
+      "save_as": "home_umgah_acting_weird",
+      "next": "home.umgah_acting_weird.effect1"
+    },
+    {
+      "id": "learned.choose",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 2]}, "next": "home.learned.done"}],
+      "otherwise": "home.learned.wait"
+    },
+    {
+      "id": "home.learned.done.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["UMGAH_UNDER_COMPULSION"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.learned.done.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 1]
+      },
+      "save_as": "home_learned_done_effect1",
+      "next": "home.learned.done.speech"
+    },
+    {
+      "id": "home.learned.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "learned_about_umgah", true]
+      },
+      "save_as": "home_learned_done",
+      "next": "home.learned.done.effect1"
+    },
+    {
+      "id": "home.learned.wait.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_NEWS_YET"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.learned.wait.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_learned_wait_effect1",
+      "next": "home.learned.wait.speech"
+    },
+    {
+      "id": "home.learned.wait",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "learned_about_umgah", true]
+      },
+      "save_as": "home_learned_wait",
+      "next": "home.learned.wait.effect1"
+    },
+    {
+      "id": "home.what_do_now.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GO_FIND_OUT"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_do_now.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_what_do_now_effect1",
+      "next": "home.what_do_now.speech"
+    },
+    {
+      "id": "home.what_do_now",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_CHECKED_UMGAH", 3]
+      },
+      "save_as": "home_what_do_now",
+      "next": "home.what_do_now.effect1"
+    },
+    {
+      "id": "home.what_give_me.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_PORTAL"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_give_me.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 3]
+      },
+      "save_as": "home_what_give_me_effect1",
+      "next": "home.what_give_me.speech"
+    },
+    {
+      "id": "home.what_give_me",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_ARILOU_WANT_WRECK", 1]
+      },
+      "save_as": "home_what_give_me",
+      "next": "home.what_give_me.effect1"
+    },
+    {
+      "id": "home.what_about_tpet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_TPET"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.what_about_tpet.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_what_about_tpet_effect1",
+      "next": "home.what_about_tpet.speech"
+    },
+    {
+      "id": "home.what_about_tpet",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_4", 1]
+      },
+      "save_as": "home_what_about_tpet",
+      "next": "home.what_about_tpet.effect1"
+    },
+    {
+      "id": "home.got_it.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"eq": [{"get": ["story", "ARILOU_HOME_VISITS", 0]}, 1]},
+          "speech": ["CLEVER_HUMAN", "GIVE_PORTAL"]
+        },
+        {
+          "speech": ["GIVE_PORTAL"]
+        }
+      ],
+      "next": "home.route"
+    },
+    {
+      "id": "home.got_it.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_got_it_effect3",
+      "next": "home.got_it.speech"
+    },
+    {
+      "id": "home.got_it.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PORTAL_SPAWNER_ON_SHIP", 1]
+      },
+      "save_as": "home_got_it_effect2",
+      "next": "home.got_it.effect3"
+    },
+    {
+      "id": "home.got_it.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PORTAL_SPAWNER", 1]
+      },
+      "save_as": "home_got_it_effect1",
+      "next": "home.got_it.effect2"
+    },
+    {
+      "id": "home.got_it",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PORTAL_KEY_ON_SHIP", 0]
+      },
+      "save_as": "home_got_it",
+      "next": "home.got_it.effect1"
+    },
+    {
+      "id": "home.about_portal_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PORTAL_AGAIN"]}],
+      "next": "home.route"
+    },
+    {
+      "id": "home.about_portal_again.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "home_focus", 0]
+      },
+      "save_as": "home_about_portal_again_effect1",
+      "next": "home.about_portal_again.speech"
+    },
+    {
+      "id": "home.about_portal_again",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "about_portal_again", true]
+      },
+      "save_as": "home_about_portal_again",
+      "next": "home.about_portal_again.effect1"
+    },
+    {
+      "id": "home.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["local", "home_focus", 0]}, 1]},
+          "next": "home.menu.1"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "home_focus", 0]}, 2]},
+          "next": "home.menu.2"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "home_focus", 0]}, 3]},
+          "next": "home.menu.3"
+        }
+      ],
+      "otherwise": "home.menu.0"
+    },
+    {
+      "id": "home.menu.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 0]},
+          "next": "home.what_about_war"
+        },
+        {
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 1]},
+          "next": "home.what_about_urquan"
+        },
+        {
+          "id": "tell_arilou_about_tpet",
+          "text": "tell_arilou_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 0]}
+            ]
+          },
+          "next": "home.tell_arilou_about_tpet"
+        },
+        {
+          "id": "what_do_about_tpet",
+          "text": "what_do_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 1]}
+            ]
+          },
+          "next": "home.what_do_about_tpet"
+        },
+        {
+          "id": "umgah_acting_weird",
+          "text": "umgah_acting_weird",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]}}
+            ]
+          },
+          "next": "home.umgah_acting_weird"
+        },
+        {
+          "id": "learned_about_umgah",
+          "text": "learned_about_umgah",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]},
+              {
+                "all": [
+                  {"not": {"get": ["local", "learned_about_umgah", false]}},
+                  {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                ]
+              }
+            ]
+          },
+          "next": "learned.choose"
+        },
+        {
+          "id": "what_do_now",
+          "text": "what_do_now",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 2]},
+              {
+                "not": {
+                  "all": [
+                    {"not": {"get": ["local", "learned_about_umgah", false]}},
+                    {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "home.what_do_now"
+        },
+        {
+          "id": "what_did_on_earth",
+          "text": "what_did_on_earth",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 0]},
+          "next": "home.what_did_on_earth"
+        },
+        {
+          "id": "why_did_this",
+          "text": "why_did_this",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 1]},
+          "next": "home.why_did_this"
+        },
+        {
+          "id": "tell_more",
+          "text": "tell_more",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 2]},
+          "next": "home.tell_more"
+        },
+        {
+          "id": "what_give_me",
+          "text": "what_give_me",
+          "when": {"not": {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]}},
+          "next": "home.what_give_me"
+        },
+        {
+          "id": "what_about_tpet",
+          "text": "what_about_tpet",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "ARILOU_STACK_4", 0]}, 0]}}
+            ]
+          },
+          "next": "home.what_about_tpet"
+        },
+        {
+          "id": "got_it",
+          "text": "got_it",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "home.got_it"
+        },
+        {
+          "id": "about_portal_again",
+          "text": "about_portal_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}},
+              {"not": {"get": ["local", "about_portal_again", false]}},
+              {"not": {"ne": [{"get": ["story", "PORTAL_SPAWNER", 0]}, 0]}}
+            ]
+          },
+          "next": "home.about_portal_again"
+        },
+        {
+          "id": "best_if_i_killed_you",
+          "text": "best_if_i_killed_you",
+          "when": {"ne": [{"get": ["story", "ARILOU_MANNER", 0]}, 3]},
+          "next": "exit.best_if_i_killed_you"
+        },
+        {
+          "id": "bye_friendly_homeworld",
+          "text": "bye_friendly_homeworld",
+          "when": true,
+          "next": "exit.bye_friendly_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "home.menu.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "tell_arilou_about_tpet",
+          "text": "tell_arilou_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 0]}
+            ]
+          },
+          "next": "home.tell_arilou_about_tpet"
+        },
+        {
+          "id": "what_do_about_tpet",
+          "text": "what_do_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 1]}
+            ]
+          },
+          "next": "home.what_do_about_tpet"
+        },
+        {
+          "id": "umgah_acting_weird",
+          "text": "umgah_acting_weird",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]}}
+            ]
+          },
+          "next": "home.umgah_acting_weird"
+        },
+        {
+          "id": "learned_about_umgah",
+          "text": "learned_about_umgah",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]},
+              {
+                "all": [
+                  {"not": {"get": ["local", "learned_about_umgah", false]}},
+                  {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                ]
+              }
+            ]
+          },
+          "next": "learned.choose"
+        },
+        {
+          "id": "what_do_now",
+          "text": "what_do_now",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 2]},
+              {
+                "not": {
+                  "all": [
+                    {"not": {"get": ["local", "learned_about_umgah", false]}},
+                    {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "home.what_do_now"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 0]},
+          "next": "home.what_about_war"
+        },
+        {
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 1]},
+          "next": "home.what_about_urquan"
+        },
+        {
+          "id": "what_did_on_earth",
+          "text": "what_did_on_earth",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 0]},
+          "next": "home.what_did_on_earth"
+        },
+        {
+          "id": "why_did_this",
+          "text": "why_did_this",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 1]},
+          "next": "home.why_did_this"
+        },
+        {
+          "id": "tell_more",
+          "text": "tell_more",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 2]},
+          "next": "home.tell_more"
+        },
+        {
+          "id": "what_give_me",
+          "text": "what_give_me",
+          "when": {"not": {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]}},
+          "next": "home.what_give_me"
+        },
+        {
+          "id": "what_about_tpet",
+          "text": "what_about_tpet",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "ARILOU_STACK_4", 0]}, 0]}}
+            ]
+          },
+          "next": "home.what_about_tpet"
+        },
+        {
+          "id": "got_it",
+          "text": "got_it",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "home.got_it"
+        },
+        {
+          "id": "about_portal_again",
+          "text": "about_portal_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}},
+              {"not": {"get": ["local", "about_portal_again", false]}},
+              {"not": {"ne": [{"get": ["story", "PORTAL_SPAWNER", 0]}, 0]}}
+            ]
+          },
+          "next": "home.about_portal_again"
+        },
+        {
+          "id": "best_if_i_killed_you",
+          "text": "best_if_i_killed_you",
+          "when": {"ne": [{"get": ["story", "ARILOU_MANNER", 0]}, 3]},
+          "next": "exit.best_if_i_killed_you"
+        },
+        {
+          "id": "bye_friendly_homeworld",
+          "text": "bye_friendly_homeworld",
+          "when": true,
+          "next": "exit.bye_friendly_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "home.menu.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_did_on_earth",
+          "text": "what_did_on_earth",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 0]},
+          "next": "home.what_did_on_earth"
+        },
+        {
+          "id": "why_did_this",
+          "text": "why_did_this",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 1]},
+          "next": "home.why_did_this"
+        },
+        {
+          "id": "tell_more",
+          "text": "tell_more",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 2]},
+          "next": "home.tell_more"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 0]},
+          "next": "home.what_about_war"
+        },
+        {
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 1]},
+          "next": "home.what_about_urquan"
+        },
+        {
+          "id": "tell_arilou_about_tpet",
+          "text": "tell_arilou_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 0]}
+            ]
+          },
+          "next": "home.tell_arilou_about_tpet"
+        },
+        {
+          "id": "what_do_about_tpet",
+          "text": "what_do_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 1]}
+            ]
+          },
+          "next": "home.what_do_about_tpet"
+        },
+        {
+          "id": "umgah_acting_weird",
+          "text": "umgah_acting_weird",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]}}
+            ]
+          },
+          "next": "home.umgah_acting_weird"
+        },
+        {
+          "id": "learned_about_umgah",
+          "text": "learned_about_umgah",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]},
+              {
+                "all": [
+                  {"not": {"get": ["local", "learned_about_umgah", false]}},
+                  {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                ]
+              }
+            ]
+          },
+          "next": "learned.choose"
+        },
+        {
+          "id": "what_do_now",
+          "text": "what_do_now",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 2]},
+              {
+                "not": {
+                  "all": [
+                    {"not": {"get": ["local", "learned_about_umgah", false]}},
+                    {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "home.what_do_now"
+        },
+        {
+          "id": "what_give_me",
+          "text": "what_give_me",
+          "when": {"not": {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]}},
+          "next": "home.what_give_me"
+        },
+        {
+          "id": "what_about_tpet",
+          "text": "what_about_tpet",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "ARILOU_STACK_4", 0]}, 0]}}
+            ]
+          },
+          "next": "home.what_about_tpet"
+        },
+        {
+          "id": "got_it",
+          "text": "got_it",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "home.got_it"
+        },
+        {
+          "id": "about_portal_again",
+          "text": "about_portal_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}},
+              {"not": {"get": ["local", "about_portal_again", false]}},
+              {"not": {"ne": [{"get": ["story", "PORTAL_SPAWNER", 0]}, 0]}}
+            ]
+          },
+          "next": "home.about_portal_again"
+        },
+        {
+          "id": "best_if_i_killed_you",
+          "text": "best_if_i_killed_you",
+          "when": {"ne": [{"get": ["story", "ARILOU_MANNER", 0]}, 3]},
+          "next": "exit.best_if_i_killed_you"
+        },
+        {
+          "id": "bye_friendly_homeworld",
+          "text": "bye_friendly_homeworld",
+          "when": true,
+          "next": "exit.bye_friendly_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "home.menu.3",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_give_me",
+          "text": "what_give_me",
+          "when": {"not": {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]}},
+          "next": "home.what_give_me"
+        },
+        {
+          "id": "what_about_tpet",
+          "text": "what_about_tpet",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "ARILOU_STACK_4", 0]}, 0]}}
+            ]
+          },
+          "next": "home.what_about_tpet"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 0]},
+          "next": "home.what_about_war"
+        },
+        {
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_1", 0]}, 1]},
+          "next": "home.what_about_urquan"
+        },
+        {
+          "id": "tell_arilou_about_tpet",
+          "text": "tell_arilou_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 0]}
+            ]
+          },
+          "next": "home.tell_arilou_about_tpet"
+        },
+        {
+          "id": "what_do_about_tpet",
+          "text": "what_do_about_tpet",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_STACK_2", 0]}, 1]}
+            ]
+          },
+          "next": "home.what_do_about_tpet"
+        },
+        {
+          "id": "umgah_acting_weird",
+          "text": "umgah_acting_weird",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]}}
+            ]
+          },
+          "next": "home.umgah_acting_weird"
+        },
+        {
+          "id": "learned_about_umgah",
+          "text": "learned_about_umgah",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"ne": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 0]},
+              {
+                "all": [
+                  {"not": {"get": ["local", "learned_about_umgah", false]}},
+                  {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                ]
+              }
+            ]
+          },
+          "next": "learned.choose"
+        },
+        {
+          "id": "what_do_now",
+          "text": "what_do_now",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET", 0]}, 0]}},
+                  {"not": {"ne": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}},
+                  {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]}
+                ]
+              },
+              {"eq": [{"get": ["story", "ARILOU_CHECKED_UMGAH", 0]}, 2]},
+              {
+                "not": {
+                  "all": [
+                    {"not": {"get": ["local", "learned_about_umgah", false]}},
+                    {"not": {"get": ["local", "umgah_acting_weird", false]}}
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "home.what_do_now"
+        },
+        {
+          "id": "what_did_on_earth",
+          "text": "what_did_on_earth",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 0]},
+          "next": "home.what_did_on_earth"
+        },
+        {
+          "id": "why_did_this",
+          "text": "why_did_this",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 1]},
+          "next": "home.why_did_this"
+        },
+        {
+          "id": "tell_more",
+          "text": "tell_more",
+          "when": {"eq": [{"get": ["story", "ARILOU_STACK_3", 0]}, 2]},
+          "next": "home.tell_more"
+        },
+        {
+          "id": "got_it",
+          "text": "got_it",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "home.got_it"
+        },
+        {
+          "id": "about_portal_again",
+          "text": "about_portal_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ARILOU_WANT_WRECK", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "PORTAL_KEY_ON_SHIP", 0]}, 0]}},
+              {"not": {"get": ["local", "about_portal_again", false]}},
+              {"not": {"ne": [{"get": ["story", "PORTAL_SPAWNER", 0]}, 0]}}
+            ]
+          },
+          "next": "home.about_portal_again"
+        },
+        {
+          "id": "best_if_i_killed_you",
+          "text": "best_if_i_killed_you",
+          "when": {"ne": [{"get": ["story", "ARILOU_MANNER", 0]}, 3]},
+          "next": "exit.best_if_i_killed_you"
+        },
+        {
+          "id": "bye_friendly_homeworld",
+          "text": "bye_friendly_homeworld",
+          "when": true,
+          "next": "exit.bye_friendly_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

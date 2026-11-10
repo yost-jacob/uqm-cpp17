@@ -1,0 +1,949 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "slyhome",
+  "resource": "comm.slylandro.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "HELLO_1",
+      "index": 0,
+      "text": "Hello visitor!\nWe are the Slylandro. I am Content To Hover\na Slylandro Speaker.\nYour presence here fills us with excitement!\nWe have gotten so few visitors over these many Drahn.\nWe hope you can stay to talk with us for a time.",
+      "voice": "slylandro-000.ogg",
+      "original_text_hash": 9982147000647079528
+    },
+    {
+      "id": "HELLO_2",
+      "index": 1,
+      "text": "You return with great speed.\nIn the last five Drahn, we have had only one visitor.\nand now you have come twice in but a single Drahnasa.\nHow wonderful!",
+      "voice": "slylandro-001.ogg",
+      "original_text_hash": 543948746911947056
+    },
+    {
+      "id": "HELLO_3",
+      "index": 2,
+      "text": "Welcome back human Traveller!\nWe hope your journeys have brought you new insights\nthat you will share with us.",
+      "voice": "slylandro-002.ogg",
+      "original_text_hash": 5207454714855255299
+    },
+    {
+      "id": "HELLO_4",
+      "index": 3,
+      "text": "Welcome back human Traveller!\nWe hope your journeys have brought you new insights\nthat you will share with us.",
+      "voice": "slylandro-003.ogg",
+      "original_text_hash": 5207454714855255299
+    },
+    {
+      "id": "RECALL_PROGRAM_1",
+      "index": 4,
+      "text": "Ah! human Traveller. We have news.\nOne of our probes finally returned home\nand we have been able to reconfigure it\nso that it will seek other probes and broadcast the destruct code sequence.\nWe expect the population of probes will decline swiftly.\nThank you so much for showing us our error.\nWe feel very badly about the inconvenience it has caused others.",
+      "voice": "slylandro-004.ogg",
+      "original_text_hash": 11015644054871021739
+    },
+    {
+      "id": "we_are_us0",
+      "index": 5,
+      "text": "I am",
+      "voice": null,
+      "original_text_hash": 13928109518787726478
+    },
+    {
+      "id": "we_are_us1",
+      "index": 6,
+      "text": ", Captain of the Earth starship",
+      "voice": null,
+      "original_text_hash": 1896196245722033023
+    },
+    {
+      "id": "we_are_us2",
+      "index": 7,
+      "text": ". What the heck are you?",
+      "voice": null,
+      "original_text_hash": 2616445846398773963
+    },
+    {
+      "id": "TERRIBLY_EXCITING",
+      "index": 8,
+      "text": "Oh, this is terribly exciting!\nWe will be happy to tell you about ourselves\nif you will please, please do the same.\nYou see, we Slylandro have been extremely interested in learning about the galaxy\nbut our physique makes us incapable of leaving our gas giant home.\nTherefore, we are totally reliant on our infrequent visitors\nto keep us informed about events outside this planetary system.\nAnd visitors usually only show up every few Drahn.\nWe hope that our newly deployed exploration probe fleet\nwill not only gather information for us\nbut inform other races of our presence here as well!",
+      "voice": "slylandro-005.ogg",
+      "original_text_hash": 9791233845001151991
+    },
+    {
+      "id": "happy_to_tell_more",
+      "index": 9,
+      "text": "Exactly how long is a `Drahn'?",
+      "voice": null,
+      "original_text_hash": 4927676904588087997
+    },
+    {
+      "id": "TELL_MORE",
+      "index": 10,
+      "text": "The Drahn is our primary unit of time.\nIt lasts for an interval equivalent to\nfour million rotations of our planet.\nA Drahn is subdivided into two-thousand Drahnasa.\nNow please... our turn! Will you tell us about yourselves?!",
+      "voice": "slylandro-006.ogg",
+      "original_text_hash": 15258453387375035709
+    },
+    {
+      "id": "would_you_like_to_know_more",
+      "index": 11,
+      "text": "We would be happy to tell you more about our people.",
+      "voice": null,
+      "original_text_hash": 655855211728881993
+    },
+    {
+      "id": "YES_TELL_MORE",
+      "index": 12,
+      "text": "Yes! Yes! Please do!\nWho ARE you?! Where are you from? Why have you come here?\nDo you know of any other intelligent races?\nPlease! Tell us everything, EVERYTHING!",
+      "voice": "slylandro-007.ogg",
+      "original_text_hash": 9638720425468259252
+    },
+    {
+      "id": "we_come_from_earth",
+      "index": 13,
+      "text": "Most of us come from a large, rocky world called Earth.",
+      "voice": null,
+      "original_text_hash": 1546474804986268074
+    },
+    {
+      "id": "OK_EARTH",
+      "index": 14,
+      "text": "Yes! That seems to be the pattern.\nJust about everyone who comes by here\nsays they developed on a world a lot like that.\nAs far as we know, we're the only sentient species\nwho's ever evolved in the atmosphere of a gas giant.\nOf course, from what we know, most Travellers like yourselves\ndon't have much interest in gas giants\nso maybe there are others like us Slylandro out there somewhere.",
+      "voice": "slylandro-008.ogg",
+      "original_text_hash": 4790781691936626946
+    },
+    {
+      "id": "we_explore",
+      "index": 15,
+      "text": "We travel the galaxy in starships, seeking knowledge and contact with other sentients.",
+      "voice": null,
+      "original_text_hash": 15021437487652338720
+    },
+    {
+      "id": "OK_EXPLORE",
+      "index": 16,
+      "text": "That must be great! To leave your planet, and roam the stars!\nYou don't know how monotonous living on a gas giant for three or four Drahn can be.\nClouds, clouds, clouds. Wind. Lightning. Clouds, clouds, clouds. That's it!\nWe know A LOT about clouds. If you've got any cloud questions, ask us.\nWe have over eight hundred different symbolic references just to describe them!\nMost of the time, when we aren't eating\nwe hover around and talk about what the clouds look like.\nOf course, the only things we know about are clouds, food and other Slylandro\nso generally, that's what we think the clouds look like.",
+      "voice": "slylandro-009.ogg",
+      "original_text_hash": 3572494263909361150
+    },
+    {
+      "id": "we_fight_urquan",
+      "index": 17,
+      "text": "Our primary objective right now is to free ourselves from the Evil Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 13796040122175253319
+    },
+    {
+      "id": "URQUAN_NICE_GUYS",
+      "index": 18,
+      "text": "The Ur-Quan?! The long brownish guys from the Milieu with all the eyes and arms?\nThey used to come visit us regularly about three Drahns ago.\nThey told us about all the interesting things they found from their scouting missions.\nThey were really nice! Why do you fight with them?",
+      "voice": "slylandro-010.ogg",
+      "original_text_hash": 14804094357747719392
+    },
+    {
+      "id": "not_same_urquan",
+      "index": 19,
+      "text": "I think you are confused. Those aren't the Ur-Quan we're talking about. Ours are green.",
+      "voice": null,
+      "original_text_hash": 7550518129198680945
+    },
+    {
+      "id": "PERSONALITY_CHANGE",
+      "index": 20,
+      "text": "But the Ur-Quan were such good guys!\nThey had lots of interesting things to tell us about\nand they never got impatient with our questions.\nHmmm. Well, I guess a lot can happen to a species in three Drahn\nlike turning green and evil.",
+      "voice": "slylandro-011.ogg",
+      "original_text_hash": 8058934423732157744
+    },
+    {
+      "id": "we_gather",
+      "index": 21,
+      "text": "We are particularly interested in studying unusual planets and life forms.",
+      "voice": null,
+      "original_text_hash": 8844713629682058326
+    },
+    {
+      "id": "MAYBE_INTERESTED",
+      "index": 22,
+      "text": "Oh! Then you should go check out a planet orbiting a blue star not too far from here.\nI think there is another blue star right next to it.\nWe can't desribe exactly where it is, but the people who told us about it\nthe Ur-Quan, I think, said that it was one of the rarest worlds in space\nand that as far as they knew\nthere were only ten of the planets in this part of the galaxy.",
+      "voice": "slylandro-012.ogg",
+      "original_text_hash": 5644316121705530233
+    },
+    {
+      "id": "enough_about_me",
+      "index": 23,
+      "text": "That's enough about us, for now.",
+      "voice": null,
+      "original_text_hash": 9987635926772471458
+    },
+    {
+      "id": "OK_ENOUGH_YOU",
+      "index": 24,
+      "text": "Okay, but please, can we talk about you some more later?",
+      "voice": "slylandro-013.ogg",
+      "original_text_hash": 8374534187679123324
+    },
+    {
+      "id": "what_other_visitors",
+      "index": 25,
+      "text": "Probes? What probes are you talking about?",
+      "voice": null,
+      "original_text_hash": 1568986866067416961
+    },
+    {
+      "id": "VISITORS",
+      "index": 26,
+      "text": "You know, it's funny. We hadn't heard from the outside galaxy in a whole Drahnasa\nand then the Melnorme come by and sell us a probe\nand just a few hundred rotations later, YOU show up!\nOh! The probes? Right.\nWell like we said, just a short time ago, a race called the Melnorme stopped by.\nThey said they had acquired some information revealing our existence\nand they wanted to study us, if we didn't mind.\nIn fact, the Melnorme said they would PAY us for the right to do so.\nI guess they are biology nuts, or something\nanyway, in exchange for our information, they gave us a probe vessel.",
+      "voice": "slylandro-014.ogg",
+      "original_text_hash": 13601351591875564377
+    },
+    {
+      "id": "any_other_visitors",
+      "index": 27,
+      "text": "Tell me about the other races who have visited you over the years.",
+      "voice": null,
+      "original_text_hash": 5017434909831337230
+    },
+    {
+      "id": "LONG_AGO",
+      "index": 28,
+      "text": "Years? Oh.. you mean Drahn.\nWell, let's see... there was the Melnorme just a few rotations back\nthen we go all the way back over three Drahn ago to the Ur-Quan\nand the other Milieu guys... the Yuli and the Drall, I think.",
+      "voice": "slylandro-015.ogg",
+      "original_text_hash": 11818656163788416257
+    },
+    {
+      "id": "what_about_sentient_milieu",
+      "index": 29,
+      "text": "Milieu? What is the Milieu and who are the Yuli and the Drall?",
+      "voice": null,
+      "original_text_hash": 16629791598306186358
+    },
+    {
+      "id": "MET_TAALO_THEY_ARE_FROM",
+      "index": 30,
+      "text": "Hmmm... let me remember... that was a long, long time ago... I was only a nymph then\nah, yes... that's it!\nThe Sentient Milieu was a cooperative association of sentient alien species\nThe Yuli, the Drall, the Taalo, the Mael-Num, the Faz and the Ur-Quan\nwho lived across a wide section of the galaxy.\nThey talked with us fairly frequently for almost half a Drahn\nthen suddenly the visits stopped and we haven't heard from them since.",
+      "voice": "slylandro-016.ogg",
+      "original_text_hash": 4276295334836683628
+    },
+    {
+      "id": "who_else",
+      "index": 31,
+      "text": "Were there any other visitors here besides the Melnorme and Milieu races?",
+      "voice": null,
+      "original_text_hash": 6085364585027210975
+    },
+    {
+      "id": "PRECURSORS",
+      "index": 32,
+      "text": "Yes, there was another race... a highly sophisticated species of shaggy giants\nwho made repeated trips to our world over a period of several Drahn.\nThey even installed a broadcasting satellite in orbit around our world\nwhich let us talk with them whenever we wanted. They were called the\nthe\nI'm sorry, I can't remember their names. It was a long long time ago.",
+      "voice": "slylandro-017.ogg",
+      "original_text_hash": 2882712672178070499
+    },
+    {
+      "id": "precursors_yow",
+      "index": 33,
+      "text": "Yow! That sounds like the Precursors! What else can you tell us about this race?",
+      "voice": null,
+      "original_text_hash": 7198591074419391287
+    },
+    {
+      "id": "ABOUT_PRECURSORS",
+      "index": 34,
+      "text": "I wish I knew more of the information you seek, Traveller\nbut we last saw the Shaggy Ones just over 39 Drahn ago\nand very little from that era has remained intact in our history chants.\nHold on a minute, let me consult with associates Joyous Lifting and Sullen Plummet.\nJoyous Lifting, who has a better memory than I\nrecalls that the Shaggy Ones were described as being... worried.\nThey were always hurrying from place to place, seeking knowledge\nas though they were in a desperate search for some important secret\nsome answer to a question that they never shared with us.\nSullen Plummet remembers that the last time the Shaggy Ones visited our world\nthey came aboard a great circular starship, one even larger than your own.\nThey had discovered their Answer and were leaving to go somewhere\nand they didn't tell us exactly where `somewhere' was.",
+      "voice": "slylandro-018.ogg",
+      "original_text_hash": 10385254876807924483
+    },
+    {
+      "id": "must_know_more",
+      "index": 35,
+      "text": "This is EXTREMELY important to us! Don't you know any more?",
+      "voice": null,
+      "original_text_hash": 1880972802944858140
+    },
+    {
+      "id": "ALL_WE_KNOW",
+      "index": 36,
+      "text": "No, I have told you... one moment, Joyous Lifting transmits.\n  \nJoyous Lifting has remembered something else\nthough it does not relate to the Shaggy Ones' Question, Answer, or Departure Destination.\nWhat my associate communicates is the description of a set of ten worlds, unlike all others.\nThe Shaggy Ones either discovered these planets or... this is garbled.. assembled them?\nWe were told the planets were... again this is confusing... organized (?) in some pattern\nwhich in some way alluded to the Shaggy Ones' ultimate fate.\nOne of the worlds was described as orbiting one of a pair of blue stars not far from here.\nAnother of these worlds circled a large white sun.\nThat is all we can remember.",
+      "voice": "slylandro-019.ogg",
+      "original_text_hash": 7592728550300142953
+    },
+    {
+      "id": "who_are_you",
+      "index": 37,
+      "text": "Pardon me, but who exactly are you again?",
+      "voice": null,
+      "original_text_hash": 5530305351463551802
+    },
+    {
+      "id": "WE_ARE_SLY",
+      "index": 38,
+      "text": "We are the Slylandro, a race of kind, curious gas bag people.",
+      "voice": "slylandro-020.ogg",
+      "original_text_hash": 18418470507206661121
+    },
+    {
+      "id": "like_more_about_you",
+      "index": 39,
+      "text": "Hmmm. Sounds interesting! Tell us more.",
+      "voice": null,
+      "original_text_hash": 3069974280662159683
+    },
+    {
+      "id": "SURE_KNOW_WHAT",
+      "index": 40,
+      "text": "Certainly, provided you share with us similar information.\nWhat would you like to know?",
+      "voice": "slylandro-021.ogg",
+      "original_text_hash": 15843007368851256642
+    },
+    {
+      "id": "what_about_home",
+      "index": 41,
+      "text": "Tell us about your home... this gas giant planet.",
+      "voice": null,
+      "original_text_hash": 7776768667234515547
+    },
+    {
+      "id": "ABOUT_HOME",
+      "index": 42,
+      "text": "Our planet, which we call Source, has no solid surface as yours likely does.\nOur `world' is the five hundred kilometer band of atmosphere in which we can survive.\nBelow this are the Depths... a dark, hostile region\nwhich grows increasingly darker, and more hostile, the farther one goes.\nA typical feat of courage for Slylandro juveniles is to sink far enough into the Depths\nso that the juvenile's gas bag is almost ruptured by the pressure.\nThe tissue scars left by the trip last many rotations\nand are thought to attract comely mates.\nAbove our world is Void. When we travel up too far into Void\nwe grow giddy and behave inappropriately.",
+      "voice": "slylandro-022.ogg",
+      "original_text_hash": 11223325960085564845
+    },
+    {
+      "id": "what_about_culture",
+      "index": 43,
+      "text": "What can you tell us about your culture?",
+      "voice": null,
+      "original_text_hash": 962335010970596304
+    },
+    {
+      "id": "ABOUT_CULTURE",
+      "index": 44,
+      "text": "We have an egalitarian society here. All are equal.\nOf course, that doesn't stop some people from being stupid fools or jerks.\nBut on a world as huge as Source, where there are no barriers to restrict your travel\nif someone is bothering you, you simply go somewhere else.\nAs you might have guessed, we have no physical technology.\nIn our long history, several of our people have tried to work with objects\nconstructing weapons and other tools from the carcasses of dead beasts\nbut eventually, whatever it was they were building got too heavy\nand dragged them down to the Depths.",
+      "voice": "slylandro-023.ogg",
+      "original_text_hash": 11709038809815577539
+    },
+    {
+      "id": "what_about_history",
+      "index": 45,
+      "text": "What about your history?",
+      "voice": null,
+      "original_text_hash": 16776114616755373282
+    },
+    {
+      "id": "ABOUT_HISTORY",
+      "index": 46,
+      "text": "Since we possess no technology, we have no permanent way to record the passing of events.\nInstead we use the History Chants... long songs whose rhythms and patterns\nhelp prevent the introduction of error into the record.\nWhen the Shaggy Ones first arrived over 41 Drahns ago\nwe had no words for aliens or ships, for stars or planets.\nOur skies are an opaque swirl of colors. We knew nothing of the universe outside Source.\nThe Shaggy Ones taught us most of the New Words\nand after they departed we remembered them for the many long Drahn\nuntil ships from the Sentient Milieu arrived.",
+      "voice": "slylandro-024.ogg",
+      "original_text_hash": 6769672180408564655
+    },
+    {
+      "id": "what_about_biology",
+      "index": 47,
+      "text": "Tell us about your biology.",
+      "voice": null,
+      "original_text_hash": 10779918712230277849
+    },
+    {
+      "id": "ABOUT_BIOLOGY",
+      "index": 48,
+      "text": "Our world, which we call Source, has been home to our species for many thousands of Drahn.\nWe evolved from simpler, unimodular beings who thrive in atmospheric convection cells.\nAt first, we were little more than mindless consumers\nwho glided at the edge of windwalls straining the air for small animalcules.\nBut even then we were social creatures, who invented language\nso that we could better cooperate when herding food into dense concentrations.\nThere are many hundreds of species here in Source\nproducers, consumers, hunters and parasites, but so far\nwe are the only species here to achieve intelligence.",
+      "voice": "slylandro-025.ogg",
+      "original_text_hash": 13578798426160998112
+    },
+    {
+      "id": "enough_info",
+      "index": 49,
+      "text": "Thank you. That's sufficient for now.",
+      "voice": null,
+      "original_text_hash": 11624869438050154486
+    },
+    {
+      "id": "OK_ENOUGH_INFO",
+      "index": 50,
+      "text": "My pleasure. Now let's talk about you and your peoples.",
+      "voice": "slylandro-026.ogg",
+      "original_text_hash": 16519743465797650183
+    },
+    {
+      "id": "where_are_you",
+      "index": 51,
+      "text": "What are those glowy bits inside of you?",
+      "voice": null,
+      "original_text_hash": 3224805204292442059
+    },
+    {
+      "id": "DOWN_HERE",
+      "index": 52,
+      "text": "OH MY! I forgot! You creatures see in the visual range and can see our...\nwell our, er... well, WE can't see them\nEhhh... Ahem... What I mean to say is... they are...\nwell we use them for when the male and the female... ahem\nLook, I'd rather if you didn't ask about them, okay?\n(especially not if front of Sullen Plummet... she's shy.)",
+      "voice": "slylandro-027.ogg",
+      "original_text_hash": 18236347948696479526
+    },
+    {
+      "id": "thats_impossible_1",
+      "index": 53,
+      "text": "I said... WHAT ARE THOSE GLOWY THINGS INSIDE OF YOU?!",
+      "voice": null,
+      "original_text_hash": 8070108131247477813
+    },
+    {
+      "id": "NO_ITS_NOT_1",
+      "index": 54,
+      "text": "Great. Now you've done it! Just look at Sullen Plummet.\nYou've embarrassed her so badly that she can't even regulate her ballast.",
+      "voice": "slylandro-028.ogg",
+      "original_text_hash": 18372867697127226618
+    },
+    {
+      "id": "thats_impossible_2",
+      "index": 55,
+      "text": "Look, I'm sorry I asked about your... glowy bits.",
+      "voice": null,
+      "original_text_hash": 13067212374252791295
+    },
+    {
+      "id": "NO_ITS_NOT_2",
+      "index": 56,
+      "text": "That's okay. Actually, your explicit questions\nhave put Sullen Plummet in an unusual and intriguing mood.\nI will explore this change more fully when this conversation is over.",
+      "voice": "slylandro-029.ogg",
+      "original_text_hash": 4187136500594639494
+    },
+    {
+      "id": "bye",
+      "index": 57,
+      "text": "Goodbye Slylandro gas bags.",
+      "voice": null,
+      "original_text_hash": 11389874503861657498
+    },
+    {
+      "id": "GOODBYE_1",
+      "index": 58,
+      "text": "Goodbye human fluid sack!",
+      "voice": "slylandro-030.ogg",
+      "original_text_hash": 3098962306413216992
+    },
+    {
+      "id": "GOODBYE_2",
+      "index": 59,
+      "text": "Goodbye human fluid sack!",
+      "voice": "slylandro-031.ogg",
+      "original_text_hash": 3098962306413216992
+    },
+    {
+      "id": "what_are_probes",
+      "index": 60,
+      "text": "Can you give me details about your probes?",
+      "voice": null,
+      "original_text_hash": 17186172721446371335
+    },
+    {
+      "id": "PROBES_ARE",
+      "index": 61,
+      "text": "Sure, if you are interested. In exchange for information about the life on Source\nthe Melnorme offered to give us a remote exploration probe.\nIt would roam the galaxy gathering information and contacting alien races\nand when it had filled its data storage units, it would return here\nand reveal to us everything it had learned!",
+      "voice": "slylandro-032.ogg",
+      "original_text_hash": 14525291475930359681
+    },
+    {
+      "id": "know_more_probe",
+      "index": 62,
+      "text": "Is that it? The probe can't do anything else?",
+      "voice": null,
+      "original_text_hash": 7391975097469800807
+    },
+    {
+      "id": "OK_WHAT_MORE_PROBE",
+      "index": 63,
+      "text": "Oh yeah! How could I forget... this is the REALLY neat part!\nThe probe was self-replicating!\nWhen it wasn't recording data, it would pulverize rocks and stuff\nthen suck in the debris. When it had enough raw materials\nit would fabricate a duplicate of itself which could self-replicate too!\nWe expect the first probe to return in a few hundred rotations\nand then we should see an increasing number thereafter.",
+      "voice": "slylandro-033.ogg",
+      "original_text_hash": 17911037420006977105
+    },
+    {
+      "id": "where_probes_from",
+      "index": 64,
+      "text": "Where exactly did you say you got your probe from?",
+      "voice": null,
+      "original_text_hash": 8557065960064599224
+    },
+    {
+      "id": "PROBES_FROM_MELNORME",
+      "index": 65,
+      "text": "From the Melnorme Traveller-Traders.\nIt was catalog item 2418... Remote Self-Replicating Robot Explorer Probe\nthe economy model.",
+      "voice": "slylandro-034.ogg",
+      "original_text_hash": 11258282125084936915
+    },
+    {
+      "id": "why_sell",
+      "index": 66,
+      "text": "Why did the Melnorme sell it to you?",
+      "voice": null,
+      "original_text_hash": 15144167601093698324
+    },
+    {
+      "id": "SELL_FOR_INFO",
+      "index": 67,
+      "text": "The Melnorme traded it to us for data on the life on Source.\nThey said the information was unique, and was worth\noh, I don't really understand their units of exchange\nsomething like 10,000 Gree-dots... or something like that.\nFortunately, that was EXACTLY the price of their catalog item 2418\nRemote Self-Replicating Robot Explorer Probe.",
+      "voice": "slylandro-035.ogg",
+      "original_text_hash": 15602609126895676884
+    },
+    {
+      "id": "how_long_ago",
+      "index": 68,
+      "text": "How long ago did you get the probe?",
+      "voice": null,
+      "original_text_hash": 14356049121582419328
+    },
+    {
+      "id": "FIFTY_THOUSAND_ROTATIONS",
+      "index": 69,
+      "text": "Two or three hundred rotations, I guess.",
+      "voice": "slylandro-036.ogg",
+      "original_text_hash": 4791384522621094817
+    },
+    {
+      "id": "whats_probes_mission",
+      "index": 70,
+      "text": "What was the probe's program?",
+      "voice": null,
+      "original_text_hash": 4556750821833607194
+    },
+    {
+      "id": "SEEK_OUT_NEW_LIFE",
+      "index": 71,
+      "text": "It was sent on a 500 rotation mission!...\n...to seek out new life and new civilizations...to boldly go where no\ncatalog item 2418... Remote Self-Replicating Robot Explorer Probe\nhad gone before!",
+      "voice": "slylandro-037.ogg",
+      "original_text_hash": 6839785297651401125
+    },
+    {
+      "id": "if_only_one",
+      "index": 72,
+      "text": "Can you explain the probe's replication ability?",
+      "voice": null,
+      "original_text_hash": 8503655061409546551
+    },
+    {
+      "id": "THEY_REPLICATE",
+      "index": 73,
+      "text": "Well, we're not hardware people, so we only know the theory.\nWhat happens is that while the probe is exploring space\nwhenever it's not doing something more important\nit hunts for asteroids and similar space junk\nzaps it into its component parts, absorbs the debris\nand when it has enough raw materials stored inside\nit manufactures a perfect replica of itself.\nSo even though we only bought one probe\nby now there should be hundreds of probes, maybe even thousands!",
+      "voice": "slylandro-038.ogg",
+      "original_text_hash": 4474287797040495620
+    },
+    {
+      "id": "enough_probe",
+      "index": 74,
+      "text": "I've heard enough, thanks.",
+      "voice": null,
+      "original_text_hash": 16449144980693888257
+    },
+    {
+      "id": "OK_ENOUGH_PROBE",
+      "index": 75,
+      "text": "Okay, what else can we talk about?",
+      "voice": "slylandro-039.ogg",
+      "original_text_hash": 10359643167938860734
+    },
+    {
+      "id": "why_probe_always_attack",
+      "index": 76,
+      "text": "Well why then do your probes attack our ships?",
+      "voice": null,
+      "original_text_hash": 881861801452173639
+    },
+    {
+      "id": "ONLY_DEFEND",
+      "index": 77,
+      "text": "Our probes DO NOT attack!\nThey have only defensive capabilities.\nOffensive behavior is NOT part of the instructions we programmed into the probe.\nTo do so would be reprehensible!",
+      "voice": "slylandro-040.ogg",
+      "original_text_hash": 10597918229248235174
+    },
+    {
+      "id": "talk_more_probe_attack",
+      "index": 78,
+      "text": "Can we talk a little bit more about the probe's program?",
+      "voice": null,
+      "original_text_hash": 9748676067628104983
+    },
+    {
+      "id": "NO_PROBLEM_BUT_SURE",
+      "index": 79,
+      "text": "Sure. What would you like to know?",
+      "voice": "slylandro-041.ogg",
+      "original_text_hash": 13835656572932685950
+    },
+    {
+      "id": "tell_me_about_basics",
+      "index": 80,
+      "text": "Would you explain the general outline of the probe's program?",
+      "voice": null,
+      "original_text_hash": 15010087986121283360
+    },
+    {
+      "id": "BASIC_COMMANDS",
+      "index": 81,
+      "text": "Sure. It was a difficult task for us, since we'd never done anything like that before\nbut for the most part we just adjusted its standard program which went something like:\n    SCAN (for targets, as defined in Target List).\n    IF (no current target).\n    THEN (select New target from Current Targets list, using specified priorities).\n    IF (Current Position is AT Current Target).\n    THEN (Set Current Behavior to New Behavior, based on Behavior Priority Settings).\n    PERFORM (Current Behavior).\nOkay, that's the basic program... I said it was simple\nand here are the tables used by the program:\n    TARGET LIST (with associated Target Priority).\n        Space Vessel (5).\n        Transmission Source (4).\n        Astronomical Anomaly (3).\n        Planet Bearing Life Signature (2).\n        Raw Replication Materials (1).\n    PROBE BEHAVIORS (With assigned priorities).\n        Communicate (5).\n        Record Data (4).\n        Analyze Data (3).\n        Seek Replication Materials (999).\n        Move to Current Target (1).\nThat's it.",
+      "voice": "slylandro-042.ogg",
+      "original_text_hash": 17376783034627599481
+    },
+    {
+      "id": "tell_basics_again",
+      "index": 82,
+      "text": "What's the general outline of the probe's program again?",
+      "voice": null,
+      "original_text_hash": 1879110926899278691
+    },
+    {
+      "id": "OK_BASICS_AGAIN",
+      "index": 83,
+      "text": "The program was:\n    SCAN (for targets, as defined in Target List).\n    IF (no current target).\n    THEN (select New target from Current Targets list, using specified priorities).\n    IF (Current Position is AT Current Target).\n    THEN (Set Current Behavior to New Behavior, based on Behavior Priority Settings).\n    PERFORM (Current Behavior).\nOkay, that's the basic program... I said it was simple\nand here are the tables used by the program:\n    TARGET LIST (with associated Target Priority).\n        Space Vessel (5).\n        Transmission Source (4).\n        Astronomical Anomaly (3).\n        Planet Bearing Life Signature (2).\n        Raw Replication Materials (1).\n    PROBE BEHAVIORS (With target requirements - Default priorities).\n        Communicate (Space Vessel OR Transmission Source) - (5).\n        Record Data (Any target) - (4).\n        Analyze Data (Unanalyzed data in queue) - (3).\n        Prepare Replication Materials (Any Target) - (2).\n        Move to Current Target (Any target) - (1).",
+      "voice": "slylandro-043.ogg",
+      "original_text_hash": 18015475714563803312
+    },
+    {
+      "id": "what_effect",
+      "index": 84,
+      "text": "What is the effect of the Priority Settings on Behavior?",
+      "voice": null,
+      "original_text_hash": 8429219760222128964
+    },
+    {
+      "id": "AFFECTS_BEHAVIOR",
+      "index": 85,
+      "text": "I'm pretty sure the way it works is that every time a behavior is completed or interrupted\nthe program selects a new behavior based on the defined Behavior Target Priorities\nand what kind of Target is currently selected... I think.\nA really high priority would cause a probe to focus its attention on that behavior.",
+      "voice": "slylandro-044.ogg",
+      "original_text_hash": 14885038334511834841
+    },
+    {
+      "id": "how_does_probe_defend",
+      "index": 86,
+      "text": "You mentioned the probe's defensive capabilities. Elaborate.",
+      "voice": null,
+      "original_text_hash": 17172424626407484890
+    },
+    {
+      "id": "ONLY_SELF_DEFENSE",
+      "index": 87,
+      "text": "That behavior was hard-coded by the Melnorme.\nWe couldn't mess with it.\nEssentially, the probe will only fire its weapons if it has been attacked\nand cannot communicate with the attacker.",
+      "voice": "slylandro-045.ogg",
+      "original_text_hash": 5063868031608463351
+    },
+    {
+      "id": "combat_behavior",
+      "index": 88,
+      "text": "And when defending itself, it uses its lightning weapon?",
+      "voice": null,
+      "original_text_hash": 13712198995126418717
+    },
+    {
+      "id": "MISSILE_BATTERIES",
+      "index": 89,
+      "text": "No. The probe is armed with a battery of missiles.\nIt doesn't use its electrical discharge device in combat.",
+      "voice": "slylandro-046.ogg",
+      "original_text_hash": 1705598864457142563
+    },
+    {
+      "id": "what_missile_batteries",
+      "index": 90,
+      "text": "What missile batteries? It always attacked us with lightning bolts!",
+      "voice": null,
+      "original_text_hash": 5925406056074897855
+    },
+    {
+      "id": "LIGHTNING_ONLY_FOR_HARVESTING",
+      "index": 91,
+      "text": "That's impossible! It's inconceivable!\nThe electrical discharge device is used only for breaking down raw replication materials\ninto their component compounds for easy gathering.",
+      "voice": "slylandro-047.ogg",
+      "original_text_hash": 13271984203033308387
+    },
+    {
+      "id": "tell_me_about_rep_1",
+      "index": 92,
+      "text": "Would you tell me about the `Replication' behavior?",
+      "voice": null,
+      "original_text_hash": 10045426547436200716
+    },
+    {
+      "id": "ABOUT_REP",
+      "index": 93,
+      "text": "I'd be glad to! You see, the probe has the capability\nto seek out raw materials, process the raw materials into component compounds\ncollect the compounds, and then when it has a sufficient supply\nit can build a duplicate of itself.\nWe decided that since we had only one probe, we should change the Replication priority\nand crank it up so that there would be more probes sooner.",
+      "voice": "slylandro-048.ogg",
+      "original_text_hash": 11660083600726258874
+    },
+    {
+      "id": "what_set_priority",
+      "index": 94,
+      "text": "Uh... what priority did you assign to replication?",
+      "voice": null,
+      "original_text_hash": 8257181484710808479
+    },
+    {
+      "id": "MAXIMUM",
+      "index": 95,
+      "text": "Well, the factory setting was two, in between Movement at one\nand Analyze Data at three. I told Joyous Lifting to set it a bit higher\nlet me ask him what he set it to...\nOh! My! That was a bit extreme, wasn't it?\nJoyous Lifting told me he changed it to nine hundred ninety-nine\nthe highest setting on the dial.",
+      "voice": "slylandro-049.ogg",
+      "original_text_hash": 18224587643788985802
+    },
+    {
+      "id": "enough_problem",
+      "index": 96,
+      "text": "Let's talk more about this later on.",
+      "voice": null,
+      "original_text_hash": 12584102514670512357
+    },
+    {
+      "id": "OK_ENOUGH_PROBLEM",
+      "index": 97,
+      "text": "Okay.",
+      "voice": "slylandro-050.ogg",
+      "original_text_hash": 10431069155991317445
+    },
+    {
+      "id": "probe_has_bug",
+      "index": 98,
+      "text": "Your probe DOES destroy ships and I can prove it!",
+      "voice": null,
+      "original_text_hash": 7871440230161386374
+    },
+    {
+      "id": "NO_IT_DOESNT",
+      "index": 99,
+      "text": "No! It cannot! It is not programmed for hostile behavior!\nWhat is your reasoning?!",
+      "voice": "slylandro-051.ogg",
+      "original_text_hash": 653873319497944071
+    },
+    {
+      "id": "tell_me_about_attack",
+      "index": 100,
+      "text": "Think about what a probe does when it meets a ship.",
+      "voice": null,
+      "original_text_hash": 4959361697521520364
+    },
+    {
+      "id": "ATTACK_NO_PROBLEM",
+      "index": 101,
+      "text": "Space ships are the probe's highest priority\nbecause we want more than anything to make friendly contact with alien races.",
+      "voice": "slylandro-052.ogg",
+      "original_text_hash": 652199548713413866
+    },
+    {
+      "id": "tell_me_about_rep_2",
+      "index": 102,
+      "text": "Think about a probe's Replication behavior.",
+      "voice": null,
+      "original_text_hash": 8625544649341936763
+    },
+    {
+      "id": "REP_NO_PROBLEM",
+      "index": 103,
+      "text": "The probe seeks raw materials, and processes them in preparation for Replication.",
+      "voice": "slylandro-053.ogg",
+      "original_text_hash": 11822364686049627994
+    },
+    {
+      "id": "what_about_rep_priorities",
+      "index": 104,
+      "text": "Think about the effect of changing the replication behavior's priority.",
+      "voice": null,
+      "original_text_hash": 2695882984566613211
+    },
+    {
+      "id": "MAXIMUM_SO_WHAT",
+      "index": 105,
+      "text": "The answer is simple... it would spend more of its time seeking raw materials\nfor its replication process. So what?",
+      "voice": "slylandro-054.ogg",
+      "original_text_hash": 6445949548396022920
+    },
+    {
+      "id": "think_about_rep_priorities",
+      "index": 106,
+      "text": "Now, what will it do to a ship, given that its Replication priority is set to maximum?",
+      "voice": null,
+      "original_text_hash": 2845958170012012651
+    },
+    {
+      "id": "UH_OH",
+      "index": 107,
+      "text": "I don't see what you are getting at, but I'll play along with you.\nLike I said, alien ships are THE top priority target.\nOnce a probe scanned a ship, it would instantly move toward it.\nThen, when it got to the ship, it would initiate communication automatically.\nWhen communications were terminated, a new behavior would be selected, and...\nUh-oh.\nA new behavior would be selected, and since the Replication setting was set to maximum\nthe probe wouldn't get time to pick a new target... it would use the current target\nthe ship\nfor raw Replication materials\nit would process the ship\nbreak it into component compounds\nwith electrical discharges.\nOh no!\nwhat have we done?\nTraveller! You must tell us what we can do!\nHow can we stop the probes from destroying all life in the galaxy?!",
+      "voice": "slylandro-055.ogg",
+      "original_text_hash": 2905146888783319721
+    },
+    {
+      "id": "hunt_them_down",
+      "index": 108,
+      "text": "Someone is going to have to hunt them all down and destroy them.",
+      "voice": null,
+      "original_text_hash": 10281670726180821452
+    },
+    {
+      "id": "GROW_TOO_FAST",
+      "index": 109,
+      "text": "No, that would never work!\nThe probes will replicate too fast!\nAs soon as you destroyed one, two would take its place!",
+      "voice": "slylandro-056.ogg",
+      "original_text_hash": 11968832635488149539
+    },
+    {
+      "id": "sue_melnorme",
+      "index": 110,
+      "text": "Well to begin with, if I were you, I'd sue the Melnorme.",
+      "voice": null,
+      "original_text_hash": 12967117679217547712
+    },
+    {
+      "id": "SIGNED_WAIVER",
+      "index": 111,
+      "text": "Sorry. The Melnorme made us agree to a formal Waiver of Damages\nin case something like this happened.",
+      "voice": "slylandro-057.ogg",
+      "original_text_hash": 4236510861530735308
+    },
+    {
+      "id": "recall_signal",
+      "index": 112,
+      "text": "Couldn't you broadcast some kind of recall signal?",
+      "voice": null,
+      "original_text_hash": 7746173271730051278
+    },
+    {
+      "id": "NOT_THIS_MODEL",
+      "index": 113,
+      "text": "No, not catalog item 2418\n(Remote Self-Replicating Robot Explorer Probe).\nThe model with the recall transmitter was catalog item 2419\nand the Melnorme said it was out of stock.",
+      "voice": "slylandro-058.ogg",
+      "original_text_hash": 9215227036064392028
+    },
+    {
+      "id": "mega_self_destruct",
+      "index": 114,
+      "text": "I don't suppose you have some kind of Mega-Self-Destruct Code, or something?",
+      "voice": null,
+      "original_text_hash": 17098660766972690294
+    },
+    {
+      "id": "WHY_YES_THERE_IS",
+      "index": 115,
+      "text": "WHY YES, THERE IS!\nYou're a genius, Traveller! Why didn't we remember that!?\nOh... there's a problem though! How are we going to transmit the code?\nWell, while we ponder that problem, at least we can give you the code sequence.\nThat way, if you run into a probe, you can destroy it without getting shot at.",
+      "voice": "slylandro-059.ogg",
+      "original_text_hash": 4507587740070910798
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["slyhome", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["slyhome", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

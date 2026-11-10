@@ -1,0 +1,1215 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "thradd",
+  "resource": "comm.thraddash.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "HOSTILE_SPACE_HELLO_1",
+      "index": 0,
+      "text": "So, what's this? SNORT! An unknown alien species?\nHow wonderful! Someone new to fight!\nWe, the Thraddash of Culture Nineteen -- famous Ur-Quan Combat Thralls\nknow well the value of a good fight.\nEither you win and prove your superiority...\nSNORT! Or you lose and are vanquished.\nIf the vanquished is lucky, it may survive to learn an important lesson from its defeat.\nThis is the way of the Thraddash! We fight and learn and improve!\nAll other cultural schemes are inferior. This is a proven fact.\nWhat have you to say before we begin combat?",
+      "voice": "thraddash-000.ogg",
+      "original_text_hash": 9942262680865529444
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_2",
+      "index": 1,
+      "text": "SNORT! What a laugh! You are the least battle-worthy creature I've ever seen commanding a starship.\nWe are the Ur-Quan fighting slaves of Culture Nineteen.\nPlease don't run away. We wish to be your species' new role-models!\nUnfortunately, to do this, we may need to blast you into your component atoms.",
+      "voice": "thraddash-001.ogg",
+      "original_text_hash": 13068234981689351207
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_3",
+      "index": 2,
+      "text": "Attention weak, ugly humans aboard that wallowing garbage scow of a ship, SNORT!\nUnless you are even more inferior than we believe and that's hard to imagine\nyou already know who we are -- the Thraddash of Culture Nineteen\nWe are the original Ur-Quan fighting slaves, the cream of their elite forces\nyour instructors in the harsh realities of life.\nSNORT! It is time for your next lesson.",
+      "voice": "thraddash-002.ogg",
+      "original_text_hash": 10040764179688152004
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_4",
+      "index": 3,
+      "text": "Inferior Aliens. You have once again intruded upon the territory of the Thraddash.\nThis is a patrolled region of space. Your presence here is considered an act of War!\nHow wonderful!",
+      "voice": "thraddash-003.ogg",
+      "original_text_hash": 4985485380865737103
+    },
+    {
+      "id": "HOSTILE_HOMEWORLD_HELLO_1",
+      "index": 4,
+      "text": "HA! View the stupid weak alien who has appeared here at our homeworld!\nWhat do you desire, creature? Our Friendship? Our submission?!\nHARG! HARG! HARG!\nFoolish, dumb weakling! We, the Nineteenth Culture of the Thraddash Empire\nhave an enormous fleet of ships here, with which to instruct you!\nWe will gladly attack you -- in fact, it is a requirement that we do so\nsince we are Ur-Quan slaves, and you are obviously an independent.\nBut know this! SNORT! Pay close heed!\nWhile it is true we keep count of the number of our ships you destroy\nwe consider attacking our homeworld SO irrevocably stupid\nthat any victories you may score here through a sheer stroke of luck\nWILL NOT be added to your personal victory tally!\nNow what do you wish of us before we attack?",
+      "voice": "thraddash-004.ogg",
+      "original_text_hash": 4788499903358842093
+    },
+    {
+      "id": "HOSTILE_HOMEWORLD_HELLO_2",
+      "index": 5,
+      "text": "Attention cowardly alien human thing!\nYou escaped our instructional session, SNORT! But this time things are different.\nWe, the Ur-Quan slaves of Culture Nineteen,\nhave engaged in a long-term build-up of weapons, assuring us that we shall prevail!\nIf you wish merely to count coup, seek our ships in space.\nNow do you wish to speak, or shall we simply start blasting?",
+      "voice": "thraddash-005.ogg",
+      "original_text_hash": 4557931474520185295
+    },
+    {
+      "id": "HOSTILE_HOMEWORLD_HELLO_3",
+      "index": 6,
+      "text": "I am Korgk, battle-slave foreman of Culture Nineteen.\nYou may be interested to know that our model ZK-53 computer\nhas determined that you have only a fleeting 1.6% chance\nof surviving a battle with our homeworld guardian fleet.\nShall we test this assertion?",
+      "voice": "thraddash-006.ogg",
+      "original_text_hash": 9777848096049929540
+    },
+    {
+      "id": "HOSTILE_HOMEWORLD_HELLO_4",
+      "index": 7,
+      "text": "Foolish Aliens! Shall you never learn the futility\nof trying to conquer our homeworld through direct attack?\nIt is impossible! SNORT! We Thraddash will toast your tootsies.\nYour charred bodies will be fertilizer for our fodderland.\nA great fight, resulting in a glorious Thraddash victory, awaits you here!",
+      "voice": "thraddash-007.ogg",
+      "original_text_hash": 16143884369864472479
+    },
+    {
+      "id": "whats_up_hostile_1",
+      "index": 8,
+      "text": "Thraddash of Culture Nineteen: we sense a bit of hostility here. Why?",
+      "voice": null,
+      "original_text_hash": 210048340969074174
+    },
+    {
+      "id": "whats_up_hostile_2",
+      "index": 9,
+      "text": "What has made you this way? Why are you so brutal?",
+      "voice": null,
+      "original_text_hash": 9336342320366238539
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_1",
+      "index": 10,
+      "text": "Hostility!\nHARG! HARG! HARG!\nWe are not `hostile'. Hostility is unwarranted aggression! SNORT! \nIf you want to know about hostility, let us tell you about Culture Twelve!\nCulture Twelve was SO hostile that while they were on their way to their first great battle\nJugkah, the battlemaster, stepped on Gnusko the tactician's foot, causing him great pain.\nThe annoyed Gnusko turned on his battlemaster, Jugkah, and sliced his body in half!\nThis miffed Jugkah's troops who took it upon themselves to murder Gnusko and his elite troops.\nThe REAL trouble started when now-dead Jugkah's master sergeants Muuhd and Pudt\nstarted arguing about how to kill Gnusko -- simple crucifixion, or the slower `Lead Tatoo' technique.\nThe argument was resolved when Muuhd and his five hundred troops were slaughtered by Pudt and his gang.\nWell, this probably all would have gone down in history as a great day of learning for Culture Twelve\nwere it not for the surprise arrival of Culture Twelve's original enemy, the Yajag and his cronies\nwho wiped out Culture Twelve's army, thus beginning the long and glorious Culture Thirteen.\nSNORT! Now THAT'S hostility!\nWe, on the other hand, merely want to kill you.",
+      "voice": "thraddash-008.ogg",
+      "original_text_hash": 577042337433205707
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_2",
+      "index": 11,
+      "text": "Brutal!? You don't know the MEANING of brutal until you've heard the story of Culture Three!\nHow brutal WAS Culture Three you ask?\nCulture Three was SO brutal that they maimed, tortured, enslaved, and in general brutalized\nTHEMSELVES!\nYou see, Culture Two had made a virtue of stoic resistance to pain, stubborn fortitude, that sort of thing.\nSo when Culture Three came around, they had a problem.\nHow were they going to impress everyone as being EVEN TOUGHER?\nTheir answer? They would arrive at a battle, stand on a tall hill where everyone could see them\nand chop off one of their own limbs! Then they'd wave it around, screaming and shaking it at their enemies.\nIt worked! It scared the hell out of their opponents! They ran like crazy!\nYou could tell who was a real war hero back then by how few arms or legs he had left.\nWar parades were quite different too. Instead of sturdy old warriors walking slowly past the reviewing stands\nthey tended to roll, and at a good clip, too.\nTo you, an inferior alien, this may seem bluntly stupid -- the product of a sick, primitive society.\nSNORT! You couldn't be more right!\nCulture Three was, as you can well understand, only the third Thraddash Culture\nand was therefore far from the tempered perfection you have encountered here and now.",
+      "voice": "thraddash-009.ogg",
+      "original_text_hash": 12944628847995859736
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_3",
+      "index": 12,
+      "text": "NO! We will not answer any more of your foolish questions!\nInstead, you will answer OUR questions, such as\nwho is responsible for those berserk red probes that keep attacking our ships?\nAre these devices your robot emissaries of death? Hmm?\nNo! Don't answer, I can see it in your eyes. You've given it all away! SNORT! I know the truth now.\nThe only thing that confuses me is WHY do the probes approach from the direction of Vega?",
+      "voice": "thraddash-010.ogg",
+      "original_text_hash": 6488362289070733056
+    },
+    {
+      "id": "GENERAL_INFO_HOSTILE_4",
+      "index": 13,
+      "text": "Back to the subject of the probes!\nWe found one orbiting a strange planet in the Epsilon Draconis system.\nThe planet causes our scanners to malfunction, producing a wildly colored image.\nThe probe seemed to be studying it. Is this true?\nSPEAK, HUMAN! REVEAL THE TRUTH! CONFESS YOUR CRIMES!\nWell, if you will not cooperate\nwe will have to extract the information from you in more painful ways.",
+      "voice": "thraddash-011.ogg",
+      "original_text_hash": 15989897968804059447
+    },
+    {
+      "id": "what_about_you_1",
+      "index": 14,
+      "text": "What can you tell us of your species?",
+      "voice": null,
+      "original_text_hash": 15776878750395257558
+    },
+    {
+      "id": "ABOUT_US_1",
+      "index": 15,
+      "text": "Talk! Bah, talk is for sissies, weaklings like those of Culture Fourteen.\nFor ten thousand years, we Thraddash have fought and died, learned and improved.\nThen, along came Culture Fourteen which claimed that all this -- this perfect method...\n...was wrong! -- that each time we violently transformed to a new Culture\nwe inevitably blasted ourselves back at least five hundred years in development.\nHmph! Some people just cannot accept the cost of progress.\nIndeed, the FOOLISHNESS of Culture Fourteen's peaceful whining was revealed\nwhen they were conquered by Culture Fifteen after only a ten year reign.\nAnd did the change to Culture Fifteen set us back five hundred years?\nNO! SNORT!\nTwo, maybe three hundred years, tops.\nThe short span of Culture Fourteen's reign is objective proof that as a way of life\npeace is a failure.",
+      "voice": "thraddash-012.ogg",
+      "original_text_hash": 7924383461036660616
+    },
+    {
+      "id": "what_about_you_2",
+      "index": 16,
+      "text": "So violent, Rhino-Dudes! What more can you tell us about your Culture Nineteen?",
+      "voice": null,
+      "original_text_hash": 17925758225798178397
+    },
+    {
+      "id": "ABOUT_US_2",
+      "index": 17,
+      "text": "What!?! SNORT! MORE talk?\nIt amazes me that you ever got out of the orbit of your home planet!\nYak! Yak! Yak! -- Yammer! Yammer! Yammer!\nSigh... very well, we will talk... for a moment.\nOur Culture Nineteen is the most formidable ever to appear in Thraddash space.\nAdmittedly, we said something similar about Culture Eighteen, BUT IT IS TRUE!\nWith our rather swift defeat by the Ur-Quan and subsequent enslavement\nwe realized that it was time for a change! A new Culture had to be established!\nSo, of course, we began a thermo-nuclear exchange to decide who would lead this new culture.\nWe were all quite disappointed when the Ur-Quan in orbit above our homeworld\nlaunched waves of fighters who intercepted all our missiles.\nThe Ur-Quan explained that slaves were not permitted to engage in such destructive conflicts\nso my people, being superior, introduced a super-lethal poison into our opponents' water and air\nthus ending the conflict, HARG! HARG! HARG!\nThe Ur-Quan were not particularly happy about this resolution, and killed all of our leaders\nwhich under other circumstances would have started a larger inter-Thraddash war\nbut the Ur-Quan appointed new leaders, apparently chosen at random\nand explained that further disobedience would result in the destruction of our species.\nFrustrating, huh?",
+      "voice": "thraddash-013.ogg",
+      "original_text_hash": 12197422529264877596
+    },
+    {
+      "id": "what_about_urquan_1",
+      "index": 18,
+      "text": "You mention the Ur-Quan. What is your relationship with them?",
+      "voice": null,
+      "original_text_hash": 17850531909834721104
+    },
+    {
+      "id": "ABOUT_URQUAN_1",
+      "index": 19,
+      "text": "A foolish question! We are their slaves, dolt! What else would we be?\nWhen the Ur-Quan first appeared in our space over fifty years ago\ncoming from the direction of the Ophiuchi stars\nwe attacked them with gusto, zipping in to fire our Mark 6 blasters\nand then theoretically zipping back out to prepare for another attack run.\nSNORT! Unfortunately, before we could zip out\nour ships were either blasted to smithereens by the Ur-Quan's fusion bolts\nor were picked apart by the swarms of Ur-Quan fighter-vessels.\nYou may wonder why we didn't use our afterburners to escape. The answer is simple.\nFifty years ago, our ships had not yet been modified for this enhancement!\nIt was not until 2143 that Maintainance Engineer Reeunk invented the afterburner effect\nwhen he accidentally stuck his cigar in the aft fuel valve of the ship he was working on.\nWHABOOM!!! The ship took off like a farg out of hell, and Reeunk was fried to a crisp.\nYes, we remember Reeunk with much fondness. Of course, we have refined the device\nand now that our entire fleet has been fitted with the Reeunk Afterburners\nperhaps NOW the Ur-Quan will let us fight at their side as TRUE battle thralls.",
+      "voice": "thraddash-014.ogg",
+      "original_text_hash": 17938512479997328888
+    },
+    {
+      "id": "what_about_urquan_2",
+      "index": 20,
+      "text": "Why didn't you fight against the Alliance, and where ARE the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 2528378299814089464
+    },
+    {
+      "id": "ABOUT_URQUAN_2",
+      "index": 21,
+      "text": "We wanted to, OH how we wanted to!\nAfter all, we were the first battle thralls the Ur-Quan enslaved in this part of space\nwe thought we had priority!...\nbut the Ur-Quan thought we were too weak to hold our own in the upcoming battles\nso they left us here... to guard the flank.\nIf only we had been WHIMPER! stronger and less... SNARF! troublesome.\nAnother reason the Ur-Quan wouldn't take us with them\nwas because we kept picking fights with the new battle slaves\nlike the Umgah blobbies, or those religious idiots, the Ilwrath.\nWhere did they go, you ask? This is a secret, of course! We can't tell you!\nIf we told you that they were fighting a secret war against a mysterious invader\nyou might find some way to use that information against our masters.\nSo forget it! No secrets!",
+      "voice": "thraddash-015.ogg",
+      "original_text_hash": 2689274755375279369
+    },
+    {
+      "id": "got_idea",
+      "index": 22,
+      "text": "Hey, I've got an idea! Why don't you go impress your Ur-Quan masters AND show-off your Afterburner modification by attacking the Ur-Quan's enemy!?",
+      "voice": null,
+      "original_text_hash": 7015618359077284452
+    },
+    {
+      "id": "GOOD_IDEA",
+      "index": 23,
+      "text": "WHAT FOOLISH STUPIDITY! HARG! HARG! HARG!\nWHY THAT'S AS DUMB AN IDEA AS -- what did you say?\nAttack the Ur-Quan's enemy? Help them win their war?\nWhy that's a... that's a... THAT'S AN EXCELLENT IDEA!\nI'm glad I thought of it!\nWe shall marshal our forces and leave at once!\nStupid, human pitiful weakling dog, you have been helpful, so as a reward\nyou may leave alive, and when we return from our glorious campaign\nwe may even honor you with a retelling of the many great battles we shall certainly win.\nUntil then, get lost.",
+      "voice": "thraddash-016.ogg",
+      "original_text_hash": 14588072696699889252
+    },
+    {
+      "id": "WE_GO_TO_IMPRESS_URQUAN_1",
+      "index": 24,
+      "text": "The Ur-Quan will be mightily impressed by our combat prowess\nwhen we blast their enemies from space!\nWe build up a charging fury! Stay out of our path!",
+      "voice": "thraddash-017.ogg",
+      "original_text_hash": 15668466143911577512
+    },
+    {
+      "id": "WE_GO_TO_IMPRESS_URQUAN_2",
+      "index": 25,
+      "text": "Our individual skills, our superior fighting ships\nand our objectively correct political views\nare sure to greatly impress our Ur-Quan Masters!\nTo Arms! SNORT! To Arms!",
+      "voice": "thraddash-018.ogg",
+      "original_text_hash": 16493805960038685795
+    },
+    {
+      "id": "WE_IMPRESSING_URQUAN_1",
+      "index": 26,
+      "text": "Oh! The Weapons!! The devastating bolts of sheer energy! SNORT!\nThe dark ships -- the Ur-Quan's enemies, they bow before our superior technologies!\nThe morbid, relentless wheels of heart-pounding destructiveness\nare nothing more than an inconvenience!\nOh, yes! I am sure that we are demonstrating to the Ur-Quan\nthe worthiness of our excellent Culture Nineteen!",
+      "voice": "thraddash-019.ogg",
+      "original_text_hash": 16156067263374446215
+    },
+    {
+      "id": "WE_IMPRESSING_URQUAN_2",
+      "index": 27,
+      "text": "We look forward to success!\nThe way is challenging, but our Turbo-Thrusters are at 200% and our guns stand ready!\nWe have engaged the dark ships and achieved victory!\nThe Ur-Quan know we are here! SNORT! They see our valor!...\n...unfortunately they also seem to be attacking us.\nWe have tried to make contact with them on the usual HyperWave bands, but to no avail.\nEven so, I am still quite sure that we are impressing them GREATLY!",
+      "voice": "thraddash-020.ogg",
+      "original_text_hash": 3195849113401496961
+    },
+    {
+      "id": "WE_IMPRESSED_URQUAN_1",
+      "index": 28,
+      "text": "The great gouts of flame! SNORT! The accuracy of our shooting!\nWe killed THOUSANDS... well at least HUNDREDS!\nIt was wonderful! It was delirious!\nThose few of us who survived will have stories to tell for years to come.\nWe were marvelous! SNORT! They shook and shivered when they saw us coming!\nThey were so frightened of us, they froze in their tracks.\nThat's how scared they were!\nAh, such fighting! SNORT! We will not soon see the like again!",
+      "voice": "thraddash-021.ogg",
+      "original_text_hash": 11306747819212388224
+    },
+    {
+      "id": "WE_IMPRESSED_URQUAN_2",
+      "index": 29,
+      "text": "Oh Yes! We have mightily impressed the Ur-Quan!\nWe destroyed several of their enemy's dreaded black ships\nand severely damaged many more.\nOur losses? Well, yes, there were a few.\nBut we are still very strong!\nMake no mistake about that!",
+      "voice": "thraddash-022.ogg",
+      "original_text_hash": 4307205883739537650
+    },
+    {
+      "id": "HOSTILE_HELIX_HELLO_1",
+      "index": 30,
+      "text": "WARNING! You have entered Thraddash Secured Space!\nThere is nothing valuable here!\nGo away!",
+      "voice": "thraddash-023.ogg",
+      "original_text_hash": 13993775488342025140
+    },
+    {
+      "id": "HOSTILE_HELIX_HELLO_2",
+      "index": 31,
+      "text": "Begone Stupid, Ugly Ones!\nSNORT!\nLeave before we break from our guard posts and give you a good Thraddashing!",
+      "voice": "thraddash-024.ogg",
+      "original_text_hash": 6996450502304021476
+    },
+    {
+      "id": "submit_1",
+      "index": 32,
+      "text": "Your blustering does not impress me. We have requirements which you will fulfill, NOW!",
+      "voice": null,
+      "original_text_hash": 3087793153125647995
+    },
+    {
+      "id": "NO_SUBMIT_1",
+      "index": 33,
+      "text": "Hunh?\nHnyarg?!\nWHAT?!\nSNARL! YOU SAY WHAT?!!!\nFoolish, pitiful, small-headed being\nWE WILL DEEESTROY YOUUU AND EVERYBODY ON YOUR SHIP!!",
+      "voice": "thraddash-025.ogg",
+      "original_text_hash": 15504695860054276901
+    },
+    {
+      "id": "submit_2",
+      "index": 34,
+      "text": "I have secret weapons of great power. Submit, or I shall evaporate your planet.",
+      "voice": null,
+      "original_text_hash": 5452998946888732598
+    },
+    {
+      "id": "NO_SUBMIT_2",
+      "index": 35,
+      "text": "HARG! HARG! HARG!\nWe like secret weapons!\nWe will now give you the opportunity to give them to us.",
+      "voice": "thraddash-026.ogg",
+      "original_text_hash": 13960347868142684514
+    },
+    {
+      "id": "be_friends_1",
+      "index": 36,
+      "text": "We wish nothing from you, save your friendship.",
+      "voice": null,
+      "original_text_hash": 14913166239776232216
+    },
+    {
+      "id": "NO_FRIENDS_1",
+      "index": 37,
+      "text": "Perhaps, after we have made you our slaves, we can accommodate your wishes.\nUntil then...",
+      "voice": "thraddash-027.ogg",
+      "original_text_hash": 14109728676227881650
+    },
+    {
+      "id": "be_friends_2",
+      "index": 38,
+      "text": "You are strong! We like strong! We be friends, now, okay?",
+      "voice": null,
+      "original_text_hash": 10047781549530160652
+    },
+    {
+      "id": "NO_FRIENDS_2",
+      "index": 39,
+      "text": "We are strong. You are weak. And HARG! HARG!...\nwe HATE weak.\nWe do not need weak friends! We only want slaves and teachers.\nSince you have nothing to teach us and refuse to be our slave\nthen you are our enemy.\nSuch logic must be obvious even to a stupid being like yourself.",
+      "voice": "thraddash-028.ogg",
+      "original_text_hash": 4677078878486605814
+    },
+    {
+      "id": "how_impressed_urquan_1",
+      "index": 40,
+      "text": "How did impressing the Ur-Quan work out?",
+      "voice": null,
+      "original_text_hash": 6771416926732607585
+    },
+    {
+      "id": "IMPRESSED_LIKE_SO_1",
+      "index": 41,
+      "text": "It was glorious, truly glorious!... for the most part.\nIt would have been entirely glorious except for two factors.\nFactor One: we lost over half our battle fleet during the two-week fracas.\nFactor Two: of our casualties, only 60 percent were due to the Ur-Quan's enemy, the dark ships.\nSNORT! The remaining 40 percent can be attributed to the Ur-Quan themselves.\nWe can be certain that we impressed them with at least one achievement\ndue to the Afterburner modification, we were somewhat harder for them to kill\nthan when they conquered us in the first place.",
+      "voice": "thraddash-029.ogg",
+      "original_text_hash": 14528412956462006647
+    },
+    {
+      "id": "how_impressed_urquan_2",
+      "index": 42,
+      "text": "Would you describe the Ur-Quan's enemy ships?",
+      "voice": null,
+      "original_text_hash": 2226889346825175128
+    },
+    {
+      "id": "IMPRESSED_LIKE_SO_2",
+      "index": 43,
+      "text": "They were black as space itself, with only the occasional glint off their hulls as they turned to fire.\nTheir weapons were extremely primitive, nothing more than fast-spinning disks of dense metal\nyet they penetrated our defensive screens, and inflicted grievous damage\npurely through their enormous kinetic energy.\nThe black ship's secret weapon is their ring of fire\nwhich is VERY effective at short range.\nHey! Wait a minute! What am I doing answering YOUR questions?\nPuny human, your time is almost up. Prepare yourself for defeat!",
+      "voice": "thraddash-030.ogg",
+      "original_text_hash": 10680322472847255566
+    },
+    {
+      "id": "bye_hostile_1",
+      "index": 44,
+      "text": "We leave in peace.",
+      "voice": null,
+      "original_text_hash": 13636904230471301595
+    },
+    {
+      "id": "GOODBYE_HOSTILE_1",
+      "index": 45,
+      "text": "What? You leave before the lesson begins? We have so much to teach you!\nLet us show you just one thing, it's called the `Surprise Attack'.",
+      "voice": "thraddash-031.ogg",
+      "original_text_hash": 14509370859671847172
+    },
+    {
+      "id": "bye_hostile_2",
+      "index": 46,
+      "text": "I guess we'll just be going now.",
+      "voice": null,
+      "original_text_hash": 12718869721252466113
+    },
+    {
+      "id": "GOODBYE_HOSTILE_2",
+      "index": 47,
+      "text": "Then I guess we'll just be attacking you now.",
+      "voice": "thraddash-032.ogg",
+      "original_text_hash": 8419563793217576309
+    },
+    {
+      "id": "why_you_here_hostile",
+      "index": 48,
+      "text": "Explain your presence here, Thraddash.",
+      "voice": null,
+      "original_text_hash": 5490006207438331297
+    },
+    {
+      "id": "NONE_OF_YOUR_CONCERN",
+      "index": 49,
+      "text": "It is none of your concern, human, SNORT!\nNow leave this world before we get REALLY mad!",
+      "voice": "thraddash-033.ogg",
+      "original_text_hash": 8486489382448061818
+    },
+    {
+      "id": "demand_to_land",
+      "index": 50,
+      "text": "What are you hiding down there? I demand to land!",
+      "voice": null,
+      "original_text_hash": 9198807945490976961
+    },
+    {
+      "id": "NO_DEMAND",
+      "index": 51,
+      "text": "You will make no demands, stupid captain human dog!\nInstead, you will die!",
+      "voice": "thraddash-034.ogg",
+      "original_text_hash": 4831770119934498526
+    },
+    {
+      "id": "what_about_this_world",
+      "index": 52,
+      "text": "So what's so special about this world? Why all the guards?",
+      "voice": null,
+      "original_text_hash": 9720139253239344739
+    },
+    {
+      "id": "BLUE_HELIX",
+      "index": 53,
+      "text": "Very well, since we have a huge number of ships here\nI guess there can't be much harm in explaining this to you\nPROVIDED YOU LEAVE WHEN WE'RE DONE!\nSo listen carefully.\nBelow us\non the surface of this planet\non the dark continent of Funt\nhigh on a mountain\nin an ancient shrine\nresting in a special ceremonial cradle\nglowing with its magical blue light, is the\nNO! I've changed my mind! You don't get to know the answer.\nSorry.",
+      "voice": "thraddash-035.ogg",
+      "original_text_hash": 1824033234614100194
+    },
+    {
+      "id": "whats_helix_hostile",
+      "index": 54,
+      "text": "Aw, geez. Come on. That was UNFAIR!",
+      "voice": null,
+      "original_text_hash": 17803160340199646443
+    },
+    {
+      "id": "HELIX_IS_HOSTILE",
+      "index": 55,
+      "text": "Okay, okay. I guess you're right, it was a bit cruel. I'll tell you.\nLet's see, where was I? Oh, right\non the dark continent of Funt\nhigh on a mountain\nin an ancient shrine\nresting in a special ceremonial cradle\nglowing with its magical blue light, is the\nAQUA HELIX!\n...the most revered of all Thraddash relics\nthe sign of any Culture's authority.",
+      "voice": "thraddash-036.ogg",
+      "original_text_hash": 13524023398544403762
+    },
+    {
+      "id": "i_need_to_land_lie",
+      "index": 56,
+      "text": "Uh... I left something important on the surface last week. Can I just go down and get it?",
+      "voice": null,
+      "original_text_hash": 13320938875048641547
+    },
+    {
+      "id": "CAUGHT_LIE",
+      "index": 57,
+      "text": "Okay. Go ahead.\nHey, WAIT A MINUTE!\nYou are after our most ancient and important relic, AREN'T YOU?\nYou were going to steal it, WEREN'T YOU? SNARL!\nYou are sneaky and deceptive, just like the vile Culture Sixteeners!\nYou shall suffer their same fate -- OBLIVION!",
+      "voice": "thraddash-037.ogg",
+      "original_text_hash": 4056193594183501394
+    },
+    {
+      "id": "bye_hostile_helix",
+      "index": 58,
+      "text": "We have decided to leave. Goodbye.",
+      "voice": null,
+      "original_text_hash": 11957508141349666704
+    },
+    {
+      "id": "GOODBYE_HOSTILE_HELIX",
+      "index": 59,
+      "text": "If you hurry, we won't kill you. Goodbye.",
+      "voice": "thraddash-038.ogg",
+      "original_text_hash": 18437373078931804258
+    },
+    {
+      "id": "DIE_THIEF_1",
+      "index": 60,
+      "text": "So it's you! The Thief! The skulking little human weasel!\nSNORT! We should not have left the Aqua Helix Planet unguarded!\nYou have shown us a weakness in ourselves, and for that we thank you.\nBut we desire the return of the Helix, and since I suspect you won't give it willingly\nSNORT! Eat Flaming Death You Gravy Sucking Pig!",
+      "voice": "thraddash-039.ogg",
+      "original_text_hash": 7014393587624535994
+    },
+    {
+      "id": "DIE_THIEF_2",
+      "index": 61,
+      "text": "Ahoy stupid human. You are arrogant and absurd!\nYou took our wonderful, ancient, sacred Aqua Helix, and refuse to return it!\nThis makes us mad, EXTREMELY mad!\nPrepare to meet thy Doom, alien Thief!",
+      "voice": "thraddash-040.ogg",
+      "original_text_hash": 7375615441708646764
+    },
+    {
+      "id": "AMAZING_PERFORMANCE",
+      "index": 62,
+      "text": "Admirable! Admirable! We have never witnessed such awesome combat capabilities!\nYou have destroyed so many of us! We are humbled in your presence!\nWe thought you were a weakling, a coward, a pitiful sniveling wimp.\nWe were wrong, so wrong! WHIMPER!\nYou have shown yourself superior to ourselves, indeed, even the Ur-Quan!\nWe wish to learn from you, thus improving our Culture.\nGive us your wisdom, mighty Teacher! What is the secret to your success?\nWait! I've got it! It's the way you respond to our hailing calls each time we meet!\nJust as they say, first impressions are SO important!\nSo tell us, please! Tell us how WE should present ourselves.",
+      "voice": "thraddash-041.ogg",
+      "original_text_hash": 3543406399238646497
+    },
+    {
+      "id": "IMPRESSIVE_PERFORMANCE",
+      "index": 63,
+      "text": "Well, Humans have some backbone after all, but not as much as the Ur-Quan.\nA Human ship is a poor second to the Ur-Quan Dreadnought.\nYour weapons do not have the killing strength of an Ur-Quan fusion blast.\nSNORT! The Ur-Quan are still your betters.",
+      "voice": "thraddash-042.ogg",
+      "original_text_hash": 6736330981074681515
+    },
+    {
+      "id": "ADEQUATE_PERFORMANCE",
+      "index": 64,
+      "text": "Perhaps Humans can fight after all, if our reports are accurate.\nWe will test this hypothesis in the laboratory of life -- IN GLORIOUS BATTLE!\nYour puny, inadequate weaponry is no match for the Thraddash Mark 6 Blaster\nwith its 4 Megawatt energy discharge.\nNor can your slow, bloated tubs compare to our Flash Turbo-Boosted warships!\nWe have nothing to fear!",
+      "voice": "thraddash-043.ogg",
+      "original_text_hash": 5678327716876494587
+    },
+    {
+      "id": "HELLO_POLITE_1",
+      "index": 65,
+      "text": "Hello and good day! How are you today?\nWe are just fine, thank you! Are your mates and offspring well?\nHow simply marvelous!",
+      "voice": "thraddash-044.ogg",
+      "original_text_hash": 17174287472111177849
+    },
+    {
+      "id": "HELLO_POLITE_2",
+      "index": 66,
+      "text": "We are the polite and courteous Thraddash!\nWe greet you with all appropriate felicitations.",
+      "voice": "thraddash-045.ogg",
+      "original_text_hash": 16115376107596938839
+    },
+    {
+      "id": "HELLO_POLITE_3",
+      "index": 67,
+      "text": "Most erudite greetings to you.\nAs always, we will be most pleased to enter into meaningful discourse with your elevated person.",
+      "voice": "thraddash-046.ogg",
+      "original_text_hash": 16109346883077353131
+    },
+    {
+      "id": "HELLO_POLITE_4",
+      "index": 68,
+      "text": "Greetings and salutations! We trust that all is well with you\nand that your stay will be pleasant and beneficial.",
+      "voice": "thraddash-047.ogg",
+      "original_text_hash": 4881056409578412155
+    },
+    {
+      "id": "HELLO_RHYME_1",
+      "index": 69,
+      "text": "We are the rhyming simons\nblancmange rhymes with orange\nspace is the place\nthe stars in their courses\ncannot catch the horses?\nSNORT! This is hard!",
+      "voice": "thraddash-048.ogg",
+      "original_text_hash": 513160219172131351
+    },
+    {
+      "id": "HELLO_RHYME_2",
+      "index": 70,
+      "text": "Blood is red, bruises are blue\nWhen strangers come here, we run them through!\nHARG! HARG! HARG!\nGood one, eh?",
+      "voice": "thraddash-049.ogg",
+      "original_text_hash": 16426632453685939921
+    },
+    {
+      "id": "HELLO_RHYME_3",
+      "index": 71,
+      "text": "There once was a Thraddash named Mak-Roni\nwhose ship was in total caco-phony\nHe got lost in Apodis\nand died in Draconis\nBecause all that he ate was baloney!\nHARG! HARG! HARG!",
+      "voice": "thraddash-050.ogg",
+      "original_text_hash": 2083301396933608226
+    },
+    {
+      "id": "HELLO_RHYME_4",
+      "index": 72,
+      "text": "Constantly moving are\nspace, stars, time\nSNORT!\nform not function\nmeets in death\nremembered.",
+      "voice": "thraddash-051.ogg",
+      "original_text_hash": 1753801113409380517
+    },
+    {
+      "id": "HELLO_PIG_LATIN_1",
+      "index": 73,
+      "text": "Eway areyay ethay igpay atinlay eakingspay Addashthray! Ortsnay!",
+      "voice": "thraddash-052.ogg",
+      "original_text_hash": 694627155417961650
+    },
+    {
+      "id": "HELLO_PIG_LATIN_2",
+      "index": 74,
+      "text": "Ombatcay! Ecklessray ouragecay! Eakingspay igpay atinlay!\nEway aryay ategray orfay eesethay easonsray!",
+      "voice": "thraddash-053.ogg",
+      "original_text_hash": 7110950357069237904
+    },
+    {
+      "id": "HELLO_PIG_LATIN_3",
+      "index": 75,
+      "text": "Ellohay umanhay! Elcomeway ackbay! E'veway eenbay xpectingay ouyay.",
+      "voice": "thraddash-054.ogg",
+      "original_text_hash": 12117645558366422852
+    },
+    {
+      "id": "HELLO_PIG_LATIN_4",
+      "index": 76,
+      "text": "Eway aypay espectray otay ouryay eategray eachertay!",
+      "voice": "thraddash-055.ogg",
+      "original_text_hash": 1414011956204978994
+    },
+    {
+      "id": "HELLO_LIKE_YOU_1",
+      "index": 77,
+      "text": "This is Grah of the starship Hot Pulsing Thrusters.",
+      "voice": "thraddash-056.ogg",
+      "original_text_hash": 5564738735298189820
+    },
+    {
+      "id": "HELLO_LIKE_YOU_2",
+      "index": 78,
+      "text": "Greetings! I am Captain Chudd in command of the Blazing Guns of Glory!",
+      "voice": "thraddash-057.ogg",
+      "original_text_hash": 5916652689589801000
+    },
+    {
+      "id": "HELLO_LIKE_YOU_3",
+      "index": 79,
+      "text": "Attention! This is the starship Overwhelmer.",
+      "voice": "thraddash-058.ogg",
+      "original_text_hash": 4852705144033640035
+    },
+    {
+      "id": "HELLO_LIKE_YOU_4",
+      "index": 80,
+      "text": "I am commander Dthunk.",
+      "voice": "thraddash-059.ogg",
+      "original_text_hash": 13438872251413698794
+    },
+    {
+      "id": "WELCOME_SPACE0",
+      "index": 81,
+      "text": "We of",
+      "voice": "thraddash-060.ogg",
+      "original_text_hash": 16879725132139850142
+    },
+    {
+      "id": "WELCOME_SPACE1",
+      "index": 82,
+      "text": "are glad to meet you here in space, oh wise Teacher from Earth!",
+      "voice": "thraddash-061.ogg",
+      "original_text_hash": 1961323464442271271
+    },
+    {
+      "id": "WELCOME_HOMEWORLD0",
+      "index": 83,
+      "text": "Your presence here at our homeworld fills all of us",
+      "voice": "thraddash-062.ogg",
+      "original_text_hash": 3630192015221902929
+    },
+    {
+      "id": "WELCOME_HOMEWORLD1",
+      "index": 84,
+      "text": "with awe. We are honored, wise human.",
+      "voice": "thraddash-063.ogg",
+      "original_text_hash": 6759609223187939552
+    },
+    {
+      "id": "WELCOME_HELIX0",
+      "index": 85,
+      "text": "Hoy-yo-HO! The super-strong human has returned to this, our most important planet.\nWe,",
+      "voice": "thraddash-064.ogg",
+      "original_text_hash": 12986245555459346469
+    },
+    {
+      "id": "WELCOME_HELIX1",
+      "index": 86,
+      "text": ", bid you welcome.",
+      "voice": "thraddash-065.ogg",
+      "original_text_hash": 13445523713639510551
+    },
+    {
+      "id": "why_you_here_ally",
+      "index": 87,
+      "text": "What's so special about this planet?",
+      "voice": null,
+      "original_text_hash": 17564983519171790002
+    },
+    {
+      "id": "GUARDING_HELIX_ALLY",
+      "index": 88,
+      "text": "We orbit here guarding that most precious of our relics, that which we hold most dearly\nthat which has been at the heart of all our Cultures\n(except for Culture Nine, and they don't really count)\nWe guard the object which transcends mortal realms\nthe Aqua Helix!",
+      "voice": "thraddash-066.ogg",
+      "original_text_hash": 7113208095299586851
+    },
+    {
+      "id": "whats_helix_ally",
+      "index": 89,
+      "text": "So what about this `Aqua Helix' thing? Does it do any tricks?",
+      "voice": null,
+      "original_text_hash": 16973971559211047788
+    },
+    {
+      "id": "HELIX_IS_ALLY",
+      "index": 90,
+      "text": "The Aqua Helix is our most precious relic.\nFor the totality of our historical memory, the Helix has been with us.\nIt guides, motivates and rewards. It is the twisty-thing that launched a thousand ships!\nIt is the relic all our cultures have held most... oh yeah, I said that already.\nWe know the Aqua Helix is great\nlargely because all our previous nineteen cultures have known this to be true!\nIf the Aqua Helix wasn't anything special\nWHY would we spend so much blood and passion over the little thing?\nIt would be a colossal waste! An absurd travesty!...\n...actually, this is what Culture Nine said\nduring their two-week period of dominance before Culture Ten wiped them out.\nAnyway we remain convinced!...\n...we are Thraddash and all Thraddash know the significance of the Aqua Helix.\nTherefore, the Aqua Helix IS great! The matter is resolved.",
+      "voice": "thraddash-067.ogg",
+      "original_text_hash": 13923562536712603886
+    },
+    {
+      "id": "may_i_land",
+      "index": 91,
+      "text": "That sounds really cool! You won't mind if I go down and just kinda look at it, would you?",
+      "voice": null,
+      "original_text_hash": 16337441606420126871
+    },
+    {
+      "id": "SURE_LAND",
+      "index": 92,
+      "text": "Why certainly, go ahead and land on the planet and take a look at the most precious of all our relics\nthe relic we hold most dear, as have all our Cultures...",
+      "voice": "thraddash-068.ogg",
+      "original_text_hash": 5672472837447315832
+    },
+    {
+      "id": "whats_up_ally",
+      "index": 93,
+      "text": "Have there been any developments here that I, your Great Teacher, should know of?",
+      "voice": null,
+      "original_text_hash": 9142047871288439233
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_1",
+      "index": 94,
+      "text": "Yes, Teacher, there is at least one event of note.\nWe may have once mentioned our encounters with the tumbling red probes\nthe ones that attack relentlessly while spouting bizarre peace offerings.\nInitially we believed that they were coming from the direction of the Vega star system.\nNow we believe the opposite.\nUh.. no, Captain, we don't know what the opposite of Vega is, that's not what we meant.\nWe now believe that the probes are RETURNING to Vega.\nAs yet we do not know the nature of their mission.",
+      "voice": "thraddash-069.ogg",
+      "original_text_hash": 5285814012202303199
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_2",
+      "index": 95,
+      "text": "Yes, wise human, let us elaborate.\nTwo years ago we monitored the entry of two ships into our space.\nOne was clearly a Dreadnought, the ship of our ex-masters, the Ur-Quan.\nThe other ship was a dark and ominous ship equally as huge as the Dreadnought.\nThe vessels were locked in mortal combat. They fought valiantly!\nEventually, the Ur-Quan destroyed the black ship, but not before receiving mortal wounds itself.\nThe last we saw of the ship, it was tumbling out of control towards Alpha Pavonis.\nWe do not know its eventual fate.",
+      "voice": "thraddash-070.ogg",
+      "original_text_hash": 7520409552630836229
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_3",
+      "index": 96,
+      "text": "Now that you are our new role-model, I guess it's time to spill the beans on the Ur-Quan.\nUnfortunately, we never really got any beans -- secret bits of information, that is.\nHowever, maybe you would like to know about the last time we saw the Ur-Quan.\nIt was in 2140, I think. All of a sudden, a fleet of Dreadnoughts came storming into our space\nquickly refueled, and then left, broadcasting a recorded message\nwhich told us to remain in our old sphere of influence, obey the slave laws, and wait for their return.\nThe Dreadnought fleet departed in the direction of the Crateris constellation\nbut where they are now is unknown.",
+      "voice": "thraddash-071.ogg",
+      "original_text_hash": 17172067153157505975
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_4",
+      "index": 97,
+      "text": "This doesn't really count as News, Teacher\nbut War is truly magnificent isn't it?\nThe gut wrenching sight of molten warships!\nThe boiling blood of depressurized soldiers!\nI just love it!...\n...don't you?",
+      "voice": "thraddash-072.ogg",
+      "original_text_hash": 16544839095389854360
+    },
+    {
+      "id": "HOW_SHOULD_WE_ACT",
+      "index": 98,
+      "text": "We need to learn so much from you, such as\nHow should we act in our new Culture? What is our direction, our ethical base?",
+      "voice": "thraddash-073.ogg",
+      "original_text_hash": 11055167341728249203
+    },
+    {
+      "id": "friendly",
+      "index": 99,
+      "text": "Be kind at all times and in all places. Treat each stranger you meet as your best friend.",
+      "voice": null,
+      "original_text_hash": 11840651554118500885
+    },
+    {
+      "id": "OK_FRIENDLY",
+      "index": 100,
+      "text": "Friendly? Kind? The wisdom escapes me.... ah yes! I understand now!\nBeing kind, being friendly...this will allow intruders to let their guard down\nand when we kill them, they will be too surprised to react!\nWhat a great plan, human! You are truly a great Teacher!",
+      "voice": "thraddash-074.ogg",
+      "original_text_hash": 161196859727368279
+    },
+    {
+      "id": "wacky",
+      "index": 101,
+      "text": "Lighten up! Be kind of... you know... Wacky! Here, try watching these vids: Monty Python and the Marx Brothers.",
+      "voice": null,
+      "original_text_hash": 6964198777339799807
+    },
+    {
+      "id": "OK_WACKY",
+      "index": 102,
+      "text": "Wacky!...Wacky? I do not understand. We shall watch these vids of yours.\nWe shall study them, to learn to be... wacky.\nThen, when we are wacky enough, we shall test our new wackiness in combat\nto discover, no doubt, the great advantage it has given us.\nThank you, Great Teacher.",
+      "voice": "thraddash-075.ogg",
+      "original_text_hash": 17965355193478414563
+    },
+    {
+      "id": "just_like_us",
+      "index": 103,
+      "text": "Look, if you really want a model for your Culture, then be just like us!",
+      "voice": null,
+      "original_text_hash": 1897847095142913553
+    },
+    {
+      "id": "OK_JUST_LIKE_YOU",
+      "index": 104,
+      "text": "Aha! I see it now. We proceed carefully\nwe take no undue risks. We slowly build up our strength\nand only attack when we have overwhelming odds on our side!\nIn dealings with other races, we shall question them mercilessly\ntrying to drag out every last bit of information, and if they are not cooperative\nwe will threaten them with instant death!\nWe will be just like you!",
+      "voice": "thraddash-076.ogg",
+      "original_text_hash": 1447772385704619872
+    },
+    {
+      "id": "WORK_TO_DO",
+      "index": 105,
+      "text": "We have much work to do to implement these sweeping cultural changes.\nTransferring from the allegiances and mores of one culture to another\nis a difficult and time-consuming task.\nWe beg you, great warrior from Earth, give us time to make the changes you have suggested.\nReturn later to see our brave new world.",
+      "voice": "thraddash-077.ogg",
+      "original_text_hash": 15231188478026789452
+    },
+    {
+      "id": "contemplative",
+      "index": 106,
+      "text": "Try being more contemplative. Consider the many facets of a single gem... and stuff like that.",
+      "voice": null,
+      "original_text_hash": 729225471110161326
+    },
+    {
+      "id": "OK_CONTEMPLATIVE",
+      "index": 107,
+      "text": "Aha! Contemplation, yes! New thought and realizations! With our new studious ways\nwe shall uncover new methods, inventions and schemes\nallowing us to conquer entire civilizations with ease!\nBrilliant, human, brilliant!",
+      "voice": "thraddash-078.ogg",
+      "original_text_hash": 15810897316112328576
+    },
+    {
+      "id": "how_goes_culture",
+      "index": 108,
+      "text": "So how is the new Culture developing?",
+      "voice": null,
+      "original_text_hash": 18151990115410225768
+    },
+    {
+      "id": "CONTEMP_GOES_1",
+      "index": 109,
+      "text": "Augh! If it were not for our certainty in your wisdom, great Teacher from Earth\nwe would not have remained a `Contemplative' culture for more than a single day\nAs it is, we have contemplated our strategies, tactics, our weapons, the stars\nthe planets, and even our navels\nwhich for a Thraddash is very uncomfortable and requires at least two mirrors.",
+      "voice": "thraddash-079.ogg",
+      "original_text_hash": 5299896374842862729
+    },
+    {
+      "id": "CONTEMP_GOES_2",
+      "index": 110,
+      "text": "So studious! So quiet! So contemplative! SNORT!\nWe are not made for this. We are beginning to break out in spots!",
+      "voice": "thraddash-080.ogg",
+      "original_text_hash": 15176423926726484601
+    },
+    {
+      "id": "FRIENDLY_GOES_1",
+      "index": 111,
+      "text": "To be frank, Great Teacher, friendliness suits us Thraddash poorly.\nFor example, we Thraddash do not have the necessary muscles to `smile' as you suggested we do\nso we are now using small plastic prosthetic devices to prop up our lips into the required position.\nVery uncomfortable.",
+      "voice": "thraddash-081.ogg",
+      "original_text_hash": 10699443864304898253
+    },
+    {
+      "id": "FRIENDLY_GOES_2",
+      "index": 112,
+      "text": "Try as we might, we just can't make this friendly thing work, Teacher.\nEven your idea about exchanging the ritual gifts, the `Fruit Cakes' has had problems.\nIt seems that nobody actually wants to eat the Fruit Cakes\nhowever, on the plus side, due to the Fruit Cakes' density and other physical characteristics\nthey make excellent projectile weapons!",
+      "voice": "thraddash-082.ogg",
+      "original_text_hash": 1715440509339736551
+    },
+    {
+      "id": "WACKY_GOES_1",
+      "index": 113,
+      "text": "We have studied and studied the vids you left with us, oh Great Teacher\nbut we fear we are unable to grasp the essential truth and power of being wacky.\nFor example, last month, in an attempt to be spontaneously absurd\nI turned to my subordinate and in a high-modulated tone of voice\nexplained that there was a penguin sitting on the vidscreen.\nNot knowing what a penguin was, my subordinate spun to face the vidscreen\nhis hydraulic holster snapping his weapon into his hand.\nBLAM! BLAM! BLAM!\nThe penguin, the vidscreen, and a large section of the wall were destroyed.\nYou see, Captain. Perhaps we are not suited to being wacky\nand SNIFF!... that was my only penguin.",
+      "voice": "thraddash-083.ogg",
+      "original_text_hash": 5106480184391798213
+    },
+    {
+      "id": "WACKY_GOES_2",
+      "index": 114,
+      "text": "We are getting a better handle on this wacky thing.\nThe key? Slapstick!\nWe Thraddash have found our mode, our idiom, our way to be wacky.\nJabbing the eyes with outstretched digits!\nStriking the head with planks!\nHARG! HARG! HARG! We like and understand this perfectly, Captain.\nAnd with the addition of our native elements, high-explosives and nausea gas\nThraddash space has become Pratfall City!",
+      "voice": "thraddash-084.ogg",
+      "original_text_hash": 11681377550712303569
+    },
+    {
+      "id": "LIKE_YOU_GOES_1",
+      "index": 115,
+      "text": "Things are proceeding well, Captain.\nWe have discovered one item which may interest you.\nThere is an unusual world orbiting Epsilon Draconis, in close solar orbit.\nThough it radiates energies which scramble our sensors\nwe can detect many radioactive substances on the surface.\nWe suspect that this is one of the so-called `Precursor Dumps'\ndescribed in some ancient text fragments we found in Alpha Apodis.\nThe text goes on to say that these Dumps are in some kind of pattern\nthough what the pattern may be remains a mystery.\nFor now, that is all.",
+      "voice": "thraddash-085.ogg",
+      "original_text_hash": 16402492057559822172
+    },
+    {
+      "id": "LIKE_YOU_GOES_2",
+      "index": 116,
+      "text": "A long-range scouting team was sent to explore the stars in the Lyncis constellation.\nOn planet I of Delta Lyncis, they encountered a life form so dangerous, so hostile\nthat it almost killed the entire landing party.\nWe know you seek information on lifeforms, Great Teacher\nand we hope this information has been of use.",
+      "voice": "thraddash-086.ogg",
+      "original_text_hash": 16371757723029562993
+    },
+    {
+      "id": "bye_ally",
+      "index": 117,
+      "text": "Goodbye to you, my Thraddash students.",
+      "voice": null,
+      "original_text_hash": 4734958626210729425
+    },
+    {
+      "id": "GOODBYE_ALLY_1",
+      "index": 118,
+      "text": "We eagerly await your return, Great Teacher.",
+      "voice": "thraddash-087.ogg",
+      "original_text_hash": 5877816975645471240
+    },
+    {
+      "id": "GOODBYE_ALLY_2",
+      "index": 119,
+      "text": "We will await your return and further enlightenment with great anticipation.",
+      "voice": "thraddash-088.ogg",
+      "original_text_hash": 17701552896121709401
+    },
+    {
+      "id": "GOODBYE_ALLY_3",
+      "index": 120,
+      "text": "Try not to get killed, Teacher.",
+      "voice": "thraddash-089.ogg",
+      "original_text_hash": 3779464007473647033
+    },
+    {
+      "id": "GOODBYE_ALLY_4",
+      "index": 121,
+      "text": "Farewell Great Teacher.",
+      "voice": "thraddash-090.ogg",
+      "original_text_hash": 5570186378485707812
+    },
+    {
+      "id": "be_polite",
+      "index": 122,
+      "text": "Try being polite and friendly in your greetings.",
+      "voice": null,
+      "original_text_hash": 15634089814574415358
+    },
+    {
+      "id": "OK_POLITE",
+      "index": 123,
+      "text": "Ok, we will be polite.\nThat will cause visitors to let their guard down,\nthen we attack them!\nYes, that is an excellent plan!",
+      "voice": "thraddash-091.ogg",
+      "original_text_hash": 9865232554487624332
+    },
+    {
+      "id": "speak_pig_latin",
+      "index": 124,
+      "text": "To really capture the spirit of Interstellar Diplomatic Protocol you should speak pig latin.",
+      "voice": null,
+      "original_text_hash": 15933307961064113901
+    },
+    {
+      "id": "OK_PIG_LATIN",
+      "index": 125,
+      "text": "Pig-Latin, eh? Isn't that where you take the first letter or two of a word, put it at the end\nand then add an `ay' at the very end? Hmm.. let me try\n`Upidstay Eaturecray! Eparepray otay ieday!'\nHey! I like that! It gives one the semblance of wit and education\nwithout all that dreary studying!\nJust one question, Great Teacher. How do you say `example' in pig latin?",
+      "voice": "thraddash-092.ogg",
+      "original_text_hash": 2926479383421581419
+    },
+    {
+      "id": "use_rhymes",
+      "index": 126,
+      "text": "I know for a fact that rhyming in your introductions wins big points.",
+      "voice": null,
+      "original_text_hash": 10830657264125477471
+    },
+    {
+      "id": "OK_RHYMES",
+      "index": 127,
+      "text": "Rhymes? Like in poetry? SNORT!\nIsn't that kind of... you know... not-tough stuff?\nSNORT! What am I saying! You are the Great Teacher! You know best!\nIf rhyming is necessary, then Teacher, we will be rhyming all the timing.",
+      "voice": "thraddash-093.ogg",
+      "original_text_hash": 3012448814030563893
+    },
+    {
+      "id": "just_the_way_we_do",
+      "index": 128,
+      "text": "Just greet people the way we do.",
+      "voice": null,
+      "original_text_hash": 14921266483339877102
+    },
+    {
+      "id": "OK_WAY_YOU_DO",
+      "index": 129,
+      "text": "Hmmm... okay. I see.\nWhen necessary, we will be obsequious and kowtow\nand the rest of the time, we will bluster and threaten!\nHow simple!",
+      "voice": "thraddash-094.ogg",
+      "original_text_hash": 11569285486666832043
+    },
+    {
+      "id": "WHAT_NAME_FOR_CULTURE",
+      "index": 130,
+      "text": "Now that we understand the nuances of introduction, Great Teacher\nwe have an even more significant question.\nYour devastation of our battle forces have shown us\nthat our Culture Nineteen is inferior to your own\ntherefore, we will adopt your methods, your techniques\nbut what shall we name our new Culture?",
+      "voice": "thraddash-095.ogg",
+      "original_text_hash": 11543476152750247649
+    },
+    {
+      "id": "alliance_name",
+      "index": 131,
+      "text": "How about the",
+      "voice": null,
+      "original_text_hash": 6027053442779569183
+    },
+    {
+      "id": "OK_ALLIANCE_NAME",
+      "index": 132,
+      "text": "Okay, the",
+      "voice": null,
+      "original_text_hash": 13982613106587945892
+    },
+    {
+      "id": "NAME_TAIL",
+      "index": 133,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "you_decide",
+      "index": 134,
+      "text": "I think it is important that with this new direction, you decide on your new name.",
+      "voice": null,
+      "original_text_hash": 5836030895765699401
+    },
+    {
+      "id": "OK_CULTURE_20",
+      "index": 135,
+      "text": "You are wise, Great Teacher. I will think long and hard on this matter\nGRUNT!\nIt must reflect the profound changes in our social order.\nGRUNT!\nIt must clearly explain the nature of our civilization!\nGRUNT!\nYes! I have it! The perfect name is\nCulture Twenty!",
+      "voice": "thraddash-096.ogg",
+      "original_text_hash": 650631028637257959
+    },
+    {
+      "id": "fat",
+      "index": 136,
+      "text": "How about `The Fat Obstreperous Jerks'?",
+      "voice": null,
+      "original_text_hash": 12494304022289657794
+    },
+    {
+      "id": "OK_FAT",
+      "index": 137,
+      "text": "I like it! This name, being such an obvious contrast to our true nature\nwill fool our enemies into believing we are harmless\nbecause surely only fools would let themselves be known by such a name!\nOnce again, Great Teacher, you have shown your wisdom. We thank you.\nFrom this day forward, we are the Fat Obstreperous Jerks!",
+      "voice": "thraddash-097.ogg",
+      "original_text_hash": 174702557176145081
+    },
+    {
+      "id": "the_slave_empire0",
+      "index": 138,
+      "text": "It will be `The Glorious Slave Empire of",
+      "voice": null,
+      "original_text_hash": 1957554871416957712
+    },
+    {
+      "id": "the_slave_empire1",
+      "index": 139,
+      "text": "'!",
+      "voice": null,
+      "original_text_hash": 557169853887556773
+    },
+    {
+      "id": "OK_SLAVE",
+      "index": 140,
+      "text": "Ulp! Well... you're the one with the big starship.\nSo be it.",
+      "voice": "thraddash-098.ogg",
+      "original_text_hash": 4748853662584309938
+    },
+    {
+      "id": "FAT_JERKS",
+      "index": 141,
+      "text": "Fat Obstreperous Jerks",
+      "voice": "thraddash-099.ogg",
+      "original_text_hash": 6796081013749234052
+    },
+    {
+      "id": "CULTURE",
+      "index": 142,
+      "text": "Culture Twenty",
+      "voice": "thraddash-100.ogg",
+      "original_text_hash": 2928069081403638494
+    },
+    {
+      "id": "SLAVE_EMPIRE",
+      "index": 143,
+      "text": "The Glorious Slave Empire",
+      "voice": "thraddash-101.ogg",
+      "original_text_hash": 18199299550237486199
+    },
+    {
+      "id": "name_1",
+      "index": 144,
+      "text": "The New Alliance of Free Stars",
+      "voice": null,
+      "original_text_hash": 2930717857211576419
+    },
+    {
+      "id": "name_2",
+      "index": 145,
+      "text": "The Concordance of Alien Nations",
+      "voice": null,
+      "original_text_hash": 16943543974912230107
+    },
+    {
+      "id": "name_3",
+      "index": 146,
+      "text": "The United Federation of Worlds",
+      "voice": null,
+      "original_text_hash": 7156419825357983966
+    },
+    {
+      "id": "name_40",
+      "index": 147,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 148,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "HAVING_FUN_WITH_ILWRATH_1",
+      "index": 149,
+      "text": "Oh! The Glory of these many battles!\nThe stupid Ilwrath are easy kills for our valiant warriors, SNORT!\nWe kill fully two of them for every one of us who perishes!\nOf course, they possess twice our number of fighting ships\nbut that is not truly significant!\nIt was your wisdom and guidance that made this all possible, Great Teacher!\nThank you! Thank you! Thank you!",
+      "voice": "thraddash-102.ogg",
+      "original_text_hash": 12569903687576183857
+    },
+    {
+      "id": "HAVING_FUN_WITH_ILWRATH_2",
+      "index": 150,
+      "text": "The exploding starships! The screaming crew!\nThe direct hits, the cunning escapes!\nThese are the moments we live for!\nNow we must return to the great battles!\nFarewell, Great Teacher.",
+      "voice": "thraddash-103.ogg",
+      "original_text_hash": 838734374740918580
+    },
+    {
+      "id": "GO_AWAY_FIGHTING_ILWRATH_1",
+      "index": 151,
+      "text": "So, it is a stupid, ungainly human.\nI thought we killed you... never mind. It is unimportant now.\nWe are in the midst of a great and glorious war.\nThe Ilwrath religious fanatics have chosen to attack us\nand our brilliant defense is decimating them!\nOf course we are taking small casualties, but that is acceptable.\nWhy am I wasting my time here with you?\nI could be out there, winning honor and glory fighting the idiot spiders.\nDepart human, your death is not worth the cost of my ammunition.",
+      "voice": "thraddash-104.ogg",
+      "original_text_hash": 1992297381856735230
+    },
+    {
+      "id": "GO_AWAY_FIGHTING_ILWRATH_2",
+      "index": 152,
+      "text": "Stop bothering us, human!\nCan't you see that we are fighting the most perfect war of our Nineteen Cultures?\nWe have brought the Ilwrath to their knee equivalents!\nNow all that remains is the coup de grace -- their final annihilation!\nSo clear my path, alien dog, before I blast it clear myself!",
+      "voice": "thraddash-105.ogg",
+      "original_text_hash": 17755175537492367999
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 153,
+      "text": "SNORT! I am furious and ready to KILL!\nThroughout this entire game, I've done nothing but bluster and threaten!\nI've had no opportunity to show my true skills as an actor, my depth and range.\nNo one knows my sensitivity... my gentle inner being.\nSNORT! What if from now on I'm type-cast as a heavy?!\nWHIMPER! Now Spielberg may NEVER call me!",
+      "voice": "thraddash-106.ogg",
+      "original_text_hash": 2940229517078818194
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["thradd", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["thradd", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

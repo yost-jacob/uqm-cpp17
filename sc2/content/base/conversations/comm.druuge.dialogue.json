@@ -1,0 +1,872 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "druuge",
+  "resource": "comm.druuge.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "AMBUSH_IS_FIRST_HELLO",
+      "index": 0,
+      "text": "We are the Druuge of the Crimson Corporation. The planet you approach belongs to us.\nAll other claims are hereby rendered invalid and uncontestable.\nDepart.",
+      "voice": "druuge-000.ogg",
+      "original_text_hash": 6813951204742012095
+    },
+    {
+      "id": "INIT_BOMB_WORLD_HELLO",
+      "index": 1,
+      "text": "Fancy meeting you here, Captain!",
+      "voice": "druuge-001.ogg",
+      "original_text_hash": 12122407131028367621
+    },
+    {
+      "id": "SUBSEQ_BOMB_WORLD_HELLO",
+      "index": 2,
+      "text": "The treasure on this world is our property! It belongs to the Crimson Corporation.\nYour presence here can only be interpreted\nas an attempt to deprive us of what is rightfully ours!\nLeave!.. And do not bother us again!...\nOr prepare to suffer the severe consequences.",
+      "voice": "druuge-002.ogg",
+      "original_text_hash": 11798773705704522877
+    },
+    {
+      "id": "whats_up_at_bomb_planet",
+      "index": 3,
+      "text": "Druuge starship captain. Justify your presence here.",
+      "voice": null,
+      "original_text_hash": 10458487345484951325
+    },
+    {
+      "id": "GEN_INFO_AT_BOMB_PLANET",
+      "index": 4,
+      "text": "We, the appointed representatives of the Crimson Corporation \nmerely come to obtain the fair and reasonable payment for our goods!\nWe travelled to this region of space years ago to sell the useless Ultron device to the Utwig.\nWe knew even then of the weapon on the surface below us -- this was to be our price!\nBut the Utwig used a clever ploy to cheat us!\nI had convinced the morose Utwig fools that the Ultron was the answer to all of their pitiful dreams.\n`Powers?', the Proctors whined. `Will it give us the powers we crave?' \nI assured them that, yes, the Ultron would give them the Second Sight\nthe Ultron would allow them to see into the past and the future\nthe Ultron would slowly imbue each of them with unique secret powers of great significance\nthe Ultron would ensure that their race's huge potential for greatness would be fulfilled.\nThen... then a mistake was made.\nEnough foolishness! We will take the Precursor device from the surface and then leave.\nThereafter, I may see fit to bequeath the entire planet to you, Captain\nfor your invaluable services in the past\nprovided you leave now!",
+      "voice": "druuge-003.ogg",
+      "original_text_hash": 15381614129229540843
+    },
+    {
+      "id": "we_get_bomb",
+      "index": 5,
+      "text": "This Precursor artifact does not belong to you. It is rightfully ours. Stand aside.",
+      "voice": null,
+      "original_text_hash": 1804908400871493225
+    },
+    {
+      "id": "NOT_GET_BOMB",
+      "index": 6,
+      "text": "LIAR!\nIt is WE who are the genuine owners! Not you, Captain.\nThose many years ago, when we offered the Ultron to the Utwig\nhow they capered and laughed at their good fortune... Fools!\nThen they begged to hold the device, just for a moment.\nTo close the deal, I permitted this... a grievous mistake!\nThe moment the High Proctor touched the Ultron, her body arched\nand her eyes rolled back in her head.\nShe began to babble meaningless phrases and howl like a beast.\nWe had expected the Utwig to fall for our Sell, to buy the useless device. But never with such gusto!\nTheir self-doubt and lack of clear reason left them vulnerable to our every manipulation.\nBut then, the Proctor's body relaxed, and her eyes slowly closed.\nWhen they re-opened, her visual orbs shone with a wild and frightening light.\n`This is all we could have dreamed of... and more!', she intoned. `And now, Druuge, as to your price...'\nI opened my mouth to speak, but before I could utter a word, the Proctor interrupted\n`Wait! The Ultron feeds your thoughts directly to me. Do not speak! I know what you desire.'\nWhat could I say? That the Ultron was a farce and could do no such thing? I was stunned and silent.\nThe Proctor continued. `You Druuge of the Crimson Corporation desire an object of great antiquity!'\n`Something of secret function and value. Very well! It shall be done.'\nAnd with that we were led to a small vault.\nThe Proctor ceremoniously opened the door of the vault\nand explained that because we had been of such great service, ALL of the treasures within were now ours!\nInside we found a hodge-podge of ancient and useless artifacts\na glowing rod, an absurd trident and more such junk.\nI could see no way to salvage the disastrous situation at that time.\nBut when I heard of you, your travels, and your foolish quest for freedom\nI realized that you could be the agent of our justice... and lo!... it is so.\nYou have heard our justification. It is valid and unassailable.\nNow GO! And do not return.",
+      "voice": "druuge-004.ogg",
+      "original_text_hash": 16564370637920679907
+    },
+    {
+      "id": "then_we_take_bomb",
+      "index": 7,
+      "text": "Regardless of your feelings in this matter,  we will now take the device.",
+      "voice": null,
+      "original_text_hash": 18011645585370145486
+    },
+    {
+      "id": "FIGHT_FOR_BOMB",
+      "index": 8,
+      "text": "No! You will not!\nWe know your soul, young Captain. It is no brighter than ours!\nWe acknowledge our greed. We revel in it.\nYou are the dishonest one! Hiding your shame in shadows, you fabricate justifications, rationales!\nIn the end, we are just the same.\nBut now you stand in our way. You will not be moved.\nTherefore, we will add your true name to our Ledger of Hatred, but first\nDie, child, DIE!",
+      "voice": "druuge-005.ogg",
+      "original_text_hash": 8460479387091184286
+    },
+    {
+      "id": "GOODBYE_FROM_BOMB_PLANET",
+      "index": 9,
+      "text": "Your appreciation of this difficult situation does you credit.",
+      "voice": "druuge-006.ogg",
+      "original_text_hash": 13891643188617120831
+    },
+    {
+      "id": "NOT_ENOUGH_ROOM",
+      "index": 10,
+      "text": "You don't have enough room in your fleet for the ships we want to give you.",
+      "voice": "druuge-007.ogg",
+      "original_text_hash": 15167056687363403677
+    },
+    {
+      "id": "TRADE_FOR_SPHERE",
+      "index": 11,
+      "text": "Captain! A special deal, a bargain unequalled!\nInstead of the usual payment we would give for this item\nwhat would you say to a different exchange?\nWe would like to trade your commodity for a highly valuable Precursor artifact\nThe Rosy Sphere!\nIts origins are filled with wonder, and its powers are uncontestable, though subtle.\nWhat is your response?",
+      "voice": "druuge-008.ogg",
+      "original_text_hash": 18353512577775534552
+    },
+    {
+      "id": "no_way",
+      "index": 12,
+      "text": "Thanks, but no thanks.",
+      "voice": null,
+      "original_text_hash": 15112792174533255987
+    },
+    {
+      "id": "OK_REGULAR_DEAL",
+      "index": 13,
+      "text": "Very well, we can understand your trepidation.\nWe have been unfair in springing this offer on you so suddenly.\nPerhaps we can offer the deal again, in the future\nwhen you have had time to think about it.",
+      "voice": "druuge-009.ogg",
+      "original_text_hash": 5705384739079458545
+    },
+    {
+      "id": "way",
+      "index": 14,
+      "text": "I accept this unusual offer.",
+      "voice": null,
+      "original_text_hash": 12041585583488311721
+    },
+    {
+      "id": "OK_HERES_SPHERE",
+      "index": 15,
+      "text": "Ha-ha! You are indeed a wise young human!\nThe Rosy Sphere is yours.",
+      "voice": "druuge-010.ogg",
+      "original_text_hash": 7844839632751930441
+    },
+    {
+      "id": "whats_the_sphere_again",
+      "index": 16,
+      "text": "Tell me more about this Artifact, this Rosy Sphere.",
+      "voice": null,
+      "original_text_hash": 9499302422349210416
+    },
+    {
+      "id": "SPHERE_IS",
+      "index": 17,
+      "text": "Its genesis is lost in antiquity, along with the race who created it\nthe marvelous Precursors!\nNote how the device glows, how it throbs... pulsing slowly... bright... then dark...\nlike the heart of a slumbering god.\nCaptain, this artifact has been in our possession for eons.\nVast brutal wars have been fought over its possession.\nThe offer we make to you here today is quite unique!\nDo not make a hasty choice.",
+      "voice": "druuge-011.ogg",
+      "original_text_hash": 7092249489806918827
+    },
+    {
+      "id": "WE_SELL_FOR_CREW",
+      "index": 18,
+      "text": "Since this is your first time trading with us, Captain\nallow me to explain our standard operating procedures.\nWe will sell you fuel, ancient artifacts, even our own Mauler starships!\nAll that we ask in return is that you assign some of your crew to serving here at our trade world\non a permanent basis.",
+      "voice": "druuge-012.ogg",
+      "original_text_hash": 15676771626456065577
+    },
+    {
+      "id": "i_will_never_trade_crew",
+      "index": 19,
+      "text": "I will never sell my crew to be your slaves.",
+      "voice": null,
+      "original_text_hash": 10568986987966716520
+    },
+    {
+      "id": "YOUR_LOSS",
+      "index": 20,
+      "text": "This a great loss for us both, but we will not make an exception in your case.\nHowever, please try to be receptive to what I am about to say.\nWe have taken the liberty of entering your ships's computer system\nto investigate the agreement signed by the Earthling volunteers who serve aboard your vessel.\nAs we expected, we found that they have promised to obey you, Captain, under every circumstance\nno exceptions.\nYou are fully within your rights to deal with us in our required manner.\nShould you change your mind, we will always be ready to work with you, Captain.",
+      "voice": "druuge-013.ogg",
+      "original_text_hash": 3779768830036594165
+    },
+    {
+      "id": "isnt_this_slave_trading",
+      "index": 21,
+      "text": "Gee, isn't this kind of like... slave trading?",
+      "voice": null,
+      "original_text_hash": 1298221339259270930
+    },
+    {
+      "id": "NO_SLAVE_TRADE",
+      "index": 22,
+      "text": "No, no, no, Captain! Slaves have no choice in their destiny, no freedom.\nWe would never accept the permanent assignment of one of your people\nunless we knew that they had granted you the rights to make such a deal.",
+      "voice": "druuge-014.ogg",
+      "original_text_hash": 2098023228697843178
+    },
+    {
+      "id": "what_do_with_crew",
+      "index": 23,
+      "text": "Well, what would my crew members do here?",
+      "voice": null,
+      "original_text_hash": 16107794889089482948
+    },
+    {
+      "id": "HAVE_FUN",
+      "index": 24,
+      "text": "People as skilled as your flagship's crew will receive immediate posts in our starfleet.\nThey will serve alongside our own Druuge starship personnel\nsharing every duty.",
+      "voice": "druuge-015.ogg",
+      "original_text_hash": 3347273068983769766
+    },
+    {
+      "id": "im_ready_to_buy",
+      "index": 25,
+      "text": "...I am ready to make purchases.",
+      "voice": null,
+      "original_text_hash": 5744250935011848110
+    },
+    {
+      "id": "THIS_FOR_SALE",
+      "index": 26,
+      "text": "Excellent! Let us begin.\nOur inventory presently includes...",
+      "voice": "druuge-016.ogg",
+      "original_text_hash": 13831161819762897745
+    },
+    {
+      "id": "HAVE_SPHERE",
+      "index": 27,
+      "text": "The Rosy Sphere! An ancient Precursor artifact of unrivaled beauty and mystery.\nYours for the amazing bargain of only 100 crew.",
+      "voice": "druuge-017.ogg",
+      "original_text_hash": 15748579536984943836
+    },
+    {
+      "id": "HAVE_ART_2",
+      "index": 28,
+      "text": "The Glowing Rod! What unearthly powers will you gain\nwhen you hold this coruscating staff high above your head and scream, `Kyeee! Lykeee-lieee!'\nAnd it can be yours for only 100 crew.",
+      "voice": "druuge-018.ogg",
+      "original_text_hash": 7223427652259257041
+    },
+    {
+      "id": "HAVE_ART_1",
+      "index": 29,
+      "text": "The Trident of Wimbli! Not just one, but fully THREE mystic prongs give this artifact\nits awesome capabilities. Are you strong enough to master its power? Or will it master you?\nCost? 100 crew.",
+      "voice": "druuge-019.ogg",
+      "original_text_hash": 9735085144869290545
+    },
+    {
+      "id": "SHIPS_AND_FUEL",
+      "index": 30,
+      "text": "As always, we also have an unlimited supply of exceptionally high-performance starship fuel\nat a cost of ten crew for ten units of fuel\nas well as a freshly assembled Mauler starship\nwhich we will trade for 100 of your crew.",
+      "voice": "druuge-020.ogg",
+      "original_text_hash": 17413387874617164085
+    },
+    {
+      "id": "BOUGHT_SHIP",
+      "index": 31,
+      "text": "Good choice. Your fleet swells with power!\nWith the purchase of additional Mauler vessels, you would be nigh-invincible!",
+      "voice": "druuge-021.ogg",
+      "original_text_hash": 8672565069441509681
+    },
+    {
+      "id": "BOUGHT_FUEL",
+      "index": 32,
+      "text": "The fuel has been transferred to your vehicle.\nI expect you will notice the immediate benefits of our secret fuel additives.",
+      "voice": "druuge-022.ogg",
+      "original_text_hash": 7870639569377909331
+    },
+    {
+      "id": "BOUGHT_ART_2",
+      "index": 33,
+      "text": "So fortunate for you! So sad for me. I fear this relic of the glorious past\nwas all that kept me from ending my life to leave this vale of tears.\nNow what shall I do?",
+      "voice": "druuge-023.ogg",
+      "original_text_hash": 14774676514140671442
+    },
+    {
+      "id": "BOUGHT_ART_1",
+      "index": 34,
+      "text": "Ho-ho, Captain! Do not point the prongs at me in such a carefree manner!\nI might have been accidentally incinerated, or transported to a hostile dimension.\nYou wield the Trident with authority, Captain.\nI can tell that already you are realizing the true scope of this artifact's powers.",
+      "voice": "druuge-024.ogg",
+      "original_text_hash": 7872588088430510013
+    },
+    {
+      "id": "BOUGHT_SPHERE",
+      "index": 35,
+      "text": "I stride to the Sphere's containment vessel and pull it slowly from its ancient cradle.\nThe dust of centuries has made a gentle weld... there! It has come free.\nNow, into your hands I place the ancient sphere. Do you feel that, Captain?\nHas the warmth already penetrated the skin of your hands into your soul?\nWell it soon shall, Captain. Just keep trying.",
+      "voice": "druuge-025.ogg",
+      "original_text_hash": 4723748585967541075
+    },
+    {
+      "id": "repeat_what_to_sell",
+      "index": 36,
+      "text": "Uh, could you repeat what you have to sell?",
+      "voice": null,
+      "original_text_hash": 501858008671030224
+    },
+    {
+      "id": "INIT_SPACE_HELLO",
+      "index": 37,
+      "text": "Greetings friend and fellow explorer.\nI am an Officer of the Crimson Corporation.\nWe are the Druuge.\nWe are delighted to make your acquaintance, and hope that we can do business together.\nShould your desires be similar, please hurry to our main trading world at Zeta Persei I.",
+      "voice": "druuge-026.ogg",
+      "original_text_hash": 205536342329510980
+    },
+    {
+      "id": "SUBSEQUENT_SPACE_HELLO",
+      "index": 38,
+      "text": "Ah, the young starship captain from Earth!\nWe hope your adventures have brought you wealth.\nHow can we be of service?",
+      "voice": "druuge-027.ogg",
+      "original_text_hash": 8035908284113553849
+    },
+    {
+      "id": "whats_up_in_space",
+      "index": 39,
+      "text": "What can you tell us of your culture, your species?",
+      "voice": null,
+      "original_text_hash": 6660572168368516005
+    },
+    {
+      "id": "GENERAL_INFO_IN_SPACE_1",
+      "index": 40,
+      "text": "More than a culture, Captain, we are an organization -- the Crimson Corporation!\nOur corporation seeks only to improve our quality of life\nand does so via the `Dribble-Down' effect.",
+      "voice": "druuge-028.ogg",
+      "original_text_hash": 8599395951378946911
+    },
+    {
+      "id": "GENERAL_INFO_IN_SPACE_2",
+      "index": 41,
+      "text": "You wish to know more about us? Excellent! \nAfter all, knowledge should be free, eh Captain?!\nLet's see... about us\nwell, we ARE the Crimson Corporation, and the Crimson Corporation is us.\nWhen the Corporation's earnings are up, our quality of life soars, and our benefit packages improve.\nThe further up the ladder you are, the more you profit individually.\nWhen times are hard, the Corporation must cut costs, usually by laying off employees.\nSince everything on our world is Corporation property\nthis means any ex-employee is instantly trespassing and is guilty of stealing Corporation property\nsuch as air and sunlight. The only appropriate penalty for theft\nis to feed the furnace.",
+      "voice": "druuge-029.ogg",
+      "original_text_hash": 5185970963481901112
+    },
+    {
+      "id": "GENERAL_INFO_IN_SPACE_3",
+      "index": 42,
+      "text": "You know, Captain, we have heard that there is a race called the Melnorme\nwhich has recently entered this part of the galaxy.\nWe understand that they sell fuel for gross profit\ncharge fees for common knowledge\nand provide a `rescue service' which amounts to little more than piracy.\nHow criminal.\nJust an aside, Captain. We thought you might like to know\nthat the resources which can be salvaged from a Melnorme wreck are phenomenal.",
+      "voice": "druuge-030.ogg",
+      "original_text_hash": 16957182548206731677
+    },
+    {
+      "id": "GENERAL_INFO_IN_SPACE_4",
+      "index": 43,
+      "text": "More information, Captain? You have learned so much about us already!\nVery well.\nYou may be interested to know that we recently diverted the onslaught of a hostile alien race.\nWe learned of its approach from our ex-clients, the Burvixese.\nThe kind and philanthropic Burvixese informed us that a dark and sinister armada\nhad detected our HyperWave emissions, and though still distant\nwas inexorably homing in on our central trade world at Zeta Persei.\nWe devised a brilliant plan, implemented it perfectly\nand were thus spared gruesome death at the hands of the aliens\nwho we later learned call themselves the `Kohr-Ah'.",
+      "voice": "druuge-031.ogg",
+      "original_text_hash": 9587212207635531762
+    },
+    {
+      "id": "GOODBYE_FROM_SPACE",
+      "index": 44,
+      "text": "Until we meet again.",
+      "voice": "druuge-032.ogg",
+      "original_text_hash": 15398645189725881530
+    },
+    {
+      "id": "HSTL_TRADE_WORLD_HELLO_1",
+      "index": 45,
+      "text": "What, you wish to rob our Trade World, eh? Not today, boyo!",
+      "voice": "druuge-033.ogg",
+      "original_text_hash": 15493376709603329001
+    },
+    {
+      "id": "HSTL_TRADE_WORLD_HELLO_2",
+      "index": 46,
+      "text": "You made a mistake returning here, Captain.\nWe know your true colors. You are a blackheart.",
+      "voice": "druuge-034.ogg",
+      "original_text_hash": 7473304798781783081
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_1",
+      "index": 47,
+      "text": "Villains! Pilferers! Crooks!\nLook to your souls. Make your peace.\nYou are about to die.",
+      "voice": "druuge-035.ogg",
+      "original_text_hash": 12634691811512906994
+    },
+    {
+      "id": "HOSTILE_SPACE_HELLO_2",
+      "index": 48,
+      "text": "Foul pirate! We know of your violence and thievery.\nYou are undone, and must pay the price for your wretched deeds!",
+      "voice": "druuge-036.ogg",
+      "original_text_hash": 2444763525267839926
+    },
+    {
+      "id": "INITIAL_TRADE_WORLD_HELLO",
+      "index": 49,
+      "text": "Attention alien starship.\nYou have arrived at the Central Trade World of the Crimson Corporation\nHome of the Druuge.\nBe welcome and take advantage of our excellent deals.",
+      "voice": "druuge-037.ogg",
+      "original_text_hash": 4237668814726595875
+    },
+    {
+      "id": "SSQ_TRADE_WORLD_HELLO_1",
+      "index": 50,
+      "text": "It's always pleasant to see you again, Captain.\nAre you here today to buy or sell?",
+      "voice": "druuge-038.ogg",
+      "original_text_hash": 11692294139101808993
+    },
+    {
+      "id": "SSQ_TRADE_WORLD_HELLO_2",
+      "index": 51,
+      "text": "Ah! It is the young human in the giant alien spacecraft.",
+      "voice": "druuge-039.ogg",
+      "original_text_hash": 16412206272076974138
+    },
+    {
+      "id": "SSQ_TRADE_WORLD_HELLO_3",
+      "index": 52,
+      "text": "We welcome you to our Trade World once again, Captain.\nWe are at your service.",
+      "voice": "druuge-040.ogg",
+      "original_text_hash": 12818775038562108797
+    },
+    {
+      "id": "SSQ_TRADE_WORLD_HELLO_4",
+      "index": 53,
+      "text": "Hello Captain. Back so soon?",
+      "voice": "druuge-041.ogg",
+      "original_text_hash": 15810851923714515248
+    },
+    {
+      "id": "whats_up_at_trade_world",
+      "index": 54,
+      "text": "What can you tell us about this trade world?",
+      "voice": null,
+      "original_text_hash": 18120745892777433845
+    },
+    {
+      "id": "GEN_INFO_AT_TRADE_WORLD_1",
+      "index": 55,
+      "text": "This is the heart of our operation, the vital core of the Crimson Corporation.\nA million deals are made here each day, perhaps more.\nYou would be wise to take advantage of all our services, Captain.\nYou will not find better deals anywhere.",
+      "voice": "druuge-042.ogg",
+      "original_text_hash": 10805380682055126242
+    },
+    {
+      "id": "GEN_INFO_AT_TRADE_WORLD_2",
+      "index": 56,
+      "text": "While I am sure, Captain, that you would never make this foolish mistake\nI still feel I should warn you about one of our laws, specifically\nDruuge Statute 3429 - subsection A86, Definition of Starship Derelicts.\nSimply put, Captain, this statute recognizes that the universe is an inherently hostile place\nand any ship which is unable to defend itself incites violence\nusually because someone will try to take the unarmed ship by force.\nTherefore any unarmed vessel in our space is defined as a derelict\nand is available for salvage by anyone who finds it.",
+      "voice": "druuge-043.ogg",
+      "original_text_hash": 17960269851530762602
+    },
+    {
+      "id": "GEN_INFO_AT_TRADE_WORLD_3",
+      "index": 57,
+      "text": "In case it has not been made clear to you, Captain\naside from your crew, there are certain items which we are willing to trade for.\nSpecifically, these include: Vortex Spawners, HyperWave 'Casters\nand the tough, fungal mats discarded by the Mycon Deep Children\nas they penetrate a planet's crust.",
+      "voice": "druuge-044.ogg",
+      "original_text_hash": 18017103145328450803
+    },
+    {
+      "id": "GEN_INFO_AT_TRADE_WORLD_4",
+      "index": 58,
+      "text": "You may be surprised to learn that we are deeply spiritual beings, Captain.\nWe worship our god with great enthusiasm.\nYou want details? Why certainly.\nWe Druuge are especially fortunate souls.\nMost aliens we have encountered have, at best, a tenuous relationship with their gods\nbut we Druuge have an iron-clad contract!\nOur document reads as follows:\nWhereas the Druuge (hereinafter known as `the Worshippers')\nwish to establish a long-term relationship with an omnipotent and all-knowing deific entity\n(hereinafter known as `God' or `god')\nwhich shall mutually benefit both parties, the parties agree to abide by the following terms and commitments\nfor the rest of eternity.\nThe Worshippers hereby promise to perform faithfully and to the best of their ability\nthe following:\n1. Worshippers shall make regular and sincere obeisance to God, including but not limited to\nprayer, sacrifice, and the building of large structures.\n2. Worshippers shall make every attempt to convert non-believers (hereinafter known as `Them')\nmaking sure to obtain signed documents from same attesting to said conversion.\n3. Worshippers shall not enter into an agreement with another deity, without written permission from God.\nIn consideration of the above correctly performed obeisance, God shall provide:\n1. Continued existance with little or no modification to the perceived reality of the Worshippers.\n2. No fewer than 3 miracles (Force Majeure), whose exact nature and timing\nshall be left to God's sole discretion.\n3. Worshippers shall enjoy some form of life after death\nwhich shall remain a complete and total mystery to the Worshippers until such time as they die.\nWe, the undersigned, hereby swear to fulfill our obligations as defined above.\nSigned, The Druuge.\n(God, being omni-present and all-knowing is considered to have signed this document, by default.)",
+      "voice": "druuge-045.ogg",
+      "original_text_hash": 12414184891676317927
+    },
+    {
+      "id": "SCAN_MAIDENS",
+      "index": 59,
+      "text": "It has come to our attention that you have female Shofixti creatures on board your ship.\nWe have the means to fertilize these creatures artificially\nallowing us to produce a hybrid beast to attend our furnaces.\nWe must have those females, Captain!\nWe are prepared to offer you fully six of our devastating Mauler starships in exchange.",
+      "voice": "druuge-046.ogg",
+      "original_text_hash": 2969117912529649862
+    },
+    {
+      "id": "SCAN_FRAGMENTS",
+      "index": 60,
+      "text": "We know that you have Mycon Deep Child egg case fragments aboard your vessel.\nWould you consider trading them to us for a shiny new Mauler starship?",
+      "voice": "druuge-047.ogg",
+      "original_text_hash": 12498814579217385965
+    },
+    {
+      "id": "SCAN_DRUUGE_CASTER",
+      "index": 61,
+      "text": "Our sensors reveal that you have one of our more powerful HyperWave 'Casters on board your ship.\nHave no fear, Captain. It was abandoned on the Burvixese moon\nand by our law it belongs to you; however\nwe are fond of the device and wish to regain it through trade.\nGive us the 'Caster, and we will give you all the fuel your ship can hold.",
+      "voice": "druuge-048.ogg",
+      "original_text_hash": 2566026730634874959
+    },
+    {
+      "id": "SCAN_ARILOU_SPAWNER",
+      "index": 62,
+      "text": "We note you possess a Vortex Spawner.\nIn exchange for the simple device we will give you three Mauler starships\nand fill your fuel tanks, at no extra charge.",
+      "voice": "druuge-049.ogg",
+      "original_text_hash": 3288580035939857186
+    },
+    {
+      "id": "ENOUGH_FRAGMENTS",
+      "index": 63,
+      "text": "We have scanned additional Mycon Egg cases on your ship\nhowever, we have a sufficient supply, and do not intend to make further purchases of this commodity.",
+      "voice": "druuge-050.ogg",
+      "original_text_hash": 15686623475518537624
+    },
+    {
+      "id": "READY_TO_BUY",
+      "index": 64,
+      "text": "We are prepared to make a deal.",
+      "voice": "druuge-051.ogg",
+      "original_text_hash": 8300404832777360230
+    },
+    {
+      "id": "READY_TO_SELL",
+      "index": 65,
+      "text": "Excellent! Let us begin.\nOur inventory presently includes:",
+      "voice": "druuge-052.ogg",
+      "original_text_hash": 14122629906499139365
+    },
+    {
+      "id": "BYE_FROM_TRADE_WORLD_1",
+      "index": 66,
+      "text": "Return soon, Captain. Your patronage is appreciated.",
+      "voice": "druuge-053.ogg",
+      "original_text_hash": 9468646477349688776
+    },
+    {
+      "id": "BYE_FROM_TRADE_WORLD_2",
+      "index": 67,
+      "text": "Until next time, captain.",
+      "voice": "druuge-054.ogg",
+      "original_text_hash": 9581505495297279143
+    },
+    {
+      "id": "NOT_ENOUGH_CREW",
+      "index": 68,
+      "text": "Unfortunately, Captain, you do not have enough crew to make this purchase.",
+      "voice": "druuge-055.ogg",
+      "original_text_hash": 3182236832277247297
+    },
+    {
+      "id": "EXCHANGE_MADE",
+      "index": 69,
+      "text": "The agreed-upon exchange is hereby enacted.",
+      "voice": "druuge-056.ogg",
+      "original_text_hash": 4844374275098916815
+    },
+    {
+      "id": "OK_DONE_BUYING",
+      "index": 70,
+      "text": "Are you sure?... as you wish.",
+      "voice": "druuge-057.ogg",
+      "original_text_hash": 6597971573810207418
+    },
+    {
+      "id": "OK_DONE_SELLING",
+      "index": 71,
+      "text": "Very well.",
+      "voice": "druuge-058.ogg",
+      "original_text_hash": 3843407576246334687
+    },
+    {
+      "id": "bye",
+      "index": 72,
+      "text": "I will leave now.",
+      "voice": null,
+      "original_text_hash": 18149260346540966979
+    },
+    {
+      "id": "want_to_sell",
+      "index": 73,
+      "text": "I would like to sell items.",
+      "voice": null,
+      "original_text_hash": 8163452690338745103
+    },
+    {
+      "id": "want_to_buy",
+      "index": 74,
+      "text": "I would like to make a purchase.",
+      "voice": null,
+      "original_text_hash": 11233289966096468577
+    },
+    {
+      "id": "buy_druuge_ship",
+      "index": 75,
+      "text": "I wish to purchase a Druuge Mauler.",
+      "voice": null,
+      "original_text_hash": 6147959145601805834
+    },
+    {
+      "id": "buy_fuel",
+      "index": 76,
+      "text": "I need fuel.",
+      "voice": null,
+      "original_text_hash": 15773888319534028334
+    },
+    {
+      "id": "buy_art_1",
+      "index": 77,
+      "text": "I must have Wimbli's Trident.",
+      "voice": null,
+      "original_text_hash": 1480645130904226333
+    },
+    {
+      "id": "buy_art_2",
+      "index": 78,
+      "text": "I require the Glowing Rod.",
+      "voice": null,
+      "original_text_hash": 9514836227863414624
+    },
+    {
+      "id": "buy_rosy_sphere",
+      "index": 79,
+      "text": "I wish to acquire the Rosy Sphere.",
+      "voice": null,
+      "original_text_hash": 16574664198909438231
+    },
+    {
+      "id": "done_buying",
+      "index": 80,
+      "text": "I am done buying for now.",
+      "voice": null,
+      "original_text_hash": 7226119874772716069
+    },
+    {
+      "id": "done_selling",
+      "index": 81,
+      "text": "I do not wish to sell anything more.",
+      "voice": null,
+      "original_text_hash": 3622510691670815843
+    },
+    {
+      "id": "sell_maidens",
+      "index": 82,
+      "text": "I will sell the Shofixti Maidens to you.",
+      "voice": null,
+      "original_text_hash": 3454314887932375644
+    },
+    {
+      "id": "sell_caster",
+      "index": 83,
+      "text": "I will sell the HyperWave 'Caster to you.",
+      "voice": null,
+      "original_text_hash": 10624628577128938889
+    },
+    {
+      "id": "sell_fragments",
+      "index": 84,
+      "text": "I will sell the Egg Case fragments to you.",
+      "voice": null,
+      "original_text_hash": 13206413344240069887
+    },
+    {
+      "id": "sell_spawner",
+      "index": 85,
+      "text": "I will sell the Portal Spawner to you.",
+      "voice": null,
+      "original_text_hash": 4106030299137691727
+    },
+    {
+      "id": "BOUGHT_MAIDENS",
+      "index": 86,
+      "text": "I will purchase the fertile Shofixti adolescents.",
+      "voice": "druuge-059.ogg",
+      "original_text_hash": 3042329582254625636
+    },
+    {
+      "id": "BOUGHT_FRAGMENTS",
+      "index": 87,
+      "text": "I accept the deal for the Mycon Deep Child eggcase.",
+      "voice": "druuge-060.ogg",
+      "original_text_hash": 17482461873360997072
+    },
+    {
+      "id": "BOUGHT_CASTER",
+      "index": 88,
+      "text": "I will buy the HyperWave 'Caster.",
+      "voice": "druuge-061.ogg",
+      "original_text_hash": 11845635436623812065
+    },
+    {
+      "id": "YOU_GET",
+      "index": 89,
+      "text": "In exchange, you shall receive",
+      "voice": "druuge-062.ogg",
+      "original_text_hash": 15627679643352416309
+    },
+    {
+      "id": "YOU_ALSO_GET",
+      "index": 90,
+      "text": "In addition, as agreed, we will also give you",
+      "voice": "druuge-063.ogg",
+      "original_text_hash": 13288902359035083761
+    },
+    {
+      "id": "BOUGHT_SPAWNER",
+      "index": 91,
+      "text": "I will take the QuasiSpace Portal Spawner.",
+      "voice": "druuge-064.ogg",
+      "original_text_hash": 8572637384110364129
+    },
+    {
+      "id": "SALVAGE_YOUR_SHIP_1",
+      "index": 92,
+      "text": "I note that your ship is unarmed and unescorted.\nTherefore, by Druuge law, your ship is deemed derelict, and is subject to the laws of salvage.\nWhile I would prefer to take your ship intact, alas, I suspect you will force me to sell it as scrap.",
+      "voice": "druuge-065.ogg",
+      "original_text_hash": 16399115356085994980
+    },
+    {
+      "id": "SALVAGE_YOUR_SHIP_2",
+      "index": 93,
+      "text": "Under the authority of Druuge Statute 3429, subsection A86\n`Definition of Starship Derelicts'\nI hereby declare your undefended vessel as my salvaged property.\nYou have five seconds to vacate the premises before I am forced to remove you by force\nTime's up!",
+      "voice": "druuge-066.ogg",
+      "original_text_hash": 12253943914182521401
+    },
+    {
+      "id": "DEAL_FOR_STATED_SHIPS",
+      "index": 94,
+      "text": "the agreed-upon number of ships.",
+      "voice": "druuge-067.ogg",
+      "original_text_hash": 3966870336010052380
+    },
+    {
+      "id": "DEAL_FOR_LESS_SHIPS",
+      "index": 95,
+      "text": "less than the number of ships I originally offered\nbecause you have no room for the the full amount in your fleet!\nUnfortunate for you, I'm afraid, but legal I assure you.",
+      "voice": "druuge-068.ogg",
+      "original_text_hash": 15590621931214139727
+    },
+    {
+      "id": "DEAL_FOR_NO_SHIPS",
+      "index": 96,
+      "text": "the number of ships which can be added to your fleet\nand according to my scan of your task force, that is none.\nA serious mistake on your part captain, I'm afraid, but a great boon for the Firm.\nWith such a fine deal under my belt, perhaps I should take the rest of the day off.",
+      "voice": "druuge-069.ogg",
+      "original_text_hash": 12576968504156829841
+    },
+    {
+      "id": "FUEL0",
+      "index": 97,
+      "text": "All the fuel your ship can hold.\nWe are now hooking up the fuel lines to fill your tanks.\nHmm..",
+      "voice": "druuge-070.ogg",
+      "original_text_hash": 4444734481993469585
+    },
+    {
+      "id": "FUEL1",
+      "index": 98,
+      "text": "units of fuel.",
+      "voice": null,
+      "original_text_hash": 9935810148135387927
+    },
+    {
+      "id": "HIDEOUS_DEAL",
+      "index": 99,
+      "text": "Aieee! I am ruined! You have sucked my full tanks until they are dry!\nCruel Monster! Bloated Villain! Slicer of innocent throats!\nWhat shall I tell the Manager?! My spouse?!\nI shall certainly be assigned to tend the furnaces.\nI shall burn in the atomic fires!\nAieee!",
+      "voice": "druuge-071.ogg",
+      "original_text_hash": 15231045407885004051
+    },
+    {
+      "id": "BAD_DEAL",
+      "index": 100,
+      "text": "This will look very bad on my record, Captain. You have hurt me deeply.\nI had expected an understanding between trading partners, between equals\nbut NO! The moment my back is turned, you fill your bloated tanks far beyond a reasonable limit.\nI have learned an important lesson from you today\nOne I shall never forget.",
+      "voice": "druuge-072.ogg",
+      "original_text_hash": 4727124538361793849
+    },
+    {
+      "id": "FAIR_DEAL",
+      "index": 101,
+      "text": "You have received a fair exchange for your device, Captain.\nPerhaps more than fair for you.\nI will not be able to brag about this exchange, but then again\nI need not worry about feeding the furnace.",
+      "voice": "druuge-073.ogg",
+      "original_text_hash": 6767144287643556661
+    },
+    {
+      "id": "GOOD_DEAL",
+      "index": 102,
+      "text": "Well done, Captain. Quite a fair exchange. Good job.\n(hee-hee-hee).",
+      "voice": "druuge-074.ogg",
+      "original_text_hash": 10400643852787705794
+    },
+    {
+      "id": "FINE_DEAL",
+      "index": 103,
+      "text": "Ha-ha, yes! Yes! Yes! Yes! Yes! Yes!\nA fine deal, Captain. An excellent bargain... for me!\nHo-ho-ho! When I offered you all the fuel you could hold, you could have drained every drop I had.\nCold sweat dripped from my palms as I watched my workers begin the transfer.\nAnd then it was over... so soon! So gloriously soon!\nI shall be promoted at least three full steps! A new office! A benefits package!\nFortune has smiled on me today!\nI feel so lucky, Captain, that you did not have the forethought to arrive here with a dozen empty tanks.\nThank you! Thank you! Thank you!",
+      "voice": "druuge-075.ogg",
+      "original_text_hash": 727954601631740297
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 104,
+      "text": "I hope you know that contract negotiations are going to be very rough\nfor my role in the sequel... yes, rough indeed. To begin with\nI want ten percent of the royalties, creative control over my dialog\nand a fat cut of the toy licenses.\nWhat!? What did you say?! The sequel is going to be all about ME?\nHow wonderful! What an honor! What a great chance to move up the ladder towards\nPRODUCER!\nForget everything I said about license fees!\nIt's an honor just to work with you!",
+      "voice": "druuge-076.ogg",
+      "original_text_hash": 3305395712245509077
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["druuge", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["druuge", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

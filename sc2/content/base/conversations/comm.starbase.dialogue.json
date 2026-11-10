@@ -1,0 +1,2237 @@
+{
+  "version": 1,
+  "node_count": 21,
+  "id": "starbas",
+  "resource": "comm.starbase.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "native_handlers",
+    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+  },
+  "phrases": [
+    {
+      "id": "BEFORE_WE_GO_ON_1",
+      "index": 0,
+      "text": "Before we go on, I have something important to tell you.",
+      "voice": "starbase-000.ogg",
+      "original_text_hash": 12792681551781428655
+    },
+    {
+      "id": "BEFORE_WE_GO_ON_2",
+      "index": 1,
+      "text": "There is something I think you should know.",
+      "voice": "starbase-001.ogg",
+      "original_text_hash": 11606770911701613837
+    },
+    {
+      "id": "BEFORE_WE_GO_ON_3",
+      "index": 2,
+      "text": "By the way, I thought you should know.",
+      "voice": "starbase-002.ogg",
+      "original_text_hash": 13263587869858755827
+    },
+    {
+      "id": "BEFORE_WE_GO_ON_4",
+      "index": 3,
+      "text": "Before we proceed, I wanted you to know.",
+      "voice": "starbase-003.ogg",
+      "original_text_hash": 17398384261411760981
+    },
+    {
+      "id": "BEFORE_WE_GO_ON_5",
+      "index": 4,
+      "text": "I have some information I think you should hear.",
+      "voice": "starbase-004.ogg",
+      "original_text_hash": 4831010517331065053
+    },
+    {
+      "id": "BEFORE_WE_GO_ON_6",
+      "index": 5,
+      "text": "I've been waiting to inform you of a new situation.",
+      "voice": "starbase-005.ogg",
+      "original_text_hash": 5772783852677271042
+    },
+    {
+      "id": "BEFORE_WE_GO_ON_7",
+      "index": 6,
+      "text": "I know you're busy, but I've got some news.",
+      "voice": "starbase-006.ogg",
+      "original_text_hash": 3998542770282940126
+    },
+    {
+      "id": "NORMAL_HELLO_A0",
+      "index": 7,
+      "text": "Welcome back, Captain",
+      "voice": "starbase-007.ogg",
+      "original_text_hash": 9448571678286180306
+    },
+    {
+      "id": "NORMAL_HELLO_A1",
+      "index": 8,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_HELLO_B0",
+      "index": 9,
+      "text": "Greetings, Captain",
+      "voice": "starbase-008.ogg",
+      "original_text_hash": 7664117771558824933
+    },
+    {
+      "id": "NORMAL_HELLO_B1",
+      "index": 10,
+      "text": ". I am ready to assist you.",
+      "voice": null,
+      "original_text_hash": 12972694188509333878
+    },
+    {
+      "id": "NORMAL_HELLO_C0",
+      "index": 11,
+      "text": "It's good to see you again, Captain",
+      "voice": "starbase-009.ogg",
+      "original_text_hash": 9597481632241518920
+    },
+    {
+      "id": "NORMAL_HELLO_C1",
+      "index": 12,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_HELLO_D0",
+      "index": 13,
+      "text": "Ah, Captain",
+      "voice": "starbase-010.ogg",
+      "original_text_hash": 10956535578692111060
+    },
+    {
+      "id": "NORMAL_HELLO_D1",
+      "index": 14,
+      "text": ", I'm glad you're back.",
+      "voice": null,
+      "original_text_hash": 1281754470313758800
+    },
+    {
+      "id": "NORMAL_HELLO_E0",
+      "index": 15,
+      "text": "Hello Captain",
+      "voice": "starbase-011.ogg",
+      "original_text_hash": 12161824355535707727
+    },
+    {
+      "id": "NORMAL_HELLO_E1",
+      "index": 16,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_HELLO_F0",
+      "index": 17,
+      "text": "I am at your disposal, Captain",
+      "voice": "starbase-012.ogg",
+      "original_text_hash": 12678434904167598567
+    },
+    {
+      "id": "NORMAL_HELLO_F1",
+      "index": 18,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_HELLO_G0",
+      "index": 19,
+      "text": "Captain",
+      "voice": "starbase-013.ogg",
+      "original_text_hash": 14402014248969783563
+    },
+    {
+      "id": "NORMAL_HELLO_G1",
+      "index": 20,
+      "text": ". I'm glad you made it back in one piece.",
+      "voice": null,
+      "original_text_hash": 8466950877967181693
+    },
+    {
+      "id": "NORMAL_HELLO_H0",
+      "index": 21,
+      "text": "I hope the battle fares well, Captain",
+      "voice": "starbase-014.ogg",
+      "original_text_hash": 2981367388763518952
+    },
+    {
+      "id": "NORMAL_HELLO_H1",
+      "index": 22,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "RETURN_HELLO",
+      "index": 23,
+      "text": "Yes, Captain?",
+      "voice": "starbase-015.ogg",
+      "original_text_hash": 8819965995944618357
+    },
+    {
+      "id": "NORMAL_HELLO_TAIL",
+      "index": 24,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "NORMAL_GOODBYE_A0",
+      "index": 25,
+      "text": "Goodbye, Captain",
+      "voice": "starbase-016.ogg",
+      "original_text_hash": 18211661487715242856
+    },
+    {
+      "id": "NORMAL_GOODBYE_A1",
+      "index": 26,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_B0",
+      "index": 27,
+      "text": "Bring back lots of minerals, Captain",
+      "voice": "starbase-017.ogg",
+      "original_text_hash": 3472937235330030286
+    },
+    {
+      "id": "NORMAL_GOODBYE_B1",
+      "index": 28,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_C0",
+      "index": 29,
+      "text": "Return soon, Captain",
+      "voice": "starbase-018.ogg",
+      "original_text_hash": 1200078802080829110
+    },
+    {
+      "id": "NORMAL_GOODBYE_C1",
+      "index": 30,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_D0",
+      "index": 31,
+      "text": "Farewell Captain",
+      "voice": "starbase-019.ogg",
+      "original_text_hash": 7789072808494673953
+    },
+    {
+      "id": "NORMAL_GOODBYE_D1",
+      "index": 32,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_E0",
+      "index": 33,
+      "text": "Try to avoid getting gruesomely killed, Captain",
+      "voice": "starbase-020.ogg",
+      "original_text_hash": 14451756820816793865
+    },
+    {
+      "id": "NORMAL_GOODBYE_E1",
+      "index": 34,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_F0",
+      "index": 35,
+      "text": "We shall await your return, Captain",
+      "voice": "starbase-021.ogg",
+      "original_text_hash": 14450079145068179226
+    },
+    {
+      "id": "NORMAL_GOODBYE_F1",
+      "index": 36,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_G0",
+      "index": 37,
+      "text": "Blow up an Ur-Quan for me, Captain",
+      "voice": "starbase-022.ogg",
+      "original_text_hash": 15128640222209433331
+    },
+    {
+      "id": "NORMAL_GOODBYE_G1",
+      "index": 38,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "NORMAL_GOODBYE_H0",
+      "index": 39,
+      "text": "Be careful out there, Captain",
+      "voice": "starbase-023.ogg",
+      "original_text_hash": 9735157651517788134
+    },
+    {
+      "id": "NORMAL_GOODBYE_H1",
+      "index": 40,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "LIGHT_LOAD_A0",
+      "index": 41,
+      "text": "The more minerals you bring us, Captain",
+      "voice": "starbase-024.ogg",
+      "original_text_hash": 15091766609260016711
+    },
+    {
+      "id": "LIGHT_LOAD_A1",
+      "index": 42,
+      "text": ", the faster we'll be able to tackle the Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 10947592216967972564
+    },
+    {
+      "id": "LIGHT_LOAD_B0",
+      "index": 43,
+      "text": "Light load this time, Captain",
+      "voice": "starbase-025.ogg",
+      "original_text_hash": 14370238522477398528
+    },
+    {
+      "id": "LIGHT_LOAD_B1",
+      "index": 44,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "LIGHT_LOAD_C0",
+      "index": 45,
+      "text": "Another small load, Captain",
+      "voice": "starbase-026.ogg",
+      "original_text_hash": 3406328527976601599
+    },
+    {
+      "id": "LIGHT_LOAD_C1",
+      "index": 46,
+      "text": ". Well, I suppose something is better than nothing.",
+      "voice": "starbase-027.ogg",
+      "original_text_hash": 1921366914745252161
+    },
+    {
+      "id": "LIGHT_LOAD_D0",
+      "index": 47,
+      "text": "I don't mean to criticize, Captain",
+      "voice": "starbase-028.ogg",
+      "original_text_hash": 9561526205529648250
+    },
+    {
+      "id": "LIGHT_LOAD_D1",
+      "index": 48,
+      "text": ", but, uh, wouldn't it be more efficient if you could return with larger loads?",
+      "voice": null,
+      "original_text_hash": 2916800745938755331
+    },
+    {
+      "id": "LIGHT_LOAD_E0",
+      "index": 49,
+      "text": "Pretty small amounts, Captain",
+      "voice": "starbase-029.ogg",
+      "original_text_hash": 10345297243557290205
+    },
+    {
+      "id": "LIGHT_LOAD_E1",
+      "index": 50,
+      "text": ".  Bringing those small amounts of minerals is not cost-effective. Try getting larger loads.",
+      "voice": null,
+      "original_text_hash": 17616962570726162475
+    },
+    {
+      "id": "LIGHT_LOAD_F0",
+      "index": 51,
+      "text": "Not too much today, Captain",
+      "voice": "starbase-030.ogg",
+      "original_text_hash": 9537386420943014692
+    },
+    {
+      "id": "LIGHT_LOAD_F1",
+      "index": 52,
+      "text": ". I hope you have better luck next time.",
+      "voice": null,
+      "original_text_hash": 2875037442615610984
+    },
+    {
+      "id": "LIGHT_LOAD_G0",
+      "index": 53,
+      "text": "Not too much today, Captain",
+      "voice": "starbase-030.ogg",
+      "original_text_hash": 9537386420943014692
+    },
+    {
+      "id": "LIGHT_LOAD_G1",
+      "index": 54,
+      "text": ". I hope you have better luck next time.",
+      "voice": null,
+      "original_text_hash": 2875037442615610984
+    },
+    {
+      "id": "MEDIUM_LOAD_A0",
+      "index": 55,
+      "text": "Not a bad job, Captain",
+      "voice": "starbase-031.ogg",
+      "original_text_hash": 6351891111284614891
+    },
+    {
+      "id": "MEDIUM_LOAD_A1",
+      "index": 56,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "MEDIUM_LOAD_B0",
+      "index": 57,
+      "text": "Good work, Captain",
+      "voice": "starbase-032.ogg",
+      "original_text_hash": 3024628988226825631
+    },
+    {
+      "id": "MEDIUM_LOAD_B1",
+      "index": 58,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "MEDIUM_LOAD_C0",
+      "index": 59,
+      "text": "Thanks, Captain",
+      "voice": "starbase-033.ogg",
+      "original_text_hash": 3331075661527336232
+    },
+    {
+      "id": "MEDIUM_LOAD_C1",
+      "index": 60,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "MEDIUM_LOAD_D0",
+      "index": 61,
+      "text": "Keep it coming, Captain",
+      "voice": "starbase-034.ogg",
+      "original_text_hash": 9663837950946460588
+    },
+    {
+      "id": "MEDIUM_LOAD_D1",
+      "index": 62,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "MEDIUM_LOAD_E0",
+      "index": 63,
+      "text": "Pretty fair load, Captain",
+      "voice": "starbase-035.ogg",
+      "original_text_hash": 13935032711546129637
+    },
+    {
+      "id": "MEDIUM_LOAD_E1",
+      "index": 64,
+      "text": ". Can you do better next time?",
+      "voice": null,
+      "original_text_hash": 4757282597835408320
+    },
+    {
+      "id": "MEDIUM_LOAD_F0",
+      "index": 65,
+      "text": "Don't stop now, Captain",
+      "voice": "starbase-036.ogg",
+      "original_text_hash": 6123638387578772581
+    },
+    {
+      "id": "MEDIUM_LOAD_F1",
+      "index": 66,
+      "text": ". We can use every bit you bring us.",
+      "voice": null,
+      "original_text_hash": 3164538896802125163
+    },
+    {
+      "id": "MEDIUM_LOAD_G0",
+      "index": 67,
+      "text": "A fair haul, Captain",
+      "voice": "starbase-037.ogg",
+      "original_text_hash": 5756199687456908728
+    },
+    {
+      "id": "MEDIUM_LOAD_G1",
+      "index": 68,
+      "text": ". Maybe you should consider adding a storage bay so you can gather larger loads.",
+      "voice": null,
+      "original_text_hash": 4465626215438667049
+    },
+    {
+      "id": "HEAVY_LOAD_A0",
+      "index": 69,
+      "text": "Excellent work, Captain",
+      "voice": "starbase-038.ogg",
+      "original_text_hash": 10290727694884521666
+    },
+    {
+      "id": "HEAVY_LOAD_A1",
+      "index": 70,
+      "text": "!",
+      "voice": null,
+      "original_text_hash": 12638116831811436492
+    },
+    {
+      "id": "HEAVY_LOAD_B0",
+      "index": 71,
+      "text": "This will really help, Captain",
+      "voice": "starbase-039.ogg",
+      "original_text_hash": 7698879794915118239
+    },
+    {
+      "id": "HEAVY_LOAD_B1",
+      "index": 72,
+      "text": ".",
+      "voice": null,
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "HEAVY_LOAD_C0",
+      "index": 73,
+      "text": "A fine job, Captain",
+      "voice": "starbase-040.ogg",
+      "original_text_hash": 7763504552118115557
+    },
+    {
+      "id": "HEAVY_LOAD_C1",
+      "index": 74,
+      "text": "!",
+      "voice": null,
+      "original_text_hash": 12638116831811436492
+    },
+    {
+      "id": "HEAVY_LOAD_D0",
+      "index": 75,
+      "text": "Wow,",
+      "voice": "starbase-041.ogg",
+      "original_text_hash": 11164616999825343256
+    },
+    {
+      "id": "HEAVY_LOAD_D1",
+      "index": 76,
+      "text": ", you really hit the mother lode this time!",
+      "voice": null,
+      "original_text_hash": 9686674039313953210
+    },
+    {
+      "id": "HEAVY_LOAD_E0",
+      "index": 77,
+      "text": "If you can keep this up,",
+      "voice": "starbase-042.ogg",
+      "original_text_hash": 16046750661765096667
+    },
+    {
+      "id": "HEAVY_LOAD_E1",
+      "index": 78,
+      "text": ", we'll turn that flagship of yours into a genuine Dreadnought-Killer.",
+      "voice": null,
+      "original_text_hash": 5953644209662086856
+    },
+    {
+      "id": "HEAVY_LOAD_F0",
+      "index": 79,
+      "text": "Captain",
+      "voice": "starbase-043.ogg",
+      "original_text_hash": 14402014248969783563
+    },
+    {
+      "id": "HEAVY_LOAD_F1",
+      "index": 80,
+      "text": ", you are to be commended. Keep up the good work!",
+      "voice": null,
+      "original_text_hash": 9643174644355264508
+    },
+    {
+      "id": "HEAVY_LOAD_G0",
+      "index": 81,
+      "text": "More fuel for the fire, eh, Captain",
+      "voice": "starbase-044.ogg",
+      "original_text_hash": 15513436720509620559
+    },
+    {
+      "id": "HEAVY_LOAD_G1",
+      "index": 82,
+      "text": "?  That last load should keep it blazing!",
+      "voice": null,
+      "original_text_hash": 5170785984812171966
+    },
+    {
+      "id": "STARBASE_IS_READY_A",
+      "index": 83,
+      "text": "I have good news to report, Captain.\nWe have successfully integrated the Precursor technology from your ship into our fabricator system\nand as you can see, we have already begun minor repairs on",
+      "voice": "starbase-045.ogg",
+      "original_text_hash": 10125226604035733902
+    },
+    {
+      "id": "STARBASE_IS_READY_B",
+      "index": 84,
+      "text": ", patching up some of the micro-meteorite holes.\nWe noticed that your ship does not have an emergency warp escape unit\nSo our engineers rigged up some for you and each of your escorts.\nNow you should be able to escape from a bad situation\nwith the touch of a button.  But there is a cost, however\nThe unit gulps up five fuel units each time your Precursor ship uses it.\nAlso, we now have a limited capacity to make modifications to your ship\nto refine starship fuel, to build additional combat ships\nand to train new members of your crew for the",
+      "voice": null,
+      "original_text_hash": 12705880277553851763
+    },
+    {
+      "id": "STARBASE_IS_READY_C",
+      "index": 85,
+      "text": "and any ships you acquire for your fleet.\nCaptain, I know you're eager to get to work, so I'll be brief.\nIf you have any questions -- how this Starbase works, what resources we need\nor just some background information on the galaxy -- don't hesitate to ask.",
+      "voice": null,
+      "original_text_hash": 5860536643538391434
+    },
+    {
+      "id": "WHAT_KIND_OF_INFO",
+      "index": 86,
+      "text": "Certainly, Captain. What do you need to know?",
+      "voice": "starbase-046.ogg",
+      "original_text_hash": 18173159894752358241
+    },
+    {
+      "id": "WHICH_FUNCTION",
+      "index": 87,
+      "text": "We can modify your Precursor ship, build additional combat vessels\nand supply you with fuel and crew.",
+      "voice": "starbase-047.ogg",
+      "original_text_hash": 2801121179111270388
+    },
+    {
+      "id": "WHICH_HISTORY",
+      "index": 88,
+      "text": "What aspect of history, Captain?",
+      "voice": "starbase-048.ogg",
+      "original_text_hash": 10534849270988462571
+    },
+    {
+      "id": "WHICH_MISSION",
+      "index": 89,
+      "text": "Can you be more specific?",
+      "voice": "starbase-049.ogg",
+      "original_text_hash": 7234162911651860909
+    },
+    {
+      "id": "OK_NO_NEED_INFO",
+      "index": 90,
+      "text": "Fine. Is there anything else you need?",
+      "voice": "starbase-050.ogg",
+      "original_text_hash": 3363276137969840252
+    },
+    {
+      "id": "ABOUT_FUEL",
+      "index": 91,
+      "text": "This base is designed to service Hierarchy ships.\nFortunately, your flagship uses the same stabilized antimatter technology as Hierarchy vessels\nand we'll be able to synthesize what you need.\nHowever, due to the size of your ship, we'll have to produce vast quantities of fuel\nwhich will be a substantial drain on our resources.",
+      "voice": "starbase-051.ogg",
+      "original_text_hash": 10343181197276316615
+    },
+    {
+      "id": "ABOUT_MODULES",
+      "index": 92,
+      "text": "Our engineers and Precursor specialists agree with the scientists from your world\nthat your starship was designed to be a `workhorse' vehicle\nwhich can be easily reconfigured for different missions\nby adding or swapping self-contained equipment packs which we call `modules'.\nThe modules we can build right now are:\nThruster units which make your ship move faster\nAttitude Jets which allow you to rotate the ship more quickly\nCrew Pods which provide life-support facilities for up to 50 additional crew members\nStorage Bays which increase your ship's cargo capacity for mineral resources\nFuel Tanks which hold an additional 50 units of fuel\nDynamos which feed energy into your combat energy batteries, improving your weapons' rate of fire.\nAnd last but not least\nIon-Bolt Guns - combat weaponry, the exact function of which depends on its location aboard the ship\nwhen put in the first, or front module slot, it fires a single shot forward\nwhen put in the second slot, it fires two shots spread to the left and right of center\nwhen put in the third slot, it fires two shots directly left and right\nand when put in the last or rear slot, it fires a single shot straight backwards.",
+      "voice": "starbase-052.ogg",
+      "original_text_hash": 78676797787687868
+    },
+    {
+      "id": "ABOUT_CREW0",
+      "index": 93,
+      "text": "We have almost 2000 highly-motivated, skilled professionals aboard this starbase\nand every single one of them wants a berth aboard",
+      "voice": "starbase-053.ogg",
+      "original_text_hash": 2187932193033791695
+    },
+    {
+      "id": "ABOUT_CREW1",
+      "index": 94,
+      "text": ". However, each hand we lose to your ship means less manpower here at the starbase\nand this is reflected in the Crew RU cost.\nAs long as you don't lose too many crew members to combat or planet exploration\nthe RU cost will remain static; but we have only so many warm bodies on this starbase\nand if your needs for crew grow beyond a certain point\nthe cost could increase dramatically.",
+      "voice": null,
+      "original_text_hash": 16920787584587438279
+    },
+    {
+      "id": "ABOUT_SHIPS",
+      "index": 95,
+      "text": "Our shipyard facilities are sophisticated and fully automated,\npermitting a handful of starbase personnel to do the same job\nas five-hundred, vac-suited construction workers.\nHowever, the only designs that we had in our computers were incomplete, Hierarchy ship designs.\nThings looked grim until one of the officers came forward with an amazing story.\nEven though the Ur-Quan destroyed every Earthling Cruiser in the fleet nearly 20 years ago\none of my maintenance engineers was a starship production assistant at the Detroit shipyards.\nWhen Earth was conquered, she was ordered to destroy all ship-construction databases;\nbut she secretly made copies of the blueprint disks, and then kept them with her ever since.\nThese disks contain all the data we need to build as many Earthling Cruisers as you want\nprovided you, Captain, can supply the large amounts of mineral resources required to build those vessels.\nIn theory, Captain, we could build alien starships here if we had designs for them; however,\nit's a well known fact that alien vessels just can't be flown in combat\nwithout native starship captains at the helm.",
+      "voice": "starbase-054.ogg",
+      "original_text_hash": 1401901387927251482
+    },
+    {
+      "id": "ABOUT_RU",
+      "index": 96,
+      "text": "As you know, Captain, we've committed the entire output of this station\nto building your flagship and your battle fleet into the strongest force possible.\nHowever, our resources are very limited, and we feel YOU must decide\nhow we are to spend our effort and materials.\nTo aid you in making these decisions, we have implemented a resource allocation scheme.\nWe provide you with a numerical assessment of the station's resources\nand ascribe a cost to each task we can perform and each device we can build.\nIt's up to you to decide how you are going to `spend' your resource units or `RU' as we call them.\nTo acquire more RU, you must bring resources back to the starbase.\nThese resources can be either in the form of mineral ores gathered from planet surfaces\nor already-refined metals and other valuable materials from the wreckage of enemy starships.",
+      "voice": "starbase-055.ogg",
+      "original_text_hash": 12342761440604819726
+    },
+    {
+      "id": "ABOUT_MINERALS",
+      "index": 97,
+      "text": "The most straightforward way you can accumulate Resource Units\nis to bring mineral ores back to this starbase.\nThere are probably enough resources in just the nearby dozen stars\nto build your ship into a powerful battleship, or\nto create a strong task force of combat vessels.\nI would also recommend that you build several additional Storage Bays.\nWhen gathering minerals, focus on `cleaning-out' one star system at a time.\nThis way, you minimize the cost of travel through HyperSpace.",
+      "voice": "starbase-056.ogg",
+      "original_text_hash": 17285793782251510361
+    },
+    {
+      "id": "ABOUT_LIFE",
+      "index": 98,
+      "text": "While I respect your search for abstract knowledge\nfrankly, Captain, in our present circumstances I see little use for such data here.\nPerhaps you can make use of biological information elsewhere.",
+      "voice": "starbase-057.ogg",
+      "original_text_hash": 13170832633937317242
+    },
+    {
+      "id": "OK_ENOUGH_STARBASE",
+      "index": 99,
+      "text": "What else can I tell you?",
+      "voice": "starbase-058.ogg",
+      "original_text_hash": 15526510320551373056
+    },
+    {
+      "id": "OK_ENOUGH_MISSION",
+      "index": 100,
+      "text": "What else can I tell you?",
+      "voice": "starbase-059.ogg",
+      "original_text_hash": 15526510320551373056
+    },
+    {
+      "id": "GET_MINERALS",
+      "index": 101,
+      "text": "If you have the patience, I would recommend you spend several months\nor even a year gathering mineral resources.\nYou can find such minerals on almost any planet surface,\nbut the quality and density will vary depending on the type of planet you're on.\nBase metals are probably the most common materials you'll find, but they aren't particularly valuable.\nYou can find rarer precious and radioactive elements on metal-rich worlds such as Mercury.\nAn old miner once told me that you could tell the relative quality of a planet's minerals\nbased on the planet's color as seen from space.\nTo remember the color sequence from good to bad\nThe miner had a mnemonic which went something like\n`Very Young Orangutans Could Grow Bananas, Perhaps Rather Well'.\nIt is also the case that mineral yields will be better at hotter stars.\nTemperature is related to the size and color of a star\nRed stars are the coolest, then orange, yellow, green, blue\nAnd the hottest stars are white.",
+      "voice": "starbase-060.ogg",
+      "original_text_hash": 17956137605151044647
+    },
+    {
+      "id": "ABOUT_ALIENS",
+      "index": 102,
+      "text": "That all depends on whom you meet, doesn't it, Captain?\nWell, in all seriousness, if you encounter the Ilwrath, VUX, Androsynth, or other Hierarchy battle thralls\nI wouldn't hold out much hope for a peaceful encounter.\nSo if you feel you have the advantage, attack!\nThe resources you will scavenge from the enemies' wreckage are well worth the effort.\nIf you can find Alliance races who are in a position to help us\nthen you MUST convince them to join with us!\nTheir assistance may be crucial to our success.",
+      "voice": "starbase-061.ogg",
+      "original_text_hash": 15349297529096173763
+    },
+    {
+      "id": "MUST_DEFEAT",
+      "index": 103,
+      "text": "Captain, I wish I had an easy answer, but I don't.\nThe only way I can see of liberating Earth, as well as the Alliance allies\nis to destroy the Ur-Quan and their armada of battle thralls entirely.",
+      "voice": "starbase-062.ogg",
+      "original_text_hash": 5288721529805611621
+    },
+    {
+      "id": "DEFEAT_LIKE_SO",
+      "index": 104,
+      "text": "To defeat our enemies, we will need awesome strength, both in your flagship and the fleet\nas well as the assistance of powerful new allies.\nThough combat will be unavoidable, and sometimes necessary to achieve our goals\nI am certain your wits will be at least as important as your weapons.\nYou will need to explore this region of space, gathering resources and information wherever you go.",
+      "voice": "starbase-063.ogg",
+      "original_text_hash": 6494313640149268022
+    },
+    {
+      "id": "FIND_URQUAN",
+      "index": 105,
+      "text": "I don't know, Captain,\nbut I suspect their battle thralls know more than we do;\nso I suggest you try to gather information from them, perhaps by force.",
+      "voice": "starbase-064.ogg",
+      "original_text_hash": 16781783434837881417
+    },
+    {
+      "id": "FIGHT_URQUAN",
+      "index": 106,
+      "text": "At first, your ship will be far too vulnerable to permit frontal assaults on the Ur-Quan.\nEven when your ship is at full power, we are faced with the reality\nthat the Hierarchy has THOUSANDS of ships\nYou cannot win the fight alone, Captain. You need allies.\nAlso, towards the end of the War, when the Hierarchy broke through the coreward front,\nwe heard rumors that the Ur-Quan had unleashed some kind of super-weapon\nwhich was unstoppable by normal means.\nYou need to find out if that rumor was true, Captain\nbecause if the Ur-Quan do have such a weapon, we'll have to find some way to stop it\nor all our efforts are for naught.",
+      "voice": "starbase-065.ogg",
+      "original_text_hash": 6376466951874962044
+    },
+    {
+      "id": "ALLY_LIKE_SO",
+      "index": 107,
+      "text": "If you encounter an unknown alien race, proceed carefully and diplomatically --\n-- we need all the friends we can get, and we certainly can't afford any more enemies. \nRemember, Captain, with your Precursor starship, you hold awesome power\nbut there will be situations when dealing with an alien race\nwhere a `carrot' will serve better than a `stick'.\nBut first you must determine what `carrot' the alien wants.",
+      "voice": "starbase-066.ogg",
+      "original_text_hash": 11386574677975327680
+    },
+    {
+      "id": "STRONG_LIKE_SO",
+      "index": 108,
+      "text": "You need to accumulate enough resources so that we can build up your flagship\nand assemble a strong fleet. I'd also recommend\nthat you acquire blueprints for other, more powerful ships than our trusty Cruiser.\nI suspect that aliens will not give you such `prints unless you form an alliance with them.",
+      "voice": "starbase-067.ogg",
+      "original_text_hash": 7680911983963928665
+    },
+    {
+      "id": "OK_ENOUGH_DEFEAT",
+      "index": 109,
+      "text": "What else can we discuss?",
+      "voice": "starbase-068.ogg",
+      "original_text_hash": 18247586942824004829
+    },
+    {
+      "id": "WHICH_ALIEN",
+      "index": 110,
+      "text": "Which group of aliens?",
+      "voice": "starbase-069.ogg",
+      "original_text_hash": 10973211070938336195
+    },
+    {
+      "id": "WHICH_WAR",
+      "index": 111,
+      "text": "What about the War?",
+      "voice": "starbase-070.ogg",
+      "original_text_hash": 11608582995272458560
+    },
+    {
+      "id": "WHICH_ANCIENT",
+      "index": 112,
+      "text": "We have some data on this subject.  What do you want to know about?",
+      "voice": "starbase-071.ogg",
+      "original_text_hash": 2602110874632242420
+    },
+    {
+      "id": "OK_ENOUGH_HISTORY",
+      "index": 113,
+      "text": "Sure. Anything else?",
+      "voice": "starbase-072.ogg",
+      "original_text_hash": 17438441693597579014
+    },
+    {
+      "id": "WHICH_ALLIANCE",
+      "index": 114,
+      "text": "Okay, which race?",
+      "voice": "starbase-073.ogg",
+      "original_text_hash": 1668699955925113204
+    },
+    {
+      "id": "WHICH_HIERARCHY",
+      "index": 115,
+      "text": "Which species?",
+      "voice": "starbase-074.ogg",
+      "original_text_hash": 6807317574207321433
+    },
+    {
+      "id": "ABOUT_OTHER",
+      "index": 116,
+      "text": "None that we had made formal contact with.\nThe Chenjesu implied that they had met 2 other starfaring species\none near the Giclas constellation, and the other directly coreward from Procyon.\nThe Ariloulaleelay once mentioned having `some fun' with an alien race in Draconis\nbut like so much else with the Arilou, they never revealed the whole story.\nI am sure there are hundreds more alien races in our galaxy,\nbut beyond what I've told you, your guess is as good as mine.",
+      "voice": "starbase-075.ogg",
+      "original_text_hash": 2787582880920764035
+    },
+    {
+      "id": "OK_ENOUGH_ALIENS",
+      "index": 117,
+      "text": "Would you like information on any other aspect of history?",
+      "voice": "starbase-076.ogg",
+      "original_text_hash": 13945616215075493975
+    },
+    {
+      "id": "ABOUT_SHOFIXTI",
+      "index": 118,
+      "text": "The Shofixti are a race of intelligent marsupials who had been `civilized' for only a few decades when the War began.\nThey were discovered in the Delta Gorno star system by the Yehat\nwho adopted and then `uplifted' the Shofixti, giving them advanced technology and cultural definition.\nShofixti are noble and fearless Warriors, Captain. In addition, their incredible fecundity and rapid maturation rate\nkept Alliance ranks solid even at the worst part of the War.\nYou know, I once flew as a observer aboard one of their ships\non routine patrol, we never saw the enemy\nbut I could never stop thinking about the `Glory Device' it had strapped to the bottom of its hull.",
+      "voice": "starbase-077.ogg",
+      "original_text_hash": 6676534832016520559
+    },
+    {
+      "id": "ABOUT_YEHAT",
+      "index": 119,
+      "text": "The Yehat are a race of ancient warrior clans that have been traveling the stars for many centuries.\nThe clans are highly competitive and sometimes even wage war on each other;\nbut the clans are all loyal to the Queen and her royal family, known as the Veep-Zeeps.\nThe Veep-Zeeps have been in power for over 2,000 years, and it is said that during their rule\nthe Yehat never lost a battle.",
+      "voice": "starbase-078.ogg",
+      "original_text_hash": 10122092971248161170
+    },
+    {
+      "id": "ABOUT_ARILOU",
+      "index": 120,
+      "text": "I'd like to think I'm not a bigoted person, Captain, especially when it comes to allies\nbut there is just something about those Arilou that gives me the creeps.\nOne thing I'll say for them, though\nthey possess some technique for moving REALLY fast through HyperSpace.\nThey never let us know what it was, but it sure beats the pants off our fastest ships.",
+      "voice": "starbase-079.ogg",
+      "original_text_hash": 3922091427955307035
+    },
+    {
+      "id": "ABOUT_CHENJESU",
+      "index": 121,
+      "text": "The Chenjesu were leaders of the Alliance, even though they refused to accept formally the title.\nI don't know if their silicon-based biology is just plain superior to our old carbon models\nor if their fantastic intellects were the product of an ancient, peaceful culture.\nWhatever the reason, I'd rather be taking orders from a Chenjesu than any other lifeform, absolutely.\nOne of the more amazing things about them was that they never used HyperWave communicators.\nThey could send messages naturally\nAnd their natural HyperWave receptors were much more sensitive than even our best units.",
+      "voice": "starbase-080.ogg",
+      "original_text_hash": 1069799173636115617
+    },
+    {
+      "id": "ABOUT_MMRNMHRM",
+      "index": 122,
+      "text": "We didn't really get much of a chance to learn about those mechanical beings,\nbut I'll tell you what I know.\nThey are the product of a distant, unknown culture\nwho sent a giant Factory-Ark into our region of space many centuries ago.\nThe Mother-Ark (that's what the Earth press called it) churned out millions of robots and finally broke down.\nI don't know why the Mmrnmhrm didn't repair the Mother-Ark, maybe they can't.\nMy personal guess as to why they were sent here is that they're on the leading edge of a colonization project\nand once the Mmrnmhrm have tamed enough new worlds, the genuine colonists -- whoever they are\nwill arrive and claim their due.",
+      "voice": "starbase-081.ogg",
+      "original_text_hash": 1952402366664773483
+    },
+    {
+      "id": "ABOUT_SYREEN",
+      "index": 123,
+      "text": "Most raw recruits saw the Syreen as nothing more than warm, breathing pin-ups.\nWarm they are, and yes, they do breathe most magnificently\nbut Captain, they are far more than simple joy units.\nTheir history shows that the Syreen established and maintained a peaceful culture\nfrom their Bronze Age through their discovery of starflight.\nBefore their planet was destroyed in a horrible cataclysm, their world was an Eden.",
+      "voice": "starbase-082.ogg",
+      "original_text_hash": 9798410833139011429
+    },
+    {
+      "id": "OK_ENOUGH_ALLIANCE",
+      "index": 124,
+      "text": "What other group of aliens are you interested in?",
+      "voice": "starbase-083.ogg",
+      "original_text_hash": 2357679493188266487
+    },
+    {
+      "id": "ABOUT_URQUAN",
+      "index": 125,
+      "text": "Our enemy is cunning, relentless and possesses technology superior to all but, perhaps\nthat found aboard your starship.\nThe Ur-Quan are born, live and die for one purpose only:\nthe subjugation of all other intelligent life in the galaxy.\nWhy? I don't know.\nThey'd probably have an easier time just destroying intelligence\nbut they are very careful not to use more force than is necessary to achieve their victim's submission.\nI'd sure like to know what made those wormy bastards as twisted as they are\nand I'd like to know why they keep on the move, never stopping longer than it takes\nto enslave whomever they find.",
+      "voice": "starbase-084.ogg",
+      "original_text_hash": 11903394283159079914
+    },
+    {
+      "id": "ABOUT_MYCON",
+      "index": 126,
+      "text": "The Mycons are hard to get a handle on.\nIn fact, I'm not sure any human has ever had a real conversation with a Mycon.\nWhat we know of them we have learned from their corpses, which, I may add\nhave a nasty habit of coming back to life when thawed out from a decompression quick-freeze.\nMycon ships seem to expend a significant amount of energy on life support.\nThis is probably because the Mycon only thrive in temperatures close to the melting point of lead.\nAs far as we know, the Mycon are the only race to actively seek out the Ur-Quan\nin order to become combat slaves.",
+      "voice": "starbase-085.ogg",
+      "original_text_hash": 2491823019824727806
+    },
+    {
+      "id": "ABOUT_SPATHI",
+      "index": 127,
+      "text": "Imagine facing a cowardly, mobile clam armed with a howitzer\nand you've got good idea of what it's like dealing with a Spathi.\nAlthough they tend to avoid battles as much as their masters will allow\nOnce in battle, a Spathi Eluder is one tough cookie.\nI once heard a rumor, though I don't like to believe in it myself,\nthat a rogue band of courageous Spathi broke away from the main starfleet,\npainted their ships black with bright red stripes\nand formed the `Black Spathi Squadron', dedicated to performing brave and hostile deeds.\nLike I said, I'd have to see it to believe it.",
+      "voice": "starbase-086.ogg",
+      "original_text_hash": 162504384414066023
+    },
+    {
+      "id": "ABOUT_UMGAH",
+      "index": 128,
+      "text": "It's unfortunate that the Umgah fell to the Ur-Quan so early in the War\nbecause I suspect we would have gotten along well with those big blob creatures;\nat the very least it would have been entertaining.\nWe know them a bit better than most races, because they were eager to talk with our ships\nbefore, after, and during battle.\nThe Arilou intimated that they had a relationship with the Umgah before the Ur-Quan arrived\nbut I don't know any details.",
+      "voice": "starbase-087.ogg",
+      "original_text_hash": 10145686622977362231
+    },
+    {
+      "id": "ABOUT_ANDROSYNTH",
+      "index": 129,
+      "text": "When I was flying combat missions along the Coreward Front\nthere was nothing we feared more than the Androsynth Hit-And-Run Squadron.\nTheir Blazer ships were more than a match for our Cruisers\nso we stayed clear of Eta Vulpeculae, their home star.\nIn addition, I think each of us aboard the ship knew deep down in our hearts\nthat the Androsynth had a damn good reason for hating us.\nOur grandparents had kept them as slaves for nearly 50 years.",
+      "voice": "starbase-088.ogg",
+      "original_text_hash": 13455321465189222844
+    },
+    {
+      "id": "ABOUT_VUX",
+      "index": 130,
+      "text": "The starship Far Voyager, under the command of Captain Jeffry L. Rand, encountered the VUX near Beta Mira.\nAlthough the details are hazy, it is generally accepted that Rand offended the VUX starship Commander\nwith an inadvertent insult.",
+      "voice": "starbase-089.ogg",
+      "original_text_hash": 14224051225812642208
+    },
+    {
+      "id": "ABOUT_ILWRATH",
+      "index": 131,
+      "text": "I still have nightmares about those spiders\ntaking me prisoner -- using me as one of their sick sacrifices to Dogar and Kazon\ntheir twin gods of destruction and torment.\nThose guys were almost as scary as the Androsynth to those of us in deep-space patrol.\nTheir Avenger ships could appear out of nowhere and melt a Cruiser down to slag in seconds.\nLuckily for us, the bulk of the Ilwrath fleet was thrown against the Chenjesu and the Mmrnmhrm.",
+      "voice": "starbase-090.ogg",
+      "original_text_hash": 14082848071782142576
+    },
+    {
+      "id": "OK_ENOUGH_HIERARCHY",
+      "index": 132,
+      "text": "What other group of aliens are you interested in?",
+      "voice": "starbase-091.ogg",
+      "original_text_hash": 2357679493188266487
+    },
+    {
+      "id": "ABOUT_PRECURSORS",
+      "index": 133,
+      "text": "Hell, you probably know more about them than I do, but here goes... about 200,000 years ago\nwhen our great-to-the-nth-grandparents were just starting to play with stone knives and bearskins\na starfaring species suddenly appeared on the galactic scene and spread like wildfire.\nWe've found evidence of their presence just about everywhere\nfrom an orbital platform in Alpha Centauri, to a stack of DataPlates in a cave on Pluto\nto some nameless widget found in a voodoo shop in New Orleans.\nThough we've never found a Precursor body, or even a picture of one\nwe can conjecture what they looked like by examining the scale and layout of their equipment.\nSuch an analysis indicates they were giants, say 5 to 8 meters tall, and twice as wide.\nI don't know if they looked more like a brontosaur or an elephant.\nAnyway, about three thousand years after the Precursors made their dramatic appearance\nthey vanished, poof! As far as we can tell, it took less than a decade to happen.",
+      "voice": "starbase-092.ogg",
+      "original_text_hash": 4975279631957027073
+    },
+    {
+      "id": "ABOUT_OLD_RACES",
+      "index": 134,
+      "text": "You mean besides the Precursors? Well, the only information we have is second-hand\nbased on some research by a Chenjesu historian that I read at the Academy.\nTzzz-Tzer-Tzak, the historian, found some evidence that there was a group of alien races\nwho formed an interstellar empire not too far from here about 22,000 years ago.\nThe only species in this empire actually lived in our region of space\nwas a race of rocklike creatures who lived in the Vulpeculae constellation.\nThe presence of the hostile Androsynth in that part of space\nseverely limited Tzzz-Tzer-Tzak's research.\nHe never even found out the race's name.",
+      "voice": "starbase-093.ogg",
+      "original_text_hash": 11300025517779106904
+    },
+    {
+      "id": "ABOUT_ALIENS_ON_EARTH",
+      "index": 135,
+      "text": "Yes, there is.\nAside from the Precursor relics we have found on Earth --\n-- often in museums, mislabeled as `modern art' --\n-- we have discovered disturbing evidence of much more recent visitations.\nPerhaps you are already aware that during the mid-to-late 20th century\nthere were uncountable UFO sightings, as well as dozens of reported `encounters' with alien life forms.\nAlthough we can discount many of the reports as wishful fabrication or traumatic-translation\nthe military authorities of that time kept a secret record of the `incidents' which were legitimate.\nIn each such case, the aliens are almost identical in appearance.\nThey have white skin and minimal facial features, except for huge, almond-shaped eyes\nwhich are often described as `glowing' or `luminescent'.\nThis description fits, almost perfectly, the Ariloulaleelay.\nIn most of the legitimate encounters\nthe people involved described being physically examined or modified by the aliens.\nIn some cases, unusual pregnancies occurred, and in almost every instance, there were repeat visitations\nas though the Ariloulaleelay were doing `check-ups' on their subjects.\nWe never got the chance to confront the Ariloulaleelay about what they did to us and why.\nI wonder if we ever will?",
+      "voice": "starbase-094.ogg",
+      "original_text_hash": 8231749048686644478
+    },
+    {
+      "id": "OK_ENOUGH_ANCIENT",
+      "index": 136,
+      "text": "Would you like information on any other aspect of history?",
+      "voice": "starbase-095.ogg",
+      "original_text_hash": 13945616215075493975
+    },
+    {
+      "id": "URQUAN_STARTED_WAR",
+      "index": 137,
+      "text": "Earth got involved late in the game, in 2112, when the Chenjesu arrived in our solar system for the first time\nso let's back up a few years to 2098\nwhen the Chenjesu's super-sensitive receivers detected a strange signal from the Ophiuchi constellation.\nThough even the Chenjesu didn't know it, it was the first sign of the Ur-Quan's arrival.\nThe Ur-Quan, having detected the presence of many sentient species, were beaming out an exulting hunting cry.\nThe first direct evidence of the Ur-Quan's intent\nwas the sudden conquest of the Umgah, a solitary, though not unfriendly, species in the Orionis constellation.\nThe Chenjesu, distraught by the invasion, were further angered when the Ur-Quan\nturned their fleets on the hostile but weak Ilwrath race.\nA hastily assembled defense force of Mmrnmhrm and Chenjesu vessels turned the Ur-Quan fleet aside\nbut the invader moved into Spathi space, rapidly subjugating that race.\nWith each new conquest, the Ur-Quan fleet grew larger as it added slave vessels to its ranks.\nEarth joined the Chenjesu to form the Alliance of Free Stars at about the same time as\nthe Androsynth stars fell to the Ur-Quan armada.\nBefore the ink was dry on our agreement with the Chenjesu in 2116\na new race appeared in orbit around the moon and asked for admittance to the Alliance\nit was the Ariloulaleelay.\nThe timing seemed unusual and the Arilou were definitely weird, looking like Saucer Men from Mars\nbut we were too busy cranking up our moth-balled heavy industry\nthat we didn't really pay it much attention at the time.",
+      "voice": "starbase-096.ogg",
+      "original_text_hash": 1461724579403622354
+    },
+    {
+      "id": "WAR_WAS_LIKE_SO",
+      "index": 138,
+      "text": "At the start of the war, here on Earth we were working like crazy\nchurning out hundreds of heavy Cruisers and smaller support vehicles.\nThe Ur-Quan were busy too.  Unbeknownst to us, they had moved down toward the Luyten star group\nand were attacking the VUX, who only the Yehat knew existed.\nOur botched first contact with the VUX took place in 2119, and it was the biggest single mistake we made during the War.\nAfter defeating the VUX, the Ur-Quan fleets ran smack into the combined might of the Yehat and Shofixti\nsupported by the first wave of our cruisers.\nAgain the Ur-Quan turned away from the hard spot to attack the weak, though we just thought they were running away.\nIn fact, the Ur-Quan had found another independent alien race, the Mycon, in the Brahe constellation.\nThe Mycon's voluntary submission to the Ur-Quan\nbrought the return of the Ur-Quan fleets, now swollen with a hundred devastating Mycon Podships.\nThe last entrants to the conflict were the Syreen, a race of space gypsies\nwho had escaped the Hierarchy by moving their vast fleet of slow-moving habitats into human space.\nWith the sides set, the last Ur-Quan offensive began.",
+      "voice": "starbase-097.ogg",
+      "original_text_hash": 14042827253716414899
+    },
+    {
+      "id": "LOST_WAR_BECAUSE",
+      "index": 139,
+      "text": "The Ur-Quan came roaring through VUX space, and tried to push past the Indi and Mira star systems.\nTheir onslaught was barely repulsed and our counter-attack made hardly a dent in the Hierarchy forces\nbut we held the line -- The Coreward front remained intact.\nOver the following ten years, there were many great battles between the combined Alliance starfleet\nand the Ur-Quan and their Hierarchy of Battle Thralls.\nThen, in 2134, a dramatic shift in the balance of power took place --\n-- this must have been about the time the science research mission was sent to the planet at Vela --\n-- our fleets were pushed back from the Indi-Mira line to beyond Raynet.\nHolding Rigel cost grievously in Chenjesu forces and the Ur-Quan, recognizing this weakness\nshifted to focus the brunt of their forces on Procyon.\nThat was the last we heard from the Chenjesu and the Mmrnmhrm.\nA few weeks later, waves of ships hit us from all directions.\nWhen Ceres Station, our outpost in the Asteroid belt, fell to the Hierarchy, we knew we were beaten\nbut we fought on anyway.\nThree days later the Ur-Quan vaporized our last remaining laser-forts on the moon\nand the Dreadnoughts took up geo-synchronous position above Rome\nMoscow, Beijing, Tokyo, London, Buenos Aires, and Washington.\nWe'd lost the War and we knew it, but the Ur-Quan decided to make it real clear --\n-- and that's why if you check any of our most recent maps, you won't find Buenos Aires.",
+      "voice": "starbase-098.ogg",
+      "original_text_hash": 18341283381219767499
+    },
+    {
+      "id": "AFTER_WAR",
+      "index": 140,
+      "text": "After the UN submitted their formal surrender\nwe were given a week to decide the nature of our servitude.\nThe Ur-Quan demanded that the decision be made through popular vote.\nWhen all the votes were tallied, Earth had chosen not to fight for the Ur-Quan\nwe had become a fallow slave world.\nWe were given a month to withdraw all of our people and equipment to Earth.\nAnyone or anything we left off-planet would be destroyed after the shield went up.\nThen the Ur-Quan broadcast an odd message\nall objects of human construction more than 500 years old were `to be abandoned'.\nWe didn't know what the Ur-Quan meant until they moved their Dreadnoughts to new orbital positions\nand opened fire on the surface with their fusion weapons.\nIn seconds, large sections of London, Paris, and other European cities were incinerated.\nAt first we thought they were going to annihilate us after all\nand we noticed that they were also striking such targets as the Giza Pyramids\nthe Parthenon in Athens, and Stonehenge. Curiously, The United States was almost untouched.\nThe flaming rain lasted 40 hellish hours.\nIt took days after we crawled from our smoldering shelters to realize what the Ur-Quan had done.\nOur new masters had targeted every building, monument or other manmade construction older than 500 years\nand destroyed it.\nIn those two days, we lost most of the history of Mankind.\nIn some cases, the Ur-Quan destroyed places\nwe did not even suspect were significant.\nFrom their positions in orbit, the Dreadnoughts blew away a kilometer of land in central Iraq\nvaporized several targets in the Amazon rain forest\npunched a big hole through the Antarctic icecap to destroy something deep under the surface\nand melted a broad swath of the ocean floor in the south-eastern Atlantic.\nThen, just a couple of days later, the shield went up\nand our contact with the outside world stopped.\nThe next time I saw the stars was 8 years ago,\nwhen I was transferred up here to be the new commander of this starbase.",
+      "voice": "starbase-099.ogg",
+      "original_text_hash": 10774772730446472312
+    },
+    {
+      "id": "OK_ENOUGH_WAR",
+      "index": 141,
+      "text": "Would you like any information on any other aspect of history?",
+      "voice": "starbase-100.ogg",
+      "original_text_hash": 7589330870953828989
+    },
+    {
+      "id": "STARBASE_BULLETIN_TAIL",
+      "index": 142,
+      "text": "That's all for now, Captain.",
+      "voice": "starbase-101.ogg",
+      "original_text_hash": 8796906887012889896
+    },
+    {
+      "id": "BETWEEN_BULLETINS",
+      "index": 143,
+      "text": "also",
+      "voice": "starbase-102.ogg",
+      "original_text_hash": 9568555481811867858
+    },
+    {
+      "id": "STARBASE_BULLETIN_1",
+      "index": 144,
+      "text": "Captain, a delegation of Spathi has just arrived here under orders from their High Council\nto form an alliance and assist you against the Hierarchy!\nThey have provided fabricator blueprint data for their `Eluder' spacecraft\nand promise a steady supply of captains for as many ships as we build.\nExcellent work, Captain!",
+      "voice": "starbase-103.ogg",
+      "original_text_hash": 11940255118331911648
+    },
+    {
+      "id": "STARBASE_BULLETIN_2",
+      "index": 145,
+      "text": "It would appear that your diplomatic efforts have struck gold, Captain.\nWe have been contacted by a race called the Zoq-Fot-Pik,\nwho wish to fulfill their part of `the Unification' --\n-- something you have arranged with them, I gather.\nThey have sent us specifications for their Stinger-class attack vessels\nas well as a large number of Zoq-Fot-Pik commanding officers.\nYou're doing a fine job, Captain.",
+      "voice": "starbase-104.ogg",
+      "original_text_hash": 6366374799197702546
+    },
+    {
+      "id": "STARBASE_BULLETIN_3",
+      "index": 146,
+      "text": "A race of plant creatures called the Supox have arrived in your absence, Captain.\nThey offered use of their ship designs and will supply you as many starship captains as we require.\nI, of course, accepted their offer immediately.",
+      "voice": "starbase-105.ogg",
+      "original_text_hash": 17455315508076234054
+    },
+    {
+      "id": "STARBASE_BULLETIN_4",
+      "index": 147,
+      "text": "A small contingent of Utwig has visited.\nAfter spending a few days setting up our fabricators to build their Jugger starships\nand providing us with a few capable commanders, they departed.\nCaptain, if you continue to build such strong alliances\nwe will surely win our battle against the Ur-Quan!",
+      "voice": "starbase-106.ogg",
+      "original_text_hash": 7448425295544241132
+    },
+    {
+      "id": "STARBASE_BULLETIN_5",
+      "index": 148,
+      "text": "We have been invaded by an alien race calling themselves the `Orz', though so far the invasion is a friendly one.\nThe fishlike creatures have been stomping around the base in their robotic walking exoskeletons\nwhich look like combat vac-suits, if you ask me.\nBased on the summary reports I've seen on their `Nemesis' ship design, I have but a single comment:\nI like it!\nI'd say we have quite a nasty little surprise in store for the Ur-Quan the next time you tangle with them.",
+      "voice": "starbase-107.ogg",
+      "original_text_hash": 9426466990553721640
+    },
+    {
+      "id": "STARBASE_BULLETIN_6",
+      "index": 149,
+      "text": "Good news, Captain!\nWith no announcement, a small fleet of Ariloulaleelay popped into space adjacent to our starbase\nscaring the hell out of the Deep-Radar operator\nbut right now I could kiss every one of those pale little weirdoes\nbecause they gave us three Skiff vessels!",
+      "voice": "starbase-108.ogg",
+      "original_text_hash": 16294622814106942124
+    },
+    {
+      "id": "STARBASE_BULLETIN_7",
+      "index": 150,
+      "text": "We are receiving a priority distress call from the Zoq-Fot Homeworld at Alpha Tucanae.\nThe signal was urgent but extremely weak. The only portions of the transmission that we can be sure of are:\n`HELP!'\n`BLACK DESTROYER!'\n`PLANET UNDER ATTACK!'\n`HELP!'\n`WORSE THAN ZEBRANKY!' (whatever that means)\nand finally\n`HELP!'",
+      "voice": "starbase-109.ogg",
+      "original_text_hash": 3889172844349925661
+    },
+    {
+      "id": "STARBASE_BULLETIN_8",
+      "index": 151,
+      "text": "A previously unknown alien race has recently made contact with our base.\nThey call themselves the Melnorme, and they are anxious to initiate trading relations with us.\nIf we are interested, they suggest making a rendezvous at Alpha Centauri.",
+      "voice": "starbase-110.ogg",
+      "original_text_hash": 2692071405674352929
+    },
+    {
+      "id": "STARBASE_BULLETIN_9",
+      "index": 152,
+      "text": "The Melnorme have returned, wondering when you want to meet them.\nThey seemed friendly but are unwilling to deal with us,\nclaiming that we have no data they consider valuable.\nThey said to make contact with them in any supergiant star system.",
+      "voice": "starbase-111.ogg",
+      "original_text_hash": 10493141941702002230
+    },
+    {
+      "id": "STARBASE_BULLETIN_10",
+      "index": 153,
+      "text": "Our deep-space monitoring team has detected faint alien signals coming from\nUranus\nor somewhere in that general direction.\nThe emanations are definitely being generated from within the solar system\nand could represent the presence of a Hierarchy spy.",
+      "voice": "starbase-112.ogg",
+      "original_text_hash": 4133510496780736935
+    },
+    {
+      "id": "STARBASE_BULLETIN_11",
+      "index": 154,
+      "text": "We have a major situation Captain!\nAs of a few days ago, all Spathi starship captains have vanished from our starbase.\nWe don't know how or why, but until we receive replacements from Spathiwa\nyou will be unable to commission any additional Spathi Eluder vessels for your fleet.",
+      "voice": "starbase-113.ogg",
+      "original_text_hash": 2693347674741529807
+    },
+    {
+      "id": "STARBASE_BULLETIN_12",
+      "index": 155,
+      "text": "We are being bathed in broad-beam HyperWave transmission from the direction of the Rigel star system.\nDue to the broadcast's wide dispersion, we cannot discern its content.",
+      "voice": "starbase-114.ogg",
+      "original_text_hash": 8986746146441283044
+    },
+    {
+      "id": "STARBASE_BULLETIN_13",
+      "index": 156,
+      "text": "We have made a formal alliance with the Chmmr.\nTheir ships can now be built in our shipyards.",
+      "voice": "starbase-115.ogg",
+      "original_text_hash": 3414326810953561475
+    },
+    {
+      "id": "STARBASE_BULLETIN_14",
+      "index": 157,
+      "text": "The Shofixti have returned!\nTheir ships can now be built in our shipyards.\nWith their vast numbers swelling our ranks\nwe won't have to worry about running out of able-bodied crew\nand I'm sure their volunteers will reduce the cost for new crew.",
+      "voice": "starbase-116.ogg",
+      "original_text_hash": 16399798136231568453
+    },
+    {
+      "id": "STARBASE_BULLETIN_15",
+      "index": 158,
+      "text": "We have detected a minute but measurable disturbance in the InterSpace fabric\nat approximate TrueSpace coordinate 100:50.\nOur scientists speculate that this disturbance may be caused by many thousands of HyperWarp penetrations\nall in phase -- as though a huge fleet of ships were on the move.",
+      "voice": "starbase-117.ogg",
+      "original_text_hash": 3275895288781360507
+    },
+    {
+      "id": "STARBASE_BULLETIN_16",
+      "index": 159,
+      "text": "In the log of your voyage from Unzervalt, I read that you encountered a tumbling,\nred probe that attacked the Tobermoon, killing Captain Burton.\nOver the past few months we have monitored an increasing number of these probes entering the system,\nand I'm afraid their population seems to be growing geometrically.\nIf this continues, in a year space will be crawling with these things!\nI recommend you treat this as a serious problem now, before it becomes a disaster.\nDiscover who is producing these probes and stop them from creating any more.",
+      "voice": "starbase-118.ogg",
+      "original_text_hash": 10621620863689342412
+    },
+    {
+      "id": "STARBASE_BULLETIN_18",
+      "index": 160,
+      "text": "This seems strange to me, and I considered not bringing it up\nbut not long ago, six of my people fell unconscious simultaneously for no apparent reason.\nWhen they awoke hours later, they reported being overwhelmed by a feeling\nof something VERY wrong that had taken place.\nThe Med Techs couldn't find anything wrong with these crew members, but they discovered one correlation.\nAll six of them have exceptionally high esper ratings.",
+      "voice": "starbase-119.ogg",
+      "original_text_hash": 7067349505887204896
+    },
+    {
+      "id": "STARBASE_BULLETIN_19",
+      "index": 161,
+      "text": "In the two weeks that have passed since the Chmmr began to work on your vessel\nthey attached the Utwig bomb to your ship, and have also put in place\ntheir own crystalline amplification devices to boost dramatically the power of the weapon.\nThis work is now complete, and your flagship is ready for whatever final modifications you desire.\nThe Chmmr technicians wanted me to explain to you that the bomb and its crystal power boosters\nare fragile and cannot be moved from their positions at the back of your vehicle.\nNow I have some bad news, and some good news.\nThe Chmmr had to remove all your main modules, weapons, crew pods, and the whole lot\nincluding your emergency warp escape unit\nso pick your engagements carefully, Captain.\nIn addition, their equipment now fills the rear ten slots leaving you only six for your own modules.\nBut here's the good news\nThe Chmmr have provided us with an unbelievable wealth of minerals and other resources.\nWe no longer have limits on what we can build for your flagship, or your fleet.",
+      "voice": "starbase-120.ogg",
+      "original_text_hash": 10351062498630237055
+    },
+    {
+      "id": "STARBASE_BULLETIN_22",
+      "index": 162,
+      "text": "I have some somber news.\nFor weeks now we have been scanning space in the direction of the Tucanae stars\nhoping to hear some word from our Zoq-Fot-Pik allies,\nwith no success. We must assume that something grave has happened to them.\nWe did receive an alien broadcast however -- it rang through space like an electronic howl.\nI think the best way to describe it would be\n`exultant'.",
+      "voice": "starbase-121.ogg",
+      "original_text_hash": 12627394182240901628
+    },
+    {
+      "id": "STARBASE_BULLETIN_27",
+      "index": 163,
+      "text": "Captain, I have an unpleasant topic to discuss with you, but this needs to be resolved right away.\nThere is some kind of wild rumor blowing around the starbase\nthat you have sold your own crew to the Druuge as slaves.\nPretty crazy, eh?\nLook Captain, I know you would never do anything like that, and I'm sorry I even had to mention this\nbut now I can assure everyone that this is just one of those damn fool lies that gets spread during wartime.\nThank you for your patience, Captain.",
+      "voice": "starbase-122.ogg",
+      "original_text_hash": 16293368385803542178
+    },
+    {
+      "id": "STARBASE_BULLETIN_28",
+      "index": 164,
+      "text": "I have just received incontrovertible evidence\nthat you HAVE been selling members of your own crew to the Druuge.\nCaptain, how could you!? Don't you know what the Druuge will use those men and women for?\nCannon-fodder, plain and simple. They are probably already dead, thanks to you.\nIt's a crime, Captain, a heinous crime -- even during wartime.\nYou must assure me that you will NEVER do this again!\nEven with that assurance, great damage has been done.\nWith the word out on what you have done, it's going to be pretty damn hard to recruit volunteers\nfor your next trip.\nI expect the RU cost for crew will sky-rocket.",
+      "voice": "starbase-123.ogg",
+      "original_text_hash": 15139255268243843391
+    },
+    {
+      "id": "STARBASE_BULLETIN_29",
+      "index": 165,
+      "text": "Well Captain, we have another problem.\nYour efforts on our behalf have been amazing, I truly believe we may win this struggle\nbut these achievements have not been gained without a price.\nOver a thousand of my people have gone away with you on your ship\nand not returned.\nA THOUSAND, Captain!\nCrew are quickly becoming a valuable commodity\nand I expect their RU cost will reflect this.",
+      "voice": "starbase-124.ogg",
+      "original_text_hash": 3003444376813114570
+    },
+    {
+      "id": "STARBASE_BULLETIN_30",
+      "index": 166,
+      "text": "I can't believe what I've just heard!\nCaptain, you're a heinous slave-trader!\nYour exchanges with the Druuge have become a horror story throughout the entire starbase.\nIf anyone here is stupid enough to join your crew, I expect the RU cost will be sky high.\nIf you weren't our only hope for freedom, Captain, I'd kill you where you stand.\nAs it is, expect me to bring charges against you when this is all over.",
+      "voice": "starbase-125.ogg",
+      "original_text_hash": 8385504414394397771
+    },
+    {
+      "id": "DEVICE_HEAD",
+      "index": 167,
+      "text": "The analysis reads as follows:",
+      "voice": "starbase-126.ogg",
+      "original_text_hash": 9175782994300945655
+    },
+    {
+      "id": "BETWEEN_DEVICES",
+      "index": 168,
+      "text": "The next entry in the analysis is:",
+      "voice": "starbase-127.ogg",
+      "original_text_hash": 14343354438942391637
+    },
+    {
+      "id": "DEVICE_TAIL",
+      "index": 169,
+      "text": "That's the end of our scientists' report.",
+      "voice": "starbase-128.ogg",
+      "original_text_hash": 15839406490661145615
+    },
+    {
+      "id": "ABOUT_PORTAL",
+      "index": 170,
+      "text": "SUBJECT: QuasiSpace Portal Spawner.\nDATA: Device is a hybrid of different alien technologies, including Arilou and Ur-Quan elements.\nOur tests show that this device temporarily creates a weakness in the fabric between HyperSpace\nand a different, unidentified dimension. The energy cost for this process is extreme\nand since the unit's power supply is self-contained, we cannot estimate how long it will remain functional.\nSUMMARY: Use of this device will permit a starship to make transit to a different dimension.\nThe hazards and benefits of this process are impossible to gauge without field study.",
+      "voice": "starbase-129.ogg",
+      "original_text_hash": 16779113212438737459
+    },
+    {
+      "id": "ABOUT_TALKPET",
+      "index": 171,
+      "text": "SUBJECT: Talking Pet Lifeform.\nDATA: This creature is physiologically identical to the so-called Ur-Quan `Talking Pet', with one notable exception:\nIt is highly intelligent, and evidences strong psychic capabilities.\nInitial AIQR tests rated it well above human super-genius\nthough immediately after we made this shocking assessment\nits scores dropped to the normal-sub-normal range.\nInterviews with the subject have shown it to be cooperative\nthough a class-IV pan-species psychological profile places the creature far into the `Furtive-Hateful' domain.\nThere were also some disturbing incidents where\nwe talked about roses, daisies, and other pretty flowers!\nSUMMARY: Everything's okay! Nothing to worry about with this cuddly little guy.\nNot one thing!",
+      "voice": "starbase-130.ogg",
+      "original_text_hash": 9735103066427079892
+    },
+    {
+      "id": "ABOUT_BOMB",
+      "index": 172,
+      "text": "SUBJECT: Utwig Bomb Device.\nDATA: Analysis has yielded little information about this device\nlargely because of our technicians' unwillingness to open it, or even remove the bomb from your ship.\nThat aside, here's what we know so far:\nThe device is correctly defined as a Bomb... one of enormous destructive potential\nbut it is not of Utwig origin -- nothing about it relates to the technology we see in the Jugger ship.\nWe believe it to be of late Precursor origin\nthough it somewhat resembles certain Chenjesu technology.\nIts original function? -- Probably a planeteering tool for dispersing unwanted moons.\nSUMMARY: Unless there is a strong reason to do otherwise\nDO NOT ACTIVATE THIS DEVICE! LEAVE IT ALONE!\nAny experimentation should be conducted AT LEAST 12 AU from this starbase\nand preferably a bit further.",
+      "voice": "starbase-131.ogg",
+      "original_text_hash": 12763881445296824187
+    },
+    {
+      "id": "ABOUT_SUN",
+      "index": 173,
+      "text": "SUBJECT: Sun Device.\nDATA: The unit contains a power generator whose output magnitude is simply mind-croggling.\nWhen activated, the device radiates energy equivalent to less than 1/100 of 1% of our sun\nhowever, when placed close to a planet, perhaps in orbit, its output would rival Sol's.\nSUMMARY: Another Precursor tool, the energy output of which can replace or augment a sun's radiance.",
+      "voice": "starbase-132.ogg",
+      "original_text_hash": 16985512502841174862
+    },
+    {
+      "id": "ABOUT_MAIDENS",
+      "index": 174,
+      "text": "SUBJECT: Shofixti Maidens.\nDATA: Subjects appear to be 16 Shofixti females, all in young adulthood.\nSubjects appear to be in good condition, with little or no freezer burn or other degeneration.\nHibernation maintenance units are functioning normally, and resuscitation equipment is easily activated.\nSUMMARY: We can wake them, but why? What shall we tell them? That they are an extinct species?\nUntil such a time as we feel we can induce artificial parthenogenesis\nor otherwise give the Shofixti sexual viability, our recommendation is to keep them as they are\nasleep.",
+      "voice": "starbase-133.ogg",
+      "original_text_hash": 4486967363387011465
+    },
+    {
+      "id": "ABOUT_SPHERE",
+      "index": 175,
+      "text": "SUBJECT: Rosy Sphere Device.\nDATA: The specimen is 5 centimeters in diameter, perfectly smooth\nand composed of a blood-red translucent substance.\nTests show that it has atypical ferro-magnetic properties, but is utterly non-conductive.\nSUMMARY: Probably a Precursor tool -- function unknown.",
+      "voice": "starbase-134.ogg",
+      "original_text_hash": 10002455142837524420
+    },
+    {
+      "id": "ABOUT_HELIX",
+      "index": 176,
+      "text": "SUBJECT: Aqua Helix Device.\nDATA: This device is composed of a light blue, super-hard substance which rates Mohs-13.\nThe object is composed of a flat ribbon of homogenous material approximately 1 meter in length\nand it is twisted in a perfect helix.\nFocused ion and nucleo-magnetic scans reveal little about its interior.\nSUMMARY: Unknown design. Unknown origin. Unknown function.",
+      "voice": "starbase-135.ogg",
+      "original_text_hash": 12949505678910569391
+    },
+    {
+      "id": "ABOUT_SPINDLE",
+      "index": 177,
+      "text": "SUBJECT: Clear Spindle Device.\nDATA: The object in question has no clear use or means of activation\nbut does have super-conductive characteristics between 18 and 22 degrees C.\nWe suspect that it is of Precursor manufacture, but we cannot be certain without extended study.\nSUMMARY: In all likelihood, this object is a part of a larger device whose capabilities remain unknown.",
+      "voice": "starbase-136.ogg",
+      "original_text_hash": 5392756155562313670
+    },
+    {
+      "id": "ABOUT_ULTRON_0",
+      "index": 178,
+      "text": "SUBJECT: Ultron Device.\nWe put this thing through every test we've got, and came up with the same results as if we'd used a fork\nnothing, zero, zip.\nIf this thing ever functioned -- which we doubt -- it certainly won't now.\nAge and physical stress have long since robbed it of whatever `mystical powers' it might have once had.\nSUMMARY: In the future, please don't waste our valuable time on junk like this so-called `Ultron.'",
+      "voice": "starbase-137.ogg",
+      "original_text_hash": 2382184536170855884
+    },
+    {
+      "id": "ABOUT_ULTRON_1",
+      "index": 179,
+      "text": "SUBJECT: Ultron Device.\nDATA: At first we thought this was a piece of junk -- in fact it may still be just that\nbut when you submitted it to us, we infused it with gamma radiation\nand found that the scatter signature was identical to the patterns\nrecorded from the `Empties', the `Singing Hoops', and `the Big Dud'\nwhich were all found in Precursor burrows on Procyon.\nSUMMARY: We are now convinced that this is a Precursor tool, but it remains dysfunctional.",
+      "voice": "starbase-138.ogg",
+      "original_text_hash": 11105085127836149602
+    },
+    {
+      "id": "ABOUT_ULTRON_2",
+      "index": 180,
+      "text": "SUBJECT: Ultron Device.\nDATA: The Ultron is partially functional, and we can detect energy emission from the device.\nWe suspect that the unit requires additional minor repairs before achieving full functionality\nand at this time, we cannot make an assessment of its capabilities.\nSUMMARY: A single additional replacement part should bring the Ultron to life.",
+      "voice": "starbase-139.ogg",
+      "original_text_hash": 2163183077250617719
+    },
+    {
+      "id": "ABOUT_ULTRON_3",
+      "index": 181,
+      "text": "SUBJECT: Ultron.\nDATA: We have determined that the so-called `Ultron' is in fact the `Appendages of Dawn'\ndescribed in the Precursor fragment found on Rigel in 2123.\nIn the partially translated Precursor text, the device is described as a `Mental Amplifier'\nwhich focuses mental energies of the holder `for the purpose of discreet change'.\nUnfortunately, human brain emanations do not seem compatible with the Ultron\nnor do those of the allied species we have tested.\nSUMMARY: Perhaps the Utwig, who claim to understand this device, can shed some light\non its true function and power.",
+      "voice": "starbase-140.ogg",
+      "original_text_hash": 18287538901231215757
+    },
+    {
+      "id": "ABOUT_UCASTER",
+      "index": 182,
+      "text": "SUBJECT: HyperWave Broadcaster - Umgah Design.\nDATA: This unit is capable of generating extremely intense HyperWave transmissions\nthough it is otherwise similar to our own 'Casters.\nSUMMARY: This thing would be great for practical jokes. You could scream `Boo!' from an Oort Cloud\nand scare the pants, or whatever, off everyone in the system.\nIf you used it in HyperSpace, there's no telling who might hear you and come running.",
+      "voice": "starbase-141.ogg",
+      "original_text_hash": 12275104079734810614
+    },
+    {
+      "id": "ABOUT_BCASTER",
+      "index": 183,
+      "text": "SUBJECT: HyperWave Broadcaster - Unknown Design.\nDATA: This technology is new to us, but though a bit primitive by Alliance standards\nis capable of generating a VERY strong signal.\nSUMMARY: Should you wish to call someone in HyperSpace, or send a message through a mile of steel\nthis baby will do just fine.",
+      "voice": "starbase-142.ogg",
+      "original_text_hash": 9858378749116184480
+    },
+    {
+      "id": "ABOUT_SHIELD",
+      "index": 184,
+      "text": "SUBJECT: Taalo Device.\nDATA: Whoever the Taalo were, they were clever -- way past us, probably even beyond the Chenjesu.\nAs far as I can tell, with all our equipment, this thing is a rock.\nJust a rock; nothing but a rock. However,\nif you feed a current into it, anywhere along its surface\neveryone on board this starbase who has esper potential gets a bad headache.\nWell we checked a bit more into that, and when the Taalo thing is active\nall evidence of psychon interaction is flatlined -- nothing gets through.\nSUMMARY: If you keep this Taalo rock device thing on board your vessel\nI'll bet you are immune to any form of psychic attack\nor at least mostly immune.",
+      "voice": "starbase-143.ogg",
+      "original_text_hash": 3616874910922327867
+    },
+    {
+      "id": "ABOUT_EGGCASE_0",
+      "index": 185,
+      "text": "SUBJECT: Mycon Egg Case.\nDATA: We really didn't know Mycon came from eggs, but our analysis of this sheath\nshows that it has been subjected to phenomenal temperatures and pressures.\nThe most unusual aspect of the egg case is its size\nwe know Mycons range in height from .5 to 3.5 meters\nbut our reconstruction of the whole egg case shows it to be over 25 meters high!\nSUMMARY: If a Mycon came out of this, it's gotta be really big.",
+      "voice": "starbase-144.ogg",
+      "original_text_hash": 17405296442909374823
+    },
+    {
+      "id": "ABOUT_SHUTTLE",
+      "index": 186,
+      "text": "SUBJECT: Syreen Pilot Shuttle.\nDATA: As yet, the field research team has failed to report back to their group leaders.\nWhen we called them, they described being deep in study\nand wished to attend to a few important details before returning to the base.\nSUMMARY: Several group leaders have volunteered to assist the team to `help them where they can.'",
+      "voice": "starbase-145.ogg",
+      "original_text_hash": 9689366868930607353
+    },
+    {
+      "id": "ABOUT_VUXBEAST0",
+      "index": 187,
+      "text": "SUBJECT: Hostile Alien Creature.",
+      "voice": "starbase-146.ogg",
+      "original_text_hash": 6061668592712989023
+    },
+    {
+      "id": "ABOUT_VUXBEAST1",
+      "index": 188,
+      "text": "DATA: This is newly-promoted, junior scientist Hawkins reporting.\nDr. Chu -- y'know, he's the leader of this section -- he's still in sick bay.\nHe's been there ever since that thing took a swipe at him and he got too close to the cage.\nI guess it's got like, triple-jointed arms or something... with spikes and razor-plates all over.\nUh... data? Oh yeah, right, right\nSubject is a Xenoteratomorph -- a big honkin' one, I might add.\nIt eats everything -- plants, animal tissue, wood\nceramics, plastics, asbestos fibers\nseveral types of metal\nchairs, a desk and about half of everything a security officer wears.\nWhat is doesn't eat, it chews, and what it doesn't chew\nwell, it breaks up into tiny little pieces.\nWhat... summary? Oh, oh yeah\nSUMMARY: The sooner you get that thing off this starbase\nthe less likely it is that that thing will get loose and kill us all.\nUh... I, uh, I guess that's it.",
+      "voice": "starbase-191.ogg",
+      "original_text_hash": 3342541102895726178
+    },
+    {
+      "id": "ABOUT_DESTRUCT",
+      "index": 189,
+      "text": "SUBJECT: Slylandro Probe Destruct Code Sequence.\nDATA: This is a complex sequence of program instructions\nusing an encryption sequence similar in some ways to the Rolling-Phung algorithm.\nSUMMARY: When a Slylandro Probe approaches, open a hailing frequency, wait for a response\nand then transmit the code.",
+      "voice": "starbase-147.ogg",
+      "original_text_hash": 3177692836879991285
+    },
+    {
+      "id": "ABOUT_WARPPOD",
+      "index": 190,
+      "text": "SUBJECT: Ur-Quan Warp Pod.\nDATA: This unit appears to be the core for the starboard warp pod of an Ur-Quan Dreadnought.\nIt is surprisingly similar to our own warp cores\nbut it generates a much stronger, tighter field than the equipment we have on our Cruisers.\nSUMMARY: For us, the Warp Pod is little more than a curiosity\nthough you may find some useful application for it in the future.",
+      "voice": "starbase-148.ogg",
+      "original_text_hash": 11706085820550676316
+    },
+    {
+      "id": "ABOUT_ARTIFACT_2",
+      "index": 191,
+      "text": "SUBJECT: Wimbli's Trident Device.\nDATA: I presume this device is named `Wimbli's Trident'\nbecause of the name, `Wimbli', crudely etched into its base.\nSUMMARY: To be honest, Captain, I believe that the Druuge robbed you blind.",
+      "voice": "starbase-149.ogg",
+      "original_text_hash": 16425205213613707957
+    },
+    {
+      "id": "ABOUT_ARTIFACT_3",
+      "index": 192,
+      "text": "SUBJECT: Glowing Rod Device.\nDATA: We had high hopes for this device, Captain, because of the constant, pulsing aura it generated.\nHowever, I am afraid after investigating the object, and locating its concealed batteries slot\nwe had to conclude that this was nothing more than a well-crafted toy.\nSUMMARY: In the future, Captain, I would be very careful of what I bought from the Druuge.",
+      "voice": "starbase-150.ogg",
+      "original_text_hash": 5048923330248408557
+    },
+    {
+      "id": "LETS_SEE",
+      "index": 193,
+      "text": "Hmm... let's see...",
+      "voice": "starbase-151.ogg",
+      "original_text_hash": 17439610369505396445
+    },
+    {
+      "id": "GO_GET_MINERALS",
+      "index": 194,
+      "text": "I guess I'd gather more minerals to build up a good supply of resource units.",
+      "voice": "starbase-152.ogg",
+      "original_text_hash": 5525445518252551325
+    },
+    {
+      "id": "IMPROVE_FLAGSHIP_WITH_RU",
+      "index": 195,
+      "text": "Use the Resource Units you have accumulated to improve your flagship.",
+      "voice": "starbase-153.ogg",
+      "original_text_hash": 12274119407259083269
+    },
+    {
+      "id": "GOT_OK_FLAGSHIP",
+      "index": 196,
+      "text": "Your flagship is in pretty good shape.",
+      "voice": "starbase-154.ogg",
+      "original_text_hash": 10001534011105019137
+    },
+    {
+      "id": "GO_ALLY_WITH_ALIENS",
+      "index": 197,
+      "text": "You should investigate building alliances with non-hostile alien races.\nTheir assistance is crucial to our success.",
+      "voice": "starbase-155.ogg",
+      "original_text_hash": 12415922449833786614
+    },
+    {
+      "id": "MADE_SOME_ALLIES",
+      "index": 198,
+      "text": "You have established several successful alliances with alien races.",
+      "voice": "starbase-156.ogg",
+      "original_text_hash": 3935837541074230997
+    },
+    {
+      "id": "GET_SHIPS_BY_MINING_OR_ALLIANCE",
+      "index": 199,
+      "text": "Build up your fleet of combat vessels.\nTheir additional strength and the flexibility granted by their various powers\nwill greatly enhance your ability to survive in space.",
+      "voice": "starbase-157.ogg",
+      "original_text_hash": 4568259620961060142
+    },
+    {
+      "id": "GOT_OK_FLEET",
+      "index": 200,
+      "text": "You've assembled a good-sized fleet of combat ships.",
+      "voice": "starbase-158.ogg",
+      "original_text_hash": 7357692077768323052
+    },
+    {
+      "id": "BUY_COMBAT_SHIPS",
+      "index": 201,
+      "text": "You need to build combat escorts and assemble a fleet to accompany you through space.",
+      "voice": "starbase-159.ogg",
+      "original_text_hash": 10578201640167793022
+    },
+    {
+      "id": "GO_LEARN_ABOUT_URQUAN",
+      "index": 202,
+      "text": "We must find a chink in the Ur-Quan's armor --\n-- a weakness that will allow us to focus our strength in such a way\nthat we can destroy their entire empire in a single, bold stroke.",
+      "voice": "starbase-160.ogg",
+      "original_text_hash": 3224059096288664760
+    },
+    {
+      "id": "MAKE_FLAGSHIP_AWESOME",
+      "index": 203,
+      "text": "My guess is you need to upgrade further your flagship\nto make it more than a match for any enemy ship you might encounter.\nYou know the Ur-Quan's Achilles' heel -- their Sa-Matra super-starship.",
+      "voice": "starbase-161.ogg",
+      "original_text_hash": 2885556028605665631
+    },
+    {
+      "id": "KNOW_ABOUT_SAMATRA",
+      "index": 204,
+      "text": "You know the Ur-Quan's Achilles' heel -- their Sa-Matra super-starship.",
+      "voice": "starbase-162.ogg",
+      "original_text_hash": 5645915950213987179
+    },
+    {
+      "id": "GOT_AWESOME_FLAGSHIP",
+      "index": 205,
+      "text": "You have constructed a flagship of unrivaled power.",
+      "voice": "starbase-163.ogg",
+      "original_text_hash": 15330983544457406217
+    },
+    {
+      "id": "GOT_BOMB",
+      "index": 206,
+      "text": "You've got the bomb from the Utwig.",
+      "voice": "starbase-164.ogg",
+      "original_text_hash": 17934574746139495106
+    },
+    {
+      "id": "FIND_WAY_TO_DESTROY_SAMATRA",
+      "index": 207,
+      "text": "You must find some way to destroy the Ur-Quan supership, the Sa-Matra.",
+      "voice": "starbase-165.ogg",
+      "original_text_hash": 13922381264871365210
+    },
+    {
+      "id": "MUST_INCREASE_BOMB_STRENGTH",
+      "index": 208,
+      "text": "Although the bomb you got from the Utwig is horrendously powerful,\nI'm afraid our computer projections show that the explosion will not be sufficient\nto break through the Sa-Matra's defenses.\nYou must find some way to increase the energy output of the weapon.\nPerhaps the Chenjesu and their superior scientific knowledge could have done this,\nbut unfortunately, we do not currently possess the technology to achieve this modification.",
+      "voice": "starbase-166.ogg",
+      "original_text_hash": 2291610135990308356
+    },
+    {
+      "id": "MUST_ACQUIRE_AWESOME_FLEET",
+      "index": 209,
+      "text": "I'm certain we need to assemble a more powerful fleet of combat ships before you face the Sa-Matra.",
+      "voice": "starbase-167.ogg",
+      "original_text_hash": 11327374617109113943
+    },
+    {
+      "id": "MUST_ELIMINATE_URQUAN_GUARDS",
+      "index": 210,
+      "text": "You must figure out how to eliminate or destroy the Ur-Quan and Kohr-Ah ships guarding the Sa-Matra.",
+      "voice": "starbase-168.ogg",
+      "original_text_hash": 6109774648804213963
+    },
+    {
+      "id": "CHMMR_IMPROVED_BOMB",
+      "index": 211,
+      "text": "The Chmmr have modified your ship to route its weapon power through the Utwig bomb.",
+      "voice": "starbase-169.ogg",
+      "original_text_hash": 5206869677240840054
+    },
+    {
+      "id": "GOT_AWESOME_FLEET",
+      "index": 212,
+      "text": "You have amassed a powerful fleet of combat ships.",
+      "voice": "starbase-170.ogg",
+      "original_text_hash": 7072722078702039517
+    },
+    {
+      "id": "GO_DESTROY_SAMATRA",
+      "index": 213,
+      "text": "Go attack the Ur-Quan Sa-Matra vessel!\nAlthough I'm sure it will be a difficult battle,\nyou have everything you need to achieve victory.",
+      "voice": "starbase-171.ogg",
+      "original_text_hash": 6013494740753339728
+    },
+    {
+      "id": "GOOD_LUCK_AGAIN",
+      "index": 214,
+      "text": "We're all depending on you.  Goodbye, and good luck.",
+      "voice": "starbase-172.ogg",
+      "original_text_hash": 12936982799605987030
+    },
+    {
+      "id": "IMPROVE_1",
+      "index": 215,
+      "text": "You need to build up and balance the strength of your flagship.",
+      "voice": "starbase-173.ogg",
+      "original_text_hash": 16801256564899582739
+    },
+    {
+      "id": "IMPROVE_2",
+      "index": 216,
+      "text": "My guess is you need to upgrade your flagship\nto make it more than a match for any enemy ship you might encounter.",
+      "voice": "starbase-174.ogg",
+      "original_text_hash": 14955283092908919763
+    },
+    {
+      "id": "NEED_THRUSTERS_1",
+      "index": 217,
+      "text": "I would add thrusters up to say, 5 or 6.\nSpeed is essential in combat, but it would also pay off over the long haul in HyperSpace\nand if you prefer to avoid confrontation, nothing beats a great pair of legs.",
+      "voice": "starbase-175.ogg",
+      "original_text_hash": 3751211212833356357
+    },
+    {
+      "id": "NEED_THRUSTERS_2",
+      "index": 218,
+      "text": "I would maximize your ship's thrusters. You will need speed when you confront the Ur-Quan.",
+      "voice": "starbase-176.ogg",
+      "original_text_hash": 6506770220124388148
+    },
+    {
+      "id": "NEED_TURN_1",
+      "index": 219,
+      "text": "I would add turning jets for increased maneuverability.",
+      "voice": "starbase-177.ogg",
+      "original_text_hash": 1721620390983315237
+    },
+    {
+      "id": "NEED_TURN_2",
+      "index": 220,
+      "text": "I would maximize rotation speed by filling your turning jet slots.",
+      "voice": "starbase-178.ogg",
+      "original_text_hash": 12470409075756743950
+    },
+    {
+      "id": "NEED_GUNS_1",
+      "index": 221,
+      "text": "I would add enough weapons to defend yourself if you are caught without escort ships.",
+      "voice": "starbase-179.ogg",
+      "original_text_hash": 9746236555088089156
+    },
+    {
+      "id": "NEED_GUNS_2",
+      "index": 222,
+      "text": "I would take advantage of your ship's capacity for combat by increasing its firepower.\nAdd more weaponry.",
+      "voice": "starbase-180.ogg",
+      "original_text_hash": 12741842778542474832
+    },
+    {
+      "id": "NEED_CREW_1",
+      "index": 223,
+      "text": "You need more crew, at least 50, to make productive voyages into space.",
+      "voice": "starbase-181.ogg",
+      "original_text_hash": 702596734870613907
+    },
+    {
+      "id": "NEED_CREW_2",
+      "index": 224,
+      "text": "You need even more crew, perhaps as many as 200, to face the challenges ahead.",
+      "voice": "starbase-182.ogg",
+      "original_text_hash": 4485634570612005796
+    },
+    {
+      "id": "NEED_FUEL_1",
+      "index": 225,
+      "text": "You need additional fuel, at least 50 units.",
+      "voice": "starbase-183.ogg",
+      "original_text_hash": 3929814760008414699
+    },
+    {
+      "id": "NEED_FUEL_2",
+      "index": 226,
+      "text": "You need large quantities of fuel, at least 150 units.",
+      "voice": "starbase-184.ogg",
+      "original_text_hash": 18421329838283825248
+    },
+    {
+      "id": "NEED_STORAGE_1",
+      "index": 227,
+      "text": "Increase your cargo capacity by adding more Storage Bays to your flagship.",
+      "voice": "starbase-185.ogg",
+      "original_text_hash": 15118140407961970777
+    },
+    {
+      "id": "NEED_LANDERS_2",
+      "index": 228,
+      "text": "You need at least one lander.",
+      "voice": "starbase-186.ogg",
+      "original_text_hash": 17775321487319561052
+    },
+    {
+      "id": "NEED_LANDERS_1",
+      "index": 229,
+      "text": "Build more landers.",
+      "voice": "starbase-187.ogg",
+      "original_text_hash": 7133771552886325199
+    },
+    {
+      "id": "NEED_DYNAMOS_1",
+      "index": 230,
+      "text": "Your weapons will be underpowered in combat if you don't have at least 1 dynamo.",
+      "voice": "starbase-188.ogg",
+      "original_text_hash": 4327898466723113676
+    },
+    {
+      "id": "NEED_DYNAMOS_2",
+      "index": 231,
+      "text": "You need more dynamo power;\notherwise your weapon re-energizing delays will be your undoing in combat.",
+      "voice": "starbase-189.ogg",
+      "original_text_hash": 10530514672467262073
+    },
+    {
+      "id": "NEED_POINT",
+      "index": 232,
+      "text": "I suggest you invest in one or more point-defense laser systems.",
+      "voice": "starbase-190.ogg",
+      "original_text_hash": 16641530086271037697
+    },
+    {
+      "id": "have_minerals",
+      "index": 233,
+      "text": "Commander, I have minerals to offload.",
+      "voice": null,
+      "original_text_hash": 11406556139205347159
+    },
+    {
+      "id": "goodbye_commander",
+      "index": 234,
+      "text": "Goodbye, Commander.",
+      "voice": null,
+      "original_text_hash": 8461885762141887480
+    },
+    {
+      "id": "repeat_bulletins",
+      "index": 235,
+      "text": "Commander, would you repeat what you told me when we began this conversation?",
+      "voice": null,
+      "original_text_hash": 3081039673211326171
+    },
+    {
+      "id": "need_info",
+      "index": 236,
+      "text": "Before proceeding I need some additional background information.",
+      "voice": null,
+      "original_text_hash": 7909661486136140440
+    },
+    {
+      "id": "starbase_functions",
+      "index": 237,
+      "text": "Would you elaborate on your facilities here at the starbase?",
+      "voice": null,
+      "original_text_hash": 6381599357206125035
+    },
+    {
+      "id": "history",
+      "index": 238,
+      "text": "I would like some historical data.",
+      "voice": null,
+      "original_text_hash": 9675887770637407066
+    },
+    {
+      "id": "our_mission",
+      "index": 239,
+      "text": "I would like your input on how we can defeat the Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 4235382254017530271
+    },
+    {
+      "id": "no_need_info",
+      "index": 240,
+      "text": "I do not require additional information.",
+      "voice": null,
+      "original_text_hash": 3483026811169879380
+    },
+    {
+      "id": "enough_starbase",
+      "index": 241,
+      "text": "You have answered my questions on this topic.",
+      "voice": null,
+      "original_text_hash": 12973809781636398622
+    },
+    {
+      "id": "enough_mission",
+      "index": 242,
+      "text": "I have learned what I need to know about this subject, for now.",
+      "voice": null,
+      "original_text_hash": 8556920022308588950
+    },
+    {
+      "id": "tell_me_about_fuel0",
+      "index": 243,
+      "text": "How will I get fuel for the",
+      "voice": null,
+      "original_text_hash": 17176319547310471140
+    },
+    {
+      "id": "tell_me_about_fuel1",
+      "index": 244,
+      "text": "?",
+      "voice": null,
+      "original_text_hash": 12638141021067257134
+    },
+    {
+      "id": "tell_me_about_modules0",
+      "index": 245,
+      "text": "What can you do to enhance and modify the",
+      "voice": null,
+      "original_text_hash": 3460557568198112732
+    },
+    {
+      "id": "tell_me_about_modules1",
+      "index": 246,
+      "text": "?",
+      "voice": null,
+      "original_text_hash": 12638141021067257134
+    },
+    {
+      "id": "tell_me_about_crew",
+      "index": 247,
+      "text": "How will we acquire additional personnel for my ship?",
+      "voice": null,
+      "original_text_hash": 943781843800894778
+    },
+    {
+      "id": "tell_me_about_ships",
+      "index": 248,
+      "text": "How can I assemble a fleet of fighting ships?",
+      "voice": null,
+      "original_text_hash": 850396188220397370
+    },
+    {
+      "id": "tell_me_about_ru",
+      "index": 249,
+      "text": "Would you please explain your resource allocation system?",
+      "voice": null,
+      "original_text_hash": 10615399332996808333
+    },
+    {
+      "id": "tell_me_about_minerals",
+      "index": 250,
+      "text": "What kind of resources are most useful to our mission?",
+      "voice": null,
+      "original_text_hash": 15045773894818209054
+    },
+    {
+      "id": "tell_me_about_life",
+      "index": 251,
+      "text": "What use are our planet landers' sophisticated lifeform analysis features?",
+      "voice": null,
+      "original_text_hash": 6305501546542967758
+    },
+    {
+      "id": "where_get_minerals",
+      "index": 252,
+      "text": "Where can I find the most useful, plentiful mineral resources?",
+      "voice": null,
+      "original_text_hash": 18002302852671502821
+    },
+    {
+      "id": "what_about_aliens",
+      "index": 253,
+      "text": "How should I deal with aliens I meet in space?",
+      "voice": null,
+      "original_text_hash": 17898079630935764177
+    },
+    {
+      "id": "what_about_urquan",
+      "index": 254,
+      "text": "How can we deal with the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 3304541555917213088
+    },
+    {
+      "id": "how_defeat",
+      "index": 255,
+      "text": "Commander, do you have any long range plans to defeat the Ur-Quan Hierarchy?",
+      "voice": null,
+      "original_text_hash": 10572128830692014348
+    },
+    {
+      "id": "how_find_urquan",
+      "index": 256,
+      "text": "How can I find the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 17984468947609753272
+    },
+    {
+      "id": "how_fight_urquan",
+      "index": 257,
+      "text": "How can we attack the Ur-Quan most effectively?",
+      "voice": null,
+      "original_text_hash": 13981700394636482673
+    },
+    {
+      "id": "how_ally",
+      "index": 258,
+      "text": "How can I make alliances and with whom?",
+      "voice": null,
+      "original_text_hash": 1237749892190440115
+    },
+    {
+      "id": "enough_defeat",
+      "index": 259,
+      "text": "Let us move on to another topic.",
+      "voice": null,
+      "original_text_hash": 18271750990101151157
+    },
+    {
+      "id": "alien_races",
+      "index": 260,
+      "text": "I would like to know about the other starfaring races.",
+      "voice": null,
+      "original_text_hash": 5572917300959506269
+    },
+    {
+      "id": "the_war",
+      "index": 261,
+      "text": "I am interested in the War against the Hierarchy.",
+      "voice": null,
+      "original_text_hash": 7565989437395479568
+    },
+    {
+      "id": "ancient_history",
+      "index": 262,
+      "text": "I need some information on ancient galactic history.",
+      "voice": null,
+      "original_text_hash": 7622622014230804669
+    },
+    {
+      "id": "enough_history",
+      "index": 263,
+      "text": "No more history, thank you.",
+      "voice": null,
+      "original_text_hash": 5618690891526865648
+    },
+    {
+      "id": "what_about_alliance",
+      "index": 264,
+      "text": "The members of the old Alliance.",
+      "voice": null,
+      "original_text_hash": 137511188126918355
+    },
+    {
+      "id": "what_about_hierarchy",
+      "index": 265,
+      "text": "The Hierarchy and their battle thralls.",
+      "voice": null,
+      "original_text_hash": 1027848071513213528
+    },
+    {
+      "id": "what_about_other",
+      "index": 266,
+      "text": "Were there any alien races who weren't in the War?",
+      "voice": null,
+      "original_text_hash": 13289441959973677428
+    },
+    {
+      "id": "enough_aliens",
+      "index": 267,
+      "text": "I have sufficient information on this subject.",
+      "voice": null,
+      "original_text_hash": 3479044388611304327
+    },
+    {
+      "id": "shofixti",
+      "index": 268,
+      "text": "The Shofixti.",
+      "voice": null,
+      "original_text_hash": 1844561696281574430
+    },
+    {
+      "id": "yehat",
+      "index": 269,
+      "text": "The Yehat.",
+      "voice": null,
+      "original_text_hash": 3292677960947292691
+    },
+    {
+      "id": "arilou",
+      "index": 270,
+      "text": "The Arilou.",
+      "voice": null,
+      "original_text_hash": 13669954824277592552
+    },
+    {
+      "id": "chenjesu",
+      "index": 271,
+      "text": "The Chenjesu.",
+      "voice": null,
+      "original_text_hash": 9154163446112697021
+    },
+    {
+      "id": "mmrnmhrm",
+      "index": 272,
+      "text": "The Mmrnmhrm.",
+      "voice": null,
+      "original_text_hash": 2023696251862768248
+    },
+    {
+      "id": "syreen",
+      "index": 273,
+      "text": "The Syreen.",
+      "voice": null,
+      "original_text_hash": 7096312631478406428
+    },
+    {
+      "id": "enough_alliance",
+      "index": 274,
+      "text": "That is enough about the Alliance for now.",
+      "voice": null,
+      "original_text_hash": 16602396883685079754
+    },
+    {
+      "id": "urquan",
+      "index": 275,
+      "text": "The Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 14258918910506083887
+    },
+    {
+      "id": "mycon",
+      "index": 276,
+      "text": "The Mycon.",
+      "voice": null,
+      "original_text_hash": 15737013867259738780
+    },
+    {
+      "id": "spathi",
+      "index": 277,
+      "text": "The Spathi.",
+      "voice": null,
+      "original_text_hash": 17014900147109422969
+    },
+    {
+      "id": "umgah",
+      "index": 278,
+      "text": "The Umgah.",
+      "voice": null,
+      "original_text_hash": 7925927038141283968
+    },
+    {
+      "id": "androsynth",
+      "index": 279,
+      "text": "The Androsynth.",
+      "voice": null,
+      "original_text_hash": 3662031803179727402
+    },
+    {
+      "id": "vux",
+      "index": 280,
+      "text": "The VUX.",
+      "voice": null,
+      "original_text_hash": 17909070923340379671
+    },
+    {
+      "id": "ilwrath",
+      "index": 281,
+      "text": "The Ilwrath.",
+      "voice": null,
+      "original_text_hash": 1239694788300266427
+    },
+    {
+      "id": "enough_hierarchy",
+      "index": 282,
+      "text": "That's enough information about the Hierarchy.",
+      "voice": null,
+      "original_text_hash": 12610652927930171221
+    },
+    {
+      "id": "precursors",
+      "index": 283,
+      "text": "What can you tell me about the Precursors",
+      "voice": null,
+      "original_text_hash": 7944617140656261705
+    },
+    {
+      "id": "old_races",
+      "index": 284,
+      "text": "What about other races from the ancient past?",
+      "voice": null,
+      "original_text_hash": 16535485213826609320
+    },
+    {
+      "id": "aliens_on_earth",
+      "index": 285,
+      "text": "Is there any indication that aliens visited Earth in the past?",
+      "voice": null,
+      "original_text_hash": 5475423608142772945
+    },
+    {
+      "id": "enough_ancient",
+      "index": 286,
+      "text": "This is fascinating, but I must move on.",
+      "voice": null,
+      "original_text_hash": 1562627300418718503
+    },
+    {
+      "id": "what_started_war",
+      "index": 287,
+      "text": "How did the War with the Ur-Quan start?",
+      "voice": null,
+      "original_text_hash": 5642282840860154548
+    },
+    {
+      "id": "what_was_war_like",
+      "index": 288,
+      "text": "What happened during the War?",
+      "voice": null,
+      "original_text_hash": 13207355572276343417
+    },
+    {
+      "id": "why_lose_war",
+      "index": 289,
+      "text": "How did the War end, Commander?",
+      "voice": null,
+      "original_text_hash": 11678608504720484503
+    },
+    {
+      "id": "what_after_war",
+      "index": 290,
+      "text": "What happened after the War?",
+      "voice": null,
+      "original_text_hash": 16081996065957056156
+    },
+    {
+      "id": "enough_war",
+      "index": 291,
+      "text": "Thanks, Commander, for the briefing.",
+      "voice": null,
+      "original_text_hash": 13003877729593143952
+    },
+    {
+      "id": "new_devices",
+      "index": 292,
+      "text": "Can your scientists analyze what I have acquired since my last visit?",
+      "voice": null,
+      "original_text_hash": 8698971945954373362
+    },
+    {
+      "id": "how_get_strong",
+      "index": 293,
+      "text": "What is the fastest way for us to build up our strength?",
+      "voice": null,
+      "original_text_hash": 2261296666595927998
+    },
+    {
+      "id": "what_do_now",
+      "index": 294,
+      "text": "If you were in my shoes, what would you do now?",
+      "voice": null,
+      "original_text_hash": 7810086659201890507
+    },
+    {
+      "id": "YOUR_FLAGSHIP_PC",
+      "index": 295,
+      "text": "the",
+      "voice": null,
+      "original_text_hash": 6266135566914540924
+    },
+    {
+      "id": "YOUR_FLAGSHIP_3DO0",
+      "index": 296,
+      "text": "flagship",
+      "voice": null,
+      "original_text_hash": 7196647495998603613
+    },
+    {
+      "id": "YOUR_FLAGSHIP_3DO1",
+      "index": 297,
+      "text": "your ship",
+      "voice": null,
+      "original_text_hash": 3744073806972277844
+    },
+    {
+      "id": "YOUR_FLAGSHIP_3DO2",
+      "index": 298,
+      "text": "your starship",
+      "voice": null,
+      "original_text_hash": 2341374737663220260
+    },
+    {
+      "id": "SPACE",
+      "index": 299,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.legacy_turn",
+        "args": ["starbas", null]
+      },
+      "save_as": "turn",
+      "next": "route"
+    },
+    {
+      "id": "route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
+      "otherwise": "farewell"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "slot_0",
+          "text": {"get": ["result", "turn.text_0"]},
+          "when": {"get": ["result", "turn.slot_0"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 0]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_1",
+          "text": {"get": ["result", "turn.text_1"]},
+          "when": {"get": ["result", "turn.slot_1"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 1]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_2",
+          "text": {"get": ["result", "turn.text_2"]},
+          "when": {"get": ["result", "turn.slot_2"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 2]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_3",
+          "text": {"get": ["result", "turn.text_3"]},
+          "when": {"get": ["result", "turn.slot_3"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 3]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_4",
+          "text": {"get": ["result", "turn.text_4"]},
+          "when": {"get": ["result", "turn.slot_4"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 4]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_5",
+          "text": {"get": ["result", "turn.text_5"]},
+          "when": {"get": ["result", "turn.slot_5"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 5]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_6",
+          "text": {"get": ["result", "turn.text_6"]},
+          "when": {"get": ["result", "turn.slot_6"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 6]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        },
+        {
+          "id": "slot_7",
+          "text": {"get": ["result", "turn.text_7"]},
+          "when": {"get": ["result", "turn.slot_7"]},
+          "action": {
+            "verb": "handlers.legacy_turn",
+            "args": ["starbas", 7]
+          },
+          "save_as": "turn",
+          "then": {"ok": "route"}
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}
