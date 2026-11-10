@@ -5,6 +5,7 @@
 #include <functional>
 #include <optional>
 namespace uqm {
+class RandomStream;
 namespace detail { struct RuntimeRosterAccess; }
 enum class RosterSide : unsigned { First = 0, Second = 1 };
 using Participant = std::optional<std::reference_wrapper<STARSHIP>>;
@@ -17,6 +18,12 @@ public:
     RuntimeShipRoster(const RuntimeShipRoster &) = delete;
     RuntimeShipRoster &operator=(const RuntimeShipRoster &) = delete;
     COUNT size(RosterSide side) const noexcept;
+    // Append a zero-initialized, unloaded participant. Returns no borrow when
+    // the fixed pool is full; existing slots and last-battle counts are unchanged.
+    Participant append(RosterSide side, SPECIES_ID species) noexcept;
+    // Choose a captain not already used by this species on this side. Consumes
+    // only the supplied stream, retaining the existing captain resource indices.
+    BYTE chooseCaptain(RosterSide side, SPECIES_ID species, RandomStream &random) const;
     // Borrows remain valid until clear/destruction; handoff preserves addresses.
     Participant first(RosterSide side) noexcept;
     Participant last(RosterSide side) noexcept;

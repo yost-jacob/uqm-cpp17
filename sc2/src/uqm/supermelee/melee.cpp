@@ -66,6 +66,7 @@
 #include "../arcade_session.hpp"
 #include "../combat_mode.hpp"
 #include <memory>
+#include <stdexcept>
 #include <assert.h>
 #include <string.h>
 
@@ -1440,14 +1441,6 @@ FreeMeleeInfo (MELEE_STATE *pMS)
 #endif
 }
 
-static void
-BuildAndDrawShipList (MELEE_STATE *pMS)
-{
-	FillPickMeleeFrame (pMS->meleeSetup);
-			// XXX TODO: This also builds the race_q for each player.
-			// This should be split off.
-}
-
 namespace {
 class ArcadeCombatPreparation final : public uqm::CombatPreparation {
 public:
@@ -1456,13 +1449,40 @@ public:
         if (gravityLoaded_) free_gravity_well();
         if (inputStarted_) ClearPlayerInputAll();
     }
-    bool prepare() override {
+    bool prepare(uqm::SimulationEngine &engine) override {
         inputStarted_ = true;
         if (!SetPlayerInputAll()) return false;
-        BuildAndDrawShipList(&menu_);
+        // UI setup sides are reversed in the battle/picker. Keep the established
+        // network player order so captain draws use the same stream order.
+        auto &roster = engine.shipRoster();
+        if (roster.size(uqm::RosterSide::First) || roster.size(uqm::RosterSide::Second))
+            throw std::logic_error("arcade combat requires an empty roster");
+        for (COUNT order = 0; order < NUM_SIDES; ++order) {
+            const auto setupSide = GetPlayerOrder(order);
+            const auto side = static_cast<uqm::RosterSide>(!setupSide);
+            for (FleetShipIndex slot = 0; slot < MELEE_FLEET_SIZE; ++slot) {
+                const auto choice = MeleeSetup_getShip(menu_.meleeSetup, setupSide, slot);
+                if (choice == MELEE_NONE) continue;
+                if (!MeleeShip_valid(choice)) throw std::invalid_argument("invalid arcade ship");
+                const auto handle = GetStarShipFromIndex(&master_q, choice);
+                if (!handle) throw std::runtime_error("arcade ship is missing from the catalogue");
+                const auto &master = *LockMasterShip(&master_q, handle);
+                const auto species = master.SpeciesID;
+                const auto cost = master.ShipInfo.ship_cost;
+                UnlockMasterShip(&master_q, handle);
+                const auto captain = roster.chooseCaptain(side, species, engine.random());
+                const auto participant = roster.append(side, species);
+                if (!participant) throw std::length_error("arcade roster is full");
+                auto &ship = participant->get();
+                ship.index = slot;
+                ship.ship_cost = cost;
+                ship.captains_name_index = captain;
+            }
+        }
+        FillPickMeleeFrame(menu_.meleeSetup);
         WaitForSoundEnd(TFBSOUND_WAIT_ALL);
         gravityLoaded_ = true;
-        load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(TFB_Random()) % NUMBER_OF_PLANET_TYPES));
+        load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(engine.random()()) % NUMBER_OF_PLANET_TYPES));
         return true;
     }
 private:
@@ -1470,11 +1490,11 @@ private:
     bool gravityLoaded_ = false, inputStarted_ = false;
 };
 std::unique_ptr<uqm::GameMode> createMeleeCombat(MELEE_STATE &menu) {
-    assert(menu.session);
+    assert(menu.session && menu.engine);
     // Preserve the negotiated/local seed delivered to the setup mode. Arena
     // selection and combat advance only the child's independent stream.
-    return uqm::createCombatMode(menu.session->dispatcher(), uqm::simulationEngine().shipRoster(),
-        TFB_GetRandomSeed(), std::make_unique<ArcadeCombatPreparation>(menu));
+    return uqm::createCombatMode(menu.session->dispatcher(), menu.engine->shipRoster(),
+        menu.engine->random().state(), std::make_unique<ArcadeCombatPreparation>(menu));
 }
 }
 
@@ -2066,9 +2086,10 @@ namespace {
 // from resource loading, input callbacks or the nested battle backend.
 class MeleeFrontend {
 public:
-    explicit MeleeFrontend(uqm::ArcadeSession &session)
+    MeleeFrontend(uqm::ArcadeSession &session, uqm::SimulationEngine &engine)
         : previous_(pMeleeState), previousSounds_(GameSounds) {
         menu_.session = &session;
+        menu_.engine = &engine;
         pMeleeState = &menu_;
         menu_.InputFunc = DoMelee;
     }
@@ -2129,7 +2150,7 @@ public:
                           : uqm::ModeResult{uqm::ModeCompleted{}};
     }
 protected:
-    void initialize() override { frontend_.emplace(session_); }
+    void initialize() override { frontend_.emplace(session_, engine()); }
 private:
     uqm::ArcadeSession &session_;
     std::optional<MeleeFrontend> frontend_;

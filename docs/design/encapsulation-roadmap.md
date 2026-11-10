@@ -149,3 +149,8 @@ ASan/UBSan and the legacy SDL2 build also pass. Changed native sources pass
 `-Wall -Wextra -Werror`. A focused GUI check loaded an older probe-encounter save, selected the flagship,
 and fired its native blasters in combat. No exhaustive story/combat playthrough
 was performed.
+
+Participant construction now follows explicit mode/engine/roster ownership.
+Super Melee drawing no longer constructs fleets; campaign and arcade native
+construction use roster-owned slots. See [the ownership path and migration
+method](native-ownership-path.md) for current boundaries and contracts.

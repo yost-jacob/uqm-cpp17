@@ -31,6 +31,7 @@ extern "C" {
 void MeleeShipDeath (STARSHIP *);
 void BuildPickMeleeFrame (void);
 void DestroyPickMeleeFrame (void);
+// Draws setup icons and labels only; never creates or changes participants.
 void FillPickMeleeFrame (MeleeSetup *setup);
 void MeleeGameOver (void);
 BOOLEAN GetInitialMeleeStarShips (HSTARSHIP *result);

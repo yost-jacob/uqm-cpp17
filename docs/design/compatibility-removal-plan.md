@@ -99,3 +99,8 @@ session-specific scoped preparation. No CampaignMode inheritance layer or option
 campaign state is needed. Native CombatDriver, shared frame processing and scoped scene ownership are now
 implemented; see [battle driver](battle-driver.md). Startup/title migration remains
 in milestone 3.
+
+Participant construction now follows explicit mode/engine/roster ownership.
+Super Melee drawing no longer constructs fleets; campaign and arcade native
+construction use roster-owned slots. See [the ownership path and migration
+method](native-ownership-path.md) for current boundaries and contracts.

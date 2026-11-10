@@ -105,98 +105,64 @@ GetShipFragQueueForPlayer (COUNT playerNr)
 }
 
 // Called by comm code to intialize battle fleets during encounter
-void
-uqm::EncounterRuntime::buildBattle(COUNT which_player)
+void uqm::EncounterRuntime::buildBattle(RosterSide side)
 {
-	QUEUE *pQueue;
-	HSHIPFRAG hStarShip, hNextShip;
-	HSTARSHIP hBuiltShip;
-	STARSHIP *BuiltShipPtr;
+    EncounterRace = -1;
+    if (!GetHeadLink(&GLOBAL(npc_built_ship_q))) {
+        story_.set(StoryFlag::BattleSegue, false);
+        return;
+    }
 
-	EncounterRace = -1;
+    if (side == RosterSide::Second) {
+        // The NPC side is prepared first, before conversation and combat. Its
+        // arena belongs to the encounter and is released by finish().
+        switch (LOBYTE(GLOBAL(CurrentActivity))) {
+            case IN_LAST_BATTLE:
+                load_gravity_well(NUMBER_OF_PLANET_TYPES);
+                break;
+            case IN_HYPERSPACE:
+                load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(engine_.random()())
+                    % NUMBER_OF_PLANET_TYPES));
+                break;
+            default:
+                story_.set(StoryCounter::EscapeCounter, 110);
+                load_gravity_well(story_.read(StoryCounter::BattlePlanet));
+                break;
+        }
+    }
 
-	if (GetHeadLink (&GLOBAL (npc_built_ship_q)) == 0)
-	{
-		story_.set(uqm::StoryFlag::BattleSegue, 0);
-		return;
-	}
+    auto &source = side == RosterSide::First && session_
+        ? detail::FleetAccess::queue(session_->player().fleet())
+        : *GetShipFragQueueForPlayer(static_cast<COUNT>(side));
+    auto &roster = engine_.shipRoster();
+    roster.clear(side);
+    for (auto handle = GetHeadLink(&source); handle;) {
+        const auto &fragment = *LockShipFrag(&source, handle);
+        const auto next = _GetSuccLink(&fragment);
+        if (auto participant = roster.append(side,
+                fragment.race_id == SAMATRA_SHIP ? SA_MATRA_ID : fragment.SpeciesID)) {
+            auto &ship = participant->get();
+            ship.fleet_owner = &source;
+            ship.fleet_ship_id = fragment.ship_id;
+            ship.captains_name_index = fragment.captains_name_index;
+            ship.crew_level = fragment.crew_level == INFINITE_FLEET
+                ? fragment.max_crew : fragment.crew_level;
+            ship.max_crew = fragment.max_crew;
+            ship.race_strings = fragment.race_strings;
+            ship.icons = fragment.icons;
+            ship.index = fragment.index;
+        }
+        UnlockShipFrag(&source, handle);
+        handle = next;
+    }
 
-	if (which_player != RPG_PLAYER_NUM)
-	{	// This function is called first for the NPC character
-		// and this is when a centerpiece is loaded
-		switch (LOBYTE (GLOBAL (CurrentActivity)))
-		{
-			case IN_LAST_BATTLE:
-				load_gravity_well (NUMBER_OF_PLANET_TYPES);
-				break;
-			case IN_HYPERSPACE:
-				load_gravity_well ((BYTE)((COUNT)TFB_Random ()
-						% NUMBER_OF_PLANET_TYPES));
-				break;
-			default:
-				story_.set(uqm::StoryCounter::EscapeCounter, 110);
-				load_gravity_well (story_.read(uqm::StoryCounter::BattlePlanet));
-				break;
-		}
-	}
-	pQueue = which_player == RPG_PLAYER_NUM && session_
-        ? &uqm::detail::FleetAccess::queue(session_->player().fleet())
-        : GetShipFragQueueForPlayer(which_player);
-
-	ClearRuntimeShipRoster (which_player);
-	for (hStarShip = GetHeadLink (pQueue);
-			hStarShip != 0; hStarShip = hNextShip)
-	{
-		SHIP_FRAGMENT *FragPtr;
-
-		FragPtr = LockShipFrag (pQueue, hStarShip);
-		hNextShip = _GetSuccLink (FragPtr);
-
-		hBuiltShip = Build (&race_q[which_player],
-				FragPtr->race_id == SAMATRA_SHIP ?
-					SA_MATRA_ID : FragPtr->SpeciesID);
-		if (hBuiltShip)
-		{
-			BuiltShipPtr = LockStarShip (&race_q[which_player], hBuiltShip);
-			BuiltShipPtr->fleet_owner = pQueue;
-            BuiltShipPtr->fleet_ship_id = FragPtr->ship_id;
-			BuiltShipPtr->captains_name_index = FragPtr->captains_name_index;
-			BuiltShipPtr->playerNr = which_player;
-			if (FragPtr->crew_level != INFINITE_FLEET)
-				BuiltShipPtr->crew_level = FragPtr->crew_level;
-			else /* if infinite ships */
-				BuiltShipPtr->crew_level = FragPtr->max_crew;
-			BuiltShipPtr->max_crew = FragPtr->max_crew;
-			BuiltShipPtr->race_strings = FragPtr->race_strings;
-			BuiltShipPtr->icons = FragPtr->icons;
-			BuiltShipPtr->index = FragPtr->index;
-			BuiltShipPtr->ship_cost = 0;
-			BuiltShipPtr->RaceDescPtr = 0;
-
-			UnlockStarShip (&race_q[which_player], hBuiltShip);
-		}
-
-		UnlockShipFrag (pQueue, hStarShip);
-	}
-
-	if (which_player == RPG_PLAYER_NUM
-			&& (hBuiltShip = Build (&race_q[0], SIS_SHIP_ID)))
-	{
-		BuiltShipPtr = LockStarShip (&race_q[0], hBuiltShip);
-		BuiltShipPtr->captains_name_index = 0;
-		BuiltShipPtr->playerNr = RPG_PLAYER_NUM;
-		BuiltShipPtr->crew_level = 0;
-		BuiltShipPtr->max_crew = 0;
-				// Crew will be copied directly from
-				// GLOBAL_SIS (CrewEnlisted) later.
-		BuiltShipPtr->race_strings = 0;
-		BuiltShipPtr->icons = 0;
-		BuiltShipPtr->index = -1;
-		BuiltShipPtr->ship_cost = 0;
-		BuiltShipPtr->energy_counter = MAX_ENERGY_SIZE;
-		BuiltShipPtr->RaceDescPtr = 0;
-		UnlockStarShip (&race_q[0], hBuiltShip);
-	}
+    if (side == RosterSide::First) {
+        if (auto flagship = roster.append(side, SIS_SHIP_ID)) {
+            // Crew/equipment are read from the player's SIS when spawned.
+            flagship->get().index = static_cast<COUNT>(-1);
+            flagship->get().energy_counter = MAX_ENERGY_SIZE;
+        }
+    }
 }
 
 BOOLEAN
@@ -458,8 +424,7 @@ uqm::EncounterRuntime::finish()
 
 	if (story_.read(uqm::StoryFlag::BattleSegue) == 0)
 	{
-		ClearRuntimeShipRoster (0);
-		ClearRuntimeShipRoster (1);
+		engine_.shipRoster().clear();
 	}
 	else
 	{
@@ -501,8 +466,8 @@ uqm::EncounterRuntime::finish()
 		story_.set(uqm::StoryFlag::BombCarrier, 0);
 
 		VictoryState = (
-				simulationEngine().shipRoster().remaining(RosterSide::Second)
-                || !simulationEngine().shipRoster().remaining(RosterSide::First)
+				engine_.shipRoster().remaining(RosterSide::Second)
+                || !engine_.shipRoster().remaining(RosterSide::First)
 				|| story_.read(uqm::StoryFlag::UrquanProtectingSamatra)
 				) ? 0 : 1;
 
@@ -550,7 +515,7 @@ uqm::EncounterRuntime::finish()
 				pQueue = &GLOBAL (npc_built_ship_q);
 			}
 				
-			ClearRuntimeShipRoster ((NUM_SIDES - 1) - i);
+			engine_.shipRoster().clear(static_cast<RosterSide>((NUM_SIDES - 1) - i));
 
 			for (hStarShip = GetHeadLink (pQueue); hStarShip;
 					hStarShip = hNextShip)

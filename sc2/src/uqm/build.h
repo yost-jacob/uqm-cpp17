@@ -34,7 +34,9 @@ extern "C" {
 								& (NUM_CAPTAINS_NAMES - 1)) \
 								+ NAME_OFFSET)
 
-extern HLINK Build (QUEUE *pQueue, SPECIES_ID SpeciesID);
+// C fleet/NPC buffer boundary. pQueue must contain SHIP_FRAGMENT slots.
+// Returns zero at capacity; native combat participants use RuntimeShipRoster.
+extern HSHIPFRAG CreateFleetFragment (QUEUE *pQueue, SPECIES_ID SpeciesID);
 extern HSHIPFRAG CloneShipFragment (COUNT shipIndex, QUEUE *pDstQueue,
 		COUNT crew_level);
 extern HLINK GetStarShipFromIndex (QUEUE *pShipQ, COUNT Index);

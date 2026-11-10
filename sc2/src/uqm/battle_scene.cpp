@@ -40,14 +40,6 @@
 #include <utility>
 namespace {
 thread_local uqm::detail::BattleScene *activeScene = nullptr;
-void buildFlagship() {
-    const auto handle = Build(&race_q[0], SIS_SHIP_ID);
-    if (!handle) return;
-    auto *ship = LockStarShip(&race_q[0], handle);
-    ship->playerNr = RPG_PLAYER_NUM;
-    ship->captains_name_index = 0;
-    UnlockStarShip(&race_q[0], handle);
-}
 COUNT floatingCrew() {
     COUNT count = 0;
     for (auto handle = GetHeadElement(); handle;) {
@@ -73,7 +65,7 @@ void uqm::detail::BattleScene::initialize() {
     InitGalaxy();
     if (kind_ == SceneKind::Navigation) {
         engine_.shipRoster().clear();
-        buildFlagship();
+        engine_.shipRoster().append(RosterSide::First, SIS_SHIP_ID);
         LoadHyperspace();
         return;
     }

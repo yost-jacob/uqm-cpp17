@@ -56,7 +56,7 @@ public:
 private:
     bool input_ = false, structures_ = false, clock_ = false;
 };
-ModeResult finishMode(GameSession &session) {
+ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
     SetFlashRect(nullptr);
     LastActivity = GLOBAL(CurrentActivity);
     if (QuitPosted) return SessionExit::shutdown();
@@ -66,7 +66,7 @@ ModeResult finishMode(GameSession &session) {
             && (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
                 || session.player().crew() == static_cast<COUNT>(~0u))) {
         if (session.player().story().read(StoryFlag::KohrAhKilledAll)) {
-            EncounterRuntime encounter{session, CurStarDescPtr};
+            EncounterRuntime encounter{session, CurStarDescPtr, engine};
             encounter.communicate(BLACKURQ_CONVERSATION);
         }
         else if (GLOBAL(CurrentActivity) & CHECK_RESTART) GLOBAL(CurrentActivity) &= ~CHECK_RESTART;
@@ -83,7 +83,7 @@ public:
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(HYPERSPACE_CLOCK_RATE);
         navigation_.run(session_);
-        return finishMode(session_);
+        return finishMode(session_, engine());
     }
 private:
     GameSession &session_;
@@ -98,7 +98,7 @@ public:
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(INTERPLANETARY_CLOCK_RATE);
         exploration_.run();
-        return finishMode(session_);
+        return finishMode(session_, engine());
     }
 protected:
     std::unique_ptr<ModeSuspension> suspend() override { return exploration_.suspendRendering(); }
@@ -111,7 +111,7 @@ enum class EncounterKind { Communication, Starbase, InstallBomb };
 class EncounterMode final : public GameMode {
 public:
     EncounterMode(GameSession &session, EncounterKind kind)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), kind_(kind), encounter_(session, CurStarDescPtr) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), kind_(kind), encounter_(session, CurStarDescPtr, engine()) {}
     ModeResult run() override {
         if (kind_ == EncounterKind::InstallBomb) InstallBombAtEarth();
         else {
@@ -124,7 +124,7 @@ public:
             if (LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
                 GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
         }
-        return finishMode(session_);
+        return finishMode(session_, engine());
     }
 private:
     GameSession &session_;
