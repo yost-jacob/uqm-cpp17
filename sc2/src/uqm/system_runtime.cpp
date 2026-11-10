@@ -17,9 +17,12 @@ SystemBehavior &systemBehavior(const SOLARSYS_STATE &system) {
         throw std::logic_error("system behavior requires a prepared runtime");
     return system.worlds->system->behavior();
 }
-SolarSystemExploration::SolarSystemExploration(GameSession &session)
-    : runtime_{session.player().story(), session.worldOwner(), nullptr, &session, ExplorationView::Flight, {}, {}} {
+SolarSystemExploration::SolarSystemExploration(GameSession &session, SimulationEngine &simulation)
+    : runtime_{session.player().story(), simulation, session.worldOwner(), nullptr, &session, ExplorationView::Flight, {}, {}} {
     if (!runtime_.world) throw std::invalid_argument("exploration requires world state");
 }
-void SolarSystemExploration::run() { runExploration(runtime_); }
+void SolarSystemExploration::run() {
+    SimulationBinding simulation{runtime_.simulation};
+    runExploration(runtime_);
+}
 }

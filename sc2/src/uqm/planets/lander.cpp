@@ -1923,8 +1923,8 @@ public:
 };
 class LanderMode final : public GameMode {
 public:
-    LanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), location_(location), visit_(system), surfaceSource_(simulationEngine()) {
+    LanderMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &surfaceSource, POINT location)
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), location_(location), visit_(system), surfaceSource_(surfaceSource) {
         if (&session.player().story() != &visit_.story)
             throw std::invalid_argument("lander and session have different campaigns");
     }
@@ -2156,6 +2156,8 @@ InitLander (BYTE LanderFlags)
 	UnbatchGraphics ();
 }
 
-std::unique_ptr<uqm::GameMode> uqm::createLanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location) {
-    return std::make_unique<LanderMode>(session, system, location);
+std::unique_ptr<uqm::GameMode> uqm::createLanderMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &surfaceSource, POINT location) {
+    if (!system.worlds || &surfaceSource != &system.worlds->simulation)
+        throw std::invalid_argument("lander scene source must belong to its exploration runtime");
+    return std::make_unique<LanderMode>(session, system, surfaceSource, location);
 }

@@ -2,8 +2,8 @@
 #include "game_state.hpp"
 #include <stdexcept>
 namespace uqm {
-HyperSpaceNavigation::HyperSpaceNavigation(PlayerEntity &player) noexcept
-    : player_(player), story_(player.story()) {}
+HyperSpaceNavigation::HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine) noexcept
+    : player_(player), engine_(engine), story_(player.story()) {}
 NavigationBinding::NavigationBinding(GameSession &session, HyperSpaceNavigation &navigation)
     : session_(session), previous_(session.navigation_) {
     if (&session.player() != &navigation.player_)

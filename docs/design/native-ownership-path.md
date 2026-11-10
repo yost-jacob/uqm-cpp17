@@ -58,3 +58,17 @@ payloads, source/target handles, spawn callbacks and loaded ship assets remain
 compatibility machinery. Conversation callbacks, NPC persistence, rendering,
 audio and input services retain the boundaries documented in the roadmap; this
 change does not claim to encapsulate those services.
+
+## Exploration and navigation
+
+SolarSystemMode passes its engine into SolarSystemExploration. Its opaque runtime
+carries a required reference to that simulation alongside story/world state.
+Navigation likewise borrows its mode's engine and uses that engine's random
+stream. Both run entry points scope their compatibility bindings and restore the
+caller on return or failure. The legacy debug context captures a selected engine
+only at its C entry boundary.
+
+Lander creation receives the surface source explicitly and checks that it belongs
+to the supplied exploration runtime. Its existing scene-transfer scope returns
+updated surface nodes before the parent resumes; construction no longer guesses
+the source by querying the selected process engine.

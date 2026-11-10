@@ -112,7 +112,7 @@ void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
 void CreateSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
     try {
         auto next = std::make_unique<UQM_SYSTEM_RUNTIME>(UQM_SYSTEM_RUNTIME{
-                uqm::gameSession().player().story(), uqm::gameSession().worldOwner(), nullptr});
+                uqm::gameSession().player().story(), uqm::simulationEngine(), uqm::gameSession().worldOwner(), nullptr});
         system->worlds = next.get();
         PrepareSystemWorlds(system, star);
         next.release();

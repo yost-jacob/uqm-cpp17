@@ -277,7 +277,7 @@ uqm::HyperSpaceNavigation::check_hyperspace_encounter(void)
 					&& (COUNT)dy < encounter_radius
 					&& (DWORD)dx * dx + (DWORD)dy * dy <
 					(DWORD)encounter_radius * encounter_radius
-					&& ((COUNT)TFB_Random () % 100) < percent)
+					&& ((COUNT)engine_.random()() % 100) < percent)
 			{
 				// Ship spawned for encounter.
 				hEncounter = AllocEncounter ();
@@ -835,7 +835,7 @@ uqm::HyperSpaceNavigation::AddAmbientElement(void)
 				STAMP_PRIM);
 		HyperSpaceElementPtr->preprocess_func = animation_preprocess;
 
-		rand_val = TFB_Random ();
+		rand_val = engine_.random()();
 		dy = LOWORD (rand_val);
 		dx = (SIZE)(LOBYTE (dy) % SPACE_WIDTH) - (SPACE_WIDTH >> 1);
 		dy = (SIZE)(HIBYTE (dy) % SPACE_HEIGHT) - (SPACE_HEIGHT >> 1);
@@ -1010,7 +1010,7 @@ uqm::HyperSpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *p
 		NumShips = LONIBBLE (EncounterMakeup[Type]);
 		for (i = HINIBBLE (EncounterMakeup[Type]) - NumShips; i; --i)
 		{
-			if ((COUNT)TFB_Random () % 100 < 50)
+			if ((COUNT)engine_.random()() % 100 < 50)
 				++NumShips;
 		}
 
@@ -1036,7 +1036,7 @@ uqm::HyperSpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *p
 		{
 			DWORD rand_val;
 
-			rand_val = TFB_Random ();
+			rand_val = engine_.random()();
 
 			enc_pt.x = puniverse->x
 					+ (LOWORD (rand_val) % (XOFFS << 1)) - XOFFS;
@@ -1625,7 +1625,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 
 	SetContext (StatusContext);
 
-	if (!(LOWORD (TFB_Random ()) & 7))
+	if (!(LOWORD (engine_.random()()) & 7))
 		AddAmbientElement ();
 
 	if (universe.x != GLOBAL (ShipStamp.origin.x)
@@ -1789,8 +1789,9 @@ void HyperspaceMenu(void) { activeNavigation().HyperspaceMenu(); }
 
 namespace uqm {
 void HyperSpaceNavigation::run(GameSession &session) {
+    SimulationBinding simulation{engine_};
     NavigationBinding binding(session, *this);
-    runSpaceNavigation(simulationEngine(), [this] { frame(); });
+    runSpaceNavigation(engine_, [this] { frame(); });
 }
 void HyperSpaceNavigation::frame() {
     GameClockTick();

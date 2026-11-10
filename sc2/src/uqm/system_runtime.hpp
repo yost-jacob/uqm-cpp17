@@ -19,6 +19,7 @@ struct SurfaceScanState {
 // it only until return. Story-state lifetime is guaranteed by the enclosing mode.
 struct UQM_SYSTEM_RUNTIME {
     uqm::StoryState &story;
+    uqm::SimulationEngine &simulation; // Borrowed from the owning exploration mode.
     std::shared_ptr<uqm::WorldState> world;
     std::unique_ptr<uqm::SolarSystem> system;
     uqm::GameSession *session = nullptr;
@@ -39,7 +40,8 @@ SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
 // Mode-owned exploration lifetime. The story state outlives this object.
 class SolarSystemExploration {
 public:
-    explicit SolarSystemExploration(GameSession &session);
+    // session and simulation outlive this visit and all synchronous children.
+    SolarSystemExploration(GameSession &session, SimulationEngine &simulation);
     void run();
     std::unique_ptr<ModeSuspension> suspendRendering();
     void resumeRendering();
@@ -75,6 +77,6 @@ void redrawExploration(SOLARSYS_STATE &system, ExplorationView view);
 void runExploration(UQM_SYSTEM_RUNTIME &runtime);
 // Create a child visit for this session and its prepared exploration system.
 // The owning exploration mode and story state must outlive the child callbacks.
-std::unique_ptr<GameMode> createLanderMode(GameSession &session, SOLARSYS_STATE &system, POINT planetLoc);
+std::unique_ptr<GameMode> createLanderMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &surfaceSource, POINT planetLoc);
 }
 #endif

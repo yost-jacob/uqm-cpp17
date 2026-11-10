@@ -7,11 +7,13 @@ namespace uqm {
 class StoryState;
 class PlayerEntity;
 class GameSession;
+class SimulationEngine;
 // One navigation visit, owned by HyperSpaceMode. C element/input callbacks borrow
 // it through a scoped session binding; all native helpers use this object's state.
 class HyperSpaceNavigation {
 public:
-    explicit HyperSpaceNavigation(PlayerEntity &player) noexcept;
+    // Both borrows outlive this navigation visit and its C callbacks.
+    HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine) noexcept;
     void run(GameSession &session);
     void frame();
     HyperSpaceNavigation(const HyperSpaceNavigation &) = delete;
@@ -52,6 +54,7 @@ public:
 private:
     friend class NavigationBinding;
     PlayerEntity &player_;
+    SimulationEngine &engine_;
     StoryState &story_;
     bool starsBound_ = false; // Resource swap lease; release is idempotent, including cancellation.
     BYTE fuel_ticks = 1;

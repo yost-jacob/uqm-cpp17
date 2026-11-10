@@ -77,7 +77,7 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
 class HyperSpaceMode final : public GameMode {
 public:
     HyperSpaceMode(GameSession &session)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player()) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine()) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
@@ -92,7 +92,7 @@ private:
 class SolarSystemMode final : public GameMode {
 public:
     SolarSystemMode(GameSession &session)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), exploration_(session) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), exploration_(session, engine()) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
         DrawAutoPilotMessage(TRUE);
