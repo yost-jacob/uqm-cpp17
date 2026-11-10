@@ -23,6 +23,7 @@ SolarSystemExploration::SolarSystemExploration(GameSession &session, SimulationE
 }
 void SolarSystemExploration::run() {
     SimulationBinding simulation{runtime_.simulation};
+    runtime_.session->player().enterSolarSystem();
     runExploration(runtime_);
 }
 }

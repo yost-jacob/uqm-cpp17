@@ -46,6 +46,15 @@ a load does not decode a replacement campaign while these objects remain alive.
 A C++ mode wrapper establishes a lifetime boundary; it does not by itself
 encapsulate every service or legacy payload accessed beneath that boundary.
 
+## Player location
+
+PlayerEntity now owns the HyperSpace/QuasiSpace/solar-system location variant.
+Exploration borrows its expected alternative by reference; orbit preserves flight
+and the lander borrows the player-owned surface position. Combat and conversation
+children leave this travel state intact. Old coordinate fields remain only as
+explicit save/load projections. Display stamps, velocity and viewport transforms
+still use the legacy engine path. See [player location](player-location.md).
+
 ## SIS and projectiles
 
 Fleet owns an optional persistent SIS, separate from escorts. The flagship combat

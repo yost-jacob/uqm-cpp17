@@ -165,8 +165,8 @@ DrawAutoPilot (POINT *pDstPt)
 		pt = CurStarDescPtr->star_pt;
 	else
 	{
-		pt.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-		pt.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+		pt.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
+		pt.y = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y);
 	}
 	pt.x = UNIVERSE_TO_DISPX (pt.x);
 	pt.y = UNIVERSE_TO_DISPY (pt.y);
@@ -350,8 +350,8 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 			r.corner = CurStarDescPtr->star_pt;
 		else
 		{
-			r.corner.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-			r.corner.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+			r.corner.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
+			r.corner.y = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y);
 		}
 
 		// Cap the diameter to a sane range
@@ -777,8 +777,8 @@ UpdateFuelRequirement (void)
 		pt = CurStarDescPtr->star_pt;
 	else
 	{
-		pt.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-		pt.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+		pt.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
+		pt.y = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y);
 	}
 	pt.x -= cursorLoc.x;
 	pt.y -= cursorLoc.y;
@@ -1226,8 +1226,8 @@ DoMoveCursor (MENU_STATE *pMS)
 			universe = CurStarDescPtr->star_pt;
 		else
 		{
-			universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-			universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+			universe.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
+			universe.y = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y);
 		}
 		flashCurrentLocation (&universe);
 
@@ -1582,8 +1582,8 @@ StarMap (void)
 		universe = CurStarDescPtr->star_pt;
 	else
 	{
-		universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-		universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+		universe.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
+		universe.y = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y);
 	}
 
 	cursorLoc = GLOBAL (autopilot);

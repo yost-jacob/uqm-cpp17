@@ -262,8 +262,8 @@ InitGameStructures (void)
 	SetRaceAllied (HUMAN_SHIP, TRUE);
 	CloneShipFragment (HUMAN_SHIP, GetPlayerFleetQueue(), 0);
 
-	GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (SOL_X);
-	GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (SOL_Y);
+	GetPlayerTravelPosition()->position.x = UNIVERSE_TO_LOGX (SOL_X);
+	GetPlayerTravelPosition()->position.y = UNIVERSE_TO_LOGY (SOL_Y);
 	CurStarDescPtr = 0;
 	GLOBAL (autopilot.x) = ~0;
 	GLOBAL (autopilot.y) = ~0;
@@ -327,6 +327,7 @@ InitGlobData (void)
     ResetPersonalDiscoveries ();
 	memset (&GlobData, 0, sizeof (GlobData));
     memset (GetPlayerSISState(), 0, sizeof(SIS_STATE));
+    ResetPlayerTravelPosition ();
 	GLOBAL (glob_flags) = (BYTE)i;
 
 	GLOBAL (DisplayArray) = DisplayArray;

@@ -154,7 +154,7 @@ GetCustomShipData (RACE_DESC *pRaceDesc)
 
 
 static void
-sis_hyper_preprocess (ELEMENT *ElementPtr, const uqm::SIS &source, const uqm::StoryState &story)
+sis_hyper_preprocess (ELEMENT *ElementPtr, const uqm::SIS &source, const uqm::StoryState &story, const uqm::MapPosition &position)
 {
 	SIZE udx = 0, udy = 0;
 	SIZE dx = 0, dy = 0;
@@ -193,8 +193,8 @@ LeaveAutoPilot:
 		SIZE facing;
 		POINT universe;
 
-		universe.x = LOGX_TO_UNIVERSE (source.x());
-		universe.y = LOGY_TO_UNIVERSE (source.y());
+		universe.x = LOGX_TO_UNIVERSE (position.x);
+		universe.y = LOGY_TO_UNIVERSE (position.y);
 		udx = (GLOBAL (autopilot)).x - universe.x;
 		udy = -((GLOBAL (autopilot)).y - universe.y);
 		if ((dx = udx) < 0)
@@ -737,15 +737,15 @@ class Flagship final : public uqm::combat::Ship {
 public:
     Flagship(const RACE_DESC &definition, bool hyperspace,
             std::optional<std::reference_wrapper<uqm::SIS>> source,
-            const uqm::StoryState &story, CustomShipData_t data)
+            const uqm::PlayerEntity &player, CustomShipData_t data)
         : Ship(definition), hyperspace_(hyperspace), source_(source),
-          story_(story), privateData_(std::move(data)) {
+          player_(player), privateData_(std::move(data)) {
         if (!hyperspace_) legacyData().cyborg_control.intelligence_func = sis_intelligence;
         legacyData().data = &privateData_;
     }
 private:
     void beforeMotion(ELEMENT &element) noexcept override {
-        if (hyperspace_) sis_hyper_preprocess(&element, source_->get(), story_);
+        if (hyperspace_) sis_hyper_preprocess(&element, source_->get(), player_.story(), player_.travel().position);
         else sis_battle_preprocess(&element);
     }
     void afterMotion(ELEMENT &element) noexcept override {
@@ -766,7 +766,7 @@ private:
     }
     bool hyperspace_;
     std::optional<std::reference_wrapper<uqm::SIS>> source_; // Outlives this combat incarnation.
-    const uqm::StoryState &story_;
+    const uqm::PlayerEntity &player_;
     CustomShipData_t privateData_;
 };
 } // namespace
@@ -832,5 +832,5 @@ uqm::combat::makeFlagship()
 
     std::optional<std::reference_wrapper<uqm::SIS>> persistent;
     if (LOBYTE(GLOBAL(CurrentActivity)) != SUPER_MELEE) persistent = std::ref(source);
-    return std::make_unique<Flagship>(new_sis_desc, inHQSpace(), persistent, session.player().story(), std::move(weapons));
+    return std::make_unique<Flagship>(new_sis_desc, inHQSpace(), persistent, session.player(), std::move(weapons));
 }

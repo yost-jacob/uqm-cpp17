@@ -211,8 +211,8 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 				if (GroupPtr->race_id == URQUAN_DRONE_SHIP)
 					detect_dist <<= 1;
 			}
-			vdx = GLOBAL (ip_location.x) - GroupPtr->loc.x;
-			vdy = GLOBAL (ip_location.y) - GroupPtr->loc.y;
+			vdx = GetPlayerTravelPosition()->flight.position.x - GroupPtr->loc.x;
+			vdy = GetPlayerTravelPosition()->flight.position.y - GroupPtr->loc.y;
 			if ((long)vdx * vdx
 					+ (long)vdy * vdy < (long)detect_dist * detect_dist)
 			{
@@ -256,7 +256,7 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 				&& group_loc == 0))
 		{
 			if (GroupPtr->dest_loc == IPNL_INTERCEPT_PLAYER)
-				dest_pt = GLOBAL (ip_location);
+				dest_pt = GetPlayerTravelPosition()->flight.position;
 			else
 			{
 				COUNT orbit_dist;
@@ -657,7 +657,7 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 		radius = zoomRadiusForLocation (flagship_loc);
 		adjustDeltaVforZoom (radius, &vdx, &vdy);
 
-		pt = locationToDisplay (GLOBAL (ip_location), radius);
+		pt = locationToDisplay (GetPlayerTravelPosition()->flight.position, radius);
 		ElementPtr->current.location.x = DISPLAY_TO_WORLD (pt.x)
 				+ (COORD)(LOG_SPACE_WIDTH >> 1)
 				- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
@@ -666,10 +666,10 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 				- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 		InitIntersectStartPoint (ElementPtr);
 
-		GLOBAL (ip_location.x) += vdx;
-		GLOBAL (ip_location.y) += vdy;
+		GetPlayerTravelPosition()->flight.position.x += vdx;
+		GetPlayerTravelPosition()->flight.position.y += vdy;
 
-		pt = locationToDisplay (GLOBAL (ip_location), radius);
+		pt = locationToDisplay (GetPlayerTravelPosition()->flight.position, radius);
 		ElementPtr->next.location.x = DISPLAY_TO_WORLD (pt.x)
 				+ (COORD)(LOG_SPACE_WIDTH >> 1)
 				- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));

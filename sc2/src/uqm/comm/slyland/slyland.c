@@ -381,8 +381,8 @@ CombatIsInevitable (RESPONSE_REF R)
 					SIZE dx, dy;
 
 					// Probe's coordinate system is {-Y,X} relative to B Corvi
-					dx = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)) - 333;
-					dy = 9812 - LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+					dx = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x) - 333;
+					dy = 9812 - LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y);
 
 					NPCPhrase (THIS_IS_PROBE_40);
 					sayCoord (dy);

@@ -20,6 +20,7 @@
 #define UQM_GLOBDATA_H_
 
 #include "clock.h"
+#include "player_location.h"
 #include "libs/gfxlib.h"
 #include "libs/reslib.h"
 #include "libs/sndlib.h"
@@ -929,7 +930,7 @@ typedef struct
 	CLOCK_STATE GameClock;
 
 	POINT autopilot;
-	POINT ip_location;
+	POINT ip_location; // Save-format projection only; live state is player-owned.
 	STAMP ShipStamp;
 	UWORD ShipFacing;
 	BYTE ip_planet;

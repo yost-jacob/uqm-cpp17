@@ -653,6 +653,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 		res_CloseResFile (in_fp);
 		return FALSE;
 	}
+	ImportPlayerTravelPosition ();
 	NextActivity = GLOBAL (CurrentActivity);
 	GLOBAL (CurrentActivity) = Activity;
 

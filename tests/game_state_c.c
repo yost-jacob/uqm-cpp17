@@ -5,7 +5,7 @@
  * code. No queue/resource handles are allocated by these fixtures. */
 static GLOBDATA saved;
 static SIS_STATE saved_sis;
-void game_state_c_reset(void) { memset(&GlobData, 0, sizeof(GlobData)); memset(GetPlayerSISState(), 0, sizeof(SIS_STATE)); }
+void game_state_c_reset(void) { ResetPlayerTravelPosition(); memset(&GlobData, 0, sizeof(GlobData)); memset(GetPlayerSISState(), 0, sizeof(SIS_STATE)); }
 void *game_state_c_address(void) { return &GlobData; }
 void game_state_c_seed(void)
 {
@@ -22,13 +22,13 @@ void game_state_c_seed(void)
     memcpy(GLOBAL_SIS(ShipName), "Vindicator", 11);
     memcpy(GLOBAL_SIS(CommanderName), "Captain", 8);
     memcpy(GLOBAL_SIS(PlanetName), "Earth", 6);
-    GLOBAL_SIS(log_x) = -12345;
-    GLOBAL_SIS(log_y) = 67890;
-    GLOBAL(ip_location.x) = -321;
-    GLOBAL(ip_location.y) = 654;
-    GLOBAL(ShipFacing) = 15;
-    GLOBAL(ip_planet) = 3;
-    GLOBAL(in_orbit) = 1;
+    GetPlayerTravelPosition()->position.x = -12345;
+    GetPlayerTravelPosition()->position.y = 67890;
+    GetPlayerTravelPosition()->flight.position.x = -321;
+    GetPlayerTravelPosition()->flight.position.y = 654;
+    GetPlayerTravelPosition()->flight.facing = 15;
+    GetPlayerTravelPosition()->flight.planet = 3;
+    GetPlayerTravelPosition()->flight.loadOrbit = 1;
     SET_GAME_STATE(STARBASE_AVAILABLE, 1);
     SET_GAME_STATE(SUN_DEVICE_ON_SHIP, 1);
     SET_GAME_STATE(CHMMR_BOMB_STATE, 2);
@@ -43,8 +43,8 @@ int game_state_c_observes_native_updates(void)
             && GET_GAME_STATE(CHMMR_BOMB_STATE) == 3 && GET_GAME_STATE(SHOFIXTI_VISITS) == 7
             && GET_GAME_STATE(SHOFIXTI_STACK1) == 2 && GET_GAME_STATE(SHOFIXTI_STACK2) == 6;
 }
-void game_state_c_save(void) { saved = GlobData; saved_sis = *GetPlayerSISState(); }
-void game_state_c_restore(void) { GlobData = saved; *GetPlayerSISState() = saved_sis; }
+void game_state_c_save(void) { ExportPlayerTravelPosition(); saved = GlobData; saved_sis = *GetPlayerSISState(); }
+void game_state_c_restore(void) { GlobData = saved; *GetPlayerSISState() = saved_sis; ImportPlayerTravelPosition(); }
 void game_state_c_unterminated_name(void)
 {
     memset(GLOBAL_SIS(ShipName), 'X', sizeof(GLOBAL_SIS(ShipName)));

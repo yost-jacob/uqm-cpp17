@@ -456,7 +456,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 			StarShipPtr->ShipFacing = NORMALIZE_FACING (TFB_Random ());
 			if (inHQSpace ())
 			{	// Only one ship is ever spawned in HyperSpace -- flagship
-				COUNT facing = GLOBAL (ShipFacing);
+				COUNT facing = GetPlayerTravelPosition()->flight.facing;
 				// XXX: Solar system reentry test depends on ShipFacing != 0
 				if (facing > 0)
 					--facing;
@@ -465,7 +465,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 				//   for when the ship returns from an encounter back
 				//   to HyperSpace. However, it is overwritten later
 				//   in sis.c. See also r1614.
-				//GLOBAL (ShipFacing) = StarShipPtr->ShipFacing + 1;
+				//GetPlayerTravelPosition()->flight.facing = StarShipPtr->ShipFacing + 1;
 				StarShipPtr->ShipFacing = facing;
 			}
 			ShipElementPtr->current.image.frame =

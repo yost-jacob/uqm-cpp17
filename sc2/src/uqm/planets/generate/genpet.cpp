@@ -226,8 +226,8 @@ TalkingPetSystemBehavior::ZapToUrquanEncounter(void)
 		EncounterPtr->loc_pt.y = 4892;
 		EncounterPtr->log_x = UNIVERSE_TO_LOGX (EncounterPtr->loc_pt.x);
 		EncounterPtr->log_y = UNIVERSE_TO_LOGY (EncounterPtr->loc_pt.y);
-		GLOBAL_SIS (log_x) = EncounterPtr->log_x;
-		GLOBAL_SIS (log_y) = EncounterPtr->log_y;
+		GetPlayerTravelPosition()->position.x = EncounterPtr->log_x;
+		GetPlayerTravelPosition()->position.y = EncounterPtr->log_y;
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
 
 		{

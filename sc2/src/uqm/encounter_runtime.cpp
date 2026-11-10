@@ -75,7 +75,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 			DrawSISMessage (NULL);
 			if (inHQSpace ())
 				DrawHyperCoords (GLOBAL (ShipStamp.origin));
-			else if (GLOBAL (ip_planet) == 0)
+			else if (GetPlayerTravelPosition()->flight.planet == 0)
 				DrawHyperCoords (star().star_pt);
 			else
 				DrawSISTitle (GLOBAL_SIS (PlanetName));

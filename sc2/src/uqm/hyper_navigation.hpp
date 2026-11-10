@@ -3,6 +3,7 @@
 #include "hyper.h"
 #include "encount.h"
 #include "menustat.h"
+#include "player_location.h"
 namespace uqm {
 class StoryState;
 class PlayerEntity;
@@ -53,6 +54,8 @@ public:
     void HyperspaceMenu(void);
 private:
     friend class NavigationBinding;
+    // The realm selected by this mode must match the player variant.
+    PLAYER_TRAVEL_POSITION &travel();
     PlayerEntity &player_;
     SimulationEngine &engine_;
     StoryState &story_;

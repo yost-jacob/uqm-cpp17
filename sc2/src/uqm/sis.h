@@ -131,7 +131,7 @@ enum
 
 typedef struct
 {
-	SDWORD log_x, log_y;
+	SDWORD log_x, log_y; // Save-summary projection; live coordinates belong to PlayerEntity.
 
 	DWORD ResUnits;
 

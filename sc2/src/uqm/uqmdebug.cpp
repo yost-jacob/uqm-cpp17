@@ -478,14 +478,14 @@ doInstantMove (void)
 	{
 		// If no destination has been selected, use the current location
 		// as the destination.
-		(GLOBAL (autopilot)).x = LOGX_TO_UNIVERSE(GLOBAL_SIS (log_x));
-		(GLOBAL (autopilot)).y = LOGY_TO_UNIVERSE(GLOBAL_SIS (log_y));
+		(GLOBAL (autopilot)).x = LOGX_TO_UNIVERSE(GetPlayerTravelPosition()->position.x);
+		(GLOBAL (autopilot)).y = LOGY_TO_UNIVERSE(GetPlayerTravelPosition()->position.y);
 	}
 	else
 	{
 		// A new destination has been selected.
-		GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX((GLOBAL (autopilot)).x);
-		GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY((GLOBAL (autopilot)).y);
+		GetPlayerTravelPosition()->position.x = UNIVERSE_TO_LOGX((GLOBAL (autopilot)).x);
+		GetPlayerTravelPosition()->position.y = UNIVERSE_TO_LOGY((GLOBAL (autopilot)).y);
 	}
 
 	// Check for a solar systems at the destination.
@@ -500,9 +500,9 @@ doInstantMove (void)
 			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 
 			// Enter IP:
-			GLOBAL (ShipFacing) = 0;
-			GLOBAL (ip_planet) = 0;
-			GLOBAL (in_orbit) = 0;
+			GetPlayerTravelPosition()->flight.facing = 0;
+			GetPlayerTravelPosition()->flight.planet = 0;
+			GetPlayerTravelPosition()->flight.loadOrbit = 0;
 					// This causes the ship position in IP to be reset.
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 		}

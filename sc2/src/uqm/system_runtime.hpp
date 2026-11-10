@@ -35,6 +35,10 @@ inline StoryState &systemStory(const SOLARSYS_STATE &system) {
     return system.worlds->story;
 }
 
+// Expected alternative is a mode contract: std::get throws on dispatch errors.
+inline SolarSystemLocation &systemLocation(const SOLARSYS_STATE &system) {
+    return std::get<SolarSystemLocation>(system.worlds->session->player().location());
+}
 // Borrowed lookup; system must have a prepared native runtime.
 SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
 // Mode-owned exploration lifetime. The story state outlives this object.

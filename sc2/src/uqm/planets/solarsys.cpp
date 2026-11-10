@@ -365,6 +365,7 @@ GetRandomSeedForStar (const STAR_DESC *star)
 static PLANET_DESC *
 LoadSolarSys(SOLARSYS_STATE &system)
 {
+    auto &flight = uqm::systemLocation(system).flight;
 	COUNT i;
 	PLANET_DESC *orbital = NULL;
 	PLANET_DESC *pCurDesc;
@@ -419,18 +420,18 @@ LoadSolarSys(SOLARSYS_STATE &system)
 
 	sortPlanetPositions ();
 
-	if (!GLOBAL (ip_planet))
+	if (!flight.planet)
 	{	// Outer system
 		system.pBaseDesc = system.PlanetDesc;
 		system.pOrbitalDesc = NULL;
 	}
 	else
 	{	// Inner system
-		system.SunDesc[0].location = GLOBAL (ip_location);
-		GLOBAL (ip_location) = displayToLocation (
+		system.SunDesc[0].location = flight.position;
+		flight.position = displayToLocation (
 				GLOBAL (ShipStamp.origin), MAX_ZOOM_RADIUS);
 
-		i = GLOBAL (ip_planet) - 1;
+		i = flight.planet - 1;
 		system.pOrbitalDesc = &system.PlanetDesc[i];
 		GenerateMoons (&system, system.pOrbitalDesc);
 		system.pBaseDesc = system.MoonDesc;
@@ -440,9 +441,9 @@ LoadSolarSys(SOLARSYS_STATE &system)
 
 	initSolarSysSISCharacteristics ();
 
-	if (GLOBAL (in_orbit))
+	if (flight.loadOrbit)
 	{	// Only when loading a game into orbital
-		i = GLOBAL (in_orbit) - 1;
+		i = flight.loadOrbit - 1;
 		if (i == 0)
 		{	// Orbiting the planet itself
 			orbital = system.pBaseDesc->pPrevDesc;
@@ -453,12 +454,12 @@ LoadSolarSys(SOLARSYS_STATE &system)
 			i -= 1;
 			orbital = &system.MoonDesc[i];
 		}
-		GLOBAL (ip_location) = system.SunDesc[0].location;
-		GLOBAL (in_orbit) = 0;
+		flight.position = system.SunDesc[0].location;
+		flight.loadOrbit = 0;
 	}
 	else
 	{
-		i = GLOBAL (ShipFacing);
+		i = flight.facing;
 		// XXX: Solar system reentry test depends on ShipFacing != 0
 		if (i == 0)
 			++i;
@@ -472,19 +473,20 @@ LoadSolarSys(SOLARSYS_STATE &system)
 static void
 saveNonOrbitalLocation (void)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 	// XXX: Solar system reentry test depends on ShipFacing != 0
-	GLOBAL (ShipFacing) = GetFrameIndex (GLOBAL (ShipStamp.frame)) + 1;
-	GLOBAL (in_orbit) = 0;
+	flight.facing = GetFrameIndex (GLOBAL (ShipStamp.frame)) + 1;
+	flight.loadOrbit = 0;
 	if (!playerInInnerSystem ())
 	{
-		GLOBAL (ip_planet) = 0;
+		flight.planet = 0;
 	}
 	else
 	{
 		// ip_planet is 1-based because code tests for ip_planet!=0
-		GLOBAL (ip_planet) = 1 + planetIndex (pSolarSysState,
+		flight.planet = 1 + planetIndex (pSolarSysState,
 				pSolarSysState->pOrbitalDesc);
-		GLOBAL (ip_location) = pSolarSysState->SunDesc[0].location;
+		flight.position = pSolarSysState->SunDesc[0].location;
 	}
 }
 
@@ -884,6 +886,7 @@ ProcessShipControls (void)
 static void
 enterInnerSystem (PLANET_DESC *planet)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 #define INNER_ENTRY_DISTANCE  (MIN_MOON_RADIUS + ((MAX_MOONS - 1) \
 		* MOON_DELTA) + (MOON_DELTA / 4))
 	COUNT angle;
@@ -901,7 +904,7 @@ enterInnerSystem (PLANET_DESC *planet)
 		GLOBAL (ShipStamp.origin.y) =
 				(SIS_SCREEN_HEIGHT - 1) - 1;
 
-	GLOBAL (ip_location) = displayToLocation (
+	flight.position = displayToLocation (
 			GLOBAL (ShipStamp.origin), MAX_ZOOM_RADIUS);
 	
 	pSolarSysState->SunDesc[0].location =
@@ -916,14 +919,15 @@ enterInnerSystem (PLANET_DESC *planet)
 static void
 leaveInnerSystem (PLANET_DESC *planet)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 	COUNT outerPlanetWait;
 
 	pSolarSysState->pBaseDesc = pSolarSysState->PlanetDesc;
 	pSolarSysState->pOrbitalDesc = NULL;
 
 	outerPlanetWait = MAKE_WORD (planet - pSolarSysState->PlanetDesc + 1, 0);
-	GLOBAL (ip_location) = pSolarSysState->SunDesc[0].location;
-	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+	flight.position = pSolarSysState->SunDesc[0].location;
+	XFormIPLoc (&flight.position, &GLOBAL (ShipStamp.origin), TRUE);
 	ZeroVelocityComponents (&GLOBAL (velocity));
 
 	// Now the ship is in outer system (as per game logic)
@@ -948,6 +952,7 @@ enterOrbital (PLANET_DESC *planet)
 static BOOLEAN
 CheckShipLocation (SIZE *newRadius)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 	SIZE radius;
 
 	radius = pSolarSysState->SunDesc[0].radius;
@@ -968,7 +973,7 @@ CheckShipLocation (SIZE *newRadius)
 				return FALSE; // no location change
 			}
 
-			*newRadius = FindRadius (GLOBAL (ip_location),
+			*newRadius = FindRadius (flight.position,
 					MAX_ZOOM_RADIUS << 1);
 		}
 		else
@@ -982,7 +987,7 @@ CheckShipLocation (SIZE *newRadius)
 	if (!playerInInnerSystem ()
 			&& pointWithinRect (scaleRect, GLOBAL (ShipStamp.origin)))
 	{	// Outer zoom-in transition
-		*newRadius = FindRadius (GLOBAL (ip_location), radius);
+		*newRadius = FindRadius (flight.position, radius);
 		return TRUE;
 	}
 
@@ -1031,6 +1036,7 @@ TransitionSystemIn (void)
 static void
 ScaleSystem (SIZE new_radius)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 #ifdef SMOOTH_SYSTEM_ZOOM
 	// XXX: This appears to have been an attempt to zoom the system view
 	//   in a different way. This code zooms gradually instead of
@@ -1056,7 +1062,7 @@ ScaleSystem (SIZE new_radius)
 	for (i = 0; i < NUM_STEPS - 1; ++i)
 	{
 		pSolarSysState->SunDesc[0].radius += step;
-		XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+		XFormIPLoc (&flight.position, &GLOBAL (ShipStamp.origin), TRUE);
 
 		BatchGraphics ();
 		DrawOuterSystem ();
@@ -1068,7 +1074,7 @@ ScaleSystem (SIZE new_radius)
 	
 	// Final zoom step
 	pSolarSysState->SunDesc[0].radius = new_radius;
-	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+	XFormIPLoc (&flight.position, &GLOBAL (ShipStamp.origin), TRUE);
 	
 	BatchGraphics ();
 	DrawOuterSystem ();
@@ -1079,7 +1085,7 @@ ScaleSystem (SIZE new_radius)
 	RECT r;
 
 	pSolarSysState->SunDesc[0].radius = new_radius;
-	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+	XFormIPLoc (&flight.position, &GLOBAL (ShipStamp.origin), TRUE);
 
 	GetContextClipRect (&r);
 	SetTransitionSource (&r);
@@ -1144,6 +1150,7 @@ IP_frame (void)
 static bool
 CheckZoomLevel (void)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 	bool InnerSystem;
 	POINT shipLoc;
 
@@ -1151,7 +1158,7 @@ CheckZoomLevel (void)
 	if (InnerSystem)
 		shipLoc = pSolarSysState->SunDesc[0].location;
 	else
-		shipLoc = GLOBAL (ip_location);
+		shipLoc = flight.position;
 
 	pSolarSysState->SunDesc[0].radius = FindRadius (shipLoc,
 			MAX_ZOOM_RADIUS << 1);
@@ -1270,6 +1277,12 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 
     {
         auto &body = uqm::orbitalWorld(system);
+        auto &location = uqm::systemLocation(system);
+        location.enterOrbit(body.id());
+        struct OrbitLocationScope {
+            uqm::SolarSystemLocation &location;
+            ~OrbitLocationScope() { location.leaveOrbit(); }
+        } orbitLocation{location};
         uqm::detail::PlanetRenderBorrow rendering{system, body};
         auto &graphics = body.renderResources();
         struct OrbitServices {
@@ -1318,6 +1331,7 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 static void
 InitSolarSys(SOLARSYS_STATE &system)
 {
+    auto &flight = uqm::systemLocation(system).flight;
 	bool InnerSystem;
 	bool Reentry;
 	PLANET_DESC *orbital;
@@ -1326,7 +1340,7 @@ InitSolarSys(SOLARSYS_STATE &system)
 	LoadIPData ();
 	LoadLanderData ();
 
-	Reentry = (GLOBAL (ShipFacing) != 0);
+	Reentry = (flight.facing != 0);
 	if (!Reentry)
 	{
 		GLOBAL (autopilot.x) = ~0;
@@ -1335,7 +1349,7 @@ InitSolarSys(SOLARSYS_STATE &system)
 		GLOBAL (ShipStamp.origin.x) = SIS_SCREEN_WIDTH >> 1;
 		GLOBAL (ShipStamp.origin.y) = SIS_SCREEN_HEIGHT - 2;
 		
-		GLOBAL (ip_location) = displayToLocation (GLOBAL (ShipStamp.origin),
+		flight.position = displayToLocation (GLOBAL (ShipStamp.origin),
 				MAX_ZOOM_RADIUS);
 	}
 
@@ -1462,6 +1476,7 @@ closestPlanetInterPlanetary (const POINT *point)
 static void
 UninitSolarSys(SOLARSYS_STATE &system)
 {
+    auto &flight = uqm::systemLocation(system).flight;
 	FreeSolarSys ();
 
 //FreeLanderData ();
@@ -1481,7 +1496,7 @@ UninitSolarSys(SOLARSYS_STATE &system)
 		GetGroupInfo (GLOBAL (BattleGroupRef), EncounterGroup);
 		// Generate the encounter location name based on the closest planet
 
-		if (GLOBAL (ip_planet) == 0)
+		if (flight.planet == 0)
 		{
 			PLANET_DESC *planet =
 					closestPlanetInterPlanetary (&GLOBAL (ShipStamp.origin));
@@ -1715,13 +1730,14 @@ void
 uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 {
 	auto &SolarSysState = runtime.engine;
+    auto &location = std::get<uqm::SolarSystemLocation>(runtime.session->player().location());
 	
 	if (CurStarDescPtr == 0)
 	{
 		POINT universe;
 
-		universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-		universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+		universe.x = LOGX_TO_UNIVERSE (location.position.x);
+		universe.y = LOGY_TO_UNIVERSE (location.position.y);
 		CurStarDescPtr = FindStar (0, &universe, 1, 1);
 		if (!CurStarDescPtr)
 		{
@@ -1729,8 +1745,8 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 			explode ();
 		}
 	}
-	GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (CurStarDescPtr->star_pt.x);
-	GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (CurStarDescPtr->star_pt.y);
+	location.position.x = UNIVERSE_TO_LOGX (CurStarDescPtr->star_pt.x);
+	location.position.y = UNIVERSE_TO_LOGY (CurStarDescPtr->star_pt.y);
 
     struct Binding {
         SOLARSYS_STATE *previous = pSolarSysState;
@@ -1741,6 +1757,7 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 
 	SolarSysState.worlds = &runtime;
 	PrepareSystemWorlds (&SolarSysState, CurStarDescPtr);
+    location.system = runtime.system->star();
 
 	InitSolarSys(SolarSysState);
     struct Cleanup {
@@ -1867,6 +1884,7 @@ GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize)
 void
 SaveSolarSysLocation (void)
 {
+    auto &flight = uqm::systemLocation(*pSolarSysState).flight;
 	assert (playerInSolarSystem ());
 
 	// This is a two-stage saving procedure
@@ -1881,8 +1899,8 @@ SaveSolarSysLocation (void)
 	{	// In orbit around a planet.
 		BYTE moon;
 
-		// GLOBAL (ip_planet) is already set
-		assert (GLOBAL (ip_planet) != 0);
+		// flight.planet is already set
+		assert (flight.planet != 0);
 
 		// has to be at least 1 because code tests for in_orbit!=0
 		moon = 1; /* the planet itself */
@@ -1892,7 +1910,7 @@ SaveSolarSysLocation (void)
 			// +1 because moons have to be 1-based
 			moon += 1;
 		}
-		GLOBAL (in_orbit) = moon;
+		flight.loadOrbit = moon;
 	}
 }
 

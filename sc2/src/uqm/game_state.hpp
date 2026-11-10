@@ -11,6 +11,7 @@
 #include "world_types.hpp"
 #include "game_mode.hpp"
 #include "ship_state.hpp"
+#include "player_location.hpp"
 
 
 namespace uqm {
@@ -21,15 +22,6 @@ class SIS;
 struct NavigationState { std::int16_t portalX = 0, portalY = 0; };
 struct UserProfile { PlayerId id; std::string displayName; };
 
-// Coordinates retain legacy units. logX/Y locate the flagship in HyperSpace;
-// interplanetaryX/Y use the current system frame. Planet/orbit retain legacy
-// sentinel values; this value alone does not establish the current game mode.
-struct PlayerLocation {
-    std::int32_t logX, logY;
-    std::int16_t interplanetaryX, interplanetaryY;
-    std::uint16_t facing;
-    std::uint8_t planet, orbit;
-};
 enum class StoryFlag {
     SupoxUltronHelp,
     ShipToCompel,
@@ -261,9 +253,18 @@ public:
     std::uint32_t fuel() const noexcept;
     std::uint16_t crew() const noexcept;
     // Raw legacy logical coordinates; navigation enforces universe bounds.
-    void setHyperSpacePosition(std::int32_t x, std::int32_t y) noexcept;
+    void setMapPosition(std::int32_t x, std::int32_t y) noexcept;
     ShipState ship() const; // Detached copy, including equipment and names.
-    PlayerLocation location() const noexcept;
+    // Borrow on the simulation thread. Modes use std::get<ExpectedLocation>;
+    // a dispatch/type mismatch throws instead of silently returning no data.
+    PlayerLocation &location() noexcept;
+    const PlayerLocation &location() const noexcept;
+    PLAYER_TRAVEL_POSITION &travel() noexcept;
+    const PLAYER_TRAVEL_POSITION &travel() const noexcept;
+    // Only top-level realm changes replace the variant. Children leave it intact.
+    void enterNavigation(bool quasispace);
+    SolarSystemLocation &enterSolarSystem();
+    void resetLocation() noexcept;
     // Storage quantities only; gameplay callers must enforce capacity/cost rules.
     void setFuel(std::uint32_t fuel) noexcept;
     void setCrew(std::uint16_t crew) noexcept;
@@ -278,6 +279,7 @@ public:
 private:
     friend struct detail::LegacyStateAccess;
     NavigationState navigation_;
+    PlayerLocation location_{HyperSpaceLocation{}};
     UserProfile profile_;
     std::unique_ptr<detail::PlayerStorage> storage_;
     StoryState story_;
