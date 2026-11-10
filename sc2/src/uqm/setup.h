@@ -53,7 +53,11 @@ extern FONT TinyFont;
 
 extern CondVar RenderingCond;
 
-extern QUEUE race_q[];
+// Borrow the selected mode's temporary participants; persistent fleets are separate.
+extern QUEUE *GetRuntimeShipQueues (void);
+// Cancellation/reset releases attached resources without committing results.
+extern void ClearRuntimeShipRoster (COUNT side);
+#define race_q (GetRuntimeShipQueues())
 		/* Array of lists of ships involved in a battle, one queue per side;
 		 * queue element is STARSHIP */
 

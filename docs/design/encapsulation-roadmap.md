@@ -92,6 +92,14 @@ This is the campaign-specific integration step toward #17, not completion of a
 campaign-independent CombatMode. Super Melee and HyperSpace retain their current
 Battle entry paths; HyperSpace uses Battle for navigation rather than combat.
 
+## Compatibility removal sequence
+
+The dependency order and first architecture checkpoint are maintained in
+[compatibility removal plan](compatibility-removal-plan.md). The first increment
+moves runtime ship roster ownership into each engine, with an explicit encounter/
+combat handoff. RNG ownership and seed delivery are the next decision before
+extracting the battle driver.
+
 ## Next steps on this path
 
 1. Continue fleet migration (#21): persistent escorts now belong to PlayerEntity's

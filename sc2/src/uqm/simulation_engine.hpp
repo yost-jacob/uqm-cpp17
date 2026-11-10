@@ -2,6 +2,7 @@
 #define UQM_SIMULATION_ENGINE_HPP_
 #include "element.h"
 #include "entity_handle.hpp"
+#include "runtime_ship_roster.hpp"
 #include <cstdint>
 #include <array>
 namespace uqm {
@@ -21,6 +22,8 @@ public:
     void swapScene(SimulationEngine &other) noexcept;
     void reset(); // Invalidates every entity handle; no gameplay death events.
     COUNT size() const noexcept;
+    RuntimeShipRoster &shipRoster() noexcept { return ships_; }
+    const RuntimeShipRoster &shipRoster() const noexcept { return ships_; }
     std::uint64_t ticks() const noexcept { return ticks_; }
     // Exactly one existing simulation pass. The legacy scene adapter must have
     // prepared its collision sprites/status context. This does not draw a frame.
@@ -38,6 +41,7 @@ public:
     std::optional<std::reference_wrapper<const ELEMENT>> resolve(combat::EntityHandle handle) const noexcept;
 private:
     friend struct detail::SimulationAccess;
+    RuntimeShipRoster ships_;
     QUEUE entities_{};
     // Compatibility projection data stays with its queue: ELEMENT::PrimIndex
     // indexes this buffer. Actual drawing/device services remain external.

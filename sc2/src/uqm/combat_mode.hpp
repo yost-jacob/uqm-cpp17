@@ -10,7 +10,7 @@ class GameSession;
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session);
 // Legacy combat backend: story state must belong to the active encounter and
 // outlive this call. Temporary sound/input/activity bindings are scoped here;
-// physical battle queues and engine resources retain their legacy ownership.
+// the mode engine owns its queues; loaded assets retain the existing backend adapters.
 void runCampaignCombat(StoryState &story);
 }
 #endif

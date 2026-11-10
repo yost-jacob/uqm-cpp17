@@ -189,8 +189,8 @@ InitShips (void)
 
 	if (inHQSpace ())
 	{
-		ReinitQueue (&race_q[0]);
-		ReinitQueue (&race_q[1]);
+		ClearRuntimeShipRoster (0);
+		ClearRuntimeShipRoster (1);
 
 		BuildSIS ();
 		LoadHyperspace ();
@@ -341,7 +341,7 @@ UninitShips (void)
 	{
 		// Remove any ships left from the race queue.
 		for (i = 0; i < NUM_PLAYERS; i++)
-			ReinitQueue (&race_q[i]);
+			ClearRuntimeShipRoster (i);
 
 		if (inHQSpace ())
 			FreeHyperspace ();

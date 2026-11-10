@@ -1,4 +1,5 @@
 #include "simulation_engine_legacy.hpp"
+#include "runtime_ship_roster_legacy.hpp"
 #include "game_state.hpp"
 #include "globdata.h"
 #include <utility>
@@ -16,7 +17,11 @@ thread_local SimulationEngine *boundEngine = nullptr;
 SimulationEngine &legacyEngine() { static SimulationEngine value; return value; }
 }
 SimulationEngine::~SimulationEngine() { shutdown(); }
-void SimulationEngine::shutdown() noexcept { if (entities_.storage) UninitQueue(&entities_); ticks_ = 0; }
+void SimulationEngine::shutdown() noexcept {
+    if (entities_.storage) UninitQueue(&entities_);
+    ships_.clear(); // Resource cleanup only; combat completion is explicit.
+    ticks_ = 0;
+}
 void SimulationEngine::initialize(COUNT capacity) {
     if (entities_.storage) throw std::logic_error("simulation engine is already initialized");
     if (!capacity) throw std::invalid_argument("simulation capacity must be positive");
@@ -97,3 +102,12 @@ BOOLEAN InitializeSimulationEngine(COUNT capacity) {
     catch (...) { return FALSE; }
 }
 void ShutdownSimulationEngine(void) { uqm::simulationEngine().shutdown(); }
+
+extern "C" QUEUE *GetRuntimeShipQueues(void) {
+    return uqm::detail::RuntimeRosterAccess::queues(uqm::simulationEngine().shipRoster());
+}
+
+extern "C" void ClearRuntimeShipRoster(COUNT side) {
+    if (side >= 2) std::terminate();
+    uqm::simulationEngine().shipRoster().clear(static_cast<uqm::RosterSide>(side));
+}
