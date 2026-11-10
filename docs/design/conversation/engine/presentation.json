@@ -9,86 +9,25 @@
         {
           "first_frame": 1,
           "frame_count": 3,
-          "flags": [
-            "yoyo"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              15
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["yoyo"],
+          "frame_seconds": {"base": [1, 15], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 10,
           "frame_count": 30,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              2,
-              1
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [2, 1], "random_range": [0, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 1,
           "frame_count": 3,
-          "flags": [
-            "random",
-            "colorxform"
-          ],
-          "frame_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              1,
-              30
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              1,
-              15
-            ]
-          },
+          "flags": ["random", "colorxform"],
+          "frame_seconds": {"base": [0, 1], "random_range": [1, 30]},
+          "restart_seconds": {"base": [0, 1], "random_range": [1, 15]},
           "blocks_layers": []
         }
       ],
@@ -96,52 +35,16 @@
         "first_frame": 0,
         "frame_count": 0,
         "flags": [],
-        "frame_seconds": {
-          "base": [
-            0,
-            1
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
-        "restart_seconds": {
-          "base": [
-            0,
-            1
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
+        "frame_seconds": {"base": [0, 1], "random_range": [0, 1]},
+        "restart_seconds": {"base": [0, 1], "random_range": [0, 1]},
         "blocks_layers": []
       },
       "talk": {
         "first_frame": 4,
         "frame_count": 6,
         "flags": [],
-        "frame_seconds": {
-          "base": [
-            1,
-            10
-          ],
-          "random_range": [
-            1,
-            15
-          ]
-        },
-        "restart_seconds": {
-          "base": [
-            7,
-            60
-          ],
-          "random_range": [
-            1,
-            12
-          ]
-        },
+        "frame_seconds": {"base": [1, 10], "random_range": [1, 15]},
+        "restart_seconds": {"base": [7, 60], "random_range": [1, 12]},
         "blocks_layers": []
       }
     },
@@ -151,279 +54,81 @@
         {
           "first_frame": 1,
           "frame_count": 3,
-          "flags": [
-            "yoyo"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              15
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["yoyo"],
+          "frame_seconds": {"base": [1, 15], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 10,
           "frame_count": 30,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              2,
-              1
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [2, 1], "random_range": [0, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 40,
           "frame_count": 7,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 47,
           "frame_count": 8,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 55,
           "frame_count": 6,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 61,
           "frame_count": 6,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 67,
           "frame_count": 7,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 74,
           "frame_count": 11,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 85,
           "frame_count": 10,
-          "flags": [
-            "circular"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              40
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              8,
-              1
-            ]
-          },
+          "flags": ["circular"],
+          "frame_seconds": {"base": [1, 40], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [8, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 95,
           "frame_count": 1,
           "flags": [],
-          "frame_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              0,
-              1
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
+          "frame_seconds": {"base": [0, 1], "random_range": [0, 1]},
+          "restart_seconds": {"base": [0, 1], "random_range": [0, 1]},
           "blocks_layers": []
         }
       ],
@@ -431,52 +136,16 @@
         "first_frame": 0,
         "frame_count": 0,
         "flags": [],
-        "frame_seconds": {
-          "base": [
-            0,
-            1
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
-        "restart_seconds": {
-          "base": [
-            0,
-            1
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
+        "frame_seconds": {"base": [0, 1], "random_range": [0, 1]},
+        "restart_seconds": {"base": [0, 1], "random_range": [0, 1]},
         "blocks_layers": []
       },
       "talk": {
         "first_frame": 4,
         "frame_count": 6,
         "flags": [],
-        "frame_seconds": {
-          "base": [
-            1,
-            10
-          ],
-          "random_range": [
-            1,
-            15
-          ]
-        },
-        "restart_seconds": {
-          "base": [
-            7,
-            60
-          ],
-          "random_range": [
-            1,
-            12
-          ]
-        },
+        "frame_seconds": {"base": [1, 10], "random_range": [1, 15]},
+        "restart_seconds": {"base": [7, 60], "random_range": [1, 12]},
         "blocks_layers": []
       }
     },
@@ -486,117 +155,33 @@
         {
           "first_frame": 6,
           "frame_count": 5,
-          "flags": [
-            "yoyo"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              12
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              4,
-              1
-            ],
-            "random_range": [
-              4,
-              1
-            ]
-          },
-          "blocks_layers": [
-            1
-          ]
+          "flags": ["yoyo"],
+          "frame_seconds": {"base": [1, 12], "random_range": [0, 1]},
+          "restart_seconds": {"base": [4, 1], "random_range": [4, 1]},
+          "blocks_layers": [1]
         },
         {
           "first_frame": 11,
           "frame_count": 9,
-          "flags": [
-            "yoyo"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              20
-            ],
-            "random_range": [
-              0,
-              1
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              4,
-              1
-            ],
-            "random_range": [
-              4,
-              1
-            ]
-          },
-          "blocks_layers": [
-            0
-          ]
+          "flags": ["yoyo"],
+          "frame_seconds": {"base": [1, 20], "random_range": [0, 1]},
+          "restart_seconds": {"base": [4, 1], "random_range": [4, 1]},
+          "blocks_layers": [0]
         },
         {
           "first_frame": 20,
           "frame_count": 2,
-          "flags": [
-            "yoyo"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              10
-            ],
-            "random_range": [
-              1,
-              15
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              1,
-              1
-            ],
-            "random_range": [
-              3,
-              1
-            ]
-          },
+          "flags": ["yoyo"],
+          "frame_seconds": {"base": [1, 10], "random_range": [1, 15]},
+          "restart_seconds": {"base": [1, 1], "random_range": [3, 1]},
           "blocks_layers": []
         },
         {
           "first_frame": 22,
           "frame_count": 2,
-          "flags": [
-            "yoyo"
-          ],
-          "frame_seconds": {
-            "base": [
-              1,
-              10
-            ],
-            "random_range": [
-              1,
-              15
-            ]
-          },
-          "restart_seconds": {
-            "base": [
-              1,
-              1
-            ],
-            "random_range": [
-              3,
-              1
-            ]
-          },
+          "flags": ["yoyo"],
+          "frame_seconds": {"base": [1, 10], "random_range": [1, 15]},
+          "restart_seconds": {"base": [1, 1], "random_range": [3, 1]},
           "blocks_layers": []
         }
       ],
@@ -604,52 +189,16 @@
         "first_frame": 0,
         "frame_count": 0,
         "flags": [],
-        "frame_seconds": {
-          "base": [
-            0,
-            1
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
-        "restart_seconds": {
-          "base": [
-            0,
-            1
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
+        "frame_seconds": {"base": [0, 1], "random_range": [0, 1]},
+        "restart_seconds": {"base": [0, 1], "random_range": [0, 1]},
         "blocks_layers": []
       },
       "talk": {
         "first_frame": 1,
         "frame_count": 5,
         "flags": [],
-        "frame_seconds": {
-          "base": [
-            1,
-            15
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
-        "restart_seconds": {
-          "base": [
-            1,
-            12
-          ],
-          "random_range": [
-            0,
-            1
-          ]
-        },
+        "frame_seconds": {"base": [1, 15], "random_range": [0, 1]},
+        "restart_seconds": {"base": [1, 12], "random_range": [0, 1]},
         "blocks_layers": []
       }
     }
@@ -661,20 +210,11 @@
       "font": "comm.commander.font",
       "palette_resource": "comm.commander.colortable",
       "palette_index": 0,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "comm.commander.music",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": 143,
-        "baseline": [
-          164,
-          20
-        ]
-      },
+      "text_layout": {"width": 143, "baseline": [164, 20]},
       "disabled_ambient_layers": []
     },
     "hayes.low_power": {
@@ -683,20 +223,11 @@
       "font": "comm.commander.font",
       "palette_resource": "comm.commander.colortable",
       "palette_index": 1,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "comm.commander.lowpower.music",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": 143,
-        "baseline": [
-          164,
-          20
-        ]
-      },
+      "text_layout": {"width": 143, "baseline": [164, 20]},
       "disabled_ambient_layers": []
     },
     "hayes.power_restored": {
@@ -705,23 +236,12 @@
       "font": "comm.commander.font",
       "palette_resource": "comm.commander.colortable",
       "palette_index": 0,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "continue",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": 143,
-        "baseline": [
-          164,
-          20
-        ]
-      },
-      "disabled_ambient_layers": [
-        2
-      ]
+      "text_layout": {"width": 143, "baseline": [164, 20]},
+      "disabled_ambient_layers": [2]
     },
     "hayes.starbase": {
       "composite": "hayes.starbase",
@@ -729,20 +249,11 @@
       "font": "comm.commander.font",
       "palette_resource": "comm.commander.colortable",
       "palette_index": 0,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "comm.starbase.music",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": 143,
-        "baseline": [
-          164,
-          20
-        ]
-      },
+      "text_layout": {"width": 143, "baseline": [164, 20]},
       "disabled_ambient_layers": []
     },
     "melnorme.yellow": {
@@ -751,17 +262,11 @@
       "font": "comm.melnorme.font",
       "palette_resource": "comm.melnorme.colortable",
       "palette_index": 0,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "comm.melnorme.music",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": "SIS_TEXT_WIDTH - 16",
-        "alignment": "center"
-      },
+      "text_layout": {"width": "SIS_TEXT_WIDTH - 16", "alignment": "center"},
       "disabled_ambient_layers": []
     },
     "melnorme.purple": {
@@ -770,17 +275,11 @@
       "font": "comm.melnorme.font",
       "palette_resource": "comm.melnorme.colortable",
       "palette_index": 1,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "continue",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": "SIS_TEXT_WIDTH - 16",
-        "alignment": "center"
-      },
+      "text_layout": {"width": "SIS_TEXT_WIDTH - 16", "alignment": "center"},
       "disabled_ambient_layers": []
     },
     "melnorme.blue": {
@@ -789,17 +288,11 @@
       "font": "comm.melnorme.font",
       "palette_resource": "comm.melnorme.colortable",
       "palette_index": 2,
-      "palette_transition_seconds": [
-        1,
-        2
-      ],
+      "palette_transition_seconds": [1, 2],
       "music": "continue",
       "music_policy": "continue_if_same",
       "voice_policy": "optional; use phrase voice metadata when installed",
-      "text_layout": {
-        "width": "SIS_TEXT_WIDTH - 16",
-        "alignment": "center"
-      },
+      "text_layout": {"width": "SIS_TEXT_WIDTH - 16", "alignment": "center"},
       "disabled_ambient_layers": []
     }
   }

@@ -19,16 +19,8 @@
     "dialogue_action_timing": "Some reply effects occur after playback in this draft; audit source enqueue-versus-commit timing before a production port."
   },
   "phrase_banks": {
-    "commander": {
-      "resource": "comm.commander.dialogue",
-      "base_text": "base/comm/commander/commander.txt",
-      "voice": "optional addon"
-    },
-    "starbase": {
-      "resource": "comm.starbase.dialogue",
-      "base_text": "base/comm/starbase/starbase.txt",
-      "voice": "optional addon"
-    }
+    "commander": {"resource": "comm.commander.dialogue", "base_text": "base/comm/commander/commander.txt", "voice": "optional addon"},
+    "starbase": {"resource": "comm.starbase.dialogue", "base_text": "base/comm/starbase/starbase.txt", "voice": "optional addon"}
   },
   "presentation_library": "../presentation.json",
   "initial_presentation": "hayes.normal",
@@ -1679,17 +1671,7 @@
       "kind": "decision",
       "branches": [
         {
-          "when": {
-            "eq": [
-              {
-                "query": "encounter.read",
-                "args": [
-                  "kind"
-                ]
-              },
-              "commander_first_contact"
-            ]
-          },
+          "when": {"eq": [{"query": "encounter.read", "args": ["kind"]}, "commander_first_contact"]},
           "next": "first.entry"
         }
       ],
@@ -1700,23 +1682,11 @@
       "kind": "decision",
       "branches": [
         {
-          "when": {
-            "get": [
-              "story",
-              "PROBE_ILWRATH_ENCOUNTER",
-              false
-            ]
-          },
+          "when": {"get": ["story", "PROBE_ILWRATH_ENCOUNTER", false]},
           "next": "first.victory"
         },
         {
-          "when": {
-            "get": [
-              "story",
-              "STARBASE_VISITED",
-              false
-            ]
-          },
+          "when": {"get": ["story", "STARBASE_VISITED", false]},
           "next": "first.return"
         }
       ],
@@ -1727,11 +1697,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "STARBASE_VISITED",
-          true
-        ]
+        "args": ["story", "STARBASE_VISITED", true]
       },
       "save_as": "first_start",
       "next": "first.greeting"
@@ -1741,14 +1707,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.ARE_YOU_SUPPLY_SHIP"
-          ],
-          "presentation": {
-            "composite": "hayes.low_power",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.ARE_YOU_SUPPLY_SHIP"],
+          "presentation": {"composite": "hayes.low_power", "music": "continue", "voice": "if_available"}
         }
       ],
       "responses": [
@@ -1756,21 +1716,9 @@
           "id": "no_but_well_help0",
           "text": {
             "compose": [
-              {
-                "phrase": "commander.no_but_well_help0"
-              },
-              {
-                "insert": {
-                  "get": [
-                    "player",
-                    "ship_name",
-                    "Vindicator"
-                  ]
-                }
-              },
-              {
-                "phrase": "commander.no_but_well_help1"
-              }
+              {"phrase": "commander.no_but_well_help0"},
+              {"insert": {"get": ["player", "ship_name", "Vindicator"]}},
+              {"phrase": "commander.no_but_well_help1"}
             ]
           },
           "when": true,
@@ -1795,14 +1743,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.THE_WHAT_FROM_WHERE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.THE_WHAT_FROM_WHERE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.radios_check"
@@ -1812,14 +1754,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.ABOUT_TIME"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.ABOUT_TIME"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.supply_check"
@@ -1829,14 +1765,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.DONT_KNOW_WHO_YOU_ARE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.DONT_KNOW_WHO_YOU_ARE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.radios_check"
@@ -1844,18 +1774,7 @@
     {
       "id": "first.return",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "get": [
-              "story",
-              "RADIOACTIVES_PROVIDED",
-              false
-            ]
-          },
-          "next": "first.moon_check"
-        }
-      ],
+      "branches": [{"when": {"get": ["story", "RADIOACTIVES_PROVIDED", false]}, "next": "first.moon_check"}],
       "otherwise": "first.radio_return"
     },
     {
@@ -1863,14 +1782,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.DO_YOU_HAVE_RADIO_THIS_TIME"
-          ],
-          "presentation": {
-            "composite": "hayes.low_power",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.DO_YOU_HAVE_RADIO_THIS_TIME"],
+          "presentation": {"composite": "hayes.low_power", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.return_radios_check"
@@ -1878,22 +1791,7 @@
     {
       "id": "first.radios_check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "gt": [
-              {
-                "query": "inventory.quantity",
-                "args": [
-                  "radioactive"
-                ]
-              },
-              0
-            ]
-          },
-          "next": "first.radios"
-        }
-      ],
+      "branches": [{"when": {"gt": [{"query": "inventory.quantity", "args": ["radioactive"]}, 0]}, "next": "first.radios"}],
       "otherwise": "first.no_radios"
     },
     {
@@ -1901,11 +1799,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "LANDERS_LOST",
-          true
-        ]
+        "args": ["story", "LANDERS_LOST", true]
       },
       "save_as": "first_no_radios_i_lost_my_lander_effects_2",
       "next": "first.radios_check"
@@ -1915,10 +1809,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "crew",
-          4
-        ]
+        "args": ["crew", 4]
       },
       "save_as": "first_no_radios_i_lost_my_lander_effects_1",
       "next": "first.no_radios.i_lost_my_lander.effects.2"
@@ -1928,10 +1819,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "landers",
-          1
-        ]
+        "args": ["landers", 1]
       },
       "save_as": "first_no_radios_i_lost_my_lander_effects",
       "next": "first.no_radios.i_lost_my_lander.effects.1"
@@ -1941,14 +1829,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HERE_IS_A_NEW_LANDER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HERE_IS_A_NEW_LANDER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.no_radios.i_lost_my_lander.effects"
@@ -1958,10 +1840,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "crew",
-          4
-        ]
+        "args": ["crew", 4]
       },
       "save_as": "first_no_radios_i_lost_another_lander_effects_1",
       "next": "first.radios_check"
@@ -1971,10 +1850,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "landers",
-          1
-        ]
+        "args": ["landers", 1]
       },
       "save_as": "first_no_radios_i_lost_another_lander_effects",
       "next": "first.no_radios.i_lost_another_lander.effects.1"
@@ -1984,14 +1860,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HERE_IS_ANOTHER_LANDER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HERE_IS_ANOTHER_LANDER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.no_radios.i_lost_another_lander.effects"
@@ -2001,11 +1871,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "GIVEN_FUEL_BEFORE",
-          true
-        ]
+        "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_no_radios_need_fuel_mercury_effects_1",
       "next": "first.radios_check"
@@ -2015,10 +1881,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "fuel",
-          5
-        ]
+        "args": ["fuel", 5]
       },
       "save_as": "first_no_radios_need_fuel_mercury_effects",
       "next": "first.no_radios.need_fuel_mercury.effects.1"
@@ -2028,14 +1891,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GIVE_FUEL"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GIVE_FUEL"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.no_radios.need_fuel_mercury.effects"
@@ -2045,11 +1902,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "GIVEN_FUEL_BEFORE",
-          true
-        ]
+        "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_no_radios_need_fuel_again_effects_1",
       "next": "first.radios_check"
@@ -2059,10 +1912,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "fuel",
-          5
-        ]
+        "args": ["fuel", 5]
       },
       "save_as": "first_no_radios_need_fuel_again_effects",
       "next": "first.no_radios.need_fuel_again.effects.1"
@@ -2072,14 +1922,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GIVE_FUEL_AGAIN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GIVE_FUEL_AGAIN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.no_radios.need_fuel_again.effects"
@@ -2089,11 +1933,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.no_radios.question",
-          false
-        ]
+        "args": ["local", "first.no_radios.question", false]
       },
       "save_as": "first_no_radios_question_effects",
       "next": "first.radios_check"
@@ -2103,14 +1943,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.RADIOS_ON_MERCURY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.RADIOS_ON_MERCURY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.no_radios.question.effects"
@@ -2118,16 +1952,7 @@
     {
       "id": "first.no_radios",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "hayes.low_power",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "hayes.low_power", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "i_lost_my_lander",
@@ -2136,40 +1961,11 @@
             "all": [
               {
                 "all": [
-                  {
-                    "eq": [
-                      {
-                        "query": "inventory.quantity",
-                        "args": [
-                          "landers"
-                        ]
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "lt": [
-                      {
-                        "get": [
-                          "story",
-                          "CHMMR_BOMB_STATE",
-                          0
-                        ]
-                      },
-                      2
-                    ]
-                  }
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
                 ]
               },
-              {
-                "not": {
-                  "get": [
-                    "story",
-                    "LANDERS_LOST",
-                    false
-                  ]
-                }
-              }
+              {"not": {"get": ["story", "LANDERS_LOST", false]}}
             ]
           },
           "next": "first.no_radios.i_lost_my_lander"
@@ -2181,38 +1977,11 @@
             "all": [
               {
                 "all": [
-                  {
-                    "eq": [
-                      {
-                        "query": "inventory.quantity",
-                        "args": [
-                          "landers"
-                        ]
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "lt": [
-                      {
-                        "get": [
-                          "story",
-                          "CHMMR_BOMB_STATE",
-                          0
-                        ]
-                      },
-                      2
-                    ]
-                  }
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
                 ]
               },
-              {
-                "get": [
-                  "story",
-                  "LANDERS_LOST",
-                  false
-                ]
-              }
+              {"get": ["story", "LANDERS_LOST", false]}
             ]
           },
           "next": "first.no_radios.i_lost_another_lander"
@@ -2221,52 +1990,14 @@
           "id": "need_fuel_mercury",
           "text": "commander.need_fuel_mercury",
           "when": {
-            "all": [
-              {
-                "lt": [
-                  {
-                    "query": "ship.fuel",
-                    "args": []
-                  },
-                  2
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "story",
-                    "GIVEN_FUEL_BEFORE",
-                    false
-                  ]
-                }
-              }
-            ]
+            "all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"not": {"get": ["story", "GIVEN_FUEL_BEFORE", false]}}]
           },
           "next": "first.no_radios.need_fuel_mercury"
         },
         {
           "id": "need_fuel_again",
           "text": "commander.need_fuel_again",
-          "when": {
-            "all": [
-              {
-                "lt": [
-                  {
-                    "query": "ship.fuel",
-                    "args": []
-                  },
-                  2
-                ]
-              },
-              {
-                "get": [
-                  "story",
-                  "GIVEN_FUEL_BEFORE",
-                  false
-                ]
-              }
-            ]
-          },
+          "when": {"all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"get": ["story", "GIVEN_FUEL_BEFORE", false]}]},
           "next": "first.no_radios.need_fuel_again"
         },
         {
@@ -2278,13 +2009,7 @@
         {
           "id": "where_can_i_get_radios",
           "text": "commander.where_can_i_get_radios",
-          "when": {
-            "get": [
-              "local",
-              "first.no_radios.question",
-              true
-            ]
-          },
+          "when": {"get": ["local", "first.no_radios.question", true]},
           "next": "first.no_radios.question"
         }
       ]
@@ -2294,14 +2019,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.THANKS_FOR_HELPING"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.THANKS_FOR_HELPING"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "end"
@@ -2309,16 +2028,7 @@
     {
       "id": "first.radios",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "we_will_transfer_now",
@@ -2345,14 +2055,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.MESSAGE_GARBLED_1"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.MESSAGE_GARBLED_1"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.radios"
@@ -2362,14 +2066,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.MESSAGE_GARBLED_2"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.MESSAGE_GARBLED_2"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.radios"
@@ -2379,11 +2077,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "RADIOACTIVES_PROVIDED",
-          true
-        ]
+        "args": ["story", "RADIOACTIVES_PROVIDED", true]
       },
       "save_as": "first_restore_power",
       "next": "first.power_speech"
@@ -2393,15 +2087,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.FUEL_UP0",
-            "commander.FUEL_UP1"
-          ],
-          "presentation": {
-            "composite": "hayes.power_restored",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.FUEL_UP0", "commander.FUEL_UP1"],
+          "presentation": {"composite": "hayes.power_restored", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.reveal"
@@ -2411,11 +2098,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.topic.first_give_info",
-          false
-        ]
+        "args": ["local", "first.topic.first_give_info", false]
       },
       "save_as": "first_topic_first_give_info_effects",
       "next": "first.reveal"
@@ -2425,14 +2108,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.ASK_AWAY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.ASK_AWAY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.topic.first_give_info.effects"
@@ -2442,11 +2119,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.topic.whats_this_starbase",
-          false
-        ]
+        "args": ["local", "first.topic.whats_this_starbase", false]
       },
       "save_as": "first_topic_whats_this_starbase_effects",
       "next": "first.reveal"
@@ -2456,14 +2129,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.STARBASE_IS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.STARBASE_IS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.topic.whats_this_starbase.effects"
@@ -2473,11 +2140,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.topic.what_about_earth",
-          false
-        ]
+        "args": ["local", "first.topic.what_about_earth", false]
       },
       "save_as": "first_topic_what_about_earth_effects",
       "next": "first.reveal"
@@ -2487,14 +2150,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HAPPENED_TO_EARTH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HAPPENED_TO_EARTH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.topic.what_about_earth.effects"
@@ -2504,11 +2161,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.topic.where_are_urquan",
-          false
-        ]
+        "args": ["local", "first.topic.where_are_urquan", false]
       },
       "save_as": "first_topic_where_are_urquan_effects",
       "next": "first.reveal"
@@ -2518,14 +2171,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.URQUAN_LEFT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.URQUAN_LEFT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.topic.where_are_urquan.effects"
@@ -2535,11 +2182,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.topic.what_was_red_thing",
-          false
-        ]
+        "args": ["local", "first.topic.what_was_red_thing", false]
       },
       "save_as": "first_topic_what_was_red_thing_effects",
       "next": "first.probe_menu"
@@ -2549,14 +2192,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.THAT_WAS_PROBE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.THAT_WAS_PROBE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.topic.what_was_red_thing.effects"
@@ -2564,31 +2201,12 @@
     {
       "id": "first.reveal",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "first_give_info",
           "text": "commander.first_give_info",
-          "when": {
-            "all": [
-              {
-                "get": [
-                  "local",
-                  "first.topic.first_give_info",
-                  true
-                ]
-              }
-            ]
-          },
+          "when": {"all": [{"get": ["local", "first.topic.first_give_info", true]}]},
           "next": "first.topic.first_give_info"
         },
         {
@@ -2596,22 +2214,8 @@
           "text": "commander.whats_this_starbase",
           "when": {
             "all": [
-              {
-                "get": [
-                  "local",
-                  "first.topic.whats_this_starbase",
-                  true
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.first_give_info",
-                    true
-                  ]
-                }
-              }
+              {"get": ["local", "first.topic.whats_this_starbase", true]},
+              {"not": {"get": ["local", "first.topic.first_give_info", true]}}
             ]
           },
           "next": "first.topic.whats_this_starbase"
@@ -2621,31 +2225,9 @@
           "text": "commander.what_about_earth",
           "when": {
             "all": [
-              {
-                "get": [
-                  "local",
-                  "first.topic.what_about_earth",
-                  true
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.first_give_info",
-                    true
-                  ]
-                }
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.whats_this_starbase",
-                    true
-                  ]
-                }
-              }
+              {"get": ["local", "first.topic.what_about_earth", true]},
+              {"not": {"get": ["local", "first.topic.first_give_info", true]}},
+              {"not": {"get": ["local", "first.topic.whats_this_starbase", true]}}
             ]
           },
           "next": "first.topic.what_about_earth"
@@ -2655,40 +2237,10 @@
           "text": "commander.where_are_urquan",
           "when": {
             "all": [
-              {
-                "get": [
-                  "local",
-                  "first.topic.where_are_urquan",
-                  true
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.first_give_info",
-                    true
-                  ]
-                }
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.whats_this_starbase",
-                    true
-                  ]
-                }
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.what_about_earth",
-                    true
-                  ]
-                }
-              }
+              {"get": ["local", "first.topic.where_are_urquan", true]},
+              {"not": {"get": ["local", "first.topic.first_give_info", true]}},
+              {"not": {"get": ["local", "first.topic.whats_this_starbase", true]}},
+              {"not": {"get": ["local", "first.topic.what_about_earth", true]}}
             ]
           },
           "next": "first.topic.where_are_urquan"
@@ -2698,49 +2250,11 @@
           "text": "commander.what_was_red_thing",
           "when": {
             "all": [
-              {
-                "get": [
-                  "local",
-                  "first.topic.what_was_red_thing",
-                  true
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.first_give_info",
-                    true
-                  ]
-                }
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.whats_this_starbase",
-                    true
-                  ]
-                }
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.what_about_earth",
-                    true
-                  ]
-                }
-              },
-              {
-                "not": {
-                  "get": [
-                    "local",
-                    "first.topic.where_are_urquan",
-                    true
-                  ]
-                }
-              }
+              {"get": ["local", "first.topic.what_was_red_thing", true]},
+              {"not": {"get": ["local", "first.topic.first_give_info", true]}},
+              {"not": {"get": ["local", "first.topic.whats_this_starbase", true]}},
+              {"not": {"get": ["local", "first.topic.what_about_earth", true]}},
+              {"not": {"get": ["local", "first.topic.where_are_urquan", true]}}
             ]
           },
           "next": "first.topic.what_was_red_thing"
@@ -2749,81 +2263,26 @@
           "id": "we_are_vindicator0",
           "text": {
             "compose": [
-              {
-                "phrase": "commander.we_are_vindicator0"
-              },
-              {
-                "insert": {
-                  "get": [
-                    "player",
-                    "captain_name",
-                    "Captain"
-                  ]
-                }
-              },
-              {
-                "phrase": "commander.we_are_vindicator1"
-              },
-              {
-                "insert": {
-                  "get": [
-                    "player",
-                    "ship_name",
-                    "Vindicator"
-                  ]
-                }
-              },
-              {
-                "phrase": "commander.we_are_vindicator2"
-              }
+              {"phrase": "commander.we_are_vindicator0"},
+              {"insert": {"get": ["player", "captain_name", "Captain"]}},
+              {"phrase": "commander.we_are_vindicator1"},
+              {"insert": {"get": ["player", "ship_name", "Vindicator"]}},
+              {"phrase": "commander.we_are_vindicator2"}
             ]
           },
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "first.identify",
-                  0
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "first.identify", 0]}, 0]},
           "next": "first.identification"
         },
         {
           "id": "our_mission_was_secret",
           "text": "commander.our_mission_was_secret",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "first.identify",
-                  0
-                ]
-              },
-              1
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "first.identify", 0]}, 1]},
           "next": "first.secret"
         },
         {
           "id": "we_are_here_to_help",
           "text": "commander.we_are_here_to_help",
-          "when": {
-            "ge": [
-              {
-                "get": [
-                  "local",
-                  "first.identify",
-                  0
-                ]
-              },
-              2
-            ]
-          },
+          "when": {"ge": [{"get": ["local", "first.identify", 0]}, 2]},
           "next": "first.moon_help"
         }
       ]
@@ -2833,11 +2292,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.identify",
-          1
-        ]
+        "args": ["local", "first.identify", 1]
       },
       "save_as": "first_identification_effects",
       "next": "first.reveal"
@@ -2847,14 +2302,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.THATS_IMPOSSIBLE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.THATS_IMPOSSIBLE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.identification.effects"
@@ -2864,11 +2313,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.identify",
-          2
-        ]
+        "args": ["local", "first.identify", 2]
       },
       "save_as": "first_secret_effects",
       "next": "first.reveal"
@@ -2878,14 +2323,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.ACKNOWLEDGE_SECRET"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.ACKNOWLEDGE_SECRET"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.secret.effects"
@@ -2893,16 +2332,7 @@
     {
       "id": "first.probe_menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "it_went_away",
@@ -2929,14 +2359,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.DEEP_TROUBLE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.DEEP_TROUBLE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.reveal"
@@ -2946,14 +2370,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GOOD_NEWS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GOOD_NEWS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.reveal"
@@ -2963,14 +2381,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.SURE_HOPE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.SURE_HOPE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.reveal"
@@ -2978,18 +2390,7 @@
     {
       "id": "first.moon_check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "get": [
-              "story",
-              "MOONBASE_DESTROYED",
-              false
-            ]
-          },
-          "next": "first.base_destroyed"
-        }
-      ],
+      "branches": [{"when": {"get": ["story", "MOONBASE_DESTROYED", false]}, "next": "first.base_destroyed"}],
       "otherwise": "first.moon_greeting"
     },
     {
@@ -2997,14 +2398,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.DEALT_WITH_BASE_YET"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.DEALT_WITH_BASE_YET"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon"
@@ -3014,14 +2409,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.BASE_ON_MOON"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.BASE_ON_MOON"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon_help_route"
@@ -3031,11 +2420,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "LANDERS_LOST",
-          true
-        ]
+        "args": ["story", "LANDERS_LOST", true]
       },
       "save_as": "first_moon_i_lost_my_lander_effects_2",
       "next": "first.moon"
@@ -3045,10 +2430,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "crew",
-          4
-        ]
+        "args": ["crew", 4]
       },
       "save_as": "first_moon_i_lost_my_lander_effects_1",
       "next": "first.moon.i_lost_my_lander.effects.2"
@@ -3058,10 +2440,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "landers",
-          1
-        ]
+        "args": ["landers", 1]
       },
       "save_as": "first_moon_i_lost_my_lander_effects",
       "next": "first.moon.i_lost_my_lander.effects.1"
@@ -3071,14 +2450,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HERE_IS_A_NEW_LANDER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HERE_IS_A_NEW_LANDER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon.i_lost_my_lander.effects"
@@ -3088,10 +2461,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "crew",
-          4
-        ]
+        "args": ["crew", 4]
       },
       "save_as": "first_moon_i_lost_another_lander_effects_1",
       "next": "first.moon"
@@ -3101,10 +2471,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "landers",
-          1
-        ]
+        "args": ["landers", 1]
       },
       "save_as": "first_moon_i_lost_another_lander_effects",
       "next": "first.moon.i_lost_another_lander.effects.1"
@@ -3114,14 +2481,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HERE_IS_ANOTHER_LANDER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HERE_IS_ANOTHER_LANDER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon.i_lost_another_lander.effects"
@@ -3131,11 +2492,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "GIVEN_FUEL_BEFORE",
-          true
-        ]
+        "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_moon_need_fuel_luna_effects_1",
       "next": "first.moon"
@@ -3145,10 +2502,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "fuel",
-          5
-        ]
+        "args": ["fuel", 5]
       },
       "save_as": "first_moon_need_fuel_luna_effects",
       "next": "first.moon.need_fuel_luna.effects.1"
@@ -3158,14 +2512,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GIVE_FUEL"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GIVE_FUEL"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon.need_fuel_luna.effects"
@@ -3175,11 +2523,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "GIVEN_FUEL_BEFORE",
-          true
-        ]
+        "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_moon_need_fuel_again_effects_1",
       "next": "first.moon"
@@ -3189,10 +2533,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "fuel",
-          5
-        ]
+        "args": ["fuel", 5]
       },
       "save_as": "first_moon_need_fuel_again_effects",
       "next": "first.moon.need_fuel_again.effects.1"
@@ -3202,14 +2543,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GIVE_FUEL_AGAIN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GIVE_FUEL_AGAIN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon.need_fuel_again.effects"
@@ -3217,16 +2552,7 @@
     {
       "id": "first.moon",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "i_lost_my_lander",
@@ -3235,40 +2561,11 @@
             "all": [
               {
                 "all": [
-                  {
-                    "eq": [
-                      {
-                        "query": "inventory.quantity",
-                        "args": [
-                          "landers"
-                        ]
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "lt": [
-                      {
-                        "get": [
-                          "story",
-                          "CHMMR_BOMB_STATE",
-                          0
-                        ]
-                      },
-                      2
-                    ]
-                  }
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
                 ]
               },
-              {
-                "not": {
-                  "get": [
-                    "story",
-                    "LANDERS_LOST",
-                    false
-                  ]
-                }
-              }
+              {"not": {"get": ["story", "LANDERS_LOST", false]}}
             ]
           },
           "next": "first.moon.i_lost_my_lander"
@@ -3280,38 +2577,11 @@
             "all": [
               {
                 "all": [
-                  {
-                    "eq": [
-                      {
-                        "query": "inventory.quantity",
-                        "args": [
-                          "landers"
-                        ]
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "lt": [
-                      {
-                        "get": [
-                          "story",
-                          "CHMMR_BOMB_STATE",
-                          0
-                        ]
-                      },
-                      2
-                    ]
-                  }
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
                 ]
               },
-              {
-                "get": [
-                  "story",
-                  "LANDERS_LOST",
-                  false
-                ]
-              }
+              {"get": ["story", "LANDERS_LOST", false]}
             ]
           },
           "next": "first.moon.i_lost_another_lander"
@@ -3320,112 +2590,38 @@
           "id": "need_fuel_luna",
           "text": "commander.need_fuel_luna",
           "when": {
-            "all": [
-              {
-                "lt": [
-                  {
-                    "query": "ship.fuel",
-                    "args": []
-                  },
-                  2
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "story",
-                    "GIVEN_FUEL_BEFORE",
-                    false
-                  ]
-                }
-              }
-            ]
+            "all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"not": {"get": ["story", "GIVEN_FUEL_BEFORE", false]}}]
           },
           "next": "first.moon.need_fuel_luna"
         },
         {
           "id": "need_fuel_again",
           "text": "commander.need_fuel_again",
-          "when": {
-            "all": [
-              {
-                "lt": [
-                  {
-                    "query": "ship.fuel",
-                    "args": []
-                  },
-                  2
-                ]
-              },
-              {
-                "get": [
-                  "story",
-                  "GIVEN_FUEL_BEFORE",
-                  false
-                ]
-              }
-            ]
-          },
+          "when": {"all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"get": ["story", "GIVEN_FUEL_BEFORE", false]}]},
           "next": "first.moon.need_fuel_again"
         },
         {
           "id": "we_will_take_care_of_base",
           "text": "commander.we_will_take_care_of_base",
-          "when": {
-            "not": {
-              "get": [
-                "story",
-                "WILL_DESTROY_BASE",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["story", "WILL_DESTROY_BASE", false]}},
           "next": "first.promise"
         },
         {
           "id": "take_care_of_base_again",
           "text": "commander.take_care_of_base_again",
-          "when": {
-            "get": [
-              "story",
-              "WILL_DESTROY_BASE",
-              false
-            ]
-          },
+          "when": {"get": ["story", "WILL_DESTROY_BASE", false]},
           "next": "first.promise_again"
         },
         {
           "id": "tell_me_about_base",
           "text": "commander.tell_me_about_base",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "story",
-                  "STARBASE_YACK_STACK1",
-                  0
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"eq": [{"get": ["story", "STARBASE_YACK_STACK1", 0]}, 0]},
           "next": "first.base_info"
         },
         {
           "id": "tell_me_again",
           "text": "commander.tell_me_again",
-          "when": {
-            "ne": [
-              {
-                "get": [
-                  "story",
-                  "STARBASE_YACK_STACK1",
-                  0
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"ne": [{"get": ["story", "STARBASE_YACK_STACK1", 0]}, 0]},
           "next": "first.base_info_again"
         }
       ]
@@ -3435,11 +2631,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "WILL_DESTROY_BASE",
-          true
-        ]
+        "args": ["story", "WILL_DESTROY_BASE", true]
       },
       "save_as": "first_promise_effects",
       "next": "end"
@@ -3449,14 +2641,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GOOD_LUCK_WITH_BASE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GOOD_LUCK_WITH_BASE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.promise.effects"
@@ -3466,14 +2652,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GOOD_LUCK_AGAIN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GOOD_LUCK_AGAIN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "end"
@@ -3483,11 +2663,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "STARBASE_YACK_STACK1",
-          1
-        ]
+        "args": ["story", "STARBASE_YACK_STACK1", 1]
       },
       "save_as": "first_base_info_effects",
       "next": "first.moon"
@@ -3497,14 +2673,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.ABOUT_BASE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.ABOUT_BASE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.base_info.effects"
@@ -3514,14 +2684,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.ABOUT_BASE_AGAIN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.ABOUT_BASE_AGAIN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.moon"
@@ -3531,14 +2695,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.DEALT_WITH_BASE_YET"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.DEALT_WITH_BASE_YET"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.base_destroyed.menu"
@@ -3548,14 +2706,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.YOU_REALLY_FOUGHT_BASE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.YOU_REALLY_FOUGHT_BASE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "responses": [
@@ -3584,11 +2736,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          true
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_claim_oh_yes_big_fight_effects",
       "next": "end"
@@ -3598,15 +2746,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.IM_GLAD_YOU_WON",
-            "commander.HERE_COMES_ILWRATH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.IM_GLAD_YOU_WON", "commander.HERE_COMES_ILWRATH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.claim.oh_yes_big_fight.effects"
@@ -3616,11 +2757,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          true
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_claim_i_lied_it_was_abandoned_effects",
       "next": "end"
@@ -3630,15 +2767,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.IT_WAS_ABANDONED",
-            "commander.HERE_COMES_ILWRATH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.IT_WAS_ABANDONED", "commander.HERE_COMES_ILWRATH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.claim.i_lied_it_was_abandoned.effects"
@@ -3648,11 +2778,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          true
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_claim_i_cant_talk_about_it_effects",
       "next": "end"
@@ -3662,15 +2788,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.IM_SURE_IT_WAS_DIFFICULT",
-            "commander.HERE_COMES_ILWRATH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.IM_SURE_IT_WAS_DIFFICULT", "commander.HERE_COMES_ILWRATH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.claim.i_cant_talk_about_it.effects"
@@ -3680,11 +2799,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          true
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_abandoned_effects",
       "next": "end"
@@ -3694,15 +2809,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.IT_WAS_ABANDONED",
-            "commander.HERE_COMES_ILWRATH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.IT_WAS_ABANDONED", "commander.HERE_COMES_ILWRATH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.abandoned.effects"
@@ -3712,14 +2820,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.VERY_IMPRESSIVE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.VERY_IMPRESSIVE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "responses": [
@@ -3748,11 +2850,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "STARBASE_AVAILABLE",
-          true
-        ]
+        "args": ["story", "STARBASE_AVAILABLE", true]
       },
       "save_as": "first_victory_cook_their_butts_effects_1",
       "next": "first.alliance_names"
@@ -3762,11 +2860,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          false
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", false]
       },
       "save_as": "first_victory_cook_their_butts_effects",
       "next": "first.victory.cook_their_butts.effects.1"
@@ -3776,14 +2870,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.COOK_BUTTS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.COOK_BUTTS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.victory.cook_their_butts.effects"
@@ -3793,11 +2881,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "STARBASE_AVAILABLE",
-          true
-        ]
+        "args": ["story", "STARBASE_AVAILABLE", true]
       },
       "save_as": "first_victory_overthrow_evil_aliens_effects_1",
       "next": "first.alliance_names"
@@ -3807,11 +2891,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          false
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", false]
       },
       "save_as": "first_victory_overthrow_evil_aliens_effects",
       "next": "first.victory.overthrow_evil_aliens.effects.1"
@@ -3821,14 +2901,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.OVERTHROW_ALIENS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.OVERTHROW_ALIENS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.victory.overthrow_evil_aliens.effects"
@@ -3838,11 +2912,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "STARBASE_AVAILABLE",
-          true
-        ]
+        "args": ["story", "STARBASE_AVAILABLE", true]
       },
       "save_as": "first_victory_annihilate_those_monsters_effects_1",
       "next": "first.alliance_names"
@@ -3852,11 +2922,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "PROBE_ILWRATH_ENCOUNTER",
-          false
-        ]
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", false]
       },
       "save_as": "first_victory_annihilate_those_monsters_effects",
       "next": "first.victory.annihilate_those_monsters.effects.1"
@@ -3866,14 +2932,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.KILL_MONSTERS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.KILL_MONSTERS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.victory.annihilate_those_monsters.effects"
@@ -3883,14 +2943,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.THIS_MAY_SEEM_SILLY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.THIS_MAY_SEEM_SILLY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "responses": [
@@ -3916,21 +2970,9 @@
           "id": "name_40",
           "text": {
             "compose": [
-              {
-                "phrase": "commander.name_40"
-              },
-              {
-                "insert": {
-                  "get": [
-                    "player",
-                    "captain_name",
-                    "Captain"
-                  ]
-                }
-              },
-              {
-                "phrase": "commander.name_41"
-              }
+              {"phrase": "commander.name_40"},
+              {"insert": {"get": ["player", "captain_name", "Captain"]}},
+              {"phrase": "commander.name_41"}
             ]
           },
           "when": true,
@@ -3943,11 +2985,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "NEW_ALLIANCE_NAME",
-          0
-        ]
+        "args": ["story", "NEW_ALLIANCE_NAME", 0]
       },
       "save_as": "first_name_name_1_effects",
       "next": "end"
@@ -3957,15 +2995,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.OK_THE_NAFS",
-            "commander.STARBASE_WILL_BE_READY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.OK_THE_NAFS", "commander.STARBASE_WILL_BE_READY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.name.name_1.effects"
@@ -3975,11 +3006,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "NEW_ALLIANCE_NAME",
-          1
-        ]
+        "args": ["story", "NEW_ALLIANCE_NAME", 1]
       },
       "save_as": "first_name_name_2_effects",
       "next": "end"
@@ -3989,15 +3016,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.OK_THE_CAN",
-            "commander.STARBASE_WILL_BE_READY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.OK_THE_CAN", "commander.STARBASE_WILL_BE_READY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.name.name_2.effects"
@@ -4007,11 +3027,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "NEW_ALLIANCE_NAME",
-          2
-        ]
+        "args": ["story", "NEW_ALLIANCE_NAME", 2]
       },
       "save_as": "first_name_name_3_effects",
       "next": "end"
@@ -4021,15 +3037,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.OK_THE_UFW",
-            "commander.STARBASE_WILL_BE_READY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.OK_THE_UFW", "commander.STARBASE_WILL_BE_READY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.name.name_3.effects"
@@ -4039,11 +3048,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "NEW_ALLIANCE_NAME",
-          3
-        ]
+        "args": ["story", "NEW_ALLIANCE_NAME", 3]
       },
       "save_as": "first_name_name_40_effects",
       "next": "end"
@@ -4055,23 +3060,11 @@
         {
           "speech": [
             "commander.OK_THE_NAME_IS_EMPIRE0",
-            {
-              "insert": {
-                "get": [
-                  "player",
-                  "captain_name",
-                  "Captain"
-                ]
-              }
-            },
+            {"insert": {"get": ["player", "captain_name", "Captain"]}},
             "commander.OK_THE_NAME_IS_EMPIRE1",
             "commander.STARBASE_WILL_BE_READY"
           ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.name.name_40.effects"
@@ -4081,17 +3074,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": {
-            "get": [
-              "result",
-              "starbase_entry.speech"
-            ]
-          },
-          "presentation": {
-            "composite": "hayes.starbase",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": {"get": ["result", "starbase_entry.speech"]},
+          "presentation": {"composite": "hayes.starbase", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.menu"
@@ -4099,22 +3083,7 @@
     {
       "id": "starbase.entry.check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "result",
-                  "starbase_entry.code"
-                ]
-              },
-              "ok"
-            ]
-          },
-          "next": "starbase.entry.speech"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["result", "starbase_entry.code"]}, "ok"]}, "next": "starbase.entry.speech"}],
       "otherwise": "error"
     },
     {
@@ -4122,12 +3091,7 @@
       "kind": "action",
       "action": {
         "verb": "report.prepare",
-        "args": [
-          "hayes.arrival",
-          {
-            "literal": {}
-          }
-        ]
+        "args": ["hayes.arrival", {"literal": {}}]
       },
       "save_as": "starbase_entry",
       "next": "starbase.entry.check"
@@ -4135,53 +3099,24 @@
     {
       "id": "starbase.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "have_minerals",
           "text": "starbase.have_minerals",
-          "when": {
-            "gt": [
-              {
-                "query": "inventory.quantity",
-                "args": [
-                  "minerals"
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"gt": [{"query": "inventory.quantity", "args": ["minerals"]}, 0]},
           "next": "starbase.sell"
         },
         {
           "id": "new_devices",
           "text": "starbase.new_devices",
-          "when": {
-            "query": "report.available",
-            "args": [
-              "hayes.devices"
-            ]
-          },
+          "when": {"query": "report.available", "args": ["hayes.devices"]},
           "next": "starbase.devices"
         },
         {
           "id": "repeat_bulletins",
           "text": "starbase.repeat_bulletins",
-          "when": {
-            "query": "report.available",
-            "args": [
-              "hayes.repeat_bulletins"
-            ]
-          },
+          "when": {"query": "report.available", "args": ["hayes.repeat_bulletins"]},
           "next": "starbase.bulletins"
         },
         {
@@ -4203,17 +3138,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": {
-            "get": [
-              "result",
-              "starbase_devices.speech"
-            ]
-          },
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": {"get": ["result", "starbase_devices.speech"]},
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.menu"
@@ -4221,22 +3147,7 @@
     {
       "id": "starbase.devices.check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "result",
-                  "starbase_devices.code"
-                ]
-              },
-              "ok"
-            ]
-          },
-          "next": "starbase.devices.speech"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["result", "starbase_devices.code"]}, "ok"]}, "next": "starbase.devices.speech"}],
       "otherwise": "error"
     },
     {
@@ -4244,12 +3155,7 @@
       "kind": "action",
       "action": {
         "verb": "report.prepare",
-        "args": [
-          "hayes.devices",
-          {
-            "literal": {}
-          }
-        ]
+        "args": ["hayes.devices", {"literal": {}}]
       },
       "save_as": "starbase_devices",
       "next": "starbase.devices.check"
@@ -4259,17 +3165,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": {
-            "get": [
-              "result",
-              "starbase_bulletins.speech"
-            ]
-          },
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": {"get": ["result", "starbase_bulletins.speech"]},
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.menu"
@@ -4277,22 +3174,7 @@
     {
       "id": "starbase.bulletins.check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "result",
-                  "starbase_bulletins.code"
-                ]
-              },
-              "ok"
-            ]
-          },
-          "next": "starbase.bulletins.speech"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["result", "starbase_bulletins.code"]}, "ok"]}, "next": "starbase.bulletins.speech"}],
       "otherwise": "error"
     },
     {
@@ -4300,12 +3182,7 @@
       "kind": "action",
       "action": {
         "verb": "report.prepare",
-        "args": [
-          "hayes.repeat_bulletins",
-          {
-            "literal": {}
-          }
-        ]
+        "args": ["hayes.repeat_bulletins", {"literal": {}}]
       },
       "save_as": "starbase_bulletins",
       "next": "starbase.bulletins.check"
@@ -4315,11 +3192,7 @@
       "kind": "action",
       "action": {
         "verb": "trade.sell",
-        "args": [
-          "starbase",
-          "minerals",
-          "all"
-        ]
+        "args": ["starbase", "minerals", "all"]
       },
       "save_as": "mineral_sale",
       "next": "starbase.sell.check"
@@ -4327,22 +3200,7 @@
     {
       "id": "starbase.sell.check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "result",
-                  "mineral_sale.code"
-                ]
-              },
-              "ok"
-            ]
-          },
-          "next": "starbase.sell.speech"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["result", "mineral_sale.code"]}, "ok"]}, "next": "starbase.sell.speech"}],
       "otherwise": "error"
     },
     {
@@ -4350,17 +3208,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": {
-            "get": [
-              "result",
-              "mineral_sale.speech"
-            ]
-          },
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": {"get": ["result", "mineral_sale.speech"]},
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.menu"
@@ -4370,17 +3219,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": {
-            "get": [
-              "result",
-              "starbase_goodbye.speech"
-            ]
-          },
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": {"get": ["result", "starbase_goodbye.speech"]},
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.post"
@@ -4388,22 +3228,7 @@
     {
       "id": "starbase.goodbye.check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "result",
-                  "starbase_goodbye.code"
-                ]
-              },
-              "ok"
-            ]
-          },
-          "next": "starbase.goodbye.speech"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["result", "starbase_goodbye.code"]}, "ok"]}, "next": "starbase.goodbye.speech"}],
       "otherwise": "error"
     },
     {
@@ -4411,12 +3236,7 @@
       "kind": "action",
       "action": {
         "verb": "report.prepare",
-        "args": [
-          "hayes.departure",
-          {
-            "literal": {}
-          }
-        ]
+        "args": ["hayes.departure", {"literal": {}}]
       },
       "save_as": "starbase_goodbye",
       "next": "starbase.goodbye.check"
@@ -4426,11 +3246,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "MOONBASE_ON_SHIP",
-          false
-        ]
+        "args": ["story", "MOONBASE_ON_SHIP", false]
       },
       "save_as": "starbase_post",
       "next": "starbase.bomb_post"
@@ -4438,23 +3254,7 @@
     {
       "id": "starbase.bomb_post",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "story",
-                  "CHMMR_BOMB_STATE",
-                  0
-                ]
-              },
-              2
-            ]
-          },
-          "next": "starbase.bomb_done"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}, "next": "starbase.bomb_done"}],
       "otherwise": "end"
     },
     {
@@ -4462,11 +3262,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "CHMMR_BOMB_STATE",
-          3
-        ]
+        "args": ["story", "CHMMR_BOMB_STATE", 3]
       },
       "save_as": "starbase_bomb_done",
       "next": "end"
@@ -4476,14 +3272,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHAT_KIND_OF_INFO"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHAT_KIND_OF_INFO"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "responses": [
@@ -4518,14 +3308,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_NO_NEED_INFO"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_NO_NEED_INFO"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.menu"
@@ -4535,11 +3319,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.shofixti",
-          true
-        ]
+        "args": ["local", "info.alliance.shofixti", true]
       },
       "save_as": "info_alliance_shofixti_effects",
       "next": "info.alliance.menu"
@@ -4549,14 +3329,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_SHOFIXTI"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_SHOFIXTI"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.shofixti.effects"
@@ -4566,11 +3340,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.yehat",
-          true
-        ]
+        "args": ["local", "info.alliance.yehat", true]
       },
       "save_as": "info_alliance_yehat_effects",
       "next": "info.alliance.menu"
@@ -4580,14 +3350,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_YEHAT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_YEHAT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.yehat.effects"
@@ -4597,11 +3361,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.arilou",
-          true
-        ]
+        "args": ["local", "info.alliance.arilou", true]
       },
       "save_as": "info_alliance_arilou_effects",
       "next": "info.alliance.menu"
@@ -4611,14 +3371,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_ARILOU"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_ARILOU"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.arilou.effects"
@@ -4628,11 +3382,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.chenjesu",
-          true
-        ]
+        "args": ["local", "info.alliance.chenjesu", true]
       },
       "save_as": "info_alliance_chenjesu_effects",
       "next": "info.alliance.menu"
@@ -4642,14 +3392,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_CHENJESU"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_CHENJESU"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.chenjesu.effects"
@@ -4659,11 +3403,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.mmrnmhrm",
-          true
-        ]
+        "args": ["local", "info.alliance.mmrnmhrm", true]
       },
       "save_as": "info_alliance_mmrnmhrm_effects",
       "next": "info.alliance.menu"
@@ -4673,14 +3413,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_MMRNMHRM"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_MMRNMHRM"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.mmrnmhrm.effects"
@@ -4690,11 +3424,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.syreen",
-          true
-        ]
+        "args": ["local", "info.alliance.syreen", true]
       },
       "save_as": "info_alliance_syreen_effects",
       "next": "info.alliance.menu"
@@ -4704,14 +3434,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_SYREEN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_SYREEN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.syreen.effects"
@@ -4719,99 +3443,42 @@
     {
       "id": "info.alliance.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "shofixti",
           "text": "starbase.shofixti",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.alliance.shofixti",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.alliance.shofixti", false]}},
           "next": "info.alliance.shofixti"
         },
         {
           "id": "yehat",
           "text": "starbase.yehat",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.alliance.yehat",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.alliance.yehat", false]}},
           "next": "info.alliance.yehat"
         },
         {
           "id": "arilou",
           "text": "starbase.arilou",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.alliance.arilou",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.alliance.arilou", false]}},
           "next": "info.alliance.arilou"
         },
         {
           "id": "chenjesu",
           "text": "starbase.chenjesu",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.alliance.chenjesu",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.alliance.chenjesu", false]}},
           "next": "info.alliance.chenjesu"
         },
         {
           "id": "mmrnmhrm",
           "text": "starbase.mmrnmhrm",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.alliance.mmrnmhrm",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.alliance.mmrnmhrm", false]}},
           "next": "info.alliance.mmrnmhrm"
         },
         {
           "id": "syreen",
           "text": "starbase.syreen",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.alliance.syreen",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.alliance.syreen", false]}},
           "next": "info.alliance.syreen"
         },
         {
@@ -4827,14 +3494,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_ALLIANCE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_ALLIANCE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.back.after"
@@ -4844,11 +3505,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.syreen",
-          false
-        ]
+        "args": ["local", "info.alliance.syreen", false]
       },
       "save_as": "info_alliance_start_5",
       "next": "info.alliance.intro"
@@ -4858,11 +3515,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.mmrnmhrm",
-          false
-        ]
+        "args": ["local", "info.alliance.mmrnmhrm", false]
       },
       "save_as": "info_alliance_start_4",
       "next": "info.alliance.start.5"
@@ -4872,11 +3525,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.chenjesu",
-          false
-        ]
+        "args": ["local", "info.alliance.chenjesu", false]
       },
       "save_as": "info_alliance_start_3",
       "next": "info.alliance.start.4"
@@ -4886,11 +3535,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.arilou",
-          false
-        ]
+        "args": ["local", "info.alliance.arilou", false]
       },
       "save_as": "info_alliance_start_2",
       "next": "info.alliance.start.3"
@@ -4900,11 +3545,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.yehat",
-          false
-        ]
+        "args": ["local", "info.alliance.yehat", false]
       },
       "save_as": "info_alliance_start_1",
       "next": "info.alliance.start.2"
@@ -4914,11 +3555,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.alliance.shofixti",
-          false
-        ]
+        "args": ["local", "info.alliance.shofixti", false]
       },
       "save_as": "info_alliance_start",
       "next": "info.alliance.start.1"
@@ -4928,14 +3565,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_ALLIANCE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_ALLIANCE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.alliance.menu"
@@ -4945,11 +3576,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.urquan",
-          true
-        ]
+        "args": ["local", "info.hierarchy.urquan", true]
       },
       "save_as": "info_hierarchy_urquan_effects",
       "next": "info.hierarchy.menu"
@@ -4959,14 +3586,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_URQUAN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_URQUAN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.urquan.effects"
@@ -4976,11 +3597,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.mycon",
-          true
-        ]
+        "args": ["local", "info.hierarchy.mycon", true]
       },
       "save_as": "info_hierarchy_mycon_effects",
       "next": "info.hierarchy.menu"
@@ -4990,14 +3607,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_MYCON"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_MYCON"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.mycon.effects"
@@ -5007,11 +3618,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.spathi",
-          true
-        ]
+        "args": ["local", "info.hierarchy.spathi", true]
       },
       "save_as": "info_hierarchy_spathi_effects",
       "next": "info.hierarchy.menu"
@@ -5021,14 +3628,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_SPATHI"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_SPATHI"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.spathi.effects"
@@ -5038,11 +3639,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.umgah",
-          true
-        ]
+        "args": ["local", "info.hierarchy.umgah", true]
       },
       "save_as": "info_hierarchy_umgah_effects",
       "next": "info.hierarchy.menu"
@@ -5052,14 +3649,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_UMGAH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_UMGAH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.umgah.effects"
@@ -5069,11 +3660,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.androsynth",
-          true
-        ]
+        "args": ["local", "info.hierarchy.androsynth", true]
       },
       "save_as": "info_hierarchy_androsynth_effects",
       "next": "info.hierarchy.menu"
@@ -5083,14 +3670,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_ANDROSYNTH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_ANDROSYNTH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.androsynth.effects"
@@ -5100,11 +3681,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.ilwrath",
-          true
-        ]
+        "args": ["local", "info.hierarchy.ilwrath", true]
       },
       "save_as": "info_hierarchy_ilwrath_effects",
       "next": "info.hierarchy.menu"
@@ -5114,14 +3691,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_ILWRATH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_ILWRATH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.ilwrath.effects"
@@ -5131,11 +3702,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.vux",
-          true
-        ]
+        "args": ["local", "info.hierarchy.vux", true]
       },
       "save_as": "info_hierarchy_vux_effects",
       "next": "info.hierarchy.menu"
@@ -5145,14 +3712,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_VUX"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_VUX"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.vux.effects"
@@ -5160,113 +3721,48 @@
     {
       "id": "info.hierarchy.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "urquan",
           "text": "starbase.urquan",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.urquan",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.urquan", false]}},
           "next": "info.hierarchy.urquan"
         },
         {
           "id": "mycon",
           "text": "starbase.mycon",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.mycon",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.mycon", false]}},
           "next": "info.hierarchy.mycon"
         },
         {
           "id": "spathi",
           "text": "starbase.spathi",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.spathi",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.spathi", false]}},
           "next": "info.hierarchy.spathi"
         },
         {
           "id": "umgah",
           "text": "starbase.umgah",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.umgah",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.umgah", false]}},
           "next": "info.hierarchy.umgah"
         },
         {
           "id": "androsynth",
           "text": "starbase.androsynth",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.androsynth",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.androsynth", false]}},
           "next": "info.hierarchy.androsynth"
         },
         {
           "id": "ilwrath",
           "text": "starbase.ilwrath",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.ilwrath",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.ilwrath", false]}},
           "next": "info.hierarchy.ilwrath"
         },
         {
           "id": "vux",
           "text": "starbase.vux",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.hierarchy.vux",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.hierarchy.vux", false]}},
           "next": "info.hierarchy.vux"
         },
         {
@@ -5282,14 +3778,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_HIERARCHY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_HIERARCHY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.back.after"
@@ -5299,11 +3789,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.vux",
-          false
-        ]
+        "args": ["local", "info.hierarchy.vux", false]
       },
       "save_as": "info_hierarchy_start_6",
       "next": "info.hierarchy.intro"
@@ -5313,11 +3799,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.ilwrath",
-          false
-        ]
+        "args": ["local", "info.hierarchy.ilwrath", false]
       },
       "save_as": "info_hierarchy_start_5",
       "next": "info.hierarchy.start.6"
@@ -5327,11 +3809,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.androsynth",
-          false
-        ]
+        "args": ["local", "info.hierarchy.androsynth", false]
       },
       "save_as": "info_hierarchy_start_4",
       "next": "info.hierarchy.start.5"
@@ -5341,11 +3819,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.umgah",
-          false
-        ]
+        "args": ["local", "info.hierarchy.umgah", false]
       },
       "save_as": "info_hierarchy_start_3",
       "next": "info.hierarchy.start.4"
@@ -5355,11 +3829,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.spathi",
-          false
-        ]
+        "args": ["local", "info.hierarchy.spathi", false]
       },
       "save_as": "info_hierarchy_start_2",
       "next": "info.hierarchy.start.3"
@@ -5369,11 +3839,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.mycon",
-          false
-        ]
+        "args": ["local", "info.hierarchy.mycon", false]
       },
       "save_as": "info_hierarchy_start_1",
       "next": "info.hierarchy.start.2"
@@ -5383,11 +3849,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.hierarchy.urquan",
-          false
-        ]
+        "args": ["local", "info.hierarchy.urquan", false]
       },
       "save_as": "info_hierarchy_start",
       "next": "info.hierarchy.start.1"
@@ -5397,14 +3859,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_HIERARCHY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_HIERARCHY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.hierarchy.menu"
@@ -5414,11 +3870,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.what_started_war",
-          true
-        ]
+        "args": ["local", "info.war.what_started_war", true]
       },
       "save_as": "info_war_what_started_war_effects",
       "next": "info.war.menu"
@@ -5428,14 +3880,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.URQUAN_STARTED_WAR"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.URQUAN_STARTED_WAR"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.war.what_started_war.effects"
@@ -5445,11 +3891,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.what_was_war_like",
-          true
-        ]
+        "args": ["local", "info.war.what_was_war_like", true]
       },
       "save_as": "info_war_what_was_war_like_effects",
       "next": "info.war.menu"
@@ -5459,14 +3901,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WAR_WAS_LIKE_SO"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WAR_WAS_LIKE_SO"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.war.what_was_war_like.effects"
@@ -5476,11 +3912,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.why_lose_war",
-          true
-        ]
+        "args": ["local", "info.war.why_lose_war", true]
       },
       "save_as": "info_war_why_lose_war_effects",
       "next": "info.war.menu"
@@ -5490,14 +3922,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.LOST_WAR_BECAUSE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.LOST_WAR_BECAUSE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.war.why_lose_war.effects"
@@ -5507,11 +3933,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.what_after_war",
-          true
-        ]
+        "args": ["local", "info.war.what_after_war", true]
       },
       "save_as": "info_war_what_after_war_effects",
       "next": "info.war.menu"
@@ -5521,14 +3943,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.AFTER_WAR"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.AFTER_WAR"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.war.what_after_war.effects"
@@ -5536,71 +3952,30 @@
     {
       "id": "info.war.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "what_started_war",
           "text": "starbase.what_started_war",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.war.what_started_war",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.war.what_started_war", false]}},
           "next": "info.war.what_started_war"
         },
         {
           "id": "what_was_war_like",
           "text": "starbase.what_was_war_like",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.war.what_was_war_like",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.war.what_was_war_like", false]}},
           "next": "info.war.what_was_war_like"
         },
         {
           "id": "why_lose_war",
           "text": "starbase.why_lose_war",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.war.why_lose_war",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.war.why_lose_war", false]}},
           "next": "info.war.why_lose_war"
         },
         {
           "id": "what_after_war",
           "text": "starbase.what_after_war",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.war.what_after_war",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.war.what_after_war", false]}},
           "next": "info.war.what_after_war"
         },
         {
@@ -5616,14 +3991,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_WAR"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_WAR"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.war.back.after"
@@ -5633,11 +4002,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.what_after_war",
-          false
-        ]
+        "args": ["local", "info.war.what_after_war", false]
       },
       "save_as": "info_war_start_3",
       "next": "info.war.intro"
@@ -5647,11 +4012,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.why_lose_war",
-          false
-        ]
+        "args": ["local", "info.war.why_lose_war", false]
       },
       "save_as": "info_war_start_2",
       "next": "info.war.start.3"
@@ -5661,11 +4022,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.what_was_war_like",
-          false
-        ]
+        "args": ["local", "info.war.what_was_war_like", false]
       },
       "save_as": "info_war_start_1",
       "next": "info.war.start.2"
@@ -5675,11 +4032,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.war.what_started_war",
-          false
-        ]
+        "args": ["local", "info.war.what_started_war", false]
       },
       "save_as": "info_war_start",
       "next": "info.war.start.1"
@@ -5689,14 +4042,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_WAR"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_WAR"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.war.menu"
@@ -5706,11 +4053,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.ancient.precursors",
-          true
-        ]
+        "args": ["local", "info.ancient.precursors", true]
       },
       "save_as": "info_ancient_precursors_effects",
       "next": "info.ancient.menu"
@@ -5720,14 +4063,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_PRECURSORS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_PRECURSORS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.ancient.precursors.effects"
@@ -5737,11 +4074,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.ancient.old_races",
-          true
-        ]
+        "args": ["local", "info.ancient.old_races", true]
       },
       "save_as": "info_ancient_old_races_effects",
       "next": "info.ancient.menu"
@@ -5751,14 +4084,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_OLD_RACES"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_OLD_RACES"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.ancient.old_races.effects"
@@ -5768,11 +4095,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.ancient.aliens_on_earth",
-          true
-        ]
+        "args": ["local", "info.ancient.aliens_on_earth", true]
       },
       "save_as": "info_ancient_aliens_on_earth_effects",
       "next": "info.ancient.menu"
@@ -5782,14 +4105,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_ALIENS_ON_EARTH"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_ALIENS_ON_EARTH"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.ancient.aliens_on_earth.effects"
@@ -5797,57 +4114,24 @@
     {
       "id": "info.ancient.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "precursors",
           "text": "starbase.precursors",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.ancient.precursors",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.ancient.precursors", false]}},
           "next": "info.ancient.precursors"
         },
         {
           "id": "old_races",
           "text": "starbase.old_races",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.ancient.old_races",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.ancient.old_races", false]}},
           "next": "info.ancient.old_races"
         },
         {
           "id": "aliens_on_earth",
           "text": "starbase.aliens_on_earth",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.ancient.aliens_on_earth",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.ancient.aliens_on_earth", false]}},
           "next": "info.ancient.aliens_on_earth"
         },
         {
@@ -5863,14 +4147,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_ANCIENT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_ANCIENT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.ancient.back.after"
@@ -5880,11 +4158,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.ancient.aliens_on_earth",
-          false
-        ]
+        "args": ["local", "info.ancient.aliens_on_earth", false]
       },
       "save_as": "info_ancient_start_2",
       "next": "info.ancient.intro"
@@ -5894,11 +4168,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.ancient.old_races",
-          false
-        ]
+        "args": ["local", "info.ancient.old_races", false]
       },
       "save_as": "info_ancient_start_1",
       "next": "info.ancient.start.2"
@@ -5908,11 +4178,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.ancient.precursors",
-          false
-        ]
+        "args": ["local", "info.ancient.precursors", false]
       },
       "save_as": "info_ancient_start",
       "next": "info.ancient.start.1"
@@ -5922,14 +4188,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_ANCIENT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_ANCIENT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.ancient.menu"
@@ -5939,11 +4199,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_find_urquan",
-          true
-        ]
+        "args": ["local", "info.defeat.how_find_urquan", true]
       },
       "save_as": "info_defeat_how_find_urquan_effects",
       "next": "info.defeat.menu"
@@ -5953,14 +4209,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.FIND_URQUAN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.FIND_URQUAN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.defeat.how_find_urquan.effects"
@@ -5970,11 +4220,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_fight_urquan",
-          true
-        ]
+        "args": ["local", "info.defeat.how_fight_urquan", true]
       },
       "save_as": "info_defeat_how_fight_urquan_effects",
       "next": "info.defeat.menu"
@@ -5984,14 +4230,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.FIGHT_URQUAN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.FIGHT_URQUAN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.defeat.how_fight_urquan.effects"
@@ -6001,11 +4241,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_ally",
-          true
-        ]
+        "args": ["local", "info.defeat.how_ally", true]
       },
       "save_as": "info_defeat_how_ally_effects",
       "next": "info.defeat.menu"
@@ -6015,14 +4251,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ALLY_LIKE_SO"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ALLY_LIKE_SO"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.defeat.how_ally.effects"
@@ -6032,11 +4262,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_get_strong",
-          true
-        ]
+        "args": ["local", "info.defeat.how_get_strong", true]
       },
       "save_as": "info_defeat_how_get_strong_effects",
       "next": "info.defeat.menu"
@@ -6046,14 +4272,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.STRONG_LIKE_SO"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.STRONG_LIKE_SO"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.defeat.how_get_strong.effects"
@@ -6061,71 +4281,30 @@
     {
       "id": "info.defeat.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "how_find_urquan",
           "text": "starbase.how_find_urquan",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.defeat.how_find_urquan",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.defeat.how_find_urquan", false]}},
           "next": "info.defeat.how_find_urquan"
         },
         {
           "id": "how_fight_urquan",
           "text": "starbase.how_fight_urquan",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.defeat.how_fight_urquan",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.defeat.how_fight_urquan", false]}},
           "next": "info.defeat.how_fight_urquan"
         },
         {
           "id": "how_ally",
           "text": "starbase.how_ally",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.defeat.how_ally",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.defeat.how_ally", false]}},
           "next": "info.defeat.how_ally"
         },
         {
           "id": "how_get_strong",
           "text": "starbase.how_get_strong",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "info.defeat.how_get_strong",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "info.defeat.how_get_strong", false]}},
           "next": "info.defeat.how_get_strong"
         },
         {
@@ -6141,14 +4320,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_DEFEAT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_DEFEAT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.defeat.back.after"
@@ -6158,11 +4331,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_get_strong",
-          false
-        ]
+        "args": ["local", "info.defeat.how_get_strong", false]
       },
       "save_as": "info_defeat_start_3",
       "next": "info.defeat.intro"
@@ -6172,11 +4341,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_ally",
-          false
-        ]
+        "args": ["local", "info.defeat.how_ally", false]
       },
       "save_as": "info_defeat_start_2",
       "next": "info.defeat.start.3"
@@ -6186,11 +4351,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_fight_urquan",
-          false
-        ]
+        "args": ["local", "info.defeat.how_fight_urquan", false]
       },
       "save_as": "info_defeat_start_1",
       "next": "info.defeat.start.2"
@@ -6200,11 +4361,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "info.defeat.how_find_urquan",
-          false
-        ]
+        "args": ["local", "info.defeat.how_find_urquan", false]
       },
       "save_as": "info_defeat_start",
       "next": "info.defeat.start.1"
@@ -6214,14 +4371,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.DEFEAT_LIKE_SO"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.DEFEAT_LIKE_SO"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.defeat.menu"
@@ -6231,14 +4382,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_ALIEN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_ALIEN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.races.start.after"
@@ -6246,57 +4391,24 @@
     {
       "id": "info.races.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "what_about_alliance",
           "text": "starbase.what_about_alliance",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "races.alliance",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "races.alliance", false]}},
           "next": "info.alliance.start"
         },
         {
           "id": "what_about_hierarchy",
           "text": "starbase.what_about_hierarchy",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "races.hierarchy",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "races.hierarchy", false]}},
           "next": "info.hierarchy.start"
         },
         {
           "id": "what_about_other",
           "text": "starbase.what_about_other",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "races.other",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "races.other", false]}},
           "next": "info.races.other"
         },
         {
@@ -6312,14 +4424,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_OTHER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_OTHER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.races.other.after"
@@ -6329,14 +4435,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_ALIENS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_ALIENS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.races.back.after"
@@ -6346,14 +4446,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_HISTORY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_HISTORY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.history.start.after"
@@ -6361,57 +4455,24 @@
     {
       "id": "info.history.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "alien_races",
           "text": "starbase.alien_races",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "history.aliens",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "history.aliens", false]}},
           "next": "info.races.start"
         },
         {
           "id": "the_war",
           "text": "starbase.the_war",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "history.war",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "history.war", false]}},
           "next": "info.war.start"
         },
         {
           "id": "ancient_history",
           "text": "starbase.ancient_history",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "history.ancient",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "history.ancient", false]}},
           "next": "info.ancient.start"
         },
         {
@@ -6427,14 +4488,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_HISTORY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_HISTORY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.info"
@@ -6444,14 +4499,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_MISSION"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_MISSION"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.mission.start.after"
@@ -6461,14 +4510,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.GET_MINERALS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.GET_MINERALS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.mission.where_get_minerals.after"
@@ -6478,14 +4521,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_ALIENS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_ALIENS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.mission.what_about_aliens.after"
@@ -6495,14 +4532,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.MUST_DEFEAT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.MUST_DEFEAT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.mission.what_about_urquan.after"
@@ -6510,91 +4541,36 @@
     {
       "id": "info.mission.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "where_get_minerals",
           "text": "starbase.where_get_minerals",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "mission.minerals",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "mission.minerals", false]}},
           "next": "info.mission.where_get_minerals"
         },
         {
           "id": "what_about_aliens",
           "text": "starbase.what_about_aliens",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "mission.aliens",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "mission.aliens", false]}},
           "next": "info.mission.what_about_aliens"
         },
         {
           "id": "what_about_urquan",
           "text": "starbase.what_about_urquan",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "mission.urquan",
-                  0
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "mission.urquan", 0]}, 0]},
           "next": "info.mission.what_about_urquan"
         },
         {
           "id": "what_do_now",
           "text": "starbase.what_do_now",
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "mission.analysis",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "mission.analysis", false]}},
           "next": "info.analysis"
         },
         {
           "id": "how_defeat",
           "text": "starbase.how_defeat",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "mission.urquan",
-                  0
-                ]
-              },
-              1
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "mission.urquan", 0]}, 1]},
           "next": "info.defeat.start"
         },
         {
@@ -6610,17 +4586,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": {
-            "get": [
-              "result",
-              "info_analysis.speech"
-            ]
-          },
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": {"get": ["result", "info_analysis.speech"]},
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.analysis.mark"
@@ -6628,22 +4595,7 @@
     {
       "id": "info.analysis.check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "result",
-                  "info_analysis.code"
-                ]
-              },
-              "ok"
-            ]
-          },
-          "next": "info.analysis.speech"
-        }
-      ],
+      "branches": [{"when": {"eq": [{"get": ["result", "info_analysis.code"]}, "ok"]}, "next": "info.analysis.speech"}],
       "otherwise": "error"
     },
     {
@@ -6651,12 +4603,7 @@
       "kind": "action",
       "action": {
         "verb": "report.prepare",
-        "args": [
-          "hayes.flagship_analysis",
-          {
-            "literal": {}
-          }
-        ]
+        "args": ["hayes.flagship_analysis", {"literal": {}}]
       },
       "save_as": "info_analysis",
       "next": "info.analysis.check"
@@ -6666,14 +4613,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_MISSION"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_MISSION"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.info"
@@ -6683,11 +4624,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.tell_me_about_fuel0",
-          true
-        ]
+        "args": ["local", "functions.tell_me_about_fuel0", true]
       },
       "save_as": "functions_tell_me_about_fuel0_effects",
       "next": "info.functions.menu"
@@ -6697,14 +4634,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_FUEL"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_FUEL"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "functions.tell_me_about_fuel0.effects"
@@ -6714,11 +4645,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.tell_me_about_modules0",
-          true
-        ]
+        "args": ["local", "functions.tell_me_about_modules0", true]
       },
       "save_as": "functions_tell_me_about_modules0_effects",
       "next": "info.functions.menu"
@@ -6728,14 +4655,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_MODULES"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_MODULES"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "functions.tell_me_about_modules0.effects"
@@ -6745,11 +4666,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.ships",
-          1
-        ]
+        "args": ["local", "functions.ships", 1]
       },
       "save_as": "functions_tell_me_about_ships_effects",
       "next": "info.functions.menu"
@@ -6759,14 +4676,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_SHIPS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_SHIPS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "functions.tell_me_about_ships.effects"
@@ -6776,11 +4687,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.ships",
-          2
-        ]
+        "args": ["local", "functions.ships", 2]
       },
       "save_as": "functions_tell_me_about_crew_effects",
       "next": "info.functions.menu"
@@ -6790,40 +4697,18 @@
       "kind": "dialogue",
       "variants": [
         {
-          "when": {
-            "get": [
-              "config",
-              "speech",
-              true
-            ]
-          },
-          "speech": [
-            "starbase.ABOUT_CREW0",
-            "starbase.YOUR_FLAGSHIP_3DO2",
-            "starbase.ABOUT_CREW1"
-          ],
-          "presentation": {
-            "composite": "continue"
-          }
+          "when": {"get": ["config", "speech", true]},
+          "speech": ["starbase.ABOUT_CREW0", "starbase.YOUR_FLAGSHIP_3DO2", "starbase.ABOUT_CREW1"],
+          "presentation": {"composite": "continue"}
         },
         {
           "speech": [
             "starbase.ABOUT_CREW0",
             "starbase.YOUR_FLAGSHIP_PC",
-            {
-              "insert": {
-                "get": [
-                  "player",
-                  "ship_name",
-                  "Vindicator"
-                ]
-              }
-            },
+            {"insert": {"get": ["player", "ship_name", "Vindicator"]}},
             "starbase.ABOUT_CREW1"
           ],
-          "presentation": {
-            "composite": "continue"
-          }
+          "presentation": {"composite": "continue"}
         }
       ],
       "next": "functions.tell_me_about_crew.effects"
@@ -6833,11 +4718,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.resources",
-          1
-        ]
+        "args": ["local", "functions.resources", 1]
       },
       "save_as": "functions_tell_me_about_ru_effects",
       "next": "info.functions.menu"
@@ -6847,14 +4728,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_RU"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_RU"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "functions.tell_me_about_ru.effects"
@@ -6864,11 +4739,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.resources",
-          2
-        ]
+        "args": ["local", "functions.resources", 2]
       },
       "save_as": "functions_tell_me_about_minerals_effects",
       "next": "info.functions.menu"
@@ -6878,14 +4749,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_MINERALS"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_MINERALS"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "functions.tell_me_about_minerals.effects"
@@ -6895,11 +4760,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.resources",
-          3
-        ]
+        "args": ["local", "functions.resources", 3]
       },
       "save_as": "functions_tell_me_about_life_effects",
       "next": "info.functions.menu"
@@ -6909,14 +4770,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.ABOUT_LIFE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.ABOUT_LIFE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "functions.tell_me_about_life.effects"
@@ -6926,11 +4781,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.tell_me_about_modules0",
-          false
-        ]
+        "args": ["local", "functions.tell_me_about_modules0", false]
       },
       "save_as": "info_functions_start_3",
       "next": "info.functions.intro"
@@ -6940,11 +4791,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.tell_me_about_fuel0",
-          false
-        ]
+        "args": ["local", "functions.tell_me_about_fuel0", false]
       },
       "save_as": "info_functions_start_2",
       "next": "info.functions.start.3"
@@ -6954,11 +4801,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.resources",
-          0
-        ]
+        "args": ["local", "functions.resources", 0]
       },
       "save_as": "info_functions_start_1",
       "next": "info.functions.start.2"
@@ -6968,11 +4811,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "functions.ships",
-          0
-        ]
+        "args": ["local", "functions.ships", 0]
       },
       "save_as": "info_functions_start",
       "next": "info.functions.start.1"
@@ -6982,14 +4821,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.WHICH_FUNCTION"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.WHICH_FUNCTION"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "info.functions.menu"
@@ -6997,164 +4830,60 @@
     {
       "id": "info.functions.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "tell_me_about_fuel0",
           "text": {
             "compose": [
-              {
-                "phrase": "starbase.tell_me_about_fuel0"
-              },
-              {
-                "insert": {
-                  "get": [
-                    "player",
-                    "ship_name",
-                    "Vindicator"
-                  ]
-                }
-              },
-              {
-                "phrase": "starbase.tell_me_about_fuel1"
-              }
+              {"phrase": "starbase.tell_me_about_fuel0"},
+              {"insert": {"get": ["player", "ship_name", "Vindicator"]}},
+              {"phrase": "starbase.tell_me_about_fuel1"}
             ]
           },
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "functions.tell_me_about_fuel0",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "functions.tell_me_about_fuel0", false]}},
           "next": "functions.tell_me_about_fuel0"
         },
         {
           "id": "tell_me_about_modules0",
           "text": {
             "compose": [
-              {
-                "phrase": "starbase.tell_me_about_modules0"
-              },
-              {
-                "insert": {
-                  "get": [
-                    "player",
-                    "ship_name",
-                    "Vindicator"
-                  ]
-                }
-              },
-              {
-                "phrase": "starbase.tell_me_about_modules1"
-              }
+              {"phrase": "starbase.tell_me_about_modules0"},
+              {"insert": {"get": ["player", "ship_name", "Vindicator"]}},
+              {"phrase": "starbase.tell_me_about_modules1"}
             ]
           },
-          "when": {
-            "not": {
-              "get": [
-                "local",
-                "functions.tell_me_about_modules0",
-                false
-              ]
-            }
-          },
+          "when": {"not": {"get": ["local", "functions.tell_me_about_modules0", false]}},
           "next": "functions.tell_me_about_modules0"
         },
         {
           "id": "tell_me_about_ships",
           "text": "starbase.tell_me_about_ships",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "functions.ships",
-                  0
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "functions.ships", 0]}, 0]},
           "next": "functions.tell_me_about_ships"
         },
         {
           "id": "tell_me_about_crew",
           "text": "starbase.tell_me_about_crew",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "functions.ships",
-                  0
-                ]
-              },
-              1
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "functions.ships", 0]}, 1]},
           "next": "functions.tell_me_about_crew"
         },
         {
           "id": "tell_me_about_ru",
           "text": "starbase.tell_me_about_ru",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "functions.resources",
-                  0
-                ]
-              },
-              0
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "functions.resources", 0]}, 0]},
           "next": "functions.tell_me_about_ru"
         },
         {
           "id": "tell_me_about_minerals",
           "text": "starbase.tell_me_about_minerals",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "functions.resources",
-                  0
-                ]
-              },
-              1
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "functions.resources", 0]}, 1]},
           "next": "functions.tell_me_about_minerals"
         },
         {
           "id": "tell_me_about_life",
           "text": "starbase.tell_me_about_life",
-          "when": {
-            "eq": [
-              {
-                "get": [
-                  "local",
-                  "functions.resources",
-                  0
-                ]
-              },
-              2
-            ]
-          },
+          "when": {"eq": [{"get": ["local", "functions.resources", 0]}, 2]},
           "next": "functions.tell_me_about_life"
         },
         {
@@ -7170,14 +4899,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "starbase.OK_ENOUGH_STARBASE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["starbase.OK_ENOUGH_STARBASE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "starbase.info"
@@ -7187,11 +4910,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "history.ancient",
-          false
-        ]
+        "args": ["local", "history.ancient", false]
       },
       "save_as": "info_history_start_after_2",
       "next": "info.history.menu"
@@ -7201,11 +4920,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "history.war",
-          false
-        ]
+        "args": ["local", "history.war", false]
       },
       "save_as": "info_history_start_after_1",
       "next": "info.history.start.after.2"
@@ -7215,11 +4930,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "history.aliens",
-          false
-        ]
+        "args": ["local", "history.aliens", false]
       },
       "save_as": "info_history_start_after",
       "next": "info.history.start.after.1"
@@ -7229,11 +4940,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "history.aliens",
-          true
-        ]
+        "args": ["local", "history.aliens", true]
       },
       "save_as": "info_races_back_after",
       "next": "info.history.menu"
@@ -7243,11 +4950,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "history.war",
-          true
-        ]
+        "args": ["local", "history.war", true]
       },
       "save_as": "info_war_back_after",
       "next": "info.history.menu"
@@ -7257,11 +4960,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "history.ancient",
-          true
-        ]
+        "args": ["local", "history.ancient", true]
       },
       "save_as": "info_ancient_back_after",
       "next": "info.history.menu"
@@ -7271,11 +4970,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "races.other",
-          false
-        ]
+        "args": ["local", "races.other", false]
       },
       "save_as": "info_races_start_after_2",
       "next": "info.races.menu"
@@ -7285,11 +4980,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "races.hierarchy",
-          false
-        ]
+        "args": ["local", "races.hierarchy", false]
       },
       "save_as": "info_races_start_after_1",
       "next": "info.races.start.after.2"
@@ -7299,11 +4990,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "races.alliance",
-          false
-        ]
+        "args": ["local", "races.alliance", false]
       },
       "save_as": "info_races_start_after",
       "next": "info.races.start.after.1"
@@ -7313,11 +5000,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "races.alliance",
-          true
-        ]
+        "args": ["local", "races.alliance", true]
       },
       "save_as": "info_alliance_back_after",
       "next": "info.races.menu"
@@ -7327,11 +5010,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "races.hierarchy",
-          true
-        ]
+        "args": ["local", "races.hierarchy", true]
       },
       "save_as": "info_hierarchy_back_after",
       "next": "info.races.menu"
@@ -7341,11 +5020,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "races.other",
-          true
-        ]
+        "args": ["local", "races.other", true]
       },
       "save_as": "info_races_other_after",
       "next": "info.races.menu"
@@ -7355,11 +5030,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.analysis",
-          false
-        ]
+        "args": ["local", "mission.analysis", false]
       },
       "save_as": "info_mission_start_after_2",
       "next": "info.mission.reset"
@@ -7369,11 +5040,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.aliens",
-          false
-        ]
+        "args": ["local", "mission.aliens", false]
       },
       "save_as": "info_mission_start_after_1",
       "next": "info.mission.start.after.2"
@@ -7383,11 +5050,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.minerals",
-          false
-        ]
+        "args": ["local", "mission.minerals", false]
       },
       "save_as": "info_mission_start_after",
       "next": "info.mission.start.after.1"
@@ -7397,11 +5060,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.urquan",
-          0
-        ]
+        "args": ["local", "mission.urquan", 0]
       },
       "save_as": "info_mission_reset",
       "next": "info.mission.menu"
@@ -7411,11 +5070,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.minerals",
-          true
-        ]
+        "args": ["local", "mission.minerals", true]
       },
       "save_as": "info_mission_where_get_minerals_after",
       "next": "info.mission.menu"
@@ -7425,11 +5080,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.aliens",
-          true
-        ]
+        "args": ["local", "mission.aliens", true]
       },
       "save_as": "info_mission_what_about_aliens_after",
       "next": "info.mission.menu"
@@ -7439,11 +5090,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.urquan",
-          1
-        ]
+        "args": ["local", "mission.urquan", 1]
       },
       "save_as": "info_mission_what_about_urquan_after",
       "next": "info.mission.menu"
@@ -7453,11 +5100,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.urquan",
-          2
-        ]
+        "args": ["local", "mission.urquan", 2]
       },
       "save_as": "info_defeat_back_after",
       "next": "info.mission.menu"
@@ -7467,11 +5110,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "mission.analysis",
-          true
-        ]
+        "args": ["local", "mission.analysis", true]
       },
       "save_as": "info_analysis_mark",
       "next": "info.mission.menu"
@@ -7479,37 +5118,13 @@
     {
       "id": "first.supply_check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "gt": [
-              {
-                "query": "inventory.quantity",
-                "args": [
-                  "radioactive"
-                ]
-              },
-              0
-            ]
-          },
-          "next": "first.radios"
-        }
-      ],
+      "branches": [{"when": {"gt": [{"query": "inventory.quantity", "args": ["radioactive"]}, 0]}, "next": "first.radios"}],
       "otherwise": "first.supply_missing"
     },
     {
       "id": "first.supply_missing",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "hayes.low_power",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "hayes.low_power", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "i_lied",
@@ -7530,14 +5145,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.DONT_KNOW_WHO_YOU_ARE"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.DONT_KNOW_WHO_YOU_ARE"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.radios_check"
@@ -7547,14 +5156,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.WHAT_KIND_OF_IDIOT"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.WHAT_KIND_OF_IDIOT"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.radios_check"
@@ -7562,22 +5165,7 @@
     {
       "id": "first.return_radios_check",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "gt": [
-              {
-                "query": "inventory.quantity",
-                "args": [
-                  "radioactive"
-                ]
-              },
-              0
-            ]
-          },
-          "next": "first.radios"
-        }
-      ],
+      "branches": [{"when": {"gt": [{"query": "inventory.quantity", "args": ["radioactive"]}, 0]}, "next": "first.radios"}],
       "otherwise": "first.ask_after_radios"
     },
     {
@@ -7585,11 +5173,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "LANDERS_LOST",
-          true
-        ]
+        "args": ["story", "LANDERS_LOST", true]
       },
       "save_as": "first_ask_after_radios_i_lost_my_lander_effects_2",
       "next": "first.return_radios_check"
@@ -7599,10 +5183,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "crew",
-          4
-        ]
+        "args": ["crew", 4]
       },
       "save_as": "first_ask_after_radios_i_lost_my_lander_effects_1",
       "next": "first.ask_after_radios.i_lost_my_lander.effects.2"
@@ -7612,10 +5193,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "landers",
-          1
-        ]
+        "args": ["landers", 1]
       },
       "save_as": "first_ask_after_radios_i_lost_my_lander_effects",
       "next": "first.ask_after_radios.i_lost_my_lander.effects.1"
@@ -7625,14 +5203,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HERE_IS_A_NEW_LANDER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HERE_IS_A_NEW_LANDER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.ask_after_radios.i_lost_my_lander.effects"
@@ -7642,10 +5214,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "crew",
-          4
-        ]
+        "args": ["crew", 4]
       },
       "save_as": "first_ask_after_radios_i_lost_another_lander_effects_1",
       "next": "first.return_radios_check"
@@ -7655,10 +5224,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "landers",
-          1
-        ]
+        "args": ["landers", 1]
       },
       "save_as": "first_ask_after_radios_i_lost_another_lander_effects",
       "next": "first.ask_after_radios.i_lost_another_lander.effects.1"
@@ -7668,14 +5234,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.HERE_IS_ANOTHER_LANDER"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.HERE_IS_ANOTHER_LANDER"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.ask_after_radios.i_lost_another_lander.effects"
@@ -7685,11 +5245,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "GIVEN_FUEL_BEFORE",
-          true
-        ]
+        "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_ask_after_radios_need_fuel_mercury_effects_1",
       "next": "first.return_radios_check"
@@ -7699,10 +5255,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "fuel",
-          5
-        ]
+        "args": ["fuel", 5]
       },
       "save_as": "first_ask_after_radios_need_fuel_mercury_effects",
       "next": "first.ask_after_radios.need_fuel_mercury.effects.1"
@@ -7712,14 +5265,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GIVE_FUEL"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GIVE_FUEL"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.ask_after_radios.need_fuel_mercury.effects"
@@ -7729,11 +5276,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "story",
-          "GIVEN_FUEL_BEFORE",
-          true
-        ]
+        "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_ask_after_radios_need_fuel_again_effects_1",
       "next": "first.return_radios_check"
@@ -7743,10 +5286,7 @@
       "kind": "action",
       "action": {
         "verb": "ship.adjust",
-        "args": [
-          "fuel",
-          5
-        ]
+        "args": ["fuel", 5]
       },
       "save_as": "first_ask_after_radios_need_fuel_again_effects",
       "next": "first.ask_after_radios.need_fuel_again.effects.1"
@@ -7756,14 +5296,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GIVE_FUEL_AGAIN"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GIVE_FUEL_AGAIN"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.ask_after_radios.need_fuel_again.effects"
@@ -7773,11 +5307,7 @@
       "kind": "action",
       "action": {
         "verb": "state.set",
-        "args": [
-          "local",
-          "first.ask_after_radios.question",
-          false
-        ]
+        "args": ["local", "first.ask_after_radios.question", false]
       },
       "save_as": "first_ask_after_radios_question_effects",
       "next": "first.return_radios_check"
@@ -7787,14 +5317,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.RADIOS_ON_MERCURY"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.RADIOS_ON_MERCURY"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "first.ask_after_radios.question.effects"
@@ -7802,16 +5326,7 @@
     {
       "id": "first.ask_after_radios",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "hayes.low_power",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "hayes.low_power", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "i_lost_my_lander",
@@ -7820,40 +5335,11 @@
             "all": [
               {
                 "all": [
-                  {
-                    "eq": [
-                      {
-                        "query": "inventory.quantity",
-                        "args": [
-                          "landers"
-                        ]
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "lt": [
-                      {
-                        "get": [
-                          "story",
-                          "CHMMR_BOMB_STATE",
-                          0
-                        ]
-                      },
-                      2
-                    ]
-                  }
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
                 ]
               },
-              {
-                "not": {
-                  "get": [
-                    "story",
-                    "LANDERS_LOST",
-                    false
-                  ]
-                }
-              }
+              {"not": {"get": ["story", "LANDERS_LOST", false]}}
             ]
           },
           "next": "first.ask_after_radios.i_lost_my_lander"
@@ -7865,38 +5351,11 @@
             "all": [
               {
                 "all": [
-                  {
-                    "eq": [
-                      {
-                        "query": "inventory.quantity",
-                        "args": [
-                          "landers"
-                        ]
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "lt": [
-                      {
-                        "get": [
-                          "story",
-                          "CHMMR_BOMB_STATE",
-                          0
-                        ]
-                      },
-                      2
-                    ]
-                  }
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
                 ]
               },
-              {
-                "get": [
-                  "story",
-                  "LANDERS_LOST",
-                  false
-                ]
-              }
+              {"get": ["story", "LANDERS_LOST", false]}
             ]
           },
           "next": "first.ask_after_radios.i_lost_another_lander"
@@ -7905,52 +5364,14 @@
           "id": "need_fuel_mercury",
           "text": "commander.need_fuel_mercury",
           "when": {
-            "all": [
-              {
-                "lt": [
-                  {
-                    "query": "ship.fuel",
-                    "args": []
-                  },
-                  2
-                ]
-              },
-              {
-                "not": {
-                  "get": [
-                    "story",
-                    "GIVEN_FUEL_BEFORE",
-                    false
-                  ]
-                }
-              }
-            ]
+            "all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"not": {"get": ["story", "GIVEN_FUEL_BEFORE", false]}}]
           },
           "next": "first.ask_after_radios.need_fuel_mercury"
         },
         {
           "id": "need_fuel_again",
           "text": "commander.need_fuel_again",
-          "when": {
-            "all": [
-              {
-                "lt": [
-                  {
-                    "query": "ship.fuel",
-                    "args": []
-                  },
-                  2
-                ]
-              },
-              {
-                "get": [
-                  "story",
-                  "GIVEN_FUEL_BEFORE",
-                  false
-                ]
-              }
-            ]
-          },
+          "when": {"all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"get": ["story", "GIVEN_FUEL_BEFORE", false]}]},
           "next": "first.ask_after_radios.need_fuel_again"
         },
         {
@@ -7962,13 +5383,7 @@
         {
           "id": "where_get_radios",
           "text": "commander.where_get_radios",
-          "when": {
-            "get": [
-              "local",
-              "first.ask_after_radios.question",
-              true
-            ]
-          },
+          "when": {"get": ["local", "first.ask_after_radios.question", true]},
           "next": "first.ask_after_radios.question"
         }
       ]
@@ -7978,14 +5393,8 @@
       "kind": "dialogue",
       "variants": [
         {
-          "speech": [
-            "commander.GLAD_WHEN_YOU_COME_BACK"
-          ],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
+          "speech": ["commander.GLAD_WHEN_YOU_COME_BACK"],
+          "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}
         }
       ],
       "next": "end"
@@ -7993,16 +5402,7 @@
     {
       "id": "first.base_destroyed.menu",
       "kind": "dialogue",
-      "variants": [
-        {
-          "speech": [],
-          "presentation": {
-            "composite": "continue",
-            "music": "continue",
-            "voice": "if_available"
-          }
-        }
-      ],
+      "variants": [{"speech": [], "presentation": {"composite": "continue", "music": "continue", "voice": "if_available"}}],
       "responses": [
         {
           "id": "base_was_abandoned",
@@ -8021,18 +5421,7 @@
     {
       "id": "first.moon_help_route",
       "kind": "decision",
-      "branches": [
-        {
-          "when": {
-            "get": [
-              "story",
-              "MOONBASE_DESTROYED",
-              false
-            ]
-          },
-          "next": "first.base_destroyed.menu"
-        }
-      ],
+      "branches": [{"when": {"get": ["story", "MOONBASE_DESTROYED", false]}, "next": "first.base_destroyed.menu"}],
       "otherwise": "first.moon"
     },
     {
@@ -8070,11 +5459,6 @@
       "dynamo": 1,
       "shiva_furnace": 2
     },
-    "advice_thresholds": {
-      "cash_ru": 3000,
-      "allied_nonhuman_races": 2,
-      "adequate_escort_value": 6000,
-      "sa_matra_escort_value": 20000
-    }
+    "advice_thresholds": {"cash_ru": 3000, "allied_nonhuman_races": 2, "adequate_escort_value": 6000, "sa_matra_escort_value": 20000}
   }
 }

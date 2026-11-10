@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Author the reviewable design graphs; not a mechanical C-to-JSON translator."""
 
-import json
+from json_format import dumps
 from pathlib import Path
 import sys
 
@@ -376,9 +376,7 @@ class Graph:
         data["_coverage"][
             "dialogue_action_timing"
         ] = "Some reply effects occur after playback in this draft; audit source enqueue-versus-commit timing before a production port."
-        (HERE / "examples" / f"{self.name}.json").write_text(
-            json.dumps(data, indent=2, ensure_ascii=False) + "\n"
-        )
+        (HERE / "examples" / f"{self.name}.json").write_text(dumps(data))
         print(self.name, len(self.nodes), "nodes", len(self.bank), "phrases")
 
 

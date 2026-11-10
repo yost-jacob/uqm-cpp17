@@ -2,7 +2,7 @@
 """Extract the existing Hayes/Melnorme sprite-layer defaults into design data."""
 
 from fractions import Fraction
-import json
+from json_format import dumps
 from pathlib import Path
 import sys
 
@@ -110,5 +110,5 @@ for key, base, palette, music in [
         ),
         "disabled_ambient_layers": [2] if key == "hayes.power_restored" else [],
     }
-(HERE / "presentation.json").write_text(json.dumps(data, indent=2) + "\n")
+(HERE / "presentation.json").write_text(dumps(data))
 print("Extracted 3 composites /", len(data["profiles"]), "presentation profiles")

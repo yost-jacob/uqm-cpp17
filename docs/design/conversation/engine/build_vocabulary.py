@@ -1,4 +1,5 @@
-import json, re, sys
+from json_format import dumps
+import re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "tools"))
@@ -176,7 +177,7 @@ for (n, lo, hi), method in zip(specs("actions"), amethod):
             "effect": "mutating",
         }
     )
-(D / "verbs.json").write_text(json.dumps(registry, indent=2) + "\n")
+(D / "verbs.json").write_text(dumps(registry))
 external = {
     "AddEscortShips": ("action", ["fleet.give"]),
     "AddEvent": ("action", ["calendar.schedule"]),
@@ -363,7 +364,7 @@ mapping = {
     "occurrences": len(rows),
     "mappings": list(unique.values()),
 }
-(D / "legacy-verbs.json").write_text(json.dumps(mapping, indent=2) + "\n")
+(D / "legacy-verbs.json").write_text(dumps(mapping))
 print(
     len(registry["queries"]),
     "queries",

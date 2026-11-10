@@ -5,9 +5,7 @@
       "verb": "fleet.contains",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "race"
-      ],
+      "arguments": ["race"],
       "state_accessor": "hasShip",
       "effect": "read_only"
     },
@@ -15,9 +13,7 @@
       "verb": "fleet.slots",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "race"
-      ],
+      "arguments": ["race"],
       "state_accessor": "availableSlots",
       "effect": "read_only"
     },
@@ -25,9 +21,7 @@
       "verb": "fleet.count",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "race_or_all"
-      ],
+      "arguments": ["race_or_all"],
       "state_accessor": "shipCount",
       "effect": "read_only"
     },
@@ -43,9 +37,7 @@
       "verb": "galaxy.relationship",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "race"
-      ],
+      "arguments": ["race"],
       "state_accessor": "relationship",
       "effect": "read_only"
     },
@@ -53,9 +45,7 @@
       "verb": "galaxy.available",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "race"
-      ],
+      "arguments": ["race"],
       "state_accessor": "raceAvailable",
       "effect": "read_only"
     },
@@ -63,9 +53,7 @@
       "verb": "inventory.has",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "item"
-      ],
+      "arguments": ["item"],
       "state_accessor": "hasItem",
       "effect": "read_only"
     },
@@ -73,9 +61,7 @@
       "verb": "inventory.quantity",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "resource"
-      ],
+      "arguments": ["resource"],
       "state_accessor": "quantity",
       "effect": "read_only"
     },
@@ -99,9 +85,7 @@
       "verb": "currency.balance",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "currency"
-      ],
+      "arguments": ["currency"],
       "state_accessor": "balance",
       "effect": "read_only"
     },
@@ -109,9 +93,7 @@
       "verb": "ship.equipment_count",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "equipment"
-      ],
+      "arguments": ["equipment"],
       "state_accessor": "equipmentCount",
       "effect": "read_only"
     },
@@ -127,9 +109,7 @@
       "verb": "ship.capability",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "profile"
-      ],
+      "arguments": ["profile"],
       "state_accessor": "capability",
       "effect": "read_only"
     },
@@ -137,9 +117,7 @@
       "verb": "technology.owned",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "technology"
-      ],
+      "arguments": ["technology"],
       "state_accessor": "hasTechnology",
       "effect": "read_only"
     },
@@ -147,10 +125,7 @@
       "verb": "market.available",
       "min_args": 2,
       "max_args": 2,
-      "arguments": [
-        "merchant",
-        "category"
-      ],
+      "arguments": ["merchant", "category"],
       "state_accessor": "marketAvailable",
       "effect": "read_only"
     },
@@ -158,12 +133,7 @@
       "verb": "calendar.reached",
       "min_args": 4,
       "max_args": 4,
-      "arguments": [
-        "saved_date",
-        "months",
-        "days",
-        "inclusive"
-      ],
+      "arguments": ["saved_date", "months", "days", "inclusive"],
       "state_accessor": "dateReached",
       "effect": "read_only"
     },
@@ -171,9 +141,7 @@
       "verb": "report.available",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "report"
-      ],
+      "arguments": ["report"],
       "state_accessor": "reportAvailable",
       "effect": "read_only"
     },
@@ -181,9 +149,7 @@
       "verb": "encounter.read",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "field"
-      ],
+      "arguments": ["field"],
       "state_accessor": "encounter",
       "effect": "read_only"
     },
@@ -191,9 +157,7 @@
       "verb": "location.distance",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "location"
-      ],
+      "arguments": ["location"],
       "state_accessor": "distanceTo",
       "effect": "read_only"
     },
@@ -211,11 +175,7 @@
       "verb": "state.set",
       "min_args": 3,
       "max_args": 3,
-      "arguments": [
-        "scope",
-        "key",
-        "value"
-      ],
+      "arguments": ["scope", "key", "value"],
       "state_accessor": "set / local memory",
       "effect": "mutating"
     },
@@ -223,11 +183,7 @@
       "verb": "state.add",
       "min_args": 3,
       "max_args": 3,
-      "arguments": [
-        "scope",
-        "key",
-        "signed_delta"
-      ],
+      "arguments": ["scope", "key", "signed_delta"],
       "state_accessor": "set / local memory",
       "effect": "mutating"
     },
@@ -235,12 +191,7 @@
       "verb": "state.bits",
       "min_args": 4,
       "max_args": 4,
-      "arguments": [
-        "scope",
-        "key",
-        "set_or_clear",
-        "mask"
-      ],
+      "arguments": ["scope", "key", "set_or_clear", "mask"],
       "state_accessor": "set / local memory",
       "effect": "mutating"
     },
@@ -248,13 +199,7 @@
       "verb": "sequence.next",
       "min_args": 4,
       "max_args": 5,
-      "arguments": [
-        "scope",
-        "key",
-        "items",
-        "repeat_last_or_cycle",
-        "optional_base"
-      ],
+      "arguments": ["scope", "key", "items", "repeat_last_or_cycle", "optional_base"],
       "state_accessor": "set / local memory",
       "effect": "mutating"
     },
@@ -262,9 +207,7 @@
       "verb": "fleet.give",
       "min_args": 1,
       "max_args": 3,
-      "arguments": [
-        "race [, count] OR race, captain, crew"
-      ],
+      "arguments": ["race [, count] OR race, captain, crew"],
       "state_accessor": "createShip / giveShips",
       "effect": "mutating"
     },
@@ -272,9 +215,7 @@
       "verb": "fleet.take",
       "min_args": 1,
       "max_args": 2,
-      "arguments": [
-        "race [, count]"
-      ],
+      "arguments": ["race [, count]"],
       "state_accessor": "removeShips",
       "effect": "mutating"
     },
@@ -282,11 +223,7 @@
       "verb": "fleet.set_crew",
       "min_args": 3,
       "max_args": 3,
-      "arguments": [
-        "ship_id",
-        "crew",
-        "captain"
-      ],
+      "arguments": ["ship_id", "crew", "captain"],
       "state_accessor": "setShipCrew",
       "effect": "mutating"
     },
@@ -294,9 +231,7 @@
       "verb": "inventory.transfer",
       "min_args": 1,
       "max_args": 2,
-      "arguments": [
-        "item [, signed_quantity]"
-      ],
+      "arguments": ["item [, signed_quantity]"],
       "state_accessor": "transferItem",
       "effect": "mutating"
     },
@@ -304,10 +239,7 @@
       "verb": "ship.adjust",
       "min_args": 2,
       "max_args": 2,
-      "arguments": [
-        "property",
-        "signed_quantity"
-      ],
+      "arguments": ["property", "signed_quantity"],
       "state_accessor": "adjustShip",
       "effect": "mutating"
     },
@@ -315,10 +247,7 @@
       "verb": "ship.configure",
       "min_args": 2,
       "max_args": 2,
-      "arguments": [
-        "profile",
-        "configuration"
-      ],
+      "arguments": ["profile", "configuration"],
       "state_accessor": "configureShip",
       "effect": "mutating"
     },
@@ -326,10 +255,7 @@
       "verb": "currency.adjust",
       "min_args": 2,
       "max_args": 2,
-      "arguments": [
-        "currency",
-        "signed_amount"
-      ],
+      "arguments": ["currency", "signed_amount"],
       "state_accessor": "adjustCurrency",
       "effect": "mutating"
     },
@@ -337,11 +263,7 @@
       "verb": "trade.purchase",
       "min_args": 3,
       "max_args": 3,
-      "arguments": [
-        "merchant",
-        "offer",
-        "quantity_or_fill"
-      ],
+      "arguments": ["merchant", "offer", "quantity_or_fill"],
       "state_accessor": "purchase",
       "effect": "mutating"
     },
@@ -349,11 +271,7 @@
       "verb": "trade.sell",
       "min_args": 3,
       "max_args": 3,
-      "arguments": [
-        "merchant",
-        "category",
-        "quantity_or_all"
-      ],
+      "arguments": ["merchant", "category", "quantity_or_all"],
       "state_accessor": "sell",
       "effect": "mutating"
     },
@@ -361,9 +279,7 @@
       "verb": "rescue.prepare",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "merchant"
-      ],
+      "arguments": ["merchant"],
       "state_accessor": "prepareRescue",
       "effect": "mutating"
     },
@@ -371,9 +287,7 @@
       "verb": "rescue.accept",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "quote_token"
-      ],
+      "arguments": ["quote_token"],
       "state_accessor": "acceptRescue",
       "effect": "mutating"
     },
@@ -381,9 +295,7 @@
       "verb": "ship.strip",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "policy"
-      ],
+      "arguments": ["policy"],
       "state_accessor": "stripShip",
       "effect": "mutating"
     },
@@ -391,9 +303,7 @@
       "verb": "technology.grant",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "technology"
-      ],
+      "arguments": ["technology"],
       "state_accessor": "grantTechnology",
       "effect": "mutating"
     },
@@ -401,10 +311,7 @@
       "verb": "galaxy.set_relationship",
       "min_args": 2,
       "max_args": 2,
-      "arguments": [
-        "race",
-        "relationship"
-      ],
+      "arguments": ["race", "relationship"],
       "state_accessor": "setRelationship",
       "effect": "mutating"
     },
@@ -412,9 +319,7 @@
       "verb": "galaxy.reveal",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "race"
-      ],
+      "arguments": ["race"],
       "state_accessor": "revealRace",
       "effect": "mutating"
     },
@@ -422,12 +327,7 @@
       "verb": "calendar.schedule",
       "min_args": 4,
       "max_args": 4,
-      "arguments": [
-        "event",
-        "months",
-        "days",
-        "years"
-      ],
+      "arguments": ["event", "months", "days", "years"],
       "state_accessor": "scheduleEvent",
       "effect": "mutating"
     },
@@ -435,9 +335,7 @@
       "verb": "calendar.remember",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "date_key"
-      ],
+      "arguments": ["date_key"],
       "state_accessor": "rememberDate",
       "effect": "mutating"
     },
@@ -445,10 +343,7 @@
       "verb": "report.prepare",
       "min_args": 2,
       "max_args": 2,
-      "arguments": [
-        "report",
-        "parameters"
-      ],
+      "arguments": ["report", "parameters"],
       "state_accessor": "prepareReport",
       "effect": "mutating"
     },
@@ -456,9 +351,7 @@
       "verb": "encounter.set_outcome",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "outcome"
-      ],
+      "arguments": ["outcome"],
       "state_accessor": "setOutcome",
       "effect": "mutating"
     },
@@ -466,35 +359,11 @@
       "verb": "random.draw",
       "min_args": 1,
       "max_args": 1,
-      "arguments": [
-        "exclusive_upper_bound"
-      ],
+      "arguments": ["exclusive_upper_bound"],
       "state_accessor": "randomBelow",
       "effect": "mutating"
     }
   ],
-  "values": [
-    "get",
-    "literal",
-    "query",
-    "add",
-    "subtract",
-    "multiply",
-    "divide",
-    "mod",
-    "min",
-    "max",
-    "bit_and"
-  ],
-  "predicates": [
-    "eq",
-    "ne",
-    "gt",
-    "ge",
-    "lt",
-    "le",
-    "all",
-    "any",
-    "not"
-  ]
+  "values": ["get", "literal", "query", "add", "subtract", "multiply", "divide", "mod", "min", "max", "bit_and"],
+  "predicates": ["eq", "ne", "gt", "ge", "lt", "le", "all", "any", "not"]
 }

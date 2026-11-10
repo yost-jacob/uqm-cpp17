@@ -216,3 +216,7 @@ stale callback protection, malformed definitions, overflow, silent cycles, and
 failed-action retry suppression. They use a test state adapter, not the running
 game, and do not certify commerce/report/rescue implementations that do not yet
 exist.
+
+Generated JSON keeps nodes and response records expanded, while short conditions,
+argument lists and presentation settings stay inline (a soft 120-column limit).
+The builders share `json_format.py`, so regeneration preserves this layout.
