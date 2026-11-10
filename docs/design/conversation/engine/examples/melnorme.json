@@ -1,0 +1,5359 @@
+{
+  "version": 1,
+  "id": "melnorme",
+  "entry": "entry",
+  "_status": "Design definition with real phrase banks and explicit native-operation contracts; not a completed gameplay port.",
+  "_coverage": {
+    "native_reports": {
+      "melnorme.technology_pitch": "Native report contract; returns speech data, never starts playback."
+    },
+    "known_differences": [
+      "First-contact question ordering is normalized; legacy dynamic buffer formatting becomes presentation templates.",
+      "Timing, bulletin/device eligibility, capability analysis and rescue mechanics require native adapters; no legacy callback execution is hidden in this JSON.",
+      "Flagship strip/sale reports return prepared speech data; legacy per-frame sale animation is a presentation-service contract."
+    ],
+    "dialogue_action_timing": "Some reply effects occur after playback in this draft; audit source enqueue-versus-commit timing before a production port."
+  },
+  "phrase_banks": {
+    "melnorme": {
+      "resource": "comm.melnorme.dialogue",
+      "base_text": "base/comm/melnorme/melnorme.txt",
+      "voice": "optional addon"
+    }
+  },
+  "presentation_library": "../presentation.json",
+  "initial_presentation": "melnorme.yellow",
+  "locals": {
+    "asked_to_buy": false,
+    "sell_enabled": true,
+    "bluster.strength": 0,
+    "bluster.testing": 0
+  },
+  "phrases": {
+    "melnorme.HELLO_NOW_DOWN_TO_BUSINESS_1": {
+      "text": "I am Trade Master Greenish in command of the Melnorme starship\n`Inevitably Successful in All Circumstances.' \nI bid you a formal welcome, Captain.\nThough we Melnorme have just recently arrived in this region of space\nwe have long desired to make contact with your species \nand look forward to an extended profitable relationship.",
+      "voice": "melnorme-000.ogg"
+    },
+    "melnorme.HELLO_NOW_DOWN_TO_BUSINESS_2": {
+      "text": "As a master trader in the Melnorme merchant fleet, I greet you, Captain.\nNews of your species and your unusual vessel has travelled quickly.\nI need not say how eager we are to trade with you and your kind! \nNow, how can I be of service to you?",
+      "voice": "melnorme-001.ogg"
+    },
+    "melnorme.HELLO_NOW_DOWN_TO_BUSINESS_3": {
+      "text": "Hello again, human space captain. \nPerhaps during this encounter, we will be able to establish a successful, businesslike relationship.",
+      "voice": "melnorme-002.ogg"
+    },
+    "melnorme.KNOW_OF_YOU": {
+      "text": "Even before our first meeting, we knew of you, Captain.\nThough your struggle to free Earth shall be a long and difficult challenge\nfraught with great danger and mystery\nwe have great confidence in you and your abilities.",
+      "voice": "melnorme-003.ogg"
+    },
+    "melnorme.how_know": {
+      "text": "How did you know about us before meeting us?",
+      "voice": null
+    },
+    "melnorme.KNOW_BECAUSE": {
+      "text": "We gather information from a thousand secret sources in space and time.\nOur charge for revealing even one of these sources would be so high\nthat your species would be in debt to us for centuries.",
+      "voice": "melnorme-004.ogg"
+    },
+    "melnorme.what_about_yourselves": {
+      "text": "What can you tell us about yourselves?",
+      "voice": null
+    },
+    "melnorme.NO_TALK_ABOUT_OURSELVES": {
+      "text": "Our origins and purposes are, frankly, mysterious and due to several unavoidable factors\nwe are unable to discuss ourselves in any great detail.",
+      "voice": "melnorme-005.ogg"
+    },
+    "melnorme.what_factors": {
+      "text": "What are these `unavoidable factors'?",
+      "voice": null
+    },
+    "melnorme.FACTORS_ARE": {
+      "text": "First and foremost among these factors\nis our unwillingness to GIVE away information\nabout our history, psychology and mental powers,\nour unique physiology,\nthe exact locations of homeworlds,\nor our potentially ominous, long-range plans.\nHowever, these important and relevant pieces of information\nARE available, for a nominal sum of Credits.",
+      "voice": "melnorme-006.ogg"
+    },
+    "melnorme.what_about_universe": {
+      "text": "Do you have any information which might be useful to us?",
+      "voice": null
+    },
+    "melnorme.NO_FREE_LUNCH": {
+      "text": "Absolutely. \nOur primary trade good IS information.\nWhy, right here on my display screen, I have something\nwhich I am certain would be of incalculable value to you!\nWe can discuss the details of this VERY significant information\nlater, when we have established normal trading procedures\nat which time we shall also discuss the nature of our fees.",
+      "voice": "melnorme-007.ogg"
+    },
+    "melnorme.giving_is_good_1": {
+      "text": "Fees! Surely your culture is far beyond such pettiness as money?",
+      "voice": null
+    },
+    "melnorme.GIVING_IS_BAD_1": {
+      "text": "You are of course correct.\nWe long ago abandoned currency,\nand now only deal with commodities that have intrinsic value, such as valuable information.",
+      "voice": "melnorme-008.ogg"
+    },
+    "melnorme.giving_is_good_2": {
+      "text": "But our cause is just! Isn't altruism the highest pinnacle of morality?",
+      "voice": null
+    },
+    "melnorme.GIVING_IS_BAD_2": {
+      "text": "No, it is not.\nIn fact, in our culture, `giving'\nwith no fair exchange of goods or services,\nis considered vulgar and inappropriate.\nPlease do not mention this subject again.",
+      "voice": "melnorme-009.ogg"
+    },
+    "melnorme.get_on_with_business": {
+      "text": "Shall we begin trading now?",
+      "voice": null
+    },
+    "melnorme.trade_is_for_the_weak": {
+      "text": "`Trade' is for the weak.  We TAKE what we want!",
+      "voice": null
+    },
+    "melnorme.WERE_NOT_AFRAID": {
+      "text": "We reel with inchoate fear, and are thrown into a sudden panic.  \nBeing peaceful by nature\nwe would no doubt be unprepared for your sudden hostility\nwere it not for the excellent weapon system we bought from the Keel-Verezy just last month.\nA weapon system which is fully locked on your command bridge, by the way.",
+      "voice": "melnorme-010.ogg"
+    },
+    "melnorme.no_trade_now": {
+      "text": "We cannot continue this conversation. Goodbye.",
+      "voice": null
+    },
+    "melnorme.OK_NO_TRADE_NOW_BYE": {
+      "text": "When you wish to trade with us, seek any supergiant star system.\nWe shall be there.",
+      "voice": "melnorme-011.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_1": {
+      "text": "Yes, let us get down to business.",
+      "voice": "melnorme-012.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_2": {
+      "text": "How nice to see you again, Captain.\nBefore we go on, I have a small announcement.\nAs you may know, in our travels throughout the galaxy\nwe Melnorme have found many strange and interesting alien artifacts.\nOne of these devices is the MetaChron, a kind of trans-time alarm system.\nIn a nutshell, it warns me of future dangers by predicting its own demise\nwhich is most likely linked to my own well being, since I keep it under my pillow.\nThe unit is a small pyramid and, when all is well, white in color.\nBut if we are proceeding along a timeline which will eventually result in the destruction of the MetaChron\nthe unit slowly darkens. Presumably, it will be destroyed at the same time as it turns completely black.\nWhen we first entered this region of space, the MetaChron was white.\nNow it is light gray.\nAt its present rate of change, something will destroy the MetaChron\nin the early part of the year 2159.\nIn order to avoid this unpleasantness, we may be leaving just before this time\nso if you have business you wish to conduct with us\nI suggest you do so before January 2159, or February at the latest.",
+      "voice": "melnorme-013.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_3": {
+      "text": "I had itchy pods this morning, Captain, and here you are!",
+      "voice": "melnorme-014.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_4": {
+      "text": "What a coincidence! I was just talking about you with a Keel-Verezy captain. \nThey expressed great interest in your explorations and struggles against the Ur-Quan\nbut, like all Verezy, I'm afraid they were hesitant to introduce themselves for fear of\nwell, frightening you. \nIn any event, it is our pleasure to meet you once again.",
+      "voice": "melnorme-015.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_5": {
+      "text": "Once again we meet to exchange valuable tangibles.\nIsn't this fun?!",
+      "voice": "melnorme-016.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_6": {
+      "text": "Your arrival was predicted by our Tzo crystal's vibrations.\nWe already know why you are here and what you need from us; however\netiquette requires that we act as though we are ignorant of your desires.",
+      "voice": "melnorme-017.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_7": {
+      "text": "This very morning, I was just saying to subordinate Ochre\n`Fe-Fi-Fo-Fum! I smell the feet of a Hu-Hu-Man!'\nWe laughed and laughed. What a synchronicity!",
+      "voice": "melnorme-018.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_8": {
+      "text": "I must warn you, Captain\nthis is the time of the month we Melnorme drive exceptionally hard bargains.\nBeware!",
+      "voice": "melnorme-019.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_9": {
+      "text": "LOOK OUT!\nHoy! What a close call!\nCaptain, why did you try to run down that Keel-Verezy vessel!?\nYou almost smashed it into flinders!\nWhat!? You didn't see it? Surely you -- oh\nNever mind.",
+      "voice": "melnorme-020.ogg"
+    },
+    "melnorme.HELLO_AND_DOWN_TO_BUSINESS_10": {
+      "text": "Welcome back, Captain! You are our favorite customer.",
+      "voice": "melnorme-021.ogg"
+    },
+    "melnorme.whats_my_credit": {
+      "text": "What's my Credit balance, if you please?",
+      "voice": null
+    },
+    "melnorme.HELLO_SLIGHTLY_ANGRY_1": {
+      "text": "So, the violent one has returned.\nHave you come back to seek our forgiveness\nor to attack our defenseless vessel once more?",
+      "voice": "melnorme-022.ogg"
+    },
+    "melnorme.HELLO_SLIGHTLY_ANGRY_2": {
+      "text": "You have disappointed us\nthough to be truthful\nwe had some hints that our relationship would be difficult at first\ndue to your species' emotional immaturity.",
+      "voice": "melnorme-023.ogg"
+    },
+    "melnorme.HELLO_SLIGHTLY_ANGRY_3": {
+      "text": "We require a formal apology.",
+      "voice": "melnorme-024.ogg"
+    },
+    "melnorme.explore_relationship": {
+      "text": "Can we discuss establishing an alliance?",
+      "voice": null
+    },
+    "melnorme.EXAMPLE_OF_RELATIONSHIP": {
+      "text": "Your question reveals a certain lack of understanding\nabout the nature of friendly, inter-species relationships. \nWe shall clarify the situation. \nIf you wish to be friends with someone\nnever, EVER\nshoot wads of super-heated plasma at them. \nIs this clear?",
+      "voice": "melnorme-025.ogg"
+    },
+    "melnorme.excuse_1": {
+      "text": "Look, mistakes happen.  Don't get so bent out of shape!",
+      "voice": null
+    },
+    "melnorme.NO_EXCUSE_1": {
+      "text": "The Spathi once used a similar excuse\nafter an unfortunate incident at their base on Algol IV.\nThey didn't like the climate there\nso they decided to make `just a few minor, climatic adjustments.'\nTheir equipment went haywire, they panicked and fled\nand the entire atmosphere was stripped off the planet\nmuch to the native Algolites sincere,\nthough short-lived, regret.",
+      "voice": "melnorme-026.ogg"
+    },
+    "melnorme.excuse_2": {
+      "text": "Let's just forget our battle ever happened, ok?",
+      "voice": null
+    },
+    "melnorme.NO_EXCUSE_2": {
+      "text": "No.",
+      "voice": "melnorme-027.ogg"
+    },
+    "melnorme.excuse_3": {
+      "text": "What do you want from me, a formal apology?",
+      "voice": null
+    },
+    "melnorme.NO_EXCUSE_3": {
+      "text": "There is a small possibility that an apology would set things right.\nBut it would have to be genuine.",
+      "voice": "melnorme-028.ogg"
+    },
+    "melnorme.we_apologize": {
+      "text": "I apologize. I'm sorry. Please forgive me, I beg you.",
+      "voice": null
+    },
+    "melnorme.APOLOGY_ACCEPTED": {
+      "text": "Well, since you put it so nicely\nyou seem so genuinely repentant\nwe'll give you another chance to become trading partners with us.\nBut don't ever attack us again\nOr the next time we won't be such nice guys.",
+      "voice": "melnorme-029.ogg"
+    },
+    "melnorme.so_we_can_attack": {
+      "text": "This seems like a great opportunity to attack you again.",
+      "voice": null
+    },
+    "melnorme.DECEITFUL_HUMAN": {
+      "text": "Deceitful human!",
+      "voice": "melnorme-030.ogg"
+    },
+    "melnorme.bye_melnorme_slightly_angry": {
+      "text": "I'm leaving now.  Goodbye.",
+      "voice": null
+    },
+    "melnorme.MELNORME_SLIGHTLY_ANGRY_GOODBYE": {
+      "text": "Farewell, violent human.",
+      "voice": "melnorme-031.ogg"
+    },
+    "melnorme.HELLO_HATE_YOU_1": {
+      "text": "We thought you were a nice guy.\nBoy, were we wrong!\nNow go away and leave us alone.",
+      "voice": "melnorme-032.ogg"
+    },
+    "melnorme.HELLO_HATE_YOU_2": {
+      "text": "So, the jerk is back.\nWhat do you want from us this time?\nNever mind, we don't want to know.",
+      "voice": "melnorme-033.ogg"
+    },
+    "melnorme.HELLO_HATE_YOU_3": {
+      "text": "We will hate you forever.\nIt is no use coming back here in the hopes that we will ever change our minds.\nWe won't!",
+      "voice": "melnorme-034.ogg"
+    },
+    "melnorme.well_if_thats_the_way_you_feel": {
+      "text": "Die, eye-freak.",
+      "voice": null
+    },
+    "melnorme.you_hate_us_so_we_go_away": {
+      "text": "Goodbye.",
+      "voice": null
+    },
+    "melnorme.HATE_YOU_GOODBYE": {
+      "text": "Don't ever come back!",
+      "voice": "melnorme-035.ogg"
+    },
+    "melnorme.WE_FIGHT_AGAIN": {
+      "text": "This time you shall pay for your transgressions!",
+      "voice": "melnorme-036.ogg"
+    },
+    "melnorme.RESCUE_EXPLANATION": {
+      "text": "According to our scanners and other sensitive devices\nyou are immobile in HyperSpace with no fuel reserves.\nThis is a serious situation.\nWithout fuel you shall drift here until your batteries exhaust themselves\nthen your life-support will fail\nand you will expire\nunless, of course\na hostile alien vessel finds you here helpless\nand annihilates you mercilessly.\nThis has been known to happen.\n\nHowever\nas a gesture of good will, and in the spirit of friendship, we offer our assistance!\nFor a nominal fee.",
+      "voice": "melnorme-037.ogg"
+    },
+    "melnorme.RESCUE_AGAIN_1": {
+      "text": "Once more we find ourselves in a position to help you.\nHow wonderful.",
+      "voice": "melnorme-038.ogg"
+    },
+    "melnorme.RESCUE_AGAIN_2": {
+      "text": "Have you ever considered buying more fuel tanks?\nJust a friendly suggestion, Captain.",
+      "voice": "melnorme-039.ogg"
+    },
+    "melnorme.RESCUE_AGAIN_3": {
+      "text": "We have come to help you once more, Captain.",
+      "voice": "melnorme-040.ogg"
+    },
+    "melnorme.RESCUE_AGAIN_4": {
+      "text": "We MUST stop meeting like this, Captain!\nHa, ha, ha!",
+      "voice": "melnorme-041.ogg"
+    },
+    "melnorme.RESCUE_AGAIN_5": {
+      "text": "Out of fuel again, eh, Captain?",
+      "voice": "melnorme-042.ogg"
+    },
+    "melnorme.CHANGED_MIND": {
+      "text": "Have you changed your mind\nand decided to accept our offer of assistance?",
+      "voice": "melnorme-043.ogg"
+    },
+    "melnorme.no_changed_mind": {
+      "text": "No thanks, I don't need your help right now.",
+      "voice": null
+    },
+    "melnorme.yes_changed_mind": {
+      "text": "Perhaps I was hasty in refusing your offer. What was it again?",
+      "voice": null
+    },
+    "melnorme.SHOULD_WE_HELP_YOU": {
+      "text": "Would you like us to help you at this time?",
+      "voice": "melnorme-044.ogg"
+    },
+    "melnorme.yes_help": {
+      "text": "Yes, I would appreciate your assistance. What is your fee?",
+      "voice": null
+    },
+    "melnorme.no_help": {
+      "text": "I don't need your help at this time. Maybe later, though.",
+      "voice": null
+    },
+    "melnorme.RESCUE_OFFER": {
+      "text": "You have no Credit balance in our mercantile computer\nand our scanners show that you possess no useful trade goods\nbut, perhaps we can work out a special deal.\nIn exchange for our giving you enough fuel to",
+      "voice": "melnorme-045.ogg"
+    },
+    "melnorme.RESCUE_TANKS": {
+      "text": "fill your tanks, we will take:",
+      "voice": "melnorme-046.ogg"
+    },
+    "melnorme.RESCUE_HOME": {
+      "text": "get you home, we will take:",
+      "voice": "melnorme-047.ogg"
+    },
+    "melnorme.take_it": {
+      "text": "I find I have no choice. I accept your offer... grudgingly.",
+      "voice": null
+    },
+    "melnorme.leave_it": {
+      "text": "This offer is absurd! I refuse.",
+      "voice": null
+    },
+    "melnorme.HAPPY_TO_HAVE_RESCUED": {
+      "text": "The exchange of fuel for equipment is complete.\nAs always, it is a pleasure doing business with you.\nGoodbye, Captain.",
+      "voice": "melnorme-048.ogg"
+    },
+    "melnorme.MAYBE_SEE_YOU_LATER": {
+      "text": "Well then, we bid you farewell.\nWe hope to see you again\nthough with you sitting here, dead in space\nvulnerable and alone\nwe won't hold our breath.",
+      "voice": "melnorme-049.ogg"
+    },
+    "melnorme.GOODBYE_AND_GOODLUCK": {
+      "text": "Good luck, Captain.",
+      "voice": "melnorme-050.ogg"
+    },
+    "melnorme.GOODBYE_AND_GOODLUCK_AGAIN": {
+      "text": "Until we meet again, Captain.",
+      "voice": "melnorme-051.ogg"
+    },
+    "melnorme.HELLO_PISSED_OFF_1": {
+      "text": "The Human has returned.\nHe hopes to either convince us of his sorrow over his past wrong-doings\nor he intends to compel us to give/render unreasonable bargains by force.",
+      "voice": "melnorme-052.ogg"
+    },
+    "melnorme.HELLO_PISSED_OFF_2": {
+      "text": "Ahhh-YING!! Ahhh-YING! Ahhh-YING! Ahhh-Y\nOh sorry, Captain. I was just meditating on the sorry state of your consciousness.\nDo you perceive any improvement?",
+      "voice": "melnorme-053.ogg"
+    },
+    "melnorme.HELLO_PISSED_OFF_3": {
+      "text": "Perhaps I can be of some assistance to you in this time of confusion and travail\neither make a sincere apology to us, or depart.",
+      "voice": "melnorme-054.ogg"
+    },
+    "melnorme.beg_forgiveness": {
+      "text": "We beg your forgiveness for our unwarranted aggression.",
+      "voice": null
+    },
+    "melnorme.LOTS_TO_MAKE_UP_FOR": {
+      "text": "Even if we were to accept your words as truth\nyou have a lot to make up for.",
+      "voice": "melnorme-055.ogg"
+    },
+    "melnorme.you_are_so_right": {
+      "text": "We stand prepared to make reparations for our previous conduct.",
+      "voice": null
+    },
+    "melnorme.ONE_LAST_CHANCE": {
+      "text": "Hmm\nhmm... hmm... hmm.\nOh, very well then.\nWe will give you a single opportunity to compensate us\nfor the damages you have inflicted upon our mercantile fleet\nwith your unreasonable attacks in the past.\nWe will not make this offer a second time.\nYou will give us all non-essential hardware from your vessel\nimmediately!\nDo you accept?",
+      "voice": "melnorme-056.ogg"
+    },
+    "melnorme.ok_strip_me": {
+      "text": "Ok, it's a deal, but ONLY the non-essentials!",
+      "voice": null
+    },
+    "melnorme.no_strip_now": {
+      "text": "What kind of sucker do you think I am? Forget it!",
+      "voice": null
+    },
+    "melnorme.NOT_WORTH_STRIPPING": {
+      "text": "It's not worth stripping.",
+      "voice": "melnorme-057.ogg"
+    },
+    "melnorme.FAIR_JUSTICE": {
+      "text": "Removal of non-essential equipment is complete.\nWe are satisfied with the exchange, and believe that we can now pursue\na productive business relationship.\nWe shall forget the mistakes you made in the past. Mostly.",
+      "voice": "melnorme-058.ogg"
+    },
+    "melnorme.bye_melnorme_pissed_off": {
+      "text": "Goodbye.",
+      "voice": null
+    },
+    "melnorme.MELNORME_PISSED_OFF_GOODBYE": {
+      "text": "Good riddance.",
+      "voice": "melnorme-059.ogg"
+    },
+    "melnorme.fight_some_more": {
+      "text": "Prepare to be destroyed.",
+      "voice": null
+    },
+    "melnorme.OK_FIGHT_SOME_MORE": {
+      "text": "No, YOU prepare to be destroyed!",
+      "voice": "melnorme-060.ogg"
+    },
+    "melnorme.why_blue_light": {
+      "text": "Why did your bridge just turn blue?",
+      "voice": null
+    },
+    "melnorme.BLUE_IS_MAD": {
+      "text": "To us, blue ambience signifies a response to an unexpected threat\nit shows that we are under emotional distress\nand not incidentally\nit also lets us see our weapon consoles more clearly.",
+      "voice": "melnorme-061.ogg"
+    },
+    "melnorme.we_strong_1": {
+      "text": "We have no fear of you, Melnorme!",
+      "voice": null
+    },
+    "melnorme.YOU_NOT_STRONG_1": {
+      "text": "Oh, you should.\nOnce the Dramya thought they could steal from us.\nYou don't see too many Dramya around these days, do you?",
+      "voice": "melnorme-062.ogg"
+    },
+    "melnorme.we_strong_2": {
+      "text": "We have the most powerful ship in this part of the galaxy.",
+      "voice": null
+    },
+    "melnorme.YOU_NOT_STRONG_2": {
+      "text": "Perhaps that is true, but you have only one ship.",
+      "voice": "melnorme-063.ogg"
+    },
+    "melnorme.we_strong_3": {
+      "text": "Why shouldn't we just take what we want from you by force?",
+      "voice": null
+    },
+    "melnorme.YOU_NOT_STRONG_3": {
+      "text": "Because it's against the law, and besides\nif you steal from us, the other Melnorme ships will have to raise their prices\nand other innocent space aliens will have to pay for your wrong-doing.\nNow that's not fair, is it?",
+      "voice": "melnorme-064.ogg"
+    },
+    "melnorme.just_testing": {
+      "text": "Look, we were just testing your intentions.  We're actually peaceful and friendly.",
+      "voice": null
+    },
+    "melnorme.REALLY_TESTING": {
+      "text": "You have an odd way of making friends, Captain.\nAre you certain that you aren't just tricking us\nso that you can attack us the moment our back is turned?",
+      "voice": "melnorme-065.ogg"
+    },
+    "melnorme.yes_really_testing": {
+      "text": "I promise, we won't do anything sneaky like that.",
+      "voice": null
+    },
+    "melnorme.TEST_RESULTS": {
+      "text": "We believe you.",
+      "voice": "melnorme-066.ogg"
+    },
+    "melnorme.youre_on": {
+      "text": "Let's just test out that weapon system, shall we?... IN COMBAT!",
+      "voice": null
+    },
+    "melnorme.YOU_GIVE_US_NO_CHOICE": {
+      "text": "You give us no choice.",
+      "voice": "melnorme-067.ogg"
+    },
+    "melnorme.TRADING_INFO": {
+      "text": "Since this is your first time trading with us, let me explain how our system works.\nWe are interested in purchasing certain items, specifically\nbiological data on alien life forms\nand the coordinates of certain strange worlds whose radiant energies defy all scanners\nproducing a rainbow-like image.\nIn exchange, we have many interesting and valuable commodities, such as\nfuel compatible with your starship's HyperDrive thrusters,\ntechnological specifications, allowing you to build new devices for your ship\nand many important secrets which may help you in your travels.\nTo facilitate trade, we translate all your sales into Interstar Credits\nwith which you may make purchases.\nIf you have any questions, don't hesitate to ask.",
+      "voice": "melnorme-068.ogg"
+    },
+    "melnorme.BUY_OR_SELL": {
+      "text": "Now, what can we do for you today?",
+      "voice": "melnorme-069.ogg"
+    },
+    "melnorme.goodbye": {
+      "text": "Goodbye, Trade Master.",
+      "voice": null
+    },
+    "melnorme.why_turned_purple": {
+      "text": "Why did your bridge turn purple?",
+      "voice": null
+    },
+    "melnorme.buy": {
+      "text": "I would like to make some purchases.",
+      "voice": null
+    },
+    "melnorme.sell": {
+      "text": "I have some items I would like to sell.",
+      "voice": null
+    },
+    "melnorme.TURNED_PURPLE_BECAUSE": {
+      "text": "That's a good question with a very interesting answer!\nThe fee for this information is 12,000,000 Credits.",
+      "voice": "melnorme-070.ogg"
+    },
+    "melnorme.NOTHING_TO_SELL": {
+      "text": "We appreciate your intentions, but you have nothing we wish to buy.",
+      "voice": "melnorme-071.ogg"
+    },
+    "melnorme.WHAT_TO_SELL": {
+      "text": "What would you like to sell, Captain?",
+      "voice": "melnorme-072.ogg"
+    },
+    "melnorme.OK_DONE_SELLING": {
+      "text": "As you wish.",
+      "voice": "melnorme-073.ogg"
+    },
+    "melnorme.sell_life_data": {
+      "text": "I have some data on alien lifeforms.",
+      "voice": null
+    },
+    "melnorme.SOLD_LIFE_DATA1": {
+      "text": "The",
+      "voice": "melnorme-074.ogg"
+    },
+    "melnorme.SOLD_LIFE_DATA2": {
+      "text": "units of biological data we downloaded from your ship earn you",
+      "voice": "melnorme-203.ogg"
+    },
+    "melnorme.SOLD_LIFE_DATA3": {
+      "text": "Credits.",
+      "voice": "melnorme-204.ogg"
+    },
+    "melnorme.sell_rainbow_locations": {
+      "text": "I wish to sell you Rainbow world locations.",
+      "voice": null
+    },
+    "melnorme.SOLD_RAINBOW_LOCATIONS1": {
+      "text": "Your ship's log indicates that you discovered the whereabouts of",
+      "voice": "melnorme-075.ogg"
+    },
+    "melnorme.SOLD_RAINBOW_LOCATIONS2": {
+      "text": "of the Rainbow worlds which so fascinate us.\nIn exchange, we will give you",
+      "voice": "melnorme-205.ogg"
+    },
+    "melnorme.SOLD_RAINBOW_LOCATIONS3": {
+      "text": "Credits.",
+      "voice": "melnorme-204.ogg"
+    },
+    "melnorme.sell_precursor_find": {
+      "text": "We found a Precursor artifact. Do you want it?",
+      "voice": null
+    },
+    "melnorme.SOLD_PRECURSOR_FIND": {
+      "text": "Always! Absolutely!\nIn exchange we will give you\nN Credits",
+      "voice": "melnorme-076.ogg"
+    },
+    "melnorme.changed_mind_no_sell": {
+      "text": "On second thought, I don't think I want to sell anything.",
+      "voice": null
+    },
+    "melnorme.done_selling": {
+      "text": "I am done selling, for now.",
+      "voice": null
+    },
+    "melnorme.NEED_CREDIT": {
+      "text": "You need Credits to purchase our trade items.\nTo earn Credits you must sell us the items we desire, which are:\nbiological data on alien lifeforms\nand the coordinates of certain strange worlds whose radiant energies defy all scanners\nproducing a rainbow-like image.",
+      "voice": "melnorme-077.ogg"
+    },
+    "melnorme.WHAT_TO_BUY": {
+      "text": "What trade items would you like to buy today?",
+      "voice": "melnorme-078.ogg"
+    },
+    "melnorme.WHAT_MORE_TO_BUY": {
+      "text": "Would you like to purchase anything else?",
+      "voice": "melnorme-079.ogg"
+    },
+    "melnorme.OK_DONE_BUYING": {
+      "text": "Very well then.",
+      "voice": "melnorme-080.ogg"
+    },
+    "melnorme.buy_fuel": {
+      "text": "I'd like to buy some fuel.",
+      "voice": null
+    },
+    "melnorme.done_buying": {
+      "text": "I am done buying, for now.",
+      "voice": null
+    },
+    "melnorme.be_leaving_now": {
+      "text": "I shall be leaving now.",
+      "voice": null
+    },
+    "melnorme.HOW_MUCH_FUEL": {
+      "text": "How much fuel do you wish to purchase?",
+      "voice": "melnorme-081.ogg"
+    },
+    "melnorme.buy_1_fuel": {
+      "text": "1 unit of fuel.",
+      "voice": null
+    },
+    "melnorme.GOT_FUEL": {
+      "text": "Fuel transferred to your vessel.",
+      "voice": "melnorme-082.ogg"
+    },
+    "melnorme.buy_5_fuel": {
+      "text": "5 units of fuel.",
+      "voice": null
+    },
+    "melnorme.buy_10_fuel": {
+      "text": "10 units of fuel.",
+      "voice": null
+    },
+    "melnorme.buy_25_fuel": {
+      "text": "25 units of fuel.",
+      "voice": null
+    },
+    "melnorme.done_buying_fuel": {
+      "text": "I am done buying fuel.",
+      "voice": null
+    },
+    "melnorme.FRIENDLY_GOODBYE": {
+      "text": "It has been a pleasure dealing with you, Captain.\nWe look forward to your next visit.",
+      "voice": "melnorme-083.ogg"
+    },
+    "melnorme.CREDIT_IS0": {
+      "text": "Your present balance is",
+      "voice": null
+    },
+    "melnorme.CREDIT_IS1": {
+      "text": "Credits.",
+      "voice": null
+    },
+    "melnorme.NEED_MORE_CREDIT0": {
+      "text": "Unfortunately this purchase requires",
+      "voice": "melnorme-084.ogg"
+    },
+    "melnorme.NEED_MORE_CREDIT1": {
+      "text": "additional Credits.",
+      "voice": "melnorme-206.ogg"
+    },
+    "melnorme.BUY_FUEL_INTRO": {
+      "text": "As you know, we carry a large supply of fuel on board which is compatible with your engine system.\nWe will be happy to sell this substance to you at a cost of 1 Credit per fuel unit.",
+      "voice": "melnorme-085.ogg"
+    },
+    "melnorme.NO_ROOM_FOR_FUEL": {
+      "text": "Your ship's capacity is insufficient to hold that much fuel.",
+      "voice": "melnorme-086.ogg"
+    },
+    "melnorme.buy_info": {
+      "text": "I wish to buy information.",
+      "voice": null
+    },
+    "melnorme.buy_technology": {
+      "text": "I am interested in purchasing new technology.",
+      "voice": null
+    },
+    "melnorme.buy_current_events": {
+      "text": "I wish to buy information about current events.",
+      "voice": null
+    },
+    "melnorme.buy_alien_races": {
+      "text": "I will pay for useful data on alien races.",
+      "voice": null
+    },
+    "melnorme.buy_history": {
+      "text": "Please sell us historical information.",
+      "voice": null
+    },
+    "melnorme.done_buying_info": {
+      "text": "I am done buying information.",
+      "voice": null
+    },
+    "melnorme.no_buy_info": {
+      "text": "I do not wish to buy information at this time.",
+      "voice": null
+    },
+    "melnorme.BUY_INFO_INTRO": {
+      "text": "As you know, in our many centuries of star-trading\nwe Melnorme have come to learn much about what happens in our galaxy\nboth now and in the ancient past.\nWe have also kept records on the diverse alien races in your region of space.\nWe will share this crucial knowledge with you for a fee of 75 Credits per informative fact.\nNo refunds.",
+      "voice": "melnorme-087.ogg"
+    },
+    "melnorme.OK_BUY_INFO": {
+      "text": "How wonderful, Captain!",
+      "voice": "melnorme-088.ogg"
+    },
+    "melnorme.OK_NO_BUY_INFO": {
+      "text": "What else would you like to buy?",
+      "voice": "melnorme-089.ogg"
+    },
+    "melnorme.OK_DONE_BUYING_INFO": {
+      "text": "What else would you like to buy?",
+      "voice": "melnorme-090.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_1": {
+      "text": "While you probably believe that the Shofixti are extinct\nhaving caused their sun to flare with a device identical to the Utwig's super-bomb\nthe truth is not so simple.\nThere yet exists a chance to resuscitate this meta-marsupial species, though it will not be easy.\nThe problem at hand seems simple: bring together two Shofixti of different sexes\nand the carnal gymnastics proceed. Given the short gestation and maturation time of the Shofixti\nyou will have thousands of the creatures in ten years, and millions in twenty.\nFinding a male of the species is easier than flup\nsimply visit the Shofixti's blasted star system at Delta Gorno.\nCaptain Tanaka or its sibling Katana shall greet you on your arrival.\nA warning! -- These warriors are old and fly in barely functional ships.\nIf they mistakenly identify you as the enemy, do not return fire!\nRetreat and try to talk with them on their own level.\nThe females of the species will be more difficult to obtain.\nThe only supply of such remaining in the galaxy is at Alpha Cerenkov I\nincluded as part of General ZEX's bizarre and beloved menagerie.\nFortunately for you, Captain, ZEX is considered... well... perverse, by his fellow VUX.\nThis is because ZEX actually enjoys the presence of human beings.\nTo acquire the Shofixti females, you will have to appease ZEX, or kill him.",
+      "voice": "melnorme-091.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_2": {
+      "text": "The Ur-Quan are presently at war with a race called the Kohr-Ah.\nThey are fighting within a large spherical region of space centered around the Crateris star group.\nAlthough it is probably too early to tell, it would appear that the Kohr-Ah are winning.",
+      "voice": "melnorme-092.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_3": {
+      "text": "No doubt you are familiar with an alien race called the Umgah who live in the Orionis constellation.\nWhile they are renowned for their potent and often cruel sense of humor\nthey have outdone themselves in recent years.\nSpecifically, they have used an unusual HyperWave 'Caster\nto impersonate the Ilwrath gods Dogar and Kazon.\nWhen the Ilwrath began tuning-in to `the voices of their gods' on their HyperWave receivers\ntheir priest caste was understandably skeptical\nand counselled their many followers to ignore the blasphemous signals.\nHowever, in a surprise move, the majority of the Ilwrath then rose up\nand slaughtered the entire priest caste.\nTheir reasons for this ghastly move included over-taxation, lack of `quality death in ceremony'\nand the general feeling that the priests had made Dogar and Kazon's pronouncements overly complex.",
+      "voice": "melnorme-093.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_4": {
+      "text": "As you know, there are weaknesses in the division between dimensions.\nFor example, your vessel uses such weaknesses to enter HyperSpace.\nHowever, there are other weak spots in the galaxy which lead to yet different dimensions.\nOne such portal exists nearby, between the Chandrasekhar and Columbae constellations.\nThe portal opens only a short time each month starting on the 17th.\nSince we have never entered the portal, we can give no more information on this subject.",
+      "voice": "melnorme-094.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_5": {
+      "text": "As you are probably aware, Ur-Quan starships -- you call them `Dreadnoughts', I believe\npossess effective self-annihilation circuits which prevent other races\nfrom reverse-engineering Ur-Quan technological secrets.\nHowever, we have become aware of a shipwrecked dreadnought which has remained largely intact.\nYou will find the remains of the ship on the surface of a blue world orbiting Alpha Pavonis.\nWe suspect you will find at least one item of interest there, possibly two.",
+      "voice": "melnorme-095.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_6": {
+      "text": "You may have noticed the presence of an increasingly large number of red probe vessels\nwhich move with great speed and attack relentlessly.\nWe are sorry to say that this is our catalog item 2418-B.\nDo not blame us! We are not responsible for this violent folly!\nThe product is not being used in a correct manner.\nShould you wish to confront the actual wrong-doers\nwe suggest you search the planets in Beta Corvi for the probes' owners.",
+      "voice": "melnorme-096.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_7": {
+      "text": "Not more than fifty years ago\nthe Druuge were informed by the now-extinct Burvixese race\nof a powerful alien nation called the Utwig.\nThe Utwig, the Burvixese explained, were pleasant, sophisticated creatures\nbut they were also terminally depressed and often spoke about ending their lives\nby activating a super-weapon, some kind of gigantic bomb\nwhich they had found on one of their worlds -- Zeta Hyades VI-B I think it was.\nThe Druuge recognized the description of the bomb as a Precursor planeteering tool\nwhich indeed was an explosive device of unrivaled power, and they set out to make it their own.\nThough the revolting, criminal, insidious Druuge rarely leave their sphere of influence\n(it encompasses Algol, Almagest, and the Persei stars)\nthey made a special trip on this occasion to the Aquarii constellation, where they made contact with the Utwig.\nThere is a device commonly known as the `Ultron'.\nIs it now in your possession? Ah... I see.\nThe Druuge sold this device to the Utwig, explaining that it was a Precursor `Personal Magnifier'\nwhich would enrich the lives of their entire culture in too many ways to describe specifically.\nThe Utwig, I am sorry to say, fell for the Druuge's foul ruse, and snapped up the Ultron immediately.\nFortunately for us all, the Utwig did not pay the Druuge's requested price -- the super-bomb\nand instead gave them a collection of `historical oddments and genuine artifacts'\nwhich to this day, the Druuge are trying to unload on unwary buyers.",
+      "voice": "melnorme-097.ogg"
+    },
+    "melnorme.OK_BUY_EVENT_8": {
+      "text": "The Utwig, who live in the Aquarii constellation, have grown very depressed of late.\nThey accidentally broke the supposed `Ultron' sold to them by the felonious Druuge.\nAs a consequence, they are morose and melancholic\nand will probably be unwilling to help you fight the Ur-Quan.\nIf you wish to gain them as allies, we recommend that you acquire the broken Ultron\n(as if it EVER worked)\nand find some suitable replacement parts.\nOur information indicates that you can find these items in three different places:\na Rosy Sphere at the Druuge trade world\nan Aqua Helix somewhere in Thraddash space\nand a Clear Spindle, which is currently in the possession of the Pkunk.\nCaptain, that was the last current event we have for sale.",
+      "voice": "melnorme-098.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_1": {
+      "text": "The Zoq-Fot-Pik are a friendly co-op of three alien species all native to the same world.\nThey are presently suffering severe collateral damage\nfrom the ritual combat between the Ur-Quan and the Kohr-Ah.\nWhile this is unfortunate for the Zoq-Fot-Pik -- they have been forced to abandon many of their worlds\nthis close proximity to the inter-Ur-Quan war will give them insights into the conflict\nwhich will be of great use to you.\nIn addition, the Zoq-Fot-Pik met the Chenjesu early on in the war, and are eager to make allies\nwho can protect them from their enemies. \nIn case you are interested, the Zoq-Fot-Pik homeworld is at coordinates 400.0:543.7, planet I.",
+      "voice": "melnorme-099.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_2": {
+      "text": "The Ilwrath are presently attacking the Pkunk in the Lacaille and Krueger constellations.\nThese beings have slavish devotion to their dark gods Dogar and Kazon\nwhich in the past few years has been used against them by the Umgah.\nIf you need to manipulate the Ilwrath, we suggest you discover the Umgah's technique\nand duplicate it.",
+      "voice": "melnorme-100.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_3": {
+      "text": "The Pkunk are a mystical off-shoot of the Yehat species\nwho left their bird-brothers long ago to found a peaceful enclave in the Krueger and Giclas stars.\nAt the present time, the Pkunk are defending themselves against the Ilwrath\nwho have been commanded to attack the happy birds by Dogar and Kazon. \nThe Pkunk may be unwilling to make a formal alliance with you\nbut we have confidence that if you explain yourself honestly\nthey will help your efforts against the Ur-Quan.",
+      "voice": "melnorme-101.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_4": {
+      "text": "The creatures presently fighting the Ur-Quan are called the Kohr-Ah.\nThey are an Ur-Quan sub-species who split off from the main species many thousands of years ago.\nTheir present fight is a ritual reenacting of a major difference of opinion\nbetween two, rival Ur-Quan leaders after the Ur-Quan overwhelmed their slave-masters, the Dnyarri.\nThe Kohr-Ah are immune to reason, having long ago lost the ability to see their situation objectively.\nThey live in a self-maintained paradox: to ensure their safety and security\nthe Kohr-Ah fight an endless battle against all other sentient species.",
+      "voice": "melnorme-102.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_5": {
+      "text": "I must warn you about some very bad people.\n`Is this worth so many credits?' you ask yourself.\nI assure you, it is!\nThe creatures are called the `Druuge' and they are a callous and evil race.\nThey care for nothing but profit and personal gain through unfair mercantile exchanges..\nWhy are you looking at me like that, Captain? It is not appropriate.\nAs I was saying, these wicked creatures will try to sell you commodities at unreasonably low prices.\nHoy! -- they almost give away fuel! \nDo not fall for their tricks! There are hidden costs -- secret tariffs!\nSo that you may avoid them, I will tell you that their main trade world is Zeta Persei I.\nWhy are you smiling, Captain?",
+      "voice": "melnorme-103.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_6": {
+      "text": "The Burvixese race evolved on the planet Arcturus I.\nThey lived there in a relatively benevolent manner\nuntil the Kohr-Ah came and destroyed them during the course of 2 or 3 unfortunate days.\nThe Druuge were largely responsible for the Kohr-Ah finding the Burvixese.\nYou see, the Burvixese were in long-distance HyperWave contact\nwith a race known simply as the Gg.\nFor decades the Gg and the Burvixese traded much valuable information\nuntil the Gg came under attack by an invading race who you may know as the Kohr-Ah.\nThe Gg warned the Burvixese that the Kohr-Ah located races by their HyperWave transmissions\nand that they had already discovered the radiations from the Druuge.\nWhen the Burvixese were kind enough to warn the Druuge that a hostile alien race\nwas homing in on their HyperWave radiations, the Druuge shut down all their transmitters\nand erected a powerful HyperWave beacon on the surface of the Burvixese moon.\nThe Kohr-Ah changed course, attacked the poor Burvixese and sadly, destroyed them all.",
+      "voice": "melnorme-104.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_7": {
+      "text": "The Thraddash are an arrogant, stubborn, and thick-skinned species\nwho reside in the Draconis and Apodis star systems.\nThey have little or no respect for anything but force, which they admire greatly.\nTo make the Thraddash your friends, you should consider killing most, but not all of them.\nIn addition, they guard some kind of sacred relic at the star system Zeta Draconis\nthough we do not know the true nature of this artifact.\nThe Thraddash homeworld is at Delta Draconis.",
+      "voice": "melnorme-105.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_8": {
+      "text": "After the war, the Chenjesu and the Mmrnmhrm chose to be slave-shielded\non the Chenjesu's homeworld at Procyon.\nWe suspect that they are melding their two species to form some kind of new, hybrid race\na race which may well be powerful enough to destroy the Ur-Quan single-handedly.\nHowever, by our calculations, this process will take many decades, if not centuries.\nShould you wish to talk to them, we recommend you invest in a\nHyperWave broadcasting system which is powerful enough to penetrate the shield around their world.",
+      "voice": "melnorme-106.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_9": {
+      "text": "The Mycon are using this time while the Ur-Quan have their attention elsewhere\nto expand their sphere of influence as fast as possible.\nThe Mycon colonize planets by launching tough spore-pods from orbit\nand injecting them under the planet's surface.\nMonths later, after the spores have grown hundreds of thick, fibrous tendrils under the planet's crust\nthe tendrils suddenly thrust up out of the planet and create huge calderas\nnot incidentally filling the planet's atmosphere with the Mycon's preferred gases\nclouds of super-heated steam and sulphuric acid.",
+      "voice": "melnorme-107.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_10": {
+      "text": "Following the end of the War, the Androsynth began experimenting with Inter-Dimensional Fatigue\na process which is related to your faster-than-light drive\nbut involves dimensions far more alien than HyperSpace.\nThey had just made a major breakthrough when they were suddenly wiped out by a race called the Orz\nwho appeared seemingly out of nowhere.\nActually, we don't know what the Orz did to the Androsynth -- they're just all gone.",
+      "voice": "melnorme-108.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_11": {
+      "text": "The Arilou Lalee'lay are a mysterious race of IDF beings\nIDF meaning, Inter-Dimensional Fatigue.\nThey do not reside in this galaxy, or in fact, anywhere in this universe.\nWhile it is true that the Arilou are rarely seen far from the Columbae star group\nthey do make regular, secret visits to your world, and have done so for centuries.\nEver since Earth was slave-shielded, they have focused their attention\non the humans aboard the starbase, many of whom are now members of your crew.\nThough the Arilou Lalee'lay always smile and are never overtly hostile\nwe believe that they have a secret agenda which somehow involves your planet, Earth.\nThese secret plans may or may not cause grief and woe to you Earthlings.",
+      "voice": "melnorme-109.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_12": {
+      "text": "Just under 20 years ago, the brave and suicidal Shofixti annihilated their species\nby exploding a Precursor device -- some kind of bomb -- in the interior of their sun.\nThe resulting storm of solar flares cooked the life off the Shofixti homeworld\nand incinerated over a hundred Ur-Quan Dreadnoughts\nwhich had just entered the system to conquer the Shofixti.\nIn actuality, there are still at least a dozen Shofixti left alive in the galaxy.\nOne or two are at Delta Gorno, guarding the dead hulk of their once beautiful world.\nOthers can be found in VUX space.",
+      "voice": "melnorme-110.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_13": {
+      "text": "The Slylandro are a mostly non-solid, sentient race who live in a gas giant at Beta Corvi.\nWe recently sold them a self-replicating exploration probe\nwhich has somehow turned hostile and attacks everything it detects.\nIf such encounters have angered you, Captain, please do NOT address your concerns to us.\nWe possess a formal Waiver of Damages, authorized by a Slylandro Speaker\nand are in no way responsible for the situation.",
+      "voice": "melnorme-111.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_14": {
+      "text": "The cowardly Spathi live at the single planet orbiting Epsilon Gruis.\nThey do not actually live on their world, rather they reside on its airless moon.\nThe reason? A xenomorphic species, which craves the sweet-flavored flesh of the Spathi\nhas been transported to the surface of their planet\nand makes every attempt to devour the poor Spathi.\nI am certain that the Spathi would be forever in your debt\nif you were to eliminate these creatures from their planet.\nWhat? You fear the alien creatures will find you a treat also?\nFear not. Our data reveals the beasts are not interested in your species.\nShould you wish to consult with the Spathi Ruling Council\nyou will need to know the Secret Spathi Cypher -- a password, which is\n`Huffi-Muffi-Guffi'.",
+      "voice": "melnorme-112.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_15": {
+      "text": "Like you Earthlings, when the war with the Ur-Quan was lost\nthe Syreen chose to be slave-shielded. Their new world is at Betelgeuse.\nThe Syreen's starbase is crewed by the starship commanders and crew\nwho were decommissioned at the end of the war.\nThough the Syreen hate the Ur-Quan with a vengeance, they are unlikely to offer you assistance\nunless you reveal to them the truth behind the tragedy of their original homeworld, Syra\nwhich was destroyed by the birth of a Mycon `Deep Child' a century ago.",
+      "voice": "melnorme-113.ogg"
+    },
+    "melnorme.OK_BUY_ALIEN_RACE_16": {
+      "text": "When the Ur-Quan entered Gamma Serpentis -- the home star of the Yehat\ntheir Queen made a sudden change of allegiance and allied with the Ur-Quan Hierarchy.\nThey became Ur-Quan combat thralls.\nThis act was viewed by most Yehat starship officers as ultimately dishonorable\nthe desperate act of a corrupt regent to maintain her throne.\nThe Yehat's shame was greatly magnified by the Shofixti's show of courage\nwhen they destroyed their own star system to slow down the Ur-Quan Armada.\nCaptain, you have heard all that we have to say about aliens indigenous to this region.\nShould we learn more in the near future, we shall be certain to sell it to you.",
+      "voice": "melnorme-114.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_1": {
+      "text": "Almost twenty-five thousand of your years ago, there existed near this region of space\nan association of starfaring races called the `Sentient Milieu'.\nThis group formed over several thousand years to mutually enrich their respective cultures\nto provide a safe creche for emerging sentient species\nand to afford themselves a degree of protection from external hostilities via military alliance.\nOf the seven most active Milieu members, the most famous race -- indeed you know them well, Captain\nwere the Ur-Quan.",
+      "voice": "melnorme-115.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_2": {
+      "text": "The Ur-Quan evolved on a harsh planet orbiting a star outside this region of space.\nThey were solitary predators, like your praying mantis, Captain, or polar bear\nwho had a very limited set of social behaviors, most of which dealt with sex.\nSince they had to compete for survival against many physically superior species\nthe Ur-Quan evolved intelligence and tool use, in much the same way as your own species.\nThe Ur-Quan also learned to master their fierce territoriality to build a cooperative planetary culture.\nWhen the Ur-Quan were discovered by the Taalo, they had just begun exploring their solar system\nin crude atomic vehicles.\nAlthough the Ur-Quan attacked what they thought to be an invader, the Taalo were patient.\nThey explained the purpose of the Sentient Milieu, and offered the Ur-Quan membership.\nThe Ur-Quan recognized the benefits that such a system provided\nand once more conquered the hunting beast within themselves\nto become cooperative, productive members of the Milieu. This lasted for several thousands of years.",
+      "voice": "melnorme-116.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_3": {
+      "text": "Just over twenty thousand years ago\nwhen your ancestors were learning to chart the course of the moon and stars on animal horns\nthe Sentient Milieu spanned five hundred light years and included the membership of a hundred worlds.\nLike all other star-travellers, they had discovered ruins and relics of a far more ancient culture\nwhich your species calls the `Precursors'.\nExplorers from many species spent their lives trying to piece together this ancient mystery\nbut of all races, the Ur-Quan were the most bold adventurers.\nTheir scouts, flying single-ships, penetrated far into uncharted space, and landed on a million worlds.\nOn one such mission, a young Ur-Quan made planetfall on a small, life-bearing alien world\nto identify some anomalous energy readings, occasionally a sign of Precursor installations.\nInstead the Ur-Quan found a small, hideous creature -- a Dnyarri.\nBefore the scout was able to defend itself, the Dnyarri creature took control of the Ur-Quan's mind\nand commanded the scout to place the Dnyarri aboard the Ur-Quan's ship, along with hundreds of its evil brood.\nThen the Ur-Quan returned to the heart of the Milieu, landing on its capital planet.\nWithin hours, every resident of the planet was a Dnyarri slave.\nWithin a month, Dnyarri-compelled starships had spread the evil, psychic creatures across the entire Milieu.",
+      "voice": "melnorme-117.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_4": {
+      "text": "When the Dnyarri took control over the Milieu, one race fought back -- the Taalo.\nThese slow, quiet creatures were silicon-based life forms\nbut bore little resemblance to the modern Chenjesu.\nThe Taalo were natural immunes to the Dnyarri psychic compulsion; they were unaffected by the creatures' power\nand the Dnyarri would not permit anyone to exist outside their control\nso they ordered the remaining races of the Milieu to attack and destroy the Taalo home planet.\nThis planet was one of the few Milieu worlds located in this region of space.\nI believe you call their star Delta Vulpeculae. Their home was a moon revolving about the second planet.\nI am sad to say that the Taalo were, indeed, eliminated.\nHowever, at the time of their devastation they had completed a device\nwhich they thought would give other races psychic immunity like their own.\nWhat happened to this device, this shield? It's hard to say.\nMaybe it was destroyed in the attack on their homeworld, maybe not.",
+      "voice": "melnorme-118.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_5": {
+      "text": "In the Dnyarri's new empire, the Ur-Quan were the favored slaves.\nThis is probably because the Ur-Quan were the most psychically sensitive, the most easily compelled.\nAs the centuries of Dnyarri dominance passed, what was once the Sentient Milieu\ndeteriorated and degenerated into a great galactic gulag.\nAlien races which did not serve with the efficiency and speed demanded by the Dnyarri\nwere ruthlessly burned from the faces of their worlds.\nThe agents of this genocide were inevitably the Dnyarri's favored pet, the Ur-Quan.\nAfter almost twenty-five hundred years of unrelenting Dnyarri control\nthere were only four living member races of the once-great Sentient Milieu.\nBy this point, the Dnyarri had used genetic manipulation to split the Ur-Quan into two sub-species:\nthe Green Ur-Quan -- scientists, technicians, and administrators\nwho were responsible for maintaining the limited infrastructure of the Dnyarri civilization\nand the Black Ur-Quan, who filled the ranks of basic laborer and combat soldier.\nThen, a chance discovery by an Ur-Quan named Kzer-Za\nled to the violent overthrow of the Dnyarri Slave Empire.",
+      "voice": "melnorme-119.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_6": {
+      "text": "The Ur-Quan named Kzer-Za was a Green, a researcher specializing in repairing the mental damage\ninflicted by long-term exposure to the Dnyarri's psychic compulsion.\nBy this point in history, the Dnyarri had grown lax in their dominance\nand on occasion accidentally permitted their slaves moments of self-direction.\nKzer-Za was able to use those few scattered minutes to compose a theory.\nFrom its observations, Kzer-Za realized that when a slave died\nthe Dnyarri `disconnected' from the slave's mind, lest it too be dragged down to death.\nFurther, the Ur-Quan scientist uncovered the fact that when a slave underwent great pain\nthe Dnyarri temporarily disconnected -- but that the degree of pain had to be extreme, nearly lethal.\nKzer-Za chose its moment carefully -- it waited until it was near an open transmission unit.\nThen, in a short moment of mental freedom, the Ur-Quan injected itself with a dose of acidic poison\nsending incredible waves of pain through its long body.\nIn the few moments before its death, Kzer-Za was able to wrest control of the transmitter\nto send word of its discovery across the planet, and into space as well.\nBefore the Dnyarri knew what was happening\nUr-Quan everywhere were hacking at their own bodies with chunks of glass, burning themselves horribly\ndoing anything that would give them the few seconds of freedom necessary to find the nearest Dnyarri\nand crush the bleating creature.\nAs they gained longer and longer periods of control, the Ur-Quan developed new tools and weapons\nto destroy their evil masters. The most gruesome of these devices was the Excruciator\na mechanism which was inserted directly into the brain, and generated a constant stream of agony.\nThe Dnyarri could not bring themselves to make the necessary mental connection with these tortured Ur-Quan.\nThey were slaughtered by the thousands.\nThe Ur-Quan Slave revolt was won.",
+      "voice": "melnorme-120.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_7": {
+      "text": "When the last Ur-Quan was free of psychic compulsion -- when the last free Dnyarri was dead\nthe combined might of the Ur-Quan star fleets met in orbit above the Dnyarri homeworld.\nThey had come together to make two important decisions.\nFirst -- how to punish the few frightened Dnyarri left below on the planet's surface.\nSecond -- how to ensure that never again would the Ur-Quan be made slaves.\nThe first decision was made swiftly. The Dnyarri would not be allowed to die;\nah, that was too kind a fate.\nInstead, the creatures would be genetically modified into sub-sentience\nthey would become dumb animals.\nThese low creatures would be further debased by serving the Ur-Quan for all eternity\nin the most demeaning way the Ur-Quan could imagine\nacting as translators, making physical contact with other species\nwhom the Ur-Quan now considered grossly inferior to themselves and revolting.\nThe second decision -- how to ensure their freedom permanently -- caused great turmoil.",
+      "voice": "melnorme-121.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_8": {
+      "text": "Following the successful Ur-Quan slave revolt\nthe Ur-Quan met to decide how to ensure their freedom.\nThe Green Ur-Quan, who called themselves the Kzer-Za in honor of the Ur-Quan who triggered the revolt\nwished to establish the `Path of Now and Forever'\nwhich required that all other sentient species must become slaves of the Ur-Quan\nor be forever imprisoned beneath an impenetrable force shield.\nLeading the opposition to this plan was Kohr-Ah, a charismatic fleet officer.\nKohr-Ah proposed a simpler alternative, the `Eternal Doctrine.'\nSimply put, this scheme called for the systematic eradication of all sentient life in the universe\naside from the Ur-Quan.\nCaptain, if these positions seem to you extreme or unwarranted\nyou must remember that the Ur-Quan had been unwilling slaves for millennia\nand that each of them had to remain in agony for years in order to defeat the Dnyarri.\nThe followers of Kzer-Za and Kohr-Ah were all on the brink of madness\nbut neither side would submit, and so they fought a bloody civil war.",
+      "voice": "melnorme-122.ogg"
+    },
+    "melnorme.OK_BUY_HISTORY_9": {
+      "text": "This is the last historical item we have for sale.\nThe civil war between the Green Ur-Quan, the followers of Kzer-Za\nand their opponents, the death-dealing Kohr-Ah, lasted for decades.\nIt is likely that they would have annihilated each other\nwere it not for a chance discovery by a Kzer-Za -- a Precursor Battleship!\nThe vessel was huge, many times the size of the Ur-Quan's vessels.\nThe Precursor ship sliced through the Kohr-Ah forces in days -- the Kohr-Ah were defeated.\nHowever, in their victory the Kzer-Za were humble\nthey realized that there was a chance that they were wrong, and the Kohr-Ah were right.\nInstead of destroying the Kohr-Ah, the Kzer-Za let them go\ndirecting them to make their way through the stars, travelling against the spin of the galaxy.\nThe Kzer-Za would travel in the opposite direction\nand when the two Ur-Quan forces met, they would fight again in ritual combat\nwith the Precursor Battleship given to the winner.\nCaptain, this is happening here and now.\nThe Kzer-Za, the Ur-Quan who enslaved Earth, are fighting their ritual battle against the Kohr-Ah\nin a large area centered near the Crateris constellation.\nIf the Kohr-Ah win this battle, Captain, the Kzer-Za will stand aside and let them kill us all.\nWe believe it is your destiny to prevent this from happening.",
+      "voice": "melnorme-123.ogg"
+    },
+    "melnorme.INFO_ALL_GONE": {
+      "text": "We regret to say that you have exhausted our supply of genuinely valuable information.\nHowever we DO have many thousands of useless facts and that we will gladly sell you\nat a substantial discount. Are you interested?\nHmm, we thought not.",
+      "voice": "melnorme-124.ogg"
+    },
+    "melnorme.buy_new_tech": {
+      "text": "I would like to buy the technology you described.",
+      "voice": null
+    },
+    "melnorme.no_buy_new_tech": {
+      "text": "I do not want to purchase any more technology.",
+      "voice": null
+    },
+    "melnorme.done_buying_new_tech": {
+      "text": "I do not want to purchase any more technology.",
+      "voice": null
+    },
+    "melnorme.fill_me_up": {
+      "text": "Fill all my fuel tanks to maximum capacity.",
+      "voice": null
+    },
+    "melnorme.OK_FILL_YOU_UP": {
+      "text": "Yes sir, fill 'er up, right away!",
+      "voice": "melnorme-125.ogg"
+    },
+    "melnorme.BUY_NEW_TECH_INTRO": {
+      "text": "Investment! Ah yes, you are so right.\nThese technological breakthroughs don't cost you Credit\nthey EARN you Credit!\nOf course... there is an initial charge\nbut each technological system item is GUARANTEED\nto be useful for something important\nsomewhere in the galaxy\nat some point in the future.\nAll technologies cost 150 Credits.",
+      "voice": "melnorme-126.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH": {
+      "text": "Right now we are offering",
+      "voice": "melnorme-127.ogg"
+    },
+    "melnorme.OK_NO_BUY_NEW_TECH": {
+      "text": "What else would you like to buy?",
+      "voice": "melnorme-128.ogg"
+    },
+    "melnorme.OK_DONE_BUYING_NEW_TECH": {
+      "text": "Would you like to purchase anything else?",
+      "voice": "melnorme-129.ogg"
+    },
+    "melnorme.OK_DONE_BUYING_FUEL": {
+      "text": "Would you like to purchase anything else?",
+      "voice": "melnorme-130.ogg"
+    },
+    "melnorme.NEW_TECH_1": {
+      "text": "The technology we are now offering includes plans for building\nblaster weapons twice as powerful as your ion-bolt guns.",
+      "voice": "melnorme-131.ogg"
+    },
+    "melnorme.NEW_TECH_2": {
+      "text": "The technology we are now offering includes specifications for constructing\nmodifications to your planet landers which will double their speed.",
+      "voice": "melnorme-132.ogg"
+    },
+    "melnorme.NEW_TECH_3": {
+      "text": "The technology we are now offering includes details on how to add\n`point-defense' laser defense systems for your flagship.",
+      "voice": "melnorme-133.ogg"
+    },
+    "melnorme.NEW_TECH_4": {
+      "text": "The technology we are now offering includes plans for building\nimprovements to your planet landers which make them resistant to hostile alien lifeforms.",
+      "voice": "melnorme-134.ogg"
+    },
+    "melnorme.NEW_TECH_5": {
+      "text": "The technology we are now offering includes blueprints\nwhich show how to increase your lander's cargo space\nto double its present volume.",
+      "voice": "melnorme-135.ogg"
+    },
+    "melnorme.NEW_TECH_6": {
+      "text": "The technology we are now offering includes blueprints which show how to add\ndouble-capacity fuel tanks.",
+      "voice": "melnorme-136.ogg"
+    },
+    "melnorme.NEW_TECH_7": {
+      "text": "The technology we are now offering includes plans for improving the rate of fire\non your lander's stunray bolt-beamer gun.",
+      "voice": "melnorme-137.ogg"
+    },
+    "melnorme.NEW_TECH_8": {
+      "text": "The technology we are now offering includes details for building\nmodifications to your planet landers which make them resistant to earthquakes.",
+      "voice": "melnorme-138.ogg"
+    },
+    "melnorme.NEW_TECH_9": {
+      "text": "The technology we are now offering includes plans for adding\nauto-tracking modules which improve the aim of all your weapons.",
+      "voice": "melnorme-139.ogg"
+    },
+    "melnorme.NEW_TECH_10": {
+      "text": "The technology we are now offering includes plans for adding\nimprovements to your planet landers which make them resistant to inclement planet weather.",
+      "voice": "melnorme-140.ogg"
+    },
+    "melnorme.NEW_TECH_11": {
+      "text": "The technology we are now offering is everything you need to know to assemble\nmodifications to your planet landers which make them resistant to planetary hot-spots.",
+      "voice": "melnorme-141.ogg"
+    },
+    "melnorme.NEW_TECH_12": {
+      "text": "The technology we are now offering is plans for building\n`Hellbore Cannons', a weapon much more destructive than a simple blaster.",
+      "voice": "melnorme-142.ogg"
+    },
+    "melnorme.NEW_TECH_13": {
+      "text": "The technology we are now offering includes details on how to develop\nShiva Furnace modules which generate energy for your combat batteries\ntwice as fast as your standard dynamos.",
+      "voice": "melnorme-143.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_1": {
+      "text": "Please remember that these weapons consume energy from your combat batteries\nfaster than your familiar ion-bolt guns.\nYou may wish to compensate for this by building additional dynamo modules for your flagship.",
+      "voice": "melnorme-144.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_2": {
+      "text": "Ah yes, speed! An excellent choice for the relentless hunter\nand craven coward as well.\nThese modifications are simple enough to be put in place immediately.\nYour landers should be properly equipped in no time.",
+      "voice": "melnorme-145.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_3": {
+      "text": "These little babies are great for defense, but because of their limited range\nthey may not make a good offensive weapon.\nHowever, the more you build for your vessel the more damage each laser strike will do.",
+      "voice": "melnorme-146.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_4": {
+      "text": "Our reinforcement procedures on your landers are complete.\nNow, provided your crew will stop putting their hands out the windows\nthey will be much better protected against hostile lifeforms.",
+      "voice": "melnorme-147.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_5": {
+      "text": "I hope this makes your resource gathering more cost-effective, Captain.",
+      "voice": "melnorme-148.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_6": {
+      "text": "We hope that these improved tanks will make more module slots available on your flagship\nwhich you can fill with other, more useful equipment.",
+      "voice": "melnorme-149.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_7": {
+      "text": "After some wild game, hmmm? Well, the changes we made should really make a difference!\nUnless of course that wiring went in backwards\nin which case you won't be able to shoot at all, or take off for that matter.\nDon't worry, Captain. We stand behind our work. If something goes wrong\njust bring it back to us, and we'll fix it pronto!",
+      "voice": "melnorme-150.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_8": {
+      "text": "With the addition of these safety belts and heavy-duty shock absorbers\nyour lander occupants should be much safer when an untimely earthquake strikes.\nThe job is complete. Your landers are ready.",
+      "voice": "melnorme-151.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_9": {
+      "text": "You are preparing for a mighty battle, eh?\nWell, let me give you some advice.\nYou should consider using multiple Tracking modules, since this will greatly improve your aim\nhowever, never add more than three to your ship. Any more would be useless.",
+      "voice": "melnorme-152.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_10": {
+      "text": "A little superconductive spray-paint and Presto!\nYour lander can sustain a direct hit by a lightning bolt\nwithout crisping the passengers inside... usually.\nSince the job is so easy that a nymph could do it\nI expect all your landers will be treated in less than an hour.",
+      "voice": "melnorme-153.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_11": {
+      "text": "With these new ablative-plasma heat shields, your crew will be substantially safer on hot worlds\nbut like all our lander modifications, this protection is not perfect, so remain cautious.\nSince the changes to your landers are straightforward\nyour landers should be fitted with the heat shields by the time you return to your ship.",
+      "voice": "melnorme-154.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_12": {
+      "text": "Captain, just a suggestion!\nHellbore Cannon are energy gulpers, so unless you want to have a long delay between shots\nI would suggest you add Dynamos or even Shiva Furnaces to your ship.",
+      "voice": "melnorme-155.ogg"
+    },
+    "melnorme.OK_BUY_NEW_TECH_13": {
+      "text": "I am certain you will appreciate this new module, Captain!\nWith it you should be able to destroy and devastate twice as fast as before.",
+      "voice": "melnorme-156.ogg"
+    },
+    "melnorme.CHARITY": {
+      "text": "Since you have no useful, easily removable equipment on your vessel\nwe have decided to provide you with fuel at no cost.\nPlease do not make the mistake of thinking of this as a `gift' or act of altruism\nwe are merely investing in our relationship with you, the customer.\nWe are certain that in the long run, this will prove to be a most profitable investment.",
+      "voice": "melnorme-157.ogg"
+    },
+    "melnorme.NEW_TECH_ALL_GONE": {
+      "text": "Commander, that is the limit of the new technology we can offer you.\nIf I may say so, you have been an excellent customer.\nThank you!",
+      "voice": "melnorme-158.ogg"
+    },
+    "melnorme.we_are_from_alliance0": {
+      "text": "We come in peace, representing",
+      "voice": null
+    },
+    "melnorme.STRIP_HEAD": {
+      "text": "We will take",
+      "voice": "melnorme-159.ogg"
+    },
+    "melnorme.LANDERS": {
+      "text": "of your Planet Landers",
+      "voice": "melnorme-160.ogg"
+    },
+    "melnorme.THRUSTERS": {
+      "text": "of your Fusion Thrusters",
+      "voice": "melnorme-161.ogg"
+    },
+    "melnorme.JETS": {
+      "text": "of your Turning Jets",
+      "voice": "melnorme-162.ogg"
+    },
+    "melnorme.PODS": {
+      "text": "of your empty Crew Pods",
+      "voice": "melnorme-163.ogg"
+    },
+    "melnorme.BAYS": {
+      "text": "of your empty Storage Bays",
+      "voice": "melnorme-164.ogg"
+    },
+    "melnorme.DYNAMOS": {
+      "text": "of your Dynamo modules",
+      "voice": "melnorme-165.ogg"
+    },
+    "melnorme.FURNACES": {
+      "text": "of your Shiva Furnaces",
+      "voice": "melnorme-166.ogg"
+    },
+    "melnorme.GUNS": {
+      "text": "of your Ion-Bolt Guns",
+      "voice": "melnorme-167.ogg"
+    },
+    "melnorme.BLASTERS": {
+      "text": "of your Blasters",
+      "voice": "melnorme-168.ogg"
+    },
+    "melnorme.CANNONS": {
+      "text": "of your Hellbore Cannons",
+      "voice": "melnorme-169.ogg"
+    },
+    "melnorme.TRACKERS": {
+      "text": "of your Auto-Tracking Modules",
+      "voice": "melnorme-170.ogg"
+    },
+    "melnorme.DEFENSES": {
+      "text": "of your Point-Defense Lasers",
+      "voice": "melnorme-171.ogg"
+    },
+    "melnorme.name_1": {
+      "text": "The New Alliance of Free Stars!",
+      "voice": null
+    },
+    "melnorme.name_2": {
+      "text": "The Concordance of Alien Nations!",
+      "voice": null
+    },
+    "melnorme.name_3": {
+      "text": "The United Federation of Worlds!",
+      "voice": null
+    },
+    "melnorme.name_40": {
+      "text": "The Empire of",
+      "voice": null
+    },
+    "melnorme.name_41": {
+      "text": "!",
+      "voice": null
+    },
+    "melnorme.ENUMERATE_ONE": {
+      "text": "one",
+      "voice": "melnorme-172.ogg"
+    },
+    "melnorme.ENUMERATE_TWO": {
+      "text": "two",
+      "voice": "melnorme-173.ogg"
+    },
+    "melnorme.ENUMERATE_THREE": {
+      "text": "three",
+      "voice": "melnorme-174.ogg"
+    },
+    "melnorme.ENUMERATE_FOUR": {
+      "text": "four",
+      "voice": "melnorme-175.ogg"
+    },
+    "melnorme.ENUMERATE_FIVE": {
+      "text": "five",
+      "voice": "melnorme-176.ogg"
+    },
+    "melnorme.ENUMERATE_SIX": {
+      "text": "six",
+      "voice": "melnorme-177.ogg"
+    },
+    "melnorme.ENUMERATE_SEVEN": {
+      "text": "seven",
+      "voice": "melnorme-178.ogg"
+    },
+    "melnorme.ENUMERATE_EIGHT": {
+      "text": "eight",
+      "voice": "melnorme-179.ogg"
+    },
+    "melnorme.ENUMERATE_NINE": {
+      "text": "nine",
+      "voice": "melnorme-180.ogg"
+    },
+    "melnorme.ENUMERATE_TEN": {
+      "text": "ten",
+      "voice": "melnorme-181.ogg"
+    },
+    "melnorme.ENUMERATE_ELEVEN": {
+      "text": "eleven",
+      "voice": "melnorme-182.ogg"
+    },
+    "melnorme.ENUMERATE_TWELVE": {
+      "text": "twelve",
+      "voice": "melnorme-183.ogg"
+    },
+    "melnorme.ENUMERATE_THIRTEEN": {
+      "text": "thirteen",
+      "voice": "melnorme-184.ogg"
+    },
+    "melnorme.ENUMERATE_FOURTEEN": {
+      "text": "fourteen",
+      "voice": "melnorme-185.ogg"
+    },
+    "melnorme.ENUMERATE_FIFTEEN": {
+      "text": "fifteen",
+      "voice": "melnorme-186.ogg"
+    },
+    "melnorme.ENUMERATE_SIXTEEN": {
+      "text": "sixteen",
+      "voice": "melnorme-187.ogg"
+    },
+    "melnorme.END_LIST_WITH_AND": {
+      "text": "and",
+      "voice": "melnorme-188.ogg"
+    },
+    "melnorme.ENUMERATE_ZERO": {
+      "text": "zero",
+      "voice": null
+    },
+    "melnorme.ENUMERATE_SEVENTEEN": {
+      "text": "seventeen",
+      "voice": "melnorme-190.ogg"
+    },
+    "melnorme.ENUMERATE_EIGHTEEN": {
+      "text": "eighteen",
+      "voice": "melnorme-191.ogg"
+    },
+    "melnorme.ENUMERATE_NINETEEN": {
+      "text": "nineteen",
+      "voice": "melnorme-192.ogg"
+    },
+    "melnorme.ENUMERATE_TWENTY": {
+      "text": "twenty",
+      "voice": "melnorme-193.ogg"
+    },
+    "melnorme.ENUMERATE_THIRTY": {
+      "text": "thirty",
+      "voice": "melnorme-194.ogg"
+    },
+    "melnorme.ENUMERATE_FOURTY": {
+      "text": "fourty",
+      "voice": "melnorme-195.ogg"
+    },
+    "melnorme.ENUMERATE_FIFTY": {
+      "text": "fifty",
+      "voice": "melnorme-196.ogg"
+    },
+    "melnorme.ENUMERATE_SIXTY": {
+      "text": "sixty",
+      "voice": "melnorme-197.ogg"
+    },
+    "melnorme.ENUMERATE_SEVENTY": {
+      "text": "seventy",
+      "voice": "melnorme-198.ogg"
+    },
+    "melnorme.ENUMERATE_EIGHTY": {
+      "text": "eighty",
+      "voice": "melnorme-199.ogg"
+    },
+    "melnorme.ENUMERATE_NINETY": {
+      "text": "ninety",
+      "voice": "melnorme-200.ogg"
+    },
+    "melnorme.ENUMERATE_HUNDRED": {
+      "text": "hundred",
+      "voice": "melnorme-201.ogg"
+    },
+    "melnorme.ENUMERATE_THOUSAND": {
+      "text": "thousand",
+      "voice": "melnorme-202.ogg"
+    }
+  },
+  "nodes": [
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "peace"
+    },
+    {
+      "id": "combat",
+      "kind": "end",
+      "outcome": "hostile"
+    },
+    {
+      "id": "entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "MET_MELNORME",
+                false
+              ]
+            }
+          },
+          "next": "first.mark"
+        }
+      ],
+      "otherwise": "anger"
+    },
+    {
+      "id": "first.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MET_MELNORME",
+          true
+        ]
+      },
+      "save_as": "first_mark",
+      "next": "first.greeting"
+    },
+    {
+      "id": "anger",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_ANGER",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "miffed.greeting"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_ANGER",
+                  0
+                ]
+              },
+              2
+            ]
+          },
+          "next": "pissed.greeting"
+        },
+        {
+          "when": {
+            "ge": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_ANGER",
+                  0
+                ]
+              },
+              3
+            ]
+          },
+          "next": "hate.greeting"
+        },
+        {
+          "when": {
+            "lt": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK2",
+                  0
+                ]
+              },
+              6
+            ]
+          },
+          "next": "first.greeting"
+        }
+      ],
+      "otherwise": "business.greeting"
+    },
+    {
+      "id": "first.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_BUSINESS_COUNT",
+          [
+            [
+              "melnorme.HELLO_NOW_DOWN_TO_BUSINESS_1"
+            ],
+            [
+              "melnorme.HELLO_NOW_DOWN_TO_BUSINESS_2"
+            ],
+            [
+              "melnorme.HELLO_NOW_DOWN_TO_BUSINESS_3"
+            ]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "first_greeting",
+      "next": "first.greeting.speech"
+    },
+    {
+      "id": "first.greeting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "first_greeting.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.menu"
+    },
+    {
+      "id": "first.we_are_from_alliance0.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK0",
+          1
+        ]
+      },
+      "save_as": "first_we_are_from_alliance0_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.we_are_from_alliance0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.KNOW_OF_YOU"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.we_are_from_alliance0.effects"
+    },
+    {
+      "id": "first.how_know.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK0",
+          2
+        ]
+      },
+      "save_as": "first_how_know_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.how_know",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.KNOW_BECAUSE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.how_know.effects"
+    },
+    {
+      "id": "first.what_about_yourselves.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK1",
+          1
+        ]
+      },
+      "save_as": "first_what_about_yourselves_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.what_about_yourselves",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NO_TALK_ABOUT_OURSELVES"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.what_about_yourselves.effects"
+    },
+    {
+      "id": "first.what_factors.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK1",
+          2
+        ]
+      },
+      "save_as": "first_what_factors_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.what_factors",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.FACTORS_ARE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.what_factors.effects"
+    },
+    {
+      "id": "first.what_about_universe.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          1
+        ]
+      },
+      "save_as": "first_what_about_universe_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.what_about_universe",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NO_FREE_LUNCH"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.what_about_universe.effects"
+    },
+    {
+      "id": "first.giving_is_good_1.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          2
+        ]
+      },
+      "save_as": "first_giving_is_good_1_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.giving_is_good_1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.GIVING_IS_BAD_1"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.giving_is_good_1.effects"
+    },
+    {
+      "id": "first.giving_is_good_2.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          3
+        ]
+      },
+      "save_as": "first_giving_is_good_2_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "first.giving_is_good_2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.GIVING_IS_BAD_2"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.giving_is_good_2.effects"
+    },
+    {
+      "id": "first.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "we_are_from_alliance0",
+          "text": {
+            "compose": [
+              {
+                "phrase": "melnorme.we_are_from_alliance0"
+              },
+              {
+                "insert": {
+                  "get": [
+                    "player",
+                    "alliance_name",
+                    "Alliance"
+                  ]
+                }
+              }
+            ]
+          },
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK0",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "first.we_are_from_alliance0"
+        },
+        {
+          "id": "how_know",
+          "text": "melnorme.how_know",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK0",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "first.how_know"
+        },
+        {
+          "id": "what_about_yourselves",
+          "text": "melnorme.what_about_yourselves",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK1",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "first.what_about_yourselves"
+        },
+        {
+          "id": "what_factors",
+          "text": "melnorme.what_factors",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK1",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "first.what_factors"
+        },
+        {
+          "id": "what_about_universe",
+          "text": "melnorme.what_about_universe",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK2",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "first.what_about_universe"
+        },
+        {
+          "id": "giving_is_good_1",
+          "text": "melnorme.giving_is_good_1",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK2",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "first.giving_is_good_1"
+        },
+        {
+          "id": "giving_is_good_2",
+          "text": "melnorme.giving_is_good_2",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK2",
+                  0
+                ]
+              },
+              2
+            ]
+          },
+          "next": "first.giving_is_good_2"
+        },
+        {
+          "id": "get_on_with_business",
+          "text": "melnorme.get_on_with_business",
+          "when": {
+            "ge": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK1",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "business.start"
+        },
+        {
+          "id": "trade_is_for_the_weak",
+          "text": "melnorme.trade_is_for_the_weak",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK2",
+                  0
+                ]
+              },
+              3
+            ]
+          },
+          "next": "bluster.start"
+        },
+        {
+          "id": "no_trade_now",
+          "text": "melnorme.no_trade_now",
+          "when": true,
+          "next": "exit.no_trade_now"
+        }
+      ]
+    },
+    {
+      "id": "exit.no_trade_now",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_NO_TRADE_NOW_BYE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "business.start",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          5
+        ]
+      },
+      "save_as": "business_start",
+      "next": "business.greeting"
+    },
+    {
+      "id": "business.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          [
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_1"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_2"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_3"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_4"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_5"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_6"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_7"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_8"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_9"
+            ],
+            [
+              "melnorme.HELLO_AND_DOWN_TO_BUSINESS_10"
+            ]
+          ],
+          "repeat_last",
+          5
+        ]
+      },
+      "save_as": "business_greeting",
+      "next": "business.greeting.speech"
+    },
+    {
+      "id": "business.greeting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "business_greeting.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "business.eligibility"
+    },
+    {
+      "id": "business.eligibility",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {
+                "gt": [
+                  {
+                    "query": "ship.fuel",
+                    "args": []
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "query": "inventory.quantity",
+                    "args": [
+                      "biomass"
+                    ]
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "query": "currency.balance",
+                    "args": [
+                      "melnorme_credit"
+                    ]
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "get": [
+                      "player",
+                      "unreported_rainbows",
+                      0
+                    ]
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "next": "business.trading_intro_check"
+        }
+      ],
+      "otherwise": "rescue.entry"
+    },
+    {
+      "id": "business.trading_intro_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "TRADED_WITH_MELNORME",
+                false
+              ]
+            }
+          },
+          "next": "business.trading_intro"
+        }
+      ],
+      "otherwise": "business.ask"
+    },
+    {
+      "id": "business.trading_intro.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "TRADED_WITH_MELNORME",
+          true
+        ]
+      },
+      "save_as": "business_trading_intro_effects",
+      "next": "business.ask"
+    },
+    {
+      "id": "business.trading_intro",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.TRADING_INFO"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "business.trading_intro.effects"
+    },
+    {
+      "id": "business.ask",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.BUY_OR_SELL"
+          ],
+          "presentation": {
+            "composite": "melnorme.purple",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "business.menu"
+    },
+    {
+      "id": "business.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "melnorme.purple",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "why_turned_purple",
+          "text": "melnorme.why_turned_purple",
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "WHY_MELNORME_PURPLE",
+                false
+              ]
+            }
+          },
+          "next": "business.purple"
+        },
+        {
+          "id": "buy",
+          "text": "melnorme.buy",
+          "when": {
+            "not": {
+              "get": [
+                "local",
+                "asked_to_buy",
+                false
+              ]
+            }
+          },
+          "next": "buy.entry"
+        },
+        {
+          "id": "sell",
+          "text": "melnorme.sell",
+          "when": {
+            "get": [
+              "local",
+              "sell_enabled",
+              true
+            ]
+          },
+          "next": "sell.entry"
+        },
+        {
+          "id": "goodbye",
+          "text": "melnorme.goodbye",
+          "when": true,
+          "next": "exit.goodbye"
+        }
+      ]
+    },
+    {
+      "id": "business.purple.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "WHY_MELNORME_PURPLE",
+          true
+        ]
+      },
+      "save_as": "business_purple_effects",
+      "next": "business.menu"
+    },
+    {
+      "id": "business.purple",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.TURNED_PURPLE_BECAUSE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "business.purple.effects"
+    },
+    {
+      "id": "exit.goodbye",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.FRIENDLY_GOODBYE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "buy.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "query": "currency.balance",
+                "args": [
+                  "melnorme_credit"
+                ]
+              },
+              0
+            ]
+          },
+          "next": "buy.no_credit"
+        }
+      ],
+      "otherwise": "buy.ask"
+    },
+    {
+      "id": "buy.no_credit.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "asked_to_buy",
+          true
+        ]
+      },
+      "save_as": "buy_no_credit_effects",
+      "next": "business.menu"
+    },
+    {
+      "id": "buy.no_credit",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NEED_CREDIT"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.no_credit.effects"
+    },
+    {
+      "id": "buy.ask",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.WHAT_TO_BUY"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "buy.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "buy_fuel",
+          "text": "melnorme.buy_fuel",
+          "when": {
+            "lt": [
+              {
+                "query": "ship.fuel",
+                "args": []
+              },
+              {
+                "query": "ship.fuel_capacity",
+                "args": []
+              }
+            ]
+          },
+          "next": "fuel.entry"
+        },
+        {
+          "id": "buy_technology",
+          "text": "melnorme.buy_technology",
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "technology"
+            ]
+          },
+          "next": "tech.entry"
+        },
+        {
+          "id": "buy_info",
+          "text": "melnorme.buy_info",
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "information"
+            ]
+          },
+          "next": "info.entry"
+        },
+        {
+          "id": "done_buying",
+          "text": "melnorme.done_buying",
+          "when": true,
+          "next": "buy.done"
+        },
+        {
+          "id": "be_leaving_now",
+          "text": "melnorme.be_leaving_now",
+          "when": true,
+          "next": "exit.goodbye"
+        }
+      ]
+    },
+    {
+      "id": "buy.done",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_DONE_BUYING"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "business.menu"
+    },
+    {
+      "id": "fuel.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "MELNORME_FUEL_PROCEDURE",
+                false
+              ]
+            }
+          },
+          "next": "fuel.intro"
+        }
+      ],
+      "otherwise": "fuel.ask"
+    },
+    {
+      "id": "fuel.intro.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_FUEL_PROCEDURE",
+          true
+        ]
+      },
+      "save_as": "fuel_intro_effects",
+      "next": "fuel.ask"
+    },
+    {
+      "id": "fuel.intro",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.BUY_FUEL_INTRO"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "fuel.intro.effects"
+    },
+    {
+      "id": "fuel.buy_1_fuel",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "fuel",
+          1
+        ]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.outcome"
+    },
+    {
+      "id": "fuel.buy_5_fuel",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "fuel",
+          5
+        ]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.outcome"
+    },
+    {
+      "id": "fuel.buy_10_fuel",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "fuel",
+          10
+        ]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.outcome"
+    },
+    {
+      "id": "fuel.buy_25_fuel",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "fuel",
+          25
+        ]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.outcome"
+    },
+    {
+      "id": "fuel.fill_me_up",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "fuel",
+          "fill"
+        ]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.outcome"
+    },
+    {
+      "id": "fuel.ask",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.HOW_MUCH_FUEL"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "buy_1_fuel",
+          "text": "melnorme.buy_1_fuel",
+          "when": true,
+          "next": "fuel.buy_1_fuel"
+        },
+        {
+          "id": "buy_5_fuel",
+          "text": "melnorme.buy_5_fuel",
+          "when": true,
+          "next": "fuel.buy_5_fuel"
+        },
+        {
+          "id": "buy_10_fuel",
+          "text": "melnorme.buy_10_fuel",
+          "when": true,
+          "next": "fuel.buy_10_fuel"
+        },
+        {
+          "id": "buy_25_fuel",
+          "text": "melnorme.buy_25_fuel",
+          "when": true,
+          "next": "fuel.buy_25_fuel"
+        },
+        {
+          "id": "fill_me_up",
+          "text": "melnorme.fill_me_up",
+          "when": true,
+          "next": "fuel.fill_me_up"
+        },
+        {
+          "id": "done_buying_fuel",
+          "text": "melnorme.done_buying_fuel",
+          "when": true,
+          "next": "fuel.done"
+        }
+      ]
+    },
+    {
+      "id": "fuel.outcome",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "fuel_purchase.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "fuel.success"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "fuel_purchase.code"
+                ]
+              },
+              "no_room"
+            ]
+          },
+          "next": "fuel.no_room"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "fuel_purchase.code"
+                ]
+              },
+              "no_credit"
+            ]
+          },
+          "next": "fuel.no_credit"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "fuel.success",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.GOT_FUEL"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "fuel.capacity_check"
+    },
+    {
+      "id": "fuel.capacity_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "ge": [
+              {
+                "query": "ship.fuel",
+                "args": []
+              },
+              {
+                "query": "ship.fuel_capacity",
+                "args": []
+              }
+            ]
+          },
+          "next": "buy.menu"
+        }
+      ],
+      "otherwise": "fuel.ask"
+    },
+    {
+      "id": "fuel.no_room",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NO_ROOM_FOR_FUEL"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "fuel.ask"
+    },
+    {
+      "id": "fuel.no_credit",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NEED_MORE_CREDIT0",
+            {
+              "number": {
+                "get": [
+                  "result",
+                  "fuel_purchase.missing"
+                ]
+              }
+            },
+            "melnorme.NEED_MORE_CREDIT1"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "fuel.ask"
+    },
+    {
+      "id": "fuel.done",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_DONE_BUYING_FUEL"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "tech.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "MELNORME_TECH_PROCEDURE",
+                false
+              ]
+            }
+          },
+          "next": "tech.intro"
+        }
+      ],
+      "otherwise": "tech.pitch"
+    },
+    {
+      "id": "tech.intro.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_TECH_PROCEDURE",
+          true
+        ]
+      },
+      "save_as": "tech_intro_effects",
+      "next": "tech.pitch"
+    },
+    {
+      "id": "tech.intro",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.BUY_NEW_TECH_INTRO"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "tech.intro.effects"
+    },
+    {
+      "id": "tech.pitch.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "tech_pitch.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "tech.menu"
+    },
+    {
+      "id": "tech.pitch.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "tech_pitch.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "tech.pitch.speech"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "tech.pitch",
+      "kind": "action",
+      "action": {
+        "verb": "report.prepare",
+        "args": [
+          "melnorme.technology_pitch",
+          {
+            "literal": {}
+          }
+        ]
+      },
+      "save_as": "tech_pitch",
+      "next": "tech.pitch.check"
+    },
+    {
+      "id": "tech.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "buy_new_tech",
+          "text": "melnorme.buy_new_tech",
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "technology"
+            ]
+          },
+          "next": "tech.buy"
+        },
+        {
+          "id": "no_buy_new_tech",
+          "text": "melnorme.no_buy_new_tech",
+          "when": true,
+          "next": "tech.done"
+        }
+      ]
+    },
+    {
+      "id": "tech.buy",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "next_technology",
+          1
+        ]
+      },
+      "save_as": "tech_purchase",
+      "next": "tech.outcome"
+    },
+    {
+      "id": "tech.outcome",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "tech_purchase.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "tech.success"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "tech_purchase.code"
+                ]
+              },
+              "no_credit"
+            ]
+          },
+          "next": "tech.no_credit"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "tech_purchase.code"
+                ]
+              },
+              "unavailable"
+            ]
+          },
+          "next": "tech.none"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "tech.success",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "tech_purchase.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "tech.remaining"
+    },
+    {
+      "id": "tech.remaining",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "technology"
+            ]
+          },
+          "next": "tech.pitch"
+        }
+      ],
+      "otherwise": "tech.none"
+    },
+    {
+      "id": "tech.none",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NEW_TECH_ALL_GONE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "tech.no_credit",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NEED_MORE_CREDIT0",
+            {
+              "number": {
+                "get": [
+                  "result",
+                  "tech_purchase.missing"
+                ]
+              }
+            },
+            "melnorme.NEED_MORE_CREDIT1"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "tech.done",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_NO_BUY_NEW_TECH"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "info.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "MELNORME_INFO_PROCEDURE",
+                false
+              ]
+            }
+          },
+          "next": "info.intro"
+        }
+      ],
+      "otherwise": "info.ask"
+    },
+    {
+      "id": "info.intro.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_INFO_PROCEDURE",
+          true
+        ]
+      },
+      "save_as": "info_intro_effects",
+      "next": "info.menu"
+    },
+    {
+      "id": "info.intro",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.BUY_INFO_INTRO"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "info.intro.effects"
+    },
+    {
+      "id": "info.ask",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_BUY_INFO"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "info.menu"
+    },
+    {
+      "id": "info.events",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "events",
+          1
+        ]
+      },
+      "save_as": "info_purchase",
+      "next": "info.outcome"
+    },
+    {
+      "id": "info.alien_races",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "alien_races",
+          1
+        ]
+      },
+      "save_as": "info_purchase",
+      "next": "info.outcome"
+    },
+    {
+      "id": "info.history",
+      "kind": "action",
+      "action": {
+        "verb": "trade.purchase",
+        "args": [
+          "melnorme",
+          "history",
+          1
+        ]
+      },
+      "save_as": "info_purchase",
+      "next": "info.outcome"
+    },
+    {
+      "id": "info.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "buy_current_events",
+          "text": "melnorme.buy_current_events",
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "events"
+            ]
+          },
+          "next": "info.events"
+        },
+        {
+          "id": "buy_alien_races",
+          "text": "melnorme.buy_alien_races",
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "alien_races"
+            ]
+          },
+          "next": "info.alien_races"
+        },
+        {
+          "id": "buy_history",
+          "text": "melnorme.buy_history",
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "history"
+            ]
+          },
+          "next": "info.history"
+        },
+        {
+          "id": "done_buying_info",
+          "text": "melnorme.done_buying_info",
+          "when": true,
+          "next": "info.done"
+        }
+      ]
+    },
+    {
+      "id": "info.outcome",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "info_purchase.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "info.success"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "info_purchase.code"
+                ]
+              },
+              "no_credit"
+            ]
+          },
+          "next": "info.no_credit"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "info_purchase.code"
+                ]
+              },
+              "unavailable"
+            ]
+          },
+          "next": "info.none"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "info.success",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "info_purchase.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "info.remaining"
+    },
+    {
+      "id": "info.remaining",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "query": "market.available",
+            "args": [
+              "melnorme",
+              "information"
+            ]
+          },
+          "next": "info.menu"
+        }
+      ],
+      "otherwise": "info.none"
+    },
+    {
+      "id": "info.none",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.INFO_ALL_GONE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "info.no_credit",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NEED_MORE_CREDIT0",
+            {
+              "number": {
+                "get": [
+                  "result",
+                  "info_purchase.missing"
+                ]
+              }
+            },
+            "melnorme.NEED_MORE_CREDIT1"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "info.done",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_DONE_BUYING_INFO"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "buy.menu"
+    },
+    {
+      "id": "sell.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {
+                "gt": [
+                  {
+                    "query": "inventory.quantity",
+                    "args": [
+                      "biomass"
+                    ]
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "get": [
+                      "player",
+                      "unreported_rainbows",
+                      0
+                    ]
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "next": "sell.ask"
+        }
+      ],
+      "otherwise": "sell.none"
+    },
+    {
+      "id": "sell.ask",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.WHAT_TO_SELL"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "sell.menu"
+    },
+    {
+      "id": "sell.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "sell_life_data",
+          "text": "melnorme.sell_life_data",
+          "when": {
+            "gt": [
+              {
+                "query": "inventory.quantity",
+                "args": [
+                  "biomass"
+                ]
+              },
+              0
+            ]
+          },
+          "next": "sell.biomass"
+        },
+        {
+          "id": "sell_rainbow_locations",
+          "text": "melnorme.sell_rainbow_locations",
+          "when": {
+            "gt": [
+              {
+                "get": [
+                  "player",
+                  "unreported_rainbows",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "sell.rainbows"
+        },
+        {
+          "id": "done_selling",
+          "text": "melnorme.done_selling",
+          "when": true,
+          "next": "sell.done"
+        }
+      ]
+    },
+    {
+      "id": "sell.biomass",
+      "kind": "action",
+      "action": {
+        "verb": "trade.sell",
+        "args": [
+          "melnorme",
+          "biomass",
+          "all"
+        ]
+      },
+      "save_as": "sale",
+      "next": "sell.outcome"
+    },
+    {
+      "id": "sell.rainbows",
+      "kind": "action",
+      "action": {
+        "verb": "trade.sell",
+        "args": [
+          "melnorme",
+          "rainbows",
+          "all"
+        ]
+      },
+      "save_as": "sale",
+      "next": "sell.outcome"
+    },
+    {
+      "id": "sell.outcome",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "sale.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "sell.success"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "sell.success",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "sale.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "sell.reset"
+    },
+    {
+      "id": "sell.reset",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "asked_to_buy",
+          false
+        ]
+      },
+      "save_as": "sell_reset",
+      "next": "sell.remaining"
+    },
+    {
+      "id": "sell.remaining",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {
+                "gt": [
+                  {
+                    "query": "inventory.quantity",
+                    "args": [
+                      "biomass"
+                    ]
+                  },
+                  0
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "get": [
+                      "player",
+                      "unreported_rainbows",
+                      0
+                    ]
+                  },
+                  0
+                ]
+              }
+            ]
+          },
+          "next": "sell.ask"
+        }
+      ],
+      "otherwise": "sell.disable"
+    },
+    {
+      "id": "sell.none",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NOTHING_TO_SELL"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "sell.disable"
+    },
+    {
+      "id": "sell.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "sell_enabled",
+          false
+        ]
+      },
+      "save_as": "sell_disable",
+      "next": "business.menu"
+    },
+    {
+      "id": "sell.done",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_DONE_SELLING"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "business.menu"
+    },
+    {
+      "id": "rescue.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "get": [
+              "story",
+              "MELNORME_RESCUE_REFUSED",
+              false
+            ]
+          },
+          "next": "rescue.changed"
+        }
+      ],
+      "otherwise": "rescue.explain"
+    },
+    {
+      "id": "rescue.changed",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.CHANGED_MIND"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "yes_changed_mind",
+          "text": "melnorme.yes_changed_mind",
+          "when": true,
+          "next": "rescue.prepare"
+        },
+        {
+          "id": "no_changed_mind",
+          "text": "melnorme.no_changed_mind",
+          "when": true,
+          "next": "rescue.no_changed"
+        }
+      ]
+    },
+    {
+      "id": "rescue.explain",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_RESCUE_COUNT",
+          [
+            [
+              "melnorme.RESCUE_EXPLANATION"
+            ],
+            [
+              "melnorme.RESCUE_AGAIN_1"
+            ],
+            [
+              "melnorme.RESCUE_AGAIN_2"
+            ],
+            [
+              "melnorme.RESCUE_AGAIN_3"
+            ],
+            [
+              "melnorme.RESCUE_AGAIN_4"
+            ],
+            [
+              "melnorme.RESCUE_AGAIN_5"
+            ]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "rescue_explain",
+      "next": "rescue.explain.speech"
+    },
+    {
+      "id": "rescue.explain.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "rescue_explain.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "rescue.ask"
+    },
+    {
+      "id": "rescue.ask",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.SHOULD_WE_HELP_YOU"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "yes_help",
+          "text": "melnorme.yes_help",
+          "when": true,
+          "next": "rescue.prepare"
+        },
+        {
+          "id": "no_help",
+          "text": "melnorme.no_help",
+          "when": true,
+          "next": "rescue.no_help"
+        }
+      ]
+    },
+    {
+      "id": "rescue.prepare",
+      "kind": "action",
+      "action": {
+        "verb": "rescue.prepare",
+        "args": [
+          "melnorme"
+        ]
+      },
+      "save_as": "rescue_quote",
+      "next": "rescue.quote_check"
+    },
+    {
+      "id": "rescue.quote_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "rescue_quote.code"
+                ]
+              },
+              "offer"
+            ]
+          },
+          "next": "rescue.offer"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "rescue_quote.code"
+                ]
+              },
+              "free"
+            ]
+          },
+          "next": "rescue.free"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "rescue.offer",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "rescue_quote.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "take_it",
+          "text": "melnorme.take_it",
+          "when": true,
+          "next": "rescue.accept"
+        },
+        {
+          "id": "leave_it",
+          "text": "melnorme.leave_it",
+          "when": true,
+          "next": "rescue.leave"
+        }
+      ]
+    },
+    {
+      "id": "rescue.accept",
+      "kind": "action",
+      "action": {
+        "verb": "rescue.accept",
+        "args": [
+          {
+            "get": [
+              "result",
+              "rescue_quote.token"
+            ]
+          }
+        ]
+      },
+      "save_as": "rescue_accept",
+      "next": "rescue.accept_check"
+    },
+    {
+      "id": "rescue.accept_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "rescue_accept.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "rescue.thanks"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "rescue.free",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "rescue_quote.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "rescue.thanks",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.HAPPY_TO_HAVE_RESCUED"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "rescue.leave.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_RESCUE_REFUSED",
+          true
+        ]
+      },
+      "save_as": "rescue_leave_effects",
+      "next": "end"
+    },
+    {
+      "id": "rescue.leave",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.MAYBE_SEE_YOU_LATER"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "rescue.leave.effects"
+    },
+    {
+      "id": "rescue.no_help.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_RESCUE_REFUSED",
+          true
+        ]
+      },
+      "save_as": "rescue_no_help_effects",
+      "next": "end"
+    },
+    {
+      "id": "rescue.no_help",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.GOODBYE_AND_GOODLUCK"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "rescue.no_help.effects"
+    },
+    {
+      "id": "rescue.no_changed",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.GOODBYE_AND_GOODLUCK_AGAIN"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "bluster.start.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          4
+        ]
+      },
+      "save_as": "bluster_start_effects",
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.start",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.WERE_NOT_AFRAID"
+          ],
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "bluster.start.effects"
+    },
+    {
+      "id": "bluster.why.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "WHY_MELNORME_BLUE",
+          true
+        ]
+      },
+      "save_as": "bluster_why_effects",
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.why",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.BLUE_IS_MAD"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "bluster.why.effects"
+    },
+    {
+      "id": "bluster.we_strong_1.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "bluster.strength",
+          1
+        ]
+      },
+      "save_as": "bluster_we_strong_1_effects",
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.we_strong_1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.YOU_NOT_STRONG_1"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "bluster.we_strong_1.effects"
+    },
+    {
+      "id": "bluster.we_strong_2.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "bluster.strength",
+          2
+        ]
+      },
+      "save_as": "bluster_we_strong_2_effects",
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.we_strong_2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.YOU_NOT_STRONG_2"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "bluster.we_strong_2.effects"
+    },
+    {
+      "id": "bluster.we_strong_3.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "bluster.strength",
+          3
+        ]
+      },
+      "save_as": "bluster_we_strong_3_effects",
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.we_strong_3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.YOU_NOT_STRONG_3"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "bluster.we_strong_3.effects"
+    },
+    {
+      "id": "bluster.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "why_blue_light",
+          "text": "melnorme.why_blue_light",
+          "when": {
+            "not": {
+              "get": [
+                "story",
+                "WHY_MELNORME_BLUE",
+                false
+              ]
+            }
+          },
+          "next": "bluster.why"
+        },
+        {
+          "id": "we_strong_1",
+          "text": "melnorme.we_strong_1",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "local",
+                  "bluster.strength",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "bluster.we_strong_1"
+        },
+        {
+          "id": "we_strong_2",
+          "text": "melnorme.we_strong_2",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "local",
+                  "bluster.strength",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "bluster.we_strong_2"
+        },
+        {
+          "id": "we_strong_3",
+          "text": "melnorme.we_strong_3",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "local",
+                  "bluster.strength",
+                  0
+                ]
+              },
+              2
+            ]
+          },
+          "next": "bluster.we_strong_3"
+        },
+        {
+          "id": "just_testing",
+          "text": "melnorme.just_testing",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "local",
+                  "bluster.testing",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "bluster.testing"
+        },
+        {
+          "id": "yes_really_testing",
+          "text": "melnorme.yes_really_testing",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "local",
+                  "bluster.testing",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "bluster.accept_testing"
+        },
+        {
+          "id": "youre_on",
+          "text": "melnorme.youre_on",
+          "when": true,
+          "next": "exit.youre_on"
+        }
+      ]
+    },
+    {
+      "id": "bluster.testing.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "bluster.testing",
+          1
+        ]
+      },
+      "save_as": "bluster_testing_effects",
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.testing",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.REALLY_TESTING"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "bluster.testing.effects"
+    },
+    {
+      "id": "bluster.accept_testing",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.TEST_RESULTS"
+          ],
+          "presentation": {
+            "composite": "melnorme.yellow",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "first.menu"
+    },
+    {
+      "id": "miffed.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_MIFFED_COUNT",
+          [
+            [
+              "melnorme.HELLO_SLIGHTLY_ANGRY_1"
+            ],
+            [
+              "melnorme.HELLO_SLIGHTLY_ANGRY_2"
+            ],
+            [
+              "melnorme.HELLO_SLIGHTLY_ANGRY_3"
+            ]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "miffed_greeting",
+      "next": "miffed.greeting.speech"
+    },
+    {
+      "id": "miffed.greeting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "miffed_greeting.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "miffed.menu"
+    },
+    {
+      "id": "pissed.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_PISSED_COUNT",
+          [
+            [
+              "melnorme.HELLO_PISSED_OFF_1"
+            ],
+            [
+              "melnorme.HELLO_PISSED_OFF_2"
+            ],
+            [
+              "melnorme.HELLO_PISSED_OFF_3"
+            ]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "pissed_greeting",
+      "next": "pissed.greeting.speech"
+    },
+    {
+      "id": "pissed.greeting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "pissed_greeting.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "pissed.menu"
+    },
+    {
+      "id": "hate.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_HATE_COUNT",
+          [
+            [
+              "melnorme.HELLO_HATE_YOU_1"
+            ],
+            [
+              "melnorme.HELLO_HATE_YOU_2"
+            ],
+            [
+              "melnorme.HELLO_HATE_YOU_3"
+            ]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "hate_greeting",
+      "next": "hate.greeting.speech"
+    },
+    {
+      "id": "hate.greeting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": {
+            "get": [
+              "result",
+              "hate_greeting.speech"
+            ]
+          },
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "hate.menu"
+    },
+    {
+      "id": "miffed.explore_relationship.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK3",
+          1
+        ]
+      },
+      "save_as": "miffed_explore_relationship_effects",
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.explore_relationship",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.EXAMPLE_OF_RELATIONSHIP"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "miffed.explore_relationship.effects"
+    },
+    {
+      "id": "miffed.excuse_1.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK3",
+          2
+        ]
+      },
+      "save_as": "miffed_excuse_1_effects",
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.excuse_1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NO_EXCUSE_1"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "miffed.excuse_1.effects"
+    },
+    {
+      "id": "miffed.excuse_2.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK3",
+          3
+        ]
+      },
+      "save_as": "miffed_excuse_2_effects",
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.excuse_2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NO_EXCUSE_2"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "miffed.excuse_2.effects"
+    },
+    {
+      "id": "miffed.excuse_3.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK3",
+          4
+        ]
+      },
+      "save_as": "miffed_excuse_3_effects",
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.excuse_3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NO_EXCUSE_3"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "miffed.excuse_3.effects"
+    },
+    {
+      "id": "miffed.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "explore_relationship",
+          "text": "melnorme.explore_relationship",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK3",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "miffed.explore_relationship"
+        },
+        {
+          "id": "excuse_1",
+          "text": "melnorme.excuse_1",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK3",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "miffed.excuse_1"
+        },
+        {
+          "id": "excuse_2",
+          "text": "melnorme.excuse_2",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK3",
+                  0
+                ]
+              },
+              2
+            ]
+          },
+          "next": "miffed.excuse_2"
+        },
+        {
+          "id": "excuse_3",
+          "text": "melnorme.excuse_3",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK3",
+                  0
+                ]
+              },
+              3
+            ]
+          },
+          "next": "miffed.excuse_3"
+        },
+        {
+          "id": "we_apologize",
+          "text": "melnorme.we_apologize",
+          "when": true,
+          "next": "miffed.apologize"
+        },
+        {
+          "id": "so_we_can_attack",
+          "text": "melnorme.so_we_can_attack",
+          "when": true,
+          "next": "exit.so_we_can_attack"
+        },
+        {
+          "id": "bye_melnorme_slightly_angry",
+          "text": "melnorme.bye_melnorme_slightly_angry",
+          "when": true,
+          "next": "exit.miffed"
+        }
+      ]
+    },
+    {
+      "id": "miffed.apologize.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_ANGER",
+          0
+        ]
+      },
+      "save_as": "miffed_apologize_effects",
+      "next": "first.menu"
+    },
+    {
+      "id": "miffed.apologize",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.APOLOGY_ACCEPTED"
+          ],
+          "presentation": {
+            "composite": "melnorme.yellow",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "miffed.apologize.effects"
+    },
+    {
+      "id": "pissed.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "beg_forgiveness",
+          "text": "melnorme.beg_forgiveness",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK4",
+                  0
+                ]
+              },
+              0
+            ]
+          },
+          "next": "pissed.beg"
+        },
+        {
+          "id": "you_are_so_right",
+          "text": "melnorme.you_are_so_right",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK4",
+                  0
+                ]
+              },
+              1
+            ]
+          },
+          "next": "pissed.agree"
+        },
+        {
+          "id": "ok_strip_me",
+          "text": "melnorme.ok_strip_me",
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "story",
+                  "MELNORME_YACK_STACK4",
+                  0
+                ]
+              },
+              2
+            ]
+          },
+          "next": "pissed.strip"
+        },
+        {
+          "id": "fight_some_more",
+          "text": "melnorme.fight_some_more",
+          "when": true,
+          "next": "exit.fight_some_more"
+        },
+        {
+          "id": "bye_melnorme_pissed_off",
+          "text": "melnorme.bye_melnorme_pissed_off",
+          "when": true,
+          "next": "exit.pissed"
+        }
+      ]
+    },
+    {
+      "id": "pissed.beg.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK4",
+          1
+        ]
+      },
+      "save_as": "pissed_beg_effects",
+      "next": "pissed.menu"
+    },
+    {
+      "id": "pissed.beg",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.LOTS_TO_MAKE_UP_FOR"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "pissed.beg.effects"
+    },
+    {
+      "id": "pissed.agree.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK4",
+          2
+        ]
+      },
+      "save_as": "pissed_agree_effects",
+      "next": "pissed.menu"
+    },
+    {
+      "id": "pissed.agree",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.ONE_LAST_CHANCE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "pissed.agree.effects"
+    },
+    {
+      "id": "pissed.strip",
+      "kind": "action",
+      "action": {
+        "verb": "ship.strip",
+        "args": [
+          "melnorme.penance"
+        ]
+      },
+      "save_as": "penance",
+      "next": "pissed.strip_check"
+    },
+    {
+      "id": "pissed.strip_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "penance.code"
+                ]
+              },
+              "not_worth_stripping"
+            ]
+          },
+          "next": "pissed.not_worth"
+        },
+        {
+          "when": {
+            "eq": [
+              {
+                "get": [
+                  "result",
+                  "penance.code"
+                ]
+              },
+              "ok"
+            ]
+          },
+          "next": "pissed.forgiven"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "pissed.not_worth",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.NOT_WORTH_STRIPPING"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "pissed.forgiven.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_ANGER",
+          0
+        ]
+      },
+      "save_as": "pissed_forgiven_effects",
+      "next": "end"
+    },
+    {
+      "id": "pissed.forgiven",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.FAIR_JUSTICE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "pissed.forgiven.effects"
+    },
+    {
+      "id": "hate.menu",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [],
+          "presentation": {
+            "composite": "melnorme.blue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "id": "well_if_thats_the_way_you_feel",
+          "text": "melnorme.well_if_thats_the_way_you_feel",
+          "when": true,
+          "next": "exit.fight_again"
+        },
+        {
+          "id": "you_hate_us_so_we_go_away",
+          "text": "melnorme.you_hate_us_so_we_go_away",
+          "when": true,
+          "next": "exit.hate"
+        }
+      ]
+    },
+    {
+      "id": "exit.youre_on.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_ANGER",
+          1
+        ]
+      },
+      "save_as": "exit_youre_on_effects",
+      "next": "combat"
+    },
+    {
+      "id": "exit.youre_on",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.YOU_GIVE_US_NO_CHOICE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "exit.youre_on.effects"
+    },
+    {
+      "id": "exit.so_we_can_attack.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_ANGER",
+          2
+        ]
+      },
+      "save_as": "exit_so_we_can_attack_effects",
+      "next": "combat"
+    },
+    {
+      "id": "exit.so_we_can_attack",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.DECEITFUL_HUMAN"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "exit.so_we_can_attack.effects"
+    },
+    {
+      "id": "exit.fight_some_more.effects",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "story",
+          "MELNORME_ANGER",
+          3
+        ]
+      },
+      "save_as": "exit_fight_some_more_effects",
+      "next": "combat"
+    },
+    {
+      "id": "exit.fight_some_more",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.OK_FIGHT_SOME_MORE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "exit.fight_some_more.effects"
+    },
+    {
+      "id": "exit.miffed",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.MELNORME_SLIGHTLY_ANGRY_GOODBYE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.pissed",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.MELNORME_PISSED_OFF_GOODBYE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.fight_again",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.WE_FIGHT_AGAIN"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "combat"
+    },
+    {
+      "id": "exit.hate",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "melnorme.HATE_YOU_GOODBYE"
+          ],
+          "presentation": {
+            "composite": "continue",
+            "music": "continue",
+            "voice": "if_available"
+          }
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "error",
+      "kind": "end",
+      "outcome": "design_error"
+    }
+  ],
+  "markets": {
+    "melnorme": {
+      "currency": "melnorme_credit",
+      "fuel": {
+        "unit_price": 1,
+        "unit": "displayed_fuel",
+        "storage_units_per_unit": 100,
+        "quantities": [
+          1,
+          5,
+          10,
+          25,
+          "fill"
+        ],
+        "fill_rounding": "ceil",
+        "capacity_comparison": "legacy_whole_units"
+      },
+      "sales": {
+        "biomass": {
+          "credits_per_unit": 2
+        },
+        "rainbows": {
+          "credits_per_new_location": 500
+        }
+      },
+      "technology": [
+        {
+          "id": "TECH_MODULE_BLASTER",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_1"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_1"
+          ],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "BLASTER_WEAPON",
+            "build_cost_ru": 4000
+          }
+        },
+        {
+          "id": "TECH_LANDER_SPEED",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_2"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_2"
+          ],
+          "grant": {
+            "kind": "state",
+            "key": "IMPROVED_LANDER_SPEED",
+            "value": 1
+          }
+        },
+        {
+          "id": "TECH_MODULE_ANTIMISSILE",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_3"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_3"
+          ],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "ANTIMISSILE_DEFENSE",
+            "build_cost_ru": 4000
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_BIO",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_4"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_4"
+          ],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "BIOLOGICAL_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_LANDER_CARGO",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_5"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_5"
+          ],
+          "grant": {
+            "kind": "state",
+            "key": "IMPROVED_LANDER_CARGO",
+            "value": 1
+          }
+        },
+        {
+          "id": "TECH_MODULE_BIGFUELTANK",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_6"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_6"
+          ],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "HIGHEFF_FUELSYS",
+            "build_cost_ru": 1000
+          }
+        },
+        {
+          "id": "TECH_LANDER_RAPIDFIRE",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_7"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_7"
+          ],
+          "grant": {
+            "kind": "state",
+            "key": "IMPROVED_LANDER_SHOT",
+            "value": 1
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_QUAKE",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_8"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_8"
+          ],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "EARTHQUAKE_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_MODULE_TRACKING",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_9"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_9"
+          ],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "TRACKING_SYSTEM",
+            "build_cost_ru": 5000
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_LIGHTNING",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_10"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_10"
+          ],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "LIGHTNING_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_HEAT",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_11"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_11"
+          ],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "LAVASPOT_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_MODULE_CANNON",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_12"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_12"
+          ],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "CANNON_WEAPON",
+            "build_cost_ru": 6000
+          }
+        },
+        {
+          "id": "TECH_MODULE_FURNACE",
+          "price": 150,
+          "pitch": [
+            "melnorme.NEW_TECH_13"
+          ],
+          "sold": [
+            "melnorme.OK_BUY_NEW_TECH_13"
+          ],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "SHIVA_FURNACE",
+            "build_cost_ru": 4000
+          }
+        }
+      ],
+      "information": {
+        "price": 75,
+        "categories": {
+          "events": {
+            "cursor": "MELNORME_EVENTS_INFO_STACK",
+            "speech": [
+              [
+                "melnorme.OK_BUY_EVENT_1"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_2"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_3"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_4"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_5"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_6"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_7"
+              ],
+              [
+                "melnorme.OK_BUY_EVENT_8"
+              ]
+            ]
+          },
+          "alien_races": {
+            "cursor": "MELNORME_ALIEN_INFO_STACK",
+            "speech": [
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_1"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_2"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_3"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_4"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_5"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_6"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_7"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_8"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_9"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_10"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_11"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_12"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_13"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_14"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_15"
+              ],
+              [
+                "melnorme.OK_BUY_ALIEN_RACE_16"
+              ]
+            ],
+            "special_effects": {
+              "14": [
+                {
+                  "when": {
+                    "not": {
+                      "get": [
+                        "story",
+                        "FOUND_PLUTO_SPATHI",
+                        false
+                      ]
+                    }
+                  },
+                  "actions": [
+                    {
+                      "verb": "state.set",
+                      "args": [
+                        "story",
+                        "KNOW_SPATHI_PASSWORD",
+                        true
+                      ]
+                    },
+                    {
+                      "verb": "state.set",
+                      "args": [
+                        "story",
+                        "SPATHI_HOME_VISITS",
+                        7
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "15": [
+                {
+                  "when": {
+                    "lt": [
+                      {
+                        "get": [
+                          "story",
+                          "KNOW_ABOUT_SHATTERED",
+                          0
+                        ]
+                      },
+                      2
+                    ]
+                  },
+                  "actions": [
+                    {
+                      "verb": "state.set",
+                      "args": [
+                        "story",
+                        "KNOW_ABOUT_SHATTERED",
+                        2
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when": true,
+                  "actions": [
+                    {
+                      "verb": "state.set",
+                      "args": [
+                        "story",
+                        "KNOW_SYREEN_WORLD_SHATTERED",
+                        true
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "history": {
+            "cursor": "MELNORME_HISTORY_INFO_STACK",
+            "speech": [
+              [
+                "melnorme.OK_BUY_HISTORY_1"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_2"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_3"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_4"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_5"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_6"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_7"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_8"
+              ],
+              [
+                "melnorme.OK_BUY_HISTORY_9"
+              ]
+            ]
+          }
+        }
+      },
+      "rescue": {
+        "destination": "sol",
+        "extra_fuel_units": 2,
+        "seed_policy": "legacy_location_and_equipment",
+        "quote_lifetime": "conversation",
+        "accept_once": true
+      },
+      "penance": {
+        "minimum_value": 80,
+        "valuation_units": "legacy_module_cost_units",
+        "strip_policy": "preserve_required_crew_pods; clamp_fuel_to_reserve"
+      }
+    }
+  }
+}

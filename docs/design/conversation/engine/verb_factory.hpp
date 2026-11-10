@@ -1,0 +1,55 @@
+#ifndef UQM_DESIGN_CONVERSATION_VERB_FACTORY_HPP
+#define UQM_DESIGN_CONVERSATION_VERB_FACTORY_HPP
+#include "state.hpp"
+#include <functional>
+#include <map>
+#include <vector>
+namespace uqm::design::conversation {
+using Value = std::function<Json()>;
+using Condition = std::function<bool()>;
+using Action = std::function<Result()>;
+struct Memory {
+    std::map<std::string, Json> local;
+    std::map<std::string, Result> results;
+};
+// State and Memory outlive every bound callable. Conversation is nonmovable so
+// bindings to its Memory stay stable. No state changes occur while binding.
+class VerbFactory {
+  public:
+    VerbFactory(State &state, Memory &memory) : state_(state), memory_(memory) {}
+    Value value(const Json &definition) const;
+    Value speech(const Json &definition) const; // Bind read-only text/number insertions.
+    Condition condition(const Json &definition) const;
+    Action action(const Json &definition) const;
+    static std::vector<std::string> queryNames();
+    static std::vector<std::string> actionNames();
+
+  private:
+    State &state_;
+    Memory &memory_;
+    using Arguments = std::vector<Value>;
+    using QueryFunction = Json (*)(const State &, const Json &);
+    using ActionFunction = Result (*)(State &, const Json &);
+    Arguments arguments(const Json &, std::size_t, std::size_t) const;
+    static Json evaluate(const Arguments &);
+    static Json invokeQuery(QueryFunction, const State &, const Arguments &);
+    static Result invokeAction(ActionFunction, State &, const Arguments &);
+    static Json get(const State &, const Memory &, const std::string &, const std::string &,
+                    const Json &);
+    static Result set(State &, Memory &, const std::string &, const std::string &, const Value &);
+    static Result increment(State &, Memory &, const std::string &, const std::string &,
+                            const Value &);
+    static Result bits(State &, Memory &, const std::string &, const std::string &,
+                       const std::string &, const Value &);
+    static Result sequence(State &, Memory &, const std::string &, const std::string &,
+                           const Json &, const std::string &, Integer);
+    static Json arithmetic(const std::string &, const std::vector<Value> &);
+    static bool comparison(const std::string &, const Value &, const Value &);
+    static Json segment(const std::string &, const Value &);
+    static bool truth(const Value &);
+    static bool every(const std::vector<Condition> &);
+    static bool some(const std::vector<Condition> &);
+    static bool negate(const Condition &);
+};
+} // namespace uqm::design::conversation
+#endif

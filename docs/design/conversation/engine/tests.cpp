@@ -1,0 +1,401 @@
+#define BOOST_TEST_MODULE conversation_design
+#include "engine.hpp"
+#include <boost/test/unit_test.hpp>
+#include <fstream>
+#include <limits>
+namespace cd = uqm::design::conversation;
+using cd::Json;
+struct TestState : cd::State {
+    std::map<std::string, Json> values;
+    unsigned mutations = 0, names = 0, purchases = 0;
+    cd::Integer onboard = 0, capacity = 100, credits = 100;
+    cd::Json read(const std::string &scope, const std::string &key) const override {
+        auto it = values.find(scope + "." + key);
+        return it == values.end() ? Json() : it->second;
+    }
+    cd::Result set(const std::string &scope, const std::string &key, const Json &value) override {
+        ++mutations;
+        values[scope + "." + key] = value;
+        return {};
+    }
+    cd::Integer fuel() const override {
+        return onboard;
+    }
+    cd::Integer fuelCapacity() const override {
+        return capacity;
+    }
+    cd::Integer balance(const std::string &) const override {
+        return credits;
+    }
+    bool marketAvailable(const std::string &, const std::string &) const override {
+        return true;
+    }
+    bool reportAvailable(const std::string &) const override {
+        return false;
+    }
+    bool hasItem(const std::string &) const override {
+        return false;
+    }
+    cd::Integer quantity(const std::string &) const override {
+        return 0;
+    }
+    Json encounter(const std::string &) const override {
+        return "starbase";
+    }
+    std::string nextCaptainName(const std::string &) override {
+        ++names;
+        return "Generated";
+    }
+    cd::Integer maximumCrew(const std::string &) const override {
+        return 30;
+    }
+    cd::Result createShip(const std::string &type, const std::string &captain,
+                          cd::Integer crew) override {
+        ++mutations;
+        return {"ok", {{"type", type}, {"captain", captain}, {"crew", crew}}};
+    }
+    cd::Result prepareReport(const std::string &, const Json &) override {
+        return {"ok", {{"speech", Json::array()}}};
+    }
+    cd::Result purchase(const std::string &, const std::string &, const Json &quantity) override {
+        ++purchases;
+        auto n = quantity.is_string() ? capacity - onboard : quantity.get<cd::Integer>();
+        if (n > capacity - onboard)
+            return {"no_room"};
+        if (n > credits)
+            return {"no_credit", {{"missing", n - credits}}};
+        onboard += n;
+        credits -= n;
+        return {};
+    }
+};
+Json readExample(const std::string &name) {
+    std::ifstream f{std::string(DESIGN_ROOT) + "/examples/" + name + ".json"};
+    Json j;
+    f >> j;
+    return j;
+}
+Json minimal(Json nodes, const std::string &entry = "a") {
+    return {{"version", 1}, {"entry", entry}, {"nodes", std::move(nodes)}};
+}
+BOOST_AUTO_TEST_CASE(binding_defers_side_effects_and_captain_defaults_until_execution) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    auto ordinary = factory.action({{"verb", "fleet.give"}, {"args", {"spathi"}}});
+    auto fwiffo = factory.action({{"verb", "fleet.give"}, {"args", {"spathi", "Fwiffo", 1}}});
+    BOOST_TEST(state.names == 0u);
+    BOOST_TEST(state.mutations == 0u);
+    auto gift = std::invoke(ordinary);
+    BOOST_TEST(state.names == 1u);
+    BOOST_TEST(gift.values.at("crew").get<int>() == 30);
+    auto special = std::invoke(fwiffo);
+    BOOST_TEST(state.names == 1u);
+    BOOST_TEST(special.values.at("captain").get<std::string>() == "Fwiffo");
+    BOOST_TEST(special.values.at("crew").get<int>() == 1);
+}
+BOOST_AUTO_TEST_CASE(conditions_read_live_state_and_short_circuit) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    auto condition = factory.condition(Json::parse(
+        R"({"gt":[{"query":"ship.fuel"},{"subtract":[{"query":"ship.fuel_capacity"},50]}]})"));
+    BOOST_TEST(!std::invoke(condition));
+    state.onboard = 75;
+    BOOST_TEST(std::invoke(condition));
+    auto shortCircuit =
+        factory.condition(Json::parse(R"({"all":[false,{"get":["result","missing.code"]}]})"));
+    BOOST_TEST(!std::invoke(shortCircuit));
+    BOOST_TEST(state.mutations == 0u);
+}
+BOOST_AUTO_TEST_CASE(actions_execute_once_and_stale_media_callbacks_cannot_advance_new_dialogue) {
+    TestState state;
+    auto json = minimal(Json::parse(R"([
+      {"id":"a","kind":"action","action":{"verb":"state.add","args":["story","visits",1]},"save_as":"change","next":"hello"},
+      {"id":"hello","kind":"dialogue","variants":[{"speech":["HELLO"]}],"next":"bye"},
+      {"id":"bye","kind":"dialogue","variants":[{"speech":["BYE"]}],"next":"end"},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    auto conversation = cd::Conversation::load(json, state);
+    BOOST_TEST(state.mutations == 0u);
+    conversation->advance();
+    auto token = conversation->view().entry;
+    conversation->advance();
+    conversation->view();
+    BOOST_TEST(state.mutations == 1u);
+    conversation->finishDialogue(token);
+    BOOST_TEST(conversation->view().speech.at(0).get<std::string>() == "BYE");
+    BOOST_CHECK_THROW(conversation->finishDialogue(token), std::invalid_argument);
+    conversation->finishDialogue(conversation->view().entry);
+    BOOST_TEST(conversation->ended());
+    BOOST_TEST(state.mutations == 1u);
+}
+BOOST_AUTO_TEST_CASE(failure_results_branch_without_reexecuting_actions) {
+    TestState state;
+    state.credits = 0;
+    auto json = minimal(Json::parse(R"([
+      {"id":"a","kind":"action","action":{"verb":"trade.purchase","args":["melnorme","fuel",10]},"save_as":"purchase","next":"check"},
+      {"id":"check","kind":"decision","branches":[{"when":{"eq":[{"get":["result","purchase.code"]},"no_credit"]},"next":"failure"}],"otherwise":"end"},
+      {"id":"failure","kind":"dialogue","variants":[{"speech":["NEED_CREDIT"]}],"next":"end"},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    auto c = cd::Conversation::load(json, state);
+    c->advance();
+    BOOST_TEST(state.purchases == 1u);
+    BOOST_TEST(c->view().speech.at(0).get<std::string>() == "NEED_CREDIT");
+    c->advance();
+    BOOST_TEST(state.purchases == 1u);
+}
+BOOST_AUTO_TEST_CASE(invalid_graphs_fail_before_actions_and_silent_cycles_are_bounded) {
+    TestState state;
+    auto json = minimal(Json::parse(
+        R"([{"id":"a","kind":"action","action":{"verb":"state.set","args":["story","x",true]},"save_as":"x","next":"missing"}])"));
+    BOOST_CHECK_THROW(cd::Conversation::load(json, state), std::invalid_argument);
+    BOOST_TEST(state.mutations == 0u);
+    auto loop = minimal(Json::parse(
+        R"([{"id":"a","kind":"decision","branches":[{"when":true,"next":"a"}],"otherwise":"a"}])"));
+    auto c = cd::Conversation::load(loop, state);
+    BOOST_CHECK_THROW(c->advance(10), std::runtime_error);
+    BOOST_CHECK_THROW(c->advance(), std::logic_error);
+}
+BOOST_AUTO_TEST_CASE(arithmetic_rejects_overflow_and_invalid_operations) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    auto overflow = factory.value({{"add", {std::numeric_limits<cd::Integer>::max(), 1}}});
+    BOOST_CHECK_THROW(std::invoke(overflow), std::overflow_error);
+    auto divide = factory.value({{"divide", {1, 0}}});
+    BOOST_CHECK_THROW(std::invoke(divide), std::overflow_error);
+    auto underflow = factory.value({{"subtract", {10, 50}}});
+    BOOST_TEST(std::invoke(underflow).get<int>() == -40);
+    BOOST_CHECK_THROW(factory.action({{"verb", "DeltaCredit"}, {"args", {-75}}}),
+                      std::invalid_argument);
+    BOOST_CHECK_THROW(factory.condition({{"verb", "random.draw"}, {"args", {8}}}),
+                      std::invalid_argument);
+}
+BOOST_AUTO_TEST_CASE(examples_load_without_mutating_state_and_offer_fuel_failure_branches) {
+    for (const auto &name : {"commander_hayes", "melnorme"}) {
+        TestState state;
+        auto definition = readExample(name);
+        auto c = cd::Conversation::load(definition, state);
+        BOOST_TEST(c->nodeCount() > 100u);
+        BOOST_TEST(state.mutations == 0u);
+        BOOST_TEST(state.purchases == 0u);
+    }
+    for (const auto &failure : {"no_credit", "no_room", "ok"}) {
+        TestState state;
+        if (std::string(failure) == "no_credit")
+            state.credits = 0;
+        if (std::string(failure) == "no_room")
+            state.onboard = 95;
+        auto definition = readExample("melnorme");
+        definition["entry"] = "fuel.ask";
+        auto c = cd::Conversation::load(definition, state);
+        c->advance();
+        const auto entry = c->view().entry;
+        c->finishDialogue(entry);
+        BOOST_TEST(c->responses().size() == 6u); // All quantities stay selectable.
+        c->choose(entry, "buy_10_fuel");
+        BOOST_TEST(c->memory().results.at("fuel_purchase").code == failure);
+        BOOST_TEST(state.purchases == 1u);
+        c->advance();
+        BOOST_TEST(state.purchases == 1u);
+        BOOST_CHECK_THROW(c->choose(entry, "buy_10_fuel"), std::invalid_argument);
+    }
+}
+BOOST_AUTO_TEST_CASE(hayes_first_contact_marks_the_visit_and_gates_speech_completion) {
+    TestState state;
+    state.values["story.STARBASE_VISITED"] = false;
+    // Select the first-contact entry without requiring a live EncounterMode.
+    auto definition = readExample("commander_hayes");
+    definition["entry"] = "first.entry";
+    auto c = cd::Conversation::load(definition, state);
+    c->advance();
+    BOOST_TEST(state.values.at("story.STARBASE_VISITED").get<bool>());
+    BOOST_TEST(c->view().speech.at(0).get<std::string>() == "commander.ARE_YOU_SUPPLY_SHIP");
+    const auto token = c->view().entry;
+    BOOST_CHECK_THROW(c->responses(), std::logic_error);
+    c->finishDialogue(token);
+    BOOST_TEST(c->responses().size() == 3u);
+    c->choose(token, "yes_this_is_supply_ship");
+    BOOST_TEST(c->view().speech.at(0).get<std::string>() == "commander.ABOUT_TIME");
+    c->finishDialogue(c->view().entry);
+    c->finishDialogue(c->view().entry); // Empty supply-response menu becomes interactive.
+    auto responses = c->responses();
+    BOOST_TEST(responses.size() == 2u);
+    BOOST_TEST(responses.front().id == "i_lied");
+}
+BOOST_AUTO_TEST_CASE(failed_action_exceptions_cannot_be_retried_after_partial_mutation) {
+    struct Broken : TestState {
+        cd::Result set(const std::string &, const std::string &, const Json &) override {
+            ++mutations;
+            throw std::runtime_error("storage failure");
+        }
+    } state;
+    auto definition = minimal(Json::parse(R"([
+      {"id":"a","kind":"action","action":{"verb":"state.set","args":["story","x",true]},"save_as":"x","next":"end"},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    auto c = cd::Conversation::load(definition, state);
+    BOOST_CHECK_THROW(c->advance(), std::runtime_error);
+    BOOST_TEST(state.mutations == 1u);
+    BOOST_CHECK_THROW(c->advance(), std::logic_error);
+    BOOST_TEST(state.mutations == 1u);
+}
+BOOST_AUTO_TEST_CASE(registry_documents_every_factory_verb_and_builds_it_without_invocation) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    std::ifstream input{std::string(DESIGN_ROOT) + "/verbs.json"};
+    Json registry;
+    input >> registry;
+    std::vector<std::string> queries, actions;
+    const auto argument = [](const std::string &name) -> Json {
+        if (name == "scope")
+            return "local";
+        if (name == "items")
+            return Json::array({"LINE"});
+        if (name == "repeat_last_or_cycle")
+            return "repeat_last";
+        if (name == "set_or_clear")
+            return "set";
+        if (name == "inclusive")
+            return false;
+        if (name == "months" || name == "days" || name == "years")
+            return 0;
+        if (name == "mask" || name == "value" || name == "signed_delta" || name == "count" ||
+            name == "crew" || name == "signed_quantity" || name == "signed_amount" ||
+            name == "quantity_or_fill" || name == "quantity_or_all" ||
+            name == "exclusive_upper_bound")
+            return 1;
+        if (name == "parameters" || name == "configuration")
+            return Json{{"literal", Json::object()}};
+        return "example";
+    };
+    for (const auto &spec : registry.at("queries")) {
+        auto name = spec.at("verb").get<std::string>();
+        queries.push_back(name);
+        Json args = Json::array();
+        for (std::size_t i = 0; i < spec.at("min_args").get<std::size_t>(); ++i)
+            args.push_back(argument(spec.at("arguments").at(i).get<std::string>()));
+        BOOST_CHECK_NO_THROW(factory.value({{"query", name}, {"args", args}}));
+    }
+    for (const auto &spec : registry.at("actions")) {
+        auto name = spec.at("verb").get<std::string>();
+        actions.push_back(name);
+        Json args = Json::array();
+        for (std::size_t i = 0; i < spec.at("min_args").get<std::size_t>(); ++i)
+            args.push_back(argument(spec.at("arguments").at(i).get<std::string>()));
+        BOOST_CHECK_NO_THROW(factory.action({{"verb", name}, {"args", args}}));
+    }
+    BOOST_TEST(queries == cd::VerbFactory::queryNames(), boost::test_tools::per_element());
+    BOOST_TEST(actions == cd::VerbFactory::actionNames(), boost::test_tools::per_element());
+    BOOST_TEST(state.mutations == 0u);
+    BOOST_TEST(state.names == 0u);
+    BOOST_TEST(state.purchases == 0u);
+}
+BOOST_AUTO_TEST_CASE(ordered_variants_are_selected_once_while_response_conditions_remain_live) {
+    TestState state;
+    state.values["story.hostile"] = false;
+    auto definition = minimal(Json::parse(R"([
+      {"id":"a","kind":"dialogue","variants":[{"when":{"get":["story","hostile"]},"speech":["THREAT"]},{"speech":["HELLO"]}],
+       "responses":[{"id":"peace","text":"Talk","when":{"not":{"get":["story","hostile"]}},"next":"end"},{"id":"fight","text":"Fight","when":{"get":["story","hostile"]},"next":"end"}]},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    auto c = cd::Conversation::load(definition, state);
+    c->advance();
+    auto token = c->view().entry;
+    state.values["story.hostile"] = true;
+    c->advance();
+    BOOST_TEST(c->view().speech.at(0).get<std::string>() == "HELLO");
+    c->finishDialogue(token);
+    BOOST_TEST(c->responses().at(0).id == "fight");
+    BOOST_CHECK_THROW(c->choose(token, "peace"), std::invalid_argument);
+    c->choose(token, "fight");
+    BOOST_TEST(c->ended());
+}
+BOOST_AUTO_TEST_CASE(repeated_responses_remain_available_and_history_only_changes_styling) {
+    TestState state;
+    auto definition = minimal(Json::parse(R"([
+      {"id":"a","kind":"dialogue","variants":[{"speech":["TOPIC"]}],"responses":[{"id":"again","text":"Again","next":"a"},{"id":"bye","text":"Bye","next":"end"}]},
+      {"id":"end","kind":"end","outcome":"peace"}])"));
+    auto c = cd::Conversation::load(definition, state);
+    c->advance();
+    auto token = c->view().entry;
+    c->finishDialogue(token);
+    BOOST_TEST(!c->responses().at(0).selectedBefore);
+    c->choose(token, "again");
+    c->finishDialogue(c->view().entry);
+    BOOST_TEST(c->responses().size() == 2u);
+    BOOST_TEST(c->responses().at(0).selectedBefore);
+    BOOST_TEST(!c->responses().at(1).selectedBefore);
+    BOOST_TEST(state.mutations == 0u);
+}
+BOOST_AUTO_TEST_CASE(signed_multiplication_and_offset_sequences_preserve_their_contracts) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    for (const auto &pair : std::vector<std::pair<cd::Integer, cd::Integer>>{
+             {-2, -3},
+             {-2, 3},
+             {2, -3},
+             {0, std::numeric_limits<cd::Integer>::min()},
+             {std::numeric_limits<cd::Integer>::min(), 1}}) {
+        auto product = factory.value({{"multiply", {pair.first, pair.second}}});
+        BOOST_TEST(std::invoke(product).get<cd::Integer>() == pair.first * pair.second);
+    }
+    auto overflow = factory.value({{"multiply", {std::numeric_limits<cd::Integer>::min(), -1}}});
+    BOOST_CHECK_THROW(std::invoke(overflow), std::overflow_error);
+    state.values["story.cursor"] = 5;
+    auto sequence = factory.action(
+        {{"verb", "sequence.next"},
+         {"args",
+          {"story", "cursor", Json::array({Json::array({"FIRST"}), Json::array({"LAST"})}),
+           "repeat_last", 5}}});
+    BOOST_TEST(std::invoke(sequence).values.at("speech").at(0).get<std::string>() == "FIRST");
+    BOOST_TEST(state.values.at("story.cursor").get<int>() == 6);
+    BOOST_TEST(std::invoke(sequence).values.at("speech").at(0).get<std::string>() == "LAST");
+    BOOST_TEST(std::invoke(sequence).values.at("speech").at(0).get<std::string>() == "LAST");
+    BOOST_TEST(state.values.at("story.cursor").get<int>() == 6);
+}
+BOOST_AUTO_TEST_CASE(removal_and_item_overloads_supply_defaults_only_when_invoked) {
+    struct Gifts : TestState {
+        cd::Integer removed = -1, transferred = 0;
+        cd::Integer shipCount(const std::string &) const override {
+            return 3;
+        }
+        cd::Result removeShips(const std::string &, cd::Integer count) override {
+            removed = count;
+            return {"ok", {{"count", count}}};
+        }
+        cd::Result transferItem(const std::string &, cd::Integer count) override {
+            transferred += count;
+            return {};
+        }
+    } state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    auto remove = factory.action({{"verb", "fleet.take"}, {"args", {"orz"}}});
+    auto give = factory.action({{"verb", "inventory.transfer"}, {"args", {"portal_spawner"}}});
+    BOOST_TEST(state.removed == -1);
+    BOOST_TEST(state.transferred == 0);
+    std::invoke(remove);
+    std::invoke(give);
+    BOOST_TEST(state.removed == 3);
+    BOOST_TEST(state.transferred == 1);
+    auto none = factory.action({{"verb", "fleet.take"}, {"args", {"orz", 0}}});
+    std::invoke(none);
+    BOOST_TEST(state.removed == 0);
+}
+BOOST_AUTO_TEST_CASE(text_insertions_are_bound_read_only_and_resolved_without_presenter_state) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    state.values["story.captain"] = "Zelnick";
+    state.values["story.credits"] = 25;
+    auto speech = factory.speech(Json::parse(
+        R"([{"compose":[{"phrase":"WELCOME"},{"insert":{"get":["story","captain"]}},{"number":{"get":["story","credits"]}}]}])"));
+    auto resolved = std::invoke(speech);
+    BOOST_TEST(resolved[0]["compose"][1]["insert"].get<std::string>() == "Zelnick");
+    BOOST_TEST(resolved[0]["compose"][2]["number"].get<int>() == 25);
+    state.values["story.credits"] = 50;
+    BOOST_TEST(resolved[0]["compose"][2]["number"].get<int>() == 25);
+    BOOST_TEST(std::invoke(speech)[0]["compose"][2]["number"].get<int>() == 50);
+    BOOST_TEST(state.mutations == 0u);
+}
