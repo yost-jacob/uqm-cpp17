@@ -47,7 +47,7 @@ std::optional<std::reference_wrapper<const ELEMENT>> SimulationEngine::resolve(c
     if (const auto result = handle.resolve(entities_)) return std::cref(result->get());
     return std::nullopt;
 }
-SimulationBinding::SimulationBinding(SimulationEngine &engine) noexcept : previous_(boundEngine), selected_(&engine) {
+SimulationBinding::SimulationBinding(SimulationEngine &engine) noexcept : randomBinding_(engine.random()), previous_(boundEngine), selected_(&engine) {
     auto &previous = simulationEngine();
     if (&previous != &engine) {
         detail::SimulationAccess::saveProjection(previous);

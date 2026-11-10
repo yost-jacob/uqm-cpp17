@@ -168,11 +168,8 @@ crc_processRNG(crc_State *state) {
 	crc_log("START crc_processRNG().");
 #endif
 
-	seed = TFB_SeedRandom(0);
-			// This modifies the seed too.
+	seed = TFB_GetRandomSeed();
 	crc_processDWORD(state, seed);
-	TFB_SeedRandom(seed);
-			// Restore the old seed.
 
 #ifdef DUMP_CRC_OPS
 	crc_log("END   crc_processRNG().");

@@ -25,7 +25,8 @@
 #define NETPLAY_FULL  2
 
 #define NETPLAY_PROTOCOL_VERSION_MAJOR 0
-#define NETPLAY_PROTOCOL_VERSION_MINOR 4
+// General gameplay now uses the standard minstd_rand0 sequence.
+#define NETPLAY_PROTOCOL_VERSION_MINOR 5
 
 #define NETPLAY_MIN_UQM_VERSION_MAJOR 0
 #define NETPLAY_MIN_UQM_VERSION_MINOR 6

@@ -4,7 +4,9 @@
 #include <cstdint>
 #include <limits>
 #include <random>
+#include <stdexcept>
 #include "libs/mathlib.h"
+#include "libs/math/random.hpp"
 #include "uqm/units.h"
 
 extern "C" int math_c_contract(void);
@@ -37,14 +39,14 @@ BOOST_AUTO_TEST_CASE(math_random_legacy_sequence_and_standard_engine_difference)
         1702319868, 2112876144, 319765416};
     for (const auto value : expected)
         BOOST_TEST(RandomContext_Random(&context) == value);
-    // A direct standard-engine replacement would change the game's stream.
+    // System generation retains this divergence from the standard gameplay stream.
     std::minstd_rand0 standard(RandomDefaultSeed);
     standard.discard(14);
     BOOST_TEST(standard() == 2112876142u);
     BOOST_TEST(expected[14] == 2112876144u);
 }
 
-BOOST_AUTO_TEST_CASE(math_random_seed_coercion_and_global_context_agreement) {
+BOOST_AUTO_TEST_CASE(math_random_legacy_seed_coercion) {
     struct Example { DWORD input, state, next; };
     for (const auto example : {Example{0, 1, 16807}, {1, 1, 16807},
             {2147483647u, 2147483647u, 1}, {2147483648u, 1, 16807},
@@ -53,10 +55,7 @@ BOOST_AUTO_TEST_CASE(math_random_seed_coercion_and_global_context_agreement) {
         BOOST_TEST(RandomContext_SeedRandom(&context, example.input) == RandomDefaultSeed);
         const RandomContext &readOnly = context;
         BOOST_TEST(RandomContext_GetSeed(&readOnly) == example.state);
-        const auto saved = TFB_SeedRandom(example.input);
         BOOST_TEST(RandomContext_Random(&context) == example.next);
-        BOOST_TEST(TFB_Random() == example.next);
-        TFB_SeedRandom(saved);
     }
 }
 
@@ -70,11 +69,40 @@ BOOST_AUTO_TEST_CASE(math_random_value_copy_and_checksum_style_restoration) {
     BOOST_TEST(RandomContext_Random(&copy) == next);
     RandomContext_SeedRandom(&context, state);
     BOOST_TEST(RandomContext_Random(&context) == next);
-    const auto saved = TFB_SeedRandom(state);
-    const auto checksumState = TFB_SeedRandom(0);
-    TFB_SeedRandom(checksumState);
-    BOOST_TEST(TFB_Random() == next);
+}
+
+BOOST_AUTO_TEST_CASE(math_general_random_uses_standard_sequence_and_restorable_state) {
+    const auto saved = TFB_GetRandomSeed();
+    for (const DWORD seed : {0u, 1u, 12345u, 2147483647u, 2147483648u, UINT32_MAX}) {
+        std::minstd_rand0 expected(seed);
+        TFB_SeedRandom(seed);
+        for (unsigned draw = 0; draw < 64; ++draw) {
+            BOOST_TEST(TFB_Random() == expected());
+            const auto checkpoint = TFB_GetRandomSeed();
+            const auto next = TFB_Random();
+            BOOST_TEST(TFB_SeedRandom(checkpoint) == next);
+            BOOST_TEST(TFB_Random() == next);
+            expected();
+        }
+    }
     TFB_SeedRandom(saved);
+}
+
+BOOST_AUTO_TEST_CASE(math_random_binding_restores_parent_after_exception) {
+    const auto fallback = TFB_GetRandomSeed();
+    uqm::RandomStream parent(31), child(97);
+    {
+        uqm::RandomBinding outer(parent);
+        const auto parentState = TFB_GetRandomSeed();
+        try {
+            uqm::RandomBinding inner(child);
+            TFB_Random();
+            throw std::runtime_error("leave child");
+        } catch (const std::runtime_error &) {}
+        BOOST_TEST(TFB_GetRandomSeed() == parentState);
+        BOOST_TEST(child.state() != 97u);
+    }
+    BOOST_TEST(TFB_GetRandomSeed() == fallback);
 }
 
 BOOST_AUTO_TEST_CASE(math_angle_cardinals_wrapping_and_zero_vector) {

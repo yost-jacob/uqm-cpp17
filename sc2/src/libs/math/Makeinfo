@@ -1,2 +1,2 @@
 uqm_CXXFILES="random.cpp sqrt.cpp"
-uqm_HFILES="random.h"
+uqm_HFILES="random.h random.hpp"

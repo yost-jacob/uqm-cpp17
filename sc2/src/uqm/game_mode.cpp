@@ -7,8 +7,10 @@
 #include <utility>
 
 namespace uqm {
-GameMode::GameMode(std::shared_ptr<GameState> state, PlayerId player)
-    : state_(std::move(state)), player_(player) {
+GameMode::GameMode(GameSession &session)
+    : GameMode(session.stateOwner(), session.playerId(), session.nextModeSeed()) {}
+GameMode::GameMode(std::shared_ptr<GameState> state, PlayerId player, std::uint32_t seed)
+    : engine_(MAX_DISPLAY_ELEMENTS, seed), state_(std::move(state)), player_(player) {
     if (!state_) throw std::invalid_argument("mode requires game state");
     state_->player(player);
 }

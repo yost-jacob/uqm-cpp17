@@ -11,6 +11,7 @@
 
 namespace uqm {
 class GameState;
+class GameSession;
 class GameMode;
 // Mode-owned RAII snapshot. Destruction restores borrowed service bindings.
 class ModeSuspension { public: virtual ~ModeSuspension() = default; };
@@ -36,7 +37,11 @@ using ModeResult = std::variant<std::unique_ptr<GameMode>, SessionExit, ModeComp
 // automatically returns control to the suspended parent; root completion exits to title.
 class GameMode {
 public:
-    GameMode(std::shared_ptr<GameState> state, PlayerId player);
+    // Session supplies an independent seed without advancing another mode.
+    explicit GameMode(GameSession &session);
+    // Explicit seed supports deterministic construction/replay and device-free tests.
+    GameMode(std::shared_ptr<GameState> state, PlayerId player,
+             std::uint32_t seed = RandomDefaultSeed);
     virtual ~GameMode() = default;
     virtual ModeResult run() = 0;
     SimulationEngine &engine() noexcept { return engine_; }
@@ -56,7 +61,7 @@ protected:
     PlayerId playerId() const noexcept;
 private:
     friend class GameSession;
-    SimulationEngine engine_{MAX_DISPLAY_ELEMENTS};
+    SimulationEngine engine_;
     std::unique_ptr<GameMode> parentMode_;
     std::shared_ptr<GameState> state_;
     PlayerId player_;

@@ -239,8 +239,8 @@ const PlayerEntity &GameState::player(PlayerId id) const {
         throw std::out_of_range("unknown player ID");
     return player_;
 }
-GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player)
-    : state_(std::move(state)), player_(player) {
+GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player, std::uint32_t seed)
+    : state_(std::move(state)), player_(player), modeSeeds_(seed) {
     if (!state_)
         throw std::invalid_argument("session requires game state");
     state_->player(player_); // Validate binding now, not at the first interaction.

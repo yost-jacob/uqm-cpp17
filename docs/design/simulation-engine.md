@@ -12,6 +12,7 @@ flowchart TD
     Session[GameSession dispatcher] --> Modes[Combat / navigation / exploration modes]
     Modes --> Engine[Own SimulationEngine value]
     Engine --> Pool[Owned entity queue and native entity lifetimes]
+    Engine --> RNG[Own std::minstd_rand0 stream]
     Engine --> Step[Step: lifecycle / movement / contact processing]
     Engine --> Rules[Damage / collision response / gravity / targeting]
     Scene[Existing scene adapter] --> Step
@@ -93,9 +94,12 @@ with their mode/controller owners.
 ELEMENT remains the compatibility simulation record. Legacy hTarget and STARSHIP
 associations still exist inside behavior code; they have not all become native
 EntityHandle fields. Cached legacy targets must refer to the active engine's
-pool. The shared RNG service and other campaign/global services retain their
-current scope. Separate engine queues therefore do not yet make complete game
-sessions safe to run concurrently or without assets.
+pool. Each engine owns its general random stream; the scoped C binding selects it
+without advancing a suspended parent. A session seed source supplies independent
+mode seeds, with an explicit seed option for combat. Deterministic system generation
+retains its separate legacy stream. Other campaign/global services retain their
+current scope, so separate engines do not yet make complete game sessions safe
+to run concurrently or without assets.
 
 ## Verification
 
