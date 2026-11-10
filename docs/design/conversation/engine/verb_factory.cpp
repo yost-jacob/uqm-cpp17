@@ -152,7 +152,7 @@ void shape(const Json &value, std::initializer_list<const char *> keys) {
     }
 }
 } // namespace
-std::vector<std::string> VerbFactory::queryNames() {
+std::vector<std::string> QueryFactory::queryNames() {
     std::vector<std::string> result;
     for (const auto &spec : queries)
         result.emplace_back(spec.name);
@@ -164,8 +164,8 @@ std::vector<std::string> VerbFactory::actionNames() {
         result.emplace_back(spec.name);
     return result;
 }
-VerbFactory::Arguments VerbFactory::arguments(const Json &definition, std::size_t min,
-                                              std::size_t max) const {
+QueryFactory::Arguments QueryFactory::arguments(const Json &definition, std::size_t min,
+                                                std::size_t max) const {
     if (!definition.is_array() || definition.size() < min || definition.size() > max)
         throw std::invalid_argument("wrong argument count");
     Arguments result;
@@ -173,20 +173,20 @@ VerbFactory::Arguments VerbFactory::arguments(const Json &definition, std::size_
         result.push_back(value(arg));
     return result;
 }
-Json VerbFactory::evaluate(const Arguments &args) {
+Json QueryFactory::evaluate(const Arguments &args) {
     Json result = Json::array();
     for (const auto &arg : args)
         result.push_back(std::invoke(arg));
     return result;
 }
-Json VerbFactory::invokeQuery(QueryFunction fn, const State &state, const Arguments &args) {
-    return std::invoke(fn, state, evaluate(args));
+Json QueryFactory::invokeQuery(QueryFunction fn, const State &state, const Arguments &args) {
+    return std::invoke(fn, state, QueryFactory::evaluate(args));
 }
 Result VerbFactory::invokeAction(ActionFunction fn, State &state, const Arguments &args) {
-    return std::invoke(fn, state, evaluate(args));
+    return std::invoke(fn, state, QueryFactory::evaluate(args));
 }
-Json VerbFactory::get(const State &state, const Memory &memory, const std::string &domain,
-                      const std::string &key, const Json &fallback) {
+Json QueryFactory::get(const State &state, const Memory &memory, const std::string &domain,
+                       const std::string &key, const Json &fallback) {
     Json found;
     if (domain == "local") {
         const auto item = memory.local.find(key);
@@ -224,12 +224,13 @@ Result VerbFactory::set(State &state, Memory &memory, const std::string &domain,
 Result VerbFactory::increment(State &state, Memory &memory, const std::string &domain,
                               const std::string &key, const Value &value) {
     const auto updated =
-        add(number(get(state, memory, domain, key, Json::array({0}))), number(std::invoke(value)));
+        add(number(QueryFactory::get(state, memory, domain, key, Json::array({0}))),
+            number(std::invoke(value)));
     return set(state, memory, domain, key, std::bind([](Integer n) -> Json { return n; }, updated));
 }
 Result VerbFactory::bits(State &state, Memory &memory, const std::string &domain,
                          const std::string &key, const std::string &operation, const Value &value) {
-    auto previous = number(get(state, memory, domain, key, Json::array({0})));
+    auto previous = number(QueryFactory::get(state, memory, domain, key, Json::array({0})));
     auto mask = number(std::invoke(value));
     if (operation == "set")
         previous |= mask;
@@ -243,7 +244,8 @@ Result VerbFactory::bits(State &state, Memory &memory, const std::string &domain
 Result VerbFactory::sequence(State &state, Memory &memory, const std::string &domain,
                              const std::string &key, const Json &items, const std::string &policy,
                              Integer base) {
-    const auto previous = number(get(state, memory, domain, key, Json::array({base})));
+    const auto previous =
+        number(QueryFactory::get(state, memory, domain, key, Json::array({base})));
     if (previous < base)
         throw std::out_of_range("sequence cursor below base");
     const auto relative = subtract(previous, base);
@@ -256,7 +258,7 @@ Result VerbFactory::sequence(State &state, Memory &memory, const std::string &do
         return result;
     return {"ok", {{"speech", items.at(static_cast<std::size_t>(index))}, {"index", index}}};
 }
-Json VerbFactory::arithmetic(const std::string &op, const std::vector<Value> &values) {
+Json QueryFactory::arithmetic(const std::string &op, const std::vector<Value> &values) {
     const auto a = number(std::invoke(values.at(0))), b = number(std::invoke(values.at(1)));
     if (op == "add")
         return add(a, b);
@@ -276,7 +278,7 @@ Json VerbFactory::arithmetic(const std::string &op, const std::vector<Value> &va
         return a / b; // Truncates toward zero; unit conversions belong to state operations.
     return a % b;
 }
-bool VerbFactory::comparison(const std::string &op, const Value &left, const Value &right) {
+bool QueryFactory::comparison(const std::string &op, const Value &left, const Value &right) {
     const auto a = std::invoke(left), b = std::invoke(right);
     if (a.type() != b.type() && !(a.is_number_integer() && b.is_number_integer()))
         throw std::invalid_argument("comparison operand types differ");
@@ -299,25 +301,25 @@ bool VerbFactory::comparison(const std::string &op, const Value &left, const Val
         return x < y;
     return x <= y;
 }
-bool VerbFactory::truth(const Value &value) {
+bool QueryFactory::truth(const Value &value) {
     return boolean(std::invoke(value));
 }
-bool VerbFactory::every(const std::vector<Condition> &conditions) {
+bool QueryFactory::every(const std::vector<Condition> &conditions) {
     for (const auto &c : conditions)
         if (!std::invoke(c))
             return false;
     return true;
 }
-bool VerbFactory::some(const std::vector<Condition> &conditions) {
+bool QueryFactory::some(const std::vector<Condition> &conditions) {
     for (const auto &c : conditions)
         if (std::invoke(c))
             return true;
     return false;
 }
-bool VerbFactory::negate(const Condition &condition) {
+bool QueryFactory::negate(const Condition &condition) {
     return !std::invoke(condition);
 }
-Value VerbFactory::value(const Json &definition) const {
+Value QueryFactory::value(const Json &definition) const {
     if (definition.is_number_integer())
         number(definition);
     if (definition.is_number_float())
@@ -337,7 +339,7 @@ Value VerbFactory::value(const Json &definition) const {
         scope(domain);
         if (key.empty())
             throw std::invalid_argument("empty state key");
-        return std::bind(&VerbFactory::get, std::cref(state_), std::cref(memory_), domain, key,
+        return std::bind(&QueryFactory::get, std::cref(state_), std::cref(memory_), domain, key,
                          a.size() == 3 ? Json::array({a.at(2)}) : Json::array());
     }
     if (definition.contains("query")) {
@@ -421,19 +423,19 @@ Value VerbFactory::value(const Json &definition) const {
         default:
             throw std::logic_error("query registration missing binder");
         }
-        return std::bind(&VerbFactory::invokeQuery, fn, std::cref(state_), std::move(args));
+        return std::bind(&QueryFactory::invokeQuery, fn, std::cref(state_), std::move(args));
     }
     if (definition.size() == 1) {
         const auto op = definition.begin().key();
         static const std::vector<std::string> operations = {
             "add", "subtract", "multiply", "divide", "mod", "min", "max", "bit_and"};
         if (std::find(operations.begin(), operations.end(), op) != operations.end())
-            return std::bind(&VerbFactory::arithmetic, op,
+            return std::bind(&QueryFactory::arithmetic, op,
                              arguments(definition.begin().value(), 2, 2));
     }
     throw std::invalid_argument("unknown value expression: " + definition.dump());
 }
-Json VerbFactory::segment(const std::string &kind, const Value &value) {
+Json QueryFactory::segment(const std::string &kind, const Value &value) {
     auto resolved = std::invoke(value);
     if (kind == "number")
         number(resolved);
@@ -443,12 +445,12 @@ Json VerbFactory::segment(const std::string &kind, const Value &value) {
         throw std::invalid_argument("compose needs text segments");
     return Json{{kind, std::move(resolved)}};
 }
-Value VerbFactory::speech(const Json &definition) const {
+Value QueryFactory::speech(const Json &definition) const {
     if (definition.is_array()) {
         Arguments segments;
         for (const auto &item : definition)
             segments.push_back(speech(item));
-        return std::bind(&VerbFactory::evaluate, std::move(segments));
+        return std::bind(&QueryFactory::evaluate, std::move(segments));
     }
     if (definition.is_object()) {
         for (const auto *kind : {"insert", "number", "phrase", "compose"}) {
@@ -456,14 +458,14 @@ Value VerbFactory::speech(const Json &definition) const {
                 shape(definition, {kind});
                 auto contents = kind == std::string("compose") ? speech(definition.at(kind))
                                                                : value(definition.at(kind));
-                return std::bind(&VerbFactory::segment, std::string(kind), std::move(contents));
+                return std::bind(&QueryFactory::segment, std::string(kind), std::move(contents));
             }
         }
     }
     // Literal phrase IDs or a getter for an already prepared native utterance list.
     return value(definition);
 }
-Condition VerbFactory::condition(const Json &definition) const {
+Condition QueryFactory::condition(const Json &definition) const {
     if (definition.is_boolean())
         return std::bind([](bool v) { return v; }, definition.get<bool>());
     if (!definition.is_object() || definition.empty())
@@ -477,12 +479,12 @@ Condition VerbFactory::condition(const Json &definition) const {
         std::vector<Condition> conditions;
         for (const auto &item : items)
             conditions.push_back(condition(item));
-        return std::bind(key == std::string("all") ? &VerbFactory::every : &VerbFactory::some,
+        return std::bind(key == std::string("all") ? &QueryFactory::every : &QueryFactory::some,
                          std::move(conditions));
     }
     if (definition.contains("not")) {
         shape(definition, {"not"});
-        return std::bind(&VerbFactory::negate, condition(definition.at("not")));
+        return std::bind(&QueryFactory::negate, condition(definition.at("not")));
     }
     if (definition.size() == 1) {
         const auto op = definition.begin().key();
@@ -491,10 +493,10 @@ Condition VerbFactory::condition(const Json &definition) const {
             const auto &a = definition.begin().value();
             if (!a.is_array() || a.size() != 2)
                 throw std::invalid_argument("comparison needs two operands");
-            return std::bind(&VerbFactory::comparison, op, value(a[0]), value(a[1]));
+            return std::bind(&QueryFactory::comparison, op, value(a[0]), value(a[1]));
         }
     }
-    return std::bind(&VerbFactory::truth, value(definition));
+    return std::bind(&QueryFactory::truth, value(definition));
 }
 Action VerbFactory::action(const Json &definition) const {
     shape(definition, {"verb", "args"});
@@ -531,7 +533,7 @@ Action VerbFactory::action(const Json &definition) const {
                          a[2], policy, a.size() == 5 ? number(a[4]) : 0);
     }
     const auto index = find(actions, name);
-    auto args = arguments(a, actions[index].minimum, actions[index].maximum);
+    auto args = queries_.arguments(a, actions[index].minimum, actions[index].maximum);
     if (name == "fleet.give" && a.size() == 2 && !a[1].is_object() && !a[1].is_number_integer())
         throw std::invalid_argument("two-argument fleet.give needs a count");
     ActionFunction fn = nullptr;

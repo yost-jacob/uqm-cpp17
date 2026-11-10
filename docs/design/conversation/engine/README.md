@@ -220,3 +220,10 @@ exist.
 Generated JSON keeps nodes and response records expanded, while short conditions,
 argument lists and presentation settings stay inline (a soft 120-column limit).
 The builders share `json_format.py`, so regeneration preserves this layout.
+
+Queries, conditions and text insertions bind through `QueryFactory(const State&,
+const Memory&)`. That binder stores only const references, including for specialized
+queries. `VerbFactory` composes it and retains mutable references for actions alone.
+Action arguments still use the const binder. Const access prevents query-side
+mutation; subsequent queries see updates committed by actions. Both borrowed objects
+must outlive the bound callables. This does not provide thread synchronization.

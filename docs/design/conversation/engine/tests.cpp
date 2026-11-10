@@ -399,3 +399,25 @@ BOOST_AUTO_TEST_CASE(text_insertions_are_bound_read_only_and_resolved_without_pr
     BOOST_TEST(std::invoke(speech)[0]["compose"][2]["number"].get<int>() == 50);
     BOOST_TEST(state.mutations == 0u);
 }
+BOOST_AUTO_TEST_CASE(const_query_binding_observes_updates_from_separately_bound_actions) {
+    TestState state;
+    cd::Memory memory;
+    state.values["story.credits"] = 25;
+    memory.local["asked"] = false;
+    const cd::State &readState = state;
+    const cd::Memory &readMemory = memory;
+    cd::QueryFactory queries{readState, readMemory};
+    auto credits = queries.value({{"get", {"story", "credits"}}});
+    auto asked = queries.condition({{"get", {"local", "asked"}}});
+    cd::VerbFactory actions{state, memory};
+    auto update = actions.action({{"verb", "state.set"}, {"args", {"story", "credits", 50}}});
+    auto mark = actions.action({{"verb", "state.set"}, {"args", {"local", "asked", true}}});
+    BOOST_TEST(std::invoke(credits).get<int>() == 25);
+    BOOST_TEST(!std::invoke(asked));
+    BOOST_TEST(state.mutations == 0u);
+    std::invoke(update);
+    std::invoke(mark);
+    BOOST_TEST(std::invoke(credits).get<int>() == 50);
+    BOOST_TEST(std::invoke(asked));
+    BOOST_TEST(state.mutations == 1u);
+}
