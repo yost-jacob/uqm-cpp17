@@ -55,10 +55,18 @@ Explicit local/state actions control any actual pruning.
 
 ## Graph ownership and traversal
 
-[`ConversationGraph`](graph.hpp) owns a fixed `std::vector<Node>`. Loading allocates
-all authored and generated nodes before resolving any connection. Runtime edges
-store graph cursors rather than names or integer indices. The graph cannot be
-copied, moved or resized after loading, so those connections remain valid.
+[`ConversationGraph`](graph.hpp) owns individually allocated nodes through a
+private `std::unique_ptr` ownership chain. Nodes carry direct non-owning `Node*`
+connections: an action/automatic dialogue has one successor, while responses and
+decision branches hold their own destination pointers. No vector stores the graph
+nodes, and traversal performs no index lookup.
+
+The ownership chain is separate from those outgoing connections. It exists only
+to release every node exactly once, including nodes with multiple incoming links
+or cyclic connections. Cleanup is iterative, so a large graph cannot overflow the
+stack through recursive ownership destruction. Only the loader adds nodes; their
+addresses remain stable as authored and generated nodes are allocated. The graph
+cannot be copied or moved, and cursors must not outlive it.
 
 The container provides `value_type`, `size_type`, `size()`, `empty()`, `begin()`,
 `end()`, `cbegin()`, `cend()` and `start()` (an alias for the entry cursor).
@@ -85,12 +93,12 @@ Conversation completion is `current_ == graph_.end()`, replacing `ended_`. The
 terminal node records the outcome before advancing to end. Response selection
 history lives on each `Edge`, replacing the separate set of node/response pairs.
 `dialogueGeneration_` identifies playback instances, including repeat visits to
-the same node; it guards against stale callbacks and is unrelated to vector size.
+the same node; it guards against stale callbacks and is unrelated to graph size.
 
 ## Loading and binding
 
 `Conversation::load(definition, state)` creates a nonmovable conversation and its
-local memory first, allocates all graph nodes and resolves destination names to direct graph cursors, then invokes
+local memory first, allocates authored nodes and resolves destination names to direct node pointers, then invokes
 `VerbFactory` to bind all queries, conditions and actions. `std::bind` owns the
 arguments and borrows the state/memory through reference wrappers. The runtime
 uses `std::invoke`; it never parses a verb or searches JSON node IDs during play.
@@ -186,7 +194,7 @@ payload. Otherwise the loader allocates a private result name. The prefix
 A compact response uses `action` and a nonempty `then`, instead of `next`. Ordinary
 responses still use `next`; result-routing fields without an action are rejected.
 Loading validates every destination and binds the operation without executing it,
-then appends an ordinary action node and a decision node to the internal vector.
+then allocates an ordinary action node and decision node and connects their pointers.
 No separate execution path or new runtime node type is introduced. Explicit nodes
 remain useful for shared branches, initialization and multi-step operations.
 

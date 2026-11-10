@@ -2,7 +2,7 @@
 #define UQM_DESIGN_CONVERSATION_GRAPH_HPP
 #include "verb_factory.hpp"
 #include <cstddef>
-#include <optional>
+#include <memory>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -11,7 +11,7 @@ struct Node;
 struct Edge;
 struct DecisionBranch;
 class Conversation;
-// Owns a fixed graph. Connections are resolved once after allocating all nodes.
+// Owns individually allocated nodes. Outgoing graph links are non-owning pointers.
 // Neither graph nor nodes move after loading. Cursors borrow this graph and must
 // not outlive it. Topology is immutable during traversal; response history is not.
 class ConversationGraph {
@@ -28,6 +28,7 @@ class ConversationGraph {
         const Node *operator->() const;
         iterator &next(); // Unconditional connection, or end after a terminal node.
         iterator &next(iterator destination); // Follow an already resolved branch.
+        iterator &next(Node *destination);    // nullptr is the end position.
         iterator &next(const Edge &response);
         iterator &next(const DecisionBranch &branch);
         iterator &operator++() {
@@ -79,15 +80,16 @@ class ConversationGraph {
 
   private:
     friend class Conversation;
-    std::vector<Node> nodes_;
+    std::unique_ptr<Node> first_; // Ownership only; independent of graph connections.
+    size_type size_ = 0;
     iterator entry_;
-    iterator position(size_type index); // Loader only; indices never enter runtime links.
+    Node *emplace(); // Loader only. A new node never moves existing nodes.
 };
 struct Edge {
     std::string id;
     Value text;
     Condition when;
-    ConversationGraph::iterator next;
+    Node *next = nullptr;
     bool selectedBefore = false; // Visit-local styling, never automatic pruning.
 };
 struct DialogueVariant {
@@ -98,20 +100,20 @@ struct DialogueVariant {
 struct DialogueNode {
     std::vector<DialogueVariant> variants;
     std::vector<Edge> responses;
-    std::optional<ConversationGraph::iterator> next;
+    Node *next = nullptr;
 };
 struct DecisionBranch {
     Condition when;
-    ConversationGraph::iterator next;
+    Node *next = nullptr;
 };
 struct DecisionNode {
     std::vector<DecisionBranch> branches;
-    std::optional<ConversationGraph::iterator> otherwise;
+    Node *otherwise = nullptr;
 };
 struct ActionNode {
     Action action;
     std::string saveAs;
-    ConversationGraph::iterator next;
+    Node *next = nullptr;
 };
 struct EndNode {
     std::string outcome;
@@ -121,6 +123,12 @@ struct Node {
     Node() = default;
     explicit Node(Data value) : data(std::move(value)) {}
     Data data;
+
+  private:
+    friend class ConversationGraph;
+    friend class ConversationGraph::iterator;
+    const ConversationGraph *owner_ = nullptr;
+    std::unique_ptr<Node> ownedNext_; // Never used for graph traversal.
 };
 } // namespace uqm::design::conversation
 #endif

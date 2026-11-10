@@ -1,15 +1,27 @@
 #include "graph.hpp"
 namespace uqm::design::conversation {
 ConversationGraph::ConversationGraph() : entry_(this, nullptr) {}
-ConversationGraph::~ConversationGraph() = default;
+ConversationGraph::~ConversationGraph() {
+    // Iterative RAII cleanup: cycles/merges in outgoing links do not own nodes,
+    // and a long ownership chain must not recurse through unique_ptr destructors.
+    while (first_) {
+        auto remaining = std::move(first_->ownedNext_);
+        first_ = std::move(remaining);
+    }
+}
 ConversationGraph::size_type ConversationGraph::size() const noexcept {
-    return nodes_.size();
+    return size_;
 }
 bool ConversationGraph::empty() const noexcept {
-    return nodes_.empty();
+    return !first_;
 }
-ConversationGraph::iterator ConversationGraph::position(size_type index) {
-    return iterator(this, &nodes_.at(index));
+Node *ConversationGraph::emplace() {
+    auto node = std::make_unique<Node>();
+    node->owner_ = this;
+    node->ownedNext_ = std::move(first_);
+    first_ = std::move(node);
+    ++size_;
+    return first_.get();
 }
 const Node &ConversationGraph::iterator::operator*() const {
     if (!graph_ || !node_)
@@ -20,10 +32,14 @@ const Node *ConversationGraph::iterator::operator->() const {
     return &**this;
 }
 ConversationGraph::iterator &ConversationGraph::iterator::next(iterator destination) {
-    // In particular, never let a branch borrow nodes belonging to another visit.
-    if (!graph_ || !node_ || graph_ != destination.graph_)
+    if (graph_ != destination.graph_)
+        throw std::invalid_argument("foreign conversation graph cursor");
+    return next(destination.node_);
+}
+ConversationGraph::iterator &ConversationGraph::iterator::next(Node *destination) {
+    if (!graph_ || !node_ || (destination && destination->owner_ != graph_))
         throw std::invalid_argument("invalid or foreign conversation graph connection");
-    node_ = destination.node_;
+    node_ = destination;
     return *this;
 }
 ConversationGraph::iterator &ConversationGraph::iterator::next(const Edge &response) {
@@ -37,7 +53,7 @@ ConversationGraph::iterator &ConversationGraph::iterator::next() {
     if (const auto *dialogue = std::get_if<DialogueNode>(&data)) {
         if (!dialogue->next)
             throw std::logic_error("dialogue requires a response selection");
-        return next(*dialogue->next);
+        return next(dialogue->next);
     }
     if (const auto *action = std::get_if<ActionNode>(&data))
         return next(action->next);

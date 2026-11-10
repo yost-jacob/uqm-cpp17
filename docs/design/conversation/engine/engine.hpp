@@ -2,6 +2,7 @@
 #define UQM_DESIGN_CONVERSATION_ENGINE_HPP
 #include "graph.hpp"
 #include <memory>
+#include <optional>
 #include <unordered_map>
 namespace uqm::design::conversation {
 struct ResponseView {

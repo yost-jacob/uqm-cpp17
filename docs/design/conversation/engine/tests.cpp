@@ -603,3 +603,33 @@ BOOST_AUTO_TEST_CASE(
     c->choose(c->view().entry, "done");
     BOOST_CHECK(c->current() == c->graph().end());
 }
+BOOST_AUTO_TEST_CASE(
+    individually_owned_nodes_support_merges_and_iterative_cleanup_of_large_cycles) {
+    TestState state;
+    Json nodes = Json::array();
+    constexpr std::size_t count = 10000;
+    for (std::size_t i = 0; i < count; ++i) {
+        const auto id = "node" + std::to_string(i);
+        const auto next = "node" + std::to_string((i + 1) % count);
+        nodes.push_back({{"id", id},
+                         {"kind", "decision"},
+                         {"branches", {{{"when", true}, {"next", next}}}},
+                         {"otherwise", next}});
+    }
+    auto definition = minimal(std::move(nodes));
+    definition["entry"] = "node0";
+    auto c = cd::Conversation::load(definition, state);
+    BOOST_TEST(c->graph().size() == count);
+    auto cursor = c->graph().start();
+    const auto first = cursor;
+    bool sharedDestinations = true;
+    for (std::size_t i = 0; i < count; ++i) {
+        const auto &node = std::get<cd::DecisionNode>(cursor->data);
+        sharedDestinations = sharedDestinations && node.branches.front().next == node.otherwise;
+        cursor.next(node.branches.front());
+    }
+    BOOST_CHECK(cursor == first);
+    BOOST_CHECK(sharedDestinations);
+    BOOST_TEST(state.mutations == 0u);
+    c.reset(); // ASan/LSan cover cyclic links and nonrecursive ownership cleanup.
+}

@@ -60,7 +60,9 @@ classDiagram
     ConversationMode *-- Presentation
     Conversation --> State : borrowed session / player / galaxy adapter
     Conversation *-- Memory : local values / action results
-    Conversation *-- Node : owned compiled vector
+    Conversation *-- ConversationGraph
+    ConversationGraph *-- Node : RAII ownership chain
+    Node --> Node : non-owning outgoing connections
     Node <.. DialogueNode
     Node <.. DecisionNode
     Node <.. ActionNode
@@ -73,8 +75,8 @@ classDiagram
     Presentation --> AssetCache : session-owned shared assets
 ```
 
-The prototype Node is a `std::variant` of the four simple records, not a second
-class hierarchy. Node IDs resolve to indices at load. Conversation is nonmovable
+Each prototype Node contains a `std::variant` of the four simple records, not a
+second class hierarchy. Node IDs resolve to direct node pointers at load. Conversation is nonmovable
 because its callables borrow its stable local memory. The session's state and
 asset services outlive the conversation and presenter.
 
@@ -118,8 +120,8 @@ See [compact responses](engine/README.md#authoring-a-response-as-one-interaction
 
 ## Graph container and current position
 
-`ConversationGraph` owns stable vector storage. Edges contain resolved traversal
-cursors, and `Conversation::current_` follows them directly. `start()`/`begin()`
+`ConversationGraph` owns individually allocated nodes through a private RAII
+ownership chain. Edges contain direct non-owning node pointers, and `Conversation::current_` follows them directly. `start()`/`begin()`
 identify the entry and `end()` identifies completion. A cursor advances through
 an unconditional connection with `next()` or `++`; responses and decisions select
 an outgoing connection explicitly. Advancing the cursor does not execute a node.
