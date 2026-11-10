@@ -63,7 +63,7 @@ LoadMasterShipList (void (* YieldProcessing)(void))
 		// XXX: SHIP_INFO implicitly referenced here
 		BuiltPtr->ShipInfo = RDPtr->ship_info;
 		BuiltPtr->Fleet = RDPtr->fleet;
-		free_ship (RDPtr, FALSE, FALSE);
+		free_ship (RDPtr, FALSE);
 
 		builtName = GetStringAddress (SetAbsStringTableIndex (
 				BuiltPtr->ShipInfo.race_strings, 2));

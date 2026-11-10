@@ -20,8 +20,12 @@ load_ship is a C buffer implemented in C++. It holds the unique owner while
 loading existing image/audio/text resources, and releases it to the C gameplay
 layer only on success. RACE_DESC::ship_owner is the remaining opaque link needed
 by C behavior dispatch. free_ship reconstructs the native owner at that boundary.
-An asset-load rollback guard releases partially loaded resources without publishing
-campaign state. Existing selective icon/asset transfers remain supported.
+Battle resources now come from the session-owned weak asset cache and are retained
+by shared owners in Ship; mutable descriptor/animation/gameplay state stays local.
+The rollback guard releases uncached partial icon data, while partial battle
+loads unwind through their shared owners. Selective icon/race-string transfers
+remain supported; the obsolete FreeBattleData argument has been removed.
+See [session assets](../session-assets.md) for synchronization and lifetimes.
 
 The former dummy.c, coderes.h, corecode.h, dummy.h, 28 icode.h files and 27
 init-only headers are deleted. Orz retains its two cross-ship C callback declarations.

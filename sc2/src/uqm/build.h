@@ -61,8 +61,7 @@ extern COUNT RemoveSomeEscortShips (COUNT race, COUNT count);
 extern void RemoveEscortShips (COUNT race);
 
 extern RACE_DESC *load_ship (SPECIES_ID SpeciesID, BOOLEAN LoadBattleData);
-extern void free_ship (RACE_DESC *RaceDescPtr, BOOLEAN FreeIconData,
-		BOOLEAN FreeBattleData);
+extern void free_ship (RACE_DESC *RaceDescPtr, BOOLEAN FreeIconData);
 
 #if defined(__cplusplus)
 }

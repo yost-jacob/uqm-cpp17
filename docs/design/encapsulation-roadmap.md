@@ -38,6 +38,7 @@ a load does not decode a replacement campaign while these objects remain alive.
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
 | Campaign combat | CombatMode owns its engine and temporarily takes the encounter roster; backend scopes sounds, cyborg input and activity | Participant records, C entity callbacks and presentation services |
+| Shared battle assets | Each campaign/arcade session owns a synchronized weak asset cache; native ships retain shared immutable resource owners | Legacy fleet/menu icons, dialogue and system artwork; see [session assets](session-assets.md) |
 | Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers and NPC queue ownership |
 | Lander | Child LanderMode owns LanderVisit with explicit system/campaign borrows | Element callbacks and graphics caches |
 | Super Melee | ArcadeSession owns dispatcher and temporary legacy buffers; fleet-selection mode owns teams/UI and launches shared CombatMode | Input/render services and setup records; see [arcade session](arcade-session.md) |
@@ -176,23 +177,28 @@ preserves unchanged native bodies instead of discarding their resources. See
 [planet rendering ownership](planet-render-ownership.md) for scope and remaining
 system-wide presentation boundaries.
 
-## Planned shared-services runtime
+## Session asset caches
 
-The proposed `UQM_runtime` is not implemented yet. Its asset-cache member should
-carry this synchronization contract:
+GameSession and ArcadeSession each own their own AssetCache as their first member.
+The cache is internally synchronized: find() and the deleter's erase() use RAII
+lock guards; the map and mutexes are private. Loading and backend destruction
+happen outside the map lock. Misses are serialized separately, with a second
+lookup to avoid loading the same live asset twice.
 
-```cpp
-struct UQM_runtime {
-    DeviceServices devices;
-    // Internally synchronized: find() and erase() use RAII lock guards.
-    // Callers and asset deleters use these methods; the map and mutex are private.
-    AssetCache asset_cache;
-};
-```
+find(id) performs lazy loading and returns shared ownership. The cache retains
+only weak references. The last shared owner's deleter releases the resource and
+erases its matching entry; a generation token prevents a retiring asset from
+erasing a replacement. No periodic garbage-collection pass is required.
 
-`find(id)` handles lazy loading internally and returns shared ownership.
-The asset deleter calls `erase(id, token)`; that method checks the entry token
-under the lock so it cannot erase a newer replacement. Cache implementation
-must avoid recursive locking and releasing a last asset owner while holding its
-mutex. Sessions, asset owners and worker threads must finish before runtime
-teardown; device services outlive the cache so asset cleanup can use them.
+Native ships retain battle sprites, captain backgrounds, victory music and sounds
+from their session cache. Mutable descriptors, animation progress and gameplay
+state remain per ship. Transferred fleet/menu icons and race-string tables still
+use the legacy ownership path. The C ship-loading boundary resolves the active
+campaign or arcade cache once; native loading receives it explicitly.
+
+Modes and all asset borrowers must finish before their session cache is destroyed;
+backend services outlive the sessions. Cache locking protects the index, not SDL
+thread affinity or backend device state. Production resource loading/destruction
+continues on the game resource thread. The future renderer/input/audio services
+owner remains separate; UQM_SYSTEM_RUNTIME is the existing exploration visit,
+not the owner of this cache.

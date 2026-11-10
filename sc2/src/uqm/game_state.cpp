@@ -15,6 +15,10 @@ LegacyRuntimeBinding::LegacyRuntimeBinding(LegacyRuntimeView &view) noexcept
     : previous_(selectedRuntime) { selectedRuntime = &view; }
 LegacyRuntimeBinding::~LegacyRuntimeBinding() { selectedRuntime = previous_; }
 LegacyRuntimeView *standaloneRuntime() noexcept { return selectedRuntime; }
+AssetCache &sessionAssets() {
+    if (selectedRuntime) return selectedRuntime->assets;
+    return gameSession().assets();
+}
 struct PlayerStorage { GLOBDATA legacy{}; };
 // Only the C boundary sees a mutable legacy aggregate. Native callers use the
 // typed state/location references and detached ship snapshots.

@@ -53,6 +53,7 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
     const auto expectedDiscoveries = story.discovery(world).visitedSites;
     frontend = [&] {
         BOOST_TEST(GetLegacyGlobData() != campaignData);
+        BOOST_TEST(&uqm::detail::sessionAssets() != &session.assets());
         BOOST_TEST(GetPlayerSISState() != campaignSIS);
         BOOST_TEST(GetPlayerFleetQueue() != campaignFleet);
         BOOST_TEST(GetPlayerTravelPosition() != campaignTravel);
@@ -70,6 +71,7 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
     uqm::ArcadeSession arcade(71);
     BOOST_TEST(static_cast<int>(arcade.run().kind) == static_cast<int>(uqm::SessionExitKind::ReturnToTitle));
     BOOST_TEST(GetLegacyGlobData() == campaignData);
+    BOOST_TEST(&uqm::detail::sessionAssets() == &session.assets());
     BOOST_TEST(GetPlayerSISState() == campaignSIS);
     BOOST_TEST(GetPlayerFleetQueue() == campaignFleet);
     BOOST_TEST(GetPlayerTravelPosition() == campaignTravel);

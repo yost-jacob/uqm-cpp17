@@ -473,7 +473,7 @@ new_ship (ELEMENT *DeadShipPtr)
 		SetElementStarShip (DeadShipPtr, 0);
 		RestartMusic = OpponentAlive (DeadStarShipPtr);
 
-		free_ship (DeadStarShipPtr->RaceDescPtr, TRUE, TRUE);
+		free_ship (DeadStarShipPtr->RaceDescPtr, TRUE);
 		DeadStarShipPtr->RaceDescPtr = 0;
 		
 		// Graphics are batched while the draw queue is processed,

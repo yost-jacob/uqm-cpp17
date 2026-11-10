@@ -4,6 +4,9 @@
 #include "races.h"
 #include "combat_entity.hpp"
 #include <array>
+#include "asset_cache.hpp"
+#include <vector>
+#include <utility>
 
 namespace uqm::combat {
 using WeaponSlots = std::array<HELEMENT, 6>;
@@ -29,6 +32,9 @@ public:
     // (at most weapons.size()); individual handles may be null. The caller must
     // enqueue real shots or free speculative shots through the element engine.
     COUNT initializeWeapon(ELEMENT &element, WeaponSlots &weapons) noexcept;
+    // Retain immutable battle resources while descriptors/projectiles borrow
+    // their handles. Their cache outlives this ship and its scene's callbacks.
+    void retainAsset(AssetCache::Pointer asset) { assets_.push_back(std::move(asset)); }
     // Explicit legacy completion before asset release; idempotent. Destructors
     // clean up owned values but never publish campaign results.
     void finish() noexcept;
@@ -41,6 +47,7 @@ protected:
     virtual void onFinish() noexcept {}
 private:
     RACE_DESC data_;
+    std::vector<AssetCache::Pointer> assets_;
     bool preprocessingEnabled_ = true;
     bool finished_ = false;
 };

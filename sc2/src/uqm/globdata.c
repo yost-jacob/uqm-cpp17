@@ -167,7 +167,7 @@ InitGameStructures (void)
 					copyFleetInfo (FleetPtr, &RDPtr->ship_info,
 							&RDPtr->fleet);
 					// avail_race_q owns these resources now
-					free_ship (RDPtr, FALSE, FALSE);
+					free_ship (RDPtr, FALSE);
 				}
 			}
 

@@ -24,7 +24,7 @@ SessionExit ArcadeSession::run() {
     try {
         storage_->data.Game_state.glob_flags = GLOBAL(glob_flags);
         detail::LegacyRuntimeView view{storage_->data,
-            detail::FleetAccess::queue(storage_->compatibilityFleet), storage_->compatibilitySIS};
+            detail::FleetAccess::queue(storage_->compatibilityFleet), storage_->compatibilitySIS, assets_};
         detail::LegacyRuntimeBinding legacy{view};
         auto exit = dispatcher_.run(detail::createArcadeFleetSelectionMode(*this));
         if (exit.kind == SessionExitKind::LoadGame)

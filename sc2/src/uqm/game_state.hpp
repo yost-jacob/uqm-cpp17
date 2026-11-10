@@ -10,6 +10,7 @@
 #include "world_state.hpp"
 #include "world_types.hpp"
 #include "game_mode.hpp"
+#include "asset_cache.hpp"
 #include "ship_state.hpp"
 #include "player_location.hpp"
 
@@ -314,6 +315,7 @@ class HyperSpaceNavigation;
 class NavigationBinding;
 class GameSession {
 public:
+    AssetCache &assets() noexcept { return assets_; } // Borrow for this session only.
     // Reject null state (invalid_argument) and unknown player (out_of_range).
     // Default entropy is sampled once per session. An explicit seed reproduces
     // its mode-seed sequence. This transient source is not legacy save data.
@@ -348,6 +350,9 @@ public:
     const WorldState &world() const noexcept;
     std::shared_ptr<WorldState> worldOwner() noexcept;
 private:
+    // Internally synchronized: find/erase use RAII locks. Modes/entities release
+    // asset owners before this first member is destroyed; device services outlive us.
+    AssetCache assets_;
     std::shared_ptr<GameState> state_;
     PlayerId player_;
     std::minstd_rand0 modeSeeds_;
