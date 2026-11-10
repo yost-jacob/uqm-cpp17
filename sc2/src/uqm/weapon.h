@@ -49,7 +49,6 @@ typedef struct
 } MISSILE_BLOCK;
 
 extern HELEMENT initialize_laser (LASER_BLOCK *pLaserBlock);
-extern HELEMENT initialize_missile (MISSILE_BLOCK *pMissileBlock);
 extern HELEMENT weapon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1);
 extern SIZE TrackShip (ELEMENT *Tracker, COUNT *pfacing);

@@ -86,53 +86,6 @@ initialize_laser (LASER_BLOCK *pLaserBlock)
 	return (hLaserElement);
 }
 
-HELEMENT
-initialize_missile (MISSILE_BLOCK *pMissileBlock)
-{
-	HELEMENT hMissileElement;
-
-	hMissileElement = AllocElement ();
-	if (hMissileElement)
-	{
-		SIZE delta_x, delta_y;
-		COUNT angle;
-		ELEMENT *MissileElementPtr;
-
-		LockElement (hMissileElement, &MissileElementPtr);
-		MissileElementPtr->hit_points = (BYTE)pMissileBlock->hit_points;
-		MissileElementPtr->mass_points = (BYTE)pMissileBlock->damage;
-		MissileElementPtr->playerNr = pMissileBlock->sender;
-		MissileElementPtr->state_flags = APPEARING | FINITE_LIFE
-				| pMissileBlock->flags;
-		MissileElementPtr->life_span = pMissileBlock->life;
-		SetPrimType (&DisplayArray[MissileElementPtr->PrimIndex], STAMP_PRIM);
-		MissileElementPtr->current.image.farray = pMissileBlock->farray;
-		MissileElementPtr->current.image.frame =
-				SetAbsFrameIndex (pMissileBlock->farray[0],
-				pMissileBlock->index);
-		MissileElementPtr->preprocess_func = pMissileBlock->preprocess_func;
-		MissileElementPtr->collision_func = weapon_collision_cb;
-		MissileElementPtr->blast_offset = (BYTE)pMissileBlock->blast_offs;
-
-		angle = FACING_TO_ANGLE (pMissileBlock->face);
-		MissileElementPtr->current.location.x = pMissileBlock->cx
-				+ COSINE (angle, DISPLAY_TO_WORLD (pMissileBlock->pixoffs));
-		MissileElementPtr->current.location.y = pMissileBlock->cy
-				+ SINE (angle, DISPLAY_TO_WORLD (pMissileBlock->pixoffs));
-
-		delta_x = COSINE (angle, WORLD_TO_VELOCITY (pMissileBlock->speed));
-		delta_y = SINE (angle, WORLD_TO_VELOCITY (pMissileBlock->speed));
-		SetVelocityComponents (&MissileElementPtr->velocity,
-				delta_x, delta_y);
-
-		MissileElementPtr->current.location.x -= VELOCITY_TO_WORLD (delta_x);
-		MissileElementPtr->current.location.y -= VELOCITY_TO_WORLD (delta_y);
-		UnlockElement (hMissileElement);
-	}
-
-	return (hMissileElement);
-}
-
 HELEMENT uqm::SimulationEngine::weaponHit(ELEMENT &weapon, POINT &point, ELEMENT &target, POINT &targetPoint) {
     SimulationBinding binding{*this};
     auto *WeaponElementPtr = &weapon; auto *pWPt = &point; auto *HitElementPtr = &target; auto *pHPt = &targetPoint;

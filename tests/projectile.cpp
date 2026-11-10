@@ -47,16 +47,11 @@ SIZE TrackShip(ELEMENT *, COUNT *facing) {
     *facing = NORMALIZE_FACING(*facing + 1);
     return targetDelta;
 }
-HELEMENT initialize_missile(MISSILE_BLOCK *block) {
+HELEMENT AllocElement() {
     const auto link = AllocLink(&disp_q);
     if (!link) return nullptr;
     auto &element = *reinterpret_cast<ELEMENT *>(link);
     element = {};
-    element.current.location = {block->cx, block->cy};
-    element.mass_points = block->damage;
-    element.hit_points = block->hit_points;
-    element.life_span = block->life;
-    element.preprocess_func = block->preprocess_func;
     return link;
 }
 }
@@ -288,4 +283,42 @@ BOOST_AUTO_TEST_CASE(configured_projectile_distinguishes_direct_and_gradual_guid
         targetPresent = true;
     }
     targetDelta = 1;
+}
+
+BOOST_FIXTURE_TEST_CASE(projectile_publication_applies_typed_definition_and_initial_motion_directly, Pool)
+{
+    auto definition = projectileDefinition(0);
+    definition.frameIndex = 9;
+    definition.blastOffset = 7;
+    definition.stats.hitPoints = 3;
+    definition.stats.damage = 5;
+    definition.flags = IGNORE_SIMILAR | DEFY_PHYSICS;
+    ProjectileLaunch launch{};
+    launch.position = {1200, 900};
+    launch.facing = 3;
+    SetVelocityComponents(&launch.velocity, WORLD_TO_VELOCITY(7), WORLD_TO_VELOCITY(-4));
+    FRAME sprites[3]{};
+    const auto handle = publishProjectile(ProjectileFactory{definition}.create(launch), sprites, 1, nullptr, nullptr);
+    BOOST_REQUIRE(handle);
+    const auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_TEST(element.playerNr == 1);
+    BOOST_TEST(element.hit_points == 3u);
+    BOOST_TEST(element.mass_points == 5u);
+    BOOST_TEST(element.life_span == definition.stats.lifetime);
+    BOOST_TEST(element.blast_offset == 7u);
+    BOOST_TEST(element.state_flags == (APPEARING | FINITE_LIFE | definition.flags));
+    BOOST_TEST(element.current.image.farray == sprites);
+    BOOST_TEST(GetFrameIndex(element.current.image.frame) == 9u);
+    BOOST_TEST(GetPrimType(&DisplayArray[element.PrimIndex]) == STAMP_PRIM);
+    // The engine integrates once on the publication tick: back up by exactly
+    // one supplied velocity step so the shot first appears at its muzzle.
+    BOOST_TEST(element.current.location.x == 1193);
+    BOOST_TEST(element.current.location.y == 904);
+    auto velocity = element.velocity;
+    SIZE dx, dy;
+    GetCurrentVelocityComponents(&velocity, &dx, &dy);
+    BOOST_TEST(dx == WORLD_TO_VELOCITY(7));
+    BOOST_TEST(dy == WORLD_TO_VELOCITY(-4));
+    BOOST_TEST(element.pParent == nullptr);
+    BOOST_REQUIRE(uqm::detail::borrowEntity(disp_q, handle));
 }
