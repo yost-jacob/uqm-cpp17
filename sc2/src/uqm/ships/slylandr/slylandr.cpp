@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -144,18 +145,18 @@ lightning_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 static COUNT
 initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 {
-	LASER_BLOCK LaserBlock;
+	uqm::combat::BeamLaunch beam{};
 
-	LaserBlock.cx = ElementPtr->next.location.x;
-	LaserBlock.cy = ElementPtr->next.location.y;
-	LaserBlock.ex = 0;
-	LaserBlock.ey = 0;
+	beam.origin.x = ElementPtr->next.location.x;
+	beam.origin.y = ElementPtr->next.location.y;
+	beam.displacement.x = 0;
+	beam.displacement.y = 0;
 
-	LaserBlock.sender = ElementPtr->playerNr;
-	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.face = 0;
-	LaserBlock.pixoffs = 0;
-	LaserArray[0] = initialize_laser (&LaserBlock);
+	beam.player = ElementPtr->playerNr;
+	beam.flags = IGNORE_SIMILAR;
+	beam.facing = 0;
+	beam.muzzleOffset = 0;
+	LaserArray[0] = uqm::combat::publishBeam(beam);
 
 	if (LaserArray[0])
 	{

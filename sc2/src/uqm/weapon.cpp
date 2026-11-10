@@ -33,59 +33,6 @@ extern "C" FRAME blast[];
 
 #include <stdio.h>
 
-// A wrapper function for weapon_collision that discards the return value.
-// This makes its signature match ElementCollisionFunc.
-static void
-weapon_collision_cb (ELEMENT *WeaponElementPtr, POINT *pWPt,
-		ELEMENT *HitElementPtr, POINT *pHPt)
-{
-	weapon_collision (WeaponElementPtr, pWPt, HitElementPtr, pHPt);
-}
-
-
-HELEMENT
-initialize_laser (LASER_BLOCK *pLaserBlock)
-{
-	HELEMENT hLaserElement;
-
-	hLaserElement = AllocElement ();
-	if (hLaserElement)
-	{
-#define LASER_LIFE 1
-		ELEMENT *LaserElementPtr;
-
-		LockElement (hLaserElement, &LaserElementPtr);
-		LaserElementPtr->playerNr = pLaserBlock->sender;
-		LaserElementPtr->hit_points = 1;
-		LaserElementPtr->mass_points = 1;
-		LaserElementPtr->state_flags = APPEARING | FINITE_LIFE
-				| pLaserBlock->flags;
-		LaserElementPtr->life_span = LASER_LIFE;
-		LaserElementPtr->collision_func = weapon_collision_cb;
-		LaserElementPtr->blast_offset = 1;
-
-		LaserElementPtr->current.location.x = pLaserBlock->cx
-				+ COSINE (FACING_TO_ANGLE (pLaserBlock->face),
-				DISPLAY_TO_WORLD (pLaserBlock->pixoffs));
-		LaserElementPtr->current.location.y = pLaserBlock->cy
-				+ SINE (FACING_TO_ANGLE (pLaserBlock->face),
-				DISPLAY_TO_WORLD (pLaserBlock->pixoffs));
-		SetPrimType (&DisplayArray[LaserElementPtr->PrimIndex], LINE_PRIM);
-		SetPrimColor (&DisplayArray[LaserElementPtr->PrimIndex],
-				pLaserBlock->color);
-		LaserElementPtr->current.image.frame = DecFrameIndex (stars_in_space);
-		LaserElementPtr->current.image.farray = &stars_in_space;
-		SetVelocityComponents (&LaserElementPtr->velocity,
-				WORLD_TO_VELOCITY ((pLaserBlock->cx + pLaserBlock->ex)
-				- LaserElementPtr->current.location.x),
-				WORLD_TO_VELOCITY ((pLaserBlock->cy + pLaserBlock->ey)
-				- LaserElementPtr->current.location.y));
-		UnlockElement (hLaserElement);
-	}
-
-	return (hLaserElement);
-}
-
 HELEMENT uqm::SimulationEngine::weaponHit(ELEMENT &weapon, POINT &point, ELEMENT &target, POINT &targetPoint) {
     SimulationBinding binding{*this};
     auto *WeaponElementPtr = &weapon; auto *pWPt = &point; auto *HitElementPtr = &target; auto *pHPt = &targetPoint;

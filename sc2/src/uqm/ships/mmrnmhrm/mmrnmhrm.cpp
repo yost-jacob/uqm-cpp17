@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -256,36 +257,36 @@ initialize_dual_weapons (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 	if (ShipPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.ship)
 	{
 		COORD ex, ey;
-		LASER_BLOCK LaserBlock;
+		uqm::combat::BeamLaunch beam{};
 		ELEMENT *LaserPtr;
 
-		LaserBlock.sender = ShipPtr->playerNr;
-		LaserBlock.flags = 0;
-		LaserBlock.pixoffs = 0;
-		LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x0A, 0x0A), 0x0C);
-		LaserBlock.face = facing;
+		beam.player = ShipPtr->playerNr;
+		beam.flags = 0;
+		beam.muzzleOffset = 0;
+		beam.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x0A, 0x0A), 0x0C);
+		beam.facing = facing;
 
 		ex = cx + COSINE (angle, LaserRange);
 		ey = cy + SINE (angle, LaserRange);
 		offs_x = -SINE (angle, WingOffs);
 		offs_y = COSINE (angle, WingOffs);
 
-		LaserBlock.cx = cx + offs_x;
-		LaserBlock.cy = cy + offs_y;
-		LaserBlock.ex = ex - LaserBlock.cx;
-		LaserBlock.ey = ey - LaserBlock.cy;
-		if ((WeaponArray[0] = initialize_laser (&LaserBlock)))
+		beam.origin.x = cx + offs_x;
+		beam.origin.y = cy + offs_y;
+		beam.displacement.x = ex - beam.origin.x;
+		beam.displacement.y = ey - beam.origin.y;
+		if ((WeaponArray[0] = uqm::combat::publishBeam(beam)))
 		{
 			LockElement (WeaponArray[0], &LaserPtr);
 			LaserPtr->collision_func = twin_laser_collision;
 			UnlockElement (WeaponArray[0]);
 		}
 
-		LaserBlock.cx = cx - offs_x;
-		LaserBlock.cy = cy - offs_y;
-		LaserBlock.ex = ex - LaserBlock.cx;
-		LaserBlock.ey = ey - LaserBlock.cy;
-		if ((WeaponArray[1] = initialize_laser (&LaserBlock)))
+		beam.origin.x = cx - offs_x;
+		beam.origin.y = cy - offs_y;
+		beam.displacement.x = ex - beam.origin.x;
+		beam.displacement.y = ey - beam.origin.y;
+		if ((WeaponArray[1] = uqm::combat::publishBeam(beam)))
 		{
 			LockElement (WeaponArray[1], &LaserPtr);
 			LaserPtr->collision_func = twin_laser_collision;

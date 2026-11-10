@@ -1,4 +1,6 @@
 #include "uqm/projectile.hpp"
+#include "uqm/beam.hpp"
+#include "uqm/init.h"
 #include "uqm/projectile_legacy.hpp"
 #include "uqm/sis_weapons.hpp"
 #include "uqm/sis_legacy.hpp"
@@ -10,7 +12,7 @@
 #include <stdexcept>
 using namespace uqm::combat;
 namespace {
-unsigned trackingCalls = 0, visualCalls = 0;
+unsigned trackingCalls = 0, visualCalls = 0, defaultCollisionCalls = 0;
 bool targetPresent = true;
 SIZE targetDelta = 1;
 ProjectileDefinition projectileDefinition(unsigned period = 2) {
@@ -37,7 +39,9 @@ struct CountingProjectile final : Projectile {
 // steering timers, velocity math, publishing adapter and pool ownership run.
 extern "C" {
 
-HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { return nullptr; }
+HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { ++defaultCollisionCalls; return nullptr; }
+FRAME stars_in_space = nullptr;
+FRAME DecFrameIndex(FRAME frame) { return reinterpret_cast<FRAME>(reinterpret_cast<std::uintptr_t>(frame) - 1); }
 FRAME IncFrameIndex(FRAME frame) { return reinterpret_cast<FRAME>(reinterpret_cast<std::uintptr_t>(frame) + 1); }
 COUNT GetFrameIndex(FRAME frame) { return static_cast<COUNT>(reinterpret_cast<std::uintptr_t>(frame)); }
 FRAME SetAbsFrameIndex(FRAME, COUNT index) { return reinterpret_cast<FRAME>(std::uintptr_t(index)); }
@@ -321,4 +325,58 @@ BOOST_FIXTURE_TEST_CASE(projectile_publication_applies_typed_definition_and_init
     BOOST_TEST(dy == WORLD_TO_VELOCITY(-4));
     BOOST_TEST(element.pParent == nullptr);
     BOOST_REQUIRE(uqm::detail::borrowEntity(disp_q, handle));
+}
+
+BOOST_FIXTURE_TEST_CASE(native_beam_preserves_segment_endpoint_muzzle_offset_and_default_collision, Pool)
+{
+    BeamLaunch launch{};
+    launch.origin = {1000, 800};
+    launch.displacement = {300, -120};
+    launch.muzzleOffset = 4;
+    launch.player = 1;
+    launch.flags = IGNORE_SIMILAR;
+    launch.color = BUILD_COLOR(MAKE_RGB15(10, 20, 30), 5);
+    const auto handle = publishBeam(launch);
+    BOOST_REQUIRE(handle);
+    auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_TEST(element.playerNr == 1);
+    BOOST_TEST(element.hit_points == 1u);
+    BOOST_TEST(element.mass_points == 1u);
+    BOOST_TEST(element.life_span == 1u);
+    BOOST_TEST(element.blast_offset == 1u);
+    BOOST_TEST(element.state_flags == (APPEARING | FINITE_LIFE | IGNORE_SIMILAR));
+    BOOST_TEST(element.current.location.x == 1000);
+    BOOST_TEST(element.current.location.y == 800 - DISPLAY_TO_WORLD(4));
+    auto velocity = element.velocity;
+    SIZE dx, dy;
+    GetCurrentVelocityComponents(&velocity, &dx, &dy);
+    BOOST_TEST(element.current.location.x + VELOCITY_TO_WORLD(dx) == 1300);
+    BOOST_TEST(element.current.location.y + VELOCITY_TO_WORLD(dy) == 680);
+    BOOST_TEST(GetPrimType(&DisplayArray[element.PrimIndex]) == LINE_PRIM);
+    BOOST_TEST(sameColor(GetPrimColor(&DisplayArray[element.PrimIndex]), launch.color));
+    BOOST_TEST(element.current.image.farray == &stars_in_space);
+    BOOST_TEST(element.preprocess_func == nullptr);
+    BOOST_REQUIRE(dynamic_cast<Beam *>(uqm::detail::borrowEntity(disp_q, handle)));
+    defaultCollisionCalls = 0;
+    ELEMENT target{}; POINT point{};
+    element.collision_func(&element, &point, &target, &point);
+    BOOST_TEST(defaultCollisionCalls == 1u);
+    FreeLink(&disp_q, handle);
+    BOOST_TEST(uqm::detail::borrowEntity(disp_q, handle) == nullptr);
+}
+
+BOOST_FIXTURE_TEST_CASE(native_beam_handles_zero_length_segments_and_pool_exhaustion, Pool)
+{
+    const auto first = publishBeam({}), second = publishBeam({});
+    BOOST_REQUIRE(first); BOOST_REQUIRE(second);
+    BOOST_TEST(publishBeam({}) == nullptr);
+    auto &element = *static_cast<ELEMENT *>(first);
+    auto velocity = element.velocity;
+    SIZE dx, dy;
+    GetCurrentVelocityComponents(&velocity, &dx, &dy);
+    BOOST_TEST(dx == 0); BOOST_TEST(dy == 0);
+    FreeLink(&disp_q, first);
+    const auto replacement = publishBeam({});
+    BOOST_TEST(replacement == first);
+    BOOST_REQUIRE(dynamic_cast<Beam *>(uqm::detail::borrowEntity(disp_q, replacement)));
 }

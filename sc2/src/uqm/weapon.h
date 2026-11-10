@@ -28,16 +28,6 @@ extern "C" {
 
 typedef struct
 {
-	COORD cx, cy, ex, ey;
-	ELEMENT_FLAGS flags;
-	SIZE sender; // player number
-	SIZE pixoffs;
-	COUNT face;
-	Color color;
-} LASER_BLOCK;
-
-typedef struct
-{
 	COORD cx, cy;
 	ELEMENT_FLAGS flags;
 	SIZE sender; // player number
@@ -48,7 +38,6 @@ typedef struct
 	SIZE blast_offs;
 } MISSILE_BLOCK;
 
-extern HELEMENT initialize_laser (LASER_BLOCK *pLaserBlock);
 extern HELEMENT weapon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1);
 extern SIZE TrackShip (ELEMENT *Tracker, COUNT *pfacing);
