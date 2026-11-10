@@ -30,6 +30,7 @@
 #include "options.h"
 #include "save.h"
 #include "settings.h"
+#include "game_configuration.h"
 #include "setup.h"
 #include "sounds.h"
 #include "util.h"
@@ -127,7 +128,7 @@ FeedbackSetting (BYTE which_setting)
 		case SOUND_OFF_SETTING:
 			snprintf (buf, sizeof (buf) - 1, "%s %s",
 					GAME_STRING (OPTION_STRING_BASE + 0),
-					GLOBAL (glob_flags) & SOUND_DISABLED
+					GetGameConfiguration()->soundDisabled
 					? GAME_STRING (OPTION_STRING_BASE + 3) :
 					GAME_STRING (OPTION_STRING_BASE + 4));
 			break;
@@ -135,7 +136,7 @@ FeedbackSetting (BYTE which_setting)
 		case MUSIC_OFF_SETTING:
 			snprintf (buf, sizeof (buf) - 1, "%s %s",
 					GAME_STRING (OPTION_STRING_BASE + 1),
-					GLOBAL (glob_flags) & MUSIC_DISABLED
+					GetGameConfiguration()->musicDisabled
 					? GAME_STRING (OPTION_STRING_BASE + 3) :
 					GAME_STRING (OPTION_STRING_BASE + 4));
 			break;

@@ -61,7 +61,8 @@ extern void ClearRuntimeShipRoster (COUNT side);
 		/* Array of lists of ships involved in a battle, one queue per side;
 		 * queue element is STARSHIP */
 
-extern ACTIVITY LastActivity;
+#include "session_activity.h"
+#define LastActivity (*GetLastSessionActivity())
 
 extern BYTE PlayerControl[];
 

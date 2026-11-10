@@ -46,7 +46,7 @@
 #include <string.h>
 
 
-ACTIVITY LastActivity;
+
 BYTE PlayerControl[NUM_PLAYERS];
 
 // XXX: These declarations should really go to the file they belong to.
@@ -183,8 +183,7 @@ InitContexts (void)
 	if (OffScreenContext == NULL)
 		return FALSE;
 
-	if (!InitializeSimulationEngine (MAX_DISPLAY_ELEMENTS))
-		return FALSE;
+	/* Simulation queues belong to the active GameMode, not device contexts. */
 
 	return TRUE;
 }

@@ -189,12 +189,12 @@ FixMenuState (BYTE BadState)
 	switch (BadState)
 	{
 		case PM_SOUND_ON:
-			if (GLOBAL (glob_flags) & SOUND_DISABLED)
+			if (GetGameConfiguration()->soundDisabled)
 				return PM_SOUND_OFF;
 			else
 				return PM_SOUND_ON;
 		case PM_MUSIC_ON:
-			if (GLOBAL (glob_flags) & MUSIC_DISABLED)
+			if (GetGameConfiguration()->musicDisabled)
 				return PM_MUSIC_OFF;
 			else
 				return PM_MUSIC_ON;

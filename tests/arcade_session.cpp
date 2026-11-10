@@ -66,10 +66,10 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
         ResetPersonalDiscoveries(); // The real C adapter must leave campaign discoveries alone.
         GLOBAL(CurrentActivity) = SUPER_MELEE | CHECK_ABORT; // Back to title, not application quit.
         uqm::ArcadeSession nested(12);
-        BOOST_TEST(static_cast<int>(nested.run().kind) == static_cast<int>(uqm::SessionExitKind::Failed));
+        BOOST_TEST(static_cast<int>(nested.runArcade().kind) == static_cast<int>(uqm::SessionExitKind::Failed));
     };
     uqm::ArcadeSession arcade(71);
-    BOOST_TEST(static_cast<int>(arcade.run().kind) == static_cast<int>(uqm::SessionExitKind::ReturnToTitle));
+    BOOST_TEST(static_cast<int>(arcade.runArcade().kind) == static_cast<int>(uqm::SessionExitKind::ReturnToTitle));
     BOOST_TEST(GetLegacyGlobData() == campaignData);
     BOOST_TEST(&uqm::detail::sessionAssets() == &session.assets());
     BOOST_TEST(GetPlayerSISState() == campaignSIS);
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(arcade_failure_destroys_simulation_before_restoring_campaig
         throw std::runtime_error("frontend failed");
     };
     uqm::ArcadeSession arcade(99);
-    const auto exit = arcade.run();
+    const auto exit = arcade.runArcade();
     frontend = {};
     BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::SessionExitKind::Failed));
     BOOST_REQUIRE(exit.error);
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(arcade_rejects_live_campaign_and_distinguishes_application_
         uqm::ModeResult run() override {
             auto *before = GetLegacyGlobData();
             uqm::ArcadeSession arcade(19);
-            BOOST_TEST(static_cast<int>(arcade.run().kind) == static_cast<int>(uqm::SessionExitKind::Failed));
+            BOOST_TEST(static_cast<int>(arcade.runArcade().kind) == static_cast<int>(uqm::SessionExitKind::Failed));
             BOOST_TEST(GetLegacyGlobData() == before);
             return uqm::ModeCompleted{};
         }
@@ -133,15 +133,15 @@ BOOST_AUTO_TEST_CASE(arcade_rejects_live_campaign_and_distinguishes_application_
     struct Restore { decltype(QuitPosted) value = QuitPosted; ~Restore() { QuitPosted = value; frontend = {}; } } restore;
     frontend = [] { QuitPosted = TRUE; };
     uqm::ArcadeSession arcade(21);
-    BOOST_TEST(static_cast<int>(arcade.run().kind) == static_cast<int>(uqm::SessionExitKind::Shutdown));
+    BOOST_TEST(static_cast<int>(arcade.runArcade().kind) == static_cast<int>(uqm::SessionExitKind::Shutdown));
 }
 
 BOOST_AUTO_TEST_CASE(arcade_rejects_campaign_load_after_modes_unwind)
 {
     auto *original = GetLegacyGlobData();
     uqm::ArcadeSession arcade(17);
-    frontend = [&] { arcade.dispatcher().requestMenuExit(uqm::SessionExit::load(0)); };
-    const auto exit = arcade.run();
+    frontend = [&] { arcade.dispatcher().requestExit(uqm::SessionExit::load(0)); };
+    const auto exit = arcade.runArcade();
     frontend = {};
     BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::SessionExitKind::Failed));
     BOOST_REQUIRE(exit.error);

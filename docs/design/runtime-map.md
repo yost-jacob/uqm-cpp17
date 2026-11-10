@@ -63,7 +63,7 @@ flowchart TD
     EC -. nested menus .-> MN
     MN --> UI["Legacy menu input / drawing / save selection"]:::legacy
     MN -. exit request after stack unwinds .-> D
-    D --> EXIT["SessionExit to starcon.c<br/>title / load / shutdown / failure"]:::adapter
+    D --> EXIT["SessionExit to GameSession<br/>title / load / shutdown / failure"]:::adapter
     EXIT -->|load request only| LOAD["Next runCampaign loads at safe boundary<br/>legacy LoadGame decoder"]:::legacy
 
     SH -. handles and shared services .-> RES["Existing assets / UIO / graphics / sound / SDL2"]:::foundation
@@ -157,7 +157,7 @@ and all-special-system migration, scoped owner and remaining C engine boundary.
 
 ## Source anchors
 
-- [Dispatcher](../../sc2/src/uqm/game_mode.cpp), [mode bodies and campaign lifecycle](../../sc2/src/uqm/gameplay_modes.cpp), [outer campaign caller](../../sc2/src/uqm/starcon.c).
+- [Dispatcher template](../../sc2/src/uqm/dispatcher.hpp), [mode bodies and campaign lifecycle](../../sc2/src/uqm/gameplay_modes.cpp), [application sessions](sessions.md) and [gameplay entry](../../sc2/src/uqm/starcon.cpp).
 - [State ownership](../../sc2/src/uqm/game_state.hpp), [payload adapter](../../sc2/src/uqm/game_state.cpp), [world runtime](../../sc2/src/uqm/world.hpp).
 - [Encounter orchestration](../../sc2/src/uqm/encounter_runtime.hpp), [device menu](../../sc2/src/uqm/device_menu.hpp), [device inventory and save adapter](../../sc2/src/uqm/device_inventory.cpp).
 - [World adapter](../../sc2/src/uqm/world_c.cpp), [behavior selection](../../sc2/src/uqm/system_behavior_factory.cpp), [menu adapter](../../sc2/src/uqm/game_menu.cpp).

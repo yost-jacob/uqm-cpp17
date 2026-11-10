@@ -64,8 +64,10 @@ member access, address-taking, assignment and `sizeof` expressions remain valid.
 The GLOBDATA/GAME_STATE/SIS_STATE layouts and save encoders/decoders are unchanged.
 There is no copy between C and C++ state when accessing data.
 
-The process-lifetime session is initialized on first use. Legacy ship resource
-code can retain its payload address. InitGlobData still clears only the plain C
+The application dispatcher owns a fresh campaign session per title-menu visit.
+A startup compatibility session remains for unmigrated callers outside a bound
+session; active C buffers always select the running owner. Legacy resource code
+may retain payload addresses only within that owner’s lifetime. InitGlobData still clears only the plain C
 payload in place; it cannot erase the C++ owner, profile, or campaign view.
 Existing resource/queue cleanup must still run before state destruction. This
 step establishes ownership of the record, not RAII for every handle it contains.
@@ -184,8 +186,8 @@ orbital handlers can migrate within this established control-flow contract.
 
 [Synchronous nested modes](design/nested-modes.md) are also available: the child
 owns the suspended parent until returning it, and session exits propagate after
-ownership restoration. Child exceptions currently abort with a graceful-shutdown
-TODO. Orbital system encounters now use this path while dialogue/combat internals
+ownership restoration. Child exceptions restore ownership and service bindings,
+then unwind to the root dispatcher’s typed failure result. Orbital system encounters now use this path while dialogue/combat internals
 remain unchanged. See the [runtime encapsulation map](design/runtime-encapsulation.md).
 
 Persistent escort ownership and identity-based combat results are described in
@@ -195,3 +197,6 @@ to the mutable legacy GAME_STATE payload.
 The persistent flagship now lives in Fleet's optional SIS rather than GLOBDATA.
 See [SIS/projectile ownership](design/sis-projectiles.md) for buffer and combat
 configuration contracts.
+
+The outer intro/title/campaign/arcade ownership and shared dispatcher template are
+described in [application sessions](design/sessions.md).

@@ -10,7 +10,7 @@
 #include "world_state.hpp"
 #include "world_types.hpp"
 #include "game_mode.hpp"
-#include "asset_cache.hpp"
+#include "session.hpp"
 #include "ship_state.hpp"
 #include "player_location.hpp"
 
@@ -313,35 +313,23 @@ private:
 // Session retains its owner, not a cached player pointer or separate campaign.
 class HyperSpaceNavigation;
 class NavigationBinding;
-class GameSession {
+class GameSession : public Session {
 public:
-    AssetCache &assets() noexcept { return assets_; } // Borrow for this session only.
+    using Session::run;
+    enum class Entry { NewGame, LoadMenu };
+    GameSession(SessionDispatcher &host, Entry entry, std::uint32_t seed = std::random_device{}());
+    SessionResult run() override;
     // Reject null state (invalid_argument) and unknown player (out_of_range).
     // Default entropy is sampled once per session. An explicit seed reproduces
     // its mode-seed sequence. This transient source is not legacy save data.
     GameSession(std::shared_ptr<GameState> state, PlayerId player,
                 std::uint32_t seed = std::random_device{}());
-    std::uint32_t nextModeSeed() noexcept { return static_cast<std::uint32_t>(modeSeeds_()); }
-    ~GameSession();
+    ~GameSession() override;
     GameSession(const GameSession &) = delete;
     GameSession &operator=(const GameSession &) = delete;
-    // Flat synchronous dispatcher. Releases the current mode before returning.
-    // Null modes, invalid transitions and C++ exceptions become Failed exits.
-    SessionExit run(std::unique_ptr<GameMode> initialMode) { return dispatcher_.run(std::move(initialMode)); }
-    // Synchronous nested execution. Only call from the active mode, with a fresh
-    // child belonging to this session's dispatcher. Parent remains alive on the stack.
-    // Child returns ModeCompleted or SessionExit; a returned exit must propagate
-    // outward before further gameplay. Child exceptions currently abort (TODO).
-    MenuResult swapGameMode(std::unique_ptr<GameMode> child) { return dispatcher_.swapGameMode(std::move(child)); }
-    bool isRunning() const noexcept { return dispatcher_.isRunning(); } // C/credits compatibility host selection only.
     // Production lifecycle/legacy adapters; load only at an unwound boundary.
     SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
-    // Transitional C menu mailbox. Native menus return the same optional result.
-    // Gameplay-thread only. Shutdown > failure > load > title; first slot wins.
-    void requestMenuExit(SessionExit exit) { dispatcher_.requestMenuExit(std::move(exit)); }
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
-    MenuResult menuExit() const { return dispatcher_.menuExit(); }
-    ModeDispatcher &dispatcher() noexcept { return dispatcher_; }
     HyperSpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
     PlayerId playerId() const noexcept;
     PlayerEntity &player();
@@ -349,19 +337,18 @@ public:
     WorldState &world() noexcept;
     const WorldState &world() const noexcept;
     std::shared_ptr<WorldState> worldOwner() noexcept;
+protected:
+    detail::LegacyRuntimeView legacyRuntime() noexcept override;
 private:
-    // Internally synchronized: find/erase use RAII locks. Modes/entities release
-    // asset owners before this first member is destroyed; device services outlive us.
-    AssetCache assets_;
+    Entry entry_ = Entry::NewGame;
     std::shared_ptr<GameState> state_;
     PlayerId player_;
-    std::minstd_rand0 modeSeeds_;
-    ModeDispatcher dispatcher_;
     friend class NavigationBinding;
     HyperSpaceNavigation *navigation_ = nullptr;
 };
 
-// Process-lifetime single-player session used by the C compatibility adapter.
+// Transitional C lookup: active campaign, or startup fallback outside a session.
+// Native callers borrow their explicit GameSession reference.
 // Do not replace its owner: legacy ship/resource code retains payload addresses.
 // The payload is zero-initialized once; InitGlobData continues to reset it in place.
 GameSession &gameSession();

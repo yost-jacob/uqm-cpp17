@@ -63,7 +63,8 @@ typedef struct
 	UNICODE SaveName[SAVE_NAME_SIZE];
 } SUMMARY_DESC;
 
-extern ACTIVITY NextActivity;
+#include "session_activity.h"
+#define NextActivity (*GetNextSessionActivity())
 
 extern BOOLEAN LoadGame (COUNT which_game, SUMMARY_DESC *summary_desc);
 extern BOOLEAN LoadLegacyGame (COUNT which_game, SUMMARY_DESC *summary_desc);

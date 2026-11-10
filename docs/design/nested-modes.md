@@ -38,19 +38,18 @@ replacement. A successor returned by a root mode starts running normally; the
 parent of a completed child is restored without calling `run()` again.
 Nested children must complete or return an exit, not an unrelated successor.
 
-## Temporary fatal-error policy
+## Failure unwinding
 
-The child `run()` and return/ownership processing are wrapped in `try/catch (...)`.
-The catch prints a diagnostic and calls `std::abort()`, with an explicit TODO to
-implement graceful shutdown later. It intentionally performs no unwinding or
-recovery of the suspended parent. This matches the temporary agreed policy;
-there is no failure message box, autosave, or graceful cleanup on this path.
-Invalid call arguments are rejected before ownership changes.
+The shared dispatcher catches child failures long enough to restore parent
+ownership, destroy the child under its own bindings, and release the suspension
+snapshot. It then rethrows through the parent's normal stack. The root dispatcher
+returns a typed failure after cleanup. It never destroys a parent with a live
+`run()` frame. Resume/redraw is skipped on failure. Invalid arguments are rejected
+before ownership changes. There is no dispatcher abort/death-test policy.
 
-Boost.Test checks multiple nesting levels, preserved locals, one run per mode,
-parent/child destruction, and propagation of load slot zero. A Linux subprocess
-test verifies SIGABRT on a thrown child exception without terminating the test
-runner or writing a core dump.
+Boost.Test checks nesting, preserved locals, load slot zero, and child exception
+unwinding. Session tests also verify destructor/binding restoration order. The
+same [dispatcher template serves application sessions](sessions.md).
 
 Orbital system behaviors use this API through SystemEncounterMode. Its native
 EncounterRuntime launches ConversationMode as another child for hailed dialogue;

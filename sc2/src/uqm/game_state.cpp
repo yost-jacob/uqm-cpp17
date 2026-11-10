@@ -14,7 +14,8 @@ namespace { thread_local LegacyRuntimeView *selectedRuntime = nullptr; }
 LegacyRuntimeBinding::LegacyRuntimeBinding(LegacyRuntimeView &view) noexcept
     : previous_(selectedRuntime) { selectedRuntime = &view; }
 LegacyRuntimeBinding::~LegacyRuntimeBinding() { selectedRuntime = previous_; }
-LegacyRuntimeView *standaloneRuntime() noexcept { return selectedRuntime; }
+LegacyRuntimeView *boundRuntime() noexcept { return selectedRuntime; }
+LegacyRuntimeView *standaloneRuntime() noexcept { return selectedRuntime && !selectedRuntime->campaign ? selectedRuntime : nullptr; }
 AssetCache &sessionAssets() {
     if (selectedRuntime) return selectedRuntime->assets;
     return gameSession().assets();
@@ -264,10 +265,20 @@ const PlayerEntity &GameState::player(PlayerId id) const {
     return player_;
 }
 GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player, std::uint32_t seed)
-    : state_(std::move(state)), player_(player), modeSeeds_(seed) {
+    : Session(RuntimeKind::Campaign, seed), state_(std::move(state)), player_(player) {
     if (!state_)
         throw std::invalid_argument("session requires game state");
     state_->player(player_); // Validate binding now, not at the first interaction.
+}
+GameSession::GameSession(SessionDispatcher &host, Entry entry, std::uint32_t seed)
+    : GameSession(std::make_shared<GameState>(UserProfile{SinglePlayerId, "Player"}), SinglePlayerId, seed) {
+    bindDispatcher(host);
+    entry_ = entry;
+}
+detail::LegacyRuntimeView GameSession::legacyRuntime() noexcept {
+    auto &user = player();
+    return {detail::LegacyStateAccess::data(user), detail::FleetAccess::queue(user.fleet()),
+        detail::SISAccess::record(user.sis()), assets(), nullptr, this};
 }
 GameSession::~GameSession() = default;
 PlayerId GameSession::playerId() const noexcept { return player_; }
@@ -277,13 +288,14 @@ std::shared_ptr<WorldState> GameSession::worldOwner() noexcept { return state_->
 WorldState &GameSession::world() noexcept { return state_->world(); }
 const WorldState &GameSession::world() const noexcept { return std::as_const(*state_).world(); }
 GameSession &gameSession() {
+    if (auto *view = detail::boundRuntime(); view && view->campaign) return *view->campaign;
     static GameSession session{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Player"}), SinglePlayerId};
     return session;
 }
 } // namespace uqm
 
 extern "C" GLOBDATA *GetLegacyGlobData(void) {
-    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->data;
+    if (auto *runtime = uqm::detail::boundRuntime()) return &runtime->data;
     try {
         return &uqm::detail::LegacyStateAccess::data(uqm::gameSession().player());
     } catch (...) {
@@ -294,20 +306,20 @@ extern "C" GLOBDATA *GetLegacyGlobData(void) {
 }
 
 extern "C" QUEUE *GetPlayerFleetQueue(void) {
-    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->fleet;
+    if (auto *runtime = uqm::detail::boundRuntime()) return &runtime->fleet;
     try { return &uqm::detail::FleetAccess::queue(uqm::gameSession().player().fleet()); }
     catch (...) { std::abort(); }
 }
 
 extern "C" SIS_STATE *GetPlayerSISState(void) {
-    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->sis;
+    if (auto *runtime = uqm::detail::boundRuntime()) return &runtime->sis;
     try { return &uqm::detail::SISAccess::record(uqm::gameSession().player().sis()); }
     catch (...) { std::abort(); }
 }
 
 extern "C" PLAYER_TRAVEL_POSITION *GetPlayerTravelPosition(void) {
     // Standalone arcade has no campaign location; only legacy reset/setup uses it.
-    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->travel;
+    if (auto *runtime = uqm::detail::standaloneRuntime()) return runtime->travel;
     try { return &uqm::gameSession().player().travel(); }
     catch (...) { std::abort(); }
 }
@@ -333,9 +345,19 @@ extern "C" void ImportPlayerTravelPosition(void) {
     travel.flight = {game.ip_location, game.ShipFacing, game.ip_planet, game.in_orbit};
 }
 extern "C" void ResetPlayerTravelPosition(void) {
-    if (auto *runtime = uqm::detail::standaloneRuntime()) runtime->travel = {};
+    if (auto *runtime = uqm::detail::standaloneRuntime()) *runtime->travel = {};
     else {
         try { uqm::gameSession().player().resetLocation(); }
         catch (...) { std::abort(); }
     }
+}
+
+namespace { UQM_SESSION_ACTIVITY startupActivity{}; }
+extern "C" UWORD *GetLastSessionActivity(void) {
+    if (auto *view = uqm::detail::boundRuntime(); view && view->activities) return &view->activities->last;
+    return &startupActivity.last;
+}
+extern "C" UWORD *GetNextSessionActivity(void) {
+    if (auto *view = uqm::detail::boundRuntime(); view && view->activities) return &view->activities->next;
+    return &startupActivity.next;
 }

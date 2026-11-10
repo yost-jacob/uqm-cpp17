@@ -1,6 +1,7 @@
 uqm_SUBDIRS="libs res uqm"
+uqm_CXXFILES="game_configuration.cpp"
 uqm_CFILES="options.c port.c uqm.c"
-uqm_HFILES="config.h endian_uqm.h options.h port.h types.h uqmversion.h"
+uqm_HFILES="game_configuration.h game_configuration.hpp config.h endian_uqm.h options.h port.h types.h uqmversion.h"
 
 if [ "$uqm_HAVE_GETOPT_LONG" = 0 ]; then
 	uqm_SUBDIRS="$uqm_SUBDIRS getopt"
@@ -11,7 +12,7 @@ case "$HOST_SYSTEM" in
 		uqm_SUBDIRS="$uqm_SUBDIRS darwin"
 		;;
 	MSVC)
-		uqm_HFILES="$uqm_HFILES config_vc6.h"
+		uqm_HFILES="game_configuration.h game_configuration.hpp $uqm_HFILES config_vc6.h"
 		;;
 esac
 

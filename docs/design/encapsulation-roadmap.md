@@ -42,7 +42,7 @@ a load does not decode a replacement campaign while these objects remain alive.
 | Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers and NPC queue ownership |
 | Lander | Child LanderMode owns LanderVisit with explicit system/campaign borrows | Element callbacks and graphics caches |
 | Super Melee | ArcadeSession owns dispatcher and temporary legacy buffers; fleet-selection mode owns teams/UI and launches shared CombatMode | Input/render services and setup records; see [arcade session](arcade-session.md) |
-| Session startup | RunGameSession C adapter invokes GameSession::runCampaign | C title loop; definition is in sc2/src/uqm/gameplay_modes.cpp |
+| Application sessions | Game::run(context) owns the session dispatcher; Session base owns cache/RNG/mode dispatch; derived intro/title/campaign/arcade visits return successors | SDL main-thread pump and legacy device/UI services; see [sessions](sessions.md) |
 
 A C++ mode wrapper establishes a lifetime boundary; it does not by itself
 encapsulate every service or legacy payload accessed beneath that boundary.

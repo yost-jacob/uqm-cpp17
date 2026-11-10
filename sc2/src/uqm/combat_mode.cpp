@@ -21,7 +21,7 @@ public:
             preparation_->complete(); // Publish gameplay results explicitly.
         }
         preparation_.reset(); // Restore caller services before choosing its result.
-        if (auto exit = dispatcher().menuExit()) return *exit;
+        if (auto exit = dispatcher().exitRequest()) return *exit;
         if (QuitPosted) return SessionExit::shutdown();
         if (GLOBAL(CurrentActivity) & CHECK_ABORT) return SessionExit::title();
         return ModeCompleted{};

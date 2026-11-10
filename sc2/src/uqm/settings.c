@@ -17,6 +17,7 @@
  */
 
 #include "settings.h"
+#include "game_configuration.h"
 
 #include "globdata.h"
 #include "libs/compiler.h"
@@ -29,10 +30,10 @@ static BYTE LastPriority;
 void
 ToggleMusic (void)
 {
-	GLOBAL (glob_flags) ^= MUSIC_DISABLED;
+	GetGameConfiguration()->musicDisabled = !GetGameConfiguration()->musicDisabled;
 	if (LastPriority <= 1)
 	{
-		if (GLOBAL (glob_flags) & MUSIC_DISABLED)
+		if (GetGameConfiguration()->musicDisabled)
 			PLRStop (LastMusicRef);
 		else if (LastMusicRef)
 			PLRPlaySong (LastMusicRef, LastContinuous, LastPriority);
@@ -51,7 +52,7 @@ PlayMusic (MUSIC_REF MusicRef, BOOLEAN Continuous, BYTE Priority)
 		Priority > 1
 		||
 #endif /* NEVER */
-		!(GLOBAL (glob_flags) & MUSIC_DISABLED)
+		!(GetGameConfiguration()->musicDisabled)
 		)
 	{
 		PLRPlaySong (MusicRef, Continuous, Priority);
@@ -80,14 +81,14 @@ PauseMusic (void)
 void
 ToggleSoundEffect (void)
 {
-	GLOBAL (glob_flags) ^= SOUND_DISABLED;
+	GetGameConfiguration()->soundDisabled = !GetGameConfiguration()->soundDisabled;
 }
 
 void
 PlaySoundEffect (SOUND S, COUNT Channel, SoundPosition Pos,
 		void *PositionalObject, BYTE Priority)
 {
-	if (!(GLOBAL (glob_flags) & SOUND_DISABLED))
+	if (!(GetGameConfiguration()->soundDisabled))
 	{
 		SetChannelVolume (Channel, MAX_VOLUME >> 1, Priority);
 		//SetChannelRate (Channel, GetSampleRate (S), Priority);

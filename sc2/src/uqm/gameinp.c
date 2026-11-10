@@ -17,6 +17,7 @@
  */
 
 #include "controls.h"
+#include "globdata.h"
 #include "battlecontrols.h"
 #include "init.h"
 #include "intel.h"
@@ -52,7 +53,7 @@ typedef struct
 } MENU_ANNOTATIONS;
 
 
-CONTROL_TEMPLATE PlayerControls[NUM_PLAYERS];
+
 CONTROLLER_INPUT_STATE CurrentInputState, PulsedInputState;
 static CONTROLLER_INPUT_STATE CachedInputState, OldInputState;
 static MENU_ANNOTATIONS RepeatDelays, Times;
@@ -224,6 +225,10 @@ _check_gestalt (DWORD NewTime)
 void
 UpdateInputState (void)
 {
+	/* Session payloads belong to the gameplay thread. The SDL pump only
+	 * posts QuitPosted; apply the abort to the active session here. */
+	if (QuitPosted)
+		GLOBAL (CurrentActivity) |= CHECK_ABORT;
 	DWORD NewTime;
 	/* First, if the game is, in fact, paused, we stall until
 	 * unpaused.  Every thread with control over game logic calls

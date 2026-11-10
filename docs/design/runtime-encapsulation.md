@@ -2,6 +2,8 @@
 
 This describes the live implementation, not the larger battle/conversation
 wireframes. Gameplay still runs synchronously on the simulation thread.
+The [application session hierarchy](sessions.md) now owns intro/title/campaign/arcade
+transitions above this map; sessions and modes reuse the same dispatcher template.
 
 ```mermaid
 flowchart TD

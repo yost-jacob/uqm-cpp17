@@ -82,7 +82,9 @@ enum
 	audio_ENUM_SIZE
 };
 
-extern int snddriver, soundflags;
+#include "game_configuration.h"
+#define snddriver (GetGameConfiguration()->audioDriver)
+#define soundflags (GetGameConfiguration()->audioFlags)
 
 typedef struct {
 	/* General */

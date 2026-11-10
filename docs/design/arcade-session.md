@@ -61,7 +61,8 @@ Generic dispatch validates the host identity of initial, successor and child
 modes. Passing a mode from another dispatcher cannot execute it. Both sessions
 retain the existing nested-exception abort/TODO policy.
 
-Remaining compatibility machinery includes the C title loop,
+The [application session dispatcher](sessions.md) now owns title/arcade transitions.
+Remaining compatibility machinery includes legacy title-menu presentation,
 team/setup records, global PlayerControl/PlayerInput and SDL rendering/audio/input
 services. Startup/title still uses the fallback engine; dispatched campaign and
 arcade modes own their engines. This does not yet allow concurrent simulations

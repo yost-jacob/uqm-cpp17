@@ -43,7 +43,7 @@ SDL_Surface *format_conv_surf = NULL;
 
 static volatile BOOLEAN abortFlag = FALSE;
 
-int GfxFlags = 0;
+
 
 TFB_GRAPHICS_BACKEND *graphics_backend = NULL;
 
