@@ -1026,7 +1026,7 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 		typeStr = planetTypeString (moon->data_index & ~PLANET_SHIELDED);
 	}
 	fprintf (out, "  - Moon %-30c  %s\n",
-			'a' + (moon - &pSolarSysState->MoonDesc[0]), typeStr);
+			'a' + static_cast<int>(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld (out, moon);
 }
@@ -1626,7 +1626,7 @@ dumpStrings (FILE *out)
 	
 	if (GAMESTR_COUNT != numStrings) {
 		fprintf(stderr, "Warning: GAMESTR_COUNT is %d, but GameStrings "
-				"contains %d strings.\n", GAMESTR_COUNT, numStrings);
+				"contains %zu strings.\n", GAMESTR_COUNT, numStrings);
 	}
 
 	categoryI = 0;
@@ -1634,7 +1634,7 @@ dumpStrings (FILE *out)
 		while (categoryI < numCategories &&
 				stringI >= categories[categoryI + 1].base)
 			categoryI++;
-		fprintf(out, "[ %s + %d ]  %s\n", categories[categoryI].name,
+		fprintf(out, "[ %s + %zu ]  %s\n", categories[categoryI].name,
 				stringI - categories[categoryI].base, GAME_STRING(stringI));
 	}
 }
@@ -1717,7 +1717,6 @@ countVisibleContexts (void)
 static void
 drawContext (CONTEXT context, double hue /* no pun intended */)
 {
-	FRAME drawFrame;
 	CONTEXT oldContext;
 	FONT oldFont;
 	DrawMode oldMode;
@@ -1725,13 +1724,11 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	Color rectCol;
 	Color lineCol;
 	Color textCol;
-	bool haveClippingRect;
 	RECT rect;
 	LINE line;
 	TEXT text;
 	POINT p1, p2, p3, p4;
 
-	drawFrame = GetContextFGFrame ();
 	rectCol = hsvaToRgba (hue, 1.0, 0.5, 100);
 	lineCol = hsvaToRgba (hue, 1.0, 1.0, 90);
 	textCol = lineCol;
@@ -1740,7 +1737,7 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	oldContext = SetContext (context);
 	
 	// Get the clipping rectangle of the specified context.
-	haveClippingRect = GetContextClipRect (&rect);
+	(void) GetContextClipRect (&rect);
 
 	// Switch back the old context; we're going to draw in it.
 	(void) SetContext (oldContext);
