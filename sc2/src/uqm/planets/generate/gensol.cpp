@@ -392,7 +392,7 @@ SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				if (!story_.read(StoryCounter::FoundPlutoSpathi))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->PlanetSideFrame[1] =
+					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 							LoadGraphic (SPAPLUTO_MASK_PMAP_ANIM));
 					solarSys->SysInfo.PlanetInfo.DiscoveryString =
@@ -439,7 +439,7 @@ SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				if (!story_.read(StoryFlag::MoonbaseDestroyed))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->PlanetSideFrame[1] =
+					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 							LoadGraphic (MOONBASE_MASK_PMAP_ANIM));
 					solarSys->SysInfo.PlanetInfo.DiscoveryString =

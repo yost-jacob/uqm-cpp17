@@ -179,7 +179,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		if (star().Index == BOMB_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->PlanetSideFrame[1] =
+			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (BOMB_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (BOMB_STRTAB));
@@ -187,7 +187,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		else
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->PlanetSideFrame[1] =
+			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (RUINS_STRTAB));

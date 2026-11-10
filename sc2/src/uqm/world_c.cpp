@@ -62,6 +62,10 @@ void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQ
 
 }
 namespace uqm {
+World &orbitalWorld(SOLARSYS_STATE &system) {
+    auto &native = runtime(system);
+    return native.at(orbitalId(system, native));
+}
 void loadPlanetProgress(SOLARSYS_STATE &system) {
     auto &native = runtime(system);
     const auto world = orbitalId(system, native);
@@ -132,7 +136,7 @@ void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
                     uqm::WorldKind::Planet, system->PlanetDesc[i]));
         auto &native = runtime(*system);
         if (native.star() != starId) throw std::logic_error("wrong active system");
-        native.replacePlanets(std::move(planets));
+        native.refreshPlanets(std::move(planets));
         importSystemDiscoveries(native, *star, *system->worlds);
     } catch (...) { std::abort(); }
 }
@@ -146,7 +150,7 @@ void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
         for (COUNT i = 0; i < planet->NumPlanets; ++i)
             moons.push_back(std::make_unique<uqm::World>(definition(id(native, static_cast<COUNT>(slot), i),
                     uqm::WorldKind::Moon, system->MoonDesc[i]), system->worlds->world));
-        native.world(static_cast<std::size_t>(slot)).replaceChildren(std::move(moons));
+        native.world(static_cast<std::size_t>(slot)).refreshChildren(std::move(moons));
     } catch (...) { std::abort(); }
 }
 void DestroySystemWorlds(SOLARSYS_STATE *system) {

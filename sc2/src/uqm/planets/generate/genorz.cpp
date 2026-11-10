@@ -141,7 +141,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		if (star().Index == TAALO_PROTECTOR_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->PlanetSideFrame[1] =
+			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (
 					LoadGraphic (TAALO_DEVICE_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
@@ -151,7 +151,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		else
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->PlanetSideFrame[1] =
+			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (RUINS_STRTAB));

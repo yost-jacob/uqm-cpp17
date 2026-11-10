@@ -67,6 +67,7 @@ const STAR_DESC &systemStar(const SOLARSYS_STATE &system);
 const UNICODE *namedPlanetaryBody(const SOLARSYS_STATE &system);
 // Orbit descriptor and world layout must already be attached. Loading replaces
 // local masks; publishing merges permanent retrieval bits without awarding cargo.
+World &orbitalWorld(SOLARSYS_STATE &system);
 void loadPlanetProgress(SOLARSYS_STATE &system);
 void publishPlanetProgress(SOLARSYS_STATE &system);
 void runScan(SOLARSYS_STATE &system);

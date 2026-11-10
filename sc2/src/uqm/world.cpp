@@ -1,9 +1,33 @@
 #include "world.hpp"
 #include "system_behavior.hpp"
+#include "planet_render.hpp"
 #include <stdexcept>
 #include <utility>
 
 namespace uqm {
+namespace {
+bool sameDefinition(const WorldDefinition &a, const WorldDefinition &b) {
+    return a.id == b.id && a.kind == b.kind && a.seed == b.seed
+        && a.shielded == b.shielded && a.name == b.name && a.moonCount == b.moonCount;
+}
+}
+PlanetRenderResources &World::renderResources() {
+    if (!rendering_) rendering_ = std::make_unique<PlanetRenderResources>();
+    return *rendering_;
+}
+void World::refreshChildren(std::vector<std::unique_ptr<World>> children) {
+    bool unchanged = children.size() == children_.size();
+    for (std::size_t i = 0; unchanged && i < children.size(); ++i)
+        unchanged = children[i] && sameDefinition(children[i]->definition(), children_[i]->definition());
+    if (!unchanged) replaceChildren(std::move(children));
+}
+void SolarSystem::refreshPlanets(std::vector<WorldDefinition> definitions) {
+    bool unchanged = definitions.size() == worlds_.size();
+    for (std::size_t i = 0; unchanged && i < definitions.size(); ++i)
+        unchanged = sameDefinition(definitions[i], worlds_[i]->definition());
+    if (!unchanged) replacePlanets(std::move(definitions));
+}
+
 World::World(WorldDefinition definition, std::shared_ptr<WorldState> state)
     : World(std::move(definition), std::move(state), std::make_unique<EnergyBehavior>()) {}
 World::World(WorldDefinition definition, std::shared_ptr<WorldState> state,

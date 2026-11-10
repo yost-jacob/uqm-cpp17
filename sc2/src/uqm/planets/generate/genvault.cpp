@@ -54,7 +54,7 @@ VaultSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->PlanetSideFrame[1] =
+		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (VAULT_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (VAULT_STRTAB));

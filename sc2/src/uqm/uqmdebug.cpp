@@ -18,6 +18,7 @@
 
 
 #include "system_runtime.hpp"
+#include "planet_render_legacy.hpp"
 #include "system_behavior.hpp"
 #include "uqmdebug.h"
 
@@ -692,6 +693,8 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPre != NULL)
 	{
 		system->pOrbitalDesc = planet;
+        uqm::detail::PlanetRenderBorrow rendering{*system,
+            system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
 				// When GenerateDefaultFunctions is used as genFuncs,
 				// generateOrbital will also call DoPlanetaryAnalysis,
@@ -715,6 +718,8 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPost != NULL)
 	{
 		system->pOrbitalDesc = planet;
+        uqm::detail::PlanetRenderBorrow rendering{*system,
+            system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
 				// When GenerateDefaultFunctions is used as genFuncs,
 				// generateOrbital will also call DoPlanetaryAnalysis,
@@ -739,6 +744,8 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->moonFunc != NULL)
 	{
 		system->pOrbitalDesc = moon;
+        uqm::detail::PlanetRenderBorrow rendering{*system,
+            system->worlds->system->world(planet - system->PlanetDesc).child(moon - system->MoonDesc)};
 		if (moon->data_index != HIERARCHY_STARBASE && moon->data_index != SA_MATRA)
 		{
 			DoPlanetaryAnalysis (&system->SysInfo, moon);

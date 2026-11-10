@@ -247,7 +247,7 @@ set(UQM_SOURCES
     sc2/src/uqm/discovery_state.cpp
     sc2/src/uqm/discovery_state_c.cpp
     sc2/src/uqm/world_state.cpp
-    sc2/src/uqm/world.cpp
+    sc2/src/uqm/world.cpp sc2/src/uqm/planet_render.cpp
     sc2/src/uqm/system_behavior.cpp
     sc2/src/uqm/system_encounter.cpp
     sc2/src/uqm/orbital_encounter.cpp

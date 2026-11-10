@@ -11,6 +11,7 @@
 namespace uqm {
 class StoryState;
 class SystemBehavior;
+class PlanetRenderResources;
 enum class WorldKind { Planet, Moon, Starbase, FinalBattleSite };
 struct WorldDefinition {
     WorldId id;
@@ -44,12 +45,19 @@ public:
     void setEnergyBehavior(std::unique_ptr<EnergyBehavior> behavior);
     EnergyInteraction interactEnergy(StoryState &story, std::size_t site,
             bool physicallyRetrieved);
+    // Lazily create this body's graphics owner. No assets are loaded by this
+    // accessor; generators fill its scoped compatibility view on orbit entry.
+    PlanetRenderResources &renderResources();
+    bool hasRenderResources() const noexcept { return static_cast<bool>(rendering_); }
     std::size_t childCount() const noexcept;
     World &child(std::size_t index);
     const World &child(std::size_t index) const;
     // Moon slots must be dense and match this universe/system/planet. Validate
     // the whole replacement before mutation. Borrowed child references expire.
     void replaceChildren(std::vector<std::unique_ptr<World>> children);
+    // Repeated descriptor generation preserves existing children and their
+    // resources when definitions match. Changed definitions replace the layout.
+    void refreshChildren(std::vector<std::unique_ptr<World>> children);
 private:
     friend class SolarSystem;
     void attachLayout(const SystemLayout &layout);
@@ -57,6 +65,7 @@ private:
     WorldDefinition definition_;
     std::shared_ptr<WorldState> state_;
     std::unique_ptr<EnergyBehavior> energy_;
+    std::unique_ptr<PlanetRenderResources> rendering_;
     std::vector<std::unique_ptr<World>> children_;
 };
 class SolarSystem {
@@ -74,6 +83,9 @@ public:
     // Attach one complete generated planet layout. Validate before replacing it;
     // behavior identity and borrowed story-state reference remain unchanged.
     void replacePlanets(std::vector<WorldDefinition> definitions);
+    // Regeneration of an unchanged layout preserves World/behavior/resource
+    // identity. Changed definitions use the validated replacement path.
+    void refreshPlanets(std::vector<WorldDefinition> definitions);
     StarId star() const noexcept;
     UniverseId universe() const noexcept;
     std::size_t worldCount() const noexcept;

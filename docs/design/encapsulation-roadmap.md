@@ -160,3 +160,9 @@ handoff validates its exploration source. The legacy missile/laser initializers
 are removed; typed projectile and beam publication own their engine behaviors.
 The next payload/relationship design checkpoint is documented in
 [native entity relationships and state](native-entity-checkpoint.md).
+
+Planet/moon-specific graphics now belong to lazy World-owned resource objects;
+orbit/scan/lander code borrows the active body. Generated descriptor refresh
+preserves unchanged native bodies instead of discarding their resources. See
+[planet rendering ownership](planet-render-ownership.md) for scope and remaining
+system-wide presentation boundaries.

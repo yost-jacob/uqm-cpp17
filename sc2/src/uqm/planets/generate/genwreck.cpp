@@ -54,7 +54,7 @@ WreckSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 	if (matchWorld (solarSys, world, 6, MATCH_PLANET))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->PlanetSideFrame[1] =
+		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (WRECK_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (WRECK_STRTAB));

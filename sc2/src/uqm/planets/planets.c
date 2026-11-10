@@ -254,7 +254,7 @@ LoadPlanet (FRAME SurfDefFrame)
 		return;
 #endif
 
-	assert (pSolarSysState->InOrbit && !pSolarSysState->TopoFrame);
+	assert (pSolarSysState->InOrbit && !pSolarSysState->graphics->TopoFrame);
 
 	CreatePlanetContext ();
 
@@ -285,51 +285,10 @@ LoadPlanet (FRAME SurfDefFrame)
 }
 
 void
-FreePlanet (void)
+FinishPlanetOrbit (void)
 {
-	COUNT i;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
-
-	UninitSphereRotation ();
-
-	StopMusic ();
-
-	for (i = 0; i < sizeof (pSolarSysState->PlanetSideFrame)
-			/ sizeof (pSolarSysState->PlanetSideFrame[0]); ++i)
-	{
-		DestroyDrawable (ReleaseDrawable (pSolarSysState->PlanetSideFrame[i]));
-		pSolarSysState->PlanetSideFrame[i] = 0;
-	}
-
-//    FreeLanderData ();
-
-	DestroyStringTable (ReleaseStringTable (pSolarSysState->XlatRef));
-	pSolarSysState->XlatRef = 0;
-	DestroyDrawable (ReleaseDrawable (pSolarSysState->TopoFrame));
-	pSolarSysState->TopoFrame = 0;
-	DestroyColorMap (ReleaseColorMap (pSolarSysState->OrbitalCMap));
-	pSolarSysState->OrbitalCMap = 0;
-
-	HFree (Orbit->lpTopoData);
-	Orbit->lpTopoData = 0;
-	DestroyDrawable (ReleaseDrawable (Orbit->TopoZoomFrame));
-	Orbit->TopoZoomFrame = 0;
-	DestroyDrawable (ReleaseDrawable (Orbit->SphereFrame));
-	Orbit->SphereFrame = NULL;
-
-	DestroyDrawable (ReleaseDrawable (Orbit->TintFrame));
-	Orbit->TintFrame = 0;
-	Orbit->TintColor = BLACK_COLOR;
-
-	DestroyDrawable (ReleaseDrawable (Orbit->ObjectFrame));
-	Orbit->ObjectFrame = 0;
-	DestroyDrawable (ReleaseDrawable (Orbit->WorkFrame));
-	Orbit->WorkFrame = 0;
-
-	HFree (Orbit->TopoColors);
-	Orbit->TopoColors = NULL;
-	HFree (Orbit->ScratchArray);
-	Orbit->ScratchArray = NULL;
+    UninitSphereRotation();
+    StopMusic();
 
 	DestroyStringTable (ReleaseStringTable (
 			pSolarSysState->SysInfo.PlanetInfo.DiscoveryString

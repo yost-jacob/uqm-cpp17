@@ -117,7 +117,7 @@ BurvixeseSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->PlanetSideFrame[1] =
+		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (
 				LoadGraphic (RUINS_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
@@ -130,7 +130,7 @@ BurvixeseSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 			&& !story_.read(StoryFlag::BurvixeseBroadcasters))
 	{
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->PlanetSideFrame[1] = CaptureDrawable (
+		solarSys->graphics->PlanetSideFrame[1] = CaptureDrawable (
 				LoadGraphic (BURV_BCS_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (BURV_BCS_STRTAB));

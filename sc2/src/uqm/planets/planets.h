@@ -89,7 +89,6 @@ enum
 typedef struct planet_desc PLANET_DESC;
 typedef struct star_desc STAR_DESC;
 typedef struct node_info NODE_INFO;
-typedef struct planet_orbit PLANET_ORBIT;
 typedef struct solarsys_state SOLARSYS_STATE;
 
 
@@ -99,6 +98,7 @@ typedef struct solarsys_state SOLARSYS_STATE;
 
 #include "elemdata.h"
 #include "lifeform.h"
+#include "../planet_render_data.h"
 #include "plandata.h"
 #include "sundata.h"
 
@@ -155,31 +155,6 @@ struct node_info
 			// For energy: undefined
 };
 
-struct planet_orbit
-{
-	FRAME TopoZoomFrame;
-			// 4x scaled topo image for planet-side
-	SBYTE  *lpTopoData;
-			// normal topo data; expressed in elevation levels
-			// data is signed for planets other than gas giants
-			// transformed to light variance map for 3d planet
-	FRAME SphereFrame;
-			// rotating 3d planet frames (current and next)
-	FRAME ObjectFrame;
-			// any extra planetary object (shield, atmo, rings)
-			// automatically drawn if present
-	FRAME TintFrame;
-			// tinted topo images for current scan type (dynamic)
-	Color TintColor;
-			// the color of the last used tint
-	Color *TopoColors;
-			// RGBA version of topo image; for 3d planet
-	Color *ScratchArray;
-			// temp RGBA data for whatever transforms (nuked often)
-	FRAME WorkFrame;
-			// any extra frame workspace (for dynamic objects)
-};
-
 // See doc/devel/generate for information on how this structure is
 // filled.
 struct solarsys_state
@@ -227,25 +202,12 @@ struct solarsys_state
 	BYTE thrust_counter;
 	BYTE max_ship_speed;
 
-	STRING XlatRef;
-	const void *XlatPtr;
-	COLORMAP OrbitalCMap;
 
 	SYSTEM_INFO SysInfo;
 
     UQM_SYSTEM_RUNTIME *worlds; // Opaque owner of native World/EnergyBehavior objects.
 
-	FRAME PlanetSideFrame[3 + MAX_LIFE_VARIATION];
-			/* Frames for planet-side elements.
-			 * [0] = bio cannister
-			 * [1] = energy node (world-specific)
-			 * [2] = unused (formerly static slave shield, presumed)
-			 * [3] = bio 1 (world-specific)
-			 * [4] = bio 2 (world-specific)
-			 * [5] = bio 3 (world-specific)
-			 */
-	FRAME TopoFrame;
-	PLANET_ORBIT Orbit;
+    PLANET_RENDER_DATA *graphics; // Scoped borrow from the current native World.
 	BOOLEAN InOrbit;
 			// Set to TRUE when player hits a world in an inner system
 			// Homeworld encounters count as 'in orbit'
@@ -277,7 +239,8 @@ POINT planetOuterLocation (COUNT planetI);
 
 extern void LoadPlanet (FRAME SurfDefFrame);
 extern void DrawPlanet (int dy, Color tintColor);
-extern void FreePlanet (void);
+// Finish active orbit-screen services; the native body retains its graphics.
+extern void FinishPlanetOrbit (void);
 extern void LoadStdLanderFont (PLANET_INFO *info);
 extern void FreeLanderFont (PLANET_INFO *info);
 

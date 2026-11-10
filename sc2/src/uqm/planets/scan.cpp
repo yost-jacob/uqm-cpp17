@@ -1237,8 +1237,8 @@ generateBioNode (SOLARSYS_STATE *system, ELEMENT *NodeElementPtr,
 				(HIBYTE (i) % (MAP_HEIGHT - (8 << 1))) + 8;
 	}
 
-	if (system->PlanetSideFrame[0] == 0)
-		system->PlanetSideFrame[0] =
+	if (system->graphics->PlanetSideFrame[0] == 0)
+		system->graphics->PlanetSideFrame[0] =
 				CaptureDrawable (LoadGraphic (CANNISTER_MASK_PMAP_ANIM));
 
 	for (i = 0; i < MAX_LIFE_VARIATION
@@ -1250,7 +1250,7 @@ generateBioNode (SOLARSYS_STATE *system, ELEMENT *NodeElementPtr,
 
 		life_init_tab[i] = (BYTE)creatureType + 1;
 
-		system->PlanetSideFrame[i + 3] = load_life_form (creatureType);
+		system->graphics->PlanetSideFrame[i + 3] = load_life_form (creatureType);
 		break;
 	}
 
@@ -1259,7 +1259,7 @@ generateBioNode (SOLARSYS_STATE *system, ELEMENT *NodeElementPtr,
 			CreatureData[creatureType].ValueAndHitPoints);
 	DisplayArray[NodeElementPtr->PrimIndex].
 			Object.Stamp.frame = SetAbsFrameIndex (
-			system->PlanetSideFrame[i + 3], (COUNT)TFB_Random ());
+			system->graphics->PlanetSideFrame[i + 3], (COUNT)TFB_Random ());
 }
 
 void
@@ -1338,7 +1338,7 @@ uqm::generatePlanetSide(SOLARSYS_STATE &system)
 				{
 					NodeElementPtr->mass_points = MAX_SCROUNGED;
 					DisplayArray[NodeElementPtr->PrimIndex].Object.Stamp.frame =
-							system.PlanetSideFrame[1];
+							system.graphics->PlanetSideFrame[1];
 				}
 				else /* (scan == BIOLOGICAL_SCAN) */
 				{
@@ -1388,7 +1388,7 @@ setNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
 }
 
 void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
-    if (!system.TopoFrame || view == ExplorationView::Flight) return;
+    if (!system.graphics->TopoFrame || view == ExplorationView::Flight) return;
     struct ContextRestore {
         CONTEXT previous;
         ~ContextRestore() { SetContext(previous); }
