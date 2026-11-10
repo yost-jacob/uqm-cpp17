@@ -101,6 +101,14 @@ copying an owning queue. External game resources still need their normal cleanup
 before a pool is destroyed. All twelve items in the initial priority list are
 implemented.
 
+## Conversation catalog
+
+The [existing conversation graph catalog](docs/design/conversation/README.md)
+indexes all 27 alien/commander scripts, their response edges and conditions,
+dialogue text, state operations, lifecycle hooks, and computed menu paths.
+Each page links back to the source. The proposed replacement engine is documented
+separately from this catalog of current behavior.
+
 ## Data-driven star map
 
 The star catalogue and its prefix/postfix names are loaded at startup from
