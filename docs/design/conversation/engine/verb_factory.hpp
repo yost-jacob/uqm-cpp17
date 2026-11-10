@@ -24,6 +24,28 @@ class QueryFactory {
 
   private:
     friend class VerbFactory;
+    // Explicit native escape hatches, shared with the action binder. Functions
+    // defined inside this nested class are implicitly inline; no instance exists.
+    // Query handlers borrow const state. Action handlers borrow mutable state and
+    // return data/outcomes rather than controlling playback or graph traversal.
+    struct Handlers {
+        static bool reportAvailable(const State &state, const std::string &report) {
+            return state.reportAvailable(report);
+        }
+        static Result prepareReport(State &state, const std::string &report,
+                                    const Json &parameters) {
+            return state.prepareReport(report, parameters);
+        }
+        static Result prepareRescue(State &state, const std::string &merchant) {
+            return state.prepareRescue(merchant);
+        }
+        static Result acceptRescue(State &state, const std::string &token) {
+            return state.acceptRescue(token);
+        }
+        static Result stripShip(State &state, const std::string &policy) {
+            return state.stripShip(policy);
+        }
+    };
     const State &state_;
     const Memory &memory_;
     using Arguments = std::vector<Value>;
@@ -66,6 +88,7 @@ class VerbFactory {
     State &state_;
     Memory &memory_;
     QueryFactory queries_;
+    using Handlers = QueryFactory::Handlers;
     using Arguments = std::vector<Value>;
     using ActionFunction = Result (*)(State &, const Json &);
     static Result invokeAction(ActionFunction, State &, const Arguments &);

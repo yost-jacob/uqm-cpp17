@@ -143,7 +143,7 @@ def validate_example(name, scripts, banks):
         action = node.get("action", {})
         if action.get("verb") == "sequence.next":
             phrase(action["args"][2])
-        if action.get("verb") == "report.prepare":
+        if action.get("verb") == "handlers.prepare_report":
             assert action["args"][0] in d["_coverage"]["native_reports"]
     inspect(d)
     reached = set()

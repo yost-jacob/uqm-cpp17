@@ -421,3 +421,35 @@ BOOST_AUTO_TEST_CASE(const_query_binding_observes_updates_from_separately_bound_
     BOOST_TEST(std::invoke(asked));
     BOOST_TEST(state.mutations == 1u);
 }
+BOOST_AUTO_TEST_CASE(specialized_handler_namespace_preserves_query_action_separation) {
+    struct Reports : TestState {
+        bool reportAvailable(const std::string &report) const override {
+            return report == "hayes.devices";
+        }
+        cd::Result prepareReport(const std::string &report, const Json &parameters) override {
+            ++mutations;
+            return {"ok", {{"report", report}, {"parameters", parameters}}};
+        }
+    } state;
+    cd::Memory memory;
+    cd::QueryFactory queries{static_cast<const cd::State &>(state), memory};
+    cd::VerbFactory factory{state, memory};
+    auto available =
+        queries.condition({{"query", "handlers.report_available"}, {"args", {"hayes.devices"}}});
+    auto prepare = factory.action({{"verb", "handlers.prepare_report"},
+                                   {"args", {"hayes.devices", {{"literal", {{"detail", true}}}}}}});
+    BOOST_TEST(state.mutations == 0u);
+    BOOST_TEST(std::invoke(available));
+    const auto result = std::invoke(prepare);
+    BOOST_TEST(result.values.at("report").get<std::string>() == "hayes.devices");
+    BOOST_TEST(result.values.at("parameters").at("detail").get<bool>());
+    BOOST_TEST(state.mutations == 1u);
+    BOOST_CHECK_THROW(
+        queries.value({{"query", "handlers.prepare_report"}, {"args", Json::array()}}),
+        std::invalid_argument);
+    BOOST_CHECK_THROW(
+        factory.action({{"verb", "handlers.report_available"}, {"args", {"hayes.devices"}}}),
+        std::invalid_argument);
+    BOOST_CHECK_THROW(queries.value({{"query", "handlers.unknown"}, {"args", Json::array()}}),
+                      std::invalid_argument);
+}

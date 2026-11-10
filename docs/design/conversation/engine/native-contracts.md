@@ -50,11 +50,11 @@ must not draw, play speech or wait for player input.
 | `currency.adjust` | `ok` or `no_credit`, with `missing` when appropriate. Never enqueue NEED_MORE_CREDIT speech; the graph does that. |
 | `trade.purchase` | Commit validation, payment, ownership and any offer-specific story effects together. `ok`, `no_credit`, `no_room`, `unavailable`; successful tech/info payload includes prepared `speech`; insufficient credit includes `missing`. No audio playback. |
 | `trade.sell` | Commit the selected cargo/discovery sale once. Payload includes amount/payment and prepared `speech`. Mineral tally animation is presentation of the result, not repeated payment per redraw. |
-| `rescue.prepare` | Generate a quote once with the legacy deterministic location/equipment seed policy. `offer` includes opaque `token` and prepared `speech`. `free` commits the free rescue and returns its speech. No partial strip is committed for an unaccepted paid offer. |
-| `rescue.accept` | Redeem a quote token once; reject stale/reused tokens. `ok` commits equipment changes and fuel; failures need explicit graph destinations. The sample routes unexpected failures to `design_error`. |
-| `ship.strip` | A validated penalty policy, distinct from accepting a rescue quote. `ok` or `not_worth_stripping`; protect required crew pods and fuel rules according to the source policy. |
+| `handlers.prepare_rescue` | Generate a quote once with the legacy deterministic location/equipment seed policy. `offer` includes opaque `token` and prepared `speech`. `free` commits the free rescue and returns its speech. No partial strip is committed for an unaccepted paid offer. |
+| `handlers.accept_rescue` | Redeem a quote token once; reject stale/reused tokens. `ok` commits equipment changes and fuel; failures need explicit graph destinations. The sample routes unexpected failures to `design_error`. |
+| `handlers.strip_ship` | A validated penalty policy, distinct from accepting a rescue quote. `ok` or `not_worth_stripping`; protect required crew pods and fuel rules according to the source policy. |
 | `calendar.schedule` | Relative event ID/month/day/year, with calendar validation. No arbitrary function pointer is serialized. |
-| `report.prepare` | Run a registered report operation once, applying its specified bookkeeping and returning utterance data. This is an action even when the report mostly describes state. |
+| `handlers.prepare_report` | Run a registered report operation once, applying its specified bookkeeping and returning utterance data. This is an action even when the report mostly describes state. |
 | `galaxy.reveal` | Reveal the requested race/sphere, returning availability if needed. Query eligibility separately through `galaxy.available`. |
 | `random.draw` | Consume session RNG once; return `value` in `[0,upperBound)`. Decision nodes inspect that saved value. |
 | `sequence.next` | Choose and advance a named local/story cursor; return `speech` and `index`. Repeat-last/cycle policy and optional numeric base are explicit data; Melnorme preserves its cursor offset of five. |

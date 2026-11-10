@@ -177,7 +177,7 @@ class Graph:
             "error",
         )
         return self.act(
-            id, "report.prepare", [topic, {"literal": args or {}}], id + ".check"
+            id, "handlers.prepare_report", [topic, {"literal": args or {}}], id + ".check"
         )
 
     def end(self, id="end", outcome="peace"):
@@ -741,13 +741,13 @@ def hayes():
             g.edge(
                 "new_devices",
                 "starbase.devices",
-                query("report.available", "hayes.devices"),
+                query("handlers.report_available", "hayes.devices"),
                 "starbase",
             ),
             g.edge(
                 "repeat_bulletins",
                 "starbase.bulletins",
-                query("report.available", "hayes.repeat_bulletins"),
+                query("handlers.report_available", "hayes.repeat_bulletins"),
                 "starbase",
             ),
             g.edge("need_info", "starbase.info", True, "starbase"),
@@ -1627,7 +1627,7 @@ def melnorme():
         "rescue.changed",
         ["CHANGED_MIND"],
         responses=[
-            g.edge("yes_changed_mind", "rescue.prepare"),
+            g.edge("yes_changed_mind", "handlers.prepare_rescue"),
             g.edge("no_changed_mind", "rescue.no_changed"),
         ],
     )
@@ -1641,13 +1641,13 @@ def melnorme():
         "rescue.ask",
         ["SHOULD_WE_HELP_YOU"],
         responses=[
-            g.edge("yes_help", "rescue.prepare"),
+            g.edge("yes_help", "handlers.prepare_rescue"),
             g.edge("no_help", "rescue.no_help"),
         ],
     )
     g.act(
-        "rescue.prepare",
-        "rescue.prepare",
+        "handlers.prepare_rescue",
+        "handlers.prepare_rescue",
         ["melnorme"],
         "rescue.quote_check",
         save="rescue_quote",
@@ -1664,19 +1664,19 @@ def melnorme():
         "rescue.offer",
         result("rescue_quote", "speech"),
         responses=[
-            g.edge("take_it", "rescue.accept"),
+            g.edge("take_it", "handlers.accept_rescue"),
             g.edge("leave_it", "rescue.leave"),
         ],
     )
     g.act(
-        "rescue.accept",
-        "rescue.accept",
+        "handlers.accept_rescue",
+        "handlers.accept_rescue",
         [result("rescue_quote", "token")],
-        "rescue.accept_check",
+        "handlers.accept_rescue_check",
         save="rescue_accept",
     )
     g.decide(
-        "rescue.accept_check",
+        "handlers.accept_rescue_check",
         [(eq(result("rescue_accept", "code"), "ok"), "rescue.thanks")],
         "error",
     )
@@ -1818,7 +1818,7 @@ def melnorme():
     )
     g.act(
         "pissed.strip",
-        "ship.strip",
+        "handlers.strip_ship",
         ["melnorme.penance"],
         "pissed.strip_check",
         save="penance",

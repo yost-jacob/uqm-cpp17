@@ -2495,7 +2495,7 @@
       "script": "melnorm",
       "call": "GetPlayerSISState",
       "kind": "state projection",
-      "targets": ["get / ship.strip / rescue.accept"],
+      "targets": ["get / handlers.strip_ship / handlers.accept_rescue"],
       "sites": [{"handler": "StripShip", "line": 590}, {"handler": "StripShip", "line": 634}]
     },
     {
@@ -2515,14 +2515,14 @@
       "script": "melnorm",
       "call": "RandomContext_SeedRandom",
       "kind": "implementation",
-      "targets": ["rescue.prepare seeded proposal"],
+      "targets": ["handlers.prepare_rescue seeded proposal"],
       "sites": [{"handler": "StripShip", "line": 632}]
     },
     {
       "script": "melnorm",
       "call": "getStripRandomSeed",
       "kind": "implementation",
-      "targets": ["rescue.prepare deterministic seed"],
+      "targets": ["handlers.prepare_rescue deterministic seed"],
       "sites": [{"handler": "StripShip", "line": 632}]
     },
     {
@@ -2536,7 +2536,7 @@
       "script": "melnorm",
       "call": "RandomContext_Random",
       "kind": "implementation",
-      "targets": ["rescue.prepare seeded proposal"],
+      "targets": ["handlers.prepare_rescue seeded proposal"],
       "sites": [{"handler": "StripShip", "line": 676}]
     },
     {
@@ -2762,7 +2762,7 @@
       "script": "melnorm",
       "call": "StripShip",
       "kind": "action",
-      "targets": ["rescue.prepare / rescue.accept / ship.strip"],
+      "targets": ["handlers.prepare_rescue / handlers.accept_rescue / handlers.strip_ship"],
       "sites": [
         {"handler": "ExitConversation", "line": 787},
         {"handler": "ExitConversation", "line": 810},
@@ -2773,7 +2773,7 @@
       "script": "melnorm",
       "call": "square_root",
       "kind": "implementation",
-      "targets": ["location.distance / rescue.prepare"],
+      "targets": ["location.distance / handlers.prepare_rescue"],
       "sites": [{"handler": "DoRescue", "line": 845}]
     },
     {
@@ -7041,7 +7041,7 @@
       "script": "starbas",
       "call": "AnalyzeCondition",
       "kind": "action",
-      "targets": ["report.prepare (hayes.flagship_analysis)"],
+      "targets": ["handlers.prepare_report (hayes.flagship_analysis)"],
       "sites": [{"handler": "TellMission", "line": 812}]
     },
     {
@@ -7191,14 +7191,14 @@
       "script": "starbas",
       "call": "DiscussDevices",
       "kind": "query/action split",
-      "targets": ["report.available", "report.prepare (hayes.devices)"],
+      "targets": ["handlers.report_available", "handlers.prepare_report (hayes.devices)"],
       "sites": [{"handler": "NormalStarbase", "line": 1639}, {"handler": "NormalStarbase", "line": 1724}]
     },
     {
       "script": "starbas",
       "call": "CheckBulletins",
       "kind": "action",
-      "targets": ["report.prepare (hayes.arrival / repeat_bulletins / departure)"],
+      "targets": ["handlers.prepare_report (hayes.arrival / repeat_bulletins / departure)"],
       "sites": [
         {"handler": "NormalStarbase", "line": 1641},
         {"handler": "NormalStarbase", "line": 1667},

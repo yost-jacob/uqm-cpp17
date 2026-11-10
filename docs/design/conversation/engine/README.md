@@ -227,3 +227,8 @@ queries. `VerbFactory` composes it and retains mutable references for actions al
 Action arguments still use the const binder. Const access prevents query-side
 mutation; subsequent queries see updates committed by actions. Both borrowed objects
 must outlive the bound callables. This does not provide thread synchronization.
+
+Specialized native operations use the explicit `handlers.*` vocabulary; see
+[the handler contract](verbs.md#specialized-handlers) and the nested static
+`QueryFactory::Handlers` entry points in `verb_factory.hpp`. General state access
+continues to use its existing verbs.

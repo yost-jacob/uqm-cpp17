@@ -138,11 +138,11 @@
       "effect": "read_only"
     },
     {
-      "verb": "report.available",
+      "verb": "handlers.report_available",
       "min_args": 1,
       "max_args": 1,
       "arguments": ["report"],
-      "state_accessor": "reportAvailable",
+      "state_accessor": "Handlers::reportAvailable",
       "effect": "read_only"
     },
     {
@@ -276,27 +276,27 @@
       "effect": "mutating"
     },
     {
-      "verb": "rescue.prepare",
+      "verb": "handlers.prepare_rescue",
       "min_args": 1,
       "max_args": 1,
       "arguments": ["merchant"],
-      "state_accessor": "prepareRescue",
+      "state_accessor": "Handlers::prepareRescue",
       "effect": "mutating"
     },
     {
-      "verb": "rescue.accept",
+      "verb": "handlers.accept_rescue",
       "min_args": 1,
       "max_args": 1,
       "arguments": ["quote_token"],
-      "state_accessor": "acceptRescue",
+      "state_accessor": "Handlers::acceptRescue",
       "effect": "mutating"
     },
     {
-      "verb": "ship.strip",
+      "verb": "handlers.strip_ship",
       "min_args": 1,
       "max_args": 1,
       "arguments": ["policy"],
-      "state_accessor": "stripShip",
+      "state_accessor": "Handlers::stripShip",
       "effect": "mutating"
     },
     {
@@ -340,11 +340,11 @@
       "effect": "mutating"
     },
     {
-      "verb": "report.prepare",
+      "verb": "handlers.prepare_report",
       "min_args": 2,
       "max_args": 2,
       "arguments": ["report", "parameters"],
-      "state_accessor": "prepareReport",
+      "state_accessor": "Handlers::prepareReport",
       "effect": "mutating"
     },
     {

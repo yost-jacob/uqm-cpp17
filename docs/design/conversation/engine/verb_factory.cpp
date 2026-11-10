@@ -54,13 +54,17 @@ struct Spec {
     std::size_t minimum, maximum;
 };
 const std::vector<Spec> queries = {
-    {"fleet.contains", 1, 1},     {"fleet.slots", 1, 1},         {"fleet.count", 1, 1},
-    {"fleet.value", 0, 0},        {"galaxy.relationship", 1, 1}, {"galaxy.available", 1, 1},
-    {"inventory.has", 1, 1},      {"inventory.quantity", 1, 1},  {"ship.fuel", 0, 0},
-    {"ship.fuel_capacity", 0, 0}, {"currency.balance", 1, 1},    {"ship.equipment_count", 1, 1},
-    {"ship.salvage_value", 0, 0}, {"ship.capability", 1, 1},     {"technology.owned", 1, 1},
-    {"market.available", 2, 2},   {"calendar.reached", 4, 4},    {"report.available", 1, 1},
-    {"encounter.read", 1, 1},     {"location.distance", 1, 1},   {"ship.free_fuel", 0, 0}};
+    {"fleet.contains", 1, 1},      {"fleet.slots", 1, 1},
+    {"fleet.count", 1, 1},         {"fleet.value", 0, 0},
+    {"galaxy.relationship", 1, 1}, {"galaxy.available", 1, 1},
+    {"inventory.has", 1, 1},       {"inventory.quantity", 1, 1},
+    {"ship.fuel", 0, 0},           {"ship.fuel_capacity", 0, 0},
+    {"currency.balance", 1, 1},    {"ship.equipment_count", 1, 1},
+    {"ship.salvage_value", 0, 0},  {"ship.capability", 1, 1},
+    {"technology.owned", 1, 1},    {"market.available", 2, 2},
+    {"calendar.reached", 4, 4},    {"handlers.report_available", 1, 1},
+    {"encounter.read", 1, 1},      {"location.distance", 1, 1},
+    {"ship.free_fuel", 0, 0}};
 const std::vector<Spec> actions = {{"fleet.give", 1, 3},
                                    {"fleet.take", 1, 2},
                                    {"fleet.set_crew", 3, 3},
@@ -70,15 +74,15 @@ const std::vector<Spec> actions = {{"fleet.give", 1, 3},
                                    {"currency.adjust", 2, 2},
                                    {"trade.purchase", 3, 3},
                                    {"trade.sell", 3, 3},
-                                   {"rescue.prepare", 1, 1},
-                                   {"rescue.accept", 1, 1},
-                                   {"ship.strip", 1, 1},
+                                   {"handlers.prepare_rescue", 1, 1},
+                                   {"handlers.accept_rescue", 1, 1},
+                                   {"handlers.strip_ship", 1, 1},
                                    {"technology.grant", 1, 1},
                                    {"galaxy.set_relationship", 2, 2},
                                    {"galaxy.reveal", 1, 1},
                                    {"calendar.schedule", 4, 4},
                                    {"calendar.remember", 1, 1},
-                                   {"report.prepare", 2, 2},
+                                   {"handlers.prepare_report", 2, 2},
                                    {"encounter.set_outcome", 1, 1},
                                    {"random.draw", 1, 1}};
 std::size_t find(const std::vector<Spec> &specs, const std::string &name) {
@@ -406,7 +410,7 @@ Value QueryFactory::value(const Json &definition) const {
             break;
         case QueryVerb::ReportAvailable:
             fn = [](const State &s, const Json &a) -> Json {
-                return s.reportAvailable(text(a[0]));
+                return Handlers::reportAvailable(s, text(a[0]));
             };
             break;
         case QueryVerb::EncounterRead:
@@ -589,13 +593,13 @@ Action VerbFactory::action(const Json &definition) const {
         fn = [](State &s, const Json &a) { return s.sell(text(a[0]), text(a[1]), a[2]); };
         break;
     case ActionVerb::PrepareRescue:
-        fn = [](State &s, const Json &a) { return s.prepareRescue(text(a[0])); };
+        fn = [](State &s, const Json &a) { return Handlers::prepareRescue(s, text(a[0])); };
         break;
     case ActionVerb::AcceptRescue:
-        fn = [](State &s, const Json &a) { return s.acceptRescue(text(a[0])); };
+        fn = [](State &s, const Json &a) { return Handlers::acceptRescue(s, text(a[0])); };
         break;
     case ActionVerb::StripShip:
-        fn = [](State &s, const Json &a) { return s.stripShip(text(a[0])); };
+        fn = [](State &s, const Json &a) { return Handlers::stripShip(s, text(a[0])); };
         break;
     case ActionVerb::GrantTechnology:
         fn = [](State &s, const Json &a) { return s.grantTechnology(text(a[0])); };
@@ -615,7 +619,7 @@ Action VerbFactory::action(const Json &definition) const {
         fn = [](State &s, const Json &a) { return s.rememberDate(text(a[0])); };
         break;
     case ActionVerb::PrepareReport:
-        fn = [](State &s, const Json &a) { return s.prepareReport(text(a[0]), a[1]); };
+        fn = [](State &s, const Json &a) { return Handlers::prepareReport(s, text(a[0]), a[1]); };
         break;
     case ActionVerb::SetOutcome:
         fn = [](State &s, const Json &a) { return s.setOutcome(text(a[0])); };

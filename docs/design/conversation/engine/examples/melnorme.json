@@ -1959,7 +1959,7 @@
       "id": "tech.pitch",
       "kind": "action",
       "action": {
-        "verb": "report.prepare",
+        "verb": "handlers.prepare_report",
         "args": ["melnorme.technology_pitch", {"literal": {}}]
       },
       "save_as": "tech_pitch",
@@ -2406,7 +2406,7 @@
           "id": "yes_changed_mind",
           "text": "melnorme.yes_changed_mind",
           "when": true,
-          "next": "rescue.prepare"
+          "next": "handlers.prepare_rescue"
         },
         {
           "id": "no_changed_mind",
@@ -2463,7 +2463,7 @@
           "id": "yes_help",
           "text": "melnorme.yes_help",
           "when": true,
-          "next": "rescue.prepare"
+          "next": "handlers.prepare_rescue"
         },
         {
           "id": "no_help",
@@ -2474,10 +2474,10 @@
       ]
     },
     {
-      "id": "rescue.prepare",
+      "id": "handlers.prepare_rescue",
       "kind": "action",
       "action": {
-        "verb": "rescue.prepare",
+        "verb": "handlers.prepare_rescue",
         "args": ["melnorme"]
       },
       "save_as": "rescue_quote",
@@ -2512,7 +2512,7 @@
           "id": "take_it",
           "text": "melnorme.take_it",
           "when": true,
-          "next": "rescue.accept"
+          "next": "handlers.accept_rescue"
         },
         {
           "id": "leave_it",
@@ -2523,17 +2523,17 @@
       ]
     },
     {
-      "id": "rescue.accept",
+      "id": "handlers.accept_rescue",
       "kind": "action",
       "action": {
-        "verb": "rescue.accept",
+        "verb": "handlers.accept_rescue",
         "args": [{"get": ["result", "rescue_quote.token"]}]
       },
       "save_as": "rescue_accept",
-      "next": "rescue.accept_check"
+      "next": "handlers.accept_rescue_check"
     },
     {
-      "id": "rescue.accept_check",
+      "id": "handlers.accept_rescue_check",
       "kind": "decision",
       "branches": [{"when": {"eq": [{"get": ["result", "rescue_accept.code"]}, "ok"]}, "next": "rescue.thanks"}],
       "otherwise": "error"
@@ -3118,7 +3118,7 @@
       "id": "pissed.strip",
       "kind": "action",
       "action": {
-        "verb": "ship.strip",
+        "verb": "handlers.strip_ship",
         "args": ["melnorme.penance"]
       },
       "save_as": "penance",

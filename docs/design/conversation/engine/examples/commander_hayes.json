@@ -3090,7 +3090,7 @@
       "id": "starbase.entry",
       "kind": "action",
       "action": {
-        "verb": "report.prepare",
+        "verb": "handlers.prepare_report",
         "args": ["hayes.arrival", {"literal": {}}]
       },
       "save_as": "starbase_entry",
@@ -3110,13 +3110,13 @@
         {
           "id": "new_devices",
           "text": "starbase.new_devices",
-          "when": {"query": "report.available", "args": ["hayes.devices"]},
+          "when": {"query": "handlers.report_available", "args": ["hayes.devices"]},
           "next": "starbase.devices"
         },
         {
           "id": "repeat_bulletins",
           "text": "starbase.repeat_bulletins",
-          "when": {"query": "report.available", "args": ["hayes.repeat_bulletins"]},
+          "when": {"query": "handlers.report_available", "args": ["hayes.repeat_bulletins"]},
           "next": "starbase.bulletins"
         },
         {
@@ -3154,7 +3154,7 @@
       "id": "starbase.devices",
       "kind": "action",
       "action": {
-        "verb": "report.prepare",
+        "verb": "handlers.prepare_report",
         "args": ["hayes.devices", {"literal": {}}]
       },
       "save_as": "starbase_devices",
@@ -3181,7 +3181,7 @@
       "id": "starbase.bulletins",
       "kind": "action",
       "action": {
-        "verb": "report.prepare",
+        "verb": "handlers.prepare_report",
         "args": ["hayes.repeat_bulletins", {"literal": {}}]
       },
       "save_as": "starbase_bulletins",
@@ -3235,7 +3235,7 @@
       "id": "starbase.goodbye",
       "kind": "action",
       "action": {
-        "verb": "report.prepare",
+        "verb": "handlers.prepare_report",
         "args": ["hayes.departure", {"literal": {}}]
       },
       "save_as": "starbase_goodbye",
@@ -4602,7 +4602,7 @@
       "id": "info.analysis",
       "kind": "action",
       "action": {
-        "verb": "report.prepare",
+        "verb": "handlers.prepare_report",
         "args": ["hayes.flagship_analysis", {"literal": {}}]
       },
       "save_as": "info_analysis",

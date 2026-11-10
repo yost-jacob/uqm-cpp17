@@ -25,7 +25,7 @@ The [full legacy mapping](legacy-verbs.json) classifies all active script call s
 | `technology.owned` | `technology` | `hasTechnology` |
 | `market.available` | `merchant`, `category` | `marketAvailable` |
 | `calendar.reached` | `saved_date`, `months`, `days`, `inclusive` | `dateReached` |
-| `report.available` | `report` | `reportAvailable` |
+| `handlers.report_available` | `report` | `reportAvailable` |
 | `encounter.read` | `field` | `encounter` |
 | `location.distance` | `location` | `distanceTo` |
 | `ship.free_fuel` |  | `fuelCapacity - fuel` |
@@ -49,15 +49,15 @@ Generic `get(scope,key[,default])` covers typed story/local/player quantities. B
 | `currency.adjust` | `currency`, `signed_amount` | `adjustCurrency` |
 | `trade.purchase` | `merchant`, `offer`, `quantity_or_fill` | `purchase` |
 | `trade.sell` | `merchant`, `category`, `quantity_or_all` | `sell` |
-| `rescue.prepare` | `merchant` | `prepareRescue` |
-| `rescue.accept` | `quote_token` | `acceptRescue` |
-| `ship.strip` | `policy` | `stripShip` |
+| `handlers.prepare_rescue` | `merchant` | `prepareRescue` |
+| `handlers.accept_rescue` | `quote_token` | `acceptRescue` |
+| `handlers.strip_ship` | `policy` | `stripShip` |
 | `technology.grant` | `technology` | `grantTechnology` |
 | `galaxy.set_relationship` | `race`, `relationship` | `setRelationship` |
 | `galaxy.reveal` | `race` | `revealRace` |
 | `calendar.schedule` | `event`, `months`, `days`, `years` | `scheduleEvent` |
 | `calendar.remember` | `date_key` | `rememberDate` |
-| `report.prepare` | `report`, `parameters` | `prepareReport` |
+| `handlers.prepare_report` | `report`, `parameters` | `prepareReport` |
 | `encounter.set_outcome` | `outcome` | `setOutcome` |
 | `random.draw` | `exclusive_upper_bound` | `randomBelow` |
 
@@ -77,6 +77,25 @@ This is a bounded expression tree with no arbitrary source evaluation, assignmen
 - Technology ownership/grants hide whether the original implementation used ModuleCost, a shield bit, or a story flag.
 - Fuel, technology and information sales share `trade.purchase`; their catalog data and result branches differ.
 - Mineral/biomass/discovery payments share `trade.sell`; quantities, pricing, once-only discovery claims and speech are domain rules.
-- Bulletin/device/advice generation share `report.prepare`, with a bounded set of registered report contracts and separate pure availability queries.
+- Bulletin/device/advice generation share `handlers.prepare_report`, with a bounded set of registered report contracts and separate pure availability queries.
 - Greeting variants/counter clamping share `sequence.next`; RNG is always an action.
 - Alien-specific handlers become subgraphs. Phrase concatenation, animation/color-map changes, timing, status display and input belong to presentation.
+
+## Specialized handlers
+
+`handlers.*` identifies native behavior that does not fit the general state verbs.
+The initial set is `handlers.report_available` (query), and
+`handlers.prepare_report`, `handlers.prepare_rescue`, `handlers.accept_rescue`,
+`handlers.strip_ship` (actions). Report names such as `hayes.devices` remain explicit
+arguments; separate report contracts can share the same entry point.
+
+All entry points live in the nested `QueryFactory::Handlers` class, reused by
+`VerbFactory`. Its static functions are defined inline in the class; no handler
+object, global state or runtime plugin lookup is needed. Query entry points accept
+`const State&`; action entry points accept `State&`. They currently forward to the
+native adapter contracts, where the specialized gameplay implementation belongs.
+New handlers must be explicitly registered in the appropriate query/action table;
+unknown names and use in the wrong context fail during loading. They use the same
+binding and result path as general verbs and cannot take over graph traversal or
+playback. This namespace is an intentional extension point, not permission to run
+arbitrary functions named by a JSON file.
