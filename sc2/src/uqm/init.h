@@ -32,8 +32,6 @@ extern FRAME stars_in_space;
 extern BOOLEAN InitSpace (void);
 extern void UninitSpace (void);
 
-extern SIZE InitShips (void);
-extern void UninitShips (void);
 
 extern BOOLEAN load_animation (FRAME *pixarray, RESOURCE big_res,
 		RESOURCE med_res, RESOURCE sml_res);

@@ -8,7 +8,7 @@ Boost.Test coverage and remain independently reviewable.
 |---|---|---|---|
 | 1 | Runtime ship roster ownership | Mode-owned engines (#38) | Each mode owns temporary participant pools; combat borrows the encounter's prepared roster through explicit handoff. Persistent Fleet ships remain separate. |
 | 2 | Mode-owned standard RNG streams (implemented) | 1 | std::minstd_rand0 per engine; session seed source and explicit combat seed; child execution leaves parent randomness unchanged. |
-| 3 | Native battle driver and startup/Super Melee modes | 1–2 | Move round progression/results out of battle.c; ordinary modes replace the fallback compatibility engine. Device input/timing remains behind its existing service boundary. |
+| 3 | Native battle driver and session modes (driver/arcade implemented; title remains) | 1–2 | CombatDriver and shared SimulationLoop replace battle.c. Campaign/arcade use native dispatch; startup/title retains the fallback engine. Device input/timing remains behind its existing boundary. |
 | 4 | Typed target/source identities | 1 and stable engine/roster lifetimes | Replace raw hTarget/pParent relationships with checked identities and optional borrows. Preserve source-controlled weapons and final retirement semantics. |
 | 5 | Native creation interfaces | 4 | Ships create projectiles, beams and effects through typed launch definitions/factories; remove MISSILE_BLOCK/LASER_BLOCK construction from native callers. |
 | 6 | Direct native lifecycle dispatch | 3–5 | Engine invokes native entity hooks directly; remove C callback selection and the remaining pointer-identity tests. |
@@ -91,5 +91,6 @@ The shared ModeDispatcher now serves both sessions. GameMode owns lifecycle and
 simulation state only; concrete modes borrow the session/state they need. Arcade
 fleet selection and campaign encounters both launch the same CombatMode with
 session-specific scoped preparation. No CampaignMode inheritance layer or optional
-campaign state is needed. Native battle-driver extraction and startup/title
-migration remain in milestone 3.
+campaign state is needed. Native CombatDriver, shared frame processing and scoped scene ownership are now
+implemented; see [battle driver](battle-driver.md). Startup/title migration remains
+in milestone 3.

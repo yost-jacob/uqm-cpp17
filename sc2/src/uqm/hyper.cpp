@@ -20,6 +20,7 @@
 #include "device_menu.hpp"
 #include "game_state.hpp"
 #include "battle.h"
+#include "battle_driver.hpp"
 #include "clock.h"
 #include "gameev.h"
 #include <stdexcept>
@@ -352,6 +353,7 @@ uqm::HyperSpaceNavigation::LoadHyperspace(void)
 		F = hyperstars[0];
 		hyperstars[0] = stars_in_space;
 		stars_in_space = F;
+        starsBound_ = true;
 	}
 
 	if (!(LastActivity & CHECK_LOAD))
@@ -402,6 +404,8 @@ uqm::HyperSpaceNavigation::LoadHyperspace(void)
 BOOLEAN
 uqm::HyperSpaceNavigation::FreeHyperspace(void)
 {
+    if (!starsBound_) return TRUE;
+    starsBound_ = false;
 	{
 		FRAME F;
 		
@@ -1786,7 +1790,7 @@ void HyperspaceMenu(void) { activeNavigation().HyperspaceMenu(); }
 namespace uqm {
 void HyperSpaceNavigation::run(GameSession &session) {
     NavigationBinding binding(session, *this);
-    Battle([](void *context) { static_cast<HyperSpaceNavigation *>(context)->frame(); }, this);
+    runSpaceNavigation(simulationEngine(), [this] { frame(); });
 }
 void HyperSpaceNavigation::frame() {
     GameClockTick();

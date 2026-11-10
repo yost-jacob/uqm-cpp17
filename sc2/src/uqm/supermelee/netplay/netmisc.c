@@ -34,7 +34,6 @@ static BattleStateData *BattleStateData_alloc(void);
 static void BattleStateData_free(BattleStateData *battleStateData);
 static inline BattleStateData *BattleStateData_new(
 		struct melee_state *meleeState,
-		struct battlestate_struct *battleState,
 		struct getmelee_struct *getMeleeState);
 static void BattleStateData_delete(BattleStateData *battleStateData);
 
@@ -51,13 +50,12 @@ BattleStateData_free(BattleStateData *battleStateData) {
 
 static inline BattleStateData *
 BattleStateData_new(struct melee_state *meleeState,
-		struct battlestate_struct *battleState,
 		struct getmelee_struct *getMeleeState) {
 	BattleStateData *battleStateData = BattleStateData_alloc();
 	battleStateData->releaseFunction =
 			(NetConnectionStateData_ReleaseFunction) BattleStateData_delete;
 	battleStateData->meleeState = meleeState;
-	battleStateData->battleState = battleState;
+	battleStateData->battleActive = false;
 	battleStateData->getMeleeState = getMeleeState;
 	return battleStateData;
 }
@@ -80,7 +78,7 @@ NetMelee_connectCallback(NetConnection *conn) {
 	struct melee_state *meleeState;
 
 	meleeState = (struct melee_state *) NetConnection_getExtra(conn);
-	battleStateData = BattleStateData_new(meleeState, NULL, NULL);
+	battleStateData = BattleStateData_new(meleeState, NULL);
 	NetConnection_setStateData(conn, (void *) battleStateData);
 	NetConnection_setExtra(conn, NULL);
 

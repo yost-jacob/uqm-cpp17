@@ -18,7 +18,7 @@ flowchart TD
     Scan --> Lander["LanderVisit<br/>owned launch state / borrowed system and campaign"]
     Rules --> Child["SystemEncounterMode<br/>owns suspended parent through swapGameMode"]
     Child --> Dialog["ConversationMode / owned ConversationRuntime"]
-    Child --> Combat["CombatMode / scoped legacy Battle adapter"]
+    Child --> Combat["CombatMode / native CombatDriver and scoped scene"]
     Child -. restore parent before returning .-> Solar
     Rules --> Fleet["OrbitalEncounter scope<br/>temporary fleet cleanup / group restoration"]
 ```
@@ -66,8 +66,8 @@ nonserialized lifetime semantics rather than changing the legacy save format.
 
 Navigation reads story fields through StoryState and accesses flagship fuel,
 crew and logical coordinates through PlayerEntity methods. Its frame callback
-now receives an explicit context pointer in `BATTLE_STATE`. Combat callers with
-no callback pass null context. The navigation menu callback borrows its navigation
+now runs through a typed std::function<void()> hook in the shared SimulationLoop;
+combat supplies no navigation hook. The navigation menu callback borrows its navigation
 owner through MENU_STATE userdata rather than looking up the active session. This runtime field is not serialized.
 
 C entry points that cannot yet carry userdata use a scoped, checked session

@@ -91,8 +91,10 @@ This is an ownership and execution migration, not a new headless physics model.
 The step pass still requires prepared sprite collision data and scene contexts.
 Impact requests, ship crew/HUD updates and legacy effects still call their
 existing presentation adapters. Rendering, audio and input services were not
-rewritten. Battle mode orchestration, fleet selection and outcome policy stay
-with their mode/controller owners.
+rewritten. CombatDriver now orchestrates matches; navigation uses its own entry into the
+shared SimulationLoop. Scoped BattleScene resources separate explicit crew/result
+completion from cancellation. See [battle driver](battle-driver.md). Fleet selection
+and outcome policy stay with their mode/controller owners.
 
 ELEMENT remains the compatibility simulation record. Legacy hTarget and STARSHIP
 associations still exist inside behavior code; they have not all become native

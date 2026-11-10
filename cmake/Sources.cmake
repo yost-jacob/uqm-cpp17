@@ -154,7 +154,9 @@ set(UQM_SOURCES
     sc2/src/options.c
     sc2/src/port.c
     sc2/src/uqm.c
-    sc2/src/uqm/battle.c
+    sc2/src/uqm/battle_driver.cpp
+    sc2/src/uqm/battle_scene.cpp
+    sc2/src/uqm/simulation_loop.cpp
     sc2/src/uqm/battlecontrols.c
     sc2/src/uqm/border.c
     sc2/src/uqm/build.c

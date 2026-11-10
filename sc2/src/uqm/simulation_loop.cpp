@@ -45,22 +45,22 @@
 #include "libs/log.h"
 #include "libs/mathlib.h"
 
+#include "simulation_loop.hpp"
+#include "simulation_engine.hpp"
+#include <algorithm>
+#include <numeric>
+#include <stdexcept>
+#include <type_traits>
+extern "C" UWORD nth_frame;
 
-BYTE battle_counter[NUM_SIDES];
-		// The number of ships still available for battle to each side.
-		// A ship that has warped out is no longer available.
-BOOLEAN instantVictory;
-size_t battleInputOrder[NUM_SIDES];
-		// Indices of the sides in the order their input is processed.
-		// Network sides are last so that the sides will never be waiting
-		// on eachother, and games with a 0 frame delay are theoretically
-		// possible.
-#ifdef NETPLAY
-BattleFrameCounter battleFrameCount;
-		// Used for synchronisation purposes during netplay.
-#endif
+BATTLE_INPUT_STATE
+frameInputHuman (HumanInputContext *context, STARSHIP *StarShipPtr)
+{
+	(void) StarShipPtr;
+	return CurrentInputToBattleInput (context->playerNr);
+}
 
-static BOOLEAN
+static bool
 RunAwayAllowed (void)
 {
 	return (LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
@@ -104,47 +104,10 @@ DoRunAway (STARSHIP *StarShipPtr)
 	UnlockElement (StarShipPtr->hShip);
 }
 
-static void
-setupBattleInputOrder(void)
+void
+uqm::SimulationLoop::processInput()
 {
-	size_t i;
-
-#ifndef NETPLAY
-	for (i = 0; i < NUM_SIDES; i++)
-		battleInputOrder[i] = i;
-#else
-	int j;
-
-	i = 0;
-	// First put the locally controlled players in the array.
-	for (j = 0; j < NUM_SIDES; j++) {
-		if (!(PlayerControl[j] & NETWORK_CONTROL)) {
-			battleInputOrder[i] = j;
-			i++;
-		}
-	}
-	
-	// Next put the network controlled players in the array.
-	for (j = 0; j < NUM_SIDES; j++) {
-		if (PlayerControl[j] & NETWORK_CONTROL) {
-			battleInputOrder[i] = j;
-			i++;
-		}
-	}
-#endif
-}
-
-BATTLE_INPUT_STATE
-frameInputHuman (HumanInputContext *context, STARSHIP *StarShipPtr)
-{
-	(void) StarShipPtr;
-	return CurrentInputToBattleInput (context->playerNr);
-}
-
-static void
-ProcessInput (void)
-{
-	BOOLEAN CanRunAway;
+	bool CanRunAway;
 	size_t sideI;
 
 #ifdef NETPLAY
@@ -156,7 +119,7 @@ ProcessInput (void)
 	for (sideI = 0; sideI < NUM_SIDES; sideI++)
 	{
 		HSTARSHIP hBattleShip, hNextShip;
-		size_t cur_player = battleInputOrder[sideI];
+		size_t cur_player = inputOrder_[sideI];
 
 		for (hBattleShip = GetHeadLink (&race_q[cur_player]);
 				hBattleShip != 0; hBattleShip = hNextShip)
@@ -225,41 +188,10 @@ ProcessInput (void)
 		GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 }
 
-#if DEMO_MODE || CREATE_JOURNAL
-DWORD BattleSeed;
-#endif /* DEMO_MODE */
-
-static MUSIC_REF BattleRef;
-
-void
-BattleSong (BOOLEAN DoPlay)
+bool
+uqm::SimulationLoop::tick()
 {
-	if (BattleRef == 0)
-	{
-		if (inHyperSpace ())
-			BattleRef = LoadMusic (HYPERSPACE_MUSIC);
-		else if (inQuasiSpace ())
-			BattleRef = LoadMusic (QUASISPACE_MUSIC);
-		else
-			BattleRef = LoadMusic (BATTLE_MUSIC);
-	}
-
-	if (DoPlay)
-		PlayMusic (BattleRef, TRUE, 1);
-}
-
-void
-FreeBattleSong (void)
-{
-	DestroyMusic (BattleRef);
-	BattleRef = 0;
-}
-
-static BOOLEAN
-DoBattle (BATTLE_STATE *bs)
-{
-	extern UWORD nth_frame;
-	RECT r;
+	RECT r{};
 	BYTE battle_speed;
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
@@ -281,7 +213,7 @@ DoBattle (BATTLE_STATE *bs)
 		addLocalChecksum (battleFrameCount, checksum);
 	}
 #endif
-	ProcessInput ();
+	processInput();
 			// Also calls NetInput()
 #if defined (NETPLAY) && defined (NETPLAY_CHECKSUM)
 	if (getNumNetConnections() > 0)
@@ -302,7 +234,7 @@ DoBattle (BATTLE_STATE *bs)
 	}
 #endif
 
-	if (bs->first_time)
+	if (firstFrame_)
 	{
 		r.corner.x = SIS_ORG_X;
 		r.corner.y = SIS_ORG_Y;
@@ -310,24 +242,21 @@ DoBattle (BATTLE_STATE *bs)
 		r.extent.height = SIS_SCREEN_HEIGHT;
 		SetTransitionSource (&r);
 	}
-	BatchGraphics ();
+    struct Batch { Batch() { BatchGraphics(); } ~Batch() { UnbatchGraphics(); } };
+    {
+        Batch batch;
+        if (beforeSimulation_) beforeSimulation_();
+        RedrawQueue(TRUE);
+        if (firstFrame_) {
+            firstFrame_ = false;
+            ScreenTransition(3, &r);
+        }
+    } // Unbatch even if a navigation hook or simulation callback throws.
 
-	// Call the callback function, if set
-	if (bs->frame_cb)
-		bs->frame_cb (bs->frame_context);
-
-	RedrawQueue (TRUE);
-
-	if (bs->first_time)
-	{
-		bs->first_time = FALSE;
-		ScreenTransition (3, &r);
-	}
-	UnbatchGraphics ();
 	if ((!(GLOBAL (CurrentActivity) & IN_BATTLE)) ||
 			(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	battle_speed = HIBYTE (nth_frame);
@@ -338,173 +267,33 @@ DoBattle (BATTLE_STATE *bs)
 	}
 	else
 	{
-		SleepThreadUntil (bs->NextTime
+		SleepThreadUntil (nextTime_
 				+ BATTLE_FRAME_RATE / (battle_speed + 1));
-		bs->NextTime = GetTimeCounter ();
+		nextTime_ = GetTimeCounter ();
 	}
 
 	if ((GLOBAL (CurrentActivity) & IN_BATTLE) == 0)
-		return FALSE;
+		return false;
 
 #ifdef NETPLAY
 	battleFrameCount++;
 #endif
-	return TRUE;
+	return true;
 }
 
-#ifdef NETPLAY
-COUNT
-GetPlayerOrder (COUNT i)
-{
-	// Iff 'myTurn' is set on a connection, the local party will be
-	// processed first.
-	// If neither is network controlled, the top player (1) is handled
-	// first.
-	if (((PlayerControl[0] & NETWORK_CONTROL) &&
-			!NetConnection_getDiscriminant (netConnections[0])) ||
-			((PlayerControl[1] & NETWORK_CONTROL) &&
-			NetConnection_getDiscriminant (netConnections[1])))
-		return i;
-	else
-		return 1 - i;
+BOOLEAN uqm::SimulationLoop::input(void *state) {
+    return static_cast<Input *>(state)->owner->tick() ? TRUE : FALSE;
 }
+void uqm::SimulationLoop::run() {
+    if (&simulationEngine() != &engine_) throw std::logic_error("frame loop engine is not selected");
+    static_assert(NUM_SIDES == 2);
+    static_assert(std::is_standard_layout_v<Input> && offsetof(Input, InputFunc) == 0);
+    std::iota(inputOrder_.begin(), inputOrder_.end(), 0u);
+#ifdef NETPLAY
+    std::stable_partition(inputOrder_.begin(), inputOrder_.end(), [](std::size_t side) {
+        return !(PlayerControl[side] & NETWORK_CONTROL);
+    });
 #endif
-
-// Let each player pick his ship.
-static BOOLEAN
-selectAllShips (SIZE num_ships)
-{
-	if (num_ships == 1) {
-		// HyperSpace in full game.
-		return GetNextStarShip (NULL, 0);
-	}
-	
-#ifdef NETPLAY
-	if ((PlayerControl[0] & NETWORK_CONTROL) &&
-			(PlayerControl[1] & NETWORK_CONTROL))
-	{
-		log_add (log_Error, "Only one side at a time can be network "
-				"controlled.\n");
-		return FALSE;
-	}
-#endif
-
-	return GetInitialStarShips ();
+    Input state{&SimulationLoop::input, this};
+    DoInput(&state, FALSE);
 }
-
-BOOLEAN
-Battle (BattleFrameCallback *callback, void *context)
-{
-	SIZE num_ships;
-
-
-/* Native modes receive a seed at construction. Super Melee uses its
- * negotiated seed. The driver must never reseed either from the clock. */
-#if DEMO_MODE || CREATE_JOURNAL
-	if (BattleSeed == 0)
-		BattleSeed = TFB_Random ();
-	TFB_SeedRandom (BattleSeed);
-	BattleSeed = TFB_Random (); /* get next battle seed */
-#endif /* DEMO_MODE */
-
-	BattleSong (FALSE);
-	
-	num_ships = InitShips ();
-
-	if (instantVictory)
-	{
-		num_ships = 0;
-		battle_counter[0] = 1;
-		battle_counter[1] = 0;
-		instantVictory = FALSE;
-	}
-	
-	if (num_ships)
-	{
-		BATTLE_STATE bs;
-
-		GLOBAL (CurrentActivity) |= IN_BATTLE;
-		battle_counter[0] = CountLinks (&race_q[0]);
-		battle_counter[1] = CountLinks (&race_q[1]);
-
-		if (optMeleeScale != TFB_SCALE_STEP)
-			SetGraphicScaleMode (optMeleeScale);
-
-		setupBattleInputOrder ();
-#ifdef NETPLAY
-		initBattleInputBuffers ();
-#ifdef NETPLAY_CHECKSUM
-		initChecksumBuffers ();
-#endif  /* NETPLAY_CHECKSUM */
-		battleFrameCount = 0;
-		ResetWinnerStarShip ();
-		setBattleStateConnections (&bs);
-#endif  /* NETPLAY */
-
-		if (!selectAllShips (num_ships)) {
-			GLOBAL (CurrentActivity) |= CHECK_ABORT;
-			goto AbortBattle;
-		}
-
-		BattleSong (TRUE);
-		bs.NextTime = 0;
-#ifdef NETPLAY
-		initBattleStateDataConnections ();
-		{
-			bool allOk = negotiateReadyConnections (true, NetState_inBattle);
-			if (!allOk) {
-				GLOBAL (CurrentActivity) |= CHECK_ABORT;
-				goto AbortBattle;
-			}
-		}
-#endif  /* NETPLAY */
-		bs.InputFunc = DoBattle;
-		bs.frame_cb = callback;
-        bs.frame_context = context;
-		bs.first_time = inHQSpace ();
-
-		DoInput (&bs, FALSE);
-
-AbortBattle:
-		if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
-		{
-			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-			{
-				// Do not return to the main menu when a game is aborted,
-				// (just to the supermelee menu).
-#ifdef NETPLAY
-				waitResetConnections(NetState_inSetup);
-						// A connection may already be in inSetup (set from
-						// GetMeleeStarship). This is not a problem, although
-						// it will generate a warning in debug mode.
-#endif
-
-				GLOBAL (CurrentActivity) &= ~CHECK_ABORT;
-			}
-			else
-			{
-				// Show the result of the battle.
-				MeleeGameOver ();
-			}
-		}
-
-#ifdef NETPLAY
-		uninitBattleInputBuffers();
-#ifdef NETPLAY_CHECKSUM
-		uninitChecksumBuffers ();
-#endif  /* NETPLAY_CHECKSUM */
-		setBattleStateConnections (NULL);
-#endif  /* NETPLAY */
-
-		StopDitty ();
-		StopMusic ();
-		StopSound ();
-	}
-
-	UninitShips ();
-	FreeBattleSong ();
-
-	
-	return (BOOLEAN) (num_ships < 0);
-}
-
