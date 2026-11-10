@@ -18,6 +18,7 @@
 
 #include "../device_menu.hpp"
 #include "../system_runtime.hpp"
+#include "../world_legacy.hpp"
 #include "../game_state.hpp"
 #include <algorithm>
 #include <stdexcept>
@@ -213,7 +214,7 @@ uqm::DeviceMenu::useCaster()
 		return FALSE;
 
 	if (inOrbit()
-			&& matchWorld (system_, system_->pOrbitalDesc,
+			&& matchWorld (system_, &uqm::detail::selectedDescriptor(*system_),
 				1, MATCH_PLANET)
 			&& uqm::systemStar(*system_).Index == CHMMR_DEFINED
 			&& !story_.read(uqm::StoryFlag::ChmmrFreed))
@@ -312,7 +313,7 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 						+ (ONE_SECOND * 2));
 				if (uqm::systemStar(*system_).Index != CHMMR_DEFINED
 						|| !matchWorld (system_,
-								system_->pOrbitalDesc,
+								&uqm::detail::selectedDescriptor(*system_),
 								1, MATCH_PLANET))
 				{
 					FadeScreen (FadeAllToColor, ONE_SECOND * 2);

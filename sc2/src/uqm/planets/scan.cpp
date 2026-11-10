@@ -18,6 +18,7 @@
 
 
 #include "../system_runtime.hpp"
+#include "../world_legacy.hpp"
 #include <stdexcept>
 #include "../system_behavior.hpp"
 #include "lander.h"
@@ -132,7 +133,7 @@ GetPlanetTitle(const SOLARSYS_STATE &system, UNICODE *buf, COUNT bufsize)
 	}
 
 	// Unnamed body, use world type
-	val = system.pOrbitalDesc->data_index & ~PLANET_SHIELDED;
+	val = uqm::detail::selectedDescriptor(system).data_index & ~PLANET_SHIELDED;
 	if (val >= FIRST_GAS_GIANT)
 	{
 		sprintf (buf, "%s", GAME_STRING (SCAN_STRING_BASE + 4 + 51));
@@ -1053,7 +1054,7 @@ DoScan(MENU_STATE *pMS)
 		{
 			COUNT fuel_required;
 
-			if ((system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+			if ((uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
 					|| (system.SysInfo.PlanetInfo.AtmoDensity ==
 						GAS_GIANT_ATMOSPHERE))
 			{	// cannot dispatch to shielded planets or gas giants
@@ -1082,7 +1083,7 @@ DoScan(MENU_STATE *pMS)
 		}
 
 		// Various scans
-		if (system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+		if (uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
 		{	// cannot scan shielded planets
 			PlayMenuSound (MENU_SOUND_FAILURE);
 			return TRUE;
@@ -1096,7 +1097,7 @@ DoScan(MENU_STATE *pMS)
 		}
 	}
 	else if (optWhichMenu == OPT_PC ||
-			(!(system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+			(!(uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
 			&& system.SysInfo.PlanetInfo.AtmoDensity !=
 				GAS_GIANT_ATMOSPHERE))
 	{
@@ -1177,7 +1178,7 @@ uqm::runScan(SOLARSYS_STATE &system)
 	GetScanContext (NULL);
 
 	if (optWhichMenu == OPT_3DO &&
-			((system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+			((uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
 			|| system.SysInfo.PlanetInfo.AtmoDensity ==
 				GAS_GIANT_ATMOSPHERE))
 	{
@@ -1272,7 +1273,7 @@ uqm::generatePlanetSide(SOLARSYS_STATE &system)
 			// yet, otherwise, it is 1 more than the creature type.
 
 	InitDisplayList ();
-	if (system.pOrbitalDesc->data_index & PLANET_SHIELDED)
+	if (uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
 		return;
 
 	memset (life_init_tab, 0, sizeof life_init_tab);
@@ -1286,7 +1287,7 @@ uqm::generatePlanetSide(SOLARSYS_STATE &system)
 				NUM_SCANDOT_TRANSITIONS * (scan - ENERGY_SCAN));
 
 		num_nodes = callGenerateForScanType (&system,
-				system.pOrbitalDesc, GENERATE_ALL, scan, NULL);
+				&uqm::detail::selectedDescriptor(system), GENERATE_ALL, scan, NULL);
 
 		while (num_nodes--)
 		{
@@ -1305,7 +1306,7 @@ uqm::generatePlanetSide(SOLARSYS_STATE &system)
 			LockElement (hNodeElement, &NodeElementPtr);
 
 			callGenerateForScanType (&system,
-					system.pOrbitalDesc, num_nodes,
+					&uqm::detail::selectedDescriptor(system), num_nodes,
 					scan, &info);
 
 			NodeElementPtr->scan_node = MAKE_WORD (scan, num_nodes + 1);

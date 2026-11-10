@@ -131,7 +131,7 @@ getFlagshipLocation (void)
 	if (!playerInInnerSystem ())
 		return 0;
 	else
-		return 1 + planetIndex (pSolarSysState, pSolarSysState->pOrbitalDesc);
+		return 1 + planetIndex (pSolarSysState, GetSystemSelectedDescriptor(pSolarSysState));
 }
 
 static void

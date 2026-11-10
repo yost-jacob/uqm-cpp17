@@ -18,6 +18,7 @@
 
 #include "uqm/planet_render_legacy.hpp"
 #include "../system_runtime.hpp"
+#include "../world_legacy.hpp"
 #include "../sis_state.hpp"
 #include "../device_menu.hpp"
 #include "../system_behavior.hpp"
@@ -92,6 +93,16 @@ BYTE EncounterGroup;
 		// last encountered group info
 
 RandomContext SysGenRNG = {RandomDefaultSeed};
+
+// Native selection is resolved through the system's World tree. These short
+// helpers expose legacy descriptor references only to the remaining flight code.
+static uqm::SolarSystem &bodies(SOLARSYS_STATE &system) { return *system.worlds->system; }
+static const uqm::SolarSystem &bodies(const SOLARSYS_STATE &system) { return *system.worlds->system; }
+using uqm::detail::selectedDescriptor;
+static PLANET_DESC &innerDescriptor(SOLARSYS_STATE &system) {
+    return uqm::detail::worldDescriptor(system, bodies(system).innerPlanet());
+}
+
 
 bool
 worldIsPlanet (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world)
@@ -263,12 +274,12 @@ GetRandomSeedForStar (const STAR_DESC *star)
 }
 
 // Returns an orbital PLANET_DESC when player is in orbit
-static PLANET_DESC *
+static std::optional<std::reference_wrapper<uqm::World>>
 LoadSolarSys(SOLARSYS_STATE &system)
 {
     auto &flight = uqm::systemLocation(system).flight;
 	COUNT i;
-	PLANET_DESC *orbital = NULL;
+	std::optional<std::reference_wrapper<uqm::World>> orbital;
 	PLANET_DESC *pCurDesc;
     constexpr unsigned TemperatureRanges = 5;
 	static const Color temp_color_array[TemperatureRanges] =
@@ -323,8 +334,7 @@ LoadSolarSys(SOLARSYS_STATE &system)
 
 	if (!flight.planet)
 	{	// Outer system
-		system.pBaseDesc = system.PlanetDesc;
-		system.pOrbitalDesc = NULL;
+		bodies(system).enterOuterSystem();
 	}
 	else
 	{	// Inner system
@@ -333,9 +343,9 @@ LoadSolarSys(SOLARSYS_STATE &system)
 				GLOBAL (ShipStamp.origin), MAX_ZOOM_RADIUS);
 
 		i = flight.planet - 1;
-		system.pOrbitalDesc = &system.PlanetDesc[i];
-		GenerateMoons(system, *system.pOrbitalDesc);
-		system.pBaseDesc = system.MoonDesc;
+		bodies(system).selectWorld(bodies(system).world(i).id());
+        GenerateMoons(system, selectedDescriptor(system));
+        bodies(system).enterInnerSystem(bodies(system).world(i).id());
 
 		uqm::systemStory(system).clear(uqm::StoryFlag::PlanetaryLanding);
 	}
@@ -347,13 +357,13 @@ LoadSolarSys(SOLARSYS_STATE &system)
 		i = flight.loadOrbit - 1;
 		if (i == 0)
 		{	// Orbiting the planet itself
-			orbital = system.pBaseDesc->pPrevDesc;
+			orbital = std::ref(bodies(system).innerPlanet());
 		}
 		else
 		{	// Orbiting a moon
 			// -1 because planet itself is 1, and moons have to be 1-based
 			i -= 1;
-			orbital = &system.MoonDesc[i];
+			orbital = std::ref(bodies(system).innerPlanet().child(i));
 		}
 		flight.position = system.SunDesc[0].location;
 		flight.loadOrbit = 0;
@@ -385,8 +395,7 @@ saveNonOrbitalLocation(SOLARSYS_STATE &system)
 	else
 	{
 		// ip_planet is 1-based because code tests for ip_planet!=0
-		flight.planet = 1 + planetIndex (&system,
-				system.pOrbitalDesc);
+		flight.planet = 1 + bodies(system).innerPlanet().id().planet;
 		flight.position = system.SunDesc[0].location;
 	}
 }
@@ -423,8 +432,8 @@ getCollisionFrame(const SOLARSYS_STATE &system, const PLANET_DESC *planet, COUNT
 	}
 }
 
-// Returns the planet with which the flagship is colliding
-static PLANET_DESC *
+// A collision borrows the native body; C descriptors are only geometry views.
+static std::optional<std::reference_wrapper<uqm::World>>
 CheckIntersect(SOLARSYS_STATE &system)
 {
 	COUNT i;
@@ -435,7 +444,7 @@ CheckIntersect(SOLARSYS_STATE &system)
 
 	// Check collisions with the system center object
 	// This may be the planet in inner view, or the sun
-	pCurDesc = system.pBaseDesc->pPrevDesc;
+	pCurDesc = bodies(system).inInnerSystem() ? &innerDescriptor(system) : &system.SunDesc[0];
 	PlanetOffset = pCurDesc == &system.SunDesc[0] ? 0 : planetIndex(&system, pCurDesc) + 1;
 	MoonOffset = 1; // the planet itself
 
@@ -473,27 +482,18 @@ CheckIntersect(SOLARSYS_STATE &system)
 					system.SunDesc[0].location.x,
 					system.SunDesc[0].location.y);
 #endif /* DEBUG_SOLARSYS */
-			return pCurDesc;
+			return std::ref(bodies(system).innerPlanet());
 		}
 	}
 
-	for (i = pCurDesc->NumPlanets,
-			pCurDesc = system.pBaseDesc; i; --i, ++pCurDesc)
-	{
+	for (i = 0; i < bodies(system).visibleWorldCount(); ++i)
+    {
+        auto &body = bodies(system).visibleWorld(i);
+        pCurDesc = &uqm::detail::worldDescriptor(system, body);
 		PlanetIntersect.IntersectStamp.origin = pCurDesc->image.origin;
 		PlanetIntersect.EndPoint = PlanetIntersect.IntersectStamp.origin;
-		if (uqm::inInnerSystem(system))
-		{
-			PlanetOffset = pCurDesc->pPrevDesc -
-					system.PlanetDesc;
-			MoonOffset = pCurDesc - system.MoonDesc + 2;
-		}
-		else
-		{
-			PlanetOffset = pCurDesc - system.PlanetDesc;
-			MoonOffset = 0;
-		}
-		++PlanetOffset;
+        PlanetOffset = body.id().planet + 1;
+        MoonOffset = body.id().moon ? *body.id().moon + 2 : 0;
 		PlanetIntersect.IntersectStamp.frame = getCollisionFrame(system, pCurDesc,
 				MAKE_WORD (PlanetOffset, MoonOffset));
 
@@ -519,7 +519,7 @@ CheckIntersect(SOLARSYS_STATE &system)
 			// Collision with a new planet/moon. This may cause a transition
 			// to an inner system or start an orbital view.
 			system.WaitIntersect = NewWaitPlanet;
-			return pCurDesc;
+			return std::ref(body);
 		}
 	}
 
@@ -530,7 +530,7 @@ CheckIntersect(SOLARSYS_STATE &system)
 	if (system.WaitIntersect != (COUNT)~0 || NewWaitPlanet == 0)
 		system.WaitIntersect = NewWaitPlanet;
 
-	return NULL;
+	return std::nullopt;
 }
 
 static void
@@ -560,9 +560,10 @@ GetPlanetOrbitRect (RECT *r, PLANET_DESC *planet, int sizeNumer,
 }
 
 static void
-ValidateOrbit(SOLARSYS_STATE &system, PLANET_DESC *planet, int sizeNumer, int dyNumer, int denom)
+ValidateOrbit(SOLARSYS_STATE &system, const uqm::World &world, int sizeNumer, int dyNumer, int denom)
 {
 	COUNT index;
+    auto *planet = &uqm::detail::worldDescriptor(system, world);
 
 	if (sizeNumer <= DISPLAY_FACTOR)
 	{	// All planets in outer view, and moons in inner
@@ -595,7 +596,7 @@ ValidateOrbit(SOLARSYS_STATE &system, PLANET_DESC *planet, int sizeNumer, int dy
 		{
 			Size += 3;
 		}
-		else if (worldIsMoon (&system, planet))
+		else if (world.id().moon.has_value())
 		{
 			Size += 2;
 		}
@@ -606,14 +607,14 @@ ValidateOrbit(SOLARSYS_STATE &system, PLANET_DESC *planet, int sizeNumer, int dy
 				++Size;
 		}
 		
-		if (worldIsPlanet (&system, planet))
+		if (!world.id().moon)
 		{	// Planet
 			angle = ARCTAN (planet->location.x, planet->location.y);
 		}
 		else
 		{	// Moon
-			angle = ARCTAN (planet->pPrevDesc->location.x,
-					planet->pPrevDesc->location.y);
+			const auto &parent = uqm::detail::worldDescriptor(system, bodies(system).world(world.id().planet));
+            angle = ARCTAN(parent.location.x, parent.location.y);
 		}
 		planet->image.frame =	SetAbsFrameIndex (OrbitalFrame,
 				(Size << FACING_SHIFT) + NORMALIZE_FACING (
@@ -783,7 +784,7 @@ ProcessShipControls(SOLARSYS_STATE &system)
 }
 
 static void
-enterInnerSystem(SOLARSYS_STATE &system, PLANET_DESC *planet)
+enterInnerSystem(SOLARSYS_STATE &system, uqm::World &planet)
 {
     auto &flight = uqm::systemLocation(system).flight;
     constexpr int InnerEntryDistance = MIN_MOON_RADIUS + (MAX_MOONS - 1) * MOON_DELTA + MOON_DELTA / 4;
@@ -806,24 +807,23 @@ enterInnerSystem(SOLARSYS_STATE &system, PLANET_DESC *planet)
 			GLOBAL (ShipStamp.origin), MAX_ZOOM_RADIUS);
 	
 	system.SunDesc[0].location =
-			uqm::planetOuterLocation(system, planetIndex (&system, planet));
+			uqm::planetOuterLocation(system, planet.id().planet);
 	ZeroVelocityComponents (&GLOBAL (velocity));
 
-	GenerateMoons(system, *planet);
-	system.pBaseDesc = system.MoonDesc;
-	system.pOrbitalDesc = planet;
+	GenerateMoons(system, uqm::detail::worldDescriptor(system, planet));
+	bodies(system).enterInnerSystem(planet.id());
 }
 
 static void
-leaveInnerSystem(SOLARSYS_STATE &system, PLANET_DESC *planet)
+leaveInnerSystem(SOLARSYS_STATE &system)
 {
     auto &flight = uqm::systemLocation(system).flight;
-	COUNT outerPlanetWait;
+	const auto planet = bodies(system).innerPlanet().id().planet;
+    COUNT outerPlanetWait;
 
-	system.pBaseDesc = system.PlanetDesc;
-	system.pOrbitalDesc = NULL;
+	bodies(system).enterOuterSystem();
 
-	outerPlanetWait = MAKE_WORD (planet - system.PlanetDesc + 1, 0);
+	outerPlanetWait = MAKE_WORD (planet + 1, 0);
 	flight.position = system.SunDesc[0].location;
 	GLOBAL (ShipStamp.origin) = uqm::transformLocation(system, flight.position, true);
 	ZeroVelocityComponents (&GLOBAL (velocity));
@@ -840,10 +840,10 @@ leaveInnerSystem(SOLARSYS_STATE &system, PLANET_DESC *planet)
 }
 
 static void
-enterOrbital(SOLARSYS_STATE &system, PLANET_DESC *planet)
+enterOrbital(SOLARSYS_STATE &system, const uqm::World &world)
 {
 	ZeroVelocityComponents (&GLOBAL (velocity));
-	system.pOrbitalDesc = planet;
+	bodies(system).selectWorld(world.id());
 	system.InOrbit = TRUE;
 }
 
@@ -876,7 +876,7 @@ CheckShipLocation(SOLARSYS_STATE &system, SIZE *newRadius)
 		}
 		else
 		{
-			leaveInnerSystem(system, system.pOrbitalDesc);
+			leaveInnerSystem(system);
 		}
 		
 		return TRUE;
@@ -891,17 +891,17 @@ CheckShipLocation(SOLARSYS_STATE &system, SIZE *newRadius)
 
 	if (GLOBAL (autopilot.x) == ~0 && GLOBAL (autopilot.y) == ~0)
 	{	// Not on autopilot -- may collide with a planet
-		PLANET_DESC *planet = CheckIntersect(system);
+		auto planet = CheckIntersect(system);
 		if (planet)
 		{	// Collision with a planet
 			if (uqm::inInnerSystem(system))
 			{	// Entering planet orbit (scans, etc.)
-				enterOrbital(system, planet);
+				enterOrbital(system, planet->get());
 				return FALSE; // no location change
 			}
 			else
 			{	// Transition to inner system
-				enterInnerSystem(system, planet);
+				enterInnerSystem(system, planet->get());
 				return TRUE;
 			}
 		}
@@ -1025,41 +1025,26 @@ CheckZoomLevel(SOLARSYS_STATE &system)
 static void
 ValidateOrbits(SOLARSYS_STATE &system)
 {
-	COUNT i;
-	PLANET_DESC *planet;
-
-	for (i = system.SunDesc[0].NumPlanets,
-			planet = &system.PlanetDesc[0]; i; --i, ++planet)
-	{
-		ValidateOrbit(system, planet, DISPLAY_FACTOR, DISPLAY_FACTOR / 4,
-				system.SunDesc[0].radius);
-	}
+    for (std::size_t i = 0; i < bodies(system).worldCount(); ++i)
+        ValidateOrbit(system, bodies(system).world(i), DISPLAY_FACTOR, DISPLAY_FACTOR / 4,
+                system.SunDesc[0].radius);
 }
 
 static void
 ValidateInnerOrbits(SOLARSYS_STATE &system)
 {
-	COUNT i;
-	PLANET_DESC *planet;
-
-	assert (uqm::inInnerSystem(system));
-
-	planet = system.pOrbitalDesc;
-	ValidateOrbit(system, planet, DISPLAY_FACTOR * 4, DISPLAY_FACTOR,
-			planet->radius);
-
-	for (i = 0; i < planet->NumPlanets; ++i)
-	{
-		PLANET_DESC *moon = &system.MoonDesc[i];
-		ValidateOrbit(system, moon, 2, 1, 2);
-	}
+    const auto &planet = bodies(system).innerPlanet();
+    ValidateOrbit(system, planet, DISPLAY_FACTOR * 4, DISPLAY_FACTOR,
+            uqm::detail::worldDescriptor(system, planet).radius);
+    for (std::size_t i = 0; i < planet.childCount(); ++i)
+        ValidateOrbit(system, planet.child(i), 2, 1, 2);
 }
 
 static void
 DrawInnerSystem(SOLARSYS_STATE &system)
 {
 	ValidateInnerOrbits(system);
-	DrawSystem(system, system.pOrbitalDesc->radius, TRUE);
+	DrawSystem(system, innerDescriptor(system).radius, TRUE);
 	DrawSISTitle (GLOBAL_SIS (PlanetName));
 }
 
@@ -1112,13 +1097,13 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 	{	// This means we hit a planet in IP flight; not a Load into orbit
 		FreeSolarSys(system);
 
-		if (worldIsMoon (&system, system.pOrbitalDesc))
+		if (worldIsMoon (&system, &selectedDescriptor(system)))
 		{	// Moon -- use its origin
 			// XXX: The conversion functions do not error-correct, so the
 			//   point we set here will change once flag_ship_preprocess()
 			//   in ipdisp.c starts over again.
 			GLOBAL (ShipStamp.origin) =
-					system.pOrbitalDesc->image.origin;
+					selectedDescriptor(system).image.origin;
 		}
 		else
 		{	// Planet -- its origin is for the outer view, so use mid-screen
@@ -1142,7 +1127,7 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
             ~OrbitServices() { if (graphics.hasSurface()) FinishPlanetOrbit(); }
         } services{graphics};
 	uqm::loadPlanetProgress(system);
-	uqm::systemBehavior(system).generateOrbital(system, *(system.pOrbitalDesc));
+	uqm::systemBehavior(system).generateOrbital(system, selectedDescriptor(system));
 	LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
 			START_ENCOUNTER)) || system.worlds->session->player().crew() == (COUNT)~0
@@ -1168,7 +1153,7 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 			CHECK_ABORT | CHECK_LOAD))
 			&& system.worlds->session->player().crew() != (COUNT)~0)
 	{	// Reload the system and return to the inner view
-		PLANET_DESC *orbital = LoadSolarSys(system);
+		auto orbital = LoadSolarSys(system);
 		assert (!orbital);
 		CheckZoomLevel(system);
 		ValidateOrbits(system);
@@ -1186,7 +1171,7 @@ InitSolarSys(SOLARSYS_STATE &system)
     auto &flight = uqm::systemLocation(system).flight;
 	bool InnerSystem;
 	bool Reentry;
-	PLANET_DESC *orbital;
+	std::optional<std::reference_wrapper<uqm::World>> orbital;
 
 	LoadIPData ();
 	LoadLanderData ();
@@ -1232,7 +1217,7 @@ InitSolarSys(SOLARSYS_STATE &system)
 
 	if (orbital)
 	{
-		enterOrbital(system, orbital);
+		enterOrbital(system, orbital->get());
 	}
 	else
 	{	// Draw the borders, the system (inner or outer) and fade/transition
@@ -1397,9 +1382,9 @@ DrawInnerPlanets(SOLARSYS_STATE &system, PLANET_DESC *planet)
 	DrawStamp (&s);
 
 	// Draw the moon images
-	for (i = planet->NumPlanets, moon = system.MoonDesc;
-			i; --i, ++moon)
-	{
+	for (i = 0; i < bodies(system).innerPlanet().childCount(); ++i)
+    {
+        moon = &uqm::detail::worldDescriptor(system, bodies(system).innerPlanet().child(i));
 		if (!(moon->data_index & WORLD_TYPE_SPECIAL))
 			SetPlanetColorMap (moon);
 		DrawStamp (&moon->image);
@@ -1411,7 +1396,6 @@ DrawSystem(SOLARSYS_STATE &system, SIZE radius, BOOLEAN IsInnerSystem)
 {
 	BYTE i;
 	PLANET_DESC *pCurDesc;
-	PLANET_DESC *pBaseDesc;
 	CONTEXT oldContext;
 	STAMP s;
 
@@ -1430,17 +1414,16 @@ DrawSystem(SOLARSYS_STATE &system, SIZE radius, BOOLEAN IsInnerSystem)
 
 	uqm::drawStarBackground(system);
 
-	pBaseDesc = system.pBaseDesc;
 	if (IsInnerSystem)
 	{	// Draw the inner system view *planet's* orbit segment
-		pCurDesc = system.pOrbitalDesc;
+		pCurDesc = &innerDescriptor(system);
 		DrawOrbit (pCurDesc, DISPLAY_FACTOR * 4, DISPLAY_FACTOR, radius);
 	}
 
 	// Draw the planet orbits or moon orbits
-	for (i = pBaseDesc->pPrevDesc->NumPlanets, pCurDesc = pBaseDesc;
-			i; --i, ++pCurDesc)
-	{
+	for (i = 0; i < bodies(system).visibleWorldCount(); ++i)
+    {
+        pCurDesc = &uqm::detail::worldDescriptor(system, bodies(system).visibleWorld(i));
 		if (IsInnerSystem)
 			DrawOrbit (pCurDesc, 2, 1, 2);
 		else
@@ -1450,7 +1433,7 @@ DrawSystem(SOLARSYS_STATE &system, SIZE radius, BOOLEAN IsInnerSystem)
 
 	if (IsInnerSystem)
 	{	// Draw the inner system view
-		DrawInnerPlanets(system, system.pOrbitalDesc);
+		DrawInnerPlanets(system, &innerDescriptor(system));
 	}
 	else
 	{	// Draw the outer system view
@@ -1595,25 +1578,24 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 const UNICODE *
 uqm::namedPlanetaryBody(const SOLARSYS_STATE &system)
 {
-	if (system.pBaseDesc != system.MoonDesc || !system.pOrbitalDesc)
+	if (!bodies(system).inInnerSystem() || !bodies(system).hasSelectedWorld())
 		return NULL; // Not inside an inner system, so no name
 
-	assert (system.pOrbitalDesc != NULL);
 
 	if (uqm::systemStar(system).Index == SOL_DEFINED)
 	{	// Planets and moons in Sol
 		int planet;
 		int moon;
 
-		planet = planetIndex (&system, system.pOrbitalDesc);
+		planet = bodies(system).selectedWorld().id().planet;
 
-		if (worldIsPlanet (&system, system.pOrbitalDesc))
+		if (!bodies(system).selectedWorld().id().moon)
 		{	// A planet
 			return GAME_STRING (PLANET_NUMBER_BASE + planet);
 		}
 
 		// Moons
-		moon = moonIndex (&system, system.pOrbitalDesc);
+		moon = *bodies(system).selectedWorld().id().moon;
 		switch (planet)
 		{
 			case 2: // Earth
@@ -1650,8 +1632,7 @@ uqm::namedPlanetaryBody(const SOLARSYS_STATE &system)
 	}
 	else if (uqm::systemStar(system).Index == SPATHI_DEFINED)
 	{
-		if (matchWorld (&system, system.pOrbitalDesc,
-				0, MATCH_PLANET))
+		if (bodies(system).selectedWorld().id().planet == 0 && !bodies(system).selectedWorld().id().moon)
 		{
 #ifdef NOTYET
 			return "Spathiwa";
@@ -1660,7 +1641,7 @@ uqm::namedPlanetaryBody(const SOLARSYS_STATE &system)
 	}
 	else if (uqm::systemStar(system).Index == SAMATRA_DEFINED)
 	{
-		if (matchWorld (&system, system.pOrbitalDesc, 4, 0))
+		if (bodies(system).selectedWorld().id().planet == 4 && bodies(system).selectedWorld().id().moon == 0)
 		{	// Sa-Matra
 			return GAME_STRING (PLANET_NUMBER_BASE + 32);
 		}
@@ -1687,7 +1668,7 @@ GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize)
 	utf8StringCopy (buf, bufsize, GLOBAL_SIS (PlanetName));
 
 	if (!playerInSolarSystem () || !playerInInnerSystem () ||
-			worldIsPlanet (pSolarSysState, pSolarSysState->pOrbitalDesc))
+			worldIsPlanet (pSolarSysState, GetSystemSelectedDescriptor(pSolarSysState)))
 	{	// Outer or inner system or orbiting a planet
 		return;
 	}
@@ -1696,7 +1677,7 @@ GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize)
 	i = strlen (buf);
 	buf += i;
 	bufsize -= i;
-	moon = moonIndex (pSolarSysState, pSolarSysState->pOrbitalDesc);
+	moon = moonIndex (pSolarSysState, GetSystemSelectedDescriptor(pSolarSysState));
 	if (bufsize >= 3)
 	{
 		snprintf (buf, bufsize, "-%c", 'A' + moon);
@@ -1724,14 +1705,9 @@ uqm::saveSolarSystemLocation(SOLARSYS_STATE &system)
 		// flight.planet is already set
 		assert (flight.planet != 0);
 
-		// has to be at least 1 because code tests for in_orbit!=0
-		moon = 1; /* the planet itself */
-		if (worldIsMoon (&system, system.pOrbitalDesc))
-		{
-			moon += moonIndex (&system, system.pOrbitalDesc);
-			// +1 because moons have to be 1-based
-			moon += 1;
-		}
+        // Encode the typed body identity only at the legacy save boundary.
+        const auto &target = bodies(system).selectedWorld().id();
+        moon = target.moon ? *target.moon + 2 : 1;
 		flight.loadOrbit = moon;
 	}
 }

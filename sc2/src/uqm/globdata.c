@@ -383,7 +383,7 @@ inOrbit (void)
 {
 	assert (inFullGame ());
 	return (pSolarSysState != NULL) &&
-			(pSolarSysState->pOrbitalDesc != NULL);
+			(GetSystemSelectedDescriptor(pSolarSysState) != NULL);
 }
 #endif
 

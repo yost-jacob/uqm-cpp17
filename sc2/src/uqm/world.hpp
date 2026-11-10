@@ -86,6 +86,25 @@ public:
     // Regeneration of an unchanged layout preserves World/behavior/resource
     // identity. Changed definitions use the validated replacement path.
     void refreshPlanets(std::vector<WorldDefinition> definitions);
+    // Visit selection uses identities, never pointers into generated C buffers.
+    // enterInnerSystem requires a planet ID in this system; selectWorld accepts
+    // a generated planet or moon in the active inner view, when present.
+    // Invalid identities throw before mutation. Missing selection getters throw
+    // bad_optional_access; modes establish their required view on entry.
+    void enterOuterSystem() noexcept;
+    void enterInnerSystem(const WorldId &planet);
+    void selectWorld(const WorldId &world);
+    void clearSelection() noexcept;
+    bool inInnerSystem() const noexcept;
+    bool hasSelectedWorld() const noexcept;
+    World &innerPlanet();
+    const World &innerPlanet() const;
+    World &selectedWorld();
+    const World &selectedWorld() const;
+    // Current flight view: planets outside, selected planet's moons inside.
+    std::size_t visibleWorldCount() const;
+    World &visibleWorld(std::size_t index);
+    const World &visibleWorld(std::size_t index) const;
     StarId star() const noexcept;
     UniverseId universe() const noexcept;
     std::size_t worldCount() const noexcept;
@@ -103,6 +122,7 @@ private:
     std::shared_ptr<WorldState> state_;
     SystemLayout layout_;
     std::vector<std::unique_ptr<World>> worlds_;
+    std::optional<WorldId> innerPlanet_, selectedWorld_;
 };
 } // namespace uqm
 #endif

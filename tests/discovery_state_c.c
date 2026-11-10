@@ -25,8 +25,6 @@ int discovery_state_c_round_trip(void)
     solar.PlanetDesc[0].NumPlanets = 2;
     solar.PlanetDesc[1].pPrevDesc = solar.SunDesc;
     solar.MoonDesc[0].pPrevDesc = &solar.PlanetDesc[1];
-    solar.pBaseDesc = solar.MoonDesc;
-    solar.pOrbitalDesc = &solar.PlanetDesc[1];
     InitPlanetInfo();
     file = OpenStateFile(STARINFO_FILE, "r+b");
     SeekStateFile(file, star * sizeof(DWORD), SEEK_SET);
@@ -40,6 +38,7 @@ int discovery_state_c_round_trip(void)
     file = NULL;
     CreateSystemWorlds (&solar, CurStarDescPtr);
     BuildSystemWorlds (&solar, CurStarDescPtr);
+    SelectSystemWorld (&solar, &solar.PlanetDesc[1]);
     ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
     BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);
     ConfigureArtifactEnergyBehavior (&solar, 0, 1);

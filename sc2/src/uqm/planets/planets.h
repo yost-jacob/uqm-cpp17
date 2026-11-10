@@ -177,17 +177,9 @@ struct solarsys_state
 			// and overwritten by subsequent calls.
 	PLANET_DESC MoonDesc[MAX_MOONS];
 			// Description of the moons orbiting the planet pointed to
-			// by pBaseDesc.
+			// by the native inner-system selection.
 			// Only defined after a call to SystemBehavior::generateMoons()
 			// as its argument, and overwritten by subsequent calls.
-	PLANET_DESC *pBaseDesc;
-			// In outer system: points to PlanetDesc[]
-			// In inner system: points to MoonDesc[]
-	PLANET_DESC *pOrbitalDesc;
-			// In orbit: points into PlanetDesc or MoonDesc to the planet
-			// currently orbiting.
-			// In inner system: points into PlanetDesc to the planet whose
-			// inner system the ship is inside
 
 	BYTE turn_counter;
 	BYTE turn_wait;

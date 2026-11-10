@@ -39,7 +39,7 @@ POINT transformLocation(const SOLARSYS_STATE &system, POINT point, bool toDispla
                      : uqm::displayToLocation(point, system.SunDesc[0].radius);
 }
 bool inInnerSystem(const SOLARSYS_STATE &system) noexcept {
-    return system.pBaseDesc != system.PlanetDesc;
+    return system.worlds->system->inInnerSystem();
 }
 
 const STAR_DESC &systemStar(const SOLARSYS_STATE &system) {
