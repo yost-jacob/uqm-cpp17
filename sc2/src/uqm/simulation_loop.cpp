@@ -70,18 +70,18 @@ RunAwayAllowed (void)
 }
 
 static void
-DoRunAway (STARSHIP *StarShipPtr)
+DoRunAway (uqm::SimulationEngine &engine, STARSHIP &ship)
 {
 	ELEMENT *ElementPtr;
 
-	LockElement (StarShipPtr->hShip, &ElementPtr);
+	LockElement (ship.hShip, &ElementPtr);
 	if (GetPrimType (&DisplayArray[ElementPtr->PrimIndex]) == STAMP_PRIM
 			&& ElementPtr->life_span == NORMAL_LIFE
 			&& !(ElementPtr->state_flags & FINITE_LIFE)
 			&& ElementPtr->mass_points != MAX_SHIP_MASS * 10
 			&& !(ElementPtr->state_flags & APPEARING))
 	{
-		uqm::simulationEngine().shipRoster().retire(uqm::RosterSide::First);
+		engine.shipRoster().retire(uqm::RosterSide::First);
 
 		ElementPtr->turn_wait = 3;
 		ElementPtr->thrust_wait = 4;
@@ -89,7 +89,7 @@ DoRunAway (STARSHIP *StarShipPtr)
 		ElementPtr->preprocess_func = flee_preprocess;
 		ElementPtr->mass_points = MAX_SHIP_MASS * 10;
 		ZeroVelocityComponents (&ElementPtr->velocity);
-		StarShipPtr->cur_status_flags &=
+		ship.cur_status_flags &=
 				~(SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
 
 		SetPrimColor (&DisplayArray[ElementPtr->PrimIndex],
@@ -99,93 +99,55 @@ DoRunAway (STARSHIP *StarShipPtr)
 				// but it is slightly different (0x0A as red value). - SvdB.
 		SetPrimType (&DisplayArray[ElementPtr->PrimIndex], STAMPFILL_PRIM);
 	
-		StarShipPtr->ship_input_state = 0;
+		ship.ship_input_state = 0;
 	}
-	UnlockElement (StarShipPtr->hShip);
+	UnlockElement (ship.hShip);
 }
 
-void
-uqm::SimulationLoop::processInput()
+void uqm::SimulationLoop::processInput()
 {
-	bool CanRunAway;
-	size_t sideI;
-
 #ifdef NETPLAY
-	netInput ();
+    netInput();
 #endif
-
-	CanRunAway = RunAwayAllowed ();
-		
-	for (sideI = 0; sideI < NUM_SIDES; sideI++)
-	{
-		HSTARSHIP hBattleShip, hNextShip;
-		size_t cur_player = inputOrder_[sideI];
-
-		for (hBattleShip = GetHeadLink (&race_q[cur_player]);
-				hBattleShip != 0; hBattleShip = hNextShip)
-		{
-			BATTLE_INPUT_STATE InputState;
-			STARSHIP *StarShipPtr;
-
-			StarShipPtr = LockStarShip (&race_q[cur_player], hBattleShip);
-			hNextShip = _GetSuccLink (StarShipPtr);
-
-			if (StarShipPtr->hShip)
-			{
-				// TODO: review and see if we have to do this every frame, or
-				//   if we can do this once somewhere
-				StarShipPtr->control = PlayerControl[cur_player];
-				
-				InputState = PlayerInput[cur_player]->handlers->frameInput (
-						PlayerInput[cur_player], StarShipPtr);
-
+    const bool canRunAway = RunAwayAllowed();
+    auto &roster = engine_.shipRoster();
+    for (const auto player : inputOrder_) {
+        const auto side = static_cast<RosterSide>(player);
+        for (auto participant = roster.first(side); participant;) {
+            auto &ship = participant->get();
+            participant = roster.next(side, ship); // Save traversal before input callbacks.
+            if (!ship.hShip) continue;
+            ship.control = PlayerControl[player];
+            auto input = PlayerInput[player]->handlers->frameInput(PlayerInput[player], &ship);
 #if CREATE_JOURNAL
-				JournalInput (InputState);
-#endif /* CREATE_JOURNAL */
-#ifdef NETPLAY
-				if (!(PlayerControl[cur_player] & NETWORK_CONTROL))
-				{
-					BattleInputBuffer *bib = getBattleInputBuffer(cur_player);
-					Netplay_NotifyAll_battleInput (InputState);
-					flushPacketQueues ();
-
-					BattleInputBuffer_push (bib, InputState);
-							// Add this input to the end of the buffer.
-					BattleInputBuffer_pop (bib, &InputState);
-							// Get the input from the front of the buffer.
-				}
+            JournalInput(input);
 #endif
-
-				StarShipPtr->ship_input_state = 0;
-				if (StarShipPtr->RaceDescPtr->ship_info.crew_level)
-				{
-					if (InputState & BATTLE_LEFT)
-						StarShipPtr->ship_input_state |= LEFT;
-					else if (InputState & BATTLE_RIGHT)
-						StarShipPtr->ship_input_state |= RIGHT;
-					if (InputState & BATTLE_THRUST)
-						StarShipPtr->ship_input_state |= THRUST;
-					if (InputState & BATTLE_WEAPON)
-						StarShipPtr->ship_input_state |= WEAPON;
-					if (InputState & BATTLE_SPECIAL)
-						StarShipPtr->ship_input_state |= SPECIAL;
-
-					if (CanRunAway && cur_player == 0 &&
-							(InputState & BATTLE_ESCAPE))
-						DoRunAway (StarShipPtr);
-				}
-			}
-
-			UnlockStarShip (&race_q[cur_player], hBattleShip);
-		}
-	}
-	
 #ifdef NETPLAY
-	flushPacketQueues ();
+            if (!(PlayerControl[player] & NETWORK_CONTROL)) {
+                auto *buffer = getBattleInputBuffer(player);
+                Netplay_NotifyAll_battleInput(input);
+                flushPacketQueues();
+                BattleInputBuffer_push(buffer, input);
+                BattleInputBuffer_pop(buffer, &input);
+            }
 #endif
-
-	if (GLOBAL (CurrentActivity) & (CHECK_LOAD | CHECK_ABORT))
-		GLOBAL (CurrentActivity) &= ~IN_BATTLE;
+            ship.ship_input_state = 0;
+            if (ship.RaceDescPtr->ship_info.crew_level) {
+                if (input & BATTLE_LEFT) ship.ship_input_state |= LEFT;
+                else if (input & BATTLE_RIGHT) ship.ship_input_state |= RIGHT;
+                if (input & BATTLE_THRUST) ship.ship_input_state |= THRUST;
+                if (input & BATTLE_WEAPON) ship.ship_input_state |= WEAPON;
+                if (input & BATTLE_SPECIAL) ship.ship_input_state |= SPECIAL;
+                if (canRunAway && player == 0 && (input & BATTLE_ESCAPE))
+                    DoRunAway(engine_, ship);
+            }
+        }
+    }
+#ifdef NETPLAY
+    flushPacketQueues();
+#endif
+    if (GLOBAL(CurrentActivity) & (CHECK_LOAD | CHECK_ABORT))
+        GLOBAL(CurrentActivity) &= ~IN_BATTLE;
 }
 
 bool

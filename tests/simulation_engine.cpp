@@ -1,4 +1,5 @@
 #include "uqm/simulation_engine_legacy.hpp"
+#include "uqm/combat_entity_legacy.hpp"
 #include "uqm/game_state.hpp"
 #include "uqm/races.h"
 #include "uqm/globdata.h"
@@ -145,4 +146,81 @@ BOOST_AUTO_TEST_CASE(session_seeds_are_replayable_and_do_not_consume_active_mode
     BOOST_TEST(TFB_GetRandomSeed() == before);
     parent.engine().reset();
     BOOST_TEST(TFB_GetRandomSeed() == before);
+}
+
+BOOST_AUTO_TEST_CASE(native_element_allocation_reserves_both_pools_and_restores_the_callers_projection)
+{
+    SimulationEngine uninitialized;
+    BOOST_CHECK_THROW(uninitialized.allocateElement(), std::logic_error);
+    SimulationEngine source(2), other(2);
+    SimulationBinding caller{other};
+    auto *projection = DisplayArray;
+    const auto otherFree = DisplayFreeList;
+    auto first = source.allocateElement(), second = source.allocateElement();
+    BOOST_REQUIRE(first); BOOST_REQUIRE(second);
+    BOOST_TEST(!source.allocateElement());
+    BOOST_TEST(source.size() == 0u); // Reservations are unlinked until publication.
+    BOOST_TEST(first->get().PrimIndex != second->get().PrimIndex);
+    BOOST_TEST(&simulationEngine() == &other);
+    BOOST_TEST(DisplayArray == projection);
+    BOOST_TEST(DisplayFreeList == otherFree);
+    BOOST_TEST(GetPrimType(&detail::SimulationAccess::primitives(source)[first->get().PrimIndex]) == NO_PRIM);
+    auto *identity = &first->get();
+    const auto generation = combat::EntityHandle::capture(detail::SimulationAccess::queue(source), *identity);
+    identity->hit_points = 17;
+    identity->pParent = identity;
+    const auto primitive = identity->PrimIndex;
+    source.releaseElement(*identity);
+    BOOST_TEST(!source.resolve(generation));
+    auto recycled = source.allocateElement();
+    BOOST_REQUIRE(recycled);
+    BOOST_TEST(&recycled->get() == identity);
+    BOOST_TEST(recycled->get().PrimIndex == primitive);
+    BOOST_TEST(recycled->get().hit_points == 0u);
+    BOOST_TEST(recycled->get().pParent == nullptr);
+    const auto lastPrimitive = second->get().PrimIndex;
+    source.releaseElement(recycled->get());
+    source.releaseElement(second->get());
+    {
+        SimulationBinding selected{source};
+        const auto cHandle = AllocElement();
+        BOOST_REQUIRE(cHandle);
+        FreeElement(cHandle);
+        BOOST_TEST(DisplayFreeList == lastPrimitive);
+    }
+    const auto published = source.allocateElement();
+    BOOST_REQUIRE(published);
+    source.enqueue(published->get());
+    BOOST_TEST(source.size() == 1u);
+    source.reset();
+    BOOST_TEST(source.size() == 0u);
+    BOOST_TEST(&simulationEngine() == &other);
+    BOOST_TEST(DisplayArray == projection);
+    BOOST_TEST(DisplayFreeList == otherFree);
+}
+
+BOOST_AUTO_TEST_CASE(native_element_release_discards_behavior_without_expiration_or_gameplay_effects)
+{
+    class Behavior final : public combat::CombatEntity {
+    public:
+        Behavior(unsigned &expired, unsigned &destroyed) : expired_(expired), destroyed_(destroyed) {}
+        ~Behavior() override { ++destroyed_; }
+        void update(ELEMENT &) override {}
+        void expire(ELEMENT &) override { ++expired_; }
+    private:
+        unsigned &expired_, &destroyed_;
+    };
+    SimulationEngine owner(1), other(1);
+    SimulationBinding caller{other};
+    unsigned expired = 0, destroyed = 0;
+    const auto element = owner.allocateElement();
+    BOOST_REQUIRE(element);
+    {
+        SimulationBinding selected{owner};
+        detail::attachEntity(element->get(), std::make_unique<Behavior>(expired, destroyed), detail::EntityHooks::Expiration);
+    }
+    owner.releaseElement(element->get());
+    BOOST_TEST(expired == 0u);
+    BOOST_TEST(destroyed == 1u);
+    BOOST_TEST(&simulationEngine() == &other);
 }

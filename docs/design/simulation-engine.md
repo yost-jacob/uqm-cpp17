@@ -117,3 +117,32 @@ selects the correct queue. Existing regression coverage continues unchanged.
 The migration also replaces DISPLAY_TO_WORLD's signed left shift with equivalent
 multiplication, making negative coordinate conversion well-defined in C++17.
 Sanitizer validation uses UBSAN_OPTIONS=halt_on_error=1 so warnings fail the run.
+
+## Native element allocation
+
+SimulationEngine now reserves zero-initialized elements and their projection
+primitives through allocateElement(), returning an optional reference. The slot
+stays owned by the engine. Call enqueue() to append it to simulation order, or
+releaseElement() for an unused/unlinked reservation. Release invalidates its
+entity generation and destroys its native behavior without death hooks or result
+publication. Binding scopes restore another selected engine's primitive state.
+
+AllocElement/FreeElement are thin C boundaries. Native projectile and beam
+publication use the optional-reference API directly, and their regression tests
+now run the real allocator/primitive reservation rather than a mock. Native
+planet construction receives its engine explicitly and enqueues through that
+owner; the unused spawn_planet C entry is deleted. Physics/asset services beneath
+these builders retain their documented compatibility contracts.
+
+The primitive allocation/free macros are inline functions with single argument
+evaluation. Exhaustion returns the sentinel without reading beyond the primitive
+buffer. Element-pool exhaustion remains normal allocation failure; the existing
+fatal policy for inconsistent primitive exhaustion is retained. InitDisplayList
+no longer repeats the primitive reset already performed by the engine.
+
+SimulationLoop traverses its owned participant roster through native borrows;
+withdrawal updates that same roster, rather than looking up a selected global
+roster. Its input/network and story-eligibility services remain the existing
+boundaries. The entity relationship/tick-context design is tracked in
+[issue #48](https://github.com/yost-jacob/uqm-cpp17/issues/48), and does not block
+independent cleanup like these changes.

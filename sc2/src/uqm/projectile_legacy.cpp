@@ -1,5 +1,6 @@
 #include "projectile_legacy.hpp"
 #include "weapon.h"
+#include "simulation_engine.hpp"
 #include <utility>
 void uqm::combat::Projectile::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     weapon_collision(&self, &point, &other, &otherPoint);
@@ -9,10 +10,10 @@ HELEMENT uqm::combat::publishProjectile(std::unique_ptr<Projectile> projectile,
     if (!projectile || !sprites) return nullptr;
     const auto &definition = projectile->definition();
     const auto &launch = projectile->launch();
-    const auto handle = AllocElement();
-    if (!handle) return nullptr;
-    ELEMENT *element;
-    LockElement(handle, &element);
+    const auto allocation = simulationEngine().allocateElement();
+    if (!allocation) return nullptr;
+    auto *element = &allocation->get();
+    const auto handle = element;
     // The native definition owns launch/flight policy. Only this publishing
     // boundary writes the engine's packed physics and sprite representation.
     element->hit_points = static_cast<BYTE>(definition.stats.hitPoints);
@@ -36,7 +37,6 @@ HELEMENT uqm::combat::publishProjectile(std::unique_ptr<Projectile> projectile,
     uqm::detail::EntityAccess::collision(*projectile, collision);
     uqm::detail::EntityAccess::visual(*projectile, visualUpdate);
     uqm::detail::bindEntity(disp_q, handle, std::move(projectile));
-    UnlockElement(handle);
     return handle;
 }
 

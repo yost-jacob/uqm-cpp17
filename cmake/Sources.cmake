@@ -215,6 +215,7 @@ set(UQM_SOURCES
     sc2/src/uqm/ship_selection.cpp
     sc2/src/uqm/runtime_ship_roster.cpp
     sc2/src/uqm/simulation_engine.cpp
+    sc2/src/uqm/simulation_elements.cpp
     sc2/src/uqm/combat_entity_legacy.cpp
     sc2/src/uqm/beam.cpp
     sc2/src/uqm/projectile.cpp

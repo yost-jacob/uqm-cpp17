@@ -17,6 +17,7 @@
  */
 
 #include "battle_scene.hpp"
+#include "combat_planet.hpp"
 #include "simulation_engine.hpp"
 #include "battle.h"
 #include "build.h"
@@ -81,7 +82,7 @@ void uqm::detail::BattleScene::initialize() {
     else {
         constexpr unsigned AsteroidCount = 5;
         for (unsigned i = 0; i < AsteroidCount; ++i) spawn_asteroid(nullptr);
-        spawn_planet();
+        combat::spawnPlanet(engine_);
     }
 }
 void uqm::detail::BattleScene::complete() {
