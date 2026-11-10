@@ -10,7 +10,21 @@
 #include <functional>
 #include <stdexcept>
 namespace { std::function<void()> frontend; }
-void uqm::detail::runArcadeFrontend() { if (frontend) frontend(); }
+namespace {
+class FleetSelection final : public uqm::GameMode {
+public:
+    explicit FleetSelection(uqm::ArcadeSession &session)
+        : GameMode(session.dispatcher(), session.nextModeSeed()) {}
+    uqm::ModeResult run() override {
+        if (frontend) frontend();
+        return QuitPosted ? uqm::ModeResult{uqm::SessionExit::shutdown()}
+                          : uqm::ModeResult{uqm::ModeCompleted{}};
+    }
+};
+}
+std::unique_ptr<uqm::GameMode> uqm::detail::createArcadeFleetSelectionMode(ArcadeSession &session) {
+    return std::make_unique<FleetSelection>(session);
+}
 
 BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_modifying_campaign)
 {
@@ -40,7 +54,7 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
         BOOST_TEST(GetPlayerSISState() != campaignSIS);
         BOOST_TEST(GetPlayerFleetQueue() != campaignFleet);
         BOOST_TEST(&uqm::simulationEngine() != previousEngine);
-        BOOST_TEST(TFB_GetRandomSeed() == 71u);
+        BOOST_TEST(TFB_GetRandomSeed() == std::minstd_rand0(71)());
         TFB_Random();
         *GetLegacyGlobData() = {}; *GetPlayerSISState() = {};
         ResetPersonalDiscoveries(); // The real C adapter must leave campaign discoveries alone.
@@ -97,7 +111,7 @@ BOOST_AUTO_TEST_CASE(arcade_rejects_live_campaign_and_distinguishes_application_
     auto &campaign = uqm::gameSession();
     frontend = [] { BOOST_FAIL("arcade frontend entered beneath campaign"); };
     struct Parent final : uqm::GameMode {
-        explicit Parent(uqm::GameSession &session) : GameMode(session) {}
+        explicit Parent(uqm::GameSession &session) : GameMode(session.dispatcher(), session.nextModeSeed()) {}
         uqm::ModeResult run() override {
             auto *before = GetLegacyGlobData();
             uqm::ArcadeSession arcade(19);
@@ -111,4 +125,17 @@ BOOST_AUTO_TEST_CASE(arcade_rejects_live_campaign_and_distinguishes_application_
     frontend = [] { QuitPosted = TRUE; };
     uqm::ArcadeSession arcade(21);
     BOOST_TEST(static_cast<int>(arcade.run().kind) == static_cast<int>(uqm::SessionExitKind::Shutdown));
+}
+
+BOOST_AUTO_TEST_CASE(arcade_rejects_campaign_load_after_modes_unwind)
+{
+    auto *original = GetLegacyGlobData();
+    uqm::ArcadeSession arcade(17);
+    frontend = [&] { arcade.dispatcher().requestMenuExit(uqm::SessionExit::load(0)); };
+    const auto exit = arcade.run();
+    frontend = {};
+    BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::SessionExitKind::Failed));
+    BOOST_REQUIRE(exit.error);
+    BOOST_TEST(GetLegacyGlobData() == original);
+    BOOST_TEST(!arcade.dispatcher().isRunning());
 }

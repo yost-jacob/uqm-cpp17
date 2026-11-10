@@ -4,15 +4,22 @@
 namespace uqm {
 class StoryState;
 class GameSession;
-// Borrow the session for one synchronous campaign battle. The enclosing
-// encounter prepares both rosters and applies aftermath after the child returns.
-// This does not yet provide the campaign-independent Super Melee interface.
+// Session-specific resource/state preparation for the same CombatMode. Resources
+// acquired by prepare must be released by the derived destructor, including errors.
+// prepare runs with the child engine selected; false skips a match. complete is
+// explicit normal completion only, never a destructor or cancellation callback.
+class CombatPreparation {
+public:
+    virtual ~CombatPreparation() = default;
+    virtual bool prepare() = 0;
+    virtual void complete() {}
+};
+// host/source and any state borrowed by preparation must outlive this child.
+// Participant pool addresses stay stable; results return before parent resume.
+std::unique_ptr<GameMode> createCombatMode(ModeDispatcher &host, RuntimeShipRoster &source,
+    std::uint32_t seed, std::unique_ptr<CombatPreparation> preparation);
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session);
-// Explicit seed for a recorded/negotiated battle; no clock reseeding in Battle.
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, std::uint32_t seed);
-// Legacy combat backend: story state must belong to the active encounter and
-// outlive this call. Temporary sound/input/activity bindings are scoped here;
-// the mode engine owns its queues; loaded assets retain the existing backend adapters.
-void runCampaignCombat(StoryState &story);
+std::unique_ptr<CombatPreparation> createCampaignCombatPreparation(StoryState &story);
 }
 #endif

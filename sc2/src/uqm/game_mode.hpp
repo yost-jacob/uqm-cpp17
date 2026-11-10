@@ -1,7 +1,6 @@
 #ifndef UQM_GAME_MODE_HPP_
 #define UQM_GAME_MODE_HPP_
 
-#include "world_types.hpp"
 #include "simulation_engine.hpp"
 #include <exception>
 #include <cstdint>
@@ -10,8 +9,7 @@
 #include <variant>
 
 namespace uqm {
-class GameState;
-class GameSession;
+class ModeDispatcher;
 class GameMode;
 // Mode-owned RAII snapshot. Destruction restores borrowed service bindings.
 class ModeSuspension { public: virtual ~ModeSuspension() = default; };
@@ -31,17 +29,15 @@ struct SessionExit {
 using MenuResult = std::optional<SessionExit>;
 using ModeResult = std::variant<std::unique_ptr<GameMode>, SessionExit, ModeCompleted>;
 
-// Named callable with shared state ownership and a checked player identity.
+// Lifecycle and simulation only. Concrete modes borrow their required session.
 // run() executes synchronously on the gameplay thread and returns before the
 // dispatcher destroys this object. Return a successor, session exit, or ModeCompleted. Nested completion
 // automatically returns control to the suspended parent; root completion exits to title.
 class GameMode {
 public:
-    // Session supplies an independent seed without advancing another mode.
-    explicit GameMode(GameSession &session);
-    // Explicit seed supports deterministic construction/replay and device-free tests.
-    GameMode(std::shared_ptr<GameState> state, PlayerId player,
-             std::uint32_t seed = RandomDefaultSeed);
+    // host must outlive this mode; the dispatcher rejects modes from other hosts.
+    // The owning session supplies a seed without consuming another mode's RNG.
+    explicit GameMode(ModeDispatcher &host, std::uint32_t seed = RandomDefaultSeed);
     virtual ~GameMode() = default;
     virtual ModeResult run() = 0;
     SimulationEngine &engine() noexcept { return engine_; }
@@ -57,14 +53,32 @@ protected:
     // view and services; it does not restart run() or commit gameplay effects.
     virtual std::unique_ptr<ModeSuspension> suspend() { return {}; }
     virtual void resume() {}
-    const std::shared_ptr<GameState> &stateOwner() const noexcept;
-    PlayerId playerId() const noexcept;
+    ModeDispatcher &dispatcher() const noexcept { return host_; }
 private:
-    friend class GameSession;
+    friend class ModeDispatcher;
     SimulationEngine engine_;
     std::unique_ptr<GameMode> parentMode_;
-    std::shared_ptr<GameState> state_;
-    PlayerId player_;
+    ModeDispatcher &host_;
+};
+// Reusable synchronous owner. Contains no player, campaign, fleet or device state.
+// Each session owns one instance; keep it alive until all of its modes are gone.
+class ModeDispatcher {
+public:
+    ModeDispatcher() = default;
+    ~ModeDispatcher() = default;
+    ModeDispatcher(const ModeDispatcher &) = delete;
+    ModeDispatcher &operator=(const ModeDispatcher &) = delete;
+    SessionExit run(std::unique_ptr<GameMode> initialMode);
+    // Called from the running parent. Child must belong to this dispatcher and
+    // return completion or exit. Destruction precedes parent rebind/resume.
+    MenuResult swapGameMode(std::unique_ptr<GameMode> child);
+    void requestMenuExit(SessionExit exit);
+    MenuResult menuExit() const { return pendingExit_; }
+    bool isRunning() const noexcept { return running_; }
+private:
+    std::unique_ptr<GameMode> currentMode_;
+    MenuResult pendingExit_;
+    bool running_ = false;
 };
 } // namespace uqm
 #endif

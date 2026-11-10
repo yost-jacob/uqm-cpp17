@@ -104,14 +104,14 @@ BOOST_AUTO_TEST_CASE(modes_own_distinct_engines_and_dispatch_binds_each_one)
     GameSession session(state, SinglePlayerId);
     auto *previous = &simulationEngine();
     struct Mode final : GameMode {
-        Mode(std::shared_ptr<GameState> state) : GameMode(std::move(state), SinglePlayerId) {}
+        Mode(ModeDispatcher &host) : GameMode(host) {}
         ModeResult run() override {
             BOOST_TEST(&simulationEngine() == &engine());
             add(engine());
             return SessionExit::title();
         }
     };
-    auto first = std::make_unique<Mode>(state), second = std::make_unique<Mode>(state);
+    auto first = std::make_unique<Mode>(session.dispatcher()), second = std::make_unique<Mode>(session.dispatcher());
     BOOST_TEST(&first->engine() != &second->engine());
     auto &entity = add(first->engine());
     const auto id = combat::EntityHandle::capture(detail::SimulationAccess::queue(first->engine()), entity);
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(session_seeds_are_replayable_and_do_not_consume_active_mode
     auto makeState = [] { return std::make_shared<GameState>(UserProfile{SinglePlayerId, "RNG test"}); };
     GameSession first(makeState(), SinglePlayerId, 123), second(makeState(), SinglePlayerId, 123);
     struct Mode final : GameMode {
-        explicit Mode(GameSession &session) : GameMode(session) {}
+        explicit Mode(GameSession &session) : GameMode(session.dispatcher(), session.nextModeSeed()) {}
         ModeResult run() override { return ModeCompleted{}; }
     };
     Mode parent(first);

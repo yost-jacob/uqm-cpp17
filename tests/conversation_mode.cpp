@@ -127,7 +127,7 @@ BOOST_FIXTURE_TEST_CASE(conversation_child_propagates_exit_and_unbinds_before_it
         uqm::GameSession session{state, uqm::SinglePlayerId};
         struct Parent final : uqm::GameMode {
             uqm::GameSession &session;
-            explicit Parent(uqm::GameSession &owner) : GameMode(owner.stateOwner(), owner.playerId()), session(owner) {}
+            explicit Parent(uqm::GameSession &owner) : GameMode(owner.dispatcher(), owner.nextModeSeed()), session(owner) {}
             uqm::ModeResult run() override {
                 auto exit = session.swapGameMode(uqm::createConversationMode(session,
                     std::make_unique<uqm::ConversationRuntime>(session, configuration())));

@@ -58,10 +58,13 @@
 		// for TFB_Random()
 #include "libs/reslib.h"
 #include "libs/log.h"
+#include "libs/inplib.h"
 #include "libs/uio.h"
 
 
 #include "../legacy_runtime.hpp"
+#include "../arcade_session.hpp"
+#include "../combat_mode.hpp"
 #include <memory>
 #include <assert.h>
 #include <string.h>
@@ -1445,6 +1448,36 @@ BuildAndDrawShipList (MELEE_STATE *pMS)
 			// This should be split off.
 }
 
+namespace {
+class ArcadeCombatPreparation final : public uqm::CombatPreparation {
+public:
+    explicit ArcadeCombatPreparation(MELEE_STATE &menu) : menu_(menu) {}
+    ~ArcadeCombatPreparation() override {
+        if (gravityLoaded_) free_gravity_well();
+        if (inputStarted_) ClearPlayerInputAll();
+    }
+    bool prepare() override {
+        inputStarted_ = true;
+        if (!SetPlayerInputAll()) return false;
+        BuildAndDrawShipList(&menu_);
+        WaitForSoundEnd(TFBSOUND_WAIT_ALL);
+        gravityLoaded_ = true;
+        load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(TFB_Random()) % NUMBER_OF_PLANET_TYPES));
+        return true;
+    }
+private:
+    MELEE_STATE &menu_;
+    bool gravityLoaded_ = false, inputStarted_ = false;
+};
+std::unique_ptr<uqm::GameMode> createMeleeCombat(MELEE_STATE &menu) {
+    assert(menu.session);
+    // Preserve the negotiated/local seed delivered to the setup mode. Arena
+    // selection and combat advance only the child's independent stream.
+    return uqm::createCombatMode(menu.session->dispatcher(), uqm::simulationEngine().shipRoster(),
+        TFB_GetRandomSeed(), std::make_unique<ArcadeCombatPreparation>(menu));
+}
+}
+
 static void
 StartMelee (MELEE_STATE *pMS)
 {
@@ -1464,22 +1497,10 @@ StartMelee (MELEE_STATE *pMS)
 
 	do
 	{
-		{
-            // Input contexts and the arena image belong to this one match,
-            // including partial setup failure and exceptions from callbacks.
-            struct MatchResources {
-                bool gravityLoaded = false;
-                ~MatchResources() {
-                    if (gravityLoaded) free_gravity_well();
-                    ClearPlayerInputAll();
-                }
-            } resources;
-            if (!SetPlayerInputAll()) break;
-            BuildAndDrawShipList(pMS);
-            WaitForSoundEnd(TFBSOUND_WAIT_ALL);
-            resources.gravityLoaded = true;
-            load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(TFB_Random()) % NUMBER_OF_PLANET_TYPES));
-            Battle(nullptr, nullptr);
+        assert(pMS->session);
+        if (auto exit = pMS->session->swapGameMode(createMeleeCombat(*pMS))) {
+            GLOBAL(CurrentActivity) |= CHECK_ABORT;
+            return;
         }
 
 		if (GLOBAL (CurrentActivity) & CHECK_ABORT)
@@ -2045,7 +2066,9 @@ namespace {
 // from resource loading, input callbacks or the nested battle backend.
 class MeleeFrontend {
 public:
-    MeleeFrontend() : previous_(pMeleeState), previousSounds_(GameSounds) {
+    explicit MeleeFrontend(uqm::ArcadeSession &session)
+        : previous_(pMeleeState), previousSounds_(GameSounds) {
+        menu_.session = &session;
         pMeleeState = &menu_;
         menu_.InputFunc = DoMelee;
     }
@@ -2094,7 +2117,27 @@ private:
     bool loadInitialized_ = false, infoLoaded_ = false, soundLoaded_ = false;
 };
 }
-void uqm::detail::runArcadeFrontend() { MeleeFrontend frontend; frontend.run(); }
+namespace {
+class FleetSelectionMode final : public uqm::GameMode {
+public:
+    explicit FleetSelectionMode(uqm::ArcadeSession &session)
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session) {}
+    uqm::ModeResult run() override {
+        frontend_->run();
+        if (auto exit = session_.menuExit()) return *exit;
+        return QuitPosted ? uqm::ModeResult{uqm::SessionExit::shutdown()}
+                          : uqm::ModeResult{uqm::ModeCompleted{}};
+    }
+protected:
+    void initialize() override { frontend_.emplace(session_); }
+private:
+    uqm::ArcadeSession &session_;
+    std::optional<MeleeFrontend> frontend_;
+};
+}
+std::unique_ptr<uqm::GameMode> uqm::detail::createArcadeFleetSelectionMode(ArcadeSession &session) {
+    return std::make_unique<FleetSelectionMode>(session);
+}
 
 #ifdef NETPLAY
 void

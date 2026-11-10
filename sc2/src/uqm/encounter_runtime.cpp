@@ -318,7 +318,7 @@ namespace {
 class LegacyEncounterHost final : public uqm::GameMode {
 public:
     LegacyEncounterHost(uqm::GameSession &session, const STAR_DESC *star, CONVERSATION conversation, COUNT &result)
-        : GameMode(session), session_(session),
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
           conversation_(conversation), result_(result), star_(star) {}
     uqm::ModeResult run() override {
         uqm::EncounterRuntime encounter{session_, star_};

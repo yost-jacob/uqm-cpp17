@@ -1924,7 +1924,7 @@ public:
 class LanderMode final : public GameMode {
 public:
     LanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location)
-        : GameMode(session), session_(session), location_(location), visit_(system), surfaceSource_(simulationEngine()) {
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), location_(location), visit_(system), surfaceSource_(simulationEngine()) {
         if (&session.player().story() != &visit_.story)
             throw std::invalid_argument("lander and session have different campaigns");
     }

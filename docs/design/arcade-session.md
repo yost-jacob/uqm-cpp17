@@ -1,96 +1,68 @@
-# Standalone arcade session
+# Shared dispatch, separate sessions
 
-Super Melee now enters through ArcadeSession at the title boundary, after any
-campaign session has unwound. It does not construct a campaign player or attach
-itself as a child of a live campaign. GameSession keeps its existing player-bound
-contract.
+The title menu launches either GameSession for the campaign or ArcadeSession for
+standalone Super Melee. Each session contains its own ModeDispatcher value. The
+same dispatcher implementation owns mode transitions, synchronous child handoff,
+engine/RNG bindings, destruction and parent resume. It owns no campaign state.
+
+GameSession retains the campaign/player owner. Concrete campaign modes borrow
+the GameSession, player or StoryState they require. GameMode no longer contains
+a shared GameState, a player ID or campaign accessors. No CampaignMode base class
+or optional campaign state is introduced.
 
 ```mermaid
 flowchart TD
-    Title[C title menu] --> Campaign[GameSession: one campaign player]
-    Title --> Arcade[ArcadeSession: standalone visit]
-    Arcade --> Engine[Own SimulationEngine: entities / roster / RNG]
-    Arcade --> Buffers[Own temporary legacy runtime buffers]
-    Arcade --> Frontend[C++ scoped Super Melee frontend]
-    Frontend --> Setup[Own two-side MeleeSetup and load state]
-    Frontend --> Assets[Own menu graphics / sounds / connection lifetime]
-    Frontend --> Battle[Existing shared Battle driver]
-    Battle --> Engine
-    Buffers -. scoped C projection .-> Battle
+    Title[Title menu] --> Campaign[GameSession: campaign/player owner]
+    Title --> Arcade[ArcadeSession: standalone owner]
+    Campaign --> CD[Own ModeDispatcher instance]
+    Arcade --> AD[Own ModeDispatcher instance]
+    CD --> Exploration[Exploration / encounter / conversation modes]
+    Exploration --> Combat[Shared CombatMode]
+    AD --> Fleet[FleetSelectionMode]
+    Fleet --> Combat
+    Combat -. completion / roster return .-> Fleet
+    Combat -. completion / roster return .-> Exploration
+    Combat --> Engine[Own SimulationEngine: entities / roster / RNG]
 ```
 
-LegacyRuntimeBinding projects the arcade's temporary GLOBDATA, SIS UI buffer and
-compatibility fleet queue to existing C callers. The buffers are not a second
-campaign or persistent player model. InitGlobData now resets those arcade-owned
-buffers while the projection is active; ResetPersonalDiscoveries does nothing
-in an arcade visit. On return or failure the previous campaign projection is
-restored. Live campaign and nested arcade entry are rejected before binding.
+Super Melee has two mode types: FleetSelectionMode owns the two-side setup UI,
+and the same CombatMode used by campaign encounters runs a selected match. The
+setup mode calls its session's swapGameMode, remains alive while suspended, then
+continues its existing redraw/input path after combat completes. Its MELEE_STATE
+has an opaque borrowed session handle for the remaining C callbacks; that handle
+is never serialized.
 
-The frontend's two configured teams still belong to MeleeSetup; they have not
-been duplicated into native Fleet objects. Their runtime participants belong to
-the arcade engine's roster. Remaining fleet/control migration should replace the
-setup/build adapters when actual callers migrate, without maintaining parallel
-ship records.
+CombatPreparation supplies session-specific setup and scoped service ownership.
+Campaign preparation borrows StoryState and configures story/SIS flags, sounds and
+optional cyborg input. Arcade preparation borrows the parent's setup, builds the
+participant roster and owns match input/arena resources. Both feed the same
+CombatMode, which transfers participants, invokes Battle once, explicitly applies
+normal completion and releases preparation before deciding its result. Failure
+or a skipped match never calls the completion hook. Child destruction returns
+participants before parent resume. Arcades use the negotiated/local battle seed
+already delivered to setup, without advancing the suspended parent's stream.
 
-The former C Melee entry point is removed. The same frontend source is C++17;
-a scoped owner now releases its setup, load-view allocations, graphics, sounds
-and netplay connections. It restores the previous frontend/sound bindings.
-Writing melee.cfg remains an explicit completion action, not destructor work.
-The outer session releases its remaining simulation participants while the arcade
-state and engine bindings are still selected, including exception exits.
+LegacyRuntimeBinding projects arcade-owned temporary GLOBDATA, SIS UI storage and
+a compatibility fleet queue to existing C callers for the complete dispatcher
+run. InitGlobData resets those buffers; ResetPersonalDiscoveries does nothing in
+an arcade visit. Normal return and failure restore the campaign projection only
+after all arcade modes have been destroyed. Live campaign/nested arcade entry is
+rejected. These buffers are not an additional campaign or persistent player model.
 
-CHECK_ABORT inside the melee menu means returning to title; QuitPosted means
-application shutdown. The C title adapter translates the typed result and keeps
-exceptions inside C++. A failure returns to the existing shutdown boundary.
+The configured arcade teams remain owned by MeleeSetup, without a duplicate native
+Fleet representation. The setup mode's scoped C++ frontend owns setup/load-view
+allocations, graphics, sounds and connections. Writing melee.cfg is explicit normal
+completion, never destructor work. Per-match resources belong to arcade combat
+preparation and release on partial setup failure or exception.
 
-The C title loop, shared Battle driver, SDL services, PlayerControl/PlayerInput
-and some rendering globals remain compatibility machinery. ArcadeSession is a
-standalone runtime owner, not yet a common GameMode dispatcher. Extracting the
-shared dispatcher must preserve the distinction between campaign state and an
-arcade visit rather than making campaign state optional everywhere. Startup/title
-still uses the fallback engine; Super Melee no longer does.
+CHECK_ABORT in the melee menu returns to title; QuitPosted requests application
+shutdown. ArcadeSession rejects campaign load results after dispatch unwinds.
+Generic dispatch validates the host identity of initial, successor and child
+modes. Passing a mode from another dispatcher cannot execute it. Both sessions
+retain the existing nested-exception abort/TODO policy.
 
-## Next dispatcher wireframe for review
-
-The next fundamental change is separating lifecycle dispatch from campaign state.
-Today GameMode requires a GameState/player pair, so reusing it directly for arcade
-would reintroduce the campaign dependency this session removes. Proposed shape:
-
-```mermaid
-classDiagram
-    class ModeDispatcher {
-        run(owned initial mode)
-        swapGameMode(owned child mode)
-        requestExit(result)
-    }
-    class GameMode {
-        run()
-        initialize()
-        suspend()
-        resume()
-    }
-    class CampaignMode {
-        GameSession reference
-        story/player/galaxy access
-    }
-    GameMode <|-- CampaignMode
-    ModeDispatcher *-- GameMode : owns current and suspended parents
-    GameMode *-- SimulationEngine
-    GameSession *-- ModeDispatcher
-    ArcadeSession *-- ModeDispatcher
-    CampaignMode <|-- SolarSystemMode
-    CampaignMode <|-- EncounterMode
-    GameMode <|-- SuperMeleeMode
-    GameMode <|-- CombatMode
-```
-
-The common GameMode would own only lifecycle/simulation state and its dispatcher
-identity. CampaignMode would retain the required campaign/player reference and
-provide the current state accessors. Both sessions would contain a dispatcher by
-value, retaining their separate state/seed ownership. Child ownership, scoped
-bindings and resume ordering would retain the existing synchronous contracts.
-A mode from another dispatcher must be rejected before execution. Arcade does
-not acquire load/save actions simply because the generic result can carry one.
-
-This wireframe is a proposal, not the current implementation. It needs review
-before moving state access out of the base class and changing the mode hierarchy.
+Remaining compatibility machinery includes the C title loop, Battle driver,
+team/setup records, global PlayerControl/PlayerInput and SDL rendering/audio/input
+services. Startup/title still uses the fallback engine; dispatched campaign and
+arcade modes own their engines. This does not yet allow concurrent simulations
+or device-free battles.
