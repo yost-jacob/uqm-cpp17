@@ -176,13 +176,13 @@ preserves unchanged native bodies instead of discarding their resources. See
 [planet rendering ownership](planet-render-ownership.md) for scope and remaining
 system-wide presentation boundaries.
 
-## Planned shared-services context
+## Planned shared-services runtime
 
-The proposed `UqmContext` is not implemented yet. Its asset-cache member should
+The proposed `UQM_runtime` is not implemented yet. Its asset-cache member should
 carry this synchronization contract:
 
 ```cpp
-struct UqmContext {
+struct UQM_runtime {
     DeviceServices devices;
     // Internally synchronized: find() and erase() use RAII lock guards.
     // Callers and asset deleters use these methods; the map and mutex are private.
@@ -194,5 +194,5 @@ struct UqmContext {
 The asset deleter calls `erase(id, token)`; that method checks the entry token
 under the lock so it cannot erase a newer replacement. Cache implementation
 must avoid recursive locking and releasing a last asset owner while holding its
-mutex. Sessions, asset owners and worker threads must finish before context
+mutex. Sessions, asset owners and worker threads must finish before runtime
 teardown; device services outlive the cache so asset cleanup can use them.
