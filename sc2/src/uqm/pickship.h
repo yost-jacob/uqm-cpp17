@@ -24,8 +24,8 @@
 extern "C" {
 #endif
 
-extern HSTARSHIP GetEncounterStarShip (STARSHIP *LastStarShipPtr,
-		COUNT which_player);
+// UI-only C buffer. Native selection policy validates the returned handle.
+extern HSTARSHIP PickCampaignStarShip(void);
 extern void DrawArmadaPickShip (BOOLEAN draw_salvage_frame, RECT *pPickRect);
 
 #if defined(__cplusplus)

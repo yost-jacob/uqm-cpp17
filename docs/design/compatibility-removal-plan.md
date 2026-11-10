@@ -39,6 +39,11 @@ cancellation is not completion. Explicit battle retirement/completion retains it
 existing state-commit policy. C reset/load/title callers use ClearRuntimeShipRoster
 rather than dropping a queue containing loaded resource owners.
 
+RuntimeShipRoster also owns remaining-ship/outcome counts. They return with the
+roster before aftermath, survive resource cleanup and reset at beginBattle. The
+old process-global battle_counter array is removed. Native next-vessel policy and
+its explicit player/RNG contracts are described in [ship selection](ship-selection.md).
+
 No additional persistent Fleet or Ship representation is introduced. STARSHIP is
 still the compatibility participant record; native incarnation/target migration
 follows after its ownership is stable.

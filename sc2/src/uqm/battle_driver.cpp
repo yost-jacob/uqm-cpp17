@@ -43,7 +43,6 @@
 
 // Compatibility results/counters still used by ship retirement, the fleet
 // picker and encounter aftermath. They are not another simulation queue owner.
-BYTE battle_counter[NUM_SIDES]{};
 BOOLEAN instantVictory = FALSE;
 #ifdef NETPLAY
 BattleFrameCounter battleFrameCount = 0;
@@ -119,8 +118,7 @@ void finishRound() {
 }
 void initializeRound(SimulationEngine &engine) {
     GLOBAL(CurrentActivity) |= IN_BATTLE;
-    battle_counter[0] = engine.shipRoster().size(RosterSide::First);
-    battle_counter[1] = engine.shipRoster().size(RosterSide::Second);
+    engine.shipRoster().beginBattle();
     if (optMeleeScale != TFB_SCALE_STEP) SetGraphicScaleMode(optMeleeScale);
 }
 }
@@ -129,7 +127,8 @@ void CombatDriver::run() {
     detail::BattleScene scene(engine_, detail::SceneKind::Combat);
     scene.initialize();
     if (std::exchange(instantVictory, FALSE)) {
-        battle_counter[0] = 1; battle_counter[1] = 0;
+        engine_.shipRoster().setRemaining(RosterSide::First, 1);
+        engine_.shipRoster().setRemaining(RosterSide::Second, 0);
     } else {
         initializeRound(engine_);
         BattleRound round;

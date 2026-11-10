@@ -17,6 +17,7 @@
  */
 
 #include "encount.h"
+#include "simulation_engine.hpp"
 #include "encounter_runtime.hpp"
 #include "fleet_legacy.hpp"
 #include "game_state.hpp"
@@ -500,7 +501,8 @@ uqm::EncounterRuntime::finish()
 		story_.set(uqm::StoryFlag::BombCarrier, 0);
 
 		VictoryState = (
-				battle_counter[1] || !battle_counter[0]
+				simulationEngine().shipRoster().remaining(RosterSide::Second)
+                || !simulationEngine().shipRoster().remaining(RosterSide::First)
 				|| story_.read(uqm::StoryFlag::UrquanProtectingSamatra)
 				) ? 0 : 1;
 

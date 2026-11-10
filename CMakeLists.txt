@@ -77,7 +77,7 @@ if(BUILD_TESTING)
     find_package(Boost 1.65 CONFIG REQUIRED COMPONENTS unit_test_framework)
     add_executable(uqm-build-tests
         tests/build.cpp tests/game_state.cpp tests/game_modes.cpp sc2/src/uqm/projectile.cpp sc2/src/uqm/projectile_legacy.cpp sc2/src/uqm/sis_weapons.cpp
-        tests/projectile.cpp sc2/src/uqm/simulation_damage.cpp sc2/src/uqm/simulation_targeting.cpp sc2/src/uqm/simulation_engine.cpp tests/simulation_engine.cpp tests/simulation_scenes.cpp sc2/src/uqm/runtime_ship_roster.cpp tests/runtime_ship_roster.cpp tests/combat_entities.cpp sc2/src/uqm/gravity_field.cpp sc2/src/uqm/animation_effect.cpp sc2/src/uqm/combat_entity_legacy.cpp sc2/src/uqm/velocity.c sc2/src/uqm/sis_state.cpp sc2/src/uqm/fleet.cpp sc2/src/uqm/fleet_legacy.cpp tests/fleet.cpp
+        tests/projectile.cpp sc2/src/uqm/simulation_damage.cpp sc2/src/uqm/simulation_targeting.cpp sc2/src/uqm/simulation_engine.cpp tests/simulation_engine.cpp tests/simulation_scenes.cpp sc2/src/uqm/runtime_ship_roster.cpp tests/runtime_ship_roster.cpp sc2/src/uqm/ship_selection.cpp tests/ship_selection.cpp tests/combat_entities.cpp sc2/src/uqm/gravity_field.cpp sc2/src/uqm/animation_effect.cpp sc2/src/uqm/combat_entity_legacy.cpp sc2/src/uqm/velocity.c sc2/src/uqm/sis_state.cpp sc2/src/uqm/fleet.cpp sc2/src/uqm/fleet_legacy.cpp tests/fleet.cpp
         tests/encounter_context.cpp sc2/src/uqm/encounter_context.cpp
         tests/device_inventory.cpp sc2/src/uqm/device_inventory.cpp
         tests/conversation_mode.cpp sc2/src/uqm/conversation_mode.cpp

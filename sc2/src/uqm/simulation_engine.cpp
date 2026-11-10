@@ -111,3 +111,7 @@ extern "C" void ClearRuntimeShipRoster(COUNT side) {
     if (side >= 2) std::terminate();
     uqm::simulationEngine().shipRoster().clear(static_cast<uqm::RosterSide>(side));
 }
+
+extern "C" BYTE *GetBattleCounters(void) {
+    return uqm::detail::RuntimeRosterAccess::remaining(uqm::simulationEngine().shipRoster());
+}

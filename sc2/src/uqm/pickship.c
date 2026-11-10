@@ -24,7 +24,6 @@
 #include "menustat.h"
 #include "supermelee/pickmele.h"
 #include "encount.h"
-#include "battle.h"
 #include "races.h"
 #include "resinst.h"
 #include "nameref.h"
@@ -246,22 +245,16 @@ ChangeSelection:
 	return (TRUE);
 }
 
-static HSTARSHIP
-GetArmadaStarShip (void)
+HSTARSHIP
+PickCampaignStarShip (void)
 {
 	RECT pick_r;
 	CONTEXT OldContext;
 	HSTARSHIP hBattleShip;
 	
-	if (battle_counter[1] == 0)
-	{
-		// No opponents left.
-		return 0;
-	}
-	
 //    MenuSounds = CaptureSound (LoadSound (MENU_SOUNDS));
 
-OldContext = SetContext (SpaceContext);
+	OldContext = SetContext (SpaceContext);
 	DrawArmadaPickShip (FALSE, &pick_r);
 
 	{
@@ -285,104 +278,15 @@ OldContext = SetContext (SpaceContext);
 
 	if (hBattleShip)
 	{
-		if (hBattleShip == GetTailLink (&race_q[0]))
-		{	// Player chose SIS. There will be no more choices.
-			battle_counter[RPG_PLAYER_NUM] = 1;
-		}
 
 		WaitForSoundEnd (0);
 	}
 
 //    DestroySound (ReleaseSound (MenuSounds));
 	
-SetContext (OldContext);
+	SetContext (OldContext);
 
 	return (hBattleShip);
-}
-
-// Get the next ship to use.
-HSTARSHIP
-GetEncounterStarShip (STARSHIP *LastStarShipPtr, COUNT which_player)
-{
-	if (inHQSpace ())
-	{
-		assert (which_player == RPG_PLAYER_NUM);
-		// SIS for the Hyperspace flight
-		return GetHeadLink (&race_q[which_player]);
-	}
-	else if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
-	{
-		// Let the player chose their own ship. (May be a computer player).
-		HSTARSHIP hBattleShip;
-
-		if (battle_counter[0] == 0 || battle_counter[1] == 0)
-		{	// One side is out of ships. Game over.
-			return 0;
-		}
-
-		if (!GetNextMeleeStarShip (which_player, &hBattleShip))
-			return 0;
-		
-		return hBattleShip;
-	}
-	else
-	{
-		// Full game.
-		if (which_player == RPG_PLAYER_NUM)
-		{	// Human player in a full game.
-			if (LastStarShipPtr == 0 && battle_counter[which_player] == 1)
-			{	// First time picking a ship and player has no escorts
-				// SIS is the last ship in queue (though there is only one)
-				return GetTailLink (&race_q[which_player]);
-			}
-			else if (battle_counter[which_player])
-			{	// Player still has ships left
-				return GetArmadaStarShip ();
-			}
-			else if (LastStarShipPtr != 0)
-			{	// last ship was the flagship
-#define RUN_AWAY_FUEL_COST (5 * FUEL_TANK_SCALE)
-				if (LastStarShipPtr->crew_level == 0)
-				{	// Died in the line of duty
-					GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
-				}
-				else
-				{	// Player ran away
-					if (GLOBAL_SIS (FuelOnBoard) > RUN_AWAY_FUEL_COST)
-						GLOBAL_SIS (FuelOnBoard) -= RUN_AWAY_FUEL_COST;
-					else
-						GLOBAL_SIS (FuelOnBoard) = 0;
-				}
-			}
-			return 0;
-		}
-		else
-		{	// NPC player in a full game
-			if (FleetIsInfinite (which_player))
-			{
-				if (LastStarShipPtr != 0)
-				{	// The current STARSHIP is reused for the next one;
-					// update with new info
-					// XXX: Note that if Syreen had a homeworld you could
-					//   fight, all Syreen ships there would be crewed to
-					//   the maximum, instead of the normal level
-					LastStarShipPtr->crew_level = LastStarShipPtr->max_crew;
-					LastStarShipPtr->playerNr = which_player;
-					LastStarShipPtr->captains_name_index = PickCaptainName ();
-				}
-				battle_counter[which_player]++;
-				
-				return GetHeadLink (&race_q[which_player]);
-			}
-
-			// Get the next ship for the computer
-			if (LastStarShipPtr != 0)
-				return _GetSuccLink (LastStarShipPtr);
-
-			// Get the very first ship for the computer
-			return GetHeadLink (&race_q[which_player]);
-		}
-	}
 }
 
 void
@@ -398,7 +302,7 @@ DrawArmadaPickShip (BOOLEAN draw_salvage_frame, RECT *pPickRect)
 	CONTEXT OldContext;
 	FRAME PickFrame;
 
-	OldContext = SetContext (SpaceContext);
+		OldContext = SetContext (SpaceContext);
 
 	PickFrame = CaptureDrawable (LoadGraphic (SC2_PICK_PMAP_ANIM));
 
