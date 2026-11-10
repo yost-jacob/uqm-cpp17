@@ -53,6 +53,10 @@ Phrase catalogs contain full **base-content** text and voice metadata. Installed
 addons may override resources; dynamic names, numbers, and constructed responses
 remain expressions/placeholders rather than fabricated literal text.
 
+For the queries and calculations the new engine must express, see the
+[condition vocabulary audit](conditions.md), including side-effecting functions
+that need to be separated from availability predicates.
+
 ## Worked trace: Fwiffo recruitment
 
 This is an actual slice of [Spathi / Fwiffo](catalog/spathi.md), traced from
