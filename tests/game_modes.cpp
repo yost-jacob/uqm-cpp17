@@ -190,41 +190,29 @@ BOOST_AUTO_TEST_CASE(nested_load_requests_restore_ownership_and_unwind_before_lo
     BOOST_TEST(counts.live == 0u);
 }
 
-#if defined(__linux__)
-#include <csignal>
-#include <sys/resource.h>
-#include <sys/wait.h>
-#include <unistd.h>
-BOOST_AUTO_TEST_CASE(nested_child_exceptions_use_the_temporary_abort_policy)
+BOOST_AUTO_TEST_CASE(nested_child_exceptions_restore_parent_and_unwind)
 {
-    const auto pid = fork();
-    BOOST_REQUIRE(pid >= 0);
-    if (pid == 0) {
-        const rlimit limit{0, 0};
-        setrlimit(RLIMIT_CORE, &limit);
-        std::signal(SIGABRT, SIG_DFL);
-        struct Parent final : uqm::GameMode {
-            uqm::GameSession &session;
-            Counts &counts;
-            Parent(uqm::GameSession &owner, Counts &calls)
-                : GameMode(owner.dispatcher()), session(owner), counts(calls) {}
-            uqm::ModeResult run() override {
-                session.swapGameMode(std::make_unique<BrokenMode>(dispatcher(), true, counts));
-                return uqm::SessionExit::title();
-            }
-        };
-        auto data = makeState();
-        uqm::GameSession session{data, uqm::SinglePlayerId};
-        Counts counts;
-        session.run(std::make_unique<Parent>(session, counts));
-        _exit(99);
-    }
-    int status = 0;
-    BOOST_REQUIRE(waitpid(pid, &status, 0) == pid);
-    BOOST_REQUIRE(WIFSIGNALED(status));
-    BOOST_TEST(WTERMSIG(status) == SIGABRT);
+    struct Parent final : uqm::GameMode {
+        uqm::GameSession &session;
+        Counts &counts;
+        Parent(uqm::GameSession &owner, Counts &calls)
+            : GameMode(owner.dispatcher()), session(owner), counts(calls) {}
+        uqm::ModeResult run() override {
+            session.swapGameMode(std::make_unique<BrokenMode>(dispatcher(), true, counts));
+            BOOST_FAIL("child failure must propagate");
+            return uqm::SessionExit::title();
+        }
+    };
+    auto data = makeState();
+    uqm::GameSession session{data, uqm::SinglePlayerId};
+    Counts counts;
+    const auto exit = session.run(std::make_unique<Parent>(session, counts));
+    BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::SessionExitKind::Failed));
+    BOOST_REQUIRE(exit.error);
+    BOOST_TEST(counts.live == 0u);
+    BOOST_CHECK_THROW(std::rethrow_exception(exit.error), std::runtime_error);
 }
-#endif
+
 
 BOOST_AUTO_TEST_CASE(dispatcher_automates_child_cleanup_renderer_restore_and_parent_redraw_in_order)
 {
@@ -287,7 +275,7 @@ BOOST_AUTO_TEST_CASE(dispatcher_runs_without_campaign_state_and_rejects_foreign_
         Parent(uqm::ModeDispatcher &host, uqm::ModeDispatcher &other, Counts &value)
             : GameMode(host), foreign(other), counts(value) {}
         uqm::ModeResult run() override {
-            BOOST_CHECK_THROW(dispatcher().swapGameMode(
+            BOOST_CHECK_THROW(dispatcher().swap(
                 std::make_unique<ExitMode>(foreign, uqm::SessionExit::title(), counts)), std::invalid_argument);
             BOOST_TEST(dispatcher().isRunning());
             return std::make_unique<ExitMode>(foreign, uqm::SessionExit::title(), counts);

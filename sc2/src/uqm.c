@@ -127,9 +127,9 @@ struct options_struct
 	DECL_CONFIG_OPTION(int, meleeScale);
 	DECL_CONFIG_OPTION(bool, subtitles);
 	DECL_CONFIG_OPTION(bool, stereoSFX);
-	DECL_CONFIG_OPTION(float, musicVolumeScale);
-	DECL_CONFIG_OPTION(float, sfxVolumeScale);
-	DECL_CONFIG_OPTION(float, speechVolumeScale);
+	DECL_CONFIG_OPTION(float, musicScale);
+	DECL_CONFIG_OPTION(float, sfxScale);
+	DECL_CONFIG_OPTION(float, speechScale);
 	DECL_CONFIG_OPTION(bool, safeMode);
 
 #define INIT_CONFIG_OPTION(name, val) \
@@ -262,9 +262,9 @@ main (int argc, char *argv[])
 		INIT_CONFIG_OPTION(  meleeScale,        TFB_SCALE_TRILINEAR ),
 		INIT_CONFIG_OPTION(  subtitles,         true ),
 		INIT_CONFIG_OPTION(  stereoSFX,         false ),
-		INIT_CONFIG_OPTION(  musicVolumeScale,  1.0f ),
-		INIT_CONFIG_OPTION(  sfxVolumeScale,    1.0f ),
-		INIT_CONFIG_OPTION(  speechVolumeScale, 1.0f ),
+		INIT_CONFIG_OPTION(  musicScale,        1.0f ),
+		INIT_CONFIG_OPTION(  sfxScale,          1.0f ),
+		INIT_CONFIG_OPTION(  speechScale,       1.0f ),
 		INIT_CONFIG_OPTION(  safeMode,          false ),
 	};
 	struct options_struct defaults = options;
@@ -389,9 +389,9 @@ main (int argc, char *argv[])
 	optKeepAspectRatio = options.keepAspectRatio.value;
 	optSubtitles = options.subtitles.value;
 	optStereoSFX = options.stereoSFX.value;
-	musicVolumeScale = options.musicVolumeScale.value;
-	sfxVolumeScale = options.sfxVolumeScale.value;
-	speechVolumeScale = options.speechVolumeScale.value;
+	musicVolumeScale = options.musicScale.value;
+	sfxVolumeScale = options.sfxScale.value;
+	speechVolumeScale = options.speechScale.value;
 	optAddons = options.addons;
 
 	prepareContentDir (options.contentDir, options.addonDir, argv[0]);
@@ -668,9 +668,9 @@ getUserConfigOptions (struct options_struct *options)
 	getListConfigValue (&options->soundQuality, "config.audioquality",
 			audioQualityList);
 	getBoolConfigValue (&options->stereoSFX, "config.positionalsfx");
-	getVolumeConfigValue (&options->musicVolumeScale, "config.musicvol");
-	getVolumeConfigValue (&options->sfxVolumeScale, "config.sfxvol");
-	getVolumeConfigValue (&options->speechVolumeScale, "config.speechvol");
+	getVolumeConfigValue (&options->musicScale, "config.musicvol");
+	getVolumeConfigValue (&options->sfxScale, "config.sfxvol");
+	getVolumeConfigValue (&options->speechScale, "config.speechvol");
 	
 	if (res_IsInteger ("config.player1control"))
 	{
@@ -929,21 +929,21 @@ parseOptions (int argc, char *argv[], struct options_struct *options)
 				options->contentDir = optarg;
 				break;
 			case 'M':
-				if (!setVolumeOption (&options->musicVolumeScale, optarg,
+				if (!setVolumeOption (&options->musicScale, optarg,
 						"music volume"))
 				{
 					badArg = true;
 				}
 				break;
 			case 'S':
-				if (!setVolumeOption (&options->sfxVolumeScale, optarg,
+				if (!setVolumeOption (&options->sfxScale, optarg,
 						"sfx volume"))
 				{
 					badArg = true;
 				}
 				break;
 			case 'T':
-				if (!setVolumeOption (&options->speechVolumeScale, optarg,
+				if (!setVolumeOption (&options->speechScale, optarg,
 						"speech volume"))
 				{
 					badArg = true;

@@ -17,7 +17,6 @@
  */
 
 #include "restart.h"
-#include "game_session_c.h"
 
 #include "colors.h"
 #include "controls.h"
@@ -97,11 +96,12 @@ DrawRestartMenu (MENU_STATE *pMS, BYTE NewState, FRAME f)
 			&origin, SetAbsFrameIndex (f, NewState + 1));
 }
 
+typedef struct TITLE_TIMING { TimeCount lastInput, timeout; } TITLE_TIMING;
+
 static BOOLEAN
 DoRestart (MENU_STATE *pMS)
 {
-	static TimeCount LastInputTime;
-	static TimeCount InactTimeOut;
+	TITLE_TIMING *timing = (TITLE_TIMING *)pMS->privData;
 	TimeCount TimeIn = GetTimeCounter ();
 
 	/* Cancel any presses of the Pause key. */
@@ -119,7 +119,7 @@ DoRestart (MENU_STATE *pMS)
 			pMS->hMusic = 0;
 		}
 		pMS->hMusic = LoadMusic (MAINMENU_MUSIC);
-		InactTimeOut = (pMS->hMusic ? 120 : 20) * ONE_SECOND;
+		timing->timeout = (pMS->hMusic ? 120 : 20) * ONE_SECOND;
 		pMS->flashContext = Flash_createOverlay (ScreenContext,
 				NULL, NULL);
 		Flash_setMergeFactors (pMS->flashContext, -3, 3, 16);
@@ -131,7 +131,7 @@ DoRestart (MENU_STATE *pMS)
 		DrawRestartMenu (pMS, pMS->CurState, pMS->CurFrame);
 		Flash_start (pMS->flashContext);
 		PlayMusic (pMS->hMusic, TRUE, 1);
-		LastInputTime = GetTimeCounter ();
+		timing->lastInput = GetTimeCounter ();
 		pMS->Initialized = TRUE;
 
 		SleepThreadUntil (FadeScreen (FadeAllToColor, ONE_SECOND / 2));
@@ -162,7 +162,7 @@ DoRestart (MENU_STATE *pMS)
 				SetupMenu ();
 				SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN,
 						MENU_SOUND_SELECT);
-				LastInputTime = GetTimeCounter ();
+				timing->lastInput = GetTimeCounter ();
 				SetTransitionSource (NULL);
 				BatchGraphics ();
 				DrawRestartMenuGraphic (pMS);
@@ -209,12 +209,12 @@ DoRestart (MENU_STATE *pMS)
 			pMS->CurState = NewState;
 		}
 
-		LastInputTime = GetTimeCounter ();
+		timing->lastInput = GetTimeCounter ();
 	}
 	else if (PulsedInputState.menu[KEY_MENU_LEFT] ||
 			PulsedInputState.menu[KEY_MENU_RIGHT])
 	{	// Does nothing, but counts as input for timeout purposes
-		LastInputTime = GetTimeCounter ();
+		timing->lastInput = GetTimeCounter ();
 	}
 	else if (MouseButtonDown)
 	{
@@ -230,11 +230,11 @@ DoRestart (MENU_STATE *pMS)
 		UnbatchGraphics ();
 		Flash_continue(pMS->flashContext);
 
-		LastInputTime = GetTimeCounter ();
+		timing->lastInput = GetTimeCounter ();
 	}
 	else
 	{	// No input received, check if timed out
-		if (GetTimeCounter () - LastInputTime > InactTimeOut)
+		if (GetTimeCounter () - timing->lastInput > timing->timeout)
 		{
 			SleepThreadUntil (FadeMusic (0, ONE_SECOND));
 			StopMusic ();
@@ -250,11 +250,10 @@ DoRestart (MENU_STATE *pMS)
 	return TRUE;
 }
 
-static BOOLEAN
-RestartMenu (MENU_STATE *pMS)
+void
+ShowCampaignEnding (void)
 {
-	TimeCount TimeOut;
-
+    TimeCount TimeOut;
 	ClearRuntimeShipRoster (0);
 	ClearRuntimeShipRoster (1);
 
@@ -292,14 +291,24 @@ RestartMenu (MENU_STATE *pMS)
 		}
 	}
 
+    if (TimeOut == ONE_SECOND / 8)
+    {
+        SleepThreadUntil (FadeScreen (FadeAllToBlack, TimeOut));
+        SleepThread (ONE_SECOND * 3);
+    }
+}
+
+static void
+RestartMenu (MENU_STATE *pMS)
+{
+    TimeCount TimeOut = ONE_SECOND / 2;
+    SetContext (ScreenContext);
 	LastActivity = 0;
 	NextActivity = 0;
 
 	// TODO: This fade is not always necessary, especially after a splash
 	//   screen. It only makes a user wait.
 	SleepThreadUntil (FadeScreen (FadeAllToBlack, TimeOut));
-	if (TimeOut == ONE_SECOND / 8)
-		SleepThread (ONE_SECOND * 3);
 
 	pMS->CurFrame = CaptureDrawable (LoadGraphic (RESTART_PMAP_ANIM));
 
@@ -321,11 +330,9 @@ RestartMenu (MENU_STATE *pMS)
 	DestroyDrawable (ReleaseDrawable (pMS->CurFrame));
 	pMS->CurFrame = 0;
 
-	if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
-		return (FALSE); // timed out
-
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return (FALSE); // quit
+	if (GLOBAL (CurrentActivity) == (ACTIVITY)~0
+			|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
+		return;
 
 	TimeOut = FadeScreen (FadeAllToBlack, ONE_SECOND / 2);
 	
@@ -334,81 +341,26 @@ RestartMenu (MENU_STATE *pMS)
 
 	SeedRandomNumbers ();
 
-	return (LOBYTE (GLOBAL (CurrentActivity)) != SUPER_MELEE);
 }
 
-static BOOLEAN
-TryStartGame (void)
+UQM_TITLE_CHOICE
+RunTitleMenu (void)
 {
-	MENU_STATE MenuState;
-
-	LastActivity = GLOBAL (CurrentActivity);
-	GLOBAL (CurrentActivity) = 0;
-
-	memset (&MenuState, 0, sizeof (MenuState));
-	MenuState.InputFunc = DoRestart;
-
-	while (!RestartMenu (&MenuState))
-	{	// spin until a game is started or loaded
-		if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE &&
-				!(GLOBAL (CurrentActivity) & CHECK_ABORT))
-		{
-			FreeGameData ();
-			UQM_SESSION_EXIT exit = RunArcadeSession ();
-			if (exit.kind == UQM_SESSION_SHUTDOWN || exit.kind == UQM_SESSION_FAILED)
-				GLOBAL (CurrentActivity) |= CHECK_ABORT;
-			MenuState.Initialized = FALSE;
-		}
-		else if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
-		{	// timed out
-			SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
-			return (FALSE);
-		}
-		else if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		{	// quit
-			return (FALSE);
-		}
-	}
-
-	return TRUE;
+    MENU_STATE menu;
+    TITLE_TIMING timing = {0, 0};
+    GLOBAL (CurrentActivity) = 0;
+    memset (&menu, 0, sizeof (menu));
+    menu.InputFunc = DoRestart;
+    menu.privData = &timing;
+    RestartMenu (&menu);
+    if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
+        return UQM_TITLE_ATTRACT;
+    if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+        return UQM_TITLE_QUIT;
+    if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+    {
+        FreeGameData ();
+        return UQM_TITLE_ARCADE;
+    }
+    return LastActivity & CHECK_RESTART ? UQM_TITLE_NEW_GAME : UQM_TITLE_LOAD_GAME;
 }
-
-BOOLEAN
-StartGame (void)
-{
-	do
-	{
-		while (!TryStartGame ())
-		{
-			if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
-			{	// timed out
-				GLOBAL (CurrentActivity) = 0;
-				SplashScreen (0);
-				Credits (FALSE);
-			}
-
-			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return (FALSE); // quit
-		}
-
-		if (LastActivity & CHECK_RESTART)
-		{	// starting a new game
-			Introduction ();
-		}
-	
-	} while (GLOBAL (CurrentActivity) & CHECK_ABORT);
-
-	{
-		extern const BYTE element_array[];
-		extern const PlanetFrame planet_array[];
-
-		Elements = element_array;
-		PlanData = planet_array;
-	}
-
-	PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
-	PlayerControl[1] = COMPUTER_CONTROL | AWESOME_RATING;
-
-	return (TRUE);
-}
-

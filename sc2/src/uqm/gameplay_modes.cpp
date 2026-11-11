@@ -180,16 +180,7 @@ std::unique_ptr<GameMode> selectMode(GameSession &session) {
         return std::make_unique<SolarSystemMode>(session);
     return std::make_unique<HyperSpaceMode>(session);
 }
-void logFailure(const SessionExit &exit) {
-    try {
-        if (exit.error) std::rethrow_exception(exit.error);
-        log_add(log_Error, "Game session failed; returning to the title menu.");
-    } catch (const std::exception &error) {
-        log_add(log_Error, "Game session failed: %s", error.what());
-    } catch (...) {
-        log_add(log_Error, "Game session failed with an unknown exception.");
-    }
-}
+
 }
 SessionExit GameSession::runCampaign(std::optional<unsigned> slot) {
     try {
@@ -232,22 +223,4 @@ extern "C" BOOLEAN RequestGameSessionLoad(COUNT slot) {
         uqm::gameSession().requestLoad(slot);
         return TRUE;
     } catch (...) { return FALSE; }
-}
-// C entry from starcon.c; declared in game_session_c.h. Translate the native
-// session result for the outer title loop without letting exceptions enter C.
-extern "C" UQM_SESSION_EXIT RunGameSession(int slot) {
-    try {
-        const auto exit = uqm::gameSession().runCampaign(slot < 0 ? std::nullopt : std::optional<unsigned>{static_cast<unsigned>(slot)});
-        switch (exit.kind) {
-            case uqm::SessionExitKind::LoadGame: return {UQM_SESSION_LOAD, exit.loadSlot.value()};
-            case uqm::SessionExitKind::Shutdown: return {UQM_SESSION_SHUTDOWN, 0};
-            case uqm::SessionExitKind::ReturnToTitle: return {UQM_SESSION_TITLE, 0};
-            case uqm::SessionExitKind::Failed:
-                uqm::logFailure(exit);
-                return {UQM_SESSION_FAILED, 0};
-        }
-    } catch (...) {
-        log_add(log_Error, "Game session adapter failed.");
-    }
-    return {UQM_SESSION_FAILED, 0};
 }

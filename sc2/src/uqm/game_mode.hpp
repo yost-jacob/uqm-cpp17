@@ -2,6 +2,7 @@
 #define UQM_GAME_MODE_HPP_
 
 #include "simulation_engine.hpp"
+#include "dispatcher.hpp"
 #include <exception>
 #include <cstdint>
 #include <memory>
@@ -9,16 +10,20 @@
 #include <variant>
 
 namespace uqm {
-class ModeDispatcher;
 class GameMode;
+struct SessionExit;
+using ModeDispatcher = Dispatcher<GameMode, SessionExit>;
 // Mode-owned RAII snapshot. Destruction restores borrowed service bindings.
 class ModeSuspension { public: virtual ~ModeSuspension() = default; };
-struct ModeCompleted {};
+using ModeCompleted = DispatchCompleted;
 enum class SessionExitKind { LoadGame, ReturnToTitle, Shutdown, Failed };
 struct SessionExit {
     SessionExitKind kind;
     std::optional<unsigned> loadSlot;
     std::exception_ptr error;
+    static SessionExit completed() { return title(); }
+    void validate() const;
+    int priority() const;
     static SessionExit load(unsigned slot) { return {SessionExitKind::LoadGame, slot, {}}; }
     static SessionExit title() { return {SessionExitKind::ReturnToTitle, {}, {}}; }
     static SessionExit shutdown() { return {SessionExitKind::Shutdown, {}, {}}; }
@@ -27,7 +32,7 @@ struct SessionExit {
 // A menu's nullopt means no session action: close normally and resume its caller.
 // A game mode chooses a successor, completion, or a definite session exit.
 using MenuResult = std::optional<SessionExit>;
-using ModeResult = std::variant<std::unique_ptr<GameMode>, SessionExit, ModeCompleted>;
+using ModeResult = DispatchResult<GameMode, SessionExit>;
 
 // Lifecycle and simulation only. Concrete modes borrow their required session.
 // run() executes synchronously on the gameplay thread and returns before the
@@ -53,32 +58,13 @@ protected:
     // view and services; it does not restart run() or commit gameplay effects.
     virtual std::unique_ptr<ModeSuspension> suspend() { return {}; }
     virtual void resume() {}
-    ModeDispatcher &dispatcher() const noexcept { return host_; }
+    ModeDispatcher &dispatcher() const noexcept { return *host_; }
 private:
-    friend class ModeDispatcher;
+    template<class, class> friend class Dispatcher;
+    SimulationBinding activate() noexcept { return SimulationBinding{engine_}; }
     SimulationEngine engine_;
-    std::unique_ptr<GameMode> parentMode_;
-    ModeDispatcher &host_;
-};
-// Reusable synchronous owner. Contains no player, campaign, fleet or device state.
-// Each session owns one instance; keep it alive until all of its modes are gone.
-class ModeDispatcher {
-public:
-    ModeDispatcher() = default;
-    ~ModeDispatcher() = default;
-    ModeDispatcher(const ModeDispatcher &) = delete;
-    ModeDispatcher &operator=(const ModeDispatcher &) = delete;
-    SessionExit run(std::unique_ptr<GameMode> initialMode);
-    // Called from the running parent. Child must belong to this dispatcher and
-    // return completion or exit. Destruction precedes parent rebind/resume.
-    MenuResult swapGameMode(std::unique_ptr<GameMode> child);
-    void requestMenuExit(SessionExit exit);
-    MenuResult menuExit() const { return pendingExit_; }
-    bool isRunning() const noexcept { return running_; }
-private:
-    std::unique_ptr<GameMode> currentMode_;
-    MenuResult pendingExit_;
-    bool running_ = false;
+    std::unique_ptr<GameMode> parent_;
+    ModeDispatcher *host_;
 };
 } // namespace uqm
 #endif

@@ -24,7 +24,14 @@ extern "C" {
 #endif
 
 
-extern BOOLEAN StartGame (void);
+typedef enum UQM_TITLE_CHOICE {
+    UQM_TITLE_NEW_GAME, UQM_TITLE_LOAD_GAME, UQM_TITLE_ARCADE,
+    UQM_TITLE_QUIT, UQM_TITLE_ATTRACT
+} UQM_TITLE_CHOICE;
+/* One menu visit only. Session selection and ownership belong to C++. */
+extern UQM_TITLE_CHOICE RunTitleMenu (void);
+/* Called before retiring the campaign whose ending is being displayed. */
+extern void ShowCampaignEnding (void);
 
 #if defined(__cplusplus)
 }

@@ -23,6 +23,7 @@
 #define OPTIONS_H
 
 #include "port.h"
+#include "game_configuration.h"
 #include "libs/compiler.h"
 #include "libs/uio.h"
 
@@ -34,23 +35,23 @@ extern "C" {
 #define OPT_PC  0x02
 #define OPT_ALL 0xFF
 
-extern int optWhichCoarseScan;
-extern int optWhichMenu;
-extern int optWhichFonts;
-extern int optWhichIntro;
-extern int optWhichShield;
-extern int optSmoothScroll;
-extern int optMeleeScale;
+/* Transitional C lvalues; native application code uses context.configuration(). */
+#define optWhichCoarseScan (GetGameConfiguration()->coarseScan)
+#define optWhichMenu (GetGameConfiguration()->menuStyle)
+#define optWhichFonts (GetGameConfiguration()->fonts)
+#define optWhichIntro (GetGameConfiguration()->intro)
+#define optWhichShield (GetGameConfiguration()->shield)
+#define optSmoothScroll (GetGameConfiguration()->smoothScroll)
+#define optMeleeScale (GetGameConfiguration()->meleeScale)
+#define opt3doMusic (GetGameConfiguration()->music3do)
+#define optRemixMusic (GetGameConfiguration()->remixMusic)
+#define optSpeech (GetGameConfiguration()->speech)
+#define optSubtitles (GetGameConfiguration()->subtitles)
+#define optStereoSFX (GetGameConfiguration()->stereoSFX)
+#define optKeepAspectRatio (GetGameConfiguration()->keepAspectRatio)
+#define optGamma (GetGameConfiguration()->gamma)
 
-extern BOOLEAN opt3doMusic;
-extern BOOLEAN optRemixMusic;
-extern BOOLEAN optSpeech;
-extern BOOLEAN optSubtitles;
-extern BOOLEAN optStereoSFX;
-extern BOOLEAN optKeepAspectRatio;
-
-#define GAMMA_SCALE  1000
-extern float optGamma;
+#define GAMMA_SCALE 1000
 
 extern uio_DirHandle *contentDir;
 extern uio_DirHandle *configDir;
@@ -60,18 +61,7 @@ extern char baseContentPath[PATH_MAX];
 
 extern const char **optAddons;
 
-/* These get edited by TEXTENTRY widgets, so they should have room to
- * hold as much as one of them allows by default. */
-typedef struct _input_template {
-	char name[30];
-
-	/* This should eventually also hold things like Joystick Port
-	 * and whether or not joysticks are enabled at all, and
-	 * possibly the whole configuration scheme.  If we do that, we
-	 * can actually ditch much of VControl. */
-} INPUT_TEMPLATE;
-
-extern INPUT_TEMPLATE input_templates[6];
+#define input_templates (GetGameConfiguration()->inputTemplates)
 
 void prepareContentDir (const char *contentDirName, const char *addonDirName, const char *execFile);
 void prepareConfigDir (const char *configDirName);

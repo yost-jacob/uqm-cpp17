@@ -66,15 +66,8 @@ enum {
 	NUM_MENU_KEYS
 };
 
-typedef enum {
-	CONTROL_TEMPLATE_KB_1,
-	CONTROL_TEMPLATE_KB_2,
-	CONTROL_TEMPLATE_KB_3,
-	CONTROL_TEMPLATE_JOY_1,
-	CONTROL_TEMPLATE_JOY_2,
-	CONTROL_TEMPLATE_JOY_3,
-	NUM_TEMPLATES
-} CONTROL_TEMPLATE;
+/* Configuration owns the selected templates and editable template names. */
+#include "game_configuration.h"
 
 typedef struct _controller_input_state {
 	int key[NUM_TEMPLATES][NUM_KEYS];
@@ -96,7 +89,7 @@ BATTLE_INPUT_STATE PulsedInputToBattleInput (COUNT player);
 extern CONTROLLER_INPUT_STATE CurrentInputState;
 extern CONTROLLER_INPUT_STATE PulsedInputState;
 extern volatile CONTROLLER_INPUT_STATE ImmediateInputState;
-extern CONTROL_TEMPLATE PlayerControls[];
+#define PlayerControls (GetGameConfiguration()->playerControls)
 
 void UpdateInputState (void);
 extern void FlushInput (void);

@@ -31,7 +31,7 @@ uqm::detail::BattleScene::~BattleScene() { if (bound_) events.push_back(complete
 void uqm::detail::BattleScene::playMusic() { events.push_back(4); }
 extern "C" {
 NetConnection *netConnections[NUM_PLAYERS]{};
-int optMeleeScale = TFB_SCALE_STEP;
+
 void initChecksumBuffers() { events.push_back(12); }
 void uninitChecksumBuffers() { events.push_back(13); }
 bool NetConnection_getDiscriminant(const NetConnection *) { return false; }

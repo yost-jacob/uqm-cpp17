@@ -63,7 +63,8 @@ enum
 		( TFB_GFXFLAGS_SCALE_ANY & ~TFB_GFXFLAGS_SCALE_BILINEAR )
 
 // The flag variable itself
-extern int GfxFlags;
+#include "game_configuration.h"
+#define GfxFlags (GetGameConfiguration()->graphicsFlags)
 
 // The following functions are driver-defined
 void TFB_PreInit (void);
@@ -108,10 +109,10 @@ void TFB_PurgeDanglingGraphics (void); // Only call from main thread as part of 
 
 extern int ScreenWidth;
 extern int ScreenHeight;
-extern int ScreenWidthActual;
-extern int ScreenHeightActual;
+#define ScreenWidthActual (GetGameConfiguration()->width)
+#define ScreenHeightActual (GetGameConfiguration()->height)
 extern int ScreenColorDepth;
-extern int GraphicsDriver;
+#define GraphicsDriver (GetGameConfiguration()->graphicsDriver)
 
 #ifdef __cplusplus
 }

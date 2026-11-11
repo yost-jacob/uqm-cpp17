@@ -52,8 +52,6 @@ FreeKernel (void)
 static void
 UninitContexts (void)
 {
-	ShutdownSimulationEngine ();
-
 	DestroyContext (OffScreenContext);
 	DestroyContext (SpaceContext);
 	DestroyContext (StatusContext);

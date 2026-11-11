@@ -53,9 +53,9 @@ typedef struct tfb_soundcallbacks
 
 
 extern int musicVolume;
-extern float musicVolumeScale;
-extern float sfxVolumeScale;
-extern float speechVolumeScale;
+#define musicVolumeScale (GetGameConfiguration()->musicScale)
+#define sfxVolumeScale (GetGameConfiguration()->sfxScale)
+#define speechVolumeScale (GetGameConfiguration()->speechScale)
 
 void StopSource (int iSource);
 void CleanSource (int iSource);

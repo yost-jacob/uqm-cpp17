@@ -24,9 +24,7 @@
 
 
 int musicVolume = NORMAL_VOLUME;
-float musicVolumeScale;
-float sfxVolumeScale;
-float speechVolumeScale;
+
 TFB_SoundSource soundSource[NUM_SOUNDSOURCES];
 
 

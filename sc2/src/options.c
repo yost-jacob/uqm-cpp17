@@ -43,23 +43,9 @@
 #endif
 
 
-int optWhichCoarseScan;
-int optWhichMenu;
-int optWhichFonts;
-int optWhichIntro;
-int optWhichShield;
-int optSmoothScroll;
-int optMeleeScale;
 const char **optAddons;
 
-BOOLEAN opt3doMusic;
-BOOLEAN optRemixMusic;
-BOOLEAN optSpeech;
-BOOLEAN optSubtitles;
-BOOLEAN optStereoSFX;
-BOOLEAN optKeepAspectRatio;
 
-float optGamma;
 
 uio_DirHandle *contentDir;
 uio_DirHandle *configDir;
@@ -72,7 +58,7 @@ char baseContentPath[PATH_MAX];
 extern uio_Repository *repository;
 extern uio_DirHandle *rootDir;
 
-INPUT_TEMPLATE input_templates[6];
+
 
 static const char *findFileInDirs (const char *locs[], int numLocs,
 		const char *file);

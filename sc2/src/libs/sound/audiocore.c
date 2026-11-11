@@ -26,7 +26,7 @@
 static audio_Driver audiodrv;
 
 /* The globals that control the sound drivers. */
-int snddriver, soundflags;
+
 
 volatile bool audio_inited = false;
 

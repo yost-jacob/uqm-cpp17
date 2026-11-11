@@ -151,6 +151,7 @@ set(UQM_SOURCES
     sc2/src/libs/video/videodec.c
     sc2/src/libs/video/vidplayer.c
     sc2/src/libs/video/vresins.c
+    sc2/src/game_configuration.cpp
     sc2/src/options.c
     sc2/src/port.c
     sc2/src/uqm.c
@@ -242,6 +243,8 @@ set(UQM_SOURCES
     sc2/src/uqm/ship_tuning_c.cpp
     sc2/src/uqm/ship_factory.cpp
     sc2/src/uqm/ship_behavior.cpp
+    sc2/src/uqm/session.cpp
+    sc2/src/uqm/application_sessions.cpp
     sc2/src/uqm/game_mode.cpp
     sc2/src/uqm/game_menu.cpp
     sc2/src/uqm/gameplay_modes.cpp
@@ -362,7 +365,7 @@ set(UQM_SOURCES
     sc2/src/uqm/sis.c
     sc2/src/uqm/sounds.c
     sc2/src/uqm/starbase.c
-    sc2/src/uqm/starcon.c
+    sc2/src/uqm/starcon.cpp
     sc2/src/uqm/star_map.cpp
     sc2/src/uqm/star_map_c.cpp
     sc2/src/uqm/starmap.c

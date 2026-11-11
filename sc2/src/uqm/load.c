@@ -35,7 +35,7 @@
 
 //#define DEBUG_LOAD
 
-ACTIVITY NextActivity;
+
 
 static inline size_t
 read_8 (void *fp, BYTE *v)

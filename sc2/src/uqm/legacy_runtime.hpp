@@ -1,13 +1,22 @@
 #ifndef UQM_LEGACY_RUNTIME_HPP_
 #define UQM_LEGACY_RUNTIME_HPP_
 #include "globdata.h"
+#include "session_activity.h"
 #include <memory>
-namespace uqm { class GameMode; class ArcadeSession; class AssetCache; }
+namespace uqm { class GameMode; class ArcadeSession; class AssetCache; class GameSession; }
 namespace uqm::detail {
-// Internal C buffer projection for a standalone runtime. These buffers remain
-// owned by the session and must outlive the binding. Never attach during a
-// live campaign. Native campaign callers continue to use their typed state.
-struct LegacyRuntimeView { GLOBDATA &data; QUEUE &fleet; SIS_STATE &sis; AssetCache &assets; PLAYER_TRAVEL_POSITION travel{}; };
+// Internal, non-owning C projections selected on the gameplay thread. The
+// session and every referenced buffer outlive this scoped binding. Frontend /
+// arcade views have no campaign; native callers use their explicit references.
+struct LegacyRuntimeView {
+    GLOBDATA &data;
+    QUEUE &fleet;
+    SIS_STATE &sis;
+    AssetCache &assets;
+    PLAYER_TRAVEL_POSITION *travel; // Frontend/arcade only; campaign resolves its live variant.
+    GameSession *campaign = nullptr;
+    UQM_SESSION_ACTIVITY *activities = nullptr;
+};
 class LegacyRuntimeBinding {
 public:
     explicit LegacyRuntimeBinding(LegacyRuntimeView &view) noexcept;
@@ -17,6 +26,7 @@ public:
 private:
     LegacyRuntimeView *previous_;
 };
+LegacyRuntimeView *boundRuntime() noexcept;
 LegacyRuntimeView *standaloneRuntime() noexcept;
 // Resource-loading C boundary only; native code borrows its explicit session cache.
 AssetCache &sessionAssets();
