@@ -1697,7 +1697,7 @@
       "id": "first.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_VISITED", true]
       },
       "save_as": "first_start",
@@ -1799,7 +1799,7 @@
       "id": "first.no_radios.i_lost_my_lander.effects.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "LANDERS_LOST", true]
       },
       "save_as": "first_no_radios_i_lost_my_lander_effects_2",
@@ -1809,7 +1809,7 @@
       "id": "first.no_radios.i_lost_my_lander.effects.1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "first_no_radios_i_lost_my_lander_effects_1",
@@ -1819,7 +1819,7 @@
       "id": "first.no_radios.i_lost_my_lander.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["landers", 1]
       },
       "save_as": "first_no_radios_i_lost_my_lander_effects",
@@ -1840,7 +1840,7 @@
       "id": "first.no_radios.i_lost_another_lander.effects.1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "first_no_radios_i_lost_another_lander_effects_1",
@@ -1850,7 +1850,7 @@
       "id": "first.no_radios.i_lost_another_lander.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["landers", 1]
       },
       "save_as": "first_no_radios_i_lost_another_lander_effects",
@@ -1871,7 +1871,7 @@
       "id": "first.no_radios.need_fuel_mercury.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_no_radios_need_fuel_mercury_effects_1",
@@ -1881,7 +1881,7 @@
       "id": "first.no_radios.need_fuel_mercury.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "first_no_radios_need_fuel_mercury_effects",
@@ -1902,7 +1902,7 @@
       "id": "first.no_radios.need_fuel_again.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_no_radios_need_fuel_again_effects_1",
@@ -1912,7 +1912,7 @@
       "id": "first.no_radios.need_fuel_again.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "first_no_radios_need_fuel_again_effects",
@@ -1933,7 +1933,7 @@
       "id": "first.no_radios.question.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.no_radios.question", false]
       },
       "save_as": "first_no_radios_question_effects",
@@ -2077,7 +2077,7 @@
       "id": "first.restore_power",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "RADIOACTIVES_PROVIDED", true]
       },
       "save_as": "first_restore_power",
@@ -2098,7 +2098,7 @@
       "id": "first.topic.first_give_info.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.topic.first_give_info", false]
       },
       "save_as": "first_topic_first_give_info_effects",
@@ -2119,7 +2119,7 @@
       "id": "first.topic.whats_this_starbase.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.topic.whats_this_starbase", false]
       },
       "save_as": "first_topic_whats_this_starbase_effects",
@@ -2140,7 +2140,7 @@
       "id": "first.topic.what_about_earth.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.topic.what_about_earth", false]
       },
       "save_as": "first_topic_what_about_earth_effects",
@@ -2161,7 +2161,7 @@
       "id": "first.topic.where_are_urquan.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.topic.where_are_urquan", false]
       },
       "save_as": "first_topic_where_are_urquan_effects",
@@ -2182,7 +2182,7 @@
       "id": "first.topic.what_was_red_thing.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.topic.what_was_red_thing", false]
       },
       "save_as": "first_topic_what_was_red_thing_effects",
@@ -2292,7 +2292,7 @@
       "id": "first.identification.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.identify", 1]
       },
       "save_as": "first_identification_effects",
@@ -2313,7 +2313,7 @@
       "id": "first.secret.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.identify", 2]
       },
       "save_as": "first_secret_effects",
@@ -2420,7 +2420,7 @@
       "id": "first.moon.i_lost_my_lander.effects.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "LANDERS_LOST", true]
       },
       "save_as": "first_moon_i_lost_my_lander_effects_2",
@@ -2430,7 +2430,7 @@
       "id": "first.moon.i_lost_my_lander.effects.1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "first_moon_i_lost_my_lander_effects_1",
@@ -2440,7 +2440,7 @@
       "id": "first.moon.i_lost_my_lander.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["landers", 1]
       },
       "save_as": "first_moon_i_lost_my_lander_effects",
@@ -2461,7 +2461,7 @@
       "id": "first.moon.i_lost_another_lander.effects.1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "first_moon_i_lost_another_lander_effects_1",
@@ -2471,7 +2471,7 @@
       "id": "first.moon.i_lost_another_lander.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["landers", 1]
       },
       "save_as": "first_moon_i_lost_another_lander_effects",
@@ -2492,7 +2492,7 @@
       "id": "first.moon.need_fuel_luna.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_moon_need_fuel_luna_effects_1",
@@ -2502,7 +2502,7 @@
       "id": "first.moon.need_fuel_luna.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "first_moon_need_fuel_luna_effects",
@@ -2523,7 +2523,7 @@
       "id": "first.moon.need_fuel_again.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_moon_need_fuel_again_effects_1",
@@ -2533,7 +2533,7 @@
       "id": "first.moon.need_fuel_again.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "first_moon_need_fuel_again_effects",
@@ -2631,7 +2631,7 @@
       "id": "first.promise.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "WILL_DESTROY_BASE", true]
       },
       "save_as": "first_promise_effects",
@@ -2663,7 +2663,7 @@
       "id": "first.base_info.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_YACK_STACK1", 1]
       },
       "save_as": "first_base_info_effects",
@@ -2736,7 +2736,7 @@
       "id": "first.claim.oh_yes_big_fight.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_claim_oh_yes_big_fight_effects",
@@ -2757,7 +2757,7 @@
       "id": "first.claim.i_lied_it_was_abandoned.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_claim_i_lied_it_was_abandoned_effects",
@@ -2778,7 +2778,7 @@
       "id": "first.claim.i_cant_talk_about_it.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_claim_i_cant_talk_about_it_effects",
@@ -2799,7 +2799,7 @@
       "id": "first.abandoned.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", true]
       },
       "save_as": "first_abandoned_effects",
@@ -2850,7 +2850,7 @@
       "id": "first.victory.cook_their_butts.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_AVAILABLE", true]
       },
       "save_as": "first_victory_cook_their_butts_effects_1",
@@ -2860,7 +2860,7 @@
       "id": "first.victory.cook_their_butts.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", false]
       },
       "save_as": "first_victory_cook_their_butts_effects",
@@ -2881,7 +2881,7 @@
       "id": "first.victory.overthrow_evil_aliens.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_AVAILABLE", true]
       },
       "save_as": "first_victory_overthrow_evil_aliens_effects_1",
@@ -2891,7 +2891,7 @@
       "id": "first.victory.overthrow_evil_aliens.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", false]
       },
       "save_as": "first_victory_overthrow_evil_aliens_effects",
@@ -2912,7 +2912,7 @@
       "id": "first.victory.annihilate_those_monsters.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_AVAILABLE", true]
       },
       "save_as": "first_victory_annihilate_those_monsters_effects_1",
@@ -2922,7 +2922,7 @@
       "id": "first.victory.annihilate_those_monsters.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", false]
       },
       "save_as": "first_victory_annihilate_those_monsters_effects",
@@ -2985,7 +2985,7 @@
       "id": "first.name.name_1.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 0]
       },
       "save_as": "first_name_name_1_effects",
@@ -3006,7 +3006,7 @@
       "id": "first.name.name_2.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 1]
       },
       "save_as": "first_name_name_2_effects",
@@ -3027,7 +3027,7 @@
       "id": "first.name.name_3.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 2]
       },
       "save_as": "first_name_name_3_effects",
@@ -3048,7 +3048,7 @@
       "id": "first.name.name_40.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 3]
       },
       "save_as": "first_name_name_40_effects",
@@ -3091,7 +3091,7 @@
       "id": "starbase.entry",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["hayes.arrival", {"literal": {}}]
       },
       "save_as": "starbase_entry",
@@ -3107,7 +3107,7 @@
           "text": "starbase.have_minerals",
           "when": {"gt": [{"query": "inventory.quantity", "args": ["minerals"]}, 0]},
           "action": {
-            "verb": "trade.sell",
+            "action": "trade.sell",
             "args": ["starbase", "minerals", "all"]
           },
           "save_as": "mineral_sale",
@@ -3161,7 +3161,7 @@
       "id": "starbase.devices",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["hayes.devices", {"literal": {}}]
       },
       "save_as": "starbase_devices",
@@ -3188,7 +3188,7 @@
       "id": "starbase.bulletins",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["hayes.repeat_bulletins", {"literal": {}}]
       },
       "save_as": "starbase_bulletins",
@@ -3226,7 +3226,7 @@
       "id": "starbase.goodbye",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["hayes.departure", {"literal": {}}]
       },
       "save_as": "starbase_goodbye",
@@ -3236,7 +3236,7 @@
       "id": "starbase.post",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MOONBASE_ON_SHIP", false]
       },
       "save_as": "starbase_post",
@@ -3252,7 +3252,7 @@
       "id": "starbase.bomb_done",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_BOMB_STATE", 3]
       },
       "save_as": "starbase_bomb_done",
@@ -3309,7 +3309,7 @@
       "id": "info.alliance.shofixti.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.shofixti", true]
       },
       "save_as": "info_alliance_shofixti_effects",
@@ -3330,7 +3330,7 @@
       "id": "info.alliance.yehat.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.yehat", true]
       },
       "save_as": "info_alliance_yehat_effects",
@@ -3351,7 +3351,7 @@
       "id": "info.alliance.arilou.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.arilou", true]
       },
       "save_as": "info_alliance_arilou_effects",
@@ -3372,7 +3372,7 @@
       "id": "info.alliance.chenjesu.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.chenjesu", true]
       },
       "save_as": "info_alliance_chenjesu_effects",
@@ -3393,7 +3393,7 @@
       "id": "info.alliance.mmrnmhrm.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.mmrnmhrm", true]
       },
       "save_as": "info_alliance_mmrnmhrm_effects",
@@ -3414,7 +3414,7 @@
       "id": "info.alliance.syreen.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.syreen", true]
       },
       "save_as": "info_alliance_syreen_effects",
@@ -3495,7 +3495,7 @@
       "id": "info.alliance.start.5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.syreen", false]
       },
       "save_as": "info_alliance_start_5",
@@ -3505,7 +3505,7 @@
       "id": "info.alliance.start.4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.mmrnmhrm", false]
       },
       "save_as": "info_alliance_start_4",
@@ -3515,7 +3515,7 @@
       "id": "info.alliance.start.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.chenjesu", false]
       },
       "save_as": "info_alliance_start_3",
@@ -3525,7 +3525,7 @@
       "id": "info.alliance.start.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.arilou", false]
       },
       "save_as": "info_alliance_start_2",
@@ -3535,7 +3535,7 @@
       "id": "info.alliance.start.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.yehat", false]
       },
       "save_as": "info_alliance_start_1",
@@ -3545,7 +3545,7 @@
       "id": "info.alliance.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.alliance.shofixti", false]
       },
       "save_as": "info_alliance_start",
@@ -3566,7 +3566,7 @@
       "id": "info.hierarchy.urquan.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.urquan", true]
       },
       "save_as": "info_hierarchy_urquan_effects",
@@ -3587,7 +3587,7 @@
       "id": "info.hierarchy.mycon.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.mycon", true]
       },
       "save_as": "info_hierarchy_mycon_effects",
@@ -3608,7 +3608,7 @@
       "id": "info.hierarchy.spathi.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.spathi", true]
       },
       "save_as": "info_hierarchy_spathi_effects",
@@ -3629,7 +3629,7 @@
       "id": "info.hierarchy.umgah.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.umgah", true]
       },
       "save_as": "info_hierarchy_umgah_effects",
@@ -3650,7 +3650,7 @@
       "id": "info.hierarchy.androsynth.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.androsynth", true]
       },
       "save_as": "info_hierarchy_androsynth_effects",
@@ -3671,7 +3671,7 @@
       "id": "info.hierarchy.ilwrath.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.ilwrath", true]
       },
       "save_as": "info_hierarchy_ilwrath_effects",
@@ -3692,7 +3692,7 @@
       "id": "info.hierarchy.vux.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.vux", true]
       },
       "save_as": "info_hierarchy_vux_effects",
@@ -3779,7 +3779,7 @@
       "id": "info.hierarchy.start.6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.vux", false]
       },
       "save_as": "info_hierarchy_start_6",
@@ -3789,7 +3789,7 @@
       "id": "info.hierarchy.start.5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.ilwrath", false]
       },
       "save_as": "info_hierarchy_start_5",
@@ -3799,7 +3799,7 @@
       "id": "info.hierarchy.start.4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.androsynth", false]
       },
       "save_as": "info_hierarchy_start_4",
@@ -3809,7 +3809,7 @@
       "id": "info.hierarchy.start.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.umgah", false]
       },
       "save_as": "info_hierarchy_start_3",
@@ -3819,7 +3819,7 @@
       "id": "info.hierarchy.start.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.spathi", false]
       },
       "save_as": "info_hierarchy_start_2",
@@ -3829,7 +3829,7 @@
       "id": "info.hierarchy.start.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.mycon", false]
       },
       "save_as": "info_hierarchy_start_1",
@@ -3839,7 +3839,7 @@
       "id": "info.hierarchy.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.hierarchy.urquan", false]
       },
       "save_as": "info_hierarchy_start",
@@ -3860,7 +3860,7 @@
       "id": "info.war.what_started_war.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.what_started_war", true]
       },
       "save_as": "info_war_what_started_war_effects",
@@ -3881,7 +3881,7 @@
       "id": "info.war.what_was_war_like.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.what_was_war_like", true]
       },
       "save_as": "info_war_what_was_war_like_effects",
@@ -3902,7 +3902,7 @@
       "id": "info.war.why_lose_war.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.why_lose_war", true]
       },
       "save_as": "info_war_why_lose_war_effects",
@@ -3923,7 +3923,7 @@
       "id": "info.war.what_after_war.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.what_after_war", true]
       },
       "save_as": "info_war_what_after_war_effects",
@@ -3992,7 +3992,7 @@
       "id": "info.war.start.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.what_after_war", false]
       },
       "save_as": "info_war_start_3",
@@ -4002,7 +4002,7 @@
       "id": "info.war.start.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.why_lose_war", false]
       },
       "save_as": "info_war_start_2",
@@ -4012,7 +4012,7 @@
       "id": "info.war.start.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.what_was_war_like", false]
       },
       "save_as": "info_war_start_1",
@@ -4022,7 +4022,7 @@
       "id": "info.war.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.war.what_started_war", false]
       },
       "save_as": "info_war_start",
@@ -4043,7 +4043,7 @@
       "id": "info.ancient.precursors.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.ancient.precursors", true]
       },
       "save_as": "info_ancient_precursors_effects",
@@ -4064,7 +4064,7 @@
       "id": "info.ancient.old_races.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.ancient.old_races", true]
       },
       "save_as": "info_ancient_old_races_effects",
@@ -4085,7 +4085,7 @@
       "id": "info.ancient.aliens_on_earth.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.ancient.aliens_on_earth", true]
       },
       "save_as": "info_ancient_aliens_on_earth_effects",
@@ -4148,7 +4148,7 @@
       "id": "info.ancient.start.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.ancient.aliens_on_earth", false]
       },
       "save_as": "info_ancient_start_2",
@@ -4158,7 +4158,7 @@
       "id": "info.ancient.start.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.ancient.old_races", false]
       },
       "save_as": "info_ancient_start_1",
@@ -4168,7 +4168,7 @@
       "id": "info.ancient.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.ancient.precursors", false]
       },
       "save_as": "info_ancient_start",
@@ -4189,7 +4189,7 @@
       "id": "info.defeat.how_find_urquan.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_find_urquan", true]
       },
       "save_as": "info_defeat_how_find_urquan_effects",
@@ -4210,7 +4210,7 @@
       "id": "info.defeat.how_fight_urquan.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_fight_urquan", true]
       },
       "save_as": "info_defeat_how_fight_urquan_effects",
@@ -4231,7 +4231,7 @@
       "id": "info.defeat.how_ally.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_ally", true]
       },
       "save_as": "info_defeat_how_ally_effects",
@@ -4252,7 +4252,7 @@
       "id": "info.defeat.how_get_strong.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_get_strong", true]
       },
       "save_as": "info_defeat_how_get_strong_effects",
@@ -4321,7 +4321,7 @@
       "id": "info.defeat.start.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_get_strong", false]
       },
       "save_as": "info_defeat_start_3",
@@ -4331,7 +4331,7 @@
       "id": "info.defeat.start.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_ally", false]
       },
       "save_as": "info_defeat_start_2",
@@ -4341,7 +4341,7 @@
       "id": "info.defeat.start.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_fight_urquan", false]
       },
       "save_as": "info_defeat_start_1",
@@ -4351,7 +4351,7 @@
       "id": "info.defeat.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "info.defeat.how_find_urquan", false]
       },
       "save_as": "info_defeat_start",
@@ -4593,7 +4593,7 @@
       "id": "info.analysis",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["hayes.flagship_analysis", {"literal": {}}]
       },
       "save_as": "info_analysis",
@@ -4614,7 +4614,7 @@
       "id": "functions.tell_me_about_fuel0.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.tell_me_about_fuel0", true]
       },
       "save_as": "functions_tell_me_about_fuel0_effects",
@@ -4635,7 +4635,7 @@
       "id": "functions.tell_me_about_modules0.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.tell_me_about_modules0", true]
       },
       "save_as": "functions_tell_me_about_modules0_effects",
@@ -4656,7 +4656,7 @@
       "id": "functions.tell_me_about_ships.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.ships", 1]
       },
       "save_as": "functions_tell_me_about_ships_effects",
@@ -4677,7 +4677,7 @@
       "id": "functions.tell_me_about_crew.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.ships", 2]
       },
       "save_as": "functions_tell_me_about_crew_effects",
@@ -4708,7 +4708,7 @@
       "id": "functions.tell_me_about_ru.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.resources", 1]
       },
       "save_as": "functions_tell_me_about_ru_effects",
@@ -4729,7 +4729,7 @@
       "id": "functions.tell_me_about_minerals.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.resources", 2]
       },
       "save_as": "functions_tell_me_about_minerals_effects",
@@ -4750,7 +4750,7 @@
       "id": "functions.tell_me_about_life.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.resources", 3]
       },
       "save_as": "functions_tell_me_about_life_effects",
@@ -4771,7 +4771,7 @@
       "id": "info.functions.start.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.tell_me_about_modules0", false]
       },
       "save_as": "info_functions_start_3",
@@ -4781,7 +4781,7 @@
       "id": "info.functions.start.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.tell_me_about_fuel0", false]
       },
       "save_as": "info_functions_start_2",
@@ -4791,7 +4791,7 @@
       "id": "info.functions.start.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.resources", 0]
       },
       "save_as": "info_functions_start_1",
@@ -4801,7 +4801,7 @@
       "id": "info.functions.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "functions.ships", 0]
       },
       "save_as": "info_functions_start",
@@ -4900,7 +4900,7 @@
       "id": "info.history.start.after.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "history.ancient", false]
       },
       "save_as": "info_history_start_after_2",
@@ -4910,7 +4910,7 @@
       "id": "info.history.start.after.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "history.war", false]
       },
       "save_as": "info_history_start_after_1",
@@ -4920,7 +4920,7 @@
       "id": "info.history.start.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "history.aliens", false]
       },
       "save_as": "info_history_start_after",
@@ -4930,7 +4930,7 @@
       "id": "info.races.back.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "history.aliens", true]
       },
       "save_as": "info_races_back_after",
@@ -4940,7 +4940,7 @@
       "id": "info.war.back.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "history.war", true]
       },
       "save_as": "info_war_back_after",
@@ -4950,7 +4950,7 @@
       "id": "info.ancient.back.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "history.ancient", true]
       },
       "save_as": "info_ancient_back_after",
@@ -4960,7 +4960,7 @@
       "id": "info.races.start.after.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "races.other", false]
       },
       "save_as": "info_races_start_after_2",
@@ -4970,7 +4970,7 @@
       "id": "info.races.start.after.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "races.hierarchy", false]
       },
       "save_as": "info_races_start_after_1",
@@ -4980,7 +4980,7 @@
       "id": "info.races.start.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "races.alliance", false]
       },
       "save_as": "info_races_start_after",
@@ -4990,7 +4990,7 @@
       "id": "info.alliance.back.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "races.alliance", true]
       },
       "save_as": "info_alliance_back_after",
@@ -5000,7 +5000,7 @@
       "id": "info.hierarchy.back.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "races.hierarchy", true]
       },
       "save_as": "info_hierarchy_back_after",
@@ -5010,7 +5010,7 @@
       "id": "info.races.other.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "races.other", true]
       },
       "save_as": "info_races_other_after",
@@ -5020,7 +5020,7 @@
       "id": "info.mission.start.after.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.analysis", false]
       },
       "save_as": "info_mission_start_after_2",
@@ -5030,7 +5030,7 @@
       "id": "info.mission.start.after.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.aliens", false]
       },
       "save_as": "info_mission_start_after_1",
@@ -5040,7 +5040,7 @@
       "id": "info.mission.start.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.minerals", false]
       },
       "save_as": "info_mission_start_after",
@@ -5050,7 +5050,7 @@
       "id": "info.mission.reset",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.urquan", 0]
       },
       "save_as": "info_mission_reset",
@@ -5060,7 +5060,7 @@
       "id": "info.mission.where_get_minerals.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.minerals", true]
       },
       "save_as": "info_mission_where_get_minerals_after",
@@ -5070,7 +5070,7 @@
       "id": "info.mission.what_about_aliens.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.aliens", true]
       },
       "save_as": "info_mission_what_about_aliens_after",
@@ -5080,7 +5080,7 @@
       "id": "info.mission.what_about_urquan.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.urquan", 1]
       },
       "save_as": "info_mission_what_about_urquan_after",
@@ -5090,7 +5090,7 @@
       "id": "info.defeat.back.after",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.urquan", 2]
       },
       "save_as": "info_defeat_back_after",
@@ -5100,7 +5100,7 @@
       "id": "info.analysis.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "mission.analysis", true]
       },
       "save_as": "info_analysis_mark",
@@ -5163,7 +5163,7 @@
       "id": "first.ask_after_radios.i_lost_my_lander.effects.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "LANDERS_LOST", true]
       },
       "save_as": "first_ask_after_radios_i_lost_my_lander_effects_2",
@@ -5173,7 +5173,7 @@
       "id": "first.ask_after_radios.i_lost_my_lander.effects.1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "first_ask_after_radios_i_lost_my_lander_effects_1",
@@ -5183,7 +5183,7 @@
       "id": "first.ask_after_radios.i_lost_my_lander.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["landers", 1]
       },
       "save_as": "first_ask_after_radios_i_lost_my_lander_effects",
@@ -5204,7 +5204,7 @@
       "id": "first.ask_after_radios.i_lost_another_lander.effects.1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "first_ask_after_radios_i_lost_another_lander_effects_1",
@@ -5214,7 +5214,7 @@
       "id": "first.ask_after_radios.i_lost_another_lander.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["landers", 1]
       },
       "save_as": "first_ask_after_radios_i_lost_another_lander_effects",
@@ -5235,7 +5235,7 @@
       "id": "first.ask_after_radios.need_fuel_mercury.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_ask_after_radios_need_fuel_mercury_effects_1",
@@ -5245,7 +5245,7 @@
       "id": "first.ask_after_radios.need_fuel_mercury.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "first_ask_after_radios_need_fuel_mercury_effects",
@@ -5266,7 +5266,7 @@
       "id": "first.ask_after_radios.need_fuel_again.effects.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", true]
       },
       "save_as": "first_ask_after_radios_need_fuel_again_effects_1",
@@ -5276,7 +5276,7 @@
       "id": "first.ask_after_radios.need_fuel_again.effects",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "first_ask_after_radios_need_fuel_again_effects",
@@ -5297,7 +5297,7 @@
       "id": "first.ask_after_radios.question.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first.ask_after_radios.question", false]
       },
       "save_as": "first_ask_after_radios_question_effects",

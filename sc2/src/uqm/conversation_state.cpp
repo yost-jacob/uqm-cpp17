@@ -1,4 +1,5 @@
 #include "conversation_state.hpp"
+#include "inventory.hpp"
 #include "build.h"
 #include "commglue.h"
 #include "conversation_native.h"
@@ -37,6 +38,43 @@ dialogue::Result CampaignDialogueState::set(const std::string &scope, const std:
         story_.setNamed(key, value.get<unsigned>());
     }
     return {};
+}
+dialogue::Integer CampaignDialogueState::storyMaximum(const std::string &name) const {
+    if (Inventory::ownsLegacyField(name)) throw std::invalid_argument("inventory field requires transact: " + name);
+    return story_.maximumNamed(name);
+}
+dialogue::Result CampaignDialogueState::setStoryBatch(
+    const std::vector<std::pair<std::string, dialogue::Json>> &batch) {
+    std::vector<std::pair<std::string, unsigned>> changes;
+    changes.reserve(batch.size());
+    for (const auto &[name, value] : batch) {
+        const auto maximum = storyMaximum(name);
+        if (!value.is_boolean() && (!value.is_number_integer() || value < 0 || value > maximum))
+            throw std::out_of_range("invalid story value: " + name);
+        changes.emplace_back(name, value.is_boolean() ? unsigned(value.get<bool>()) : value.get<unsigned>());
+    }
+    story_.setNamedBatch(changes);
+    return {};
+}
+void CampaignDialogueState::validateInventoryKey(const std::string &name) const { Inventory::validateKey(name); }
+dialogue::Result CampaignDialogueState::transact(const InventoryTransaction &request) {
+    const auto result = player_.inventory().transact(request);
+    switch (result.status) {
+    case InventoryStatus::Completed:
+        DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+        return {};
+    case InventoryStatus::Insufficient: return {"insufficient", {{"asset", result.asset}}};
+    case InventoryStatus::NoCapacity: return {"no_capacity", {{"asset", result.asset}}};
+    case InventoryStatus::Unavailable: return {"unavailable", {{"asset", result.asset}}};
+    }
+    throw std::logic_error("unknown inventory transaction result");
+}
+bool CampaignDialogueState::hasItem(const std::string &item) const {
+    return player_.inventory().quantity(item.rfind("items.", 0) == 0 ? item : "items." + item) != 0;
+}
+dialogue::Integer CampaignDialogueState::balance(const std::string &account) const {
+    if (account != "credits" && account != "ru") throw std::invalid_argument("unknown inventory account: " + account);
+    return player_.inventory().quantity(account);
 }
 dialogue::Result CampaignDialogueState::setOutcome(const std::string &outcome) {
     if (outcome == "peace")
@@ -142,17 +180,10 @@ dialogue::Integer CampaignDialogueState::fuel() const {
     return player_.sis().fuel() / FUEL_TANK_SCALE;
 }
 dialogue::Integer CampaignDialogueState::fuelCapacity() const {
-    return GetFuelTankCapacity() / FUEL_TANK_SCALE;
+    return player_.inventory().capacity("fuel");
 }
 dialogue::Integer CampaignDialogueState::quantity(const std::string &item) const {
-    const auto &sis = static_cast<const PlayerEntity &>(player_).sis();
-    if (item == "landers")
-        return sis.landers();
-    if (item == "radioactive")
-        return sis.mineral(RADIOACTIVE);
-    if (item == "biomass")
-        return sis.biomass();
-    throw std::invalid_argument("unsupported inventory quantity: " + item);
+    return player_.inventory().quantity(item == "radioactive" ? "minerals.radioactive" : item);
 }
 dialogue::Integer CampaignDialogueState::availableSlots(const std::string &type) const {
     return EscortFeasibilityStudy(raceId(type));

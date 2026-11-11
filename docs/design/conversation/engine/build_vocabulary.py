@@ -148,6 +148,8 @@ for (n, lo, hi), method in zip(specs("queries"), qmethod):
         }
     )
 for n, lo, hi, args in [
+    ("set", 1, None, ["fields"]),
+    ("transact", 2, 2, ["give", "receive"]),
     ("state.set", 3, 3, ["scope", "key", "value"]),
     ("state.add", 3, 3, ["scope", "key", "signed_delta"]),
     ("state.bits", 4, 4, ["scope", "key", "set_or_clear", "mask"]),
@@ -164,7 +166,7 @@ for n, lo, hi, args in [
             "min_args": lo,
             "max_args": hi,
             "arguments": args,
-            "state_accessor": "set / local memory",
+            "state_accessor": "setStoryBatch" if n == "set" else "transact" if n == "transact" else "set / local memory",
             "effect": "mutating",
         }
     )
@@ -181,6 +183,10 @@ for (n, lo, hi), method in zip(specs("actions"), amethod):
     )
 (D / "verbs.json").write_text(dumps(registry))
 external = {
+    "GetGameData": ("state projection", ["economic tables / story rule helpers"]),
+    "GetCampaignClockState": ("query", ["calendar snapshot"]),
+    "GetCurrentStar": ("query", ["location identity"]),
+    "GetLegacyGlobData": ("state projection", ["legacy payload adapter"]),
     "AddEscortShips": ("action", ["fleet.give"]),
     "AddEvent": ("action", ["calendar.schedule"]),
     "AlienTalkSegue": ("presentation", ["speech boundary / wait cue"]),

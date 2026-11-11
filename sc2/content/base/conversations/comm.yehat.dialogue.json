@@ -552,7 +552,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -562,7 +562,7 @@
       "id": "hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile",
@@ -593,7 +593,7 @@
       "id": "royal.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "YEHAT_HOME_VISITS", [["ROYALIST_HOMEWORLD_HELLO_1"], ["ROYALIST_HOMEWORLD_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -609,7 +609,7 @@
       "id": "royal.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "YEHAT_VISITS", [["ROYALIST_SPACE_HELLO_1"], ["ROYALIST_SPACE_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -625,7 +625,7 @@
       "id": "home.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "YEHAT_HOME_VISITS", [["HOMEWORLD_HELLO_1"], ["HOMEWORLD_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -641,7 +641,7 @@
       "id": "space.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "YEHAT_VISITS",
@@ -668,7 +668,7 @@
       "id": "exit.bye_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_homeworld",
@@ -684,7 +684,7 @@
       "id": "exit.bye_royalist",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_royalist",
@@ -700,7 +700,7 @@
       "id": "exit.i_demand_you_ally_homeworld0.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_i_demand_you_ally_homeworld0_effect1",
@@ -710,7 +710,7 @@
       "id": "exit.i_demand_you_ally_homeworld0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_ALLY_HOME", 1]
       },
       "save_as": "exit_i_demand_you_ally_homeworld0",
@@ -720,7 +720,7 @@
       "id": "bye.space",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "farewell",
@@ -742,7 +742,7 @@
       "id": "bye.peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "bye_peace",
@@ -758,7 +758,7 @@
       "id": "bye.fight",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_fight",
@@ -768,7 +768,7 @@
       "id": "refuse",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "refuse",
@@ -778,7 +778,7 @@
       "id": "refuse.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "YEHAT_REBEL_VISITS", [["JUST_A_TRICK_1"], ["JUST_A_TRICK_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -800,7 +800,7 @@
       "id": "revolt.effect8",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "revolt_effect8",
@@ -810,7 +810,7 @@
       "id": "revolt.effect7",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["YEHAT_REBEL_EVENT", 0, 0, 0]
       },
       "save_as": "revolt_effect7",
@@ -820,7 +820,7 @@
       "id": "revolt.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_INFO", 0]
       },
       "save_as": "revolt_effect6",
@@ -830,7 +830,7 @@
       "id": "revolt.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]
       },
       "save_as": "revolt_effect5",
@@ -840,7 +840,7 @@
       "id": "revolt.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_REBEL_INFO", 0]
       },
       "save_as": "revolt_effect4",
@@ -850,7 +850,7 @@
       "id": "revolt.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_REBEL_VISITS", 0]
       },
       "save_as": "revolt_effect3",
@@ -860,7 +860,7 @@
       "id": "revolt.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_HOME_VISITS", 0]
       },
       "save_as": "revolt_effect2",
@@ -870,7 +870,7 @@
       "id": "revolt.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_VISITS", 0]
       },
       "save_as": "revolt_effect1",
@@ -880,7 +880,7 @@
       "id": "revolt",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_CIVIL_WAR", 1]
       },
       "save_as": "revolt",
@@ -896,7 +896,7 @@
       "id": "shofixti.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
       },
       "save_as": "shofixti_1",
@@ -937,7 +937,7 @@
       "id": "royal.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_is_rebellion", true]
       },
       "save_as": "royal_info",
@@ -947,7 +947,7 @@
       "id": "royal.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "YEHAT_ROYALIST_INFO", [["ROYALIST_REBELLION_1"], ["ROYALIST_REBELLION_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -963,7 +963,7 @@
       "id": "home.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_homeworld", true]
       },
       "save_as": "home_info",
@@ -973,7 +973,7 @@
       "id": "home.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "YEHAT_ROYALIST_INFO", [["GENERAL_INFO_HOMEWORLD_1"], ["GENERAL_INFO_HOMEWORLD_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1001,7 +1001,7 @@
       "id": "royal.pkunk.absorbed",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
       },
       "save_as": "royal_pkunk_absorbed",
@@ -1017,7 +1017,7 @@
       "id": "royal.pkunk.hate",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
       },
       "save_as": "royal_pkunk_hate",
@@ -1039,7 +1039,7 @@
       "id": "home.pkunk.absorbed",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
       },
       "save_as": "home_pkunk_absorbed",
@@ -1055,7 +1055,7 @@
       "id": "home.pkunk.hate",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
       },
       "save_as": "home_pkunk_hate",
@@ -1077,7 +1077,7 @@
       "id": "space.pkunk.absorbed",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
       },
       "save_as": "space_pkunk_absorbed",
@@ -1093,7 +1093,7 @@
       "id": "space.pkunk.hate",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
       },
       "save_as": "space_pkunk_hate",
@@ -1109,7 +1109,7 @@
       "id": "sorry",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_INFO", 1]
       },
       "save_as": "sorry",
@@ -1162,7 +1162,7 @@
       "id": "help.home",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_HELP_HOME", 1]
       },
       "save_as": "help_home",
@@ -1178,7 +1178,7 @@
       "id": "info.home",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_INFO", 1]
       },
       "save_as": "info_home",
@@ -1247,7 +1247,7 @@
       "id": "space.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "space_info", true]
       },
       "save_as": "space_info",
@@ -1257,7 +1257,7 @@
       "id": "space.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "YEHAT_REBEL_INFO",
@@ -1284,7 +1284,7 @@
       "id": "ally.space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_ALLY_SPACE", 1]
       },
       "save_as": "ally_space",
@@ -1300,7 +1300,7 @@
       "id": "obligation.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "obligation_effect1",
@@ -1310,7 +1310,7 @@
       "id": "obligation",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_ALLY_SPACE", 2]
       },
       "save_as": "obligation",
@@ -1326,7 +1326,7 @@
       "id": "help.space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_HELP_SPACE", 1]
       },
       "save_as": "help_space",
@@ -1342,7 +1342,7 @@
       "id": "dishonor",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_YEHAT_HELP_SPACE", 2]
       },
       "save_as": "dishonor",

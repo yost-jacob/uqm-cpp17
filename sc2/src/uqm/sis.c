@@ -1172,32 +1172,6 @@ GetCrewCount (void)
 	return GLOBAL_SIS (CrewEnlisted);
 }
 
-// Get the number of crew which fit in a module of a specified type.
-COUNT
-GetModuleCrewCapacity (BYTE moduleType)
-{
-	if (moduleType == CREW_POD)
-		return CREW_POD_CAPACITY;
-
-	return 0;
-}
-
-// Gets the amount of crew which currently fit in the ship's crew pods.
-COUNT
-GetCrewPodCapacity (void)
-{
-	COUNT capacity = 0;
-	COUNT slotI;
-
-	for (slotI = 0; slotI < NUM_MODULE_SLOTS; slotI++)
-	{
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
-		capacity += GetModuleCrewCapacity (moduleType);
-	}
-
-	return capacity;
-}
-
 // Find the slot number of the crew pod and "seat" number in that crew pod,
 // where the Nth crew member would be located.
 // If the crew member does not fit, false is returned, and *slotNr and
@@ -1272,32 +1246,6 @@ static COUNT
 GetElementMass (void)
 {
 	return GLOBAL_SIS (TotalElementMass);
-}
-
-// Get the number of crew which fit in a module of a specified type.
-COUNT
-GetModuleStorageCapacity (BYTE moduleType)
-{
-	if (moduleType == STORAGE_BAY)
-		return STORAGE_BAY_CAPACITY;
-
-	return 0;
-}
-
-// Gets the amount of minerals which currently fit in the ship's storage.
-COUNT
-GetStorageBayCapacity (void)
-{
-	COUNT capacity = 0;
-	COUNT slotI;
-
-	for (slotI = 0; slotI < NUM_MODULE_SLOTS; slotI++)
-	{
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
-		capacity += GetModuleStorageCapacity (moduleType);
-	}
-
-	return capacity;
 }
 
 // Find the slot number of the storage bay and "storage cell" number in that
@@ -1377,35 +1325,6 @@ static DWORD
 GetFuelTotal (void)
 {
 	return GLOBAL_SIS (FuelOnBoard);
-}
-
-// Get the amount of fuel which fits in a module of a specified type.
-DWORD
-GetModuleFuelCapacity (BYTE moduleType)
-{
-	if (moduleType == FUEL_TANK)
-		return FUEL_TANK_CAPACITY;
-
-	if (moduleType == HIGHEFF_FUELSYS)
-		return HEFUEL_TANK_CAPACITY;
-
-	return 0;
-}
-
-// Gets the amount of fuel which currently fits in the ship's fuel tanks.
-DWORD
-GetFuelTankCapacity (void)
-{
-	DWORD capacity = FUEL_RESERVE;
-	COUNT slotI;
-
-	for (slotI = 0; slotI < NUM_MODULE_SLOTS; slotI++)
-	{
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
-		capacity += GetModuleFuelCapacity (moduleType);
-	}
-
-	return capacity;
 }
 
 // Find the slot number of the fuel cell and "compartment" number in that

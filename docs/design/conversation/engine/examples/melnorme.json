@@ -1170,7 +1170,7 @@
       "id": "first.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MET_MELNORME", true]
       },
       "save_as": "first_mark",
@@ -1203,7 +1203,7 @@
       "id": "first.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MELNORME_BUSINESS_COUNT",
@@ -1233,7 +1233,7 @@
       "id": "first.we_are_from_alliance0.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK0", 1]
       },
       "save_as": "first_we_are_from_alliance0_effects",
@@ -1254,7 +1254,7 @@
       "id": "first.how_know.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK0", 2]
       },
       "save_as": "first_how_know_effects",
@@ -1275,7 +1275,7 @@
       "id": "first.what_about_yourselves.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK1", 1]
       },
       "save_as": "first_what_about_yourselves_effects",
@@ -1296,7 +1296,7 @@
       "id": "first.what_factors.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK1", 2]
       },
       "save_as": "first_what_factors_effects",
@@ -1317,7 +1317,7 @@
       "id": "first.what_about_universe.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK2", 1]
       },
       "save_as": "first_what_about_universe_effects",
@@ -1338,7 +1338,7 @@
       "id": "first.giving_is_good_1.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK2", 2]
       },
       "save_as": "first_giving_is_good_1_effects",
@@ -1359,7 +1359,7 @@
       "id": "first.giving_is_good_2.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK2", 3]
       },
       "save_as": "first_giving_is_good_2_effects",
@@ -1460,7 +1460,7 @@
       "id": "business.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK2", 5]
       },
       "save_as": "business_start",
@@ -1470,7 +1470,7 @@
       "id": "business.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MELNORME_YACK_STACK2",
@@ -1532,7 +1532,7 @@
       "id": "business.trading_intro.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TRADED_WITH_MELNORME", true]
       },
       "save_as": "business_trading_intro_effects",
@@ -1595,7 +1595,7 @@
       "id": "business.purple.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "WHY_MELNORME_PURPLE", true]
       },
       "save_as": "business_purple_effects",
@@ -1633,7 +1633,7 @@
       "id": "buy.no_credit.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "asked_to_buy", true]
       },
       "save_as": "buy_no_credit_effects",
@@ -1719,7 +1719,7 @@
       "id": "fuel.intro.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_FUEL_PROCEDURE", true]
       },
       "save_as": "fuel_intro_effects",
@@ -1751,7 +1751,7 @@
           "text": "melnorme.buy_1_fuel",
           "when": true,
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "fuel", 1]
           },
           "save_as": "fuel_purchase",
@@ -1763,7 +1763,7 @@
           "text": "melnorme.buy_5_fuel",
           "when": true,
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "fuel", 5]
           },
           "save_as": "fuel_purchase",
@@ -1775,7 +1775,7 @@
           "text": "melnorme.buy_10_fuel",
           "when": true,
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "fuel", 10]
           },
           "save_as": "fuel_purchase",
@@ -1787,7 +1787,7 @@
           "text": "melnorme.buy_25_fuel",
           "when": true,
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "fuel", 25]
           },
           "save_as": "fuel_purchase",
@@ -1799,7 +1799,7 @@
           "text": "melnorme.fill_me_up",
           "when": true,
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "fuel", "fill"]
           },
           "save_as": "fuel_purchase",
@@ -1883,7 +1883,7 @@
       "id": "tech.intro.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_TECH_PROCEDURE", true]
       },
       "save_as": "tech_intro_effects",
@@ -1921,7 +1921,7 @@
       "id": "tech.pitch",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["melnorme.technology_pitch", {"literal": {}}]
       },
       "save_as": "tech_pitch",
@@ -1937,7 +1937,7 @@
           "text": "melnorme.buy_new_tech",
           "when": {"query": "market.available", "args": ["melnorme", "technology"]},
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "next_technology", 1]
           },
           "save_as": "tech_purchase",
@@ -2016,7 +2016,7 @@
       "id": "info.intro.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_INFO_PROCEDURE", true]
       },
       "save_as": "info_intro_effects",
@@ -2054,7 +2054,7 @@
           "text": "melnorme.buy_current_events",
           "when": {"query": "market.available", "args": ["melnorme", "events"]},
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "events", 1]
           },
           "save_as": "info_purchase",
@@ -2066,7 +2066,7 @@
           "text": "melnorme.buy_alien_races",
           "when": {"query": "market.available", "args": ["melnorme", "alien_races"]},
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "alien_races", 1]
           },
           "save_as": "info_purchase",
@@ -2078,7 +2078,7 @@
           "text": "melnorme.buy_history",
           "when": {"query": "market.available", "args": ["melnorme", "history"]},
           "action": {
-            "verb": "trade.purchase",
+            "action": "trade.purchase",
             "args": ["melnorme", "history", 1]
           },
           "save_as": "info_purchase",
@@ -2203,7 +2203,7 @@
       "id": "sell.biomass",
       "kind": "action",
       "action": {
-        "verb": "trade.sell",
+        "action": "trade.sell",
         "args": ["melnorme", "biomass", "all"]
       },
       "save_as": "sale",
@@ -2213,7 +2213,7 @@
       "id": "sell.rainbows",
       "kind": "action",
       "action": {
-        "verb": "trade.sell",
+        "action": "trade.sell",
         "args": ["melnorme", "rainbows", "all"]
       },
       "save_as": "sale",
@@ -2240,7 +2240,7 @@
       "id": "sell.reset",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "asked_to_buy", false]
       },
       "save_as": "sell_reset",
@@ -2277,7 +2277,7 @@
       "id": "sell.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "sell_enabled", false]
       },
       "save_as": "sell_disable",
@@ -2328,7 +2328,7 @@
       "id": "rescue.explain",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MELNORME_RESCUE_COUNT",
@@ -2385,7 +2385,7 @@
       "id": "handlers.prepare_rescue",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_rescue",
+        "action": "handlers.prepare_rescue",
         "args": ["melnorme"]
       },
       "save_as": "rescue_quote",
@@ -2434,7 +2434,7 @@
       "id": "handlers.accept_rescue",
       "kind": "action",
       "action": {
-        "verb": "handlers.accept_rescue",
+        "action": "handlers.accept_rescue",
         "args": [{"get": ["result", "rescue_quote.token"]}]
       },
       "save_as": "rescue_accept",
@@ -2472,7 +2472,7 @@
       "id": "rescue.leave.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_RESCUE_REFUSED", true]
       },
       "save_as": "rescue_leave_effects",
@@ -2493,7 +2493,7 @@
       "id": "rescue.no_help.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_RESCUE_REFUSED", true]
       },
       "save_as": "rescue_no_help_effects",
@@ -2525,7 +2525,7 @@
       "id": "bluster.start.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK2", 4]
       },
       "save_as": "bluster_start_effects",
@@ -2546,7 +2546,7 @@
       "id": "bluster.why.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "WHY_MELNORME_BLUE", true]
       },
       "save_as": "bluster_why_effects",
@@ -2567,7 +2567,7 @@
       "id": "bluster.we_strong_1.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "bluster.strength", 1]
       },
       "save_as": "bluster_we_strong_1_effects",
@@ -2588,7 +2588,7 @@
       "id": "bluster.we_strong_2.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "bluster.strength", 2]
       },
       "save_as": "bluster_we_strong_2_effects",
@@ -2609,7 +2609,7 @@
       "id": "bluster.we_strong_3.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "bluster.strength", 3]
       },
       "save_as": "bluster_we_strong_3_effects",
@@ -2679,7 +2679,7 @@
       "id": "bluster.testing.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "bluster.testing", 1]
       },
       "save_as": "bluster_testing_effects",
@@ -2711,7 +2711,7 @@
       "id": "miffed.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MELNORME_MIFFED_COUNT",
@@ -2741,7 +2741,7 @@
       "id": "pissed.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MELNORME_PISSED_COUNT",
@@ -2767,7 +2767,7 @@
       "id": "hate.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MELNORME_HATE_COUNT",
@@ -2793,7 +2793,7 @@
       "id": "miffed.explore_relationship.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK3", 1]
       },
       "save_as": "miffed_explore_relationship_effects",
@@ -2814,7 +2814,7 @@
       "id": "miffed.excuse_1.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK3", 2]
       },
       "save_as": "miffed_excuse_1_effects",
@@ -2835,7 +2835,7 @@
       "id": "miffed.excuse_2.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK3", 3]
       },
       "save_as": "miffed_excuse_2_effects",
@@ -2856,7 +2856,7 @@
       "id": "miffed.excuse_3.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK3", 4]
       },
       "save_as": "miffed_excuse_3_effects",
@@ -2926,7 +2926,7 @@
       "id": "miffed.apologize.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_ANGER", 0]
       },
       "save_as": "miffed_apologize_effects",
@@ -2984,7 +2984,7 @@
       "id": "pissed.beg.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK4", 1]
       },
       "save_as": "pissed_beg_effects",
@@ -3005,7 +3005,7 @@
       "id": "pissed.agree.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_YACK_STACK4", 2]
       },
       "save_as": "pissed_agree_effects",
@@ -3026,7 +3026,7 @@
       "id": "pissed.strip",
       "kind": "action",
       "action": {
-        "verb": "handlers.strip_ship",
+        "action": "handlers.strip_ship",
         "args": ["melnorme.penance"]
       },
       "save_as": "penance",
@@ -3062,7 +3062,7 @@
       "id": "pissed.forgiven.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_ANGER", 0]
       },
       "save_as": "pissed_forgiven_effects",
@@ -3102,7 +3102,7 @@
       "id": "exit.youre_on.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_ANGER", 1]
       },
       "save_as": "exit_youre_on_effects",
@@ -3123,7 +3123,7 @@
       "id": "exit.so_we_can_attack.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_ANGER", 2]
       },
       "save_as": "exit_so_we_can_attack_effects",
@@ -3144,7 +3144,7 @@
       "id": "exit.fight_some_more.effects",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MELNORME_ANGER", 3]
       },
       "save_as": "exit_fight_some_more_effects",
@@ -3406,11 +3406,11 @@
                   "when": {"not": {"get": ["story", "FOUND_PLUTO_SPATHI", false]}},
                   "actions": [
                     {
-                      "verb": "state.set",
+                      "action": "state.set",
                       "args": ["story", "KNOW_SPATHI_PASSWORD", true]
                     },
                     {
-                      "verb": "state.set",
+                      "action": "state.set",
                       "args": ["story", "SPATHI_HOME_VISITS", 7]
                     }
                   ]
@@ -3419,11 +3419,11 @@
               "15": [
                 {
                   "when": {"lt": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
-                  "actions": [{"verb": "state.set", "args": ["story", "KNOW_ABOUT_SHATTERED", 2]}]
+                  "actions": [{"action": "state.set", "args": ["story", "KNOW_ABOUT_SHATTERED", 2]}]
                 },
                 {
                   "when": true,
-                  "actions": [{"verb": "state.set", "args": ["story", "KNOW_SYREEN_WORLD_SHATTERED", true]}]
+                  "actions": [{"action": "state.set", "args": ["story", "KNOW_SYREEN_WORLD_SHATTERED", true]}]
                 }
               ]
             }

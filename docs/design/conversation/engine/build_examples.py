@@ -109,7 +109,7 @@ class Graph:
             id=id,
             text=self.p(id, bank),
             when=when,
-            action={"verb": verb, "args": args},
+            action={"action": verb, "args": args},
             save_as=save,
             then=then,
             otherwise="error",
@@ -160,7 +160,7 @@ class Graph:
         return self.node(
             id,
             "action",
-            action={"verb": verb, "args": args},
+            action={"action": verb, "args": args},
             save_as=save or id.replace(".", "_"),
             next=next,
         )
@@ -324,7 +324,7 @@ class Graph:
                                             "when": not_(flag("FOUND_PLUTO_SPATHI")),
                                             "actions": [
                                                 {
-                                                    "verb": "state.set",
+                                                    "action": "state.set",
                                                     "args": [
                                                         "story",
                                                         "KNOW_SPATHI_PASSWORD",
@@ -332,7 +332,7 @@ class Graph:
                                                     ],
                                                 },
                                                 {
-                                                    "verb": "state.set",
+                                                    "action": "state.set",
                                                     "args": [
                                                         "story",
                                                         "SPATHI_HOME_VISITS",
@@ -349,7 +349,7 @@ class Graph:
                                             ),
                                             "actions": [
                                                 {
-                                                    "verb": "state.set",
+                                                    "action": "state.set",
                                                     "args": [
                                                         "story",
                                                         "KNOW_ABOUT_SHATTERED",
@@ -362,7 +362,7 @@ class Graph:
                                             "when": True,
                                             "actions": [
                                                 {
-                                                    "verb": "state.set",
+                                                    "action": "state.set",
                                                     "args": [
                                                         "story",
                                                         "KNOW_SYREEN_WORLD_SHATTERED",

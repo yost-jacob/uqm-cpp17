@@ -849,7 +849,7 @@
       "id": "recall",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "RECALL_VISITS", 1]
       },
       "save_as": "recall",
@@ -859,7 +859,7 @@
       "id": "greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SLYLANDRO_HOME_VISITS", [["HELLO_1"], ["HELLO_2"], ["HELLO_3"], ["HELLO_4"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -887,7 +887,7 @@
       "id": "bye.first",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "bye_first",
@@ -903,7 +903,7 @@
       "id": "bye.again",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "bye_again",
@@ -919,7 +919,7 @@
       "id": "we_are_us0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 1]
       },
       "save_as": "we_are_us0",
@@ -935,7 +935,7 @@
       "id": "what_other_visitors.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_KNOWS_PROBE", 1]
       },
       "save_as": "what_other_visitors_effect1",
@@ -945,7 +945,7 @@
       "id": "what_other_visitors",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 2]
       },
       "save_as": "what_other_visitors",
@@ -961,7 +961,7 @@
       "id": "any_other_visitors",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 3]
       },
       "save_as": "any_other_visitors",
@@ -977,7 +977,7 @@
       "id": "what_about_sentient_milieu",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 4]
       },
       "save_as": "what_about_sentient_milieu",
@@ -993,7 +993,7 @@
       "id": "who_else",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 5]
       },
       "save_as": "who_else",
@@ -1009,7 +1009,7 @@
       "id": "precursors_yow",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 6]
       },
       "save_as": "precursors_yow",
@@ -1025,7 +1025,7 @@
       "id": "must_know_more",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK1", 7]
       },
       "save_as": "must_know_more",
@@ -1041,7 +1041,7 @@
       "id": "who_are_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK2", 1]
       },
       "save_as": "who_are_you",
@@ -1057,7 +1057,7 @@
       "id": "where_are_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK3", 1]
       },
       "save_as": "where_are_you",
@@ -1073,7 +1073,7 @@
       "id": "thats_impossible_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK3", 2]
       },
       "save_as": "thats_impossible_1",
@@ -1089,7 +1089,7 @@
       "id": "thats_impossible_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK3", 3]
       },
       "save_as": "thats_impossible_2",
@@ -1558,7 +1558,7 @@
       "id": "human.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK4", 1]
       },
       "save_as": "human_start",
@@ -1592,7 +1592,7 @@
       "id": "human.exhausted",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK4", 2]
       },
       "save_as": "human_exhausted",
@@ -1608,7 +1608,7 @@
       "id": "not_same_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_KNOW_URQUAN", 2]
       },
       "save_as": "not_same_urquan",
@@ -1624,7 +1624,7 @@
       "id": "we_come_from_earth",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_KNOW_EARTH", 1]
       },
       "save_as": "we_come_from_earth",
@@ -1640,7 +1640,7 @@
       "id": "we_explore",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_KNOW_EXPLORE", 1]
       },
       "save_as": "we_explore",
@@ -1656,7 +1656,7 @@
       "id": "we_fight_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_KNOW_URQUAN", 1]
       },
       "save_as": "we_fight_urquan",
@@ -1672,7 +1672,7 @@
       "id": "we_gather",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_KNOW_GATHER", 1]
       },
       "save_as": "we_gather",
@@ -1749,7 +1749,7 @@
       "id": "species.exhausted",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "like_more_about_you", true]
       },
       "save_as": "species_exhausted",
@@ -1765,7 +1765,7 @@
       "id": "what_about_home",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_home", true]
       },
       "save_as": "what_about_home",
@@ -1781,7 +1781,7 @@
       "id": "what_about_culture",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_culture", true]
       },
       "save_as": "what_about_culture",
@@ -1797,7 +1797,7 @@
       "id": "what_about_history",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_history", true]
       },
       "save_as": "what_about_history",
@@ -1813,7 +1813,7 @@
       "id": "what_about_biology",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_biology", true]
       },
       "save_as": "what_about_biology",
@@ -1872,7 +1872,7 @@
       "id": "hunt_them_down",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "hunt_them_down", true]
       },
       "save_as": "hunt_them_down",
@@ -1888,7 +1888,7 @@
       "id": "sue_melnorme",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "sue_melnorme", true]
       },
       "save_as": "sue_melnorme",
@@ -1904,7 +1904,7 @@
       "id": "recall_signal",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "recall_signal", true]
       },
       "save_as": "recall_signal",
@@ -1951,7 +1951,7 @@
       "id": "fix.complete.effect3",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["SLYLANDRO_RAMP_DOWN", 0, 0, 0]
       },
       "save_as": "fix_complete_effect3",
@@ -1961,7 +1961,7 @@
       "id": "fix.complete.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "SLYLANDRO_MULTIPLIER", 1]
       },
       "save_as": "fix_complete_effect2",
@@ -1971,7 +1971,7 @@
       "id": "fix.complete.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "DESTRUCT_CODE_ON_SHIP", 1]
       },
       "save_as": "fix_complete_effect1",
@@ -1981,7 +1981,7 @@
       "id": "fix.complete",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_KNOW_BROKEN", 1]
       },
       "save_as": "fix_complete",
@@ -2003,7 +2003,7 @@
       "id": "tell_me_about_rep_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_me_about_rep_2", true]
       },
       "save_as": "tell_me_about_rep_2",
@@ -2019,7 +2019,7 @@
       "id": "what_about_rep_priorities",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_rep_priorities", true]
       },
       "save_as": "what_about_rep_priorities",
@@ -2035,7 +2035,7 @@
       "id": "tell_me_about_attack",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_me_about_attack", true]
       },
       "save_as": "tell_me_about_attack",
@@ -2092,7 +2092,7 @@
       "id": "why_probe_always_attack",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK6", 1]
       },
       "save_as": "why_probe_always_attack",
@@ -2108,7 +2108,7 @@
       "id": "where_probes_from",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK7", 1]
       },
       "save_as": "where_probes_from",
@@ -2124,7 +2124,7 @@
       "id": "why_sell",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK7", 2]
       },
       "save_as": "why_sell",
@@ -2140,7 +2140,7 @@
       "id": "how_long_ago",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK7", 3]
       },
       "save_as": "how_long_ago",
@@ -2156,7 +2156,7 @@
       "id": "whats_probes_mission",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK8", 1]
       },
       "save_as": "whats_probes_mission",
@@ -2172,7 +2172,7 @@
       "id": "if_only_one",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK8", 2]
       },
       "save_as": "if_only_one",
@@ -2287,7 +2287,7 @@
       "id": "probe.exhausted",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "know_more_probe", true]
       },
       "save_as": "probe_exhausted",
@@ -2504,7 +2504,7 @@
       "id": "probe.start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK5", 1]
       },
       "save_as": "probe_start",
@@ -2538,7 +2538,7 @@
       "id": "how_does_probe_defend",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK9", 1]
       },
       "save_as": "how_does_probe_defend",
@@ -2554,7 +2554,7 @@
       "id": "combat_behavior",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK9", 2]
       },
       "save_as": "combat_behavior",
@@ -2570,7 +2570,7 @@
       "id": "what_missile_batteries",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK9", 3]
       },
       "save_as": "what_missile_batteries",
@@ -2586,7 +2586,7 @@
       "id": "tell_me_about_rep_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SLYLANDRO_STACK8", 3]
       },
       "save_as": "tell_me_about_rep_1",
@@ -2602,7 +2602,7 @@
       "id": "what_set_priority.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_set_priority", true]
       },
       "save_as": "what_set_priority_effect1",
@@ -2612,7 +2612,7 @@
       "id": "what_set_priority",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_KNOWS_PRIORITY", 1]
       },
       "save_as": "what_set_priority",
@@ -2628,7 +2628,7 @@
       "id": "tell_me_about_basics.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_basics_again", true]
       },
       "save_as": "tell_me_about_basics_effect1",
@@ -2638,7 +2638,7 @@
       "id": "tell_me_about_basics",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_KNOWS_PROGRAM", 1]
       },
       "save_as": "tell_me_about_basics",
@@ -2654,7 +2654,7 @@
       "id": "what_effect.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_effect", true]
       },
       "save_as": "what_effect_effect1",
@@ -2664,7 +2664,7 @@
       "id": "what_effect",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_KNOWS_EFFECTS", 1]
       },
       "save_as": "what_effect",
@@ -2680,7 +2680,7 @@
       "id": "tell_basics_again",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_basics_again", true]
       },
       "save_as": "tell_basics_again",

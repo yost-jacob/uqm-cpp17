@@ -724,7 +724,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -734,7 +734,7 @@
       "id": "first.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MET_ARILOU", 1]
       },
       "save_as": "first_mark",
@@ -750,7 +750,7 @@
       "id": "first.home.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_HOME_VISITS", 1]
       },
       "save_as": "first_home_mark",
@@ -846,7 +846,7 @@
       "id": "hostile.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ARILOU_VISITS",
@@ -861,7 +861,7 @@
       "id": "hostile.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "hostile_outcome",
@@ -883,7 +883,7 @@
       "id": "angry.home.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_HOME_VISITS", 1]
       },
       "save_as": "angry_home_mark",
@@ -899,7 +899,7 @@
       "id": "angry.space.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ARILOU_VISITS", [["ANGRY_SPACE_HELLO_1"], ["ANGRY_SPACE_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -921,7 +921,7 @@
       "id": "friendly.space.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ARILOU_VISITS",
@@ -963,7 +963,7 @@
       "id": "portal.reminder",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "NO_PORTAL_VISITS", [["GOT_PART_YET_1"], ["GOT_PART_YET_1"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -973,7 +973,7 @@
       "id": "friendly.home.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ARILOU_HOME_VISITS",
@@ -1005,7 +1005,7 @@
       "id": "exit.bye_angry_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_angry_space",
@@ -1021,7 +1021,7 @@
       "id": "exit.bye_friendly_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_friendly_space",
@@ -1037,7 +1037,7 @@
       "id": "exit.bye_friendly_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_friendly_homeworld",
@@ -1053,7 +1053,7 @@
       "id": "exit.lets_fight",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_lets_fight",
@@ -1069,7 +1069,7 @@
       "id": "exit.bug_eyed_fruitcakes.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bug_eyed_fruitcakes_effect1",
@@ -1079,7 +1079,7 @@
       "id": "exit.bug_eyed_fruitcakes",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_MANNER", 2]
       },
       "save_as": "exit_bug_eyed_fruitcakes",
@@ -1095,7 +1095,7 @@
       "id": "exit.best_if_i_killed_you.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_best_if_i_killed_you_effect1",
@@ -1105,7 +1105,7 @@
       "id": "exit.best_if_i_killed_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_MANNER", 2]
       },
       "save_as": "exit_best_if_i_killed_you",
@@ -1121,7 +1121,7 @@
       "id": "space.why_you_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_5", 1]
       },
       "save_as": "space_why_you_here",
@@ -1137,7 +1137,7 @@
       "id": "space.what_things",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_5", 2]
       },
       "save_as": "space_what_things",
@@ -1153,7 +1153,7 @@
       "id": "space.why_do_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_5", 3]
       },
       "save_as": "space_why_do_it",
@@ -1163,7 +1163,7 @@
       "id": "space.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_2", true]
       },
       "save_as": "space_info",
@@ -1173,7 +1173,7 @@
       "id": "space.info.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ARILOU_INFO",
@@ -1194,7 +1194,7 @@
       "id": "space.hints",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "give_me_info_2", true]
       },
       "save_as": "space_hints",
@@ -1219,7 +1219,7 @@
       "id": "space.hints.shattered",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_ABOUT_SHATTERED", {"max": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]}]
       },
       "save_as": "space_hints_shattered",
@@ -1229,7 +1229,7 @@
       "id": "space.hints.urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_URQUAN_STORY", 1]
       },
       "save_as": "space_hints_urquan",
@@ -1239,7 +1239,7 @@
       "id": "space.hints.kohrah",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_KOHR_AH_STORY", 1]
       },
       "save_as": "space_hints_kohrah",
@@ -1249,7 +1249,7 @@
       "id": "space.hints.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ARILOU_HINTS",
@@ -1335,7 +1335,7 @@
       "id": "sorry",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "im_sorry", true]
       },
       "save_as": "sorry",
@@ -1376,7 +1376,7 @@
       "id": "angry.invaders_from_mars",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "invaders_from_mars", true]
       },
       "save_as": "angry_invaders_from_mars",
@@ -1392,7 +1392,7 @@
       "id": "angry.why_should_i_trust",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_should_i_trust", true]
       },
       "save_as": "angry_why_should_i_trust",
@@ -1408,7 +1408,7 @@
       "id": "angry.what_about_interference",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_interference", true]
       },
       "save_as": "angry_what_about_interference",
@@ -1424,7 +1424,7 @@
       "id": "home.ok_lets_be_friends",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_ok_lets_be_friends",
@@ -1494,7 +1494,7 @@
       "id": "home.what_about_war.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_what_about_war_effect1",
@@ -1504,7 +1504,7 @@
       "id": "home.what_about_war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_1", 1]
       },
       "save_as": "home_what_about_war",
@@ -1520,7 +1520,7 @@
       "id": "home.what_about_urquan.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_what_about_urquan_effect1",
@@ -1530,7 +1530,7 @@
       "id": "home.what_about_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_1", 2]
       },
       "save_as": "home_what_about_urquan",
@@ -1546,7 +1546,7 @@
       "id": "home.what_did_on_earth.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 2]
       },
       "save_as": "home_what_did_on_earth_effect1",
@@ -1556,7 +1556,7 @@
       "id": "home.what_did_on_earth",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_3", 1]
       },
       "save_as": "home_what_did_on_earth",
@@ -1572,7 +1572,7 @@
       "id": "home.why_did_this.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 2]
       },
       "save_as": "home_why_did_this_effect1",
@@ -1582,7 +1582,7 @@
       "id": "home.why_did_this",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_3", 2]
       },
       "save_as": "home_why_did_this",
@@ -1598,7 +1598,7 @@
       "id": "home.tell_more.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 2]
       },
       "save_as": "home_tell_more_effect1",
@@ -1608,7 +1608,7 @@
       "id": "home.tell_more",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_3", 3]
       },
       "save_as": "home_tell_more",
@@ -1624,7 +1624,7 @@
       "id": "home.tell_arilou_about_tpet.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 1]
       },
       "save_as": "home_tell_arilou_about_tpet_effect1",
@@ -1634,7 +1634,7 @@
       "id": "home.tell_arilou_about_tpet",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_2", 1]
       },
       "save_as": "home_tell_arilou_about_tpet",
@@ -1650,7 +1650,7 @@
       "id": "home.what_do_about_tpet.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 1]
       },
       "save_as": "home_what_do_about_tpet_effect1",
@@ -1660,7 +1660,7 @@
       "id": "home.what_do_about_tpet",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_2", 2]
       },
       "save_as": "home_what_do_about_tpet",
@@ -1676,7 +1676,7 @@
       "id": "home.umgah_acting_weird.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_umgah_acting_weird_effect3",
@@ -1686,7 +1686,7 @@
       "id": "home.umgah_acting_weird.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "umgah_acting_weird", true]
       },
       "save_as": "home_umgah_acting_weird_effect2",
@@ -1696,7 +1696,7 @@
       "id": "home.umgah_acting_weird.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ARILOU_UMGAH_CHECK", 0, 10, 0]
       },
       "save_as": "home_umgah_acting_weird_effect1",
@@ -1706,7 +1706,7 @@
       "id": "home.umgah_acting_weird",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_CHECKED_UMGAH", 1]
       },
       "save_as": "home_umgah_acting_weird",
@@ -1728,7 +1728,7 @@
       "id": "home.learned.done.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 1]
       },
       "save_as": "home_learned_done_effect1",
@@ -1738,7 +1738,7 @@
       "id": "home.learned.done",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "learned_about_umgah", true]
       },
       "save_as": "home_learned_done",
@@ -1754,7 +1754,7 @@
       "id": "home.learned.wait.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_learned_wait_effect1",
@@ -1764,7 +1764,7 @@
       "id": "home.learned.wait",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "learned_about_umgah", true]
       },
       "save_as": "home_learned_wait",
@@ -1780,7 +1780,7 @@
       "id": "home.what_do_now.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_what_do_now_effect1",
@@ -1790,7 +1790,7 @@
       "id": "home.what_do_now",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_CHECKED_UMGAH", 3]
       },
       "save_as": "home_what_do_now",
@@ -1806,7 +1806,7 @@
       "id": "home.what_give_me.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 3]
       },
       "save_as": "home_what_give_me_effect1",
@@ -1816,7 +1816,7 @@
       "id": "home.what_give_me",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_ARILOU_WANT_WRECK", 1]
       },
       "save_as": "home_what_give_me",
@@ -1832,7 +1832,7 @@
       "id": "home.what_about_tpet.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_what_about_tpet_effect1",
@@ -1842,7 +1842,7 @@
       "id": "home.what_about_tpet",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_4", 1]
       },
       "save_as": "home_what_about_tpet",
@@ -1866,7 +1866,7 @@
       "id": "home.got_it.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_got_it_effect3",
@@ -1876,7 +1876,7 @@
       "id": "home.got_it.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PORTAL_SPAWNER_ON_SHIP", 1]
       },
       "save_as": "home_got_it_effect2",
@@ -1886,7 +1886,7 @@
       "id": "home.got_it.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PORTAL_SPAWNER", 1]
       },
       "save_as": "home_got_it_effect1",
@@ -1896,7 +1896,7 @@
       "id": "home.got_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PORTAL_KEY_ON_SHIP", 0]
       },
       "save_as": "home_got_it",
@@ -1912,7 +1912,7 @@
       "id": "home.about_portal_again.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "home_focus", 0]
       },
       "save_as": "home_about_portal_again_effect1",
@@ -1922,7 +1922,7 @@
       "id": "home.about_portal_again",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "about_portal_again", true]
       },
       "save_as": "home_about_portal_again",

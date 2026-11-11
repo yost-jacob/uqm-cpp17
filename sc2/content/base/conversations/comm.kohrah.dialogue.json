@@ -568,7 +568,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -584,7 +584,7 @@
       "id": "game_over",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "game_over",
@@ -610,7 +610,7 @@
       "id": "evil.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_SENSES_EVIL", 1]
       },
       "save_as": "evil_mark",
@@ -620,7 +620,7 @@
       "id": "evil.prefix",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "evil_prefix", true]
       },
       "save_as": "evil_prefix",
@@ -636,7 +636,7 @@
       "id": "samatra.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "AWARE_OF_SAMATRA", 1]
       },
       "save_as": "samatra_mark",
@@ -646,7 +646,7 @@
       "id": "samatra.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "samatra_outcome",
@@ -676,7 +676,7 @@
       "id": "greet.frenzy",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "KOHR_AH_VISITS",
@@ -691,7 +691,7 @@
       "id": "greet.normal",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "KOHR_AH_VISITS",
@@ -740,7 +740,7 @@
       "id": "why_kill_all_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_kill_all_1_effect1",
@@ -750,7 +750,7 @@
       "id": "why_kill_all_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 1]
       },
       "save_as": "why_kill_all_1",
@@ -766,7 +766,7 @@
       "id": "why_kill_all_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_kill_all_2_effect1",
@@ -776,7 +776,7 @@
       "id": "why_kill_all_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 2]
       },
       "save_as": "why_kill_all_2",
@@ -792,7 +792,7 @@
       "id": "why_kill_all_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_kill_all_3_effect1",
@@ -802,7 +802,7 @@
       "id": "why_kill_all_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 3]
       },
       "save_as": "why_kill_all_3",
@@ -818,7 +818,7 @@
       "id": "why_kill_all_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_kill_all_4_effect1",
@@ -828,7 +828,7 @@
       "id": "why_kill_all_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 3]
       },
       "save_as": "why_kill_all_4",
@@ -844,7 +844,7 @@
       "id": "please_dont_kill_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "please_dont_kill_1_effect1",
@@ -854,7 +854,7 @@
       "id": "please_dont_kill_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", 1]
       },
       "save_as": "please_dont_kill_1",
@@ -870,7 +870,7 @@
       "id": "please_dont_kill_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "please_dont_kill_2_effect1",
@@ -880,7 +880,7 @@
       "id": "please_dont_kill_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", 2]
       },
       "save_as": "please_dont_kill_2",
@@ -896,7 +896,7 @@
       "id": "please_dont_kill_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "please_dont_kill_3_effect1",
@@ -906,7 +906,7 @@
       "id": "please_dont_kill_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", 3]
       },
       "save_as": "please_dont_kill_3",
@@ -922,7 +922,7 @@
       "id": "please_dont_kill_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "please_dont_kill_4_effect1",
@@ -932,7 +932,7 @@
       "id": "please_dont_kill_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", 3]
       },
       "save_as": "please_dont_kill_4",
@@ -948,7 +948,7 @@
       "id": "bye_frenzy_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_frenzy_1_effect1",
@@ -958,7 +958,7 @@
       "id": "bye_frenzy_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 1]
       },
       "save_as": "bye_frenzy_1",
@@ -974,7 +974,7 @@
       "id": "bye_frenzy_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_frenzy_2_effect1",
@@ -984,7 +984,7 @@
       "id": "bye_frenzy_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 2]
       },
       "save_as": "bye_frenzy_2",
@@ -1000,7 +1000,7 @@
       "id": "bye_frenzy_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_frenzy_3_effect1",
@@ -1010,7 +1010,7 @@
       "id": "bye_frenzy_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 3]
       },
       "save_as": "bye_frenzy_3",
@@ -1026,7 +1026,7 @@
       "id": "bye_frenzy_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_frenzy_4_effect1",
@@ -1036,7 +1036,7 @@
       "id": "bye_frenzy_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 3]
       },
       "save_as": "bye_frenzy_4",
@@ -1052,7 +1052,7 @@
       "id": "threat_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_1_effect1",
@@ -1062,7 +1062,7 @@
       "id": "threat_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 1]
       },
       "save_as": "threat_1",
@@ -1078,7 +1078,7 @@
       "id": "threat_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_2_effect1",
@@ -1088,7 +1088,7 @@
       "id": "threat_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 2]
       },
       "save_as": "threat_2",
@@ -1104,7 +1104,7 @@
       "id": "threat_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_3_effect1",
@@ -1114,7 +1114,7 @@
       "id": "threat_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 3]
       },
       "save_as": "threat_3",
@@ -1130,7 +1130,7 @@
       "id": "threat_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_4_effect1",
@@ -1140,7 +1140,7 @@
       "id": "threat_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_REASONS", 3]
       },
       "save_as": "threat_4",
@@ -1156,7 +1156,7 @@
       "id": "what_are_you_hovering_over.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "what_are_you_hovering_over_effect1",
@@ -1166,7 +1166,7 @@
       "id": "what_are_you_hovering_over",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 1]
       },
       "save_as": "what_are_you_hovering_over",
@@ -1182,7 +1182,7 @@
       "id": "you_sure_are_creepy.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "you_sure_are_creepy_effect1",
@@ -1192,7 +1192,7 @@
       "id": "you_sure_are_creepy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 2]
       },
       "save_as": "you_sure_are_creepy",
@@ -1208,7 +1208,7 @@
       "id": "stop_that_gross_blinking.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "stop_that_gross_blinking_effect1",
@@ -1218,7 +1218,7 @@
       "id": "stop_that_gross_blinking",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_INFO", 3]
       },
       "save_as": "stop_that_gross_blinking",
@@ -1234,7 +1234,7 @@
       "id": "plead_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "plead_1_effect1",
@@ -1244,7 +1244,7 @@
       "id": "plead_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", 1]
       },
       "save_as": "plead_1",
@@ -1260,7 +1260,7 @@
       "id": "plead_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "plead_2_effect1",
@@ -1270,7 +1270,7 @@
       "id": "plead_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", 2]
       },
       "save_as": "plead_2",
@@ -1286,7 +1286,7 @@
       "id": "plead_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "plead_4_effect1",
@@ -1296,7 +1296,7 @@
       "id": "plead_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_PLEAD", {"get": ["story", "KOHR_AH_PLEAD", 0]}]
       },
       "save_as": "plead_4",
@@ -1312,7 +1312,7 @@
       "id": "bye.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_effect1",
@@ -1322,7 +1322,7 @@
       "id": "bye",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_BYES", 1]
       },
       "save_as": "bye",
@@ -1338,7 +1338,7 @@
       "id": "bye.again.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_again_effect1",
@@ -1348,7 +1348,7 @@
       "id": "bye.again",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KOHR_AH_BYES", 1]
       },
       "save_as": "bye_again",
@@ -1528,7 +1528,7 @@
       "id": "story.key",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_KOHR_AH_STORY", 2]
       },
       "save_as": "story_key",
@@ -1544,7 +1544,7 @@
       "id": "story.why_do_you_destroy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_do_you_destroy", true]
       },
       "save_as": "story_why_do_you_destroy",
@@ -1560,7 +1560,7 @@
       "id": "story.relationship_with_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "relationship_with_urquan", true]
       },
       "save_as": "story_relationship_with_urquan",
@@ -1576,7 +1576,7 @@
       "id": "story.what_about_culture",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_culture", true]
       },
       "save_as": "story_what_about_culture",
@@ -1592,7 +1592,7 @@
       "id": "story.how_leave_me_alone",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_leave_me_alone", true]
       },
       "save_as": "story_how_leave_me_alone",
@@ -1608,7 +1608,7 @@
       "id": "story.done",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "story_done",

@@ -1,6 +1,9 @@
 #ifndef UQM_DIALOGUE_STATE_HPP
 #define UQM_DIALOGUE_STATE_HPP
 #include <cstdint>
+#include "../inventory_transaction.hpp"
+#include <vector>
+#include <utility>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
@@ -28,6 +31,14 @@ class State {
     virtual Result set(const std::string &, const std::string &, const Json &) {
         missing("set");
     }
+    // Bare set targets narrative state only. The binder checks keys/ranges
+    // through const access; the implementation validates the whole batch again.
+    virtual Integer storyMaximum(const std::string &) const { missing("storyMaximum"); }
+    virtual Result setStoryBatch(const std::vector<std::pair<std::string, Json>> &) {
+        missing("setStoryBatch");
+    }
+    virtual void validateInventoryKey(const std::string &) const { missing("validateInventoryKey"); }
+    virtual Result transact(const InventoryTransaction &) { missing("transact"); }
     virtual bool hasShip(const std::string &) const {
         missing("hasShip");
     }

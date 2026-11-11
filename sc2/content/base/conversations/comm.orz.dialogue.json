@@ -833,7 +833,7 @@
       "id": "exit.bye_ally",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_ally",
@@ -849,7 +849,7 @@
       "id": "exit.bye_neutral",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_neutral",
@@ -865,7 +865,7 @@
       "id": "exit.bye_angry",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_angry",
@@ -887,7 +887,7 @@
       "id": "bye.taalo.angry",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "bye_taalo_angry",
@@ -903,7 +903,7 @@
       "id": "bye.taalo.friendly",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "bye_taalo_friendly",
@@ -919,7 +919,7 @@
       "id": "exit.hostile_2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_hostile_2",
@@ -935,7 +935,7 @@
       "id": "exit.demand_to_land",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_demand_to_land",
@@ -951,7 +951,7 @@
       "id": "land.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "land_effect1",
@@ -961,7 +961,7 @@
       "id": "land",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TAALO_UNPROTECTED", 1]
       },
       "save_as": "land",
@@ -977,7 +977,7 @@
       "id": "exit.yes_alliance.effect5",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_yes_alliance_effect5",
@@ -987,7 +987,7 @@
       "id": "exit.yes_alliance.effect4",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["orz", "allied"]
       },
       "save_as": "exit_yes_alliance_effect4",
@@ -997,7 +997,7 @@
       "id": "exit.yes_alliance.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_MANNER", 3]
       },
       "save_as": "exit_yes_alliance_effect3",
@@ -1007,7 +1007,7 @@
       "id": "exit.yes_alliance.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_PERSONAL_INFO", 0]
       },
       "save_as": "exit_yes_alliance_effect2",
@@ -1017,7 +1017,7 @@
       "id": "exit.yes_alliance.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_GENERAL_INFO", 0]
       },
       "save_as": "exit_yes_alliance_effect1",
@@ -1027,7 +1027,7 @@
       "id": "exit.yes_alliance",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_ANDRO_STATE", 0]
       },
       "save_as": "exit_yes_alliance",
@@ -1043,7 +1043,7 @@
       "id": "exit.were_sorry.effect5",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_were_sorry_effect5",
@@ -1053,7 +1053,7 @@
       "id": "exit.were_sorry.effect4",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["orz", "allied"]
       },
       "save_as": "exit_were_sorry_effect4",
@@ -1063,7 +1063,7 @@
       "id": "exit.were_sorry.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_MANNER", 3]
       },
       "save_as": "exit_were_sorry_effect3",
@@ -1073,7 +1073,7 @@
       "id": "exit.were_sorry.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_PERSONAL_INFO", 0]
       },
       "save_as": "exit_were_sorry_effect2",
@@ -1083,7 +1083,7 @@
       "id": "exit.were_sorry.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_GENERAL_INFO", 0]
       },
       "save_as": "exit_were_sorry_effect1",
@@ -1093,7 +1093,7 @@
       "id": "exit.were_sorry",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_ANDRO_STATE", 0]
       },
       "save_as": "exit_were_sorry",
@@ -1109,7 +1109,7 @@
       "id": "exit.about_andro_3.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_about_andro_3_effect4",
@@ -1119,7 +1119,7 @@
       "id": "exit.about_andro_3.effect3",
       "kind": "action",
       "action": {
-        "verb": "fleet.take",
+        "action": "fleet.take",
         "args": ["orz"]
       },
       "save_as": "exit_about_andro_3_effect3",
@@ -1129,7 +1129,7 @@
       "id": "exit.about_andro_3.effect2",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["orz", "neutral"]
       },
       "save_as": "exit_about_andro_3_effect2",
@@ -1139,7 +1139,7 @@
       "id": "exit.about_andro_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_MANNER", 2]
       },
       "save_as": "exit_about_andro_3_effect1",
@@ -1149,7 +1149,7 @@
       "id": "exit.about_andro_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_VISITS", 0]
       },
       "save_as": "exit_about_andro_3",
@@ -1165,7 +1165,7 @@
       "id": "exit.must_know_about_androsyn.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_must_know_about_androsyn_effect2",
@@ -1175,7 +1175,7 @@
       "id": "exit.must_know_about_androsyn.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_MANNER", 2]
       },
       "save_as": "exit_must_know_about_androsyn_effect1",
@@ -1185,7 +1185,7 @@
       "id": "exit.must_know_about_androsyn",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_VISITS", 0]
       },
       "save_as": "exit_must_know_about_androsyn",
@@ -1195,7 +1195,7 @@
       "id": "insult",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_level", {"get": ["story", "ORZ_PERSONAL_INFO", 0]}]
       },
       "save_as": "insult",
@@ -1205,7 +1205,7 @@
       "id": "insult.increment",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_PERSONAL_INFO", {"min": [{"add": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 1]}, 7]}]
       },
       "save_as": "insult_increment",
@@ -1240,7 +1240,7 @@
       "id": "insult.0",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "insult_0",
@@ -1256,7 +1256,7 @@
       "id": "insult.1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "insult_1",
@@ -1272,7 +1272,7 @@
       "id": "insult.2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "insult_2",
@@ -1288,7 +1288,7 @@
       "id": "insult.3",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "insult_3",
@@ -1320,7 +1320,7 @@
       "id": "taalo.land.reply",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "may_we_land", true]
       },
       "save_as": "taalo_land_reply",
@@ -1342,7 +1342,7 @@
       "id": "taalo.demand.reply",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "demand_to_land", true]
       },
       "save_as": "taalo_demand_reply",
@@ -1352,7 +1352,7 @@
       "id": "taalo.why_you_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_you_here", true]
       },
       "save_as": "taalo_why_you_here",
@@ -1380,7 +1380,7 @@
       "id": "taalo.what_is_this_place",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_is_this_place", true]
       },
       "save_as": "taalo_what_is_this_place",
@@ -1414,7 +1414,7 @@
       "id": "taalo.ally",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "make_alliance", true]
       },
       "save_as": "taalo_ally",
@@ -1430,7 +1430,7 @@
       "id": "taalo.busy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_busy", true]
       },
       "save_as": "taalo_busy",
@@ -1500,7 +1500,7 @@
       "id": "whats_up_ally",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_ally", true]
       },
       "save_as": "whats_up_ally",
@@ -1510,7 +1510,7 @@
       "id": "whats_up_ally.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_GENERAL_INFO",
@@ -1531,7 +1531,7 @@
       "id": "more_about_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "more_about_you", true]
       },
       "save_as": "more_about_you",
@@ -1541,7 +1541,7 @@
       "id": "more_about_you.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ORZ_PERSONAL_INFO", [["ABOUT_US_1"], ["ABOUT_US_2"], ["ABOUT_US_3"], ["ABOUT_US_4"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1557,7 +1557,7 @@
       "id": "whats_up_angry",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_angry", true]
       },
       "save_as": "whats_up_angry",
@@ -1567,7 +1567,7 @@
       "id": "whats_up_angry.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ORZ_GENERAL_INFO", [["GENERAL_INFO_ANGRY_1"], ["GENERAL_INFO_ANGRY_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1589,7 +1589,7 @@
       "id": "about.andro.0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_ANDRO_STATE", 1]
       },
       "save_as": "about_andro_0",
@@ -1605,7 +1605,7 @@
       "id": "about.andro.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_ANDRO_STATE", 2]
       },
       "save_as": "about_andro_1",
@@ -1737,7 +1737,7 @@
       "id": "where_androsyn",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_androsyn", true]
       },
       "save_as": "where_androsyn",
@@ -1790,7 +1790,7 @@
       "id": "offer.trust",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_STACK1", 1]
       },
       "save_as": "offer_trust",
@@ -1806,7 +1806,7 @@
       "id": "no_alliance.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "REFUSED_ORZ_ALLIANCE", 1]
       },
       "save_as": "no_alliance_effect1",
@@ -1816,7 +1816,7 @@
       "id": "no_alliance",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "talk_about_alliance", true]
       },
       "save_as": "no_alliance",
@@ -1832,7 +1832,7 @@
       "id": "decide_later.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "REFUSED_ORZ_ALLIANCE", 1]
       },
       "save_as": "decide_later_effect1",
@@ -1842,7 +1842,7 @@
       "id": "decide_later",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "talk_about_alliance", true]
       },
       "save_as": "decide_later",
@@ -1889,7 +1889,7 @@
       "id": "who_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_ANDRO_STATE", 1]
       },
       "save_as": "who_you",
@@ -1905,7 +1905,7 @@
       "id": "why_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_ANDRO_STATE", 2]
       },
       "save_as": "why_here",
@@ -1921,7 +1921,7 @@
       "id": "introduce",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ORZ_STACK0", 1]
       },
       "save_as": "introduce",
@@ -1937,7 +1937,7 @@
       "id": "hostile.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "hostile_1", true]
       },
       "save_as": "hostile_1",
@@ -2235,7 +2235,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -2245,7 +2245,7 @@
       "id": "first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first", true]
       },
       "save_as": "first",
@@ -2255,7 +2255,7 @@
       "id": "first.met",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MET_ORZ_BEFORE", 1]
       },
       "save_as": "first_met",
@@ -2293,7 +2293,7 @@
       "id": "hostile.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_VISITS",
@@ -2311,7 +2311,7 @@
       "id": "hostile.greet.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile_greet_outcome",
@@ -2343,7 +2343,7 @@
       "id": "taalo.angry",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "TAALO_VISITS",
@@ -2377,7 +2377,7 @@
       "id": "taalo.friendly",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "TAALO_VISITS",
@@ -2417,7 +2417,7 @@
       "id": "ally.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_HOME_VISITS",
@@ -2453,7 +2453,7 @@
       "id": "ally.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_VISITS",
@@ -2500,7 +2500,7 @@
       "id": "neutral.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_HOME_VISITS",
@@ -2536,7 +2536,7 @@
       "id": "neutral.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_VISITS",
@@ -2578,7 +2578,7 @@
       "id": "angry.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_HOME_VISITS",
@@ -2612,7 +2612,7 @@
       "id": "angry.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ORZ_VISITS",

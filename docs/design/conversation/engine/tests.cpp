@@ -18,6 +18,24 @@ struct TestState : cd::State {
         values[scope + "." + key] = value;
         return {};
     }
+    uqm::InventoryTransaction lastTransaction;
+    cd::Integer storyMaximum(const std::string &) const override { return 255; }
+    cd::Result setStoryBatch(const std::vector<std::pair<std::string, Json>> &changes) override {
+        auto staged = values;
+        for (const auto &[key, value] : changes) staged["story." + key] = value;
+        values.swap(staged);
+        ++mutations;
+        return {};
+    }
+    void validateInventoryKey(const std::string &key) const override {
+        if (key != "credits" && key != "fuel" && key != "crew" && key != "items.sun_device")
+            throw std::invalid_argument("unknown test inventory key");
+    }
+    cd::Result transact(const uqm::InventoryTransaction &request) override {
+        lastTransaction = request;
+        ++purchases;
+        return {};
+    }
     cd::Integer fuel() const override {
         return onboard;
     }
@@ -248,6 +266,9 @@ BOOST_AUTO_TEST_CASE(registry_documents_every_factory_verb_and_builds_it_without
     input >> registry;
     std::vector<std::string> queries, actions;
     const auto argument = [](const std::string &name) -> Json {
+        if (name == "fields") return Json{{"MET_ARILOU", true}};
+        if (name == "give") return Json{{"credits", 1}};
+        if (name == "receive") return Json{{"fuel", 1}};
         if (name == "scope")
             return "local";
         if (name == "items")
@@ -737,4 +758,46 @@ BOOST_AUTO_TEST_CASE(graph_loader_hooks_seal_storage_before_runtime_traversal) {
     BOOST_CHECK_THROW(graph.emplace(), std::logic_error);
     BOOST_CHECK_THROW(graph.set_start(node), std::invalid_argument);
     BOOST_CHECK(&graph.at(graph.start()) == node);
+}
+
+BOOST_AUTO_TEST_CASE(positional_package_actions_bind_without_mutating_and_evaluate_once) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    state.values["story.amount"] = 100;
+    auto grant = factory.action({{"action","transact"}, {"args",Json::array({Json::object(),
+        Json{{"crew",{{"get",{"story","amount"}}}}, {"items.sun_device",1}}})}});
+    BOOST_TEST(state.purchases == 0u);
+    state.values["story.amount"] = 50;
+    grant();
+    BOOST_TEST(state.purchases == 1u);
+    BOOST_TEST(state.lastTransaction.give.empty());
+    BOOST_TEST(state.lastTransaction.receive.at("crew") == 50);
+    BOOST_TEST(state.lastTransaction.receive.at("items.sun_device") == 1);
+}
+BOOST_AUTO_TEST_CASE(story_set_batches_evaluate_every_value_before_calling_the_state) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    auto set = factory.action({{"action","set"}, {"args",Json::array({Json{{"met",true}},
+        Json{{"progress",{{"get",{"story","amount"}}}}}})}});
+    BOOST_TEST(state.mutations == 0u);
+    state.values["story.amount"] = 256;
+    BOOST_CHECK_THROW(set(), std::out_of_range);
+    BOOST_TEST(state.mutations == 0u);
+    state.values["story.amount"] = 4;
+    set();
+    BOOST_TEST(state.mutations == 1u);
+    BOOST_TEST(state.values.at("story.met").get<bool>());
+    BOOST_TEST(state.values.at("story.progress").get<int>() == 4);
+}
+BOOST_AUTO_TEST_CASE(package_action_shapes_are_validated_at_binding) {
+    TestState state;
+    cd::Memory memory;
+    cd::VerbFactory factory{state, memory};
+    BOOST_CHECK_THROW(factory.action({{"action","set"},{"args",Json::array({Json{{"met",1}},Json{{"met",2}}})}}), std::invalid_argument);
+    BOOST_CHECK_THROW(factory.action({{"action","transact"},{"args",Json::array({Json::object(),Json::object()})}}), std::invalid_argument);
+    BOOST_CHECK_THROW(factory.action({{"action","transact"},{"args",Json::array({Json::object(),Json{{"fuel",0}}})}}), std::invalid_argument);
+    BOOST_CHECK_THROW(factory.action({{"action","transact"},{"args",Json::array({Json::object(),Json{{"unknown",1}}})}}), std::invalid_argument);
+    BOOST_CHECK_THROW(factory.action({{"action","transact"},{"verb","transact"},{"args",Json::array()}}), std::invalid_argument);
 }

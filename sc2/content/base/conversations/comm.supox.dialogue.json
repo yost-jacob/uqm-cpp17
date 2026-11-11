@@ -694,7 +694,7 @@
       "id": "intro",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "intro",
@@ -729,7 +729,7 @@
       "id": "hostile",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_VISITS", [["HOSTILE_SPACE_HELLO_1"], ["HOSTILE_SPACE_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -764,7 +764,7 @@
       "id": "allied.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SUPOX_HOME_VISITS",
@@ -790,7 +790,7 @@
       "id": "before",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_VISITS", [["HELLO_BEFORE_KOHRAH_SPACE_1"], ["HELLO_BEFORE_KOHRAH_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -806,7 +806,7 @@
       "id": "during",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_VISITS", [["HELLO_DURING_KOHRAH_SPACE_1"], ["HELLO_DURING_KOHRAH_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -822,7 +822,7 @@
       "id": "after",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_VISITS", [["HELLO_AFTER_KOHRAH_SPACE_1"], ["HELLO_AFTER_KOHRAH_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -849,7 +849,7 @@
       "id": "neutral.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_HOME_VISITS", [["NEUTRAL_HOMEWORLD_HELLO_1"], ["NEUTRAL_HOMEWORLD_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -865,7 +865,7 @@
       "id": "neutral.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_VISITS", [["NEUTRAL_SPACE_HELLO_1"], ["NEUTRAL_SPACE_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -887,7 +887,7 @@
       "id": "exit.bye_neutral",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_neutral",
@@ -903,7 +903,7 @@
       "id": "exit.what_do_i_do_now",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_what_do_i_do_now",
@@ -919,7 +919,7 @@
       "id": "exit.bye_after_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_after_space",
@@ -935,7 +935,7 @@
       "id": "exit.bye_before_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_before_space",
@@ -951,7 +951,7 @@
       "id": "exit.bye_allied_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_allied_homeworld",
@@ -967,7 +967,7 @@
       "id": "exit.thanks_now_we_eat_you.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_VISITS", 0]
       },
       "save_as": "exit_thanks_now_we_eat_you_effect2",
@@ -977,7 +977,7 @@
       "id": "exit.thanks_now_we_eat_you.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_HOME_VISITS", 0]
       },
       "save_as": "exit_thanks_now_we_eat_you_effect1",
@@ -987,7 +987,7 @@
       "id": "exit.thanks_now_we_eat_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_HOSTILE", 1]
       },
       "save_as": "exit_thanks_now_we_eat_you",
@@ -1015,7 +1015,7 @@
       "id": "help.give",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["supox", 4]
       },
       "save_as": "help_give",
@@ -1025,7 +1025,7 @@
       "id": "before.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_before_space", true]
       },
       "save_as": "before_info",
@@ -1035,7 +1035,7 @@
       "id": "before.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_INFO", [["GENERAL_INFO_BEFORE_SPACE_1"], ["GENERAL_INFO_BEFORE_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1057,7 +1057,7 @@
       "id": "what_now_before_space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_before_space", true]
       },
       "save_as": "what_now_before_space",
@@ -1092,7 +1092,7 @@
       "id": "after.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_after_space", true]
       },
       "save_as": "after_info",
@@ -1102,7 +1102,7 @@
       "id": "after.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SUPOX_INFO", [["GENERAL_INFO_AFTER_SPACE_1"], ["GENERAL_INFO_AFTER_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1124,7 +1124,7 @@
       "id": "what_now_after_space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_after_space", true]
       },
       "save_as": "what_now_after_space",
@@ -1165,7 +1165,7 @@
       "id": "how_went_war",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "SUPOX_WAR_NEWS", "set", 1]
       },
       "save_as": "how_went_war",
@@ -1175,7 +1175,7 @@
       "id": "how_goes_war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_war", true]
       },
       "save_as": "how_goes_war",
@@ -1212,7 +1212,7 @@
       "id": "war.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 1]
       },
       "save_as": "war_first",
@@ -1228,7 +1228,7 @@
       "id": "war.second",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 2]
       },
       "save_as": "war_second",
@@ -1238,7 +1238,7 @@
       "id": "learn_new_info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "learn_new_info", true]
       },
       "save_as": "learn_new_info",
@@ -1266,7 +1266,7 @@
       "id": "new.samatra",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "SUPOX_WAR_NEWS", "set", 2]
       },
       "save_as": "new_samatra",
@@ -1276,7 +1276,7 @@
       "id": "what_now_homeworld",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_homeworld", true]
       },
       "save_as": "what_now_homeworld",
@@ -1310,7 +1310,7 @@
       "id": "how_is_ultron",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_is_ultron", true]
       },
       "save_as": "how_is_ultron",
@@ -1401,7 +1401,7 @@
       "id": "i_am0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK1", 1]
       },
       "save_as": "i_am0",
@@ -1417,7 +1417,7 @@
       "id": "my_ship0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK1", 2]
       },
       "save_as": "my_ship0",
@@ -1433,7 +1433,7 @@
       "id": "from_alliance0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK1", 3]
       },
       "save_as": "from_alliance0",
@@ -1449,7 +1449,7 @@
       "id": "are_you_copying",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK1", 4]
       },
       "save_as": "are_you_copying",
@@ -1465,7 +1465,7 @@
       "id": "why_copy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK1", 5]
       },
       "save_as": "why_copy",
@@ -1481,7 +1481,7 @@
       "id": "tell_us_of_your_species",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK2", 1]
       },
       "save_as": "tell_us_of_your_species",
@@ -1497,7 +1497,7 @@
       "id": "plants_arent_intelligent",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_STACK2", 2]
       },
       "save_as": "plants_arent_intelligent",
@@ -1513,7 +1513,7 @@
       "id": "anyone_around_here.effect1",
       "kind": "action",
       "action": {
-        "verb": "galaxy.reveal",
+        "action": "galaxy.reveal",
         "args": ["utwig"]
       },
       "save_as": "anyone_around_here_effect1",
@@ -1523,7 +1523,7 @@
       "id": "anyone_around_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 1]
       },
       "save_as": "anyone_around_here",
@@ -1539,7 +1539,7 @@
       "id": "what_relation_to_utwig",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 1]
       },
       "save_as": "what_relation_to_utwig",
@@ -1555,7 +1555,7 @@
       "id": "whats_wrong_with_utwig",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 2]
       },
       "save_as": "whats_wrong_with_utwig",
@@ -1571,7 +1571,7 @@
       "id": "whats_ultron.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ULTRON_CONDITION", 1]
       },
       "save_as": "whats_ultron_effect1",
@@ -1581,7 +1581,7 @@
       "id": "whats_ultron",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 0]
       },
       "save_as": "whats_ultron",
@@ -1616,7 +1616,7 @@
       "id": "where_get_repairs",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_ULTRON_HELP", 1]
       },
       "save_as": "where_get_repairs",
@@ -1632,7 +1632,7 @@
       "id": "look_i_slightly_repaired",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_ULTRON_HELP", 1]
       },
       "save_as": "look_i_slightly_repaired",
@@ -1648,7 +1648,7 @@
       "id": "look_i_repaired_lots",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_ULTRON_HELP", 1]
       },
       "save_as": "look_i_repaired_lots",
@@ -1664,7 +1664,7 @@
       "id": "got_fixed_ultron",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_ULTRON_HELP", 1]
       },
       "save_as": "got_fixed_ultron",

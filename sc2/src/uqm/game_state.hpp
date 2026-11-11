@@ -20,6 +20,7 @@
 
 namespace uqm {
 class Fleet;
+class Inventory;
 class SIS;
 // Transient per-player navigation memory, retained across encounter mode swaps.
 // Portal coordinates were process statics and are not part of the legacy save.
@@ -208,6 +209,10 @@ public:
     // C++ callers retain the enum overloads. Names address existing save fields.
     unsigned readNamed(std::string_view field) const;
     void setNamed(std::string_view field, unsigned value);
+    unsigned maximumNamed(std::string_view field) const;
+    // Validate the complete batch before writing any packed field. Duplicate
+    // names and invalid values throw; no writes/allocations occur during commit.
+    void setNamedBatch(const std::vector<std::pair<std::string, unsigned>> &changes);
     bool read(StoryFlag flag) const;
     unsigned read(StoryCounter counter) const;
     void set(StoryFlag flag);
@@ -280,6 +285,8 @@ public:
     void setFuel(std::uint32_t fuel) noexcept;
     void setCrew(std::uint16_t crew) noexcept;
     // Borrow this player's economic tables; valid until the player is destroyed.
+    Inventory &inventory() noexcept;
+    const Inventory &inventory() const noexcept;
     GameData &gameData() noexcept;
     const GameData &gameData() const noexcept;
     // Borrow owned flagship/escorts; valid for this player's lifetime.
@@ -297,7 +304,7 @@ private:
     UserProfile profile_;
     std::unique_ptr<detail::PlayerStorage> storage_;
     StoryState story_;
-    std::unique_ptr<Fleet> fleet_;
+    std::unique_ptr<Inventory> inventory_;
 };
 
 // Storage-independent lookup boundary. Initially owns one player, not a list.

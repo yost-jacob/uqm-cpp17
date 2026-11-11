@@ -726,7 +726,7 @@
       "id": "exit.we_will_take_care_of_base",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "WILL_DESTROY_BASE", 1]
       },
       "save_as": "exit_we_will_take_care_of_base",
@@ -748,7 +748,7 @@
       "id": "exit.base_was_abandoned",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
       },
       "save_as": "exit_base_was_abandoned",
@@ -764,7 +764,7 @@
       "id": "exit.i_lied_it_was_abandoned",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
       },
       "save_as": "exit_i_lied_it_was_abandoned",
@@ -780,7 +780,7 @@
       "id": "exit.oh_yes_big_fight",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
       },
       "save_as": "exit_oh_yes_big_fight",
@@ -796,7 +796,7 @@
       "id": "exit.i_cant_talk_about_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
       },
       "save_as": "exit_i_cant_talk_about_it",
@@ -812,7 +812,7 @@
       "id": "cook_their_butts.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_AVAILABLE", 1]
       },
       "save_as": "cook_their_butts_effect1",
@@ -822,7 +822,7 @@
       "id": "cook_their_butts",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]
       },
       "save_as": "cook_their_butts",
@@ -838,7 +838,7 @@
       "id": "overthrow_evil_aliens.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_AVAILABLE", 1]
       },
       "save_as": "overthrow_evil_aliens_effect1",
@@ -848,7 +848,7 @@
       "id": "overthrow_evil_aliens",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]
       },
       "save_as": "overthrow_evil_aliens",
@@ -864,7 +864,7 @@
       "id": "annihilate_those_monsters.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_AVAILABLE", 1]
       },
       "save_as": "annihilate_those_monsters_effect1",
@@ -874,7 +874,7 @@
       "id": "annihilate_those_monsters",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]
       },
       "save_as": "annihilate_those_monsters",
@@ -890,7 +890,7 @@
       "id": "name.0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 0]
       },
       "save_as": "name_0",
@@ -906,7 +906,7 @@
       "id": "name.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 1]
       },
       "save_as": "name_1",
@@ -922,7 +922,7 @@
       "id": "name.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 2]
       },
       "save_as": "name_2",
@@ -947,7 +947,7 @@
       "id": "name.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NEW_ALLIANCE_NAME", 3]
       },
       "save_as": "name_3",
@@ -1055,8 +1055,8 @@
       "id": "no.i_lost_my_lander.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
-        "args": ["story", "LANDERS_LOST", 1]
+        "action": "set",
+        "args": [{"LANDERS_LOST": 1}]
       },
       "save_as": "no_i_lost_my_lander_effect2",
       "next": "no.i_lost_my_lander.speech"
@@ -1065,7 +1065,7 @@
       "id": "no.i_lost_my_lander.effect1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "no_i_lost_my_lander_effect1",
@@ -1075,8 +1075,8 @@
       "id": "no.i_lost_my_lander",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
-        "args": ["landers", 1]
+        "action": "transact",
+        "args": [{}, {"landers": 1}]
       },
       "save_as": "no_i_lost_my_lander",
       "next": "no.i_lost_my_lander.effect1"
@@ -1091,7 +1091,7 @@
       "id": "no.i_lost_another_lander.effect1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "no_i_lost_another_lander_effect1",
@@ -1101,8 +1101,8 @@
       "id": "no.i_lost_another_lander",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
-        "args": ["landers", 1]
+        "action": "transact",
+        "args": [{}, {"landers": 1}]
       },
       "save_as": "no_i_lost_another_lander",
       "next": "no.i_lost_another_lander.effect1"
@@ -1117,7 +1117,7 @@
       "id": "no.need_fuel_mercury.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", 1]
       },
       "save_as": "no_need_fuel_mercury_effect1",
@@ -1127,7 +1127,7 @@
       "id": "no.need_fuel_mercury",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "no_need_fuel_mercury",
@@ -1143,7 +1143,7 @@
       "id": "no.need_fuel_again",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "no_need_fuel_again",
@@ -1159,7 +1159,7 @@
       "id": "where.can.radios",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_can_i_get_radios", true]
       },
       "save_as": "where_can_radios",
@@ -1245,8 +1245,8 @@
       "id": "ask.i_lost_my_lander.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
-        "args": ["story", "LANDERS_LOST", 1]
+        "action": "set",
+        "args": [{"LANDERS_LOST": 1}]
       },
       "save_as": "ask_i_lost_my_lander_effect2",
       "next": "ask.i_lost_my_lander.speech"
@@ -1255,7 +1255,7 @@
       "id": "ask.i_lost_my_lander.effect1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "ask_i_lost_my_lander_effect1",
@@ -1265,8 +1265,8 @@
       "id": "ask.i_lost_my_lander",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
-        "args": ["landers", 1]
+        "action": "transact",
+        "args": [{}, {"landers": 1}]
       },
       "save_as": "ask_i_lost_my_lander",
       "next": "ask.i_lost_my_lander.effect1"
@@ -1281,7 +1281,7 @@
       "id": "ask.i_lost_another_lander.effect1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "ask_i_lost_another_lander_effect1",
@@ -1291,8 +1291,8 @@
       "id": "ask.i_lost_another_lander",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
-        "args": ["landers", 1]
+        "action": "transact",
+        "args": [{}, {"landers": 1}]
       },
       "save_as": "ask_i_lost_another_lander",
       "next": "ask.i_lost_another_lander.effect1"
@@ -1307,7 +1307,7 @@
       "id": "ask.need_fuel_mercury.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", 1]
       },
       "save_as": "ask_need_fuel_mercury_effect1",
@@ -1317,7 +1317,7 @@
       "id": "ask.need_fuel_mercury",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "ask_need_fuel_mercury",
@@ -1333,7 +1333,7 @@
       "id": "ask.need_fuel_again",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "ask_need_fuel_again",
@@ -1349,7 +1349,7 @@
       "id": "where.get.radios",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_get_radios", true]
       },
       "save_as": "where_get_radios",
@@ -1509,7 +1509,7 @@
       "id": "moon.about.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_YACK_STACK1", 1]
       },
       "save_as": "moon_about_first",
@@ -1531,8 +1531,8 @@
       "id": "moon.i_lost_my_lander.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
-        "args": ["story", "LANDERS_LOST", 1]
+        "action": "set",
+        "args": [{"LANDERS_LOST": 1}]
       },
       "save_as": "moon_i_lost_my_lander_effect2",
       "next": "moon.i_lost_my_lander.speech"
@@ -1541,7 +1541,7 @@
       "id": "moon.i_lost_my_lander.effect1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "moon_i_lost_my_lander_effect1",
@@ -1551,8 +1551,8 @@
       "id": "moon.i_lost_my_lander",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
-        "args": ["landers", 1]
+        "action": "transact",
+        "args": [{}, {"landers": 1}]
       },
       "save_as": "moon_i_lost_my_lander",
       "next": "moon.i_lost_my_lander.effect1"
@@ -1567,7 +1567,7 @@
       "id": "moon.i_lost_another_lander.effect1",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["crew", 4]
       },
       "save_as": "moon_i_lost_another_lander_effect1",
@@ -1577,8 +1577,8 @@
       "id": "moon.i_lost_another_lander",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
-        "args": ["landers", 1]
+        "action": "transact",
+        "args": [{}, {"landers": 1}]
       },
       "save_as": "moon_i_lost_another_lander",
       "next": "moon.i_lost_another_lander.effect1"
@@ -1593,7 +1593,7 @@
       "id": "moon.need_fuel_luna.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "GIVEN_FUEL_BEFORE", 1]
       },
       "save_as": "moon_need_fuel_luna_effect1",
@@ -1603,7 +1603,7 @@
       "id": "moon.need_fuel_luna",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "moon_need_fuel_luna",
@@ -1619,7 +1619,7 @@
       "id": "moon.need_fuel_again",
       "kind": "action",
       "action": {
-        "verb": "ship.adjust",
+        "action": "ship.adjust",
         "args": ["fuel", 5]
       },
       "save_as": "moon_need_fuel_again",
@@ -1717,7 +1717,7 @@
       "id": "we_are_vindicator0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "we_are_vindicator0", true]
       },
       "save_as": "we_are_vindicator0",
@@ -1733,7 +1733,7 @@
       "id": "our_mission_was_secret",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "our_mission_was_secret", true]
       },
       "save_as": "our_mission_was_secret",
@@ -1749,7 +1749,7 @@
       "id": "first_give_info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "first_give_info", true]
       },
       "save_as": "first_give_info",
@@ -1765,7 +1765,7 @@
       "id": "whats_this_starbase",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_this_starbase", true]
       },
       "save_as": "whats_this_starbase",
@@ -1781,7 +1781,7 @@
       "id": "what_about_earth",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_earth", true]
       },
       "save_as": "what_about_earth",
@@ -1797,7 +1797,7 @@
       "id": "where_are_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_are_urquan", true]
       },
       "save_as": "where_are_urquan",
@@ -2011,7 +2011,7 @@
       "id": "probe",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_was_red_thing", true]
       },
       "save_as": "probe",
@@ -2070,7 +2070,7 @@
       "id": "radios.transfer",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "RADIOACTIVES_PROVIDED", 1]
       },
       "save_as": "radios_transfer",
@@ -2187,7 +2187,7 @@
       "id": "first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "STARBASE_VISITED", 1]
       },
       "save_as": "first",

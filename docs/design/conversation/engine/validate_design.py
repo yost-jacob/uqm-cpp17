@@ -120,8 +120,8 @@ def validate_example(name, scripts, banks):
         if isinstance(value, dict):
             if "query" in value:
                 assert value["query"] in query_names
-            if "verb" in value:
-                assert value["verb"] in action_names
+            if "verb" in value or isinstance(value.get("action"), str):
+                assert value.get("verb", value.get("action")) in action_names
             for v in value.values():
                 inspect(v)
         elif isinstance(value, list):
@@ -156,9 +156,9 @@ def validate_example(name, scripts, banks):
             edge["action"] for edge in node.get("responses", []) if "action" in edge
         ]
         for action in actions:
-            if action.get("verb") == "sequence.next":
+            if action.get("action", action.get("verb")) == "sequence.next":
                 phrase(action["args"][2])
-            if action.get("verb") == "handlers.prepare_report":
+            if action.get("action", action.get("verb")) == "handlers.prepare_report":
                 assert action["args"][0] in d["_coverage"]["native_reports"]
     inspect(d)
     reached = set()

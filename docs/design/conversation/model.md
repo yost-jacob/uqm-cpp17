@@ -41,7 +41,7 @@ Conditions are read-only and may be reevaluated. Actions can return failure,
 partial-success or quote data; decision nodes inspect that saved result without
 executing the operation a second time.
 
-There are [21 consolidated domain queries and 25 actions](engine/verbs.md), plus
+There are [21 consolidated domain queries and 27 actions](engine/verbs.md), plus
 typed state reads, comparisons, boolean composition and bounded integer arithmetic.
 The [legacy mapping](engine/legacy-verbs.json) classifies every active call site
 across all 27 scripts. Routing becomes edges; packed encodings become native

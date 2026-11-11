@@ -31,7 +31,7 @@ def definition(script, resource, bank, symbols):
         return {"get": ["result", "turn." + field]}
 
     def action(selection):
-        return {"verb": "handlers.legacy_turn", "args": [script, selection]}
+        return {"action": "handlers.legacy_turn", "args": [script, selection]}
 
     nodes = [
         {

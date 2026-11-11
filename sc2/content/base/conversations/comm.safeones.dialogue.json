@@ -1036,7 +1036,7 @@
       "id": "exit.we_attack_again",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_we_attack_again",
@@ -1052,7 +1052,7 @@
       "id": "exit.surrender_or_die",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_surrender_or_die",
@@ -1068,7 +1068,7 @@
       "id": "exit.we_are_vindicator0",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_we_are_vindicator0",
@@ -1084,7 +1084,7 @@
       "id": "exit.screw_password",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_screw_password",
@@ -1100,7 +1100,7 @@
       "id": "exit.gort_merenga",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_gort_merenga",
@@ -1116,7 +1116,7 @@
       "id": "exit.guph_florp",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_guph_florp",
@@ -1132,7 +1132,7 @@
       "id": "exit.wagngl_fthagn",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_wagngl_fthagn",
@@ -1148,7 +1148,7 @@
       "id": "exit.pleeese",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_pleeese",
@@ -1164,7 +1164,7 @@
       "id": "exit.bye_no_ally_offer",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_no_ally_offer",
@@ -1180,7 +1180,7 @@
       "id": "exit.bye_angry_spathi",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_angry_spathi",
@@ -1196,7 +1196,7 @@
       "id": "exit.bye_ally",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_ally",
@@ -1212,7 +1212,7 @@
       "id": "exit.too_dangerous",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_too_dangerous",
@@ -1228,7 +1228,7 @@
       "id": "exit.think_more",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_think_more",
@@ -1244,7 +1244,7 @@
       "id": "exit.bye_before_party",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_before_party",
@@ -1260,7 +1260,7 @@
       "id": "exit.bye_from_party_1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_from_party_1",
@@ -1276,7 +1276,7 @@
       "id": "exit.bye_from_party_2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_from_party_2",
@@ -1292,7 +1292,7 @@
       "id": "exit.bye_from_party_3",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_from_party_3",
@@ -1308,7 +1308,7 @@
       "id": "exit.already_got_them.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_already_got_them_effect4",
@@ -1318,7 +1318,7 @@
       "id": "exit.already_got_them.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_MANNER", 3]
       },
       "save_as": "exit_already_got_them_effect3",
@@ -1328,7 +1328,7 @@
       "id": "exit.already_got_them.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_PARTY", 1]
       },
       "save_as": "exit_already_got_them_effect2",
@@ -1338,7 +1338,7 @@
       "id": "exit.already_got_them.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_VISITS", 0]
       },
       "save_as": "exit_already_got_them_effect1",
@@ -1348,7 +1348,7 @@
       "id": "exit.already_got_them",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 0]
       },
       "save_as": "exit_already_got_them",
@@ -1364,7 +1364,7 @@
       "id": "exit.i_accept.effect3",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_i_accept_effect3",
@@ -1374,7 +1374,7 @@
       "id": "exit.i_accept.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_VISITS", 0]
       },
       "save_as": "exit_i_accept_effect2",
@@ -1384,7 +1384,7 @@
       "id": "exit.i_accept.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_MANNER", 3]
       },
       "save_as": "exit_i_accept_effect1",
@@ -1394,7 +1394,7 @@
       "id": "exit.i_accept",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_QUEST", 1]
       },
       "save_as": "exit_i_accept",
@@ -1410,7 +1410,7 @@
       "id": "exit.do_as_we_say.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_do_as_we_say_effect4",
@@ -1420,7 +1420,7 @@
       "id": "exit.do_as_we_say.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_VISITS", 0]
       },
       "save_as": "exit_do_as_we_say_effect3",
@@ -1430,7 +1430,7 @@
       "id": "exit.do_as_we_say.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 0]
       },
       "save_as": "exit_do_as_we_say_effect2",
@@ -1440,7 +1440,7 @@
       "id": "exit.do_as_we_say.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["SPATHI_SHIELD_EVENT", 6, 0, 0]
       },
       "save_as": "exit_do_as_we_say_effect1",
@@ -1450,7 +1450,7 @@
       "id": "exit.do_as_we_say",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["spathi", "allied"]
       },
       "save_as": "exit_do_as_we_say",
@@ -1472,7 +1472,7 @@
       "id": "killed.1.true.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "killed_1_true_effect4",
@@ -1482,7 +1482,7 @@
       "id": "killed.1.true.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_MANNER", 3]
       },
       "save_as": "killed_1_true_effect3",
@@ -1492,7 +1492,7 @@
       "id": "killed.1.true.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_PARTY", 1]
       },
       "save_as": "killed_1_true_effect2",
@@ -1502,7 +1502,7 @@
       "id": "killed.1.true.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_VISITS", 0]
       },
       "save_as": "killed_1_true_effect1",
@@ -1512,7 +1512,7 @@
       "id": "killed.1.true",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 0]
       },
       "save_as": "killed_1_true",
@@ -1528,7 +1528,7 @@
       "id": "killed.1.lie.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "killed_1_lie_effect1",
@@ -1538,7 +1538,7 @@
       "id": "killed.1.lie",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "LIED_ABOUT_CREATURES", 1]
       },
       "save_as": "killed_1_lie",
@@ -1560,7 +1560,7 @@
       "id": "killed.2.true.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "killed_2_true_effect4",
@@ -1570,7 +1570,7 @@
       "id": "killed.2.true.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_MANNER", 3]
       },
       "save_as": "killed_2_true_effect3",
@@ -1580,7 +1580,7 @@
       "id": "killed.2.true.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_PARTY", 1]
       },
       "save_as": "killed_2_true_effect2",
@@ -1590,7 +1590,7 @@
       "id": "killed.2.true.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_VISITS", 0]
       },
       "save_as": "killed_2_true_effect1",
@@ -1600,7 +1600,7 @@
       "id": "killed.2.true",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 0]
       },
       "save_as": "killed_2_true",
@@ -1616,7 +1616,7 @@
       "id": "killed.2.lie.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "killed_2_lie_effect1",
@@ -1626,7 +1626,7 @@
       "id": "killed.2.lie",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "LIED_ABOUT_CREATURES", 2]
       },
       "save_as": "killed_2_lie",
@@ -1661,7 +1661,7 @@
       "id": "info.done",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "like_some_info", true]
       },
       "save_as": "info_done",
@@ -1677,7 +1677,7 @@
       "id": "what_about_hierarchy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_hierarchy", true]
       },
       "save_as": "what_about_hierarchy",
@@ -1693,7 +1693,7 @@
       "id": "what_about_history",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_history", true]
       },
       "save_as": "what_about_history",
@@ -1709,7 +1709,7 @@
       "id": "what_about_alliance",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_alliance", true]
       },
       "save_as": "what_about_alliance",
@@ -1725,7 +1725,7 @@
       "id": "what_about_other",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_other", true]
       },
       "save_as": "what_about_other",
@@ -1741,7 +1741,7 @@
       "id": "what_about_precursors",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_precursors", true]
       },
       "save_as": "what_about_precursors",
@@ -1800,7 +1800,7 @@
       "id": "ally.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up", true]
       },
       "save_as": "ally_info",
@@ -1816,7 +1816,7 @@
       "id": "ally.info.urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_URQUAN_STORY", 1]
       },
       "save_as": "ally_info_urquan",
@@ -1826,7 +1826,7 @@
       "id": "ally.info.kohrah",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_KOHR_AH_STORY", 1]
       },
       "save_as": "ally_info_kohrah",
@@ -1836,7 +1836,7 @@
       "id": "ally.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SPATHI_INFO",
@@ -1863,7 +1863,7 @@
       "id": "fishy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_INFO", 5]
       },
       "save_as": "fishy",
@@ -1879,7 +1879,7 @@
       "id": "resources_please",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "resources_please", true]
       },
       "save_as": "resources_please",
@@ -1932,7 +1932,7 @@
       "id": "little_mistake",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "little_mistake", true]
       },
       "save_as": "little_mistake",
@@ -1948,7 +1948,7 @@
       "id": "talk_test",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "talk_test", true]
       },
       "save_as": "talk_test",
@@ -1964,7 +1964,7 @@
       "id": "zapped_a_few",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "zapped_a_few", true]
       },
       "save_as": "zapped_a_few",
@@ -2045,7 +2045,7 @@
       "id": "what_test.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_SPATHI_QUEST", 1]
       },
       "save_as": "what_test_effect1",
@@ -2055,7 +2055,7 @@
       "id": "what_test",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_test", true]
       },
       "save_as": "what_test",
@@ -2071,7 +2071,7 @@
       "id": "tell_evil.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "prove_strength", true]
       },
       "save_as": "tell_evil_effect2",
@@ -2081,7 +2081,7 @@
       "id": "tell_evil.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_evil", true]
       },
       "save_as": "tell_evil_effect1",
@@ -2091,7 +2091,7 @@
       "id": "tell_evil",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_SPATHI_EVIL", 1]
       },
       "save_as": "tell_evil",
@@ -2107,7 +2107,7 @@
       "id": "prove_strength",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "prove_strength", true]
       },
       "save_as": "prove_strength",
@@ -2123,7 +2123,7 @@
       "id": "why_dont_you_do_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_dont_you_do_it", true]
       },
       "save_as": "why_dont_you_do_it",
@@ -2233,7 +2233,7 @@
       "id": "learn.known.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_evil", true]
       },
       "save_as": "learn_known_effect1",
@@ -2243,7 +2243,7 @@
       "id": "learn.known",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_test", true]
       },
       "save_as": "learn_known",
@@ -2259,7 +2259,7 @@
       "id": "learn.unknown",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_test", true]
       },
       "save_as": "learn_unknown",
@@ -2275,7 +2275,7 @@
       "id": "misunderstanding.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_VISITS", 0]
       },
       "save_as": "misunderstanding_effect1",
@@ -2285,7 +2285,7 @@
       "id": "misunderstanding",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_MANNER", 3]
       },
       "save_as": "misunderstanding",
@@ -2307,7 +2307,7 @@
       "id": "hand_in_friendship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "hand_in_friendship", true]
       },
       "save_as": "hand_in_friendship",
@@ -2323,7 +2323,7 @@
       "id": "stronger",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "stronger", true]
       },
       "save_as": "stronger",
@@ -2339,7 +2339,7 @@
       "id": "yes_we_are",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "yes_we_are", true]
       },
       "save_as": "yes_we_are",
@@ -2355,7 +2355,7 @@
       "id": "share_info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "share_info", true]
       },
       "save_as": "share_info",
@@ -2371,7 +2371,7 @@
       "id": "give_us_resources",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "give_us_resources", true]
       },
       "save_as": "give_us_resources",
@@ -2497,7 +2497,7 @@
       "id": "deals_a_deal",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "deals_a_deal", true]
       },
       "save_as": "deals_a_deal",
@@ -2513,7 +2513,7 @@
       "id": "how_long",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_long", true]
       },
       "save_as": "how_long",
@@ -2529,7 +2529,7 @@
       "id": "reneging",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "reneging", true]
       },
       "save_as": "reneging",
@@ -2545,7 +2545,7 @@
       "id": "return_beasts",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "return_beasts", true]
       },
       "save_as": "return_beasts",
@@ -2561,7 +2561,7 @@
       "id": "minds_and_might",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "minds_and_might", true]
       },
       "save_as": "minds_and_might",
@@ -2577,7 +2577,7 @@
       "id": "fellowship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "fellowship", true]
       },
       "save_as": "fellowship",
@@ -2756,7 +2756,7 @@
       "id": "good_password.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 0]
       },
       "save_as": "good_password_effect1",
@@ -2766,7 +2766,7 @@
       "id": "good_password",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_SPATHI_PASSWORD", 1]
       },
       "save_as": "good_password",
@@ -2782,7 +2782,7 @@
       "id": "council.peace",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "we_come_in_peace", true]
       },
       "save_as": "council_peace",
@@ -2798,7 +2798,7 @@
       "id": "spathi_on_pluto",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "spathi_on_pluto", true]
       },
       "save_as": "spathi_on_pluto",
@@ -2814,7 +2814,7 @@
       "id": "hostage.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "FOUND_PLUTO_SPATHI", 3]
       },
       "save_as": "hostage_effect1",
@@ -2824,7 +2824,7 @@
       "id": "hostage",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "hostage", true]
       },
       "save_as": "hostage",
@@ -2840,7 +2840,7 @@
       "id": "killed_fwiffo.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "FOUND_PLUTO_SPATHI", 3]
       },
       "save_as": "killed_fwiffo_effect1",
@@ -2850,7 +2850,7 @@
       "id": "killed_fwiffo",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "killed_fwiffo", true]
       },
       "save_as": "killed_fwiffo",
@@ -2866,7 +2866,7 @@
       "id": "fwiffo_fine",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "fwiffo_fine", true]
       },
       "save_as": "fwiffo_fine",
@@ -2882,7 +2882,7 @@
       "id": "surrender",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "surrender", true]
       },
       "save_as": "surrender",
@@ -3022,7 +3022,7 @@
       "id": "what_do_i_get",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_do_i_get", true]
       },
       "save_as": "what_do_i_get",
@@ -3164,7 +3164,7 @@
       "id": "password.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 1]
       },
       "save_as": "password_first",
@@ -3180,7 +3180,7 @@
       "id": "password.again",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_HOME_VISITS", 1]
       },
       "save_as": "password_again",
@@ -3256,7 +3256,7 @@
       "id": "hate",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hate",
@@ -3266,7 +3266,7 @@
       "id": "ally.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SPATHI_HOME_VISITS", [["HELLO_ALLIES_1"], ["HELLO_ALLIES_2"], ["HELLO_ALLIES_3"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -3282,7 +3282,7 @@
       "id": "party.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SPATHI_HOME_VISITS", [["MUST_PARTY_1"], ["MUST_PARTY_2"], ["MUST_PARTY_3"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -3319,7 +3319,7 @@
       "id": "quest.lie.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "quest_lie_effect1",
@@ -3329,7 +3329,7 @@
       "id": "quest.lie",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SPATHI_MANNER", 2]
       },
       "save_as": "quest_lie",

@@ -1,5 +1,7 @@
 #include "verb_factory.hpp"
 #include <algorithm>
+#include <array>
+#include <set>
 #include <limits>
 #include <utility>
 namespace uqm::dialogue {
@@ -165,7 +167,7 @@ std::vector<std::string> QueryFactory::queryNames() {
     return result;
 }
 std::vector<std::string> VerbFactory::actionNames() {
-    std::vector<std::string> result = {"state.set", "state.add", "state.bits", "sequence.next"};
+    std::vector<std::string> result = {"set", "transact", "state.set", "state.add", "state.bits", "sequence.next"};
     for (const auto &spec : actions)
         result.emplace_back(spec.name);
     return result;
@@ -516,9 +518,68 @@ Condition QueryFactory::condition(const Json &definition) const {
     return std::bind(&QueryFactory::truth, value(definition));
 }
 Action VerbFactory::action(const Json &definition) const {
-    shape(definition, {"verb", "args"});
-    const auto name = text(definition.at("verb"));
+    shape(definition, {"action", "verb", "args"});
+    if (definition.contains("action") == definition.contains("verb"))
+        throw std::invalid_argument("action needs exactly one name field");
+    const auto name = text(definition.at(definition.contains("action") ? "action" : "verb"));
     const auto a = definition.value("args", Json::array());
+    if (name == "set") {
+        if (!a.is_array() || a.empty()) throw std::invalid_argument("set needs one or more field objects");
+        struct Assignment { std::string key; Integer maximum; Value value; };
+        std::vector<Assignment> assignments;
+        std::set<std::string> seen;
+        for (const auto &fields : a) {
+            if (!fields.is_object() || fields.empty()) throw std::invalid_argument("set arguments must be nonempty objects");
+            for (const auto &field : fields.items()) {
+                if (!seen.emplace(field.key()).second) throw std::invalid_argument("duplicate story key: " + field.key());
+                const auto maximum = state_.storyMaximum(field.key());
+                auto evaluate = value(field.value());
+                if (!field.value().is_object()) {
+                    const auto literal = field.value().is_boolean() ? Integer(field.value().get<bool>()) : number(field.value());
+                    if (literal < 0 || literal > maximum) throw std::out_of_range("story value exceeds its field: " + field.key());
+                }
+                assignments.push_back({field.key(), maximum, std::move(evaluate)});
+            }
+        }
+        return [state = &state_, assignments = std::move(assignments)] {
+            std::vector<std::pair<std::string, Json>> changes;
+            changes.reserve(assignments.size());
+            for (const auto &entry : assignments) {
+                auto evaluated = std::invoke(entry.value);
+                const auto n = evaluated.is_boolean() ? Integer(evaluated.get<bool>()) : number(evaluated);
+                if (n < 0 || n > entry.maximum) throw std::out_of_range("story value exceeds its field: " + entry.key);
+                changes.emplace_back(entry.key, std::move(evaluated));
+            }
+            return state->setStoryBatch(changes);
+        };
+    }
+    if (name == "transact") {
+        if (!a.is_array() || a.size() != 2 || !a[0].is_object() || !a[1].is_object())
+            throw std::invalid_argument("transact needs player-gives and player-receives packages");
+        if (a[0].empty() && a[1].empty()) throw std::invalid_argument("empty inventory transaction");
+        using BoundPackage = std::vector<std::pair<std::string, Value>>;
+        std::array<BoundPackage, 2> packages;
+        for (std::size_t side = 0; side < 2; ++side) {
+            for (const auto &entry : a[side].items()) {
+                state_.validateInventoryKey(entry.key());
+                if (!entry.value().is_object() && positive(entry.value()) == 0)
+                    throw std::invalid_argument("transaction quantities must be positive");
+                packages[side].emplace_back(entry.key(), value(entry.value()));
+            }
+        }
+        return [state = &state_, packages = std::move(packages)] {
+            InventoryTransaction request;
+            auto evaluate = [](const BoundPackage &source, InventoryPackage &out) {
+                for (const auto &[key, value] : source) {
+                    const auto amount = positive(std::invoke(value));
+                    if (!amount) throw std::invalid_argument("transaction quantities must be positive");
+                    out.emplace(key, amount);
+                }
+            };
+            evaluate(packages[0], request.give); evaluate(packages[1], request.receive);
+            return state->transact(request);
+        };
+    }
     if (name == "state.set" || name == "state.add" || name == "state.bits" ||
         name == "sequence.next") {
         const auto expected = (name == "state.bits" || name == "sequence.next") ? 4u : 3u;

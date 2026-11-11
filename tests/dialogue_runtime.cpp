@@ -32,7 +32,15 @@ BOOST_AUTO_TEST_CASE(all_live_graphs_preserve_turn_order_completion_and_all_eigh
         dd::validateLiveDefinition(data, data.at("resource"), data.at("phrases").size());
         ++files;
         if (data.at("_migration").at("status") != "native_handlers") {
-            dd::State validationState;
+            struct DefinitionState final : dd::State {
+                dd::Integer storyMaximum(const std::string &name) const override {
+                    if (name != "LANDERS_LOST") throw std::invalid_argument("unexpected story field");
+                    return 255;
+                }
+                void validateInventoryKey(const std::string &key) const override {
+                    if (key != "landers") throw std::invalid_argument("unexpected inventory key");
+                }
+            } validationState;
             const auto graph = dd::Conversation::load(data, validationState);
             BOOST_TEST(graph->nodeCount() == data.at("node_count").get<std::size_t>());
             continue;
@@ -147,6 +155,25 @@ struct ProbeState : dd::State {
     unsigned coordinates = 0, fades = 0, calendarEvents = 0, randomDraws = 0;
     dd::Integer biomass = 0, escorts = 0, slots = 12;
     dd::Integer shipFuel = 5, landers = 1, crew = 18, radioactive = 0;
+    dd::Integer storyMaximum(const std::string &name) const override {
+        if (name != "LANDERS_LOST") throw std::invalid_argument("unexpected story batch key");
+        return 255;
+    }
+    dd::Result setStoryBatch(const std::vector<std::pair<std::string, dd::Json>> &changes) override {
+        auto staged = fields;
+        for (const auto &[key, value] : changes) staged[key] = value.get<dd::Integer>();
+        fields.swap(staged);
+        return {};
+    }
+    void validateInventoryKey(const std::string &key) const override {
+        if (key != "landers") throw std::invalid_argument("unexpected transaction key");
+    }
+    dd::Result transact(const uqm::InventoryTransaction &request) override {
+        if (!request.give.empty() || request.receive != uqm::InventoryPackage{{"landers",1}})
+            throw std::invalid_argument("unexpected transaction");
+        ++landers;
+        return {};
+    }
     dd::Integer fuel() const override {
         return shipFuel;
     }
@@ -882,7 +909,7 @@ BOOST_AUTO_TEST_CASE(graph_owned_scripts_reference_existing_native_phrases) {
                     for (const auto &response : node.at("responses"))
                         check(response.at("text"));
             } else if (node.at("kind") == "action" &&
-                       node.at("action").at("verb") == "sequence.next") {
+                       node.at("action").value("action", node.at("action").value("verb", "")) == "sequence.next") {
                 check(node.at("action").at("args")[2]);
             }
         }

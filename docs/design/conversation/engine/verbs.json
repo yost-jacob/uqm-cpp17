@@ -172,6 +172,22 @@
   ],
   "actions": [
     {
+      "verb": "set",
+      "min_args": 1,
+      "max_args": null,
+      "arguments": ["fields"],
+      "state_accessor": "setStoryBatch",
+      "effect": "mutating"
+    },
+    {
+      "verb": "transact",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["give", "receive"],
+      "state_accessor": "transact",
+      "effect": "mutating"
+    },
+    {
       "verb": "state.set",
       "min_args": 3,
       "max_args": 3,

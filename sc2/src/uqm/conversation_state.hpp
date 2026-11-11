@@ -13,6 +13,12 @@ class CampaignDialogueState final : public dialogue::LegacyTurnState {
     CampaignDialogueState(PlayerEntity &, CampaignClock &, std::string, Callback, Report, dialogue::Json);
     dialogue::Json read(const std::string &, const std::string &) const override;
     dialogue::Result set(const std::string &, const std::string &, const dialogue::Json &) override;
+    dialogue::Integer storyMaximum(const std::string &) const override;
+    dialogue::Result setStoryBatch(const std::vector<std::pair<std::string, dialogue::Json>> &) override;
+    void validateInventoryKey(const std::string &) const override;
+    dialogue::Result transact(const InventoryTransaction &) override;
+    bool hasItem(const std::string &) const override;
+    dialogue::Integer balance(const std::string &) const override;
     dialogue::Result setOutcome(const std::string &) override;
     dialogue::Integer randomBelow(dialogue::Integer) override;
     dialogue::Result scheduleEvent(const std::string &, dialogue::Integer, dialogue::Integer,

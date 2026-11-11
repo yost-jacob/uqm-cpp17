@@ -567,7 +567,7 @@
       "id": "exit.bye",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye",
@@ -583,7 +583,7 @@
       "id": "exit.bye_shielded",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_shielded",
@@ -599,7 +599,7 @@
       "id": "exit.bye_after_bomb",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_after_bomb",
@@ -615,7 +615,7 @@
       "id": "refit.effect6",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "refit_effect6",
@@ -625,7 +625,7 @@
       "id": "refit.effect5",
       "kind": "action",
       "action": {
-        "verb": "ship.configure",
+        "action": "ship.configure",
         "args": ["chmmr_bomb_refit", {"literal": {}}]
       },
       "save_as": "refit_effect5",
@@ -635,7 +635,7 @@
       "id": "refit.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_BOMB_ON_SHIP", 0]
       },
       "save_as": "refit_effect4",
@@ -645,7 +645,7 @@
       "id": "refit.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_BOMB_STATE", 2]
       },
       "save_as": "refit_effect3",
@@ -655,7 +655,7 @@
       "id": "refit.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_STACK", 0]
       },
       "save_as": "refit_effect2",
@@ -665,7 +665,7 @@
       "id": "refit.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_HOME_VISITS", 0]
       },
       "save_as": "refit_effect1",
@@ -675,7 +675,7 @@
       "id": "refit",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["chmmr", "allied"]
       },
       "save_as": "refit",
@@ -697,7 +697,7 @@
       "id": "tech_help",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["chmmr", "allied"]
       },
       "save_as": "tech_help",
@@ -713,7 +713,7 @@
       "id": "further_assistance",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "further_assistance", true]
       },
       "save_as": "further_assistance",
@@ -729,7 +729,7 @@
       "id": "where_weapon",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_weapon", true]
       },
       "save_as": "where_weapon",
@@ -745,7 +745,7 @@
       "id": "where_distraction",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_distraction", true]
       },
       "save_as": "where_distraction",
@@ -813,7 +813,7 @@
       "id": "what_now",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now", true]
       },
       "save_as": "what_now",
@@ -829,7 +829,7 @@
       "id": "wont_hurt_my_ship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "wont_hurt_my_ship", true]
       },
       "save_as": "wont_hurt_my_ship",
@@ -845,7 +845,7 @@
       "id": "bummer_about_my_ship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "bummer_about_my_ship", true]
       },
       "save_as": "bummer_about_my_ship",
@@ -861,7 +861,7 @@
       "id": "other_assistance",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["chmmr", "allied"]
       },
       "save_as": "other_assistance",
@@ -931,7 +931,7 @@
       "id": "emerging.clear",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_EMERGING", 0]
       },
       "save_as": "emerging_clear",
@@ -972,7 +972,7 @@
       "id": "analysis.known",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "samatra_line", ["YOU_KNOW_SAMATRA"]]
       },
       "save_as": "analysis_known",
@@ -982,7 +982,7 @@
       "id": "analysis.unknown",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "samatra_line", ["DONT_KNOW_ABOUT_SAMATRA"]]
       },
       "save_as": "analysis_unknown",
@@ -992,7 +992,7 @@
       "id": "analysis.aware",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "AWARE_OF_SAMATRA", 1]
       },
       "save_as": "analysis_aware",
@@ -1085,7 +1085,7 @@
       "id": "how_defeat_urquan.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_BOMB_STATE", 1]
       },
       "save_as": "how_defeat_urquan_effect1",
@@ -1095,7 +1095,7 @@
       "id": "how_defeat_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_defeat_urquan", true]
       },
       "save_as": "how_defeat_urquan",
@@ -1111,7 +1111,7 @@
       "id": "what_about_tpet",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_tpet", true]
       },
       "save_as": "what_about_tpet",
@@ -1127,7 +1127,7 @@
       "id": "what_about_bomb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_bomb", true]
       },
       "save_as": "what_about_bomb",
@@ -1143,7 +1143,7 @@
       "id": "what_about_sun_device",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_sun_device", true]
       },
       "save_as": "what_about_sun_device",
@@ -1159,7 +1159,7 @@
       "id": "what_about_samatra",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_samatra", true]
       },
       "save_as": "what_about_samatra",
@@ -1216,7 +1216,7 @@
       "id": "advice.done",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "need_advice", true]
       },
       "save_as": "advice_done",
@@ -1301,7 +1301,7 @@
       "id": "need_help",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_STACK", 1]
       },
       "save_as": "need_help",
@@ -1317,7 +1317,7 @@
       "id": "why_no_help",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_STACK", 2]
       },
       "save_as": "why_no_help",
@@ -1333,7 +1333,7 @@
       "id": "what_if_more_energy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_STACK", 3]
       },
       "save_as": "what_if_more_energy",
@@ -1349,7 +1349,7 @@
       "id": "find_out_whats_up",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "find_out_whats_up", true]
       },
       "save_as": "find_out_whats_up",
@@ -1402,7 +1402,7 @@
       "id": "after.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_after_bomb", true]
       },
       "save_as": "after_info",
@@ -1412,7 +1412,7 @@
       "id": "after.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "CHMMR_STACK", [["GENERAL_INFO_AFTER_BOMB_1"], ["GENERAL_INFO_AFTER_BOMB_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1434,7 +1434,7 @@
       "id": "what_do_after_bomb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_do_after_bomb", true]
       },
       "save_as": "what_do_after_bomb",
@@ -1488,7 +1488,7 @@
       "id": "after.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "CHMMR_HOME_VISITS", [["HELLO_AFTER_BOMB_1"], ["HELLO_AFTER_BOMB_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1520,7 +1520,7 @@
       "id": "shield.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "CHMMR_HOME_VISITS",
@@ -1547,7 +1547,7 @@
       "id": "emerging.known",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_UNLEASHED", 1]
       },
       "save_as": "emerging_known",
@@ -1557,7 +1557,7 @@
       "id": "emerging.known.visits",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_HOME_VISITS", 0]
       },
       "save_as": "emerging_known_visits",
@@ -1573,7 +1573,7 @@
       "id": "emerging.unknown",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_UNLEASHED", 1]
       },
       "save_as": "emerging_unknown",
@@ -1583,7 +1583,7 @@
       "id": "emerging.unknown.visits",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CHMMR_HOME_VISITS", 0]
       },
       "save_as": "emerging_unknown_visits",

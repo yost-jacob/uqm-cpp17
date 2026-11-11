@@ -572,7 +572,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -588,7 +588,7 @@
       "id": "probe.message",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_MESSAGE_DELIVERED", 1]
       },
       "save_as": "probe_message",
@@ -598,7 +598,7 @@
       "id": "hypno.fade",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["urquan.hypno_intro", {"literal": {}}]
       },
       "save_as": "hypno_fade",
@@ -632,7 +632,7 @@
       "id": "where_am_i",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_am_i", true]
       },
       "save_as": "where_am_i",
@@ -648,7 +648,7 @@
       "id": "why_does_my_head_hurt",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_does_my_head_hurt", true]
       },
       "save_as": "why_does_my_head_hurt",
@@ -664,7 +664,7 @@
       "id": "what_about_2_weeks",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_2_weeks", true]
       },
       "save_as": "what_about_2_weeks",
@@ -717,7 +717,7 @@
       "id": "uh_oh",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "uh_oh", true]
       },
       "save_as": "uh_oh",
@@ -733,7 +733,7 @@
       "id": "stop_meeting",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "stop_meeting", true]
       },
       "save_as": "stop_meeting",
@@ -780,7 +780,7 @@
       "id": "hypno.bye.first.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hypno_bye_first_effect1",
@@ -790,7 +790,7 @@
       "id": "hypno.bye.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_HYPNO_VISITS", 1]
       },
       "save_as": "hypno_bye_first",
@@ -806,7 +806,7 @@
       "id": "hypno.bye.again",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hypno_bye_again",
@@ -822,7 +822,7 @@
       "id": "compulsion",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MENTIONED_PET_COMPULSION", 1]
       },
       "save_as": "compulsion",
@@ -838,7 +838,7 @@
       "id": "possessed_by_devil",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "possessed_by_devil", true]
       },
       "save_as": "possessed_by_devil",
@@ -854,7 +854,7 @@
       "id": "why_explain",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_explain", true]
       },
       "save_as": "why_explain",
@@ -913,7 +913,7 @@
       "id": "terran_amphibian.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "terran_amphibian_effect1",
@@ -923,7 +923,7 @@
       "id": "terran_amphibian",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_HYPNO_VISITS", 1]
       },
       "save_as": "terran_amphibian",
@@ -939,7 +939,7 @@
       "id": "talking_pet_on_steroids.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "talking_pet_on_steroids_effect1",
@@ -949,7 +949,7 @@
       "id": "talking_pet_on_steroids",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_HYPNO_VISITS", 1]
       },
       "save_as": "talking_pet_on_steroids",
@@ -965,7 +965,7 @@
       "id": "falling_asleep.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "falling_asleep_effect1",
@@ -975,7 +975,7 @@
       "id": "falling_asleep",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_HYPNO_VISITS", 1]
       },
       "save_as": "falling_asleep",
@@ -991,7 +991,7 @@
       "id": "someone_else_controlled.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "someone_else_controlled_effect1",
@@ -1001,7 +1001,7 @@
       "id": "someone_else_controlled",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_HYPNO_VISITS", 1]
       },
       "save_as": "someone_else_controlled",
@@ -1017,7 +1017,7 @@
       "id": "turd_and_toad",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "turd_and_toad", true]
       },
       "save_as": "turd_and_toad",
@@ -1058,7 +1058,7 @@
       "id": "before_coffee",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "before_coffee", true]
       },
       "save_as": "before_coffee",
@@ -1109,7 +1109,7 @@
       "id": "evil.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_SENSES_EVIL", 1]
       },
       "save_as": "evil_mark",
@@ -1119,7 +1119,7 @@
       "id": "evil.prefix",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "evil_prefix", true]
       },
       "save_as": "evil_prefix",
@@ -1144,7 +1144,7 @@
       "id": "colony.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "colony_outcome",
@@ -1168,7 +1168,7 @@
       "id": "samatra.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "AWARE_OF_SAMATRA", 1]
       },
       "save_as": "samatra_mark",
@@ -1178,7 +1178,7 @@
       "id": "samatra.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "samatra_outcome",
@@ -1208,7 +1208,7 @@
       "id": "normal.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "URQUAN_VISITS",
@@ -1249,7 +1249,7 @@
       "id": "surrender.demand",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "surrender_demand",
@@ -1265,7 +1265,7 @@
       "id": "key",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_URQUAN_STORY", 2]
       },
       "save_as": "key",
@@ -1281,7 +1281,7 @@
       "id": "whats_up_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_1_effect1",
@@ -1291,7 +1291,7 @@
       "id": "whats_up_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_INFO", 1]
       },
       "save_as": "whats_up_1",
@@ -1307,7 +1307,7 @@
       "id": "whats_up_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_2_effect1",
@@ -1317,7 +1317,7 @@
       "id": "whats_up_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_INFO", 2]
       },
       "save_as": "whats_up_2",
@@ -1333,7 +1333,7 @@
       "id": "whats_up_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_3_effect1",
@@ -1343,7 +1343,7 @@
       "id": "whats_up_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_INFO", 3]
       },
       "save_as": "whats_up_3",
@@ -1359,7 +1359,7 @@
       "id": "whats_up_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_4_effect1",
@@ -1369,7 +1369,7 @@
       "id": "whats_up_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_INFO", 3]
       },
       "save_as": "whats_up_4",
@@ -1385,7 +1385,7 @@
       "id": "leave",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "leave",
@@ -1456,7 +1456,7 @@
       "id": "surrender.no",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "surrender_no",
@@ -1472,7 +1472,7 @@
       "id": "surrender.yes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["defeat"]
       },
       "save_as": "surrender_yes",
@@ -1516,7 +1516,7 @@
       "id": "flee.first.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_VISITS", 1]
       },
       "save_as": "flee_first_mark",
@@ -1540,7 +1540,7 @@
       "id": "flee.again",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "flee_again",
@@ -1564,7 +1564,7 @@
       "id": "flee.silent",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_VISITS", {"min": [{"add": [{"get": ["story", "URQUAN_VISITS", 0]}, 1]}, 7]}]
       },
       "save_as": "flee_silent",
@@ -1586,7 +1586,7 @@
       "id": "why_flee",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_flee", true]
       },
       "save_as": "why_flee",
@@ -1602,7 +1602,7 @@
       "id": "what_happens_now",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_happens_now", true]
       },
       "save_as": "what_happens_now",
@@ -1618,7 +1618,7 @@
       "id": "what_about_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_you", true]
       },
       "save_as": "what_about_you",
@@ -1634,7 +1634,7 @@
       "id": "flee.bye",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "flee_bye",

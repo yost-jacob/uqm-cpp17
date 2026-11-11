@@ -1,4 +1,7 @@
 #include "game_state.hpp"
+#include "inventory.hpp"
+#include <set>
+#include <limits>
 #include "globdata.h"
 #include "fleet_legacy.hpp"
 #include "sis_legacy.hpp"
@@ -179,6 +182,10 @@ static_assert(counterMaximum(StoryCounter::BombProgress)
         == (1u << (END_CHMMR_BOMB_STATE - CHMMR_BOMB_STATE + 1)) - 1);
 static_assert(counterMaximum(StoryCounter::ShofixtiVisits)
         == (1u << (END_SHOFIXTI_VISITS - SHOFIXTI_VISITS + 1)) - 1);
+unsigned maximumFieldValue(Field field) noexcept {
+    const unsigned width = field.last - field.first + 1;
+    return width == 32 ? std::numeric_limits<unsigned>::max() : (1u << width) - 1;
+}
 unsigned read(const detail::PlayerStorage &storage, Field field) {
     if (field.last - field.first + 1 == 32)
         return getGameState32(storage.legacy.Game_state.GameState, field.first);
@@ -207,10 +214,24 @@ StoryState::StoryState(detail::PlayerStorage &storage) noexcept : storage_(stora
 unsigned StoryState::readNamed(std::string_view name) const {
     return uqm::read(storage_, namedField(name));
 }
+unsigned StoryState::maximumNamed(std::string_view name) const {
+    return maximumFieldValue(namedField(name));
+}
+void StoryState::setNamedBatch(const std::vector<std::pair<std::string, unsigned>> &changes) {
+    std::vector<std::pair<Field, unsigned>> checked;
+    checked.reserve(changes.size());
+    std::set<std::string_view> names;
+    for (const auto &[name, value] : changes) {
+        const auto descriptor = namedField(name);
+        if (!names.insert(name).second) throw std::invalid_argument("duplicate story field: " + name);
+        if (value > maximumFieldValue(descriptor)) throw std::out_of_range("story value exceeds its packed field: " + name);
+        checked.emplace_back(descriptor, value);
+    }
+    for (const auto &[descriptor, value] : checked) write(storage_, descriptor, value);
+}
 void StoryState::setNamed(std::string_view name, unsigned value) {
     const auto descriptor = namedField(name);
-    const unsigned width = descriptor.last - descriptor.first + 1;
-    if (width < 32 && value >= (1u << width))
+    if (value > maximumFieldValue(descriptor))
         throw std::out_of_range("story field value exceeds its save layout: " + std::string(name));
     write(storage_, descriptor, value);
 }
@@ -228,7 +249,7 @@ void StoryState::set(StoryCounter counter, unsigned value) {
 
 PlayerEntity::PlayerEntity(UserProfile profile)
     : profile_(std::move(profile)), storage_(std::make_unique<detail::PlayerStorage>()),
-      story_(*storage_), fleet_(std::make_unique<Fleet>(MAX_BUILT_SHIPS, SISPresence::Present)) {}
+      story_(*storage_), inventory_(std::make_unique<Inventory>(story_)) {}
 PlayerEntity::~PlayerEntity() = default;
 PlayerId PlayerEntity::id() const noexcept { return profile_.id; }
 NavigationState &PlayerEntity::navigationState() noexcept { return navigation_; }
@@ -262,10 +283,10 @@ SolarSystemLocation &PlayerEntity::enterSolarSystem() {
 void PlayerEntity::resetLocation() noexcept { location_ = HyperSpaceLocation{}; }
 void PlayerEntity::setFuel(std::uint32_t fuel) noexcept { sis().setFuel(fuel); }
 void PlayerEntity::setCrew(std::uint16_t crew) noexcept { sis().setCrew(crew); }
-SIS &PlayerEntity::sis() noexcept { return fleet_->sis()->get(); }
-const SIS &PlayerEntity::sis() const noexcept { return std::as_const(*fleet_).sis()->get(); }
-Fleet &PlayerEntity::fleet() noexcept { return *fleet_; }
-const Fleet &PlayerEntity::fleet() const noexcept { return *fleet_; }
+SIS &PlayerEntity::sis() noexcept { return inventory_->fleet().sis()->get(); }
+const SIS &PlayerEntity::sis() const noexcept { return std::as_const(*inventory_).fleet().sis()->get(); }
+Fleet &PlayerEntity::fleet() noexcept { return inventory_->fleet(); }
+const Fleet &PlayerEntity::fleet() const noexcept { return std::as_const(*inventory_).fleet(); }
 StoryState &PlayerEntity::story() noexcept { return story_; }
 const StoryState &PlayerEntity::story() const noexcept { return story_; }
 
@@ -407,4 +428,9 @@ extern "C" void ResetGameData(UQM_GAME_DATA *data) { *data = uqm::defaultGameDat
 extern "C" COUNT GetShipPrice(COUNT race) {
     // C callers cannot receive C++ exceptions; an invalid enum is a caller bug.
     try { return uqm::shipPrice(race); } catch (...) { std::abort(); }
+}
+
+namespace uqm {
+Inventory &PlayerEntity::inventory() noexcept { return *inventory_; }
+const Inventory &PlayerEntity::inventory() const noexcept { return *inventory_; }
 }

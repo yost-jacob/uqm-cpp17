@@ -801,7 +801,7 @@
       "id": "thief.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "MYCON_VISITS", [["DIE_THIEF"], ["DIE_THIEF_AGAIN"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -811,7 +811,7 @@
       "id": "thief.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "thief_outcome",
@@ -833,7 +833,7 @@
       "id": "liar",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "liar",
@@ -843,7 +843,7 @@
       "id": "sun.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "MYCON_SUN_VISITS", [["HELLO_SUN_DEVICE_WORLD_1"], ["HELLO_SUN_DEVICE_WORLD_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -859,7 +859,7 @@
       "id": "home.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MYCON_HOME_VISITS",
@@ -883,7 +883,7 @@
       "id": "home.sequence.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -899,7 +899,7 @@
       "id": "space.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "MYCON_VISITS",
@@ -923,7 +923,7 @@
       "id": "space.sequence.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -945,7 +945,7 @@
       "id": "exit.bye_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_space",
@@ -961,7 +961,7 @@
       "id": "exit.bye_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_homeworld",
@@ -977,7 +977,7 @@
       "id": "exit.like_to_land",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_like_to_land",
@@ -993,7 +993,7 @@
       "id": "exit.bye_sun_device",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_sun_device",
@@ -1009,7 +1009,7 @@
       "id": "sun.whats_up_sun_device",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_sun_device", true]
       },
       "save_as": "sun_whats_up_sun_device",
@@ -1025,7 +1025,7 @@
       "id": "sun.how_goes_implanting",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_implanting", true]
       },
       "save_as": "sun_how_goes_implanting",
@@ -1041,7 +1041,7 @@
       "id": "sun.plan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "NO_TRICK_AT_SUN", 1]
       },
       "save_as": "sun_plan",
@@ -1105,7 +1105,7 @@
       "id": "come_in_peace.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "come_in_peace", true]
       },
       "save_as": "come_in_peace_disable",
@@ -1115,7 +1115,7 @@
       "id": "come_in_peace.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1137,7 +1137,7 @@
       "id": "gonna_die.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "gonna_die", true]
       },
       "save_as": "gonna_die_disable",
@@ -1147,7 +1147,7 @@
       "id": "gonna_die.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1169,7 +1169,7 @@
       "id": "insult_1.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_1", true]
       },
       "save_as": "insult_1_disable",
@@ -1179,7 +1179,7 @@
       "id": "insult_1.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1201,7 +1201,7 @@
       "id": "insult_2.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_2", true]
       },
       "save_as": "insult_2_disable",
@@ -1211,7 +1211,7 @@
       "id": "insult_2.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1233,7 +1233,7 @@
       "id": "insult_3.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_3", true]
       },
       "save_as": "insult_3_disable",
@@ -1243,7 +1243,7 @@
       "id": "insult_3.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1265,7 +1265,7 @@
       "id": "insult_4.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_4", true]
       },
       "save_as": "insult_4_disable",
@@ -1275,7 +1275,7 @@
       "id": "insult_4.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1297,7 +1297,7 @@
       "id": "insult_5.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_5", true]
       },
       "save_as": "insult_5_disable",
@@ -1307,7 +1307,7 @@
       "id": "insult_5.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1329,7 +1329,7 @@
       "id": "insult_6.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_6", true]
       },
       "save_as": "insult_6_disable",
@@ -1339,7 +1339,7 @@
       "id": "insult_6.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1361,7 +1361,7 @@
       "id": "insult_7.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_7", true]
       },
       "save_as": "insult_7_disable",
@@ -1371,7 +1371,7 @@
       "id": "insult_7.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1393,7 +1393,7 @@
       "id": "insult_8.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "insult_8", true]
       },
       "save_as": "insult_8_disable",
@@ -1403,7 +1403,7 @@
       "id": "insult_8.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1425,7 +1425,7 @@
       "id": "question_1.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_1", true]
       },
       "save_as": "question_1_disable",
@@ -1435,7 +1435,7 @@
       "id": "question_1.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1457,7 +1457,7 @@
       "id": "question_2.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_2", true]
       },
       "save_as": "question_2_disable",
@@ -1467,7 +1467,7 @@
       "id": "question_2.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1489,7 +1489,7 @@
       "id": "question_3.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_3", true]
       },
       "save_as": "question_3_disable",
@@ -1499,7 +1499,7 @@
       "id": "question_3.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1521,7 +1521,7 @@
       "id": "question_4.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_4", true]
       },
       "save_as": "question_4_disable",
@@ -1531,7 +1531,7 @@
       "id": "question_4.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1553,7 +1553,7 @@
       "id": "question_5.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_5", true]
       },
       "save_as": "question_5_disable",
@@ -1563,7 +1563,7 @@
       "id": "question_5.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1585,7 +1585,7 @@
       "id": "question_6.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_6", true]
       },
       "save_as": "question_6_disable",
@@ -1595,7 +1595,7 @@
       "id": "question_6.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1617,7 +1617,7 @@
       "id": "question_7.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_7", true]
       },
       "save_as": "question_7_disable",
@@ -1627,7 +1627,7 @@
       "id": "question_7.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1649,7 +1649,7 @@
       "id": "question_8.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_8", true]
       },
       "save_as": "question_8_disable",
@@ -1659,7 +1659,7 @@
       "id": "question_8.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1681,7 +1681,7 @@
       "id": "question_9.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_9", true]
       },
       "save_as": "question_9_disable",
@@ -1691,7 +1691,7 @@
       "id": "question_9.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1713,7 +1713,7 @@
       "id": "question_10.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_10", true]
       },
       "save_as": "question_10_disable",
@@ -1723,7 +1723,7 @@
       "id": "question_10.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1745,7 +1745,7 @@
       "id": "question_11.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_11", true]
       },
       "save_as": "question_11_disable",
@@ -1755,7 +1755,7 @@
       "id": "question_11.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1777,7 +1777,7 @@
       "id": "question_12.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_12", true]
       },
       "save_as": "question_12_disable",
@@ -1787,7 +1787,7 @@
       "id": "question_12.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1809,7 +1809,7 @@
       "id": "question_13.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_13", true]
       },
       "save_as": "question_13_disable",
@@ -1819,7 +1819,7 @@
       "id": "question_13.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1841,7 +1841,7 @@
       "id": "question_14.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_14", true]
       },
       "save_as": "question_14_disable",
@@ -1851,7 +1851,7 @@
       "id": "question_14.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1873,7 +1873,7 @@
       "id": "question_15.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_15", true]
       },
       "save_as": "question_15_disable",
@@ -1883,7 +1883,7 @@
       "id": "question_15.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1905,7 +1905,7 @@
       "id": "question_16.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "question_16", true]
       },
       "save_as": "question_16_disable",
@@ -1915,7 +1915,7 @@
       "id": "question_16.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1937,7 +1937,7 @@
       "id": "lets_be_friends.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "lets_be_friends", true]
       },
       "save_as": "lets_be_friends_disable",
@@ -1947,7 +1947,7 @@
       "id": "lets_be_friends.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -1969,7 +1969,7 @@
       "id": "came_to_homeworld.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "came_to_homeworld", true]
       },
       "save_as": "came_to_homeworld_disable",
@@ -1979,7 +1979,7 @@
       "id": "came_to_homeworld.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -2001,7 +2001,7 @@
       "id": "submit_to_us.disable",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "submit_to_us", true]
       },
       "save_as": "submit_to_us_disable",
@@ -2011,7 +2011,7 @@
       "id": "submit_to_us.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -2027,7 +2027,7 @@
       "id": "combat.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "combat_outcome",
@@ -2067,7 +2067,7 @@
           "text": "come_in_peace",
           "when": {"not": {"get": ["local", "come_in_peace", false]}},
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "come_in_peace"}}]
           },
           "save_as": "ramble",
@@ -2078,7 +2078,7 @@
           "text": "gonna_die",
           "when": {"not": {"get": ["local", "gonna_die", false]}},
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "gonna_die"}}]
           },
           "save_as": "ramble",
@@ -2094,7 +2094,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_1"}}]
           },
           "save_as": "ramble",
@@ -2110,7 +2110,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_2"}}]
           },
           "save_as": "ramble",
@@ -2126,7 +2126,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_3"}}]
           },
           "save_as": "ramble",
@@ -2142,7 +2142,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_4"}}]
           },
           "save_as": "ramble",
@@ -2158,7 +2158,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_5"}}]
           },
           "save_as": "ramble",
@@ -2174,7 +2174,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_6"}}]
           },
           "save_as": "ramble",
@@ -2190,7 +2190,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_7"}}]
           },
           "save_as": "ramble",
@@ -2206,7 +2206,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "insult_8"}}]
           },
           "save_as": "ramble",
@@ -2235,7 +2235,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_1"}}]
           },
           "save_as": "ramble",
@@ -2251,7 +2251,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_2"}}]
           },
           "save_as": "ramble",
@@ -2267,7 +2267,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_3"}}]
           },
           "save_as": "ramble",
@@ -2283,7 +2283,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_4"}}]
           },
           "save_as": "ramble",
@@ -2299,7 +2299,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_5"}}]
           },
           "save_as": "ramble",
@@ -2315,7 +2315,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_6"}}]
           },
           "save_as": "ramble",
@@ -2331,7 +2331,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_7"}}]
           },
           "save_as": "ramble",
@@ -2347,7 +2347,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_8"}}]
           },
           "save_as": "ramble",
@@ -2363,7 +2363,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_9"}}]
           },
           "save_as": "ramble",
@@ -2379,7 +2379,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_10"}}]
           },
           "save_as": "ramble",
@@ -2395,7 +2395,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_11"}}]
           },
           "save_as": "ramble",
@@ -2411,7 +2411,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_12"}}]
           },
           "save_as": "ramble",
@@ -2427,7 +2427,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_13"}}]
           },
           "save_as": "ramble",
@@ -2443,7 +2443,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_14"}}]
           },
           "save_as": "ramble",
@@ -2459,7 +2459,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_15"}}]
           },
           "save_as": "ramble",
@@ -2475,7 +2475,7 @@
             ]
           },
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "question_16"}}]
           },
           "save_as": "ramble",
@@ -2486,7 +2486,7 @@
           "text": "lets_be_friends",
           "when": {"not": {"get": ["local", "lets_be_friends", false]}},
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "lets_be_friends"}}]
           },
           "save_as": "ramble",
@@ -2497,7 +2497,7 @@
           "text": "came_to_homeworld",
           "when": {"not": {"get": ["local", "came_to_homeworld", false]}},
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "came_to_homeworld"}}]
           },
           "save_as": "ramble",
@@ -2508,7 +2508,7 @@
           "text": "submit_to_us",
           "when": {"not": {"get": ["local", "submit_to_us", false]}},
           "action": {
-            "verb": "handlers.prepare_report",
+            "action": "handlers.prepare_report",
             "args": ["mycon.ramble", {"literal": {"response": "submit_to_us"}}]
           },
           "save_as": "ramble",
@@ -2548,7 +2548,7 @@
       "id": "shattered",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_ABOUT_SHATTERED", 2]
       },
       "save_as": "shattered",
@@ -2558,7 +2558,7 @@
       "id": "shattered.chance",
       "kind": "action",
       "action": {
-        "verb": "random.draw",
+        "action": "random.draw",
         "args": [256]
       },
       "save_as": "chance",
@@ -2603,7 +2603,7 @@
       "id": "clue_1.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MYCON_FELL_FOR_AMBUSH", 1]
       },
       "save_as": "clue_1_mark",
@@ -2613,7 +2613,7 @@
       "id": "clue_1.schedule",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_MYCON_MISSION", 0, 0, 0]
       },
       "save_as": "clue_1_schedule",
@@ -2623,7 +2623,7 @@
       "id": "clue_1.peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "clue_1_peace",
@@ -2662,7 +2662,7 @@
       "id": "clue_2.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MYCON_FELL_FOR_AMBUSH", 1]
       },
       "save_as": "clue_2_mark",
@@ -2672,7 +2672,7 @@
       "id": "clue_2.schedule",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_MYCON_MISSION", 0, 0, 0]
       },
       "save_as": "clue_2_schedule",
@@ -2682,7 +2682,7 @@
       "id": "clue_2.peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "clue_2_peace",
@@ -2721,7 +2721,7 @@
       "id": "clue_3.mark",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MYCON_FELL_FOR_AMBUSH", 1]
       },
       "save_as": "clue_3_mark",
@@ -2731,7 +2731,7 @@
       "id": "clue_3.schedule",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_MYCON_MISSION", 0, 0, 0]
       },
       "save_as": "clue_3_schedule",
@@ -2741,7 +2741,7 @@
       "id": "clue_3.peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "clue_3_peace",
@@ -2763,7 +2763,7 @@
           "text": "clue_1",
           "when": {"not": {"get": ["local", "clue_1", false]}},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["local", "clue_1", true]
           },
           "then": {"ok": "clue_1.check"}
@@ -2773,7 +2773,7 @@
           "text": "clue_2",
           "when": {"not": {"get": ["local", "clue_2", false]}},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["local", "clue_2", true]
           },
           "then": {"ok": "clue_2.check"}
@@ -2783,7 +2783,7 @@
           "text": "clue_3",
           "when": {"not": {"get": ["local", "clue_3", false]}},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["local", "clue_3", true]
           },
           "then": {"ok": "clue_3.check"}
