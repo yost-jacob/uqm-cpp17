@@ -18,7 +18,7 @@ flowchart TD
     Scan --> Lander["LanderVisit<br/>owned launch state / borrowed system and campaign"]
     Rules --> Child["SystemEncounterMode<br/>owns suspended parent through swapGameMode"]
     Child --> Dialog["ConversationMode / owned ConversationRuntime"]
-    Child --> Combat["CampaignCombatMode / scoped legacy Battle adapter"]
+    Child --> Combat["CombatMode / scoped legacy Battle adapter"]
     Child -. restore parent before returning .-> Solar
     Rules --> Fleet["OrbitalEncounter scope<br/>temporary fleet cleanup / group restoration"]
 ```

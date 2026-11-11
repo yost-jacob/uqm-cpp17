@@ -12,11 +12,11 @@ this path before starting independent graphics, dialogue-data, or multiplayer wo
 
 ```mermaid
 flowchart TD
-    Session[GameSession dispatcher] --> Explore[SolarSystemMode / SolarSystemExploration]
+    Session[GameSession owns ModeDispatcher] --> Explore[SolarSystemMode / SolarSystemExploration]
     Explore --> Behavior[SystemBehavior: borrowed campaign and star]
     Behavior --> Encounter[SystemEncounterMode / EncounterRuntime]
     Encounter --> Conversation[ConversationMode / ConversationRuntime]
-    Encounter --> Combat[CampaignCombatMode]
+    Encounter --> Combat[Shared CombatMode]
     Conversation --> Scripts[Legacy C story callbacks through checked bindings]
     Combat --> Backend[Scoped campaign combat adapter]
     Backend --> Engine[Legacy Battle: queues, physics, graphics and input]
@@ -37,9 +37,10 @@ a load does not decode a replacement campaign while these objects remain alive.
 | Exploration | SolarSystemMode owns SolarSystemExploration and native systems; behaviors borrow campaign and catalogue star | Legacy planet/input/render descriptors and process services |
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
-| Campaign combat | CampaignCombatMode owns its engine and temporarily takes the encounter roster; backend scopes sounds, cyborg input and activity | C battle driver, participant records, callbacks and presentation services |
+| Campaign combat | CombatMode owns its engine and temporarily takes the encounter roster; backend scopes sounds, cyborg input and activity | C battle driver, participant records, callbacks and presentation services |
 | Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers and NPC queue ownership |
 | Lander | Child LanderMode owns LanderVisit with explicit system/campaign borrows | Element callbacks and graphics caches |
+| Super Melee | ArcadeSession owns dispatcher and temporary legacy buffers; fleet-selection mode owns teams/UI and launches shared CombatMode | C battle driver, input/render services and setup records; see [arcade session](arcade-session.md) |
 | Session startup | RunGameSession C adapter invokes GameSession::runCampaign | C title loop; definition is in sc2/src/uqm/gameplay_modes.cpp |
 
 A C++ mode wrapper establishes a lifetime boundary; it does not by itself

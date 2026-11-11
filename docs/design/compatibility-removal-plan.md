@@ -27,7 +27,7 @@ including any loaded ship behavior/assets attached to those slots. SimulationEng
 owns a roster value. The former global race_q array becomes a C buffer borrow from
 the selected mode. Native clients use engine.shipRoster().
 
-EncounterRuntime prepares participants and consumes aftermath. CampaignCombatMode's
+EncounterRuntime prepares participants and consumes aftermath. CombatMode's
 initialize() transfers the prepared roster from its parent's engine; destruction
 returns crew/status changes before parent resume and aftermath. Pool addresses and
 participant identities do not change. The parent keeps its own physical scene and
@@ -73,18 +73,23 @@ The architectural choice was resolved in favor of the standard library and
 independent streams. The next implementation milestone is the battle driver,
 followed by startup/Super Melee mode ownership.
 
-## Next ownership checkpoint: non-campaign sessions
+## Resolved ownership checkpoint: non-campaign sessions
 
-The current GameSession requires a GameState and one PlayerId, and every GameMode
-validates that player binding. The C title loop invokes campaign sessions, while
-StartGame also invokes Melee outside them. Melee begins with InitGlobData and owns
-two arcade fleet/control configurations. It cannot simply become a child of a
-live campaign mode: its legacy reset would mutate the suspended player's payload.
+GameSession requires a GameState and one PlayerId; GameMode no longer owns or
+validates campaign state. The title boundary selects a separate standalone arcade
+session. Super Melee begins with InitGlobData and owns two arcade fleet/control
+configurations, so its legacy reset must target isolated buffers rather than a
+suspended campaign player.
 
-Before removing the startup/Super Melee fallback owner, choose whether standalone
-modes have their own non-campaign session or GameSession becomes a general host
-with optional campaign state. The recommended boundary is a standalone arcade
-session above its two battle sides, leaving player-bound campaign sessions intact.
-A reusable dispatcher can serve both, but its mode/state validation contract needs
-a wireframe before changing ownership. Battle's shared navigation/combat frame
-runner can then be separated from combat-only round and fleet progression.
+Standalone modes now use a separate ArcadeSession, leaving the player-bound
+GameSession contract intact. The title boundary creates it only after campaign
+teardown. Its scoped C projection isolates temporary state and its own engine
+replaces the Super Melee fallback owner. The frontend has scoped C++ resource
+ownership; see [arcade session](arcade-session.md).
+
+The shared ModeDispatcher now serves both sessions. GameMode owns lifecycle and
+simulation state only; concrete modes borrow the session/state they need. Arcade
+fleet selection and campaign encounters both launch the same CombatMode with
+session-specific scoped preparation. No CampaignMode inheritance layer or optional
+campaign state is needed. Native battle-driver extraction and startup/title
+migration remain in milestone 3.

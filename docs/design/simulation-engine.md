@@ -27,6 +27,8 @@ compatibility queue by value; its private QueueStorage continues to own native
 CombatEntity objects through unique_ptr. Initialization uses the established
 capacity of 150. Reset invalidates handles without firing death callbacks.
 Shutdown releases the pool and is idempotent; the destructor also calls it.
+ArcadeSession owns a separate dispatcher for standalone Super Melee. Fleet selection
+and the shared CombatMode each own their engine.
 C startup graphics setup/teardown call compatibility-engine adapters at their existing lifecycle points,
 so entity destruction still precedes device shutdown.
 
@@ -54,8 +56,9 @@ Actual renderer/device ownership and graphics contexts remain outside the engine
 Native clients borrow mode.engine(). Native handle resolution returns an optional
 reference, const when the engine is const. The queue buffer is available through
 the internal SimulationAccess boundary. The disp_q compatibility macro borrows
-GetSimulationQueue(); it is not another queue owner. Startup/title and the existing
-C Super Melee path use a compatibility engine until they are GameModes themselves.
+GetSimulationQueue(); it is not another queue owner. Startup and
+title paths use a compatibility engine until they are modes themselves. Super Melee
+selects its dispatched fleet-selection or combat engine.
 SimulationBinding is thread-local and does not provide device thread safety.
 
 ## Simulation responsibilities

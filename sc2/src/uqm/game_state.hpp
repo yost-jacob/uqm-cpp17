@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <random>
+#include <utility>
 #include <string>
 #include "world_state.hpp"
 #include "world_types.hpp"
@@ -322,22 +323,22 @@ public:
     GameSession &operator=(const GameSession &) = delete;
     // Flat synchronous dispatcher. Releases the current mode before returning.
     // Null modes, invalid transitions and C++ exceptions become Failed exits.
-    SessionExit run(std::unique_ptr<GameMode> initialMode);
+    SessionExit run(std::unique_ptr<GameMode> initialMode) { return dispatcher_.run(std::move(initialMode)); }
     // Synchronous nested execution. Only call from the active mode, with a fresh
-    // child bound to the same state/player. Parent remains alive on the stack.
+    // child belonging to this session's dispatcher. Parent remains alive on the stack.
     // Child returns ModeCompleted or SessionExit; a returned exit must propagate
     // outward before further gameplay. Child exceptions currently abort (TODO).
-    MenuResult swapGameMode(std::unique_ptr<GameMode> child);
-    bool isRunning() const noexcept { return running_; } // C/credits compatibility host selection only.
+    MenuResult swapGameMode(std::unique_ptr<GameMode> child) { return dispatcher_.swapGameMode(std::move(child)); }
+    bool isRunning() const noexcept { return dispatcher_.isRunning(); } // C/credits compatibility host selection only.
     // Production lifecycle/legacy adapters; load only at an unwound boundary.
     SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
     // Transitional C menu mailbox. Native menus return the same optional result.
     // Gameplay-thread only. Shutdown > failure > load > title; first slot wins.
-    void requestMenuExit(SessionExit exit);
-    void requestLoad(unsigned slot);
-    MenuResult menuExit() const;
+    void requestMenuExit(SessionExit exit) { dispatcher_.requestMenuExit(std::move(exit)); }
+    void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
+    MenuResult menuExit() const { return dispatcher_.menuExit(); }
+    ModeDispatcher &dispatcher() noexcept { return dispatcher_; }
     HyperSpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
-    std::shared_ptr<GameState> stateOwner() noexcept;
     PlayerId playerId() const noexcept;
     PlayerEntity &player();
     const PlayerEntity &player() const;
@@ -348,9 +349,7 @@ private:
     std::shared_ptr<GameState> state_;
     PlayerId player_;
     std::minstd_rand0 modeSeeds_;
-    std::unique_ptr<GameMode> currentMode_;
-    MenuResult pendingExit_;
-    bool running_ = false;
+    ModeDispatcher dispatcher_;
     friend class NavigationBinding;
     HyperSpaceNavigation *navigation_ = nullptr;
 };

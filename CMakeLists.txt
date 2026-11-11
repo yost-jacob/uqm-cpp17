@@ -108,7 +108,7 @@ if(BUILD_TESTING)
         sc2/src/libs/strings/unicode.c sc2/src/libs/memory/w_memlib.c
         sc2/src/libs/math/random.cpp sc2/src/libs/math/sqrt.cpp
         sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp sc2/src/uqm/star_map.cpp
-        sc2/src/uqm/star_map_c.cpp sc2/src/uqm/game_state.cpp
+        sc2/src/uqm/star_map_c.cpp sc2/src/uqm/game_state.cpp sc2/src/uqm/arcade_session.cpp tests/arcade_session.cpp
         sc2/src/uqm/game_mode.cpp
         sc2/src/uqm/discovery_state.cpp sc2/src/uqm/discovery_state_c.cpp
         sc2/src/uqm/world_state.cpp

@@ -16,6 +16,8 @@ typedef struct UQM_SESSION_EXIT { int kind; unsigned slot; } UQM_SESSION_EXIT;
 // The caller repeats on LOAD, exits on SHUTDOWN, and returns to title otherwise.
 // Remove this adapter when its C callers can use the typed C++ interface.
 UQM_SESSION_EXIT RunGameSession(int loadSlot);
+// Standalone arcade visit; only call after campaign teardown at the title menu.
+UQM_SESSION_EXIT RunArcadeSession(void);
 BOOLEAN RequestGameSessionLoad(COUNT slot); // Read-only summary check, then request only.
 // Existing C menu drawing/input callbacks, called only by the C++ menu adapter.
 BOOLEAN LegacyPickGame(BOOLEAN saving, BOOLEAN fromMainMenu);

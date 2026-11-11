@@ -58,9 +58,14 @@
 		// for TFB_Random()
 #include "libs/reslib.h"
 #include "libs/log.h"
+#include "libs/inplib.h"
 #include "libs/uio.h"
 
 
+#include "../legacy_runtime.hpp"
+#include "../arcade_session.hpp"
+#include "../combat_mode.hpp"
+#include <memory>
 #include <assert.h>
 #include <string.h>
 
@@ -1443,6 +1448,36 @@ BuildAndDrawShipList (MELEE_STATE *pMS)
 			// This should be split off.
 }
 
+namespace {
+class ArcadeCombatPreparation final : public uqm::CombatPreparation {
+public:
+    explicit ArcadeCombatPreparation(MELEE_STATE &menu) : menu_(menu) {}
+    ~ArcadeCombatPreparation() override {
+        if (gravityLoaded_) free_gravity_well();
+        if (inputStarted_) ClearPlayerInputAll();
+    }
+    bool prepare() override {
+        inputStarted_ = true;
+        if (!SetPlayerInputAll()) return false;
+        BuildAndDrawShipList(&menu_);
+        WaitForSoundEnd(TFBSOUND_WAIT_ALL);
+        gravityLoaded_ = true;
+        load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(TFB_Random()) % NUMBER_OF_PLANET_TYPES));
+        return true;
+    }
+private:
+    MELEE_STATE &menu_;
+    bool gravityLoaded_ = false, inputStarted_ = false;
+};
+std::unique_ptr<uqm::GameMode> createMeleeCombat(MELEE_STATE &menu) {
+    assert(menu.session);
+    // Preserve the negotiated/local seed delivered to the setup mode. Arena
+    // selection and combat advance only the child's independent stream.
+    return uqm::createCombatMode(menu.session->dispatcher(), uqm::simulationEngine().shipRoster(),
+        TFB_GetRandomSeed(), std::make_unique<ArcadeCombatPreparation>(menu));
+}
+}
+
 static void
 StartMelee (MELEE_STATE *pMS)
 {
@@ -1462,17 +1497,11 @@ StartMelee (MELEE_STATE *pMS)
 
 	do
 	{
-		if (!SetPlayerInputAll ())
-			break;
-		BuildAndDrawShipList (pMS);
-
-		WaitForSoundEnd (TFBSOUND_WAIT_ALL);
-
-		load_gravity_well ((BYTE)((COUNT)TFB_Random () %
-					NUMBER_OF_PLANET_TYPES));
-		Battle (NULL, NULL);
-		free_gravity_well ();
-		ClearPlayerInputAll ();
+        assert(pMS->session);
+        if (auto exit = pMS->session->swapGameMode(createMeleeCombat(*pMS))) {
+            GLOBAL(CurrentActivity) |= CHECK_ABORT;
+            return;
+        }
 
 		if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 			return;
@@ -2032,65 +2061,82 @@ err:
 	return -1;
 }
 
-void
-Melee (void)
-{
-	InitGlobData ();
-	{
-		MELEE_STATE MenuState;
-
-		pMeleeState = &MenuState;
-		memset (pMeleeState, 0, sizeof (*pMeleeState));
-
-		MenuState.InputFunc = DoMelee;
-		MenuState.Initialized = FALSE;
-
-		MenuState.meleeSetup = MeleeSetup_new ();
-
+namespace {
+// Acquisitions happen after construction so this scope also handles C++ exits
+// from resource loading, input callbacks or the nested battle backend.
+class MeleeFrontend {
+public:
+    explicit MeleeFrontend(uqm::ArcadeSession &session)
+        : previous_(pMeleeState), previousSounds_(GameSounds) {
+        menu_.session = &session;
+        pMeleeState = &menu_;
+        menu_.InputFunc = DoMelee;
+    }
+    ~MeleeFrontend() {
+        StopMusic();
+        if (infoLoaded_) FreeMeleeInfo(&menu_);
+        if (soundLoaded_) DestroySound(ReleaseSound(GameSounds));
+        GameSounds = previousSounds_;
+        if (loadInitialized_) UninitMeleeLoadState(&menu_);
+        pMeleeState = previous_;
+        FlushInput();
+    }
+    void run() {
+        InitGlobData();
+        setup_.reset(MeleeSetup_new());
+        menu_.meleeSetup = setup_.get();
 #ifdef NETPLAY
-		{
-			COUNT player;
-			for (player = 0; player < NUM_PLAYERS; player++)
-				netConnections[player] = NULL;
-		}
+        for (COUNT player = 0; player < NUM_PLAYERS; ++player) netConnections[player] = nullptr;
 #endif
-		
-		MenuState.currentShip = MELEE_NONE;
-		MenuState.CurIndex = MELEE_STATE_INDEX_DONE;
-		InitMeleeLoadState (&MenuState);
-
-		GLOBAL (CurrentActivity) = SUPER_MELEE;
-
-		GameSounds = CaptureSound (LoadSound (GAME_SOUNDS));
-		LoadMeleeInfo (&MenuState);
-		if (LoadMeleeConfig (&MenuState) == -1)
-		{
-			PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
-			Melee_LocalChange_team (&MenuState, 0,
-					MenuState.load.preBuiltList[0]);
-			PlayerControl[1] = COMPUTER_CONTROL | STANDARD_RATING;
-			Melee_LocalChange_team (&MenuState, 1,
-					MenuState.load.preBuiltList[1]);
-		}
-
-		MenuState.side = 0;
-		SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-		DoInput (&MenuState, TRUE);
-
-		StopMusic ();
-		WaitForSoundEnd (TFBSOUND_WAIT_ALL);
-
-		WriteMeleeConfig (&MenuState);
-		FreeMeleeInfo (&MenuState);
-		DestroySound (ReleaseSound (GameSounds));
-		GameSounds = 0;
-
-		UninitMeleeLoadState (&MenuState);
-
-		MeleeSetup_delete (MenuState.meleeSetup);
-
-		FlushInput ();
-	}
+        menu_.currentShip = MELEE_NONE;
+        menu_.CurIndex = MELEE_STATE_INDEX_DONE;
+        loadInitialized_ = true;
+        InitMeleeLoadState(&menu_);
+        GLOBAL(CurrentActivity) = SUPER_MELEE;
+        GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
+        soundLoaded_ = true;
+        infoLoaded_ = true;
+        LoadMeleeInfo(&menu_);
+        if (LoadMeleeConfig(&menu_) == -1) {
+            PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
+            Melee_LocalChange_team(&menu_, 0, menu_.load.preBuiltList[0]);
+            PlayerControl[1] = COMPUTER_CONTROL | STANDARD_RATING;
+            Melee_LocalChange_team(&menu_, 1, menu_.load.preBuiltList[1]);
+        }
+        SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+        DoInput(&menu_, TRUE);
+        StopMusic();
+        WaitForSoundEnd(TFBSOUND_WAIT_ALL);
+        WriteMeleeConfig(&menu_); // Explicit completion, never in a destructor.
+    }
+private:
+    MELEE_STATE menu_{};
+    MELEE_STATE *previous_;
+    SOUND previousSounds_;
+    std::unique_ptr<MeleeSetup, decltype(&MeleeSetup_delete)> setup_{nullptr, &MeleeSetup_delete};
+    bool loadInitialized_ = false, infoLoaded_ = false, soundLoaded_ = false;
+};
+}
+namespace {
+class FleetSelectionMode final : public uqm::GameMode {
+public:
+    explicit FleetSelectionMode(uqm::ArcadeSession &session)
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session) {}
+    uqm::ModeResult run() override {
+        frontend_->run();
+        if (auto exit = session_.menuExit()) return *exit;
+        return QuitPosted ? uqm::ModeResult{uqm::SessionExit::shutdown()}
+                          : uqm::ModeResult{uqm::ModeCompleted{}};
+    }
+protected:
+    void initialize() override { frontend_.emplace(session_); }
+private:
+    uqm::ArcadeSession &session_;
+    std::optional<MeleeFrontend> frontend_;
+};
+}
+std::unique_ptr<uqm::GameMode> uqm::detail::createArcadeFleetSelectionMode(ArcadeSession &session) {
+    return std::make_unique<FleetSelectionMode>(session);
 }
 
 #ifdef NETPLAY

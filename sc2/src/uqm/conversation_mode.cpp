@@ -8,7 +8,7 @@ namespace {
 class ConversationMode final : public GameMode {
 public:
     ConversationMode(GameSession &session, std::unique_ptr<ConversationRuntime> conversation)
-        : GameMode(session), session_(session), conversation_(std::move(conversation)) {
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), conversation_(std::move(conversation)) {
         if (!conversation_ || !conversation_->belongsTo(session))
             throw std::invalid_argument("conversation requires its owning session");
     }

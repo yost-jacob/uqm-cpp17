@@ -1,4 +1,5 @@
 #include "game_state.hpp"
+#include "legacy_runtime.hpp"
 #include "state.h"
 #include "starmap.h"
 #include <cstdlib>
@@ -17,6 +18,7 @@ uqm::WorldId worldId(COUNT system, COUNT planet, int moon) {
 struct PLANET_INFO_SNAPSHOT { std::vector<std::uint32_t> words; };
 extern "C" {
 void ResetPersonalDiscoveries(void) {
+    if (uqm::detail::standaloneRuntime()) return; // Arcade has no personal discoveries.
     try { uqm::gameSession().player().story().clearDiscoveries(); }
     catch (...) { std::abort(); }
 }

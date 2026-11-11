@@ -14,8 +14,8 @@ ELEMENT &addEntity(SimulationEngine &engine) {
 struct Trace { unsigned initialized = 0; bool childDestroyed = false, parentDestroyed = false, resumed = false; };
 class Child final : public GameMode {
 public:
-    Child(std::shared_ptr<GameState> state, Trace &trace, PRIMITIVE *parentPrimitives)
-        : GameMode(std::move(state), SinglePlayerId), trace_(trace), parentPrimitives_(parentPrimitives) {}
+    Child(ModeDispatcher &host, Trace &trace, PRIMITIVE *parentPrimitives)
+        : GameMode(host), trace_(trace), parentPrimitives_(parentPrimitives) {}
     ~Child() override {
         trace_.childDestroyed = &simulationEngine() == &engine();
     }
@@ -39,7 +39,7 @@ private:
 class Parent final : public GameMode {
 public:
     Parent(GameSession &session, Trace &trace)
-        : GameMode(session.stateOwner(), session.playerId()), session_(session), trace_(trace) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), trace_(trace) {}
     ~Parent() override { trace_.parentDestroyed = &simulationEngine() == &engine(); }
     ModeResult run() override {
         auto &entity = addEntity(engine());
@@ -47,7 +47,7 @@ public:
         auto *primitives = DisplayArray;
         DisplayFreeList = 11;
         SetPrimType(&DisplayArray[0], STAMP_PRIM);
-        BOOST_TEST(!session_.swapGameMode(std::make_unique<Child>(stateOwner(), trace_, primitives)));
+        BOOST_TEST(!session_.swapGameMode(std::make_unique<Child>(dispatcher(), trace_, primitives)));
         BOOST_REQUIRE(engine().resolve(id));
         BOOST_TEST(&engine().resolve(id)->get() == &entity);
         BOOST_TEST(DisplayArray == primitives);
@@ -104,13 +104,13 @@ BOOST_AUTO_TEST_CASE(failed_mode_initialization_restores_previous_engine_binding
     auto *previous = &simulationEngine();
     struct Failed final : GameMode {
         bool &destroyed;
-        Failed(std::shared_ptr<GameState> state, bool &value)
-            : GameMode(std::move(state), SinglePlayerId), destroyed(value) {}
+        Failed(ModeDispatcher &host, bool &value)
+            : GameMode(host), destroyed(value) {}
         ~Failed() override { destroyed = &simulationEngine() == &engine(); }
         void initialize() override { throw std::runtime_error("cannot initialize scene"); }
         ModeResult run() override { BOOST_FAIL("run after failed initialization"); return ModeCompleted{}; }
     };
-    const auto result = session.run(std::make_unique<Failed>(state, destroyed));
+    const auto result = session.run(std::make_unique<Failed>(session.dispatcher(), destroyed));
     BOOST_TEST(static_cast<int>(result.kind) == static_cast<int>(SessionExitKind::Failed));
     BOOST_TEST(destroyed); BOOST_TEST(&simulationEngine() == previous);
 }

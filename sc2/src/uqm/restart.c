@@ -17,6 +17,7 @@
  */
 
 #include "restart.h"
+#include "game_session_c.h"
 
 #include "colors.h"
 #include "controls.h"
@@ -353,7 +354,9 @@ TryStartGame (void)
 				!(GLOBAL (CurrentActivity) & CHECK_ABORT))
 		{
 			FreeGameData ();
-			Melee ();
+			UQM_SESSION_EXIT exit = RunArcadeSession ();
+			if (exit.kind == UQM_SESSION_SHUTDOWN || exit.kind == UQM_SESSION_FAILED)
+				GLOBAL (CurrentActivity) |= CHECK_ABORT;
 			MenuState.Initialized = FALSE;
 		}
 		else if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
