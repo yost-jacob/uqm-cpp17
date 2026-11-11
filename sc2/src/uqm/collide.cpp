@@ -17,6 +17,7 @@
  */
 
 #include "collide.h"
+#include "simulation_engine.hpp"
 #include "element.h"
 #include "races.h"
 #include "units.h"
@@ -26,9 +27,10 @@
 
 //#define DEBUG_COLLIDE
 
-void
-collide (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
-{
+void uqm::SimulationEngine::resolveCollision(ELEMENT &first, ELEMENT &second) {
+    SimulationBinding binding{*this};
+    auto *ElementPtr0 = &first; auto *ElementPtr1 = &second;
+
 	SIZE speed;
 	SIZE dx0, dy0, dx1, dy1, dx_rel, dy_rel;
 	SIZE TravelAngle0, TravelAngle1, ImpactAngle0, ImpactAngle1;
@@ -179,5 +181,8 @@ collide (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
 				dx0, dy0, dx1, dy1);
 #endif /* DEBUG_COLLIDE */
 	}
-}
 
+}
+void collide(ELEMENT *first, ELEMENT *second) {
+    uqm::simulationEngine().resolveCollision(*first, *second);
+}

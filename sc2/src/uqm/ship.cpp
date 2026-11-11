@@ -17,6 +17,7 @@
  */
 
 #include "ship.h"
+#include "simulation_engine.hpp"
 #include "ship_behavior.hpp"
 #include "animation_effect.hpp"
 
@@ -339,10 +340,11 @@ ship_postprocess (ELEMENT *ElementPtr)
 		PostProcessStatus (ElementPtr);
 }
 
-void
-collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void uqm::SimulationEngine::contact(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    SimulationBinding binding{*this};
+    auto *ElementPtr0 = &self; auto *pPt0 = &point;
+    auto *ElementPtr1 = &other; auto *pPt1 = &otherPoint;
+
 	if (!(ElementPtr1->state_flags & FINITE_LIFE))
 	{
 		ElementPtr0->state_flags |= COLLISION;
@@ -364,7 +366,12 @@ collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 	(void) pPt0;  /* Satisfying compiler (unused parameter) */
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
+
 }
+void collision(ELEMENT *self, POINT *point, ELEMENT *other, POINT *otherPoint) {
+    uqm::simulationEngine().contact(*self, *point, *other, *otherPoint);
+}
+
 
 static BOOLEAN
 spawn_ship (STARSHIP *StarShipPtr)

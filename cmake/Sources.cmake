@@ -161,7 +161,7 @@ set(UQM_SOURCES
     sc2/src/uqm/cleanup.c
     sc2/src/uqm/clock.c
     sc2/src/uqm/cnctdlg.c
-    sc2/src/uqm/collide.c
+    sc2/src/uqm/collide.cpp
     sc2/src/uqm/conversation.cpp
     sc2/src/uqm/conversation_mode.cpp
     sc2/src/uqm/conversation_context.cpp
@@ -208,6 +208,9 @@ set(UQM_SOURCES
     sc2/src/uqm/gravity_field.cpp
     sc2/src/uqm/combat_planet.cpp
     sc2/src/uqm/animation_effect.cpp
+    sc2/src/uqm/simulation_targeting.cpp
+    sc2/src/uqm/simulation_damage.cpp
+    sc2/src/uqm/simulation_engine.cpp
     sc2/src/uqm/combat_entity_legacy.cpp
     sc2/src/uqm/projectile.cpp
     sc2/src/uqm/projectile_legacy.cpp
@@ -311,7 +314,7 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/scan.cpp
     sc2/src/uqm/planets/solarsys.cpp
     sc2/src/uqm/planets/surface.c
-    sc2/src/uqm/process.c
+    sc2/src/uqm/process.cpp
     sc2/src/uqm/restart.c
     sc2/src/uqm/save.c
     sc2/src/uqm/settings.c
@@ -386,5 +389,5 @@ set(UQM_SOURCES
     sc2/src/uqm/uqmdebug.cpp
     sc2/src/uqm/util.c
     sc2/src/uqm/velocity.c
-    sc2/src/uqm/weapon.c
+    sc2/src/uqm/weapon.cpp
 )

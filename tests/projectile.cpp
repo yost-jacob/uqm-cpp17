@@ -36,7 +36,7 @@ struct CountingProjectile final : Projectile {
 // Simulate target selection and graphics allocation only. Real factories,
 // steering timers, velocity math, publishing adapter and pool ownership run.
 extern "C" {
-QUEUE disp_q{};
+
 HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { return nullptr; }
 FRAME IncFrameIndex(FRAME frame) { return reinterpret_cast<FRAME>(reinterpret_cast<std::uintptr_t>(frame) + 1); }
 COUNT GetFrameIndex(FRAME frame) { return static_cast<COUNT>(reinterpret_cast<std::uintptr_t>(frame)); }

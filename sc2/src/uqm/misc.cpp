@@ -17,6 +17,7 @@
  */
 
 #include "element.h"
+#include "simulation_engine.hpp"
 #include "init.h"
 #include "races.h"
 #include "ship.h"
@@ -176,29 +177,8 @@ spawn_asteroid (ELEMENT *ElementPtr)
 	}
 }
 
-void
-do_damage (ELEMENT *ElementPtr, SIZE damage)
-{
-	if (ElementPtr->state_flags & PLAYER_SHIP)
-	{
-		if (!DeltaCrew (ElementPtr, -damage))
-		{
-			ElementPtr->life_span = 0;
-			ElementPtr->state_flags |= NONSOLID;
-		}
-	}
-	else if (!GRAVITY_MASS (ElementPtr->mass_points))
-	{
-		if ((BYTE)damage < ElementPtr->hit_points)
-			ElementPtr->hit_points -= (BYTE)damage;
-		else
-		{
-			ElementPtr->hit_points = 0;
-			ElementPtr->life_span = 0;
-			ElementPtr->state_flags |= NONSOLID;
-		}
-	}
-}
+void do_damage(ELEMENT *target, SIZE amount) { uqm::simulationEngine().damage(*target, amount); }
+
 
 #define CREW_COLOR_LOW_INTENSITY \
 		BUILD_COLOR (MAKE_RGB15 (0x00, 0x14, 0x00), 0x02)

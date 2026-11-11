@@ -17,6 +17,7 @@
  */
 
 #include "collide.h"
+#include "simulation_engine.hpp"
 #include "combat_planet.hpp"
 #include "combat_entity_legacy.hpp"
 #include "races.h"
@@ -25,7 +26,10 @@
 
 // The physics pass applies each source's field. Planet owns parameters and the
 // sprite collision shape; it does not integrate or discover targets itself.
-BOOLEAN CalculateGravity(ELEMENT *element) {
+BOOLEAN uqm::SimulationEngine::gravity(ELEMENT &source) {
+    SimulationBinding binding{*this};
+    auto *element = &source;
+
     const bool hasGravity = CollidingElement(element) && GRAVITY_MASS(element->mass_points + 1);
     for (auto handle = GetHeadElement(); handle;) {
         ELEMENT *other;
@@ -58,7 +62,10 @@ BOOLEAN CalculateGravity(ELEMENT *element) {
         handle = next;
     }
     return FALSE;
+
 }
+BOOLEAN CalculateGravity(ELEMENT *source) { return uqm::simulationEngine().gravity(*source); }
+
 
 BOOLEAN
 TimeSpaceMatterConflict (ELEMENT *ElementPtr)

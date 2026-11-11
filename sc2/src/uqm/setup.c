@@ -67,7 +67,7 @@ FRAME FlagStatFrame;
 FRAME MiscDataFrame;
 FRAME FontGradFrame;
 STRING GameStrings;
-QUEUE disp_q;
+
 
 uio_Repository *repository;
 uio_DirHandle *rootDir;
@@ -183,7 +183,7 @@ InitContexts (void)
 	if (OffScreenContext == NULL)
 		return FALSE;
 
-	if (!InitQueue (&disp_q, MAX_DISPLAY_ELEMENTS, QUEUE_ELEMENT))
+	if (!InitializeSimulationEngine (MAX_DISPLAY_ELEMENTS))
 		return FALSE;
 
 	return TRUE;

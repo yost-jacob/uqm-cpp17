@@ -57,6 +57,15 @@ units, effects, asteroids and the planet. The underlying collision/render backen
 and laser allocation remain compatibility services. See [combat entities](combat-entities.md). See [SIS and projectile ownership](sis-projectiles.md)
 and the [projectile roster migration](projectile-roster.md).
 
+## Simulation ownership
+
+Each GameMode now owns a SimulationEngine value and its entity queue. The existing update
+pass, damage, collision response, gravity and target selection execute behind
+engine methods. The dispatcher calls initialize() after construction. C callers borrow the active mode engine through scoped
+adapters; there is no global queue owner. Rendering/audio/input and sprite-based
+scene projection retain their current service bindings. See
+[simulation engine](simulation-engine.md) for contracts and remaining boundaries.
+
 ## State naming
 
 The personal progress interface is `StoryState`, accessed as `player.story()`.

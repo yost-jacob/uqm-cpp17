@@ -52,7 +52,7 @@ FreeKernel (void)
 static void
 UninitContexts (void)
 {
-	UninitQueue (&disp_q);
+	ShutdownSimulationEngine ();
 
 	DestroyContext (OffScreenContext);
 	DestroyContext (SpaceContext);

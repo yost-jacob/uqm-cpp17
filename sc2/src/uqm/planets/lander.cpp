@@ -1924,15 +1924,19 @@ public:
 class LanderMode final : public GameMode {
 public:
     LanderMode(GameSession &session, SOLARSYS_STATE &system, POINT location)
-        : GameMode(session.stateOwner(), session.playerId()), session_(session), location_(location), visit_(system) {
+        : GameMode(session.stateOwner(), session.playerId()), session_(session), location_(location), visit_(system), surfaceSource_(simulationEngine()) {
         if (&session.player().story() != &visit_.story)
             throw std::invalid_argument("lander and session have different campaigns");
     }
     ModeResult run() override;
+protected:
+    void initialize() override { scene_.emplace(surfaceSource_, engine()); }
 private:
     GameSession &session_;
     POINT location_;
     LanderVisit visit_;
+    SimulationEngine &surfaceSource_;
+    std::optional<SimulationSceneTransfer> scene_;
     // Reverse destruction: transient effects, menu sounds, active visit binding,
     // then visit data. Dispatcher restores renderer bindings only afterward.
     std::optional<LanderBinding> binding_;

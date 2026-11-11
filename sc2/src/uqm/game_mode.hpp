@@ -2,6 +2,7 @@
 #define UQM_GAME_MODE_HPP_
 
 #include "world_types.hpp"
+#include "simulation_engine.hpp"
 #include <exception>
 #include <cstdint>
 #include <memory>
@@ -38,9 +39,14 @@ public:
     GameMode(std::shared_ptr<GameState> state, PlayerId player);
     virtual ~GameMode() = default;
     virtual ModeResult run() = 0;
+    SimulationEngine &engine() noexcept { return engine_; }
+    const SimulationEngine &engine() const noexcept { return engine_; }
     GameMode(const GameMode &) = delete;
     GameMode &operator=(const GameMode &) = delete;
 protected:
+    // Called once by the dispatcher after full construction, with this mode's
+    // engine selected. Derived modes can prepare or take ownership of a scene.
+    virtual void initialize() {}
     // Dispatcher calls these around a child. The token restores bindings after
     // child destruction, including exits. resume() restores the continuing parent
     // view and services; it does not restart run() or commit gameplay effects.
@@ -50,6 +56,7 @@ protected:
     PlayerId playerId() const noexcept;
 private:
     friend class GameSession;
+    SimulationEngine engine_{MAX_DISPLAY_ELEMENTS};
     std::unique_ptr<GameMode> parentMode_;
     std::shared_ptr<GameState> state_;
     PlayerId player_;

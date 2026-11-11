@@ -177,14 +177,19 @@ elementsOfSamePlayer (const ELEMENT *ElementPtr0, const ELEMENT *ElementPtr1)
 	return ElementPtr0->playerNr == ElementPtr1->playerNr ? TRUE : FALSE;
 }
 
-extern QUEUE disp_q;
+// Borrow the active mode engine's compatibility buffer.
+extern QUEUE *GetSimulationQueue (void);
+extern BOOLEAN InitializeSimulationEngine (COUNT capacity);
+extern void ShutdownSimulationEngine (void);
+#define disp_q (*GetSimulationQueue())
 // The maximum number of elements is chosen to provide a slight margin.
 // Currently, it is maximum *known used* in Melee + 30
 #define MAX_DISPLAY_ELEMENTS 150
 
 #define MAX_DISPLAY_PRIMS 330
 extern COUNT DisplayFreeList;
-extern PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
+extern PRIM_LINKS DisplayLinks;
+extern PRIMITIVE *DisplayArray;
 
 #define AllocDisplayPrim() DisplayFreeList; \
 								DisplayFreeList = GetSuccLink (GetPrimLinks (&DisplayArray[DisplayFreeList]))

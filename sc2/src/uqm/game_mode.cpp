@@ -1,3 +1,4 @@
+#include "simulation_engine.hpp"
 #include "game_mode.hpp"
 #include "game_state.hpp"
 #include <stdexcept>
@@ -21,13 +22,18 @@ MenuResult GameSession::swapGameMode(std::unique_ptr<GameMode> child) {
         auto suspension = currentMode_->suspend();
         child->parentMode_.swap(currentMode_);
         currentMode_.swap(child);
-        auto result = currentMode_->run();
-        if (auto *exit = std::get_if<SessionExit>(&result)) requestMenuExit(*exit);
-        else if (!std::holds_alternative<ModeCompleted>(result))
-            throw std::logic_error("nested mode must complete or return a session exit");
-        auto completed = std::move(currentMode_);
-        currentMode_ = std::move(completed->parentMode_);
-        completed.reset(); // RAII cleanup finishes before restoring bindings/redrawing.
+        {
+            SimulationBinding childSimulation{currentMode_->engine()};
+            currentMode_->initialize();
+            auto result = currentMode_->run();
+            if (auto *exit = std::get_if<SessionExit>(&result)) requestMenuExit(*exit);
+            else if (!std::holds_alternative<ModeCompleted>(result))
+                throw std::logic_error("nested mode must complete or return a session exit");
+            auto completed = std::move(currentMode_);
+            currentMode_ = std::move(completed->parentMode_);
+            childSimulation.discardOnExit();
+            completed.reset(); // Child queue/resources die before parent rebind.
+        }
         suspension.reset();
         if (!pendingExit_) currentMode_->resume();
         return pendingExit_;
@@ -71,6 +77,8 @@ SessionExit GameSession::run(std::unique_ptr<GameMode> initialMode) {
     try {
         if (!currentMode_) throw std::logic_error("session has no initial mode");
         for (;;) {
+            SimulationBinding simulation{currentMode_->engine()};
+            currentMode_->initialize();
             auto result = currentMode_->run();
             if (auto *direct = std::get_if<SessionExit>(&result))
                 requestMenuExit(*direct);
@@ -81,12 +89,17 @@ SessionExit GameSession::run(std::unique_ptr<GameMode> initialMode) {
             if (std::holds_alternative<ModeCompleted>(result)) break;
             auto &next = std::get<std::unique_ptr<GameMode>>(result);
             if (!next) throw std::logic_error("mode returned a null successor");
+            simulation.discardOnExit();
             currentMode_ = std::move(next);
         }
     } catch (...) {
         exit = SessionExit::failed(std::current_exception());
     }
-    currentMode_.reset(); // No old mode survives into load or application teardown.
+    if (currentMode_) {
+        SimulationBinding cleanup{currentMode_->engine()};
+        cleanup.discardOnExit();
+        currentMode_.reset(); // Cleanup runs against this mode's queue.
+    }
     pendingExit_.reset();
     running_ = false;
     return exit;

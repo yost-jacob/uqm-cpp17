@@ -31,7 +31,8 @@ postprocess, while a deferred action may need only expiration. Expiration is a
 gameplay event and may extend life to start an animation. Destructors release
 resources; they never fire weapons, spawn replacements or commit story state.
 
-ELEMENT queues now own `unique_ptr<CombatEntity>` rather than a projectile-only
+The mode-owned [SimulationEngine](simulation-engine.md) owns the ELEMENT queue.
+Its pool stores `unique_ptr<CombatEntity>` rather than a projectile-only
 owner vector. FreeLink, reset and teardown release all categories uniformly.
 Ship descriptors retain their existing asset owner and borrow their engine
 records; adding the common base does not introduce a second ship owner. Engine
