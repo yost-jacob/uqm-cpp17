@@ -4,6 +4,7 @@
 #include "game_state.hpp"
 #include "gameev.h"
 #include "libs/mathlib.h"
+#include "ship_tuning.hpp"
 #include "sis_state.hpp"
 #include <limits>
 namespace uqm {
@@ -61,6 +62,12 @@ dialogue::Result CampaignDialogueState::scheduleEvent(const std::string &event,
         selector = ARILOU_UMGAH_CHECK;
     else if (event == "ADVANCE_ILWRATH_MISSION")
         selector = ADVANCE_ILWRATH_MISSION;
+    else if (event == "ADVANCE_UTWIG_SUPOX_MISSION")
+        selector = ADVANCE_UTWIG_SUPOX_MISSION;
+    else if (event == "SLYLANDRO_RAMP_DOWN")
+        selector = SLYLANDRO_RAMP_DOWN;
+    else if (event == "ADVANCE_PKUNK_MISSION")
+        selector = ADVANCE_PKUNK_MISSION;
     else if (event == "YEHAT_REBEL_EVENT")
         selector = YEHAT_REBEL_EVENT;
     else if (event == "SHOFIXTI_RETURN_EVENT")
@@ -133,11 +140,25 @@ std::string CampaignDialogueState::relationship(const std::string &type) const {
     const auto state = CheckAlliance(raceId(type));
     return state == GOOD_GUY ? "allied" : state == DEAD_GUY ? "extinct" : "neutral";
 }
+dialogue::Result CampaignDialogueState::createShip(const std::string &type,
+                                                   const std::string &captain,
+                                                   dialogue::Integer crew) {
+    if (type != "spathi" || captain != "fwiffo")
+        throw std::invalid_argument("unregistered named captain: " + type + "." + captain);
+    if (crew <= 0 || crew > combat::shipTuning(type).ship.maxCrew)
+        throw std::out_of_range("named captain crew exceeds ship capacity");
+    const auto count = AddEscortShips(SPATHI_SHIP, 1);
+    if (count && SetEscortCrewComplement(SPATHI_SHIP, static_cast<COUNT>(crew),
+                                         NAME_OFFSET + NUM_CAPTAINS_NAMES) < 0)
+        throw std::runtime_error("could not assign recruited captain");
+    return {"ok", {{"count", count}}};
+}
 dialogue::Result CampaignDialogueState::giveShips(const std::string &type,
                                                   dialogue::Integer count) {
     if (count < 0 || count > std::numeric_limits<SIZE>::max())
         throw std::out_of_range("invalid escort count");
-    return {"ok", {{"count", AddEscortShips(raceId(type), count)}}};
+    const auto race = raceId(type);
+    return {"ok", {{"count", count ? AddEscortShips(race, count) : 0}}};
 }
 dialogue::Result CampaignDialogueState::setRelationship(const std::string &type,
                                                         const std::string &relation) {

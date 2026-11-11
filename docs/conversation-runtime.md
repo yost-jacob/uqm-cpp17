@@ -14,7 +14,7 @@ selects the file. Names and indexed phrases are validated against its native
 string table, preserving compiled enums. `node_count` includes compact expansion.
 The loader resolves and binds the graph before running story code.
 
-The 16 remaining compatibility envelopes use an action for intro, a silent menu/farewell decision, and
+The 12 remaining compatibility envelopes use an action for intro, a silent menu/farewell decision, and
 compact responses with single-execution actions. The eight response slots preserve
 native registration order and constructed strings. `handlers.legacy_turn` invokes
 only the callback currently offered in that slot; unknown script IDs, invalid
@@ -43,10 +43,10 @@ pycparser is not a runtime or build dependency.
 
 ## Remaining work
 
-The probe, Kohr-Ah, Ur-Quan, Arilou, Ilwrath, Mycon, Umgah, Supox, Yehat rebels, Shofixti and Yehat scripts now use general state actions, conditions
+The probe, Kohr-Ah, Ur-Quan, Arilou, Ilwrath, Mycon, Umgah, Supox, Yehat rebels, Shofixti, Yehat, Pkunk, Slylandro homeworld, Spathi and Utwig scripts now use general state actions, conditions
 and dialogue nodes. Their old C callback bodies were removed. Probe coordinate
 number-speech, Ur-Quan hypnosis fade and native resource/lifecycle configuration
-remain explicit special cases. The other 16 C story bodies have **not** been
+remain explicit special cases. The other 12 C story bodies have **not** been
 converted to general state actions and conditions. Calling them through an explicit handler is a compatibility boundary,
 not a claim that the old logic was deleted. Hayes/Melnorme's hand-authored design
 graphs have known behavior/timing differences and unimplemented native contracts;

@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 192,
   "id": "pkunk",
   "resource": "comm.pkunk.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource configuration and post-combat manner adjustment remain. All dialog branches, migration reasons, gifts/dates, topic pruning and initial alliance events are graph/state operations."
   },
   "phrases": [
     {
@@ -1286,121 +1286,2280 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.friendly_bye_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_GOODBYE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.friendly_bye_space",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["pkunk", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_friendly_bye_space",
+      "next": "exit.friendly_bye_space.speech"
     },
     {
-      "id": "route",
+      "id": "exit.neutral_bye_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEUTRAL_GOODBYE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.neutral_bye_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_neutral_bye_space",
+      "next": "exit.neutral_bye_space.speech"
+    },
+    {
+      "id": "exit.bye_angry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ANGRY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_angry",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_angry",
+      "next": "exit.bye_angry.speech"
+    },
+    {
+      "id": "exit.bye_friendly.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FRIENDLY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_friendly",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_friendly",
+      "next": "exit.bye_friendly.speech"
+    },
+    {
+      "id": "exit.suit_yourself.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_MIGRATION"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.suit_yourself",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_suit_yourself",
+      "next": "exit.suit_yourself.speech"
+    },
+    {
+      "id": "exit.must_conquer.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BAD_IDEA"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.must_conquer.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_must_conquer_effect1",
+      "next": "exit.must_conquer.speech"
+    },
+    {
+      "id": "exit.must_conquer",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_MANNER", 2]
+      },
+      "save_as": "exit_must_conquer",
+      "next": "exit.must_conquer.effect1"
+    },
+    {
+      "id": "exit.obey.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_OBEY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.obey",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_obey",
+      "next": "exit.obey.speech"
+    },
+    {
+      "id": "exit.die_idiot_fools.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["VERY_WELL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.die_idiot_fools",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_die_idiot_fools",
+      "next": "exit.die_idiot_fools.speech"
+    },
+    {
+      "id": "exit.we_here_to_help.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"eq": [{"query": "fleet.slots", "args": ["pkunk"]}, 0]},
+          "speech": ["NEED_HELP", "ALMOST_ALLIANCE", "INIT_NO_ROOM"]
+        },
+        {
+          "speech": ["NEED_HELP", "ALMOST_ALLIANCE", "INIT_SHIP_GIFT"]
+        }
+      ],
+      "next": "alliance.after"
+    },
+    {
+      "id": "exit.we_here_to_help.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_PKUNK_MISSION", 6, 0, 0]
+      },
+      "save_as": "exit_we_here_to_help_effect5",
+      "next": "exit.we_here_to_help.speech"
+    },
+    {
+      "id": "exit.we_here_to_help.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_we_here_to_help_effect4",
+      "next": "exit.we_here_to_help.effect5"
+    },
+    {
+      "id": "exit.we_here_to_help.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_INFO", 0]
+      },
+      "save_as": "exit_we_here_to_help_effect3",
+      "next": "exit.we_here_to_help.effect4"
+    },
+    {
+      "id": "exit.we_here_to_help.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_HOME_VISITS", 0]
+      },
+      "save_as": "exit_we_here_to_help_effect2",
+      "next": "exit.we_here_to_help.effect3"
+    },
+    {
+      "id": "exit.we_here_to_help.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_VISITS", 0]
+      },
+      "save_as": "exit_we_here_to_help_effect1",
+      "next": "exit.we_here_to_help.effect2"
+    },
+    {
+      "id": "exit.we_here_to_help",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_MANNER", 3]
+      },
+      "save_as": "exit_we_here_to_help",
+      "next": "exit.we_here_to_help.effect1"
+    },
+    {
+      "id": "exit.we_need_help.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"eq": [{"query": "fleet.slots", "args": ["pkunk"]}, 0]},
+          "speech": ["GIVE_HELP", "ALMOST_ALLIANCE", "INIT_NO_ROOM"]
+        },
+        {
+          "speech": ["GIVE_HELP", "ALMOST_ALLIANCE", "INIT_SHIP_GIFT"]
+        }
+      ],
+      "next": "alliance.after"
+    },
+    {
+      "id": "exit.we_need_help.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_PKUNK_MISSION", 6, 0, 0]
+      },
+      "save_as": "exit_we_need_help_effect5",
+      "next": "exit.we_need_help.speech"
+    },
+    {
+      "id": "exit.we_need_help.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_we_need_help_effect4",
+      "next": "exit.we_need_help.effect5"
+    },
+    {
+      "id": "exit.we_need_help.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_INFO", 0]
+      },
+      "save_as": "exit_we_need_help_effect3",
+      "next": "exit.we_need_help.effect4"
+    },
+    {
+      "id": "exit.we_need_help.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_HOME_VISITS", 0]
+      },
+      "save_as": "exit_we_need_help_effect2",
+      "next": "exit.we_need_help.effect3"
+    },
+    {
+      "id": "exit.we_need_help.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_VISITS", 0]
+      },
+      "save_as": "exit_we_need_help_effect1",
+      "next": "exit.we_need_help.effect2"
+    },
+    {
+      "id": "exit.we_need_help",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_MANNER", 3]
+      },
+      "save_as": "exit_we_need_help",
+      "next": "exit.we_need_help.effect1"
+    },
+    {
+      "id": "alliance.after",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"eq": [{"query": "fleet.slots", "args": ["pkunk"]}, 0]}, "next": "end"}],
+      "otherwise": "alliance.gift"
     },
     {
-      "id": "menu",
+      "id": "alliance.gift",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["pkunk", 4]
+      },
+      "save_as": "gift",
+      "next": "alliance.gift.check"
+    },
+    {
+      "id": "alliance.gift.check",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"get": ["result", "gift.count", 0]}, 0]}, "next": "alliance.gift.month"}],
+      "otherwise": "end"
+    },
+    {
+      "id": "alliance.gift.month",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SHIP_MONTH", {"get": ["encounter", "calendar_month", 0]}]
+      },
+      "save_as": "alliance_gift_month",
+      "next": "alliance.gift.day"
+    },
+    {
+      "id": "alliance.gift.day",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
+      },
+      "save_as": "alliance_gift_day",
+      "next": "alliance.gift.year"
+    },
+    {
+      "id": "alliance.gift.year",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
+      },
+      "save_as": "alliance_gift_year",
+      "next": "end"
+    },
+    {
+      "id": "nicer.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_ASK_FOR_MORE", "VISIT_OUR_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "nicer.space.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "nicer_space_effect4",
+      "next": "nicer.space.speech"
+    },
+    {
+      "id": "nicer.space.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_INFO", 0]
+      },
+      "save_as": "nicer_space_effect3",
+      "next": "nicer.space.effect4"
+    },
+    {
+      "id": "nicer.space.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_HOME_VISITS", 0]
+      },
+      "save_as": "nicer_space_effect2",
+      "next": "nicer.space.effect3"
+    },
+    {
+      "id": "nicer.space.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_VISITS", 0]
+      },
+      "save_as": "nicer_space_effect1",
+      "next": "nicer.space.effect2"
+    },
+    {
+      "id": "nicer.space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_MANNER", 3]
+      },
+      "save_as": "nicer_space",
+      "next": "nicer.space.effect1"
+    },
+    {
+      "id": "nicer.home",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"ne": [{"get": ["story", "CLEAR_SPINDLE", 0]}, 0]}}, "next": "nicer.spindle"}],
+      "otherwise": "nicer.known"
+    },
+    {
+      "id": "nicer.spindle.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_ASK_FOR_MORE", "GIVE_SPINDLE", "CAN_BE_FRIENDS"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "nicer.spindle.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CLEAR_SPINDLE_ON_SHIP", 1]
+      },
+      "save_as": "nicer_spindle_effect4",
+      "next": "nicer.spindle.speech"
+    },
+    {
+      "id": "nicer.spindle.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CLEAR_SPINDLE", 1]
+      },
+      "save_as": "nicer_spindle_effect3",
+      "next": "nicer.spindle.effect4"
+    },
+    {
+      "id": "nicer.spindle.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_HOME_VISITS", 0]
+      },
+      "save_as": "nicer_spindle_effect2",
+      "next": "nicer.spindle.effect3"
+    },
+    {
+      "id": "nicer.spindle.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_VISITS", 0]
+      },
+      "save_as": "nicer_spindle_effect1",
+      "next": "nicer.spindle.effect2"
+    },
+    {
+      "id": "nicer.spindle",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_MANNER", 3]
+      },
+      "save_as": "nicer_spindle",
+      "next": "nicer.spindle.effect1"
+    },
+    {
+      "id": "nicer.known.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_ASK_FOR_MORE", "CAN_BE_FRIENDS"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "nicer.known.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_HOME_VISITS", 0]
+      },
+      "save_as": "nicer_known_effect2",
+      "next": "nicer.known.speech"
+    },
+    {
+      "id": "nicer.known.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_VISITS", 0]
+      },
+      "save_as": "nicer_known_effect1",
+      "next": "nicer.known.effect2"
+    },
+    {
+      "id": "nicer.known",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_MANNER", 3]
+      },
+      "save_as": "nicer_known",
+      "next": "nicer.known.effect1"
+    },
+    {
+      "id": "exit.good_reason_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_GO_HOME_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.good_reason_1.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_good_reason_1_effect2",
+      "next": "exit.good_reason_1.speech"
+    },
+    {
+      "id": "exit.good_reason_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_PKUNK_MISSION", 0, 0, 0]
+      },
+      "save_as": "exit_good_reason_1_effect1",
+      "next": "exit.good_reason_1.effect2"
+    },
+    {
+      "id": "exit.good_reason_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "PKUNK_REASONS", "set", 1]
+      },
+      "save_as": "exit_good_reason_1",
+      "next": "exit.good_reason_1.effect1"
+    },
+    {
+      "id": "exit.good_reason_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_GO_HOME_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.good_reason_2.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_good_reason_2_effect2",
+      "next": "exit.good_reason_2.speech"
+    },
+    {
+      "id": "exit.good_reason_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_PKUNK_MISSION", 0, 0, 0]
+      },
+      "save_as": "exit_good_reason_2_effect1",
+      "next": "exit.good_reason_2.effect2"
+    },
+    {
+      "id": "exit.good_reason_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "PKUNK_REASONS", "set", 2]
+      },
+      "save_as": "exit_good_reason_2",
+      "next": "exit.good_reason_2.effect1"
+    },
+    {
+      "id": "exit.bad_reason_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_GO_HOME_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bad_reason_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bad_reason_1_effect1",
+      "next": "exit.bad_reason_1.speech"
+    },
+    {
+      "id": "exit.bad_reason_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "PKUNK_REASONS", "set", 4]
+      },
+      "save_as": "exit_bad_reason_1",
+      "next": "exit.bad_reason_1.effect1"
+    },
+    {
+      "id": "exit.bad_reason_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_GO_HOME_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bad_reason_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bad_reason_2_effect1",
+      "next": "exit.bad_reason_2.speech"
+    },
+    {
+      "id": "exit.bad_reason_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "PKUNK_REASONS", "set", 8]
+      },
+      "save_as": "exit_bad_reason_2",
+      "next": "exit.bad_reason_2.effect1"
+    },
+    {
+      "id": "migrate.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "good_reason_1",
+          "text": "good_reason_1",
+          "when": {"eq": [{"bit_and": [{"get": ["story", "PKUNK_REASONS", 0]}, 1]}, 0]},
+          "next": "exit.good_reason_1"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bad_reason_1",
+          "text": "bad_reason_1",
+          "when": {"eq": [{"bit_and": [{"get": ["story", "PKUNK_REASONS", 0]}, 4]}, 0]},
+          "next": "exit.bad_reason_1"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "good_reason_2",
+          "text": "good_reason_2",
+          "when": {"eq": [{"bit_and": [{"get": ["story", "PKUNK_REASONS", 0]}, 2]}, 0]},
+          "next": "exit.good_reason_2"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bad_reason_2",
+          "text": "bad_reason_2",
+          "when": {"eq": [{"bit_and": [{"get": ["story", "PKUNK_REASONS", 0]}, 8]}, 0]},
+          "next": "exit.bad_reason_2"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["pkunk", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "suit_yourself",
+          "text": "suit_yourself",
+          "when": true,
+          "next": "exit.suit_yourself"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "should_be_friends.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YES_FRIENDS"]}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "should_be_friends",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "should_be_friends", true]
+      },
+      "save_as": "should_be_friends",
+      "next": "should_be_friends.speech"
+    },
+    {
+      "id": "why_insults.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RELEASE_TENSION"]}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "why_insults",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_insults", true]
+      },
+      "save_as": "why_insults",
+      "next": "why_insults.speech"
+    },
+    {
+      "id": "what_about_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US"]}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "what_about_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_you", true]
+      },
+      "save_as": "what_about_you",
+      "next": "what_about_you.speech"
+    },
+    {
+      "id": "angry.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "should_be_friends",
+          "text": "should_be_friends",
+          "when": {"not": {"get": ["local", "should_be_friends", false]}},
+          "next": "should_be_friends"
+        },
+        {
+          "id": "try_to_be_nicer",
+          "text": "try_to_be_nicer",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "should_be_friends", false]}}},
+              {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}
+            ]
+          },
+          "next": "nicer.home"
+        },
+        {
+          "id": "try_to_be_nicer_space",
+          "text": "try_to_be_nicer",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "should_be_friends", false]}}},
+              {"not": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}}
+            ]
+          },
+          "next": "nicer.space"
+        },
+        {
+          "id": "die_idiot_fools",
+          "text": "die_idiot_fools",
+          "when": true,
+          "next": "exit.die_idiot_fools"
+        },
+        {
+          "id": "why_insults",
+          "text": "why_insults",
+          "when": {"not": {"get": ["local", "why_insults", false]}},
+          "next": "why_insults"
+        },
+        {
+          "id": "what_about_you",
+          "text": "what_about_you",
+          "when": {"not": {"get": ["local", "what_about_you", false]}},
+          "next": "what_about_you"
+        },
+        {
+          "id": "bye_angry",
+          "text": "bye_angry",
+          "when": true,
+          "next": "exit.bye_angry"
+        }
+      ]
+    },
+    {
+      "id": "conquer_because_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_CONQUER_1"]}],
+      "next": "conquer.menu"
+    },
+    {
+      "id": "conquer_because_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "conquer_because_1", true]
+      },
+      "save_as": "conquer_because_1",
+      "next": "conquer_because_1.speech"
+    },
+    {
+      "id": "conquer_because_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_CONQUER_2"]}],
+      "next": "conquer.menu"
+    },
+    {
+      "id": "conquer_because_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "conquer_because_2", true]
+      },
+      "save_as": "conquer_because_2",
+      "next": "conquer_because_2.speech"
+    },
+    {
+      "id": "conquer.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "conquer_because_1",
+          "text": "conquer_because_1",
+          "when": {"not": {"get": ["local", "conquer_because_1", false]}},
+          "next": "conquer_because_1"
+        },
+        {
+          "id": "conquer_because_2",
+          "text": "conquer_because_2",
+          "when": {"not": {"get": ["local", "conquer_because_2", false]}},
+          "next": "conquer_because_2"
+        },
+        {
+          "id": "must_conquer",
+          "text": "must_conquer",
+          "when": true,
+          "next": "exit.must_conquer"
+        },
+        {
+          "id": "no_conquest",
+          "text": "no_conquest",
+          "when": true,
+          "next": "no.conquest"
+        }
+      ]
+    },
+    {
+      "id": "conquer.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHY_CONQUER"]}],
+      "next": "conquer.menu"
+    },
+    {
+      "id": "conquer",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "we_conquer", true]
+      },
+      "save_as": "conquer",
+      "next": "conquer.speech"
+    },
+    {
+      "id": "no.conquest",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_IDEA"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "offer",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHY_YOU_HERE"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "exploring_universe.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SENSE_DEEPER_CONFLICT"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "exploring_universe",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "exploring_universe", true]
+      },
+      "save_as": "exploring_universe",
+      "next": "exploring_universe.speech"
+    },
+    {
+      "id": "fun_cruise.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["REPRESS"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "fun_cruise",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "fun_cruise", true]
+      },
+      "save_as": "fun_cruise",
+      "next": "fun_cruise.speech"
+    },
+    {
+      "id": "offer.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_here_to_help",
+          "text": "we_here_to_help",
+          "when": true,
+          "next": "exit.we_here_to_help"
+        },
+        {
+          "id": "we_need_help",
+          "text": "we_need_help",
+          "when": true,
+          "next": "exit.we_need_help"
+        },
+        {
+          "id": "exploring_universe",
+          "text": "exploring_universe",
+          "when": {"not": {"get": ["local", "exploring_universe", false]}},
+          "next": "exploring_universe"
+        },
+        {
+          "id": "fun_cruise",
+          "text": "fun_cruise",
+          "when": {"not": {"get": ["local", "fun_cruise", false]}},
+          "next": "fun_cruise"
+        }
+      ]
+    },
+    {
+      "id": "what_about_you.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US"]}],
+      "next": "what_about_you.route"
+    },
+    {
+      "id": "what_about_you.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_history", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_yehat", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_culture", false]}}},
+              {"not": {"not": {"get": ["local", "elaborate_culture", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_future", false]}}}
+            ]
+          },
+          "next": "what_about_you.exhausted"
+        }
+      ],
+      "otherwise": "what_about_you.menu"
+    },
+    {
+      "id": "what_about_you.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_you", true]
+      },
+      "save_as": "what_about_you_exhausted",
+      "next": "what_about_you.menu"
+    },
+    {
+      "id": "what_about_history.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HISTORY"]}],
+      "next": "what_about_you.route"
+    },
+    {
+      "id": "what_about_history",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_history", true]
+      },
+      "save_as": "what_about_history",
+      "next": "what_about_history.speech"
+    },
+    {
+      "id": "what_about_yehat.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_YEHAT"]}],
+      "next": "what_about_you.route"
+    },
+    {
+      "id": "what_about_yehat",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_yehat", true]
+      },
+      "save_as": "what_about_yehat",
+      "next": "what_about_yehat.speech"
+    },
+    {
+      "id": "what_about_culture.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_CULTURE"]}],
+      "next": "what_about_you.route"
+    },
+    {
+      "id": "what_about_culture",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_culture", true]
+      },
+      "save_as": "what_about_culture",
+      "next": "what_about_culture.speech"
+    },
+    {
+      "id": "elaborate_culture.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ELABORATE_CULTURE"]}],
+      "next": "what_about_you.route"
+    },
+    {
+      "id": "elaborate_culture",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "elaborate_culture", true]
+      },
+      "save_as": "elaborate_culture",
+      "next": "elaborate_culture.speech"
+    },
+    {
+      "id": "what_about_future.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_FUTURE"]}],
+      "next": "what_about_you.route"
+    },
+    {
+      "id": "what_about_future",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_future", true]
+      },
+      "save_as": "what_about_future",
+      "next": "what_about_future.speech"
+    },
+    {
+      "id": "what_about_you.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"all": [{"not": {"get": ["local", "what_about_history", false]}}]},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_yehat",
+          "text": "what_about_yehat",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_yehat", false]}},
+              {"not": {"not": {"get": ["local", "what_about_history", false]}}}
+            ]
+          },
+          "next": "what_about_yehat"
+        },
+        {
+          "id": "what_about_culture",
+          "text": "what_about_culture",
+          "when": {"all": [{"not": {"get": ["local", "what_about_culture", false]}}]},
+          "next": "what_about_culture"
+        },
+        {
+          "id": "elaborate_culture",
+          "text": "elaborate_culture",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "elaborate_culture", false]}},
+              {"not": {"not": {"get": ["local", "what_about_culture", false]}}}
+            ]
+          },
+          "next": "elaborate_culture"
+        },
+        {
+          "id": "what_about_future",
+          "text": "what_about_future",
+          "when": {"all": [{"not": {"get": ["local", "what_about_future", false]}}]},
+          "next": "what_about_future"
+        },
+        {
+          "id": "enough_about_you",
+          "text": "enough_about_you",
+          "when": true,
+          "next": "what_about_you.back"
+        }
+      ]
+    },
+    {
+      "id": "what_about_you.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_ABOUT_US"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "what_about_ilwrath.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ILWRATH"]}],
+      "next": "what_about_ilwrath.route"
+    },
+    {
+      "id": "what_about_ilwrath.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "why_ilwrath_fight", false]}}},
+              {"not": {"not": {"get": ["local", "when_fight_start", false]}}},
+              {"not": {"not": {"get": ["local", "how_goes_fight", false]}}},
+              {"not": {"not": {"get": ["local", "how_stop_fight", false]}}}
+            ]
+          },
+          "next": "what_about_ilwrath.exhausted"
+        }
+      ],
+      "otherwise": "what_about_ilwrath.menu"
+    },
+    {
+      "id": "what_about_ilwrath.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_ilwrath", true]
+      },
+      "save_as": "what_about_ilwrath_exhausted",
+      "next": "what_about_ilwrath.menu"
+    },
+    {
+      "id": "why_ilwrath_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ILWRATH_FIGHT_BECAUSE"]}],
+      "next": "what_about_ilwrath.route"
+    },
+    {
+      "id": "why_ilwrath_fight",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_ilwrath_fight", true]
+      },
+      "save_as": "why_ilwrath_fight",
+      "next": "why_ilwrath_fight.speech"
+    },
+    {
+      "id": "when_fight_start.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FIGHT_START_WHEN"]}],
+      "next": "what_about_ilwrath.route"
+    },
+    {
+      "id": "when_fight_start",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "when_fight_start", true]
+      },
+      "save_as": "when_fight_start",
+      "next": "when_fight_start.speech"
+    },
+    {
+      "id": "how_goes_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FIGHT_GOES"]}],
+      "next": "what_about_ilwrath.route"
+    },
+    {
+      "id": "how_goes_fight",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_fight", true]
+      },
+      "save_as": "how_goes_fight",
+      "next": "how_goes_fight.speech"
+    },
+    {
+      "id": "how_stop_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["STOP_FIGHT_LIKE_SO"]}],
+      "next": "what_about_ilwrath.route"
+    },
+    {
+      "id": "how_stop_fight",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_stop_fight", true]
+      },
+      "save_as": "how_stop_fight",
+      "next": "how_stop_fight.speech"
+    },
+    {
+      "id": "what_about_ilwrath.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_ilwrath_fight",
+          "text": "why_ilwrath_fight",
+          "when": {"all": [{"not": {"get": ["local", "why_ilwrath_fight", false]}}]},
+          "next": "why_ilwrath_fight"
+        },
+        {
+          "id": "when_fight_start",
+          "text": "when_fight_start",
+          "when": {"all": [{"not": {"get": ["local", "when_fight_start", false]}}]},
+          "next": "when_fight_start"
+        },
+        {
+          "id": "how_goes_fight",
+          "text": "how_goes_fight",
+          "when": {"all": [{"not": {"get": ["local", "how_goes_fight", false]}}]},
+          "next": "how_goes_fight"
+        },
+        {
+          "id": "how_stop_fight",
+          "text": "how_stop_fight",
+          "when": {"all": [{"not": {"get": ["local", "how_stop_fight", false]}}]},
+          "next": "how_stop_fight"
+        },
+        {
+          "id": "enough_ilwrath",
+          "text": "enough_ilwrath",
+          "when": true,
+          "next": "what_about_ilwrath.back"
+        }
+      ]
+    },
+    {
+      "id": "what_about_ilwrath.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_ILWRATH"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "ilwrath.gone.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ILWRATH"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "ilwrath.gone",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_ilwrath", true]
+      },
+      "save_as": "ilwrath_gone",
+      "next": "ilwrath.gone.speech"
+    },
+    {
+      "id": "fleet",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SWITCH", 1]
+      },
+      "save_as": "fleet",
+      "next": "fleet.counter"
+    },
+    {
+      "id": "fleet.counter",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "PKUNK_FLEET", 1]
+      },
+      "save_as": "fleet_counter",
+      "next": "fleet.prune"
+    },
+    {
+      "id": "fleet.prune",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_fleet_1", true]
+      },
+      "save_as": "fleet_prune",
+      "next": "fleet.route"
+    },
+    {
+      "id": "fleet.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "PKUNK_MISSION", 0]}, 1]}, 0]}, "next": "fleet.migrating"}],
+      "otherwise": "fleet.returning"
+    },
+    {
+      "id": "fleet.returning",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "PKUNK_RETURN", [["RETURNING_FROM_YEHAT_1"], ["RETURNING_FROM_YEHAT_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "fleet.returning.speech"
+    },
+    {
+      "id": "fleet.returning.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "fleet.migrating",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_MIGRATE",
+          [["MIGRATING_HOMEWORLD_1"], ["MIGRATING_HOMEWORLD_2"], ["MIGRATING_HOMEWORLD_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "fleet.migrating.speech"
+    },
+    {
+      "id": "fleet.migrating.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "worry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "am_worried_1", true]
+      },
+      "save_as": "worry",
+      "next": "worry.seq"
+    },
+    {
+      "id": "worry.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "PKUNK_WORRY", [["DONT_WORRY_1"], ["DONT_WORRY_2"], ["DONT_WORRY_3"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "worry.seq.speech"
+    },
+    {
+      "id": "worry.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_conquer",
+          "text": "we_conquer",
+          "when": {
+            "all": [{"not": {"get": ["local", "we_conquer", false]}}, {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 0]}]
+          },
+          "next": "conquer"
+        },
+        {
+          "id": "where_fleet_1",
+          "text": "where_fleet_1",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_ON_THE_MOVE", 0]}, 0]},
+              {"not": {"get": ["local", "where_fleet_1", false]}},
+              {"not": {"ne": [{"get": ["story", "PKUNK_SWITCH", 0]}, 0]}},
+              {"eq": [{"get": ["story", "PKUNK_FLEET", 0]}, 0]}
+            ]
+          },
+          "next": "fleet"
+        },
+        {
+          "id": "where_fleet_2",
+          "text": "where_fleet_2",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_ON_THE_MOVE", 0]}, 0]},
+              {"not": {"get": ["local", "where_fleet_1", false]}},
+              {"not": {"ne": [{"get": ["story", "PKUNK_SWITCH", 0]}, 0]}},
+              {"eq": [{"get": ["story", "PKUNK_FLEET", 0]}, 1]}
+            ]
+          },
+          "next": "fleet"
+        },
+        {
+          "id": "where_fleet_3",
+          "text": "where_fleet_3",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_ON_THE_MOVE", 0]}, 0]},
+              {"not": {"get": ["local", "where_fleet_1", false]}},
+              {"not": {"ne": [{"get": ["story", "PKUNK_SWITCH", 0]}, 0]}},
+              {"eq": [{"get": ["story", "PKUNK_FLEET", 0]}, 2]}
+            ]
+          },
+          "next": "fleet"
+        },
+        {
+          "id": "am_worried_1",
+          "text": "am_worried_1",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_ON_THE_MOVE", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "where_fleet_1", false]}}},
+              {"not": {"get": ["local", "am_worried_1", false]}},
+              {"ne": [{"bit_and": [{"get": ["story", "PKUNK_MISSION", 0]}, 1]}, 0]},
+              {"eq": [{"get": ["story", "PKUNK_WORRY", 0]}, 0]}
+            ]
+          },
+          "next": "worry"
+        },
+        {
+          "id": "am_worried_2",
+          "text": "am_worried_2",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_ON_THE_MOVE", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "where_fleet_1", false]}}},
+              {"not": {"get": ["local", "am_worried_1", false]}},
+              {"ne": [{"bit_and": [{"get": ["story", "PKUNK_MISSION", 0]}, 1]}, 0]},
+              {"eq": [{"get": ["story", "PKUNK_WORRY", 0]}, 1]}
+            ]
+          },
+          "next": "worry"
+        },
+        {
+          "id": "am_worried_3",
+          "text": "am_worried_3",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_ON_THE_MOVE", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "where_fleet_1", false]}}},
+              {"not": {"get": ["local", "am_worried_1", false]}},
+              {"ne": [{"bit_and": [{"get": ["story", "PKUNK_MISSION", 0]}, 1]}, 0]},
+              {"eq": [{"get": ["story", "PKUNK_WORRY", 0]}, 2]}
+            ]
+          },
+          "next": "worry"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "PKUNK_SHIP_MONTH", 0]}, 0]},
+          "next": "offer"
+        },
+        {
+          "id": "what_about_you",
+          "text": "what_about_you",
+          "when": {"not": {"get": ["local", "what_about_you", false]}},
+          "next": "what_about_you.intro"
+        },
+        {
+          "id": "what_about_ilwrath",
+          "text": "what_about_ilwrath",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_ilwrath", false]}},
+              {"not": {"ne": [{"get": ["story", "ILWRATH_DECEIVED", 0]}, 0]}}
+            ]
+          },
+          "next": "what_about_ilwrath.intro"
+        },
+        {
+          "id": "what_about_ilwrath_gone",
+          "text": "what_about_ilwrath",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_ilwrath", false]}},
+              {"ne": [{"get": ["story", "ILWRATH_DECEIVED", 0]}, 0]}
+            ]
+          },
+          "next": "ilwrath.gone"
+        },
+        {
+          "id": "bye_friendly",
+          "text": "bye_friendly",
+          "when": true,
+          "next": "exit.bye_friendly"
+        }
+      ]
+    },
+    {
+      "id": "space.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_space", true]
+      },
+      "save_as": "space_info",
+      "next": "space.info.route"
+    },
+    {
+      "id": "space.info.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 3]},
+              {
+                "any": [
+                  {
+                    "gt": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "PKUNK_SHIP_YEAR", 0]}]
+                  },
+                  {
+                    "all": [
+                      {
+                        "eq": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "PKUNK_SHIP_YEAR", 0]}]
+                      },
+                      {"gt": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "PKUNK_SHIP_MONTH", 0]}]}
+                    ]
+                  },
+                  {
+                    "all": [
+                      {
+                        "eq": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "PKUNK_SHIP_YEAR", 0]}]
+                      },
+                      {"eq": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "PKUNK_SHIP_MONTH", 0]}]},
+                      {"ge": [{"get": ["encounter", "calendar_day", 0]}, {"get": ["story", "PKUNK_SHIP_DAY", 0]}]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "space.ships"
+        }
+      ],
+      "otherwise": "space.info.seq"
+    },
+    {
+      "id": "space.ships",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SHIPS_AT_HOME"]}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "space.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_INFO",
+          [
+            ["GENERAL_INFO_SPACE_1"],
+            ["GENERAL_INFO_SPACE_2"],
+            ["GENERAL_INFO_SPACE_3"],
+            ["GENERAL_INFO_SPACE_4"],
+            ["GENERAL_INFO_SPACE_5"],
+            ["GENERAL_INFO_SPACE_6"],
+            ["GENERAL_INFO_SPACE_7"],
+            ["GENERAL_INFO_SPACE_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.info.seq.speech"
+    },
+    {
+      "id": "space.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "fortune",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_my_fortune", true]
+      },
+      "save_as": "fortune",
+      "next": "fortune.seq"
+    },
+    {
+      "id": "fortune.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_FORTUNE",
+          [
+            ["FORTUNE_IS_1"],
+            ["FORTUNE_IS_2"],
+            ["FORTUNE_IS_3"],
+            ["FORTUNE_IS_4"],
+            ["FORTUNE_IS_5"],
+            ["FORTUNE_IS_6"],
+            ["FORTUNE_IS_7"],
+            ["FORTUNE_IS_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "fortune.seq.speech"
+    },
+    {
+      "id": "fortune.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_war", true]
+      },
+      "save_as": "war",
+      "next": "war.route"
+    },
+    {
+      "id": "war.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "PKUNK_WAR", 0]}, 0]},
+          "next": "war.knowledge"
+        },
+        {
+          "when": {"ge": [{"get": ["story", "PKUNK_WAR", 0]}, 3]},
+          "next": "war.done"
+        }
+      ],
+      "otherwise": "war.seq"
+    },
+    {
+      "id": "war.knowledge",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_URQUAN_STORY", 1]
+      },
+      "save_as": "war_knowledge",
+      "next": "war.kohrah"
+    },
+    {
+      "id": "war.kohrah",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_KOHR_AH_STORY", 1]
+      },
+      "save_as": "war_kohrah",
+      "next": "war.seq"
+    },
+    {
+      "id": "war.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_DONE_WAR", 1]
+      },
+      "save_as": "war_done",
+      "next": "war.seq"
+    },
+    {
+      "id": "war.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "PKUNK_WAR", [["WAR_GOES_1"], ["WAR_GOES_2"], ["WAR_GOES_3"], ["WAR_GOES_4"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "war.seq.speech"
+    },
+    {
+      "id": "war.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "friendly.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_space",
+          "text": "whats_up_space",
+          "when": {"not": {"get": ["local", "whats_up_space", false]}},
+          "next": "space.info"
+        },
+        {
+          "id": "how_goes_war",
+          "text": "how_goes_war",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "how_goes_war", false]}},
+              {"not": {"ne": [{"get": ["story", "PKUNK_DONE_WAR", 0]}, 0]}}
+            ]
+          },
+          "next": "war"
+        },
+        {
+          "id": "tell_my_fortune",
+          "text": "tell_my_fortune",
+          "when": {"not": {"get": ["local", "tell_my_fortune", false]}},
+          "next": "fortune"
+        },
+        {
+          "id": "friendly_bye_space",
+          "text": "friendly_bye_space",
+          "when": true,
+          "next": "exit.friendly_bye_space"
+        }
+      ]
+    },
+    {
+      "id": "neutral.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_neutral", true]
+      },
+      "save_as": "neutral_info",
+      "next": "neutral.info.seq"
+    },
+    {
+      "id": "neutral.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_INFO",
+          [["GENERAL_INFO_SPACE_1"], ["GENERAL_INFO_SPACE_2"], ["GENERAL_INFO_SPACE_6"], ["GENERAL_INFO_SPACE_7"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.info.seq.speech"
+    },
+    {
+      "id": "neutral.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "form_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GO_TO_HOMEWORLD"]}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "form_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "form_alliance", true]
+      },
+      "save_as": "form_alliance",
+      "next": "form_alliance.speech"
+    },
+    {
+      "id": "help.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GO_TO_HOMEWORLD_AGAIN"]}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "help",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "can_you_help", true]
+      },
+      "save_as": "help",
+      "next": "help.speech"
+    },
+    {
+      "id": "hostile_greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_BE_HOSTILE"]}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "hostile_greeting",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hostile_greeting", true]
+      },
+      "save_as": "hostile_greeting",
+      "next": "hostile_greeting.speech"
+    },
+    {
+      "id": "neutral.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "form_alliance",
+          "text": "form_alliance",
+          "when": {"not": {"get": ["local", "form_alliance", false]}},
+          "next": "form_alliance"
+        },
+        {
+          "id": "can_you_help",
+          "text": "can_you_help",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "form_alliance", false]}}},
+              {"not": {"get": ["local", "can_you_help", false]}}
+            ]
+          },
+          "next": "help"
+        },
+        {
+          "id": "hostile_greeting",
+          "text": "hostile_greeting",
+          "when": {"not": {"get": ["local", "hostile_greeting", false]}},
+          "next": "hostile_greeting"
+        },
+        {
+          "id": "obey",
+          "text": "obey",
+          "when": {"not": {"not": {"get": ["local", "hostile_greeting", false]}}},
+          "next": "exit.obey"
+        },
+        {
+          "id": "whats_up_neutral",
+          "text": "whats_up_neutral",
+          "when": {"not": {"get": ["local", "whats_up_neutral", false]}},
+          "next": "neutral.info"
+        },
+        {
+          "id": "neutral_bye_space",
+          "text": "neutral_bye_space",
+          "when": true,
+          "next": "exit.neutral_bye_space"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 2]},
+          "next": "hate.outcome"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 1]},
+          "next": "angry.greet"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "home.prefix.route"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "PKUNK_MISSION", 0]}, 1]}, 0]},
+          "next": "migration.greet"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 3]},
+          "next": "friendly.greet"
+        }
+      ],
+      "otherwise": "neutral.greet"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
       "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "hate.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hate_outcome",
+      "next": "hate.greet"
+    },
+    {
+      "id": "hate.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_VISITS",
+          [["HATE_YOU_FOREVER_1"], ["HATE_YOU_FOREVER_2"], ["HATE_YOU_FOREVER_3"], ["HATE_YOU_FOREVER_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "hate.greet.speech"
+    },
+    {
+      "id": "hate.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "angry.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_VISITS",
+          [["SPIRITUAL_PROBLEMS_1"], ["SPIRITUAL_PROBLEMS_2"], ["SPIRITUAL_PROBLEMS_3"], ["SPIRITUAL_PROBLEMS_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "angry.greet.speech"
+    },
+    {
+      "id": "angry.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "migration.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_MIGRATE_VISITS",
+          [
+            ["MIGRATING_SPACE_1"],
+            ["MIGRATING_SPACE_2"],
+            ["MIGRATING_SPACE_3"],
+            ["MIGRATING_SPACE_4"],
+            ["MIGRATING_SPACE_5"],
+            ["MIGRATING_SPACE_6"],
+            ["MIGRATING_SPACE_7"],
+            ["MIGRATING_SPACE_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "migration.greet.speech"
+    },
+    {
+      "id": "migration.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "migrate.menu"
+    },
+    {
+      "id": "friendly.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_VISITS",
+          [
+            ["FRIENDLY_SPACE_HELLO_1"],
+            ["FRIENDLY_SPACE_HELLO_2"],
+            ["FRIENDLY_SPACE_HELLO_3"],
+            ["FRIENDLY_SPACE_HELLO_4"],
+            ["FRIENDLY_SPACE_HELLO_5"],
+            ["FRIENDLY_SPACE_HELLO_6"],
+            ["FRIENDLY_SPACE_HELLO_7"],
+            ["FRIENDLY_SPACE_HELLO_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "friendly.greet.speech"
+    },
+    {
+      "id": "friendly.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "neutral.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_VISITS",
+          [["NEUTRAL_SPACE_HELLO_1"], ["NEUTRAL_SPACE_HELLO_2"], ["NEUTRAL_SPACE_HELLO_3"], ["NEUTRAL_SPACE_HELLO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.greet.speech"
+    },
+    {
+      "id": "neutral.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "home.prefix.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"not": {"ne": [{"get": ["story", "CLEAR_SPINDLE", 0]}, 0]}},
+          "next": "home.spindle"
+        },
+        {
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "PKUNK_SENSE_VICTOR", 0]}, 0]}},
+              {"gt": [{"get": ["encounter", "calendar_campaign_year", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}}
+            ]
+          },
+          "next": "home.victory"
+        }
+      ],
+      "otherwise": "home.manner"
+    },
+    {
+      "id": "home.spindle",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CLEAR_SPINDLE", 1]
+      },
+      "save_as": "home_spindle",
+      "next": "home.spindle.ship"
+    },
+    {
+      "id": "home.spindle.ship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CLEAR_SPINDLE_ON_SHIP", 1]
+      },
+      "save_as": "home_spindle_ship",
+      "next": "home.spindle.prefix"
+    },
+    {
+      "id": "home.spindle.prefix",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "entry_prefix", ["GIVE_SPINDLE"]]
+      },
+      "save_as": "home_spindle_prefix",
+      "next": "home.manner"
+    },
+    {
+      "id": "home.victory",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SENSE_VICTOR", 1]
+      },
+      "save_as": "home_victory",
+      "next": "home.victory.prefix"
+    },
+    {
+      "id": "home.victory.prefix",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "entry_prefix", ["SENSE_KOHRAH_VICTORY"]]
+      },
+      "save_as": "home_victory_prefix",
+      "next": "home.manner"
+    },
+    {
+      "id": "home.manner",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 0]},
+          "next": "home.neutral"
+        },
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]},
+              {
+                "all": [
+                  {"eq": [{"get": ["story", "PKUNK_MANNER", 0]}, 3]},
+                  {
+                    "any": [
+                      {
+                        "gt": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "PKUNK_SHIP_YEAR", 0]}]
+                      },
+                      {
+                        "all": [
+                          {
+                            "eq": [
+                              {"get": ["encounter", "calendar_campaign_year", 0]},
+                              {"get": ["story", "PKUNK_SHIP_YEAR", 0]}
+                            ]
+                          },
+                          {
+                            "gt": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "PKUNK_SHIP_MONTH", 0]}]
+                          }
+                        ]
+                      },
+                      {
+                        "all": [
+                          {
+                            "eq": [
+                              {"get": ["encounter", "calendar_campaign_year", 0]},
+                              {"get": ["story", "PKUNK_SHIP_YEAR", 0]}
+                            ]
+                          },
+                          {
+                            "eq": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "PKUNK_SHIP_MONTH", 0]}]
+                          },
+                          {"ge": [{"get": ["encounter", "calendar_day", 0]}, {"get": ["story", "PKUNK_SHIP_DAY", 0]}]}
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "home.gift.capacity"
+        }
+      ],
+      "otherwise": "home.friendly"
+    },
+    {
+      "id": "home.neutral",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_HOME_VISITS",
+          [
+            ["NEUTRAL_HOMEWORLD_HELLO_1"],
+            ["NEUTRAL_HOMEWORLD_HELLO_2"],
+            ["NEUTRAL_HOMEWORLD_HELLO_3"],
+            ["NEUTRAL_HOMEWORLD_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "home.neutral.speech"
+    },
+    {
+      "id": "home.neutral.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "entry_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "PKUNK_HOME_VISITS",
+          [
+            ["FRIENDLY_HOMEWORLD_HELLO_1"],
+            ["FRIENDLY_HOMEWORLD_HELLO_2"],
+            ["FRIENDLY_HOMEWORLD_HELLO_3"],
+            ["FRIENDLY_HOMEWORLD_HELLO_4"],
+            ["FRIENDLY_HOMEWORLD_HELLO_5"],
+            ["FRIENDLY_HOMEWORLD_HELLO_6"],
+            ["FRIENDLY_HOMEWORLD_HELLO_7"],
+            ["FRIENDLY_HOMEWORLD_HELLO_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "home.friendly.speech"
+    },
+    {
+      "id": "home.friendly.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "entry_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.gift.capacity",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"query": "fleet.slots", "args": ["pkunk"]}, 0]}, "next": "home.full"}],
+      "otherwise": "home.gift"
+    },
+    {
+      "id": "home.gift",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["pkunk", 4]
+      },
+      "save_as": "gift",
+      "next": "home.gift.check"
+    },
+    {
+      "id": "home.gift.check",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"get": ["result", "gift.count", 0]}, 0]}, "next": "home.gift.month"}],
+      "otherwise": "home.gift.speech"
+    },
+    {
+      "id": "home.gift.month",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SHIP_MONTH", {"get": ["encounter", "calendar_month", 0]}]
+      },
+      "save_as": "home_gift_month",
+      "next": "home.gift.day"
+    },
+    {
+      "id": "home.gift.day",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
+      },
+      "save_as": "home_gift_day",
+      "next": "home.gift.year"
+    },
+    {
+      "id": "home.gift.year",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PKUNK_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
+      },
+      "save_as": "home_gift_year",
+      "next": "home.gift.speech"
+    },
+    {
+      "id": "home.gift.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "entry_prefix", []]}, "SHIP_GIFT"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.full",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "entry_prefix", []]}, "NO_ROOM"]}],
+      "next": "home.menu"
     },
     {
       "id": "end",

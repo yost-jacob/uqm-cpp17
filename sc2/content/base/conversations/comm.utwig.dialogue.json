@@ -1,12 +1,13 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 189,
   "id": "utwig",
   "resource": "comm.utwig.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native media/lifecycle configuration remains. Ultron restoration, alliances/mission, bomb guards, focused topics and post-speech gifts use general graph/state operations.",
+    "known_difference": "None intended: the source Ur-Quan topic overwrites the species topic until exhausted; this ordering quirk is preserved."
   },
   "phrases": [
     {
@@ -831,126 +832,2182 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "allied.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "allied.home"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 1]},
+          "next": "before"
+        },
+        {
+          "when": {"lt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]},
+          "next": "during"
+        }
+      ],
+      "otherwise": "after"
+    },
+    {
+      "id": "allied.home",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["utwig", null]
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "UTWIG_HOME_VISITS",
+          [
+            ["ALLIED_HOMEWORLD_HELLO_1"],
+            ["ALLIED_HOMEWORLD_HELLO_2"],
+            ["ALLIED_HOMEWORLD_HELLO_3"],
+            ["ALLIED_HOMEWORLD_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "greeting",
+      "next": "allied.home.speech"
     },
     {
-      "id": "route",
+      "id": "allied.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "before",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_VISITS", [["HELLO_BEFORE_KOHRAH_SPACE_1"], ["HELLO_BEFORE_KOHRAH_SPACE_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "before.speech"
+    },
+    {
+      "id": "before.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "before.menu"
+    },
+    {
+      "id": "during",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_VISITS", [["HELLO_DURING_KOHRAH_SPACE_1"], ["HELLO_DURING_KOHRAH_SPACE_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "during.speech"
+    },
+    {
+      "id": "during.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "after",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_VISITS", [["HELLO_AFTER_KOHRAH_SPACE_1"], ["HELLO_AFTER_KOHRAH_SPACE_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "after.speech"
+    },
+    {
+      "id": "after.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "after.menu"
+    },
+    {
+      "id": "exit.bye_after_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AFTER_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_after_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_after_space",
+      "next": "exit.bye_after_space.speech"
+    },
+    {
+      "id": "exit.bye_before_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_BEFORE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_before_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_before_space",
+      "next": "exit.bye_before_space.speech"
+    },
+    {
+      "id": "exit.bye_allied_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ALLIED_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_allied_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_allied_homeworld",
+      "next": "exit.bye_allied_homeworld.speech"
+    },
+    {
+      "id": "help",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"eq": [{"query": "fleet.slots", "args": ["utwig"]}, 0]}, "next": "help.full"}],
+      "otherwise": "help.offer"
     },
     {
-      "id": "menu",
+      "id": "help.full",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOW_HELP", "DONT_NEED"]}],
+      "next": "end"
+    },
+    {
+      "id": "help.offer",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOW_HELP", "HAVE_4_SHIPS"]}],
+      "next": "help.give"
+    },
+    {
+      "id": "help.give",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["utwig", 4]
+      },
+      "save_as": "help_give",
+      "next": "end"
+    },
+    {
+      "id": "before.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_before_space", true]
+      },
+      "save_as": "before_info",
+      "next": "before.info.seq"
+    },
+    {
+      "id": "before.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_INFO", [["GENERAL_INFO_BEFORE_SPACE_1"], ["GENERAL_INFO_BEFORE_SPACE_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "before.info.seq.speech"
+    },
+    {
+      "id": "before.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "before.menu"
+    },
+    {
+      "id": "what_now_before_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_THIS_BEFORE_SPACE"]}],
+      "next": "before.menu"
+    },
+    {
+      "id": "what_now_before_space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_now_before_space", true]
+      },
+      "save_as": "what_now_before_space",
+      "next": "what_now_before_space.speech"
+    },
+    {
+      "id": "before.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "whats_up_before_space",
+          "text": "whats_up_before_space",
+          "when": {"not": {"get": ["local", "whats_up_before_space", false]}},
+          "next": "before.info"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_now_before_space",
+          "text": "what_now_before_space",
+          "when": {"not": {"get": ["local", "what_now_before_space", false]}},
+          "next": "what_now_before_space"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["utwig", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bye_before_space",
+          "text": "bye_before_space",
+          "when": true,
+          "next": "exit.bye_before_space"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "after.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_after_space", true]
+      },
+      "save_as": "after_info",
+      "next": "after.info.seq"
+    },
+    {
+      "id": "after.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_INFO", [["GENERAL_INFO_AFTER_SPACE_1"], ["GENERAL_INFO_AFTER_SPACE_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "after.info.seq.speech"
+    },
+    {
+      "id": "after.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_now_after_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_THIS_AFTER_SPACE"]}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_now_after_space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_now_after_space", true]
+      },
+      "save_as": "what_now_after_space",
+      "next": "what_now_after_space.speech"
+    },
+    {
+      "id": "after.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_after_space",
+          "text": "whats_up_after_space",
+          "when": {"not": {"get": ["local", "whats_up_after_space", false]}},
+          "next": "after.info"
+        },
+        {
+          "id": "what_now_after_space",
+          "text": "what_now_after_space",
+          "when": {"not": {"get": ["local", "what_now_after_space", false]}},
+          "next": "what_now_after_space"
+        },
+        {
+          "id": "bye_after_space",
+          "text": "bye_after_space",
+          "when": true,
+          "next": "exit.bye_after_space"
+        }
+      ]
+    },
+    {
+      "id": "how_went_war.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_BATTLE"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "how_went_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "UTWIG_WAR_NEWS", "set", 1]
+      },
+      "save_as": "how_went_war",
+      "next": "how_went_war.speech"
+    },
+    {
+      "id": "how_goes_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_war", true]
+      },
+      "save_as": "how_goes_war",
+      "next": "war.route"
+    },
+    {
+      "id": "war.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 1]},
+          "next": "war.onway"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 0]},
+          "next": "war.first"
+        }
+      ],
+      "otherwise": "war.second"
+    },
+    {
+      "id": "war.onway",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FLEET_ON_WAY"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "war.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BATTLE_HAPPENS_1"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "war.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 1]
+      },
+      "save_as": "war_first",
+      "next": "war.first.speech"
+    },
+    {
+      "id": "war.second.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BATTLE_HAPPENS_2"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "war.second",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 2]
+      },
+      "save_as": "war_second",
+      "next": "war.second.speech"
+    },
+    {
+      "id": "learn_new_info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "learn_new_info", true]
+      },
+      "save_as": "learn_new_info",
+      "next": "new.route"
+    },
+    {
+      "id": "new.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]}, "next": "new.none"}],
+      "otherwise": "new.samatra"
+    },
+    {
+      "id": "new.none",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_NEW_INFO"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "new.samatra.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SAMATRA"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "new.samatra",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "UTWIG_WAR_NEWS", "set", 2]
+      },
+      "save_as": "new_samatra",
+      "next": "new.samatra.speech"
+    },
+    {
+      "id": "what_now_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_now_homeworld", true]
+      },
+      "save_as": "what_now_homeworld",
+      "next": "now.route"
+    },
+    {
+      "id": "now.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]}, "next": "now.you"}],
+      "otherwise": "now.hope"
+    },
+    {
+      "id": "now.you",
+      "kind": "dialogue",
+      "variants": [{"speech": ["UP_TO_YOU"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "now.hope",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOPE_KILL_EACH_OTHER"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "how_is_ultron.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ULTRON_IS_GREAT"]}],
+      "next": "allied.menu"
+    },
+    {
+      "id": "how_is_ultron",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_is_ultron", true]
+      },
+      "save_as": "how_is_ultron",
+      "next": "how_is_ultron.speech"
+    },
+    {
+      "id": "allied.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "how_went_war",
+          "text": "how_went_war",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]},
+              {"eq": [{"bit_and": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 1]}, 0]}
+            ]
+          },
+          "next": "how_went_war"
+        },
+        {
+          "id": "how_goes_war",
+          "text": "how_goes_war",
+          "when": {
+            "all": [
+              {"lt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]},
+              {"not": {"get": ["local", "how_goes_war", false]}},
+              {
+                "any": [
+                  {
+                    "all": [
+                      {"eq": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 1]},
+                      {"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 0]}
+                    ]
+                  },
+                  {
+                    "all": [
+                      {"ne": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 0]},
+                      {"lt": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 2]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "how_goes_war"
+        },
+        {
+          "id": "learn_new_info",
+          "text": "learn_new_info",
+          "when": {"not": {"get": ["local", "learn_new_info", false]}},
+          "next": "learn_new_info"
+        },
+        {
+          "id": "what_now_homeworld",
+          "text": "what_now_homeworld",
+          "when": {"not": {"get": ["local", "what_now_homeworld", false]}},
+          "next": "what_now_homeworld"
+        },
+        {
+          "id": "how_is_ultron",
+          "text": "how_is_ultron",
+          "when": {"not": {"get": ["local", "how_is_ultron", false]}},
+          "next": "how_is_ultron"
+        },
+        {
+          "id": "can_you_help",
+          "text": "can_you_help",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 0]},
+              {"gt": [{"query": "fleet.slots", "args": ["utwig"]}, 0]}
+            ]
+          },
+          "next": "help"
+        },
+        {
+          "id": "bye_allied_homeworld",
+          "text": "bye_allied_homeworld",
+          "when": true,
+          "next": "exit.bye_allied_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "exit.bye_neutral.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_NEUTRAL"]}],
       "next": "end"
+    },
+    {
+      "id": "exit.bye_neutral",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_neutral",
+      "next": "exit.bye_neutral.speech"
+    },
+    {
+      "id": "exit.bye_bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_BOMB"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_bomb",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_bomb",
+      "next": "exit.bye_bomb.speech"
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "UTWIG_HOSTILE", 0]}, 0]},
+          "next": "hostile.location"
+        },
+        {
+          "when": {"eq": [{"query": "galaxy.relationship", "args": ["utwig"]}, "allied"]},
+          "next": "allied.route"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "bomb.greeting"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "neutral.home"
+        }
+      ],
+      "otherwise": "neutral.space"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "hostile.location",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "hostile.bomb"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "hostile.home"
+        }
+      ],
+      "otherwise": "hostile.space"
+    },
+    {
+      "id": "hostile.bomb",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "BOMB_VISITS", [["HOSTILE_BOMB_HELLO_1"], ["HOSTILE_BOMB_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "hostile.bomb.speech"
+    },
+    {
+      "id": "hostile.bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "hostile.after"
+    },
+    {
+      "id": "hostile.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_HOME_VISITS", [["HOSTILE_HOMEWORLD_HELLO_1"], ["HOSTILE_HOMEWORLD_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "hostile.home.speech"
+    },
+    {
+      "id": "hostile.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "hostile.after"
+    },
+    {
+      "id": "hostile.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_VISITS", [["HOSTILE_SPACE_HELLO_1"], ["HOSTILE_SPACE_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "hostile.space.speech"
+    },
+    {
+      "id": "hostile.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "hostile.after"
+    },
+    {
+      "id": "hostile.after",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "ULTRON_CONDITION", 0]}, 0]},
+              {"not": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]}}
+            ]
+          },
+          "next": "hostile.menu"
+        }
+      ],
+      "otherwise": "hostile.end"
+    },
+    {
+      "id": "hostile.end",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_end",
+      "next": "end"
+    },
+    {
+      "id": "hostile.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [{"id": "hey_wait_got_ultron", "text": "hey_wait_got_ultron", "when": true, "next": "ultron.taunt"}]
+    },
+    {
+      "id": "neutral.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "UTWIG_HOME_VISITS",
+          [
+            ["NEUTRAL_HOMEWORLD_HELLO_1"],
+            ["NEUTRAL_HOMEWORLD_HELLO_2"],
+            ["NEUTRAL_HOMEWORLD_HELLO_3"],
+            ["NEUTRAL_HOMEWORLD_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.home.speech"
+    },
+    {
+      "id": "neutral.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "neutral.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "UTWIG_VISITS", [["NEUTRAL_SPACE_HELLO_1"], ["NEUTRAL_SPACE_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "neutral.space.speech"
+    },
+    {
+      "id": "neutral.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "bomb.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "BOMB_VISITS", [["BOMB_WORLD_HELLO_1"], ["BOMB_WORLD_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "bomb.greeting.speech"
+    },
+    {
+      "id": "bomb.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "ultron.normal",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "ultron_lead", ["DONT_WANT_TO_LOOK"]]
+      },
+      "save_as": "ultron_normal",
+      "next": "ultron.normal.flag"
+    },
+    {
+      "id": "ultron.normal.flag",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "ultron_taunt", false]
+      },
+      "save_as": "ultron_normal_flag",
+      "next": "ultron.route"
+    },
+    {
+      "id": "ultron.taunt",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "ultron_lead", ["TAUNT_US_BUT_WE_LOOK"]]
+      },
+      "save_as": "ultron_taunt",
+      "next": "ultron.taunt.flag"
+    },
+    {
+      "id": "ultron.taunt.flag",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "ultron_taunt", true]
+      },
+      "save_as": "ultron_taunt_flag",
+      "next": "ultron.route"
+    },
+    {
+      "id": "ultron.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "ultron.refused"
+        },
+        {
+          "when": {"lt": [{"get": ["story", "ULTRON_CONDITION", 0]}, 4]},
+          "next": "ultron.broken.route"
+        }
+      ],
+      "otherwise": "ultron.fixed.route"
+    },
+    {
+      "id": "ultron.refused.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ULTRON_AT_BOMB"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.refused.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ultron_refused_effect1",
+      "next": "ultron.refused.speech"
+    },
+    {
+      "id": "ultron.refused",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "REFUSED_ULTRON_AT_BOMB", 1]
+      },
+      "save_as": "ultron_refused",
+      "next": "ultron.refused.effect1"
+    },
+    {
+      "id": "ultron.broken.route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["local", "ultron_taunt", false]}, "next": "ultron.trick.route"}],
+      "otherwise": "ultron.sick.route"
+    },
+    {
+      "id": "ultron.trick.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "UTWIG_INFO", 0]}, 0]}, "next": "ultron.trick.1"}],
+      "otherwise": "ultron.trick.2"
+    },
+    {
+      "id": "ultron.trick.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "ultron_lead", []]}, "TRICKED_US_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.trick.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "ultron_trick_1_effect1",
+      "next": "ultron.trick.1.speech"
+    },
+    {
+      "id": "ultron.trick.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 1]
+      },
+      "save_as": "ultron_trick_1",
+      "next": "ultron.trick.1.effect1"
+    },
+    {
+      "id": "ultron.trick.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "ultron_lead", []]}, "TRICKED_US_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.trick.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "ultron_trick_2_effect1",
+      "next": "ultron.trick.2.speech"
+    },
+    {
+      "id": "ultron.trick.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 1]
+      },
+      "save_as": "ultron_trick_2",
+      "next": "ultron.trick.2.effect1"
+    },
+    {
+      "id": "ultron.sick.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "UTWIG_INFO", 0]}, 0]}, "next": "ultron.sick.1"}],
+      "otherwise": "ultron.sick.2"
+    },
+    {
+      "id": "ultron.sick.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "ultron_lead", []]}, "SICK_TRICK_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.sick.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ultron_sick_1_effect1",
+      "next": "ultron.sick.1.speech"
+    },
+    {
+      "id": "ultron.sick.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 1]
+      },
+      "save_as": "ultron_sick_1",
+      "next": "ultron.sick.1.effect1"
+    },
+    {
+      "id": "ultron.sick.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "ultron_lead", []]}, "SICK_TRICK_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.sick.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ultron_sick_2_effect1",
+      "next": "ultron.sick.2.speech"
+    },
+    {
+      "id": "ultron.sick.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 1]
+      },
+      "save_as": "ultron_sick_2",
+      "next": "ultron.sick.2.effect1"
+    },
+    {
+      "id": "ultron.fixed.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}, "next": "ultron.fixed.late"}],
+      "otherwise": "ultron.fixed.mission"
+    },
+    {
+      "id": "ultron.fixed.late.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "ultron_lead", []]}, "HAPPY_DAYS", "TOO_LATE"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.fixed.late.effect15",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ultron_fixed_late_effect15",
+      "next": "ultron.fixed.late.speech"
+    },
+    {
+      "id": "ultron.fixed.late.effect14",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["supox", "allied"]
+      },
+      "save_as": "ultron_fixed_late_effect14",
+      "next": "ultron.fixed.late.effect15"
+    },
+    {
+      "id": "ultron.fixed.late.effect13",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["utwig", "allied"]
+      },
+      "save_as": "ultron_fixed_late_effect13",
+      "next": "ultron.fixed.late.effect14"
+    },
+    {
+      "id": "ultron.fixed.late.effect12",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOSTILE", 0]
+      },
+      "save_as": "ultron_fixed_late_effect12",
+      "next": "ultron.fixed.late.effect13"
+    },
+    {
+      "id": "ultron.fixed.late.effect11",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_HOSTILE", 0]
+      },
+      "save_as": "ultron_fixed_late_effect11",
+      "next": "ultron.fixed.late.effect12"
+    },
+    {
+      "id": "ultron.fixed.late.effect10",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect10",
+      "next": "ultron.fixed.late.effect11"
+    },
+    {
+      "id": "ultron.fixed.late.effect9",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_WAR_NEWS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect9",
+      "next": "ultron.fixed.late.effect10"
+    },
+    {
+      "id": "ultron.fixed.late.effect8",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 0]
+      },
+      "save_as": "ultron_fixed_late_effect8",
+      "next": "ultron.fixed.late.effect9"
+    },
+    {
+      "id": "ultron.fixed.late.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_INFO", 0]
+      },
+      "save_as": "ultron_fixed_late_effect7",
+      "next": "ultron.fixed.late.effect8"
+    },
+    {
+      "id": "ultron.fixed.late.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect6",
+      "next": "ultron.fixed.late.effect7"
+    },
+    {
+      "id": "ultron.fixed.late.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_HOME_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect5",
+      "next": "ultron.fixed.late.effect6"
+    },
+    {
+      "id": "ultron.fixed.late.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOME_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect4",
+      "next": "ultron.fixed.late.effect5"
+    },
+    {
+      "id": "ultron.fixed.late.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect3",
+      "next": "ultron.fixed.late.effect4"
+    },
+    {
+      "id": "ultron.fixed.late.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_late_effect2",
+      "next": "ultron.fixed.late.effect3"
+    },
+    {
+      "id": "ultron.fixed.late.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ULTRON_CONDITION", 5]
+      },
+      "save_as": "ultron_fixed_late_effect1",
+      "next": "ultron.fixed.late.effect2"
+    },
+    {
+      "id": "ultron.fixed.late",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HAVE_ULTRON", 1]
+      },
+      "save_as": "ultron_fixed_late",
+      "next": "ultron.fixed.late.effect1"
+    },
+    {
+      "id": "ultron.fixed.mission.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "ultron_lead", []]}, "HAPPY_DAYS", "OK_ATTACK_KOHRAH"]}],
+      "next": "end"
+    },
+    {
+      "id": "ultron.fixed.mission.effect16",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ultron_fixed_mission_effect16",
+      "next": "ultron.fixed.mission.speech"
+    },
+    {
+      "id": "ultron.fixed.mission.effect15",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["supox", "allied"]
+      },
+      "save_as": "ultron_fixed_mission_effect15",
+      "next": "ultron.fixed.mission.effect16"
+    },
+    {
+      "id": "ultron.fixed.mission.effect14",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["utwig", "allied"]
+      },
+      "save_as": "ultron_fixed_mission_effect14",
+      "next": "ultron.fixed.mission.effect15"
+    },
+    {
+      "id": "ultron.fixed.mission.effect13",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOSTILE", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect13",
+      "next": "ultron.fixed.mission.effect14"
+    },
+    {
+      "id": "ultron.fixed.mission.effect12",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_HOSTILE", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect12",
+      "next": "ultron.fixed.mission.effect13"
+    },
+    {
+      "id": "ultron.fixed.mission.effect11",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect11",
+      "next": "ultron.fixed.mission.effect12"
+    },
+    {
+      "id": "ultron.fixed.mission.effect10",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_WAR_NEWS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect10",
+      "next": "ultron.fixed.mission.effect11"
+    },
+    {
+      "id": "ultron.fixed.mission.effect9",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect9",
+      "next": "ultron.fixed.mission.effect10"
+    },
+    {
+      "id": "ultron.fixed.mission.effect8",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_INFO", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect8",
+      "next": "ultron.fixed.mission.effect9"
+    },
+    {
+      "id": "ultron.fixed.mission.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect7",
+      "next": "ultron.fixed.mission.effect8"
+    },
+    {
+      "id": "ultron.fixed.mission.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_HOME_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect6",
+      "next": "ultron.fixed.mission.effect7"
+    },
+    {
+      "id": "ultron.fixed.mission.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOME_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect5",
+      "next": "ultron.fixed.mission.effect6"
+    },
+    {
+      "id": "ultron.fixed.mission.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SUPOX_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect4",
+      "next": "ultron.fixed.mission.effect5"
+    },
+    {
+      "id": "ultron.fixed.mission.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_VISITS", 0]
+      },
+      "save_as": "ultron_fixed_mission_effect3",
+      "next": "ultron.fixed.mission.effect4"
+    },
+    {
+      "id": "ultron.fixed.mission.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ULTRON_CONDITION", 5]
+      },
+      "save_as": "ultron_fixed_mission_effect2",
+      "next": "ultron.fixed.mission.effect3"
+    },
+    {
+      "id": "ultron.fixed.mission.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HAVE_ULTRON", 1]
+      },
+      "save_as": "ultron_fixed_mission_effect1",
+      "next": "ultron.fixed.mission.effect2"
+    },
+    {
+      "id": "ultron.fixed.mission",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_UTWIG_SUPOX_MISSION", 0, 0, 0]
+      },
+      "save_as": "ultron_fixed_mission",
+      "next": "ultron.fixed.mission.effect1"
+    },
+    {
+      "id": "mock.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MOCK_OUR_PAIN"]}],
+      "next": "end"
+    },
+    {
+      "id": "mock.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "mock_effect6",
+      "next": "mock.speech"
+    },
+    {
+      "id": "mock.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_VISITS", 0]
+      },
+      "save_as": "mock_effect5",
+      "next": "mock.effect6"
+    },
+    {
+      "id": "mock.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_VISITS", 0]
+      },
+      "save_as": "mock_effect4",
+      "next": "mock.effect5"
+    },
+    {
+      "id": "mock.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOME_VISITS", 0]
+      },
+      "save_as": "mock_effect3",
+      "next": "mock.effect4"
+    },
+    {
+      "id": "mock.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 0]
+      },
+      "save_as": "mock_effect2",
+      "next": "mock.effect3"
+    },
+    {
+      "id": "mock.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOSTILE", 1]
+      },
+      "save_as": "mock_effect1",
+      "next": "mock.effect2"
+    },
+    {
+      "id": "mock",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK1", 4]
+      },
+      "save_as": "mock",
+      "next": "mock.effect1"
+    },
+    {
+      "id": "sympathy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["APPRECIATE_SYMPATHY"]}],
+      "next": "end"
+    },
+    {
+      "id": "sympathy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK1", 4]
+      },
+      "save_as": "sympathy",
+      "next": "sympathy.speech"
+    },
+    {
+      "id": "we_are_vindicator0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WOULD_BE_HAPPY_BUT"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "we_are_vindicator0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK1", 1]
+      },
+      "save_as": "we_are_vindicator0",
+      "next": "we_are_vindicator0.speech"
+    },
+    {
+      "id": "why_sad.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ULTRON_BROKE"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "why_sad",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK1", 2]
+      },
+      "save_as": "why_sad",
+      "next": "why_sad.speech"
+    },
+    {
+      "id": "what_ultron.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GLORIOUS_ULTRON"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "what_ultron",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK1", 3]
+      },
+      "save_as": "what_ultron",
+      "next": "what_ultron.speech"
+    },
+    {
+      "id": "about.you.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US_1"]}],
+      "next": "neutral.2"
+    },
+    {
+      "id": "about.you.0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 1]
+      },
+      "save_as": "about_you_0",
+      "next": "about.you.0.speech"
+    },
+    {
+      "id": "about.you.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US_2"]}],
+      "next": "neutral.2"
+    },
+    {
+      "id": "about.you.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.reveal",
+        "args": ["supox"]
+      },
+      "save_as": "about_you_1_effect1",
+      "next": "about.you.1.speech"
+    },
+    {
+      "id": "about.you.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 2]
+      },
+      "save_as": "about_you_1",
+      "next": "about.you.1.effect1"
+    },
+    {
+      "id": "about.you.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US_3"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "about.you.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_WAR_NEWS", 3]
+      },
+      "save_as": "about_you_2",
+      "next": "about.you.2.speech"
+    },
+    {
+      "id": "about.urquan.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN_1"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "about.urquan.0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK2", 1]
+      },
+      "save_as": "about_urquan_0",
+      "next": "about.urquan.0.speech"
+    },
+    {
+      "id": "about.urquan.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN_2"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "about.urquan.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_STACK2", 2]
+      },
+      "save_as": "about_urquan_1",
+      "next": "about.urquan.1.speech"
+    },
+    {
+      "id": "neutral.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 0]},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "why_sad",
+          "text": "why_sad",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 1]},
+          "next": "why_sad"
+        },
+        {
+          "id": "what_ultron",
+          "text": "what_ultron",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 2]},
+          "next": "what_ultron"
+        },
+        {
+          "id": "dont_be_babies",
+          "text": "dont_be_babies",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 3]},
+          "next": "mock"
+        },
+        {
+          "id": "real_sorry_about_ultron",
+          "text": "real_sorry_about_ultron",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 3]},
+          "next": "sympathy"
+        },
+        {
+          "id": "what_about_you_1",
+          "text": "what_about_you_1",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 0]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.0"
+        },
+        {
+          "id": "what_about_you_2",
+          "text": "what_about_you_2",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 1]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.1"
+        },
+        {
+          "id": "what_about_you_3",
+          "text": "what_about_you_3",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 2]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.2"
+        },
+        {
+          "id": "what_about_urquan_1",
+          "text": "what_about_urquan_1",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK2", 0]}, 0]},
+          "next": "about.urquan.0"
+        },
+        {
+          "id": "what_about_urquan_2",
+          "text": "what_about_urquan_2",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK2", 0]}, 1]},
+          "next": "about.urquan.1"
+        },
+        {
+          "id": "got_ultron",
+          "text": "got_ultron",
+          "when": {"ne": [{"get": ["story", "ULTRON_CONDITION", 0]}, 0]},
+          "next": "ultron.normal"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "neutral.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "real_sorry_about_ultron",
+          "text": "real_sorry_about_ultron",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 3]},
+          "next": "sympathy"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 0]},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "why_sad",
+          "text": "why_sad",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 1]},
+          "next": "why_sad"
+        },
+        {
+          "id": "what_ultron",
+          "text": "what_ultron",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 2]},
+          "next": "what_ultron"
+        },
+        {
+          "id": "dont_be_babies",
+          "text": "dont_be_babies",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 3]},
+          "next": "mock"
+        },
+        {
+          "id": "what_about_you_1",
+          "text": "what_about_you_1",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 0]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.0"
+        },
+        {
+          "id": "what_about_you_2",
+          "text": "what_about_you_2",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 1]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.1"
+        },
+        {
+          "id": "what_about_you_3",
+          "text": "what_about_you_3",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 2]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.2"
+        },
+        {
+          "id": "what_about_urquan_1",
+          "text": "what_about_urquan_1",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK2", 0]}, 0]},
+          "next": "about.urquan.0"
+        },
+        {
+          "id": "what_about_urquan_2",
+          "text": "what_about_urquan_2",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK2", 0]}, 1]},
+          "next": "about.urquan.1"
+        },
+        {
+          "id": "got_ultron",
+          "text": "got_ultron",
+          "when": {"ne": [{"get": ["story", "ULTRON_CONDITION", 0]}, 0]},
+          "next": "ultron.normal"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "neutral.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_you_1",
+          "text": "what_about_you_1",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 0]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.0"
+        },
+        {
+          "id": "what_about_you_2",
+          "text": "what_about_you_2",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 1]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.1"
+        },
+        {
+          "id": "what_about_you_3",
+          "text": "what_about_you_3",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "UTWIG_WAR_NEWS", 0]}, 2]}, {"ge": [{"get": ["story", "UTWIG_STACK2", 0]}, 2]}]
+          },
+          "next": "about.you.2"
+        },
+        {
+          "id": "what_about_urquan_1",
+          "text": "what_about_urquan_1",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK2", 0]}, 0]},
+          "next": "about.urquan.0"
+        },
+        {
+          "id": "what_about_urquan_2",
+          "text": "what_about_urquan_2",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK2", 0]}, 1]},
+          "next": "about.urquan.1"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 0]},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "why_sad",
+          "text": "why_sad",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 1]},
+          "next": "why_sad"
+        },
+        {
+          "id": "what_ultron",
+          "text": "what_ultron",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 2]},
+          "next": "what_ultron"
+        },
+        {
+          "id": "dont_be_babies",
+          "text": "dont_be_babies",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 3]},
+          "next": "mock"
+        },
+        {
+          "id": "real_sorry_about_ultron",
+          "text": "real_sorry_about_ultron",
+          "when": {"eq": [{"get": ["story", "UTWIG_STACK1", 0]}, 3]},
+          "next": "sympathy"
+        },
+        {
+          "id": "got_ultron",
+          "text": "got_ultron",
+          "when": {"ne": [{"get": ["story", "ULTRON_CONDITION", 0]}, 0]},
+          "next": "ultron.normal"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "why_you_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_GUARD_BOMB"]}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "why_you_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_STACK1", 1]
+      },
+      "save_as": "why_you_here",
+      "next": "why_you_here.speech"
+    },
+    {
+      "id": "what_about_bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_BOMB"]}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "what_about_bomb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_STACK1", 2]
+      },
+      "save_as": "what_about_bomb",
+      "next": "what_about_bomb.speech"
+    },
+    {
+      "id": "give_us_bomb_or_die.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GUARDS_WARN"]}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "give_us_bomb_or_die",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_STACK1", 3]
+      },
+      "save_as": "give_us_bomb_or_die",
+      "next": "give_us_bomb_or_die.speech"
+    },
+    {
+      "id": "demand.bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GUARDS_FIGHT"]}],
+      "next": "end"
+    },
+    {
+      "id": "demand.bomb.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "demand_bomb_effect5",
+      "next": "demand.bomb.speech"
+    },
+    {
+      "id": "demand.bomb.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_VISITS", 0]
+      },
+      "save_as": "demand_bomb_effect4",
+      "next": "demand.bomb.effect5"
+    },
+    {
+      "id": "demand.bomb.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_VISITS", 0]
+      },
+      "save_as": "demand_bomb_effect3",
+      "next": "demand.bomb.effect4"
+    },
+    {
+      "id": "demand.bomb.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOME_VISITS", 0]
+      },
+      "save_as": "demand_bomb_effect2",
+      "next": "demand.bomb.effect3"
+    },
+    {
+      "id": "demand.bomb.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_INFO", 0]
+      },
+      "save_as": "demand_bomb_effect1",
+      "next": "demand.bomb.effect2"
+    },
+    {
+      "id": "demand.bomb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_HOSTILE", 1]
+      },
+      "save_as": "demand_bomb",
+      "next": "demand.bomb.effect1"
+    },
+    {
+      "id": "may_we_have_bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_BOMB"]}],
+      "next": "bomb.1"
+    },
+    {
+      "id": "may_we_have_bomb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_STACK2", 1]
+      },
+      "save_as": "may_we_have_bomb",
+      "next": "may_we_have_bomb.speech"
+    },
+    {
+      "id": "please.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SORRY_NO_BOMB"]}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "please",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_STACK2", 2]
+      },
+      "save_as": "please",
+      "next": "please.speech"
+    },
+    {
+      "id": "bomb.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_bomb", true]
+      },
+      "save_as": "bomb_info",
+      "next": "bomb.info.route"
+    },
+    {
+      "id": "bomb.info.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "BOMB_INFO", 0]}, 0]}, "next": "bomb.info.again"}],
+      "otherwise": "bomb.info.first"
+    },
+    {
+      "id": "bomb.info.again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_BOMB_2"]}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "bomb.info.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_BOMB_1"]}],
+      "next": "bomb.0"
+    },
+    {
+      "id": "bomb.info.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "BOMB_INFO", 1]
+      },
+      "save_as": "bomb_info_first",
+      "next": "bomb.info.first.speech"
+    },
+    {
+      "id": "bomb.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_you_here",
+          "text": "why_you_here",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 0]},
+          "next": "why_you_here"
+        },
+        {
+          "id": "what_about_bomb",
+          "text": "what_about_bomb",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 1]},
+          "next": "what_about_bomb"
+        },
+        {
+          "id": "give_us_bomb_or_die",
+          "text": "give_us_bomb_or_die",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 2]},
+          "next": "give_us_bomb_or_die"
+        },
+        {
+          "id": "demand_bomb",
+          "text": "demand_bomb",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 3]},
+          "next": "demand.bomb"
+        },
+        {
+          "id": "may_we_have_bomb",
+          "text": "may_we_have_bomb",
+          "when": {
+            "all": [{"ge": [{"get": ["story", "BOMB_STACK1", 0]}, 2]}, {"eq": [{"get": ["story", "BOMB_STACK2", 0]}, 0]}]
+          },
+          "next": "may_we_have_bomb"
+        },
+        {
+          "id": "please",
+          "text": "please",
+          "when": {
+            "all": [{"ge": [{"get": ["story", "BOMB_STACK1", 0]}, 2]}, {"eq": [{"get": ["story", "BOMB_STACK2", 0]}, 1]}]
+          },
+          "next": "please"
+        },
+        {
+          "id": "whats_up_bomb",
+          "text": "whats_up_bomb",
+          "when": {
+            "all": [{"not": {"get": ["local", "whats_up_bomb", false]}}, {"gt": [{"get": ["story", "BOMB_STACK1", 0]}, 1]}]
+          },
+          "next": "bomb.info"
+        },
+        {
+          "id": "got_ultron",
+          "text": "got_ultron",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "ULTRON_CONDITION", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "REFUSED_ULTRON_AT_BOMB", 0]}, 0]}}
+            ]
+          },
+          "next": "ultron.normal"
+        },
+        {
+          "id": "bye_bomb",
+          "text": "bye_bomb",
+          "when": {"ne": [{"get": ["story", "BOMB_INFO", 0]}, 0]},
+          "next": "exit.bye_bomb"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": {"not": {"ne": [{"get": ["story", "BOMB_INFO", 0]}, 0]}},
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "bomb.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "may_we_have_bomb",
+          "text": "may_we_have_bomb",
+          "when": {
+            "all": [{"ge": [{"get": ["story", "BOMB_STACK1", 0]}, 2]}, {"eq": [{"get": ["story", "BOMB_STACK2", 0]}, 0]}]
+          },
+          "next": "may_we_have_bomb"
+        },
+        {
+          "id": "please",
+          "text": "please",
+          "when": {
+            "all": [{"ge": [{"get": ["story", "BOMB_STACK1", 0]}, 2]}, {"eq": [{"get": ["story", "BOMB_STACK2", 0]}, 1]}]
+          },
+          "next": "please"
+        },
+        {
+          "id": "why_you_here",
+          "text": "why_you_here",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 0]},
+          "next": "why_you_here"
+        },
+        {
+          "id": "what_about_bomb",
+          "text": "what_about_bomb",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 1]},
+          "next": "what_about_bomb"
+        },
+        {
+          "id": "give_us_bomb_or_die",
+          "text": "give_us_bomb_or_die",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 2]},
+          "next": "give_us_bomb_or_die"
+        },
+        {
+          "id": "demand_bomb",
+          "text": "demand_bomb",
+          "when": {"eq": [{"get": ["story", "BOMB_STACK1", 0]}, 3]},
+          "next": "demand.bomb"
+        },
+        {
+          "id": "whats_up_bomb",
+          "text": "whats_up_bomb",
+          "when": {
+            "all": [{"not": {"get": ["local", "whats_up_bomb", false]}}, {"gt": [{"get": ["story", "BOMB_STACK1", 0]}, 1]}]
+          },
+          "next": "bomb.info"
+        },
+        {
+          "id": "got_ultron",
+          "text": "got_ultron",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "ULTRON_CONDITION", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "REFUSED_ULTRON_AT_BOMB", 0]}, 0]}}
+            ]
+          },
+          "next": "ultron.normal"
+        },
+        {
+          "id": "bye_bomb",
+          "text": "bye_bomb",
+          "when": {"ne": [{"get": ["story", "BOMB_INFO", 0]}, 0]},
+          "next": "exit.bye_bomb"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": {"not": {"ne": [{"get": ["story", "BOMB_INFO", 0]}, 0]}},
+          "next": "exit.bye_neutral"
+        }
+      ]
     },
     {
       "id": "end",
       "kind": "end",
       "outcome": "native_segue"
     }
-  ]
+  ],
+  "alliance_name_base": "name_1"
 }

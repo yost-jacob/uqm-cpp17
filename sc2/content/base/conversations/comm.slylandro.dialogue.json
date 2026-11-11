@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 135,
   "id": "slyhome",
   "resource": "comm.slylandro.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Only native media/lifecycle configuration remains. Topic stacks, probe-program diagnosis, destruct-code award and ramp-down scheduling use graph/state operations."
   },
   "phrases": [
     {
@@ -825,120 +825,2133 @@
   "nodes": [
     {
       "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]},
+              {"eq": [{"get": ["story", "RECALL_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "recall"
+        }
+      ],
+      "otherwise": "greeting"
+    },
+    {
+      "id": "recall.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RECALL_PROGRAM_1"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "recall",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["slyhome", null]
+        "verb": "state.set",
+        "args": ["story", "RECALL_VISITS", 1]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "recall",
+      "next": "recall.speech"
     },
     {
-      "id": "route",
+      "id": "greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SLYLANDRO_HOME_VISITS", [["HELLO_1"], ["HELLO_2"], ["HELLO_3"], ["HELLO_4"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "greeting.speech"
+    },
+    {
+      "id": "greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "home.0"
+    },
+    {
+      "id": "bye",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"eq": [{"get": ["story", "SLYLANDRO_HOME_VISITS", 0]}, 1]}, "next": "bye.first"}],
+      "otherwise": "bye.again"
     },
     {
-      "id": "menu",
+      "id": "bye.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.first",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_first",
+      "next": "bye.first.speech"
+    },
+    {
+      "id": "bye.again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.again",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_again",
+      "next": "bye.again.speech"
+    },
+    {
+      "id": "we_are_us0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TERRIBLY_EXCITING"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "we_are_us0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 1]
+      },
+      "save_as": "we_are_us0",
+      "next": "we_are_us0.speech"
+    },
+    {
+      "id": "what_other_visitors.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["VISITORS"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "what_other_visitors.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_KNOWS_PROBE", 1]
+      },
+      "save_as": "what_other_visitors_effect1",
+      "next": "what_other_visitors.speech"
+    },
+    {
+      "id": "what_other_visitors",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 2]
+      },
+      "save_as": "what_other_visitors",
+      "next": "what_other_visitors.effect1"
+    },
+    {
+      "id": "any_other_visitors.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LONG_AGO"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "any_other_visitors",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 3]
+      },
+      "save_as": "any_other_visitors",
+      "next": "any_other_visitors.speech"
+    },
+    {
+      "id": "what_about_sentient_milieu.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MET_TAALO_THEY_ARE_FROM"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "what_about_sentient_milieu",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 4]
+      },
+      "save_as": "what_about_sentient_milieu",
+      "next": "what_about_sentient_milieu.speech"
+    },
+    {
+      "id": "who_else.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PRECURSORS"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "who_else",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 5]
+      },
+      "save_as": "who_else",
+      "next": "who_else.speech"
+    },
+    {
+      "id": "precursors_yow.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_PRECURSORS"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "precursors_yow",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 6]
+      },
+      "save_as": "precursors_yow",
+      "next": "precursors_yow.speech"
+    },
+    {
+      "id": "must_know_more.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ALL_WE_KNOW"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "must_know_more",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK1", 7]
+      },
+      "save_as": "must_know_more",
+      "next": "must_know_more.speech"
+    },
+    {
+      "id": "who_are_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_ARE_SLY"]}],
+      "next": "home.1"
+    },
+    {
+      "id": "who_are_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK2", 1]
+      },
+      "save_as": "who_are_you",
+      "next": "who_are_you.speech"
+    },
+    {
+      "id": "where_are_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DOWN_HERE"]}],
+      "next": "home.2"
+    },
+    {
+      "id": "where_are_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK3", 1]
+      },
+      "save_as": "where_are_you",
+      "next": "where_are_you.speech"
+    },
+    {
+      "id": "thats_impossible_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ITS_NOT_1"]}],
+      "next": "home.2"
+    },
+    {
+      "id": "thats_impossible_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK3", 2]
+      },
+      "save_as": "thats_impossible_1",
+      "next": "thats_impossible_1.speech"
+    },
+    {
+      "id": "thats_impossible_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ITS_NOT_2"]}],
+      "next": "home.2"
+    },
+    {
+      "id": "thats_impossible_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK3", 3]
+      },
+      "save_as": "thats_impossible_2",
+      "next": "thats_impossible_2.speech"
+    },
+    {
+      "id": "home.0",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 0]
+          "id": "we_are_us0",
+          "text": {
+            "compose": [
+              "we_are_us0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_us1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_us2"
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+          "next": "we_are_us0"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_other_visitors",
+          "text": "what_other_visitors",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 1]},
+          "next": "what_other_visitors"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "any_other_visitors",
+          "text": "any_other_visitors",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 2]},
+          "next": "any_other_visitors"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_sentient_milieu",
+          "text": "what_about_sentient_milieu",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 3]},
+          "next": "what_about_sentient_milieu"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "who_else",
+          "text": "who_else",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 4]},
+          "next": "who_else"
         },
         {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "precursors_yow",
+          "text": "precursors_yow",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 5]},
+          "next": "precursors_yow"
         },
         {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "must_know_more",
+          "text": "must_know_more",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 6]},
+          "next": "must_know_more"
         },
         {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["slyhome", 7]
+          "id": "who_are_you",
+          "text": "who_are_you",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK2", 0]}, 0]},
+          "next": "who_are_you"
+        },
+        {
+          "id": "like_more_about_you",
+          "text": "like_more_about_you",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK2", 0]}, 1]},
+              {"not": {"get": ["local", "like_more_about_you", false]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "species.intro"
+        },
+        {
+          "id": "where_are_you",
+          "text": "where_are_you",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 0]},
+          "next": "where_are_you"
+        },
+        {
+          "id": "thats_impossible_1",
+          "text": "thats_impossible_1",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 1]},
+          "next": "thats_impossible_1"
+        },
+        {
+          "id": "thats_impossible_2",
+          "text": "thats_impossible_2",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 2]},
+          "next": "thats_impossible_2"
+        },
+        {
+          "id": "happy_to_tell_more",
+          "text": "happy_to_tell_more",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK4", 0]}, 0]}
+            ]
+          },
+          "next": "human.start"
+        },
+        {
+          "id": "would_you_like_to_know_more",
+          "text": "would_you_like_to_know_more",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK4", 0]}, 1]}
+            ]
+          },
+          "next": "human.again"
+        },
+        {
+          "id": "what_are_probes",
+          "text": "what_are_probes",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROBE", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK5", 0]}, 0]}
+            ]
+          },
+          "next": "probe.start"
+        },
+        {
+          "id": "know_more_probe",
+          "text": "know_more_probe",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROBE", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK5", 0]}, 1]},
+              {"not": {"get": ["local", "know_more_probe", false]}}
+            ]
+          },
+          "next": "probe.again"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "home.1",
       "kind": "dialogue",
       "variants": [{"speech": []}],
-      "next": "end"
+      "responses": [
+        {
+          "id": "who_are_you",
+          "text": "who_are_you",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK2", 0]}, 0]},
+          "next": "who_are_you"
+        },
+        {
+          "id": "like_more_about_you",
+          "text": "like_more_about_you",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK2", 0]}, 1]},
+              {"not": {"get": ["local", "like_more_about_you", false]}}
+            ]
+          },
+          "next": "species.intro"
+        },
+        {
+          "id": "we_are_us0",
+          "text": {
+            "compose": [
+              "we_are_us0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_us1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_us2"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+          "next": "we_are_us0"
+        },
+        {
+          "id": "what_other_visitors",
+          "text": "what_other_visitors",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 1]},
+          "next": "what_other_visitors"
+        },
+        {
+          "id": "any_other_visitors",
+          "text": "any_other_visitors",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 2]},
+          "next": "any_other_visitors"
+        },
+        {
+          "id": "what_about_sentient_milieu",
+          "text": "what_about_sentient_milieu",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 3]},
+          "next": "what_about_sentient_milieu"
+        },
+        {
+          "id": "who_else",
+          "text": "who_else",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 4]},
+          "next": "who_else"
+        },
+        {
+          "id": "precursors_yow",
+          "text": "precursors_yow",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 5]},
+          "next": "precursors_yow"
+        },
+        {
+          "id": "must_know_more",
+          "text": "must_know_more",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 6]},
+          "next": "must_know_more"
+        },
+        {
+          "id": "where_are_you",
+          "text": "where_are_you",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 0]},
+          "next": "where_are_you"
+        },
+        {
+          "id": "thats_impossible_1",
+          "text": "thats_impossible_1",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 1]},
+          "next": "thats_impossible_1"
+        },
+        {
+          "id": "thats_impossible_2",
+          "text": "thats_impossible_2",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 2]},
+          "next": "thats_impossible_2"
+        },
+        {
+          "id": "happy_to_tell_more",
+          "text": "happy_to_tell_more",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK4", 0]}, 0]}
+            ]
+          },
+          "next": "human.start"
+        },
+        {
+          "id": "would_you_like_to_know_more",
+          "text": "would_you_like_to_know_more",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK4", 0]}, 1]}
+            ]
+          },
+          "next": "human.again"
+        },
+        {
+          "id": "what_are_probes",
+          "text": "what_are_probes",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROBE", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK5", 0]}, 0]}
+            ]
+          },
+          "next": "probe.start"
+        },
+        {
+          "id": "know_more_probe",
+          "text": "know_more_probe",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROBE", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK5", 0]}, 1]},
+              {"not": {"get": ["local", "know_more_probe", false]}}
+            ]
+          },
+          "next": "probe.again"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye"
+        }
+      ]
+    },
+    {
+      "id": "home.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "where_are_you",
+          "text": "where_are_you",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 0]},
+          "next": "where_are_you"
+        },
+        {
+          "id": "thats_impossible_1",
+          "text": "thats_impossible_1",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 1]},
+          "next": "thats_impossible_1"
+        },
+        {
+          "id": "thats_impossible_2",
+          "text": "thats_impossible_2",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK3", 0]}, 2]},
+          "next": "thats_impossible_2"
+        },
+        {
+          "id": "we_are_us0",
+          "text": {
+            "compose": [
+              "we_are_us0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_us1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_us2"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+          "next": "we_are_us0"
+        },
+        {
+          "id": "what_other_visitors",
+          "text": "what_other_visitors",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 1]},
+          "next": "what_other_visitors"
+        },
+        {
+          "id": "any_other_visitors",
+          "text": "any_other_visitors",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 2]},
+          "next": "any_other_visitors"
+        },
+        {
+          "id": "what_about_sentient_milieu",
+          "text": "what_about_sentient_milieu",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 3]},
+          "next": "what_about_sentient_milieu"
+        },
+        {
+          "id": "who_else",
+          "text": "who_else",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 4]},
+          "next": "who_else"
+        },
+        {
+          "id": "precursors_yow",
+          "text": "precursors_yow",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 5]},
+          "next": "precursors_yow"
+        },
+        {
+          "id": "must_know_more",
+          "text": "must_know_more",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 6]},
+          "next": "must_know_more"
+        },
+        {
+          "id": "who_are_you",
+          "text": "who_are_you",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK2", 0]}, 0]},
+          "next": "who_are_you"
+        },
+        {
+          "id": "like_more_about_you",
+          "text": "like_more_about_you",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK2", 0]}, 1]},
+              {"not": {"get": ["local", "like_more_about_you", false]}}
+            ]
+          },
+          "next": "species.intro"
+        },
+        {
+          "id": "happy_to_tell_more",
+          "text": "happy_to_tell_more",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK4", 0]}, 0]}
+            ]
+          },
+          "next": "human.start"
+        },
+        {
+          "id": "would_you_like_to_know_more",
+          "text": "would_you_like_to_know_more",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_STACK1", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK4", 0]}, 1]}
+            ]
+          },
+          "next": "human.again"
+        },
+        {
+          "id": "what_are_probes",
+          "text": "what_are_probes",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROBE", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK5", 0]}, 0]}
+            ]
+          },
+          "next": "probe.start"
+        },
+        {
+          "id": "know_more_probe",
+          "text": "know_more_probe",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROBE", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK5", 0]}, 1]},
+              {"not": {"get": ["local", "know_more_probe", false]}}
+            ]
+          },
+          "next": "probe.again"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye"
+        }
+      ]
+    },
+    {
+      "id": "back.enough_about_me",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_YOU"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "back.enough_info",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_INFO"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "back.enough_probe",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_PROBE"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "human.start.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TELL_MORE"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "human.start",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK4", 1]
+      },
+      "save_as": "human_start",
+      "next": "human.start.speech"
+    },
+    {
+      "id": "human.again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YES_TELL_MORE"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "human.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SLYLANDRO_KNOW_EARTH", 0]}, 0]},
+              {"ne": [{"get": ["story", "SLYLANDRO_KNOW_EXPLORE", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_KNOW_URQUAN", 0]}, 2]},
+              {"ne": [{"get": ["story", "SLYLANDRO_KNOW_GATHER", 0]}, 0]}
+            ]
+          },
+          "next": "human.exhausted"
+        }
+      ],
+      "otherwise": "human.menu"
+    },
+    {
+      "id": "human.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK4", 2]
+      },
+      "save_as": "human_exhausted",
+      "next": "human.menu"
+    },
+    {
+      "id": "not_same_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PERSONALITY_CHANGE"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "not_same_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_KNOW_URQUAN", 2]
+      },
+      "save_as": "not_same_urquan",
+      "next": "not_same_urquan.speech"
+    },
+    {
+      "id": "we_come_from_earth.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_EARTH"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "we_come_from_earth",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_KNOW_EARTH", 1]
+      },
+      "save_as": "we_come_from_earth",
+      "next": "we_come_from_earth.speech"
+    },
+    {
+      "id": "we_explore.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_EXPLORE"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "we_explore",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_KNOW_EXPLORE", 1]
+      },
+      "save_as": "we_explore",
+      "next": "we_explore.speech"
+    },
+    {
+      "id": "we_fight_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_NICE_GUYS"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "we_fight_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_KNOW_URQUAN", 1]
+      },
+      "save_as": "we_fight_urquan",
+      "next": "we_fight_urquan.speech"
+    },
+    {
+      "id": "we_gather.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAYBE_INTERESTED"]}],
+      "next": "human.route"
+    },
+    {
+      "id": "we_gather",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_KNOW_GATHER", 1]
+      },
+      "save_as": "we_gather",
+      "next": "we_gather.speech"
+    },
+    {
+      "id": "human.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "not_same_urquan",
+          "text": "not_same_urquan",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_KNOW_URQUAN", 0]}, 1]},
+          "next": "not_same_urquan"
+        },
+        {
+          "id": "we_come_from_earth",
+          "text": "we_come_from_earth",
+          "when": {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_EARTH", 0]}, 0]}},
+          "next": "we_come_from_earth"
+        },
+        {
+          "id": "we_explore",
+          "text": "we_explore",
+          "when": {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_EXPLORE", 0]}, 0]}},
+          "next": "we_explore"
+        },
+        {
+          "id": "we_fight_urquan",
+          "text": "we_fight_urquan",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_KNOW_URQUAN", 0]}, 0]},
+          "next": "we_fight_urquan"
+        },
+        {
+          "id": "we_gather",
+          "text": "we_gather",
+          "when": {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_GATHER", 0]}, 0]}},
+          "next": "we_gather"
+        },
+        {
+          "id": "enough_about_me",
+          "text": "enough_about_me",
+          "when": true,
+          "next": "back.enough_about_me"
+        }
+      ]
+    },
+    {
+      "id": "species.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SURE_KNOW_WHAT"]}],
+      "next": "species.route"
+    },
+    {
+      "id": "species.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_home", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_culture", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_history", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_biology", false]}}}
+            ]
+          },
+          "next": "species.exhausted"
+        }
+      ],
+      "otherwise": "species.menu"
+    },
+    {
+      "id": "species.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "like_more_about_you", true]
+      },
+      "save_as": "species_exhausted",
+      "next": "species.menu"
+    },
+    {
+      "id": "what_about_home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HOME"]}],
+      "next": "species.route"
+    },
+    {
+      "id": "what_about_home",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_home", true]
+      },
+      "save_as": "what_about_home",
+      "next": "what_about_home.speech"
+    },
+    {
+      "id": "what_about_culture.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_CULTURE"]}],
+      "next": "species.route"
+    },
+    {
+      "id": "what_about_culture",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_culture", true]
+      },
+      "save_as": "what_about_culture",
+      "next": "what_about_culture.speech"
+    },
+    {
+      "id": "what_about_history.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HISTORY"]}],
+      "next": "species.route"
+    },
+    {
+      "id": "what_about_history",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_history", true]
+      },
+      "save_as": "what_about_history",
+      "next": "what_about_history.speech"
+    },
+    {
+      "id": "what_about_biology.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_BIOLOGY"]}],
+      "next": "species.route"
+    },
+    {
+      "id": "what_about_biology",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_biology", true]
+      },
+      "save_as": "what_about_biology",
+      "next": "what_about_biology.speech"
+    },
+    {
+      "id": "species.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_home",
+          "text": "what_about_home",
+          "when": {"not": {"get": ["local", "what_about_home", false]}},
+          "next": "what_about_home"
+        },
+        {
+          "id": "what_about_culture",
+          "text": "what_about_culture",
+          "when": {"not": {"get": ["local", "what_about_culture", false]}},
+          "next": "what_about_culture"
+        },
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"not": {"get": ["local", "what_about_history", false]}},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_biology",
+          "text": "what_about_biology",
+          "when": {"not": {"get": ["local", "what_about_biology", false]}},
+          "next": "what_about_biology"
+        },
+        {
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "back.enough_info"
+        }
+      ]
+    },
+    {
+      "id": "fix.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["UH_OH"]}],
+      "next": "fix.menu"
+    },
+    {
+      "id": "hunt_them_down.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GROW_TOO_FAST"]}],
+      "next": "fix.menu"
+    },
+    {
+      "id": "hunt_them_down",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hunt_them_down", true]
+      },
+      "save_as": "hunt_them_down",
+      "next": "hunt_them_down.speech"
+    },
+    {
+      "id": "sue_melnorme.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SIGNED_WAIVER"]}],
+      "next": "fix.menu"
+    },
+    {
+      "id": "sue_melnorme",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "sue_melnorme", true]
+      },
+      "save_as": "sue_melnorme",
+      "next": "sue_melnorme.speech"
+    },
+    {
+      "id": "recall_signal.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_THIS_MODEL"]}],
+      "next": "fix.menu"
+    },
+    {
+      "id": "recall_signal",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "recall_signal", true]
+      },
+      "save_as": "recall_signal",
+      "next": "recall_signal.speech"
+    },
+    {
+      "id": "fix.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "hunt_them_down",
+          "text": "hunt_them_down",
+          "when": {"not": {"get": ["local", "hunt_them_down", false]}},
+          "next": "hunt_them_down"
+        },
+        {
+          "id": "sue_melnorme",
+          "text": "sue_melnorme",
+          "when": {"not": {"get": ["local", "sue_melnorme", false]}},
+          "next": "sue_melnorme"
+        },
+        {
+          "id": "recall_signal",
+          "text": "recall_signal",
+          "when": {"not": {"get": ["local", "recall_signal", false]}},
+          "next": "recall_signal"
+        },
+        {
+          "id": "mega_self_destruct",
+          "text": "mega_self_destruct",
+          "when": true,
+          "next": "fix.complete"
+        }
+      ]
+    },
+    {
+      "id": "fix.complete.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHY_YES_THERE_IS"]}],
+      "next": "home.0"
+    },
+    {
+      "id": "fix.complete.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["SLYLANDRO_RAMP_DOWN", 0, 0, 0]
+      },
+      "save_as": "fix_complete_effect3",
+      "next": "fix.complete.speech"
+    },
+    {
+      "id": "fix.complete.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "SLYLANDRO_MULTIPLIER", 1]
+      },
+      "save_as": "fix_complete_effect2",
+      "next": "fix.complete.effect3"
+    },
+    {
+      "id": "fix.complete.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "DESTRUCT_CODE_ON_SHIP", 1]
+      },
+      "save_as": "fix_complete_effect1",
+      "next": "fix.complete.effect2"
+    },
+    {
+      "id": "fix.complete",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_KNOW_BROKEN", 1]
+      },
+      "save_as": "fix_complete",
+      "next": "fix.complete.effect1"
+    },
+    {
+      "id": "bug.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_IT_DOESNT"]}],
+      "next": "bug.menu"
+    },
+    {
+      "id": "tell_me_about_rep_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["REP_NO_PROBLEM"]}],
+      "next": "bug.menu"
+    },
+    {
+      "id": "tell_me_about_rep_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_me_about_rep_2", true]
+      },
+      "save_as": "tell_me_about_rep_2",
+      "next": "tell_me_about_rep_2.speech"
+    },
+    {
+      "id": "what_about_rep_priorities.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAXIMUM_SO_WHAT"]}],
+      "next": "bug.menu"
+    },
+    {
+      "id": "what_about_rep_priorities",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_rep_priorities", true]
+      },
+      "save_as": "what_about_rep_priorities",
+      "next": "what_about_rep_priorities.speech"
+    },
+    {
+      "id": "tell_me_about_attack.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ATTACK_NO_PROBLEM"]}],
+      "next": "bug.menu"
+    },
+    {
+      "id": "tell_me_about_attack",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_me_about_attack", true]
+      },
+      "save_as": "tell_me_about_attack",
+      "next": "tell_me_about_attack.speech"
+    },
+    {
+      "id": "bug.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "tell_me_about_rep_2",
+          "text": "tell_me_about_rep_2",
+          "when": {"not": {"get": ["local", "tell_me_about_rep_2", false]}},
+          "next": "tell_me_about_rep_2"
+        },
+        {
+          "id": "what_about_rep_priorities",
+          "text": "what_about_rep_priorities",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "tell_me_about_rep_2", false]}}},
+              {"not": {"get": ["local", "what_about_rep_priorities", false]}}
+            ]
+          },
+          "next": "what_about_rep_priorities"
+        },
+        {
+          "id": "think_about_rep_priorities",
+          "text": "think_about_rep_priorities",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "tell_me_about_rep_2", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_rep_priorities", false]}}}
+            ]
+          },
+          "next": "fix.intro"
+        },
+        {
+          "id": "tell_me_about_attack",
+          "text": "tell_me_about_attack",
+          "when": {"not": {"get": ["local", "tell_me_about_attack", false]}},
+          "next": "tell_me_about_attack"
+        }
+      ]
+    },
+    {
+      "id": "why_probe_always_attack.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ONLY_DEFEND"]}],
+      "next": "probe.route.0"
+    },
+    {
+      "id": "why_probe_always_attack",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK6", 1]
+      },
+      "save_as": "why_probe_always_attack",
+      "next": "why_probe_always_attack.speech"
+    },
+    {
+      "id": "where_probes_from.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROBES_FROM_MELNORME"]}],
+      "next": "probe.route.1"
+    },
+    {
+      "id": "where_probes_from",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK7", 1]
+      },
+      "save_as": "where_probes_from",
+      "next": "where_probes_from.speech"
+    },
+    {
+      "id": "why_sell.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SELL_FOR_INFO"]}],
+      "next": "probe.route.1"
+    },
+    {
+      "id": "why_sell",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK7", 2]
+      },
+      "save_as": "why_sell",
+      "next": "why_sell.speech"
+    },
+    {
+      "id": "how_long_ago.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FIFTY_THOUSAND_ROTATIONS"]}],
+      "next": "probe.route.0"
+    },
+    {
+      "id": "how_long_ago",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK7", 3]
+      },
+      "save_as": "how_long_ago",
+      "next": "how_long_ago.speech"
+    },
+    {
+      "id": "whats_probes_mission.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SEEK_OUT_NEW_LIFE"]}],
+      "next": "probe.route.2"
+    },
+    {
+      "id": "whats_probes_mission",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK8", 1]
+      },
+      "save_as": "whats_probes_mission",
+      "next": "whats_probes_mission.speech"
+    },
+    {
+      "id": "if_only_one.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THEY_REPLICATE"]}],
+      "next": "probe.route.0"
+    },
+    {
+      "id": "if_only_one",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK8", 2]
+      },
+      "save_as": "if_only_one",
+      "next": "if_only_one.speech"
+    },
+    {
+      "id": "probe.route.0",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "any": [
+                {
+                  "all": [
+                    {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+                    {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+                    {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 0]}
+                  ]
+                },
+                {
+                  "all": [
+                    {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+                    {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+                    {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 1]}
+                  ]
+                },
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 0]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 1]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 2]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 0]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 1]}
+              ]
+            }
+          },
+          "next": "probe.exhausted"
+        }
+      ],
+      "otherwise": "probe.0"
+    },
+    {
+      "id": "probe.route.1",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "any": [
+                {
+                  "all": [
+                    {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+                    {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+                    {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 0]}
+                  ]
+                },
+                {
+                  "all": [
+                    {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+                    {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+                    {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 1]}
+                  ]
+                },
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 0]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 1]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 2]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 0]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 1]}
+              ]
+            }
+          },
+          "next": "probe.exhausted"
+        }
+      ],
+      "otherwise": "probe.1"
+    },
+    {
+      "id": "probe.route.2",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "any": [
+                {
+                  "all": [
+                    {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+                    {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+                    {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 0]}
+                  ]
+                },
+                {
+                  "all": [
+                    {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+                    {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+                    {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 1]}
+                  ]
+                },
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 0]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 1]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 2]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 0]},
+                {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 1]}
+              ]
+            }
+          },
+          "next": "probe.exhausted"
+        }
+      ],
+      "otherwise": "probe.2"
+    },
+    {
+      "id": "probe.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "know_more_probe", true]
+      },
+      "save_as": "probe_exhausted",
+      "next": "probe.0"
+    },
+    {
+      "id": "probe.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_probe_always_attack",
+          "text": "why_probe_always_attack",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 0]}
+            ]
+          },
+          "next": "why_probe_always_attack"
+        },
+        {
+          "id": "talk_more_probe_attack",
+          "text": "talk_more_probe_attack",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 1]}
+            ]
+          },
+          "next": "function.intro"
+        },
+        {
+          "id": "where_probes_from",
+          "text": "where_probes_from",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 0]},
+          "next": "where_probes_from"
+        },
+        {
+          "id": "why_sell",
+          "text": "why_sell",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 1]},
+          "next": "why_sell"
+        },
+        {
+          "id": "how_long_ago",
+          "text": "how_long_ago",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 2]},
+          "next": "how_long_ago"
+        },
+        {
+          "id": "whats_probes_mission",
+          "text": "whats_probes_mission",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 0]},
+          "next": "whats_probes_mission"
+        },
+        {
+          "id": "if_only_one",
+          "text": "if_only_one",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 1]},
+          "next": "if_only_one"
+        },
+        {
+          "id": "enough_probe",
+          "text": "enough_probe",
+          "when": true,
+          "next": "back.enough_probe"
+        }
+      ]
+    },
+    {
+      "id": "probe.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "where_probes_from",
+          "text": "where_probes_from",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 0]},
+          "next": "where_probes_from"
+        },
+        {
+          "id": "why_sell",
+          "text": "why_sell",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 1]},
+          "next": "why_sell"
+        },
+        {
+          "id": "how_long_ago",
+          "text": "how_long_ago",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 2]},
+          "next": "how_long_ago"
+        },
+        {
+          "id": "why_probe_always_attack",
+          "text": "why_probe_always_attack",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 0]}
+            ]
+          },
+          "next": "why_probe_always_attack"
+        },
+        {
+          "id": "talk_more_probe_attack",
+          "text": "talk_more_probe_attack",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 1]}
+            ]
+          },
+          "next": "function.intro"
+        },
+        {
+          "id": "whats_probes_mission",
+          "text": "whats_probes_mission",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 0]},
+          "next": "whats_probes_mission"
+        },
+        {
+          "id": "if_only_one",
+          "text": "if_only_one",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 1]},
+          "next": "if_only_one"
+        },
+        {
+          "id": "enough_probe",
+          "text": "enough_probe",
+          "when": true,
+          "next": "back.enough_probe"
+        }
+      ]
+    },
+    {
+      "id": "probe.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_probes_mission",
+          "text": "whats_probes_mission",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 0]},
+          "next": "whats_probes_mission"
+        },
+        {
+          "id": "if_only_one",
+          "text": "if_only_one",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 1]},
+          "next": "if_only_one"
+        },
+        {
+          "id": "why_probe_always_attack",
+          "text": "why_probe_always_attack",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 0]}
+            ]
+          },
+          "next": "why_probe_always_attack"
+        },
+        {
+          "id": "talk_more_probe_attack",
+          "text": "talk_more_probe_attack",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SLYLANDRO_KNOW_BROKEN", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PROBE_EXHIBITED_BUG", 0]}, 0]},
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK6", 0]}, 1]}
+            ]
+          },
+          "next": "function.intro"
+        },
+        {
+          "id": "where_probes_from",
+          "text": "where_probes_from",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 0]},
+          "next": "where_probes_from"
+        },
+        {
+          "id": "why_sell",
+          "text": "why_sell",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 1]},
+          "next": "why_sell"
+        },
+        {
+          "id": "how_long_ago",
+          "text": "how_long_ago",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK7", 0]}, 2]},
+          "next": "how_long_ago"
+        },
+        {
+          "id": "enough_probe",
+          "text": "enough_probe",
+          "when": true,
+          "next": "back.enough_probe"
+        }
+      ]
+    },
+    {
+      "id": "probe.start.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROBES_ARE"]}],
+      "next": "probe.route.0"
+    },
+    {
+      "id": "probe.start",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK5", 1]
+      },
+      "save_as": "probe_start",
+      "next": "probe.start.speech"
+    },
+    {
+      "id": "probe.again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WHAT_MORE_PROBE"]}],
+      "next": "probe.route.0"
+    },
+    {
+      "id": "function.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_PROBLEM"]}],
+      "next": "probe.route.0"
+    },
+    {
+      "id": "function.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_PROBLEM_BUT_SURE"]}],
+      "next": "function.0"
+    },
+    {
+      "id": "how_does_probe_defend.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ONLY_SELF_DEFENSE"]}],
+      "next": "function.1"
+    },
+    {
+      "id": "how_does_probe_defend",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK9", 1]
+      },
+      "save_as": "how_does_probe_defend",
+      "next": "how_does_probe_defend.speech"
+    },
+    {
+      "id": "combat_behavior.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MISSILE_BATTERIES"]}],
+      "next": "function.1"
+    },
+    {
+      "id": "combat_behavior",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK9", 2]
+      },
+      "save_as": "combat_behavior",
+      "next": "combat_behavior.speech"
+    },
+    {
+      "id": "what_missile_batteries.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LIGHTNING_ONLY_FOR_HARVESTING"]}],
+      "next": "function.0"
+    },
+    {
+      "id": "what_missile_batteries",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK9", 3]
+      },
+      "save_as": "what_missile_batteries",
+      "next": "what_missile_batteries.speech"
+    },
+    {
+      "id": "tell_me_about_rep_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_REP"]}],
+      "next": "function.2"
+    },
+    {
+      "id": "tell_me_about_rep_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SLYLANDRO_STACK8", 3]
+      },
+      "save_as": "tell_me_about_rep_1",
+      "next": "tell_me_about_rep_1.speech"
+    },
+    {
+      "id": "what_set_priority.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAXIMUM"]}],
+      "next": "function.0"
+    },
+    {
+      "id": "what_set_priority.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_set_priority", true]
+      },
+      "save_as": "what_set_priority_effect1",
+      "next": "what_set_priority.speech"
+    },
+    {
+      "id": "what_set_priority",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_KNOWS_PRIORITY", 1]
+      },
+      "save_as": "what_set_priority",
+      "next": "what_set_priority.effect1"
+    },
+    {
+      "id": "tell_me_about_basics.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BASIC_COMMANDS"]}],
+      "next": "function.0"
+    },
+    {
+      "id": "tell_me_about_basics.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_basics_again", true]
+      },
+      "save_as": "tell_me_about_basics_effect1",
+      "next": "tell_me_about_basics.speech"
+    },
+    {
+      "id": "tell_me_about_basics",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_KNOWS_PROGRAM", 1]
+      },
+      "save_as": "tell_me_about_basics",
+      "next": "tell_me_about_basics.effect1"
+    },
+    {
+      "id": "what_effect.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["AFFECTS_BEHAVIOR"]}],
+      "next": "function.0"
+    },
+    {
+      "id": "what_effect.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_effect", true]
+      },
+      "save_as": "what_effect_effect1",
+      "next": "what_effect.speech"
+    },
+    {
+      "id": "what_effect",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_KNOWS_EFFECTS", 1]
+      },
+      "save_as": "what_effect",
+      "next": "what_effect.effect1"
+    },
+    {
+      "id": "tell_basics_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_BASICS_AGAIN"]}],
+      "next": "function.0"
+    },
+    {
+      "id": "tell_basics_again",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_basics_again", true]
+      },
+      "save_as": "tell_basics_again",
+      "next": "tell_basics_again.speech"
+    },
+    {
+      "id": "function.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "tell_me_about_basics",
+          "text": "tell_me_about_basics",
+          "when": {"not": {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]}},
+          "next": "tell_me_about_basics"
+        },
+        {
+          "id": "probe_has_bug",
+          "text": "probe_has_bug",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PRIORITY", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_EFFECTS", 0]}, 0]}
+            ]
+          },
+          "next": "bug.intro"
+        },
+        {
+          "id": "what_effect",
+          "text": "what_effect",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PRIORITY", 0]}, 0]},
+              {"not": {"get": ["local", "what_effect", false]}}
+            ]
+          },
+          "next": "what_effect"
+        },
+        {
+          "id": "tell_basics_again",
+          "text": "tell_basics_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"not": {"get": ["local", "tell_basics_again", false]}}
+            ]
+          },
+          "next": "tell_basics_again"
+        },
+        {
+          "id": "how_does_probe_defend",
+          "text": "how_does_probe_defend",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 0]},
+          "next": "how_does_probe_defend"
+        },
+        {
+          "id": "combat_behavior",
+          "text": "combat_behavior",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 1]},
+          "next": "combat_behavior"
+        },
+        {
+          "id": "what_missile_batteries",
+          "text": "what_missile_batteries",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 2]},
+          "next": "what_missile_batteries"
+        },
+        {
+          "id": "tell_me_about_rep_1",
+          "text": "tell_me_about_rep_1",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 2]},
+          "next": "tell_me_about_rep_1"
+        },
+        {
+          "id": "what_set_priority",
+          "text": "what_set_priority",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 3]},
+              {"not": {"get": ["local", "what_set_priority", false]}}
+            ]
+          },
+          "next": "what_set_priority"
+        },
+        {
+          "id": "enough_problem",
+          "text": "enough_problem",
+          "when": true,
+          "next": "function.back"
+        }
+      ]
+    },
+    {
+      "id": "function.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "how_does_probe_defend",
+          "text": "how_does_probe_defend",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 0]},
+          "next": "how_does_probe_defend"
+        },
+        {
+          "id": "combat_behavior",
+          "text": "combat_behavior",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 1]},
+          "next": "combat_behavior"
+        },
+        {
+          "id": "what_missile_batteries",
+          "text": "what_missile_batteries",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 2]},
+          "next": "what_missile_batteries"
+        },
+        {
+          "id": "tell_me_about_basics",
+          "text": "tell_me_about_basics",
+          "when": {"not": {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]}},
+          "next": "tell_me_about_basics"
+        },
+        {
+          "id": "probe_has_bug",
+          "text": "probe_has_bug",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PRIORITY", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_EFFECTS", 0]}, 0]}
+            ]
+          },
+          "next": "bug.intro"
+        },
+        {
+          "id": "what_effect",
+          "text": "what_effect",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PRIORITY", 0]}, 0]},
+              {"not": {"get": ["local", "what_effect", false]}}
+            ]
+          },
+          "next": "what_effect"
+        },
+        {
+          "id": "tell_basics_again",
+          "text": "tell_basics_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"not": {"get": ["local", "tell_basics_again", false]}}
+            ]
+          },
+          "next": "tell_basics_again"
+        },
+        {
+          "id": "tell_me_about_rep_1",
+          "text": "tell_me_about_rep_1",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 2]},
+          "next": "tell_me_about_rep_1"
+        },
+        {
+          "id": "what_set_priority",
+          "text": "what_set_priority",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 3]},
+              {"not": {"get": ["local", "what_set_priority", false]}}
+            ]
+          },
+          "next": "what_set_priority"
+        },
+        {
+          "id": "enough_problem",
+          "text": "enough_problem",
+          "when": true,
+          "next": "function.back"
+        }
+      ]
+    },
+    {
+      "id": "function.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "tell_me_about_rep_1",
+          "text": "tell_me_about_rep_1",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 2]},
+          "next": "tell_me_about_rep_1"
+        },
+        {
+          "id": "what_set_priority",
+          "text": "what_set_priority",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SLYLANDRO_STACK8", 0]}, 3]},
+              {"not": {"get": ["local", "what_set_priority", false]}}
+            ]
+          },
+          "next": "what_set_priority"
+        },
+        {
+          "id": "tell_me_about_basics",
+          "text": "tell_me_about_basics",
+          "when": {"not": {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]}},
+          "next": "tell_me_about_basics"
+        },
+        {
+          "id": "probe_has_bug",
+          "text": "probe_has_bug",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PRIORITY", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_EFFECTS", 0]}, 0]}
+            ]
+          },
+          "next": "bug.intro"
+        },
+        {
+          "id": "what_effect",
+          "text": "what_effect",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PRIORITY", 0]}, 0]},
+              {"not": {"get": ["local", "what_effect", false]}}
+            ]
+          },
+          "next": "what_effect"
+        },
+        {
+          "id": "tell_basics_again",
+          "text": "tell_basics_again",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "PLAYER_KNOWS_PROGRAM", 0]}, 0]},
+              {"not": {"get": ["local", "tell_basics_again", false]}}
+            ]
+          },
+          "next": "tell_basics_again"
+        },
+        {
+          "id": "how_does_probe_defend",
+          "text": "how_does_probe_defend",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 0]},
+          "next": "how_does_probe_defend"
+        },
+        {
+          "id": "combat_behavior",
+          "text": "combat_behavior",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 1]},
+          "next": "combat_behavior"
+        },
+        {
+          "id": "what_missile_batteries",
+          "text": "what_missile_batteries",
+          "when": {"eq": [{"get": ["story", "SLYLANDRO_STACK9", 0]}, 2]},
+          "next": "what_missile_batteries"
+        },
+        {
+          "id": "enough_problem",
+          "text": "enough_problem",
+          "when": true,
+          "next": "function.back"
+        }
+      ]
     },
     {
       "id": "end",

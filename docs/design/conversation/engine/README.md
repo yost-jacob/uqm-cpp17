@@ -5,7 +5,7 @@ The graph engine is now production code in
 the headers here forward to that implementation so design experiments and tests do
 not maintain a second engine. The Hayes/Melnorme examples below remain design
 proposals; the game uses [live compatibility graphs](../../../../sc2/content/base/conversations)
-for all 27 scripts. Eleven scripts use general graph/state operations; 16 graphs explicitly mark the remaining native C story
+for all 27 scripts. Fifteen scripts use general graph/state operations; 12 graphs explicitly mark the remaining native C story
 bodies as `handlers.legacy_turn`. This integration is not a completed C-to-JSON
 story migration. See [live integration and remaining work](../../../conversation-runtime.md).
 

@@ -21,6 +21,10 @@ class CampaignDialogueState final : public dialogue::LegacyTurnState {
     dialogue::Integer shipCount(const std::string &) const override;
     bool hasShip(const std::string &) const override;
     std::string relationship(const std::string &) const override;
+    // Explicit captain IDs currently resolve the named Fwiffo resource entry.
+    // Validate the crew before recruitment; a full fleet returns count zero.
+    dialogue::Result createShip(const std::string &, const std::string &,
+                                dialogue::Integer) override;
     dialogue::Result giveShips(const std::string &, dialogue::Integer) override;
     dialogue::Result setRelationship(const std::string &, const std::string &) override;
     dialogue::Result revealRace(const std::string &) override;

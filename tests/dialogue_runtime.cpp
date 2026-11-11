@@ -137,6 +137,14 @@ struct ProbeState : dd::State {
         return shofixtiEscort;
     }
     unsigned reveals = 0;
+    std::vector<std::string> alliances;
+    dd::Result setRelationship(const std::string &race, const std::string &relation) override {
+        if ((race != "utwig" && race != "supox") || relation != "allied")
+            throw std::invalid_argument("unexpected alliance");
+        alliances.push_back(race);
+        allied = true;
+        return {};
+    }
     dd::Integer availableSlots(const std::string &) const override {
         return slots;
     }
@@ -144,7 +152,7 @@ struct ProbeState : dd::State {
         return allied ? "allied" : "neutral";
     }
     dd::Result revealRace(const std::string &race) override {
-        if (race != "utwig")
+        if (race != "utwig" && race != "supox")
             throw std::invalid_argument("unexpected reveal");
         ++reveals;
         return {};
@@ -155,9 +163,16 @@ struct ProbeState : dd::State {
         biomass += amount;
         return {};
     }
+    dd::Result createShip(const std::string &type, const std::string &captain,
+                          dd::Integer crew) override {
+        if (type != "spathi" || captain != "fwiffo" || crew != 1)
+            throw std::invalid_argument("unexpected named captain");
+        ++escorts;
+        return {"ok", {{"count", 1}}};
+    }
     dd::Result giveShips(const std::string &type, dd::Integer count) override {
         if (type != "umgah" && type != "supox" && type != "yehat" && type != "yehat_rebel" &&
-            type != "pkunk")
+            type != "pkunk" && type != "utwig")
             throw std::invalid_argument("unexpected escorts");
         escorts += count;
         return {"ok", {{"count", count}}};
@@ -206,10 +221,14 @@ struct ProbeState : dd::State {
                              dd::Integer years) override {
         const bool shofixti = name == "SHOFIXTI_RETURN_EVENT" && months == 2 && days == 0;
         const bool arilou = name == "ARILOU_UMGAH_CHECK" && months == 0 && days == 10;
-        const bool mission = (name == "ADVANCE_ILWRATH_MISSION" ||
-                              name == "ADVANCE_MYCON_MISSION" || name == "YEHAT_REBEL_EVENT") &&
-                             months == 0 && days == 0;
-        if (years != 0 || !(shofixti || arilou || mission))
+        const bool mission =
+            (name == "ADVANCE_ILWRATH_MISSION" || name == "ADVANCE_MYCON_MISSION" ||
+             name == "YEHAT_REBEL_EVENT" || name == "SLYLANDRO_RAMP_DOWN" ||
+             name == "ADVANCE_UTWIG_SUPOX_MISSION") &&
+            months == 0 && days == 0;
+        const bool pkunk =
+            name == "ADVANCE_PKUNK_MISSION" && (months == 0 || months == 6) && days == 0;
+        if (years != 0 || !(shofixti || arilou || mission || pkunk))
             throw std::invalid_argument("unexpected calendar action");
         ++calendarEvents;
         return {};
@@ -973,4 +992,218 @@ BOOST_AUTO_TEST_CASE(yehat_revolt_requires_an_escort_and_resets_rebel_story_befo
             BOOST_TEST(state.outcome == "hostile");
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(pkunk_initial_alliance_gift_waits_for_speech_and_records_the_next_year) {
+    for (const auto slots : {0, 12}) {
+        ProbeState state;
+        state.slots = slots;
+        state.context["calendar_day"] = 31;
+        state.fields["GLOBAL_FLAGS_AND_DATA"] = 128;
+        auto graph = liveGraph("comm.pkunk.dialogue", state);
+        graph->advance();
+        BOOST_TEST(state.fields.at("CLEAR_SPINDLE_ON_SHIP") == 1);
+        BOOST_TEST(graph->view().speech[0][0].get<std::string>() == "GIVE_SPINDLE");
+        finishToMenu(*graph);
+        graph->choose(graph->view().entry, "we_are_vindicator0");
+        finishToMenu(*graph);
+        graph->choose(graph->view().entry, "we_need_help");
+        BOOST_TEST(state.fields.at("PKUNK_MANNER") == 3);
+        BOOST_TEST(state.calendarEvents == 1u);
+        BOOST_TEST(state.escorts == 0);
+        BOOST_TEST(graph->view().speech[2].get<std::string>() ==
+                   (slots ? "INIT_SHIP_GIFT" : "INIT_NO_ROOM"));
+        graph->finishDialogue(graph->view().entry);
+        BOOST_TEST(graph->ended());
+        BOOST_TEST(state.escorts == (slots ? 4 : 0));
+        if (slots) {
+            BOOST_TEST(state.fields.at("PKUNK_SHIP_DAY") == 28);
+            BOOST_TEST(state.fields.at("PKUNK_SHIP_MONTH") == 2);
+            BOOST_TEST(state.fields.at("PKUNK_SHIP_YEAR") == 1);
+        }
+    }
+}
+BOOST_AUTO_TEST_CASE(
+    pkunk_annual_homeworld_gift_occurs_before_playback_and_preserves_visit_counter) {
+    ProbeState state;
+    state.fields["GLOBAL_FLAGS_AND_DATA"] = 128;
+    state.fields["PKUNK_MANNER"] = 3;
+    state.fields["PKUNK_HOME_VISITS"] = 2;
+    state.fields["CLEAR_SPINDLE"] = 1;
+    state.fields["PKUNK_SHIP_MONTH"] = 2;
+    state.fields["PKUNK_SHIP_DAY"] = 17;
+    state.fields["PKUNK_SHIP_YEAR"] = 1;
+    state.context["calendar_campaign_year"] = 1;
+    auto graph = liveGraph("comm.pkunk.dialogue", state);
+    graph->advance();
+    BOOST_TEST(state.escorts == 4);
+    BOOST_TEST(state.fields.at("PKUNK_HOME_VISITS") == 2);
+    BOOST_TEST(state.fields.at("PKUNK_SHIP_YEAR") == 2);
+    BOOST_TEST(graph->view().speech[1].get<std::string>() == "SHIP_GIFT");
+}
+BOOST_AUTO_TEST_CASE(
+    pkunk_migration_reasons_prune_independently_and_only_good_reasons_schedule_return) {
+    for (const auto good : {false, true}) {
+        ProbeState state;
+        state.fields["PKUNK_MISSION"] = 1;
+        auto graph = liveGraph("comm.pkunk.dialogue", state);
+        graph->advance();
+        finishToMenu(*graph);
+        graph->choose(graph->view().entry, good ? "good_reason_2" : "bad_reason_1");
+        BOOST_TEST(state.fields.at("PKUNK_REASONS") == (good ? 2 : 4));
+        BOOST_TEST(state.calendarEvents == (good ? 1u : 0u));
+        graph->finishDialogue(graph->view().entry);
+        BOOST_TEST(graph->ended());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(
+    slylandro_program_diagnosis_awards_the_code_and_schedules_probe_ramp_down_once) {
+    ProbeState state;
+    state.fields["PLAYER_KNOWS_PROBE"] = 1;
+    state.fields["PROBE_EXHIBITED_BUG"] = 1;
+    state.fields["SLYLANDRO_STACK1"] = 2;
+    state.fields["SLYLANDRO_STACK5"] = 1;
+    state.fields["SLYLANDRO_STACK6"] = 1;
+    state.fields["SLYLANDRO_STACK8"] = 2;
+    auto graph = liveGraph("comm.slylandro.dialogue", state);
+    graph->advance();
+    finishToMenu(*graph);
+    for (const auto response : {"know_more_probe", "talk_more_probe_attack", "tell_me_about_basics",
+                                "tell_me_about_rep_1", "what_set_priority", "what_effect",
+                                "probe_has_bug", "tell_me_about_rep_2", "what_about_rep_priorities",
+                                "think_about_rep_priorities", "mega_self_destruct"}) {
+        graph->choose(graph->view().entry, response);
+        finishToMenu(*graph);
+    }
+    BOOST_TEST(state.fields.at("SLYLANDRO_KNOW_BROKEN") == 1);
+    BOOST_TEST(state.fields.at("DESTRUCT_CODE_ON_SHIP") == 1);
+    BOOST_TEST(state.fields.at("SLYLANDRO_MULTIPLIER") == 1);
+    BOOST_TEST(state.calendarEvents == 1u);
+    BOOST_CHECK_THROW(graph->choose(graph->view().entry, "know_more_probe"), std::invalid_argument);
+    auto revisit = liveGraph("comm.slylandro.dialogue", state);
+    revisit->advance();
+    BOOST_TEST(revisit->view().speech[0].get<std::string>() == "RECALL_PROGRAM_1");
+    BOOST_TEST(state.fields.at("RECALL_VISITS") == 1);
+    BOOST_TEST(state.calendarEvents == 1u);
+}
+BOOST_AUTO_TEST_CASE(slylandro_human_information_exhaustion_persists_in_story_state) {
+    ProbeState state;
+    state.fields["SLYLANDRO_STACK1"] = 1;
+    auto graph = liveGraph("comm.slylandro.dialogue", state);
+    graph->advance();
+    finishToMenu(*graph);
+    for (const auto response : {"happy_to_tell_more", "we_come_from_earth", "we_explore",
+                                "we_fight_urquan", "not_same_urquan", "we_gather"}) {
+        graph->choose(graph->view().entry, response);
+        finishToMenu(*graph);
+    }
+    BOOST_TEST(state.fields.at("SLYLANDRO_STACK4") == 2);
+    BOOST_TEST(graph->responses().size() == 1u);
+    graph->choose(graph->view().entry, "enough_about_me");
+    finishToMenu(*graph);
+    BOOST_CHECK_THROW(graph->choose(graph->view().entry, "happy_to_tell_more"),
+                      std::invalid_argument);
+    BOOST_CHECK_THROW(graph->choose(graph->view().entry, "would_you_like_to_know_more"),
+                      std::invalid_argument);
+}
+
+BOOST_AUTO_TEST_CASE(spathi_fwiffo_recruitment_waits_for_speech_and_preserves_his_single_crew) {
+    ProbeState state;
+    state.fields["FOUND_PLUTO_SPATHI"] = 1;
+    state.fields["SPATHI_HOME_VISITS"] = 7;
+    state.fields["KNOW_SPATHI_PASSWORD"] = 1;
+    auto graph = liveGraph("comm.spathi.dialogue", state);
+    graph->advance();
+    BOOST_TEST(state.fields.at("KNOW_SPATHI_PASSWORD") == 0);
+    graph->finishDialogue(graph->view().entry);
+    graph->choose(graph->view().entry, "hi_there");
+    finishToMenu(*graph);
+    // Asking too early yields progressively firmer refusals without recruiting.
+    for (unsigned i = 1; i <= 3; ++i) {
+        graph->choose(graph->view().entry, "join_us_refused");
+        BOOST_TEST(graph->view().speech[0].get<std::string>() == "WONT_JOIN_" + std::to_string(i));
+        finishToMenu(*graph);
+    }
+    for (const auto response :
+         {"what_doing_on_pluto_1", "what_doing_on_pluto_2", "what_doing_on_pluto_3",
+          "what_about_moonbase", "what_about_other_spathi", "how_many_crew", "really_thousands",
+          "full_of_monsters"}) {
+        graph->choose(graph->view().entry, response);
+        finishToMenu(*graph);
+    }
+    graph->choose(graph->view().entry, "join_us");
+    BOOST_TEST(graph->view().speech[0].get<std::string>() == "WILL_JOIN");
+    BOOST_TEST(state.escorts == 0);
+    graph->finishDialogue(graph->view().entry);
+    BOOST_TEST(state.escorts == 1);
+    BOOST_TEST(graph->ended());
+}
+BOOST_AUTO_TEST_CASE(spathi_befriending_exhaustion_returns_to_neutral_without_an_extra_greeting) {
+    ProbeState state;
+    auto graph = liveGraph("comm.spathi.dialogue", state);
+    graph->advance();
+    finishToMenu(*graph);
+    for (const auto response :
+         {"come_in_peace", "looking_for_a_few_good_squids", "why_slaves", "tell_us_about_you",
+          "what_you_really_want", "how_about_alliance"}) {
+        graph->choose(graph->view().entry, response);
+        finishToMenu(*graph);
+    }
+    BOOST_TEST(state.fields.at("SPATHI_STACK1") == 1);
+    BOOST_TEST(state.fields.at("SPATHI_VISITS") == 1);
+    BOOST_CHECK_THROW(graph->choose(graph->view().entry, "come_in_peace"), std::invalid_argument);
+}
+
+BOOST_AUTO_TEST_CASE(
+    utwig_restored_ultron_ends_hostility_forms_both_alliances_and_schedules_the_mission) {
+    for (const auto frenzy : {0, 1}) {
+        ProbeState state;
+        state.fields["UTWIG_HOSTILE"] = 1;
+        state.fields["SUPOX_HOSTILE"] = 1;
+        state.fields["ULTRON_CONDITION"] = 4;
+        state.fields["KOHR_AH_FRENZY"] = frenzy;
+        auto graph = liveGraph("comm.utwig.dialogue", state);
+        graph->advance();
+        finishToMenu(*graph);
+        graph->choose(graph->view().entry, "hey_wait_got_ultron");
+        BOOST_TEST(graph->view().speech[0][0].get<std::string>() == "TAUNT_US_BUT_WE_LOOK");
+        BOOST_TEST(graph->view().speech[2].get<std::string>() ==
+                   (frenzy ? "TOO_LATE" : "OK_ATTACK_KOHRAH"));
+        BOOST_TEST(state.fields.at("UTWIG_HOSTILE") == 0);
+        BOOST_TEST(state.fields.at("SUPOX_HOSTILE") == 0);
+        BOOST_TEST(state.fields.at("UTWIG_HAVE_ULTRON") == 1);
+        BOOST_TEST(state.fields.at("ULTRON_CONDITION") == 5);
+        BOOST_TEST(state.calendarEvents == (frenzy ? 0u : 1u));
+        BOOST_TEST(state.alliances.size() == 2u);
+        BOOST_TEST(state.outcome == "peace");
+        graph->finishDialogue(graph->view().entry);
+        BOOST_TEST(graph->ended());
+    }
+}
+BOOST_AUTO_TEST_CASE(
+    utwig_bomb_guards_refuse_the_ultron_and_neutral_topics_keep_the_source_overwrite) {
+    ProbeState state;
+    state.fields["ULTRON_CONDITION"] = 4;
+    state.fields["GLOBAL_FLAGS_AND_DATA"] = 64;
+    auto bomb = liveGraph("comm.utwig.dialogue", state);
+    bomb->advance();
+    finishToMenu(*bomb);
+    bomb->choose(bomb->view().entry, "got_ultron");
+    BOOST_TEST(bomb->view().speech[0].get<std::string>() == "NO_ULTRON_AT_BOMB");
+    BOOST_TEST(state.fields.at("REFUSED_ULTRON_AT_BOMB") == 1);
+    BOOST_TEST(state.fields["UTWIG_HAVE_ULTRON"] == 0);
+    BOOST_TEST(state.alliances.empty());
+    state.fields["GLOBAL_FLAGS_AND_DATA"] = 0;
+    auto neutral = liveGraph("comm.utwig.dialogue", state);
+    neutral->advance();
+    finishToMenu(*neutral);
+    BOOST_CHECK_THROW(neutral->choose(neutral->view().entry, "what_about_you_1"),
+                      std::invalid_argument);
+    neutral->choose(neutral->view().entry, "what_about_urquan_1");
+    finishToMenu(*neutral);
+    neutral->choose(neutral->view().entry, "what_about_urquan_2");
+    finishToMenu(*neutral);
+    neutral->choose(neutral->view().entry, "what_about_you_1");
+    BOOST_TEST(state.fields.at("UTWIG_WAR_NEWS") == 1);
 }
