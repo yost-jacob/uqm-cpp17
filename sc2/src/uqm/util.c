@@ -16,6 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/tasklib.h"
+#include "libs/threadlib.h"
 #include "controls.h"
 #include "util.h"
 #include "setup.h"

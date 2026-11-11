@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/threadlib.h"
 #include "uqm/planet_render_legacy.hpp"
 #include "../system_runtime.hpp"
 #include "../world_legacy.hpp"
@@ -969,7 +970,7 @@ IP_frame(SOLARSYS_STATE &system)
 
 	SetContext (SpaceContext);
 
-	GameClockTick ();
+	system.worlds->session->clock().tick();
 	ProcessShipControls(system);
 	
 	locChange = CheckShipLocation(system, &newRadius);

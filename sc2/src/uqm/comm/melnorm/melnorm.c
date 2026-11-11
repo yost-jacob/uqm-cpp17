@@ -17,6 +17,7 @@
  */
 
 #include "../commall.h"
+#include "libs/threadlib.h"
 #include "resinst.h"
 #include "strings.h"
 

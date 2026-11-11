@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/threadlib.h"
 #include "conversation.hpp"
 #include "game_state.hpp"
 #include "mode_rendering.hpp"

@@ -17,6 +17,7 @@
  */
 
 #include <assert.h>
+#include <stdlib.h>
 
 #include "save.h"
 
@@ -285,31 +286,20 @@ SaveEncounters (uio_Stream *fh)
 static void
 SaveEvents (uio_Stream *fh)
 {
-	COUNT num_links;
-	HEVENT hEvent;
-	num_links = CountLinks (&GLOBAL (GameClock.event_q));
-	if (num_links == 0)
-		return;
-	write_32 (fh, EVENTS_TAG);
-	write_32 (fh, num_links * 5); /* Event chunks are five bytes each */
-
-	hEvent = GetHeadLink (&GLOBAL (GameClock.event_q));
-	while (num_links--)
-	{
-		HEVENT hNextEvent;
-		EVENT *EventPtr;
-
-		LockEvent (hEvent, &EventPtr);
-		hNextEvent = GetSuccEvent (EventPtr);
-
-		write_8   (fh, EventPtr->day_index);
-		write_8   (fh, EventPtr->month_index);
-		write_16  (fh, EventPtr->year_index);
-		write_8   (fh, EventPtr->func_index);
-
-		UnlockEvent (hEvent);
-		hEvent = hNextEvent;
-	}
+    const size_t count = CampaignEventCount();
+    size_t i;
+    if (!count) return;
+    write_32 (fh, EVENTS_TAG);
+    write_32 (fh, count * 5);
+    for (i = 0; i < count; ++i)
+    {
+        EVENT event;
+        if (!ReadCampaignEvent(i, &event)) abort();
+        write_8 (fh, event.day_index);
+        write_8 (fh, event.month_index);
+        write_16 (fh, event.year_index);
+        write_8 (fh, event.func_index);
+    }
 }
 
 /* The clock state is folded in with the game state chunk. */
@@ -486,9 +476,9 @@ PrepareSummary (SUMMARY_DESC *SummPtr, const char *name)
 			| (GET_GAME_STATE (IMPROVED_LANDER_SHOT) << (4 + 2))
 			| ((GET_GAME_STATE (CHMMR_BOMB_STATE) < 2 ? 0 : 1) << (4 + 3));
 
-	SummPtr->day_index = GLOBAL (GameClock.day_index);
-	SummPtr->month_index = GLOBAL (GameClock.month_index);
-	SummPtr->year_index = GLOBAL (GameClock.year_index);
+	SummPtr->day_index = GetCampaignClockState().day_index;
+	SummPtr->month_index = GetCampaignClockState().month_index;
+	SummPtr->year_index = GetCampaignClockState().year_index;
 	SummPtr->SaveName[SAVE_NAME_SIZE-1] = 0;
 	strncpy (SummPtr->SaveName, name, SAVE_NAME_SIZE-1);
 }
@@ -749,6 +739,7 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 		write_32 (out_fp, SAVEFILE_TAG);
 
 		ExportPlayerTravelPosition ();
+		ExportCampaignClock ();
 		PrepareSummary (SummPtr, name);
 		SaveSummary (SummPtr, out_fp);
 

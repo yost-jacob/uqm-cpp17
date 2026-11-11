@@ -1795,7 +1795,7 @@ void HyperSpaceNavigation::run(GameSession &session) {
     runSpaceNavigation(engine_, [this] { frame(); });
 }
 void HyperSpaceNavigation::frame() {
-    GameClockTick();
+    clock_.tick();
     auto counter = story_.read(uqm::StoryCounter::ArilouSpaceCounter);
     if (story_.read(uqm::StoryFlag::ArilouSpace) == OPENING) {
         if (counter < 9) ++counter;

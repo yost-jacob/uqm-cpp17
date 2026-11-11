@@ -273,15 +273,13 @@ LoadEncounter (ENCOUNTER *EncounterPtr, void *fh)
 	read_32s (fh, &EncounterPtr->log_y);
 }
 
-static void
+static BOOLEAN
 LoadEvent (EVENT *EventPtr, void *fh)
 {
-	EventPtr->pred = 0;
-	EventPtr->succ = 0;
-	read_8   (fh, &EventPtr->day_index);
-	read_8   (fh, &EventPtr->month_index);
-	read_16  (fh, &EventPtr->year_index);
-	read_8   (fh, &EventPtr->func_index);
+    return (read_8(fh, &EventPtr->day_index) == 1
+        && read_8(fh, &EventPtr->month_index) == 1
+        && read_16(fh, &EventPtr->year_index) == 1
+        && read_8(fh, &EventPtr->func_index) == 1) ? TRUE : FALSE;
 }
 
 static void
@@ -640,7 +638,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 
 	(*GetPlayerSISState()) = SummPtr->SS;
 
-	ReinitQueue (&GLOBAL (GameClock.event_q));
+	ClearCampaignEvents ();
 	ReinitQueue (&GLOBAL (encounter_q));
 	ReinitQueue (&GLOBAL (ip_group_q));
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
@@ -654,6 +652,11 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 		return FALSE;
 	}
 	ImportPlayerTravelPosition ();
+    if (!ImportCampaignClock ())
+    {
+        res_CloseResFile (in_fp);
+        return FALSE;
+    }
 	NextActivity = GLOBAL (CurrentActivity);
 	GLOBAL (CurrentActivity) = Activity;
 
@@ -694,19 +697,25 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 			}
 			break;
 		case EVENTS_TAG:
+            if (chunkSize % 5 != 0)
+            {
+                res_CloseResFile (in_fp);
+                return FALSE;
+            }
 			num_links = chunkSize / 5;
 #ifdef DEBUG_LOAD
 			log_add (log_Debug, "EVENTS:");
 #endif /* DEBUG_LOAD */
 			while (num_links--)
 			{
-				HEVENT hEvent;
-				EVENT *EventPtr;
+				EVENT event = {0};
+				EVENT *EventPtr = &event;
 
-				hEvent = AllocEvent ();
-				LockEvent (hEvent, &EventPtr);
-
-				LoadEvent (EventPtr, in_fp);
+				if (!LoadEvent (EventPtr, in_fp) || !RestoreCampaignEvent(EventPtr))
+                {
+                    res_CloseResFile (in_fp);
+                    return FALSE;
+                }
 
 #ifdef DEBUG_LOAD
 				log_add (log_Debug, "\t%u/%u/%u -- %u",
@@ -715,8 +724,6 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 						 EventPtr->year_index,
 						 EventPtr->func_index);
 #endif /* DEBUG_LOAD */
-				UnlockEvent (hEvent);
-				PutEvent (hEvent);
 			}
 			break;
 		case STAR_TAG:

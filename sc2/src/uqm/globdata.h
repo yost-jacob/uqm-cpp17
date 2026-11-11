@@ -926,7 +926,7 @@ typedef struct
 	PRIMITIVE *DisplayArray;
 	ACTIVITY CurrentActivity;
 
-	CLOCK_STATE GameClock;
+	CLOCK_STATE GameClock; // Save-format projection only; live clock is session-owned.
 
 	POINT autopilot;
 	POINT ip_location; // Save-format projection only; live state is player-owned.

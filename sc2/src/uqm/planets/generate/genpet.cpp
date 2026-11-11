@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/threadlib.h"
 #include "genall.h"
 #include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"

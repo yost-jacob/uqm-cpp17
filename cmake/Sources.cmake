@@ -162,7 +162,8 @@ set(UQM_SOURCES
     sc2/src/uqm/border.c
     sc2/src/uqm/build.c
     sc2/src/uqm/cleanup.c
-    sc2/src/uqm/clock.c
+    sc2/src/uqm/campaign_clock.cpp
+    sc2/src/uqm/campaign_clock_c.cpp
     sc2/src/uqm/cnctdlg.c
     sc2/src/uqm/collide.cpp
     sc2/src/uqm/conversation_state.cpp

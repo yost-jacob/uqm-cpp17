@@ -35,7 +35,6 @@
 #include "races.h"
 #include "grpinfo.h"
 #include "encount.h"
-#include "clock.h"
 #include "master.h"
 
 struct QueueStorage {
@@ -44,7 +43,7 @@ struct QueueStorage {
     std::variant<std::vector<ELEMENT>, std::vector<STARSHIP>,
             std::vector<uqm::Ship>, std::vector<FLEET_INFO>,
             std::vector<IP_GROUP>, std::vector<ENCOUNTER>,
-            std::vector<EVENT>, std::vector<MASTER_SHIP_INFO>> objects;
+            std::vector<MASTER_SHIP_INFO>> objects;
     std::vector<HLINK> free;
     std::vector<std::unique_ptr<uqm::combat::CombatEntity>> entities;
     std::vector<std::uint64_t> generations;
@@ -79,7 +78,6 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
         case QUEUE_FLEET_INFO: pool->objects.emplace<std::vector<FLEET_INFO>>(capacity); break;
         case QUEUE_IP_GROUP: pool->objects.emplace<std::vector<IP_GROUP>>(capacity); break;
         case QUEUE_ENCOUNTER: pool->objects.emplace<std::vector<ENCOUNTER>>(capacity); break;
-        case QUEUE_EVENT: pool->objects.emplace<std::vector<EVENT>>(capacity); break;
         case QUEUE_MASTER_SHIP: pool->objects.emplace<std::vector<MASTER_SHIP_INFO>>(capacity); break;
         default: std::terminate();
     }

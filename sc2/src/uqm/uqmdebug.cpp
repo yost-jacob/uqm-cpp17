@@ -1,3 +1,5 @@
+#include "libs/threadlib.h"
+#include "game_state.hpp"
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -152,48 +154,19 @@ debugKeyPressed (void)
 // Fast forwards to the next event.
 // If skipHEE is set, HYPERSPACE_ENCOUNTER_EVENTs are skipped.
 // Must be called from the Starcon2Main thread.
-// TODO: LockGameClock may be removed since it is only
-//   supposed to be called synchronously wrt the game logic thread.
 void
 forwardToNextEvent (BOOLEAN skipHEE)
 {
-	HEVENT hEvent;
-	EVENT *EventPtr;
-	COUNT year, month, day;
-			// time of next event
-	BOOLEAN done;
-
-	if (!GameClockRunning ())
-		return;
-
-	LockGameClock ();
-
-	done = skipHEE ? FALSE : TRUE;
-	do {
-		hEvent = GetHeadEvent ();
-		if (hEvent == 0)
-			return;
-		LockEvent (hEvent, &EventPtr);
-		if (EventPtr->func_index != HYPERSPACE_ENCOUNTER_EVENT)
-			done = TRUE;
-		year = EventPtr->year_index;
-		month = EventPtr->month_index;
-		day = EventPtr->day_index;
-		UnlockEvent (hEvent);
-
-		for (;;) {
-			if (GLOBAL (GameClock.year_index) > year ||
-					(GLOBAL (GameClock.year_index) == year &&
-					(GLOBAL (GameClock.month_index) > month ||
-					(GLOBAL (GameClock.month_index) == month &&
-					GLOBAL (GameClock.day_index) >= day))))
-				break;
-
-			MoveGameClockDays (1);
-		}
-	} while (!done);
-
-	UnlockGameClock ();
+    auto &clock = uqm::gameSession().clock();
+    std::lock_guard guard(clock);
+    if (!clock.running()) return;
+    for (;;) {
+        const auto events = clock.events();
+        if (events.empty()) return;
+        const auto next = events.front();
+        while (clock.date() < next.date) clock.advance(1);
+        if (!skipHEE || next.event != uqm::CampaignEvent::HyperspaceEncounter) return;
+    }
 }
 
 const char *
@@ -242,13 +215,6 @@ eventName (BYTE func_index)
 	}
 }
 
-static void
-dumpEventCallback (LINK *link, void *arg)
-{
-	FILE *out = (FILE *) arg;
-	dumpEvent (out, (const EVENT *)link);
-}
-
 void
 dumpEvent (FILE *out, const EVENT *eventPtr)
 {
@@ -262,9 +228,11 @@ dumpEvent (FILE *out, const EVENT *eventPtr)
 void
 dumpEvents (FILE *out)
 {
-	LockGameClock ();
-	ForAllLinks (&GLOBAL (GameClock.event_q), dumpEventCallback, out);
-	UnlockGameClock ();
+    for (const auto &entry : uqm::gameSession().clock().events()) {
+        const EVENT event{static_cast<BYTE>(entry.date.day), static_cast<BYTE>(entry.date.month),
+                          static_cast<COUNT>(entry.date.year), static_cast<BYTE>(entry.event)};
+        dumpEvent(out, &event);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -605,7 +573,6 @@ forAllMoons (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 ////////////////////////////////////////////////////////////////////////////
 
 // Must be called from the Starcon2Main thread.
-// TODO: LockGameClock may be removed
 void
 UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
 {
@@ -618,7 +585,7 @@ UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
 			&& universeRecurseArg->moonFunc == NULL)
 		return;
 	
-	LockGameClock ();
+    std::lock_guard clockGuard(uqm::gameSession().clock());
 	//TFB_DEBUG_HALT = 1;
 	savedActivity = GLOBAL (CurrentActivity);
 	disableInteractivity = TRUE;
@@ -627,7 +594,6 @@ UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
 	
 	disableInteractivity = FALSE;
 	GLOBAL (CurrentActivity) = savedActivity;
-	UnlockGameClock ();
 }
 
 static void

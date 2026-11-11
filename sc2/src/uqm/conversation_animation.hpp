@@ -1,5 +1,6 @@
 #ifndef UQM_CONVERSATION_ANIMATION_HPP_
 #define UQM_CONVERSATION_ANIMATION_HPP_
+#include "libs/timelib.h"
 #include "commanim.h"
 #include "globdata.h"
 #include <array>

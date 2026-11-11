@@ -430,19 +430,17 @@ LoadEncounter (ENCOUNTER *EncounterPtr, DECODE_REF fh)
 	cread_32s (fh, &EncounterPtr->log_y);
 }
 
-static void
+static BOOLEAN
 LoadEvent (EVENT *EventPtr, DECODE_REF fh)
 {
-	cread_ptr (fh); /* useless ptr; HEVENT pred */
-	EventPtr->pred = 0;
-	cread_ptr (fh); /* useless ptr; HEVENT succ */
-	EventPtr->succ = 0;
-	cread_8   (fh, &EventPtr->day_index);
-	cread_8   (fh, &EventPtr->month_index);
-	cread_16  (fh, &EventPtr->year_index);
-	cread_8   (fh, &EventPtr->func_index);
-	cread_8   (fh, NULL); /* padding */
-	cread_16  (fh, NULL); /* padding */
+    return (cread_ptr(fh) == 1
+        && cread_ptr(fh) == 1
+        && cread_8(fh, &EventPtr->day_index) == 1
+        && cread_8(fh, &EventPtr->month_index) == 1
+        && cread_16(fh, &EventPtr->year_index) == 1
+        && cread_8(fh, &EventPtr->func_index) == 1
+        && cread_8(fh, NULL) == 1
+        && cread_16(fh, NULL) == 1) ? TRUE : FALSE;
 }
 
 static void
@@ -478,7 +476,7 @@ LoadClockState (CLOCK_STATE *ClockPtr, DECODE_REF fh)
 	cread_ptr (fh); /* not loading ptr; Task clock_task */
 	cread_32  (fh, NULL); /* not loading; DWORD TimeCounter */
 
-	DummyLoadQueue (&ClockPtr->event_q, fh);
+	DummyLoadQueue (NULL, fh); /* Obsolete event-pool representation. */
 }
 
 static void
@@ -662,7 +660,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 		return FALSE;
 	}
 
-	ReinitQueue (&GLOBAL (GameClock.event_q));
+	ClearCampaignEvents ();
 	ReinitQueue (&GLOBAL (encounter_q));
 	ReinitQueue (&GLOBAL (ip_group_q));
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
@@ -672,6 +670,12 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	Activity = GLOBAL (CurrentActivity);
 	LoadGameState (&GlobData.Game_state, fh);
 	ImportPlayerTravelPosition ();
+    if (!ImportCampaignClock ())
+    {
+        cclose (fh);
+        res_CloseResFile (in_fp);
+        return FALSE;
+    }
 	NextActivity = GLOBAL (CurrentActivity);
 	GLOBAL (CurrentActivity) = Activity;
 
@@ -705,13 +709,15 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 #endif /* DEBUG_LOAD */
 		while (num_links--)
 		{
-			HEVENT hEvent;
-			EVENT *EventPtr;
+			EVENT event = {0};
+			EVENT *EventPtr = &event;
 
-			hEvent = AllocEvent ();
-			LockEvent (hEvent, &EventPtr);
-
-			LoadEvent (EventPtr, fh);
+			if (!LoadEvent (EventPtr, fh) || !RestoreCampaignEvent(EventPtr))
+                {
+                    cclose (fh);
+                    res_CloseResFile (in_fp);
+                    return FALSE;
+                }
 
 #ifdef DEBUG_LOAD
 		log_add (log_Debug, "\t%u/%u/%u -- %u",
@@ -720,8 +726,6 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 				EventPtr->year_index,
 				EventPtr->func_index);
 #endif /* DEBUG_LOAD */
-			UnlockEvent (hEvent);
-			PutEvent (hEvent);
 		}
 	}
 

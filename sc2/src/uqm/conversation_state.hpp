@@ -4,12 +4,13 @@
 namespace uqm {
 class PlayerEntity;
 class StoryState;
+class CampaignClock;
 // Borrow the active session's player for one visit. Story reads are const;
 // native fleet/event adapters still require that campaign's C binding to be active.
 class CampaignDialogueState final : public dialogue::LegacyTurnState {
   public:
     using Report = std::function<dialogue::Result(const std::string &, const dialogue::Json &)>;
-    CampaignDialogueState(PlayerEntity &, std::string, Callback, Report, dialogue::Json);
+    CampaignDialogueState(PlayerEntity &, CampaignClock &, std::string, Callback, Report, dialogue::Json);
     dialogue::Json read(const std::string &, const std::string &) const override;
     dialogue::Result set(const std::string &, const std::string &, const dialogue::Json &) override;
     dialogue::Result setOutcome(const std::string &) override;
@@ -39,6 +40,7 @@ class CampaignDialogueState final : public dialogue::LegacyTurnState {
   private:
     PlayerEntity &player_;
     StoryState &story_;
+    CampaignClock &clock_;
     Report report_;
     const dialogue::Json context_;
 };

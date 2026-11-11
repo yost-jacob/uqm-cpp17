@@ -16,6 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/tasklib.h"
+#include "libs/threadlib.h"
 #include "../commall.h"
 #include "../comandr/resinst.h"
 #include "strings.h"
@@ -1346,11 +1348,11 @@ CheckTiming (COUNT month_index, COUNT day_index)
 	year_index += (month_index - 1) / 12;
 	month_index = ((month_index - 1) % 12) + 1;
 
-	return (year_index < GLOBAL (GameClock.year_index)
-			|| (year_index == GLOBAL (GameClock.year_index)
-			&& (month_index < GLOBAL (GameClock.month_index)
-			|| (month_index == GLOBAL (GameClock.month_index)
-			&& day_index < GLOBAL (GameClock.day_index)))));
+	return (year_index < GetCampaignClockState().year_index
+			|| (year_index == GetCampaignClockState().year_index
+			&& (month_index < GetCampaignClockState().month_index
+			|| (month_index == GetCampaignClockState().month_index
+			&& day_index < GetCampaignClockState().day_index))));
 }
 
 static void
@@ -1658,9 +1660,9 @@ NormalStarbase (RESPONSE_REF R)
 			NPCPhrase (STARBASE_IS_READY_C);
 			DeltaSISGauges (0, 0, 2500);
 			SET_GAME_STATE (STARBASE_MONTH,
-					GLOBAL (GameClock.month_index));
+					GetCampaignClockState().month_index);
 			SET_GAME_STATE (STARBASE_DAY,
-					GLOBAL (GameClock.day_index));
+					GetCampaignClockState().day_index);
 		}
 		else if (GET_GAME_STATE (STARBASE_VISITED))
 		{

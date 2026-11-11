@@ -19,6 +19,7 @@
 // This file handles loading of teams, but the UI and the actual loading.
 
 #define MELEESETUP_INTERNAL
+#include "libs/threadlib.h"
 #include "melee.h"
 
 #include "../controls.h"

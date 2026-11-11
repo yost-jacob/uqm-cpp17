@@ -18,6 +18,7 @@
 
 #ifdef NETPLAY
 
+#include "libs/threadlib.h"
 #include "cnctdlg.h"
 #include "controls.h"
 #include "colors.h"

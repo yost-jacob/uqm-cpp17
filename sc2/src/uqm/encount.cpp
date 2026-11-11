@@ -1,3 +1,4 @@
+#include "libs/threadlib.h"
 #include "game_data.hpp"
 //Copyright Paul Reiche, Fred Ford. 1992-2002
 

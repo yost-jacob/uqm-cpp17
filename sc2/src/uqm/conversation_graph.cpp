@@ -94,7 +94,7 @@ void ConversationRuntime::loadGraph() {
             }
         }
         graphState_ = std::make_unique<CampaignDialogueState>(
-            session_.player(), definition.at("id").get<std::string>(),
+            session_.player(), session_.clock(), definition.at("id").get<std::string>(),
             [this](std::optional<std::size_t> selection) { return runNativeTurn(selection); },
             [this](const std::string &report,
                    const dialogue::Json &parameters) -> dialogue::Result {
@@ -125,11 +125,11 @@ void ConversationRuntime::loadGraph() {
                 {"cyborg_enabled", (GLOBAL(glob_flags) & CYBORG_ENABLED) != 0},
                 {"using_speech", usingSpeech != FALSE},
                 {"has_npc_ships", GetHeadLink(&GLOBAL(npc_built_ship_q)) != nullptr},
-                {"calendar_campaign_year", GLOBAL(GameClock.year_index) - START_YEAR},
+                {"calendar_campaign_year", static_cast<int>(session_.clock().date().year) - START_YEAR},
                 {"years_to_kohrah_victory", YEARS_TO_KOHRAH_VICTORY},
                 {"thraddash_body_threshold", THRADDASH_BODY_THRESHOLD},
-                {"calendar_month", GLOBAL(GameClock.month_index)},
-                {"calendar_day", GLOBAL(GameClock.day_index)},
+                {"calendar_month", session_.clock().date().month},
+                {"calendar_day", session_.clock().date().day},
                 {"at_samatra",
                  LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY &&
                      GLOBAL(BattleGroupRef) != 0 &&

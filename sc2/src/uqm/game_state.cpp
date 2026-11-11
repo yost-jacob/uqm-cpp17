@@ -291,7 +291,16 @@ const PlayerEntity &GameState::player(PlayerId id) const {
     return player_;
 }
 GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player, std::uint32_t seed)
-    : Session(RuntimeKind::Campaign, seed), state_(std::move(state)), player_(player) {
+    : Session(RuntimeKind::Campaign, seed),
+      clock_([this](CampaignEvent event) {
+          auto view = bindingView();
+          detail::LegacyRuntimeBinding binding{view};
+          EventHandler(static_cast<BYTE>(event));
+      }, [this] {
+          auto view = bindingView();
+          detail::LegacyRuntimeBinding binding{view};
+          DrawStatusMessage(nullptr);
+      }), state_(std::move(state)), player_(player) {
     if (!state_)
         throw std::invalid_argument("session requires game state");
     state_->player(player_); // Validate binding now, not at the first interaction.
