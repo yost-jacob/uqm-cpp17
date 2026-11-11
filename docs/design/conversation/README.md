@@ -5,7 +5,8 @@ Each conversation page contains its actual lifecycle entry points, a handler
 graph, response edges and their conditions, dialogue text, operations and state
 updates, and the exact decision bodies with links to source lines.
 
-For the separate future design discussion, see [proposed conversation model](model.md).
+For the proposed replacement, see the [conversation model](model.md) and the
+[standalone C++17 engine prototype, verb vocabulary, Hayes and Melnorme JSON](engine/README.md).
 For current ownership and mode integration, see [conversation child mode](../conversation-mode.md).
 
 ## How to read the graphs

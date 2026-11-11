@@ -1,148 +1,129 @@
-# Conversation graph design
+# Proposed conversation engine
 
-This records the proposed conversation model. It is a design document, not an
-implemented engine or a settled JSON schema. The existing
-[conversation child mode](../conversation-mode.md) still runs the legacy alien
-scripts. We will design the C++ abstractions and general state operations before
-choosing how to serialize their definitions.
+The [standalone C++17 design prototype](engine/README.md) implements graph loading,
+bound conditions/actions and traversal. It is outside the game build. The
+[current conversation catalog](README.md) remains the source-backed record of
+existing behavior; prototype JSON does not yet replace those scripts.
 
-## Nodes and response edges
+## Three functional nodes
 
-A conversation is a directed graph. A node represents what the other character
-says and does. Its outgoing edges are the player's possible responses.
+- **Dialogue:** select one text/animation/audio variant from ordered read-only
+  conditions, then offer eligible player responses or continue after playback.
+- **Decision:** silently check state or a stored action result and follow the
+  first matching edge, with an optional fallback; no matching branch without one throws.
+- **Action:** silently invoke an operation once, retain its result, then continue.
 
-| Part | Contents |
-| --- | --- |
-| Node | Dialogue text, an animation composite, optional voice/audio, actions, and outgoing response edges |
-| Response edge | Player response text, an optional availability condition, and a destination node |
-| Entry selection | Rules that choose a starting node from the encounter circumstances and current game state |
-| Running conversation | Current node, playback progress, the available-response menu, and any temporary history |
-
-Selecting a response follows its edge to another node. That destination can
-perform an action, present more dialogue, and offer another response menu.
-Actions interact with story, player, or galaxy state through general game
-operations. Recruitment, cargo transfers, and story changes should use the same
-operations when initiated elsewhere in the game.
-
-The examples below illustrate structure; they are not an audit of a particular
-alien's existing dialogue.
+An end marker returns an outcome to the enclosing encounter. Combat remains that
+encounter's responsibility. Both decision and action nodes are normally invisible
+and traverse immediately; operations requiring visible progress need explicit
+presentation/handoff rather than an accidental wait inside a predicate.
 
 ```mermaid
 flowchart TD
-    Greeting["Greeting<br/>dialogue + presentation"]
-    History["Explain history<br/>dialogue + presentation"]
-    Offer["Offer assistance<br/>dialogue + presentation"]
-    Recruit["Welcome aboard<br/>action: recruit ship<br/>dialogue + presentation"]
-    Farewell["Farewell<br/>dialogue + presentation"]
-    Finished["Return conversation outcome to encounter"]
-
-    Greeting -->|"Tell me your history"| History
-    History -->|"What else can you tell me?"| Greeting
-    Greeting -->|"Can you help us? — if eligible"| Offer
-    Offer -->|"Join us — if fleet has room"| Recruit
-    Offer -->|"Maybe later"| Greeting
-    Recruit -->|"Goodbye"| Farewell
-    Greeting -->|"Goodbye"| Farewell
-    Farewell -->|"Automatic completion; no response required"| Finished
+    Start["Initialization decision"] --> Greeting["Dialogue variant"]
+    Greeting -->|selected response| Eligibility["Silent read-only decision"]
+    Eligibility --> Action["Silent action: attempt purchase"]
+    Eligibility --> Decline["Dialogue: unavailable"]
+    Action --> Outcome["Decision on saved result"]
+    Outcome --> Success["Dialogue: success"]
+    Outcome --> Failure["Dialogue: insufficient credit / capacity"]
+    Success --> Greeting
+    Failure --> Greeting
+    Greeting --> End["End outcome returned to encounter"]
 ```
 
-The loop is intentional. Returning to a topic does not consume it. A response
-remains available unless its explicit condition becomes false. Some nodes need
-no player response: a farewell can finish the conversation, and a monologue can
-continue automatically. These automatic continuations are distinct from response
-edges.
+## Bound vocabulary
 
-## Multiple entry points and shared branches
+A master VerbFactory constructs separate query/condition and action callables.
+Private binding helpers select an ordinary native accessor/operation and use
+`std::bind` to retain its arguments. Runtime traversal uses `std::invoke`.
+Conditions are read-only and may be reevaluated. Actions can return failure,
+partial-success or quote data; decision nodes inspect that saved result without
+executing the operation a second time.
 
-Initialization can choose among several entry points. This can feel like several
-conversation trees while still using one graph with shared topics and endings.
-We do not need to duplicate an entire tree for every initial circumstance.
+There are [21 consolidated domain queries and 24 actions](engine/verbs.md), plus
+typed state reads, comparisons, boolean composition and bounded integer arithmetic.
+The [legacy mapping](engine/legacy-verbs.json) classifies every active call site
+across all 27 scripts. Routing becomes edges; packed encodings become native
+state adapters; input/drawing/playback become presentation service work.
+
+Factory overload binding supports ordinary ships with generated defaults,
+explicit captain/crew overrides and bulk gifts. Defaults are generated when the
+bound action executes, not when the graph is loaded. The state owner enforces
+normal fleet, cargo, trade and story rules.
+
+## Data and runtime ownership
 
 ```mermaid
-flowchart TD
-    Start["Initialize conversation"] --> Select["Select entry using current state"]
-    Select -->|"Hostile encounter"| Threat["Threat"]
-    Select -->|"First meeting"| Introduction["Introduction"]
-    Select -->|"Returning with requested item"| Delivery["Discuss delivery"]
-    Select -->|"Otherwise"| Familiar["Familiar greeting"]
-    Introduction -->|"Continue"| Topics["Shared topic menu"]
-    Familiar -->|"Ask a question"| Topics
-    Delivery -->|"Ask a question"| Topics
-    Topics -->|"Ask about history"| History["Shared history node"]
-    History -->|"Another question"| Topics
-    Topics -->|"Goodbye"| Goodbye["Shared farewell"]
-    Threat -->|"Automatic completion"| Outcome["Return encounter outcome"]
-    Goodbye -->|"Automatic completion"| Outcome
+classDiagram
+    ConversationMode *-- Conversation
+    ConversationMode *-- Presentation
+    Conversation --> State : borrowed session / player / galaxy adapter
+    Conversation *-- Memory : local values / action results
+    Conversation *-- ConversationGraph
+    ConversationGraph *-- Node : contiguous vector ownership
+    Node --> Node : non-owning outgoing connections
+    Node <.. DialogueNode
+    Node <.. DecisionNode
+    Node <.. ActionNode
+    Node <.. EndNode
+    DialogueNode *-- ResponseEdge
+    ResponseEdge --> Condition : bound read-only callable
+    ActionNode --> Action : bound mutating callable
+    VerbFactory ..> Condition : constructs at load
+    VerbFactory ..> Action : constructs at load
+    Presentation --> AssetCache : session-owned shared assets
 ```
 
-Entry-rule precedence must be explicit when several rules match. The example
-labels describe possible circumstances rather than a finalized selection API.
-Entry selection chooses where to begin; response conditions are evaluated again
-as the conversation proceeds.
+Each prototype Node contains a `std::variant` of the four simple records, not a
+second class hierarchy. Node IDs resolve to direct node pointers at load. Conversation is nonmovable
+because its callables borrow its stable local memory. The session's state and
+asset services outlive the conversation and presenter.
 
-## Conditional response menus
+The dialogue definition specifies presentation. The running owner retains assets,
+composites and playback across nodes. A redraw or resume uses the selected view;
+it does not restart audio, reroll a variant, or run an action. Entry tokens reject
+stale playback callbacks and stale menu selections. Presentation callbacks execute
+on the gameplay thread; query constness does not provide synchronization.
 
-Conditions are read-only queries of the current state. When a node presents its
-response menu, the engine evaluates its outgoing response edges and includes the
-ones whose conditions pass. An unconditional response is always eligible.
+## Responses and repetition
 
-“Pruning” means filtering this visit's menu. It does not delete edges from the
-conversation definition. Returning to the node reevaluates eligibility, so an
-action that changes state can change the next menu.
+Responses contain player text, a condition and a destination. Filtering a menu
+does not remove edges from the definition. Reentering a node reevaluates
+eligibility. Topics may cycle indefinitely; explicit local/story state controls
+pruning when the content requires it.
 
-There is no automatic rule that hides a response after selection. If a topic is
-supposed to disappear, its definition must explicitly express that behavior.
-Permanent facts belong to the appropriate game state. Temporary facts can belong
-to the running conversation when a particular conversation needs them.
+Visit-local response selection history can gray previously selected answers.
+It changes styling only, and says “selected before,” not “all subsequent speech
+was heard.” Persistent cross-visit history is not implemented by this design.
 
-## Optional seen-response styling
+## Concrete design data and limits
 
-Availability and selection history are separate. As an optional presentation
-feature, a response selected before could appear in a muted color while remaining
-selectable. This is a renderer color/style choice; it need not require another
-font asset.
+- [Commander Hayes](engine/examples/commander_hayes.json): first contact and
+  operational starbase, 293 authored nodes and 399 original phrase records.
+- [Melnorme](engine/examples/melnorme.json): introduction, commerce, hostility and
+  rescue, 154 authored nodes and 282 original phrase records, plus market data.
+- [Presentation data](engine/presentation.json): extracted ambient/talk/transition
+  layers and palette/music profiles for Hayes and Melnorme.
+- [Native contracts](engine/native-contracts.md): required query/action behavior,
+  complex report/trade/rescue seams, units, action results, and draft differences.
 
-Tracking selections during the current conversation would be sufficient for an
-initial implementation. Remembering selections across later visits would require
-stable response identifiers and player-owned persistent history. That persistence
-policy is not decided here. “Selected before” also need not mean “all resulting
-dialogue has been heard”; playback and skipping make those different facts.
+The runtime prototype is tested with a test state adapter. Actual native bindings,
+report eligibility, commerce/rescue implementation, media formatting/playback,
+save compatibility and mode integration remain future implementation work. The
+gameplay source and existing content remain unchanged.
 
-## Runtime and presentation responsibilities
+The authored JSON can keep a response, its condition, its action and its result
+routes together. The loader expands this compact interaction into the same silent
+action/decision nodes; the internal graph need not dictate the authoring format.
+See [compact responses](engine/README.md#authoring-a-response-as-one-interaction).
 
-```mermaid
-flowchart TD
-    Encounter["Encounter mode"] --> Mode["ConversationMode"]
-    Mode --> Runtime["Conversation instance<br/>current node / playback / response menu"]
-    Runtime --> Definition["ConversationDefinition<br/>nodes / response edges / entry rules"]
-    Runtime -->|"Read-only conditions"| State["Story / player / galaxy interfaces"]
-    Runtime -->|"Explicit actions"| Operations["General game operations"]
-    Operations --> State
-    Runtime --> Presentation["Presentation services"]
-    Presentation --> Text["Dialogue and response text"]
-    Presentation --> Animation["Animation composite<br/>independently timed sprite layers"]
-    Presentation --> Audio["Optional voice / music / effects"]
-    Runtime -->|"Completion outcome"| Encounter
-```
+## Graph container and current position
 
-ConversationMode owns the running conversation and borrows session state and
-services. The definition describes content; it does not store mutable playback
-state or own a player's state. Animation composites can combine a background,
-talking mouth, blinking eyes, and other independently timed layers.
-
-Action timing must be explicit. Entering a node, finishing dialogue, and selecting
-a response are distinct events. Redrawing a frame or resuming after a child mode
-must not repeat an entry action. Intentionally revisiting a node is a new entry;
-one-time rewards still need explicit state conditions or guarded game operations.
-The exact action hooks remain to be designed.
-
-A conversation can finish with an outcome such as peaceful departure or hostility.
-The enclosing encounter remains responsible for deciding whether to launch combat.
-
-## Next design work
-
-Before defining a file format, trace contrasting existing scripts: a simple story
-exchange, recruitment/trading, repeated visits with counters, and an encounter
-that leads to combat. Use them to establish the condition/action vocabulary and
-C++ interfaces. Named exceptional C++ actions remain an option; we have not chosen
-a general scripting language, expression syntax, or editor format.
+`ConversationGraph` owns nodes in a vector sized once before wiring connections.
+Edges contain direct non-owning node pointers, and `Conversation::current_` follows them directly. `start()`/`begin()`
+identify the entry and `end()` identifies completion. A cursor advances through
+an unconditional connection with `next()` or `++`; responses and decisions select
+an outgoing connection explicitly. Advancing the cursor does not execute a node.
+The session-bound `Conversation` remains responsible for invoking its behavior.
+See [graph ownership and traversal](engine/README.md#graph-ownership-and-traversal).

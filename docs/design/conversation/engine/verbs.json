@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "queries": [
+    {
+      "verb": "fleet.contains",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["race"],
+      "state_accessor": "hasShip",
+      "effect": "read_only"
+    },
+    {
+      "verb": "fleet.slots",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["race"],
+      "state_accessor": "availableSlots",
+      "effect": "read_only"
+    },
+    {
+      "verb": "fleet.count",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["race_or_all"],
+      "state_accessor": "shipCount",
+      "effect": "read_only"
+    },
+    {
+      "verb": "fleet.value",
+      "min_args": 0,
+      "max_args": 0,
+      "arguments": [],
+      "state_accessor": "fleetValue",
+      "effect": "read_only"
+    },
+    {
+      "verb": "galaxy.relationship",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["race"],
+      "state_accessor": "relationship",
+      "effect": "read_only"
+    },
+    {
+      "verb": "galaxy.available",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["race"],
+      "state_accessor": "raceAvailable",
+      "effect": "read_only"
+    },
+    {
+      "verb": "inventory.has",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["item"],
+      "state_accessor": "hasItem",
+      "effect": "read_only"
+    },
+    {
+      "verb": "inventory.quantity",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["resource"],
+      "state_accessor": "quantity",
+      "effect": "read_only"
+    },
+    {
+      "verb": "ship.fuel",
+      "min_args": 0,
+      "max_args": 0,
+      "arguments": [],
+      "state_accessor": "fuel",
+      "effect": "read_only"
+    },
+    {
+      "verb": "ship.fuel_capacity",
+      "min_args": 0,
+      "max_args": 0,
+      "arguments": [],
+      "state_accessor": "fuelCapacity",
+      "effect": "read_only"
+    },
+    {
+      "verb": "currency.balance",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["currency"],
+      "state_accessor": "balance",
+      "effect": "read_only"
+    },
+    {
+      "verb": "ship.equipment_count",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["equipment"],
+      "state_accessor": "equipmentCount",
+      "effect": "read_only"
+    },
+    {
+      "verb": "ship.salvage_value",
+      "min_args": 0,
+      "max_args": 0,
+      "arguments": [],
+      "state_accessor": "salvageValue",
+      "effect": "read_only"
+    },
+    {
+      "verb": "ship.capability",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["profile"],
+      "state_accessor": "capability",
+      "effect": "read_only"
+    },
+    {
+      "verb": "technology.owned",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["technology"],
+      "state_accessor": "hasTechnology",
+      "effect": "read_only"
+    },
+    {
+      "verb": "market.available",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["merchant", "category"],
+      "state_accessor": "marketAvailable",
+      "effect": "read_only"
+    },
+    {
+      "verb": "calendar.reached",
+      "min_args": 4,
+      "max_args": 4,
+      "arguments": ["saved_date", "months", "days", "inclusive"],
+      "state_accessor": "dateReached",
+      "effect": "read_only"
+    },
+    {
+      "verb": "handlers.report_available",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["report"],
+      "state_accessor": "Handlers::reportAvailable",
+      "effect": "read_only"
+    },
+    {
+      "verb": "encounter.read",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["field"],
+      "state_accessor": "encounter",
+      "effect": "read_only"
+    },
+    {
+      "verb": "location.distance",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["location"],
+      "state_accessor": "distanceTo",
+      "effect": "read_only"
+    },
+    {
+      "verb": "ship.free_fuel",
+      "min_args": 0,
+      "max_args": 0,
+      "arguments": [],
+      "state_accessor": "fuelCapacity - fuel",
+      "effect": "read_only"
+    }
+  ],
+  "actions": [
+    {
+      "verb": "state.set",
+      "min_args": 3,
+      "max_args": 3,
+      "arguments": ["scope", "key", "value"],
+      "state_accessor": "set / local memory",
+      "effect": "mutating"
+    },
+    {
+      "verb": "state.add",
+      "min_args": 3,
+      "max_args": 3,
+      "arguments": ["scope", "key", "signed_delta"],
+      "state_accessor": "set / local memory",
+      "effect": "mutating"
+    },
+    {
+      "verb": "state.bits",
+      "min_args": 4,
+      "max_args": 4,
+      "arguments": ["scope", "key", "set_or_clear", "mask"],
+      "state_accessor": "set / local memory",
+      "effect": "mutating"
+    },
+    {
+      "verb": "sequence.next",
+      "min_args": 4,
+      "max_args": 5,
+      "arguments": ["scope", "key", "items", "repeat_last_or_cycle", "optional_base"],
+      "state_accessor": "set / local memory",
+      "effect": "mutating"
+    },
+    {
+      "verb": "fleet.give",
+      "min_args": 1,
+      "max_args": 3,
+      "arguments": ["race [, count] OR race, captain, crew"],
+      "state_accessor": "createShip / giveShips",
+      "effect": "mutating"
+    },
+    {
+      "verb": "fleet.take",
+      "min_args": 1,
+      "max_args": 2,
+      "arguments": ["race [, count]"],
+      "state_accessor": "removeShips",
+      "effect": "mutating"
+    },
+    {
+      "verb": "fleet.set_crew",
+      "min_args": 3,
+      "max_args": 3,
+      "arguments": ["ship_id", "crew", "captain"],
+      "state_accessor": "setShipCrew",
+      "effect": "mutating"
+    },
+    {
+      "verb": "inventory.transfer",
+      "min_args": 1,
+      "max_args": 2,
+      "arguments": ["item [, signed_quantity]"],
+      "state_accessor": "transferItem",
+      "effect": "mutating"
+    },
+    {
+      "verb": "ship.adjust",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["property", "signed_quantity"],
+      "state_accessor": "adjustShip",
+      "effect": "mutating"
+    },
+    {
+      "verb": "ship.configure",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["profile", "configuration"],
+      "state_accessor": "configureShip",
+      "effect": "mutating"
+    },
+    {
+      "verb": "currency.adjust",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["currency", "signed_amount"],
+      "state_accessor": "adjustCurrency",
+      "effect": "mutating"
+    },
+    {
+      "verb": "trade.purchase",
+      "min_args": 3,
+      "max_args": 3,
+      "arguments": ["merchant", "offer", "quantity_or_fill"],
+      "state_accessor": "purchase",
+      "effect": "mutating"
+    },
+    {
+      "verb": "trade.sell",
+      "min_args": 3,
+      "max_args": 3,
+      "arguments": ["merchant", "category", "quantity_or_all"],
+      "state_accessor": "sell",
+      "effect": "mutating"
+    },
+    {
+      "verb": "handlers.prepare_rescue",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["merchant"],
+      "state_accessor": "Handlers::prepareRescue",
+      "effect": "mutating"
+    },
+    {
+      "verb": "handlers.accept_rescue",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["quote_token"],
+      "state_accessor": "Handlers::acceptRescue",
+      "effect": "mutating"
+    },
+    {
+      "verb": "handlers.strip_ship",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["policy"],
+      "state_accessor": "Handlers::stripShip",
+      "effect": "mutating"
+    },
+    {
+      "verb": "technology.grant",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["technology"],
+      "state_accessor": "grantTechnology",
+      "effect": "mutating"
+    },
+    {
+      "verb": "galaxy.set_relationship",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["race", "relationship"],
+      "state_accessor": "setRelationship",
+      "effect": "mutating"
+    },
+    {
+      "verb": "galaxy.reveal",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["race"],
+      "state_accessor": "revealRace",
+      "effect": "mutating"
+    },
+    {
+      "verb": "calendar.schedule",
+      "min_args": 4,
+      "max_args": 4,
+      "arguments": ["event", "months", "days", "years"],
+      "state_accessor": "scheduleEvent",
+      "effect": "mutating"
+    },
+    {
+      "verb": "calendar.remember",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["date_key"],
+      "state_accessor": "rememberDate",
+      "effect": "mutating"
+    },
+    {
+      "verb": "handlers.prepare_report",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["report", "parameters"],
+      "state_accessor": "Handlers::prepareReport",
+      "effect": "mutating"
+    },
+    {
+      "verb": "encounter.set_outcome",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["outcome"],
+      "state_accessor": "setOutcome",
+      "effect": "mutating"
+    },
+    {
+      "verb": "random.draw",
+      "min_args": 1,
+      "max_args": 1,
+      "arguments": ["exclusive_upper_bound"],
+      "state_accessor": "randomBelow",
+      "effect": "mutating"
+    }
+  ],
+  "values": ["get", "literal", "query", "add", "subtract", "multiply", "divide", "mod", "min", "max", "bit_and"],
+  "predicates": ["eq", "ne", "gt", "ge", "lt", "le", "all", "any", "not"]
+}
