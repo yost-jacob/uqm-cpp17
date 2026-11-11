@@ -60,7 +60,7 @@ FRAME Screen;
 FONT StarConFont;
 FONT MicroFont;
 FONT TinyFont;
-QUEUE race_q[NUM_PLAYERS];
+
 FRAME ActivityFrame;
 FRAME StatusFrame;
 FRAME FlagStatFrame;
@@ -192,11 +192,6 @@ InitContexts (void)
 static BOOLEAN
 InitKernel (void)
 {
-	COUNT counter;
-
-	for (counter = 0; counter < NUM_PLAYERS; ++counter)
-		InitQueue (&race_q[counter], MAX_SHIPS_PER_SIDE, QUEUE_STARSHIP);
-
 	StarConFont = LoadFont (STARCON_FONT);
 	if (StarConFont == NULL)
 		return FALSE;

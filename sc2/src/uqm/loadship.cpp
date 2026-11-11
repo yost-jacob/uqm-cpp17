@@ -18,6 +18,7 @@
 
 #include "build.h"
 #include "ship_factory.hpp"
+#include "ship_assets_legacy.hpp"
 #include "nameref.h"
 #include "init.h"
 #include "libs/log.h"
@@ -159,4 +160,9 @@ extern "C" void free_ship(RACE_DESC *descriptor, BOOLEAN iconData, BOOLEAN battl
     std::unique_ptr<uqm::combat::Ship> owner(&uqm::combat::shipFor(*descriptor));
     owner->finish(); // Explicit legacy campaign completion precedes asset release.
     freeAssets(owner->legacyData(), iconData != FALSE, battleData != FALSE);
+}
+
+void uqm::detail::discardLoadedShip(RACE_DESC &descriptor) noexcept {
+    std::unique_ptr<uqm::combat::Ship> owner(&uqm::combat::shipFor(descriptor));
+    freeAssets(owner->legacyData(), true, true);
 }

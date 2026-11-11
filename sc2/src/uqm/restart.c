@@ -254,8 +254,8 @@ RestartMenu (MENU_STATE *pMS)
 {
 	TimeCount TimeOut;
 
-	ReinitQueue (&race_q[0]);
-	ReinitQueue (&race_q[1]);
+	ClearRuntimeShipRoster (0);
+	ClearRuntimeShipRoster (1);
 
 	SetContext (ScreenContext);
 

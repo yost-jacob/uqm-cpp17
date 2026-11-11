@@ -37,7 +37,7 @@ a load does not decode a replacement campaign while these objects remain alive.
 | Exploration | SolarSystemMode owns SolarSystemExploration and native systems; behaviors borrow campaign and catalogue star | Legacy planet/input/render descriptors and process services |
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
-| Campaign combat | CampaignCombatMode borrows the session and campaign; backend scopes temporary sounds, cyborg input and activity | Battle loop, rosters, mechanics and engine resources retain existing ownership |
+| Campaign combat | CampaignCombatMode owns its engine and temporarily takes the encounter roster; backend scopes sounds, cyborg input and activity | C battle driver, participant records, callbacks and presentation services |
 | Persistent escorts | PlayerEntity owns Fleet and native Ship storage; combat binds vessel IDs | C recruitment/UI/save buffers and NPC queue ownership |
 | Lander | Child LanderMode owns LanderVisit with explicit system/campaign borrows | Element callbacks and graphics caches |
 | Session startup | RunGameSession C adapter invokes GameSession::runCampaign | C title loop; definition is in sc2/src/uqm/gameplay_modes.cpp |
@@ -59,7 +59,7 @@ and the [projectile roster migration](projectile-roster.md).
 
 ## Simulation ownership
 
-Each GameMode now owns a SimulationEngine value and its entity queue. The existing update
+Each GameMode now owns a SimulationEngine value, its entity queue and its temporary ship roster. Campaign combat takes the prepared encounter roster and returns it before parent resume. The existing update
 pass, damage, collision response, gravity and target selection execute behind
 engine methods. The dispatcher calls initialize() after construction. C callers borrow the active mode engine through scoped
 adapters; there is no global queue owner. Rendering/audio/input and sprite-based
@@ -91,6 +91,14 @@ See [fleet ownership](fleet-ownership.md) for API and save-format contracts.
 This is the campaign-specific integration step toward #17, not completion of a
 campaign-independent CombatMode. Super Melee and HyperSpace retain their current
 Battle entry paths; HyperSpace uses Battle for navigation rather than combat.
+
+## Compatibility removal sequence
+
+The dependency order and first architecture checkpoint are maintained in
+[compatibility removal plan](compatibility-removal-plan.md). The first increment
+moves runtime ship roster ownership into each engine, with an explicit encounter/
+combat handoff. RNG ownership and seed delivery are the next decision before
+extracting the battle driver.
 
 ## Next steps on this path
 

@@ -72,8 +72,6 @@ UninitKernel (void)
 	DestroyFont (TinyFont);
 	DestroyFont (StarConFont);
 
-	UninitQueue (&race_q[0]);
-	UninitQueue (&race_q[1]);
 
 	ActivityFrame = 0;
 }

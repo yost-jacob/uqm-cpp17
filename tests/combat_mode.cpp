@@ -1,4 +1,5 @@
 #include "uqm/combat_mode.hpp"
+#include "uqm/runtime_ship_roster_legacy.hpp"
 #include "uqm/game_state.hpp"
 #include "uqm/globdata.h"
 #include "uqm/battle.h"
@@ -72,19 +73,30 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
     for (const unsigned action : {0u, 1u, 2u}) {
         uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
         std::vector<int> events;
+        STARSHIP *participant = nullptr;
+        uqm::RuntimeShipRoster *encounterRoster = nullptr;
         struct Encounter final : uqm::GameMode {
             uqm::GameSession &session;
             std::vector<int> &events;
-            Encounter(uqm::GameSession &s, std::vector<int> &e)
-                : GameMode(s.stateOwner(), s.playerId()), session(s), events(e) {}
+            STARSHIP *&participant;
+            uqm::RuntimeShipRoster *&encounterRoster;
+            Encounter(uqm::GameSession &s, std::vector<int> &e, STARSHIP *&p, uqm::RuntimeShipRoster *&roster)
+                : GameMode(s.stateOwner(), s.playerId()), session(s), events(e), participant(p), encounterRoster(roster) {}
             uqm::ModeResult run() override {
                 events.push_back(1);
+                encounterRoster = &engine().shipRoster();
+                auto &queue = uqm::detail::RuntimeRosterAccess::queues(*encounterRoster)[0];
+                auto handle = AllocLink(&queue);
+                participant = static_cast<STARSHIP *>(handle); *participant = {};
+                participant->crew_level = 13; PutQueue(&queue, handle);
                 const auto exit = session.swapGameMode(uqm::createCampaignCombatMode(session));
                 BOOST_TEST(PlayerInput[0] == &originalInput);
                 BOOST_TEST(PlayerControl[0] == (HUMAN_CONTROL | GOOD_RATING));
                 BOOST_TEST(GameSounds == reinterpret_cast<SOUND>(&originalInput));
                 BOOST_TEST(nth_frame == 37u);
                 BOOST_TEST(GLOBAL(CurrentActivity) == IN_INTERPLANETARY);
+                BOOST_TEST(encounterRoster->size(uqm::RosterSide::First) == 1u);
+                BOOST_TEST(participant->crew_level == 9u);
                 events.push_back(4); // Encounter aftermath runs after child teardown.
                 if (exit) return *exit;
                 return uqm::ModeCompleted{};
@@ -98,10 +110,15 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
         session.player().story().set(uqm::StoryFlag::BattleSegue, false);
         combatDriver = [&] {
             BOOST_TEST(session.player().story().read(uqm::StoryFlag::BattleSegue));
+            BOOST_REQUIRE(participant);
+            BOOST_TEST(encounterRoster->size(uqm::RosterSide::First) == 0u);
+            auto &queue = uqm::detail::RuntimeRosterAccess::queues(uqm::simulationEngine().shipRoster())[0];
+            BOOST_TEST(GetHeadLink(&queue) == participant);
+            participant->crew_level = 9;
             if (action == 1) session.requestLoad(2);
             if (action == 2) session.requestMenuExit(uqm::SessionExit::shutdown());
         };
-        const auto exit = session.run(std::make_unique<Encounter>(session, events));
+        const auto exit = session.run(std::make_unique<Encounter>(session, events, participant, encounterRoster));
         const std::vector<int> expected = action ? std::vector<int>{1, 2, 4} : std::vector<int>{1, 2, 3, 4};
         BOOST_CHECK_EQUAL_COLLECTIONS(events.begin(), events.end(), expected.begin(), expected.end());
         BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(action == 1 ? uqm::SessionExitKind::LoadGame : action == 2 ? uqm::SessionExitKind::Shutdown : uqm::SessionExitKind::ReturnToTitle));

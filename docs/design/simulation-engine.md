@@ -3,6 +3,9 @@
 Each GameMode contains a SimulationEngine value member. Combat, HyperSpace and
 solar-system exploration use the same engine implementation with distinct queues.
 Persistent player/story/galaxy state remains on its existing owners.
+Runtime participants now belong to each engine's RuntimeShipRoster. Combat's
+initialization hook takes the encounter's prepared roster and returns it through
+RAII before aftermath; see [compatibility removal plan](compatibility-removal-plan.md).
 
 ```mermaid
 flowchart TD

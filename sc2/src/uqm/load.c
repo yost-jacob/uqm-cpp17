@@ -763,8 +763,8 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	EncounterGroup = 0;
 	EncounterRace = -1;
 
-	ReinitQueue (&race_q[0]);
-	ReinitQueue (&race_q[1]);
+	ClearRuntimeShipRoster (0);
+	ClearRuntimeShipRoster (1);
 	CurStarDescPtr = FindStar (NULL, &SD.star_pt, 0, 0);
 	if (!(NextActivity & START_ENCOUNTER)
 			&& LOBYTE (NextActivity) == IN_INTERPLANETARY)

@@ -210,6 +210,7 @@ set(UQM_SOURCES
     sc2/src/uqm/animation_effect.cpp
     sc2/src/uqm/simulation_targeting.cpp
     sc2/src/uqm/simulation_damage.cpp
+    sc2/src/uqm/runtime_ship_roster.cpp
     sc2/src/uqm/simulation_engine.cpp
     sc2/src/uqm/combat_entity_legacy.cpp
     sc2/src/uqm/projectile.cpp

@@ -142,7 +142,7 @@ uqm::EncounterRuntime::buildBattle(COUNT which_player)
         ? &uqm::detail::FleetAccess::queue(session_->player().fleet())
         : GetShipFragQueueForPlayer(which_player);
 
-	ReinitQueue (&race_q[which_player]);
+	ClearRuntimeShipRoster (which_player);
 	for (hStarShip = GetHeadLink (pQueue);
 			hStarShip != 0; hStarShip = hNextShip)
 	{
@@ -457,8 +457,8 @@ uqm::EncounterRuntime::finish()
 
 	if (story_.read(uqm::StoryFlag::BattleSegue) == 0)
 	{
-		ReinitQueue (&race_q[0]);
-		ReinitQueue (&race_q[1]);
+		ClearRuntimeShipRoster (0);
+		ClearRuntimeShipRoster (1);
 	}
 	else
 	{
@@ -548,7 +548,7 @@ uqm::EncounterRuntime::finish()
 				pQueue = &GLOBAL (npc_built_ship_q);
 			}
 				
-			ReinitQueue (&race_q[(NUM_SIDES - 1) - i]);
+			ClearRuntimeShipRoster ((NUM_SIDES - 1) - i);
 
 			for (hStarShip = GetHeadLink (pQueue); hStarShip;
 					hStarShip = hNextShip)
