@@ -1,0 +1,2700 @@
+{
+  "version": 1,
+  "node_count": 141,
+  "id": "spathi",
+  "resource": "comm.spathi.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native media/lifecycle configuration and post-encounter manner adjustment remain. Pluto topics, Fwiffo recruitment, neutral/friendly/allied branches use graph/state operations."
+  },
+  "phrases": [
+    {
+      "id": "SORRY_ABOUT_THAT",
+      "index": 0,
+      "text": "Attention big, mean, hostile alien vessel hovering overhead in an obvious attack posture:\nThis is Spathi Captain Fwiffo.\nI know you are going to torture me, so let's just get this over with right now.\nThe coordinates of my homeworld, Spathiwa, are 241.6, 368.7\nand the ultra-secret Spathi Cypher, which is known only by me and several billion other Spathi\nis `Huffi-Muffi-Guffi'.\nSorry about that little mistake with your landing vehicle!\nI was so startled when it approached my vessel in a threatening manner that\ner\nmy automated defense systems fired on it when it got too close.\nI hope nobody got hurt!",
+      "voice": "spathi-000.ogg",
+      "original_text_hash": 5629576919969108358
+    },
+    {
+      "id": "identify",
+      "index": 1,
+      "text": "Attention alien vessel: Identify yourself or be destroyed!",
+      "voice": null,
+      "original_text_hash": 8767799227347091625
+    },
+    {
+      "id": "I_FWIFFO",
+      "index": 2,
+      "text": "Of course, of course!\nAs I said, I am Captain Fwiffo of the Spathi voidship StarRunner.\nOur sensors have tracked your entry into this system\nwhich you are no doubt here to conquer\nand while you are certainly welcome to do so we would be greatly appreciative\nif you would please just go away and forget this star system ever existed.\nIf you don't go, it will greatly complicate our master-slave relationship with the Ur-Quan\nwho stationed us here to watch over the Earthlings.",
+      "voice": "spathi-001.ogg",
+      "original_text_hash": 11356356497516302637
+    },
+    {
+      "id": "hi_there",
+      "index": 3,
+      "text": "Hi there friend! We come in peace and mean you no harm.",
+      "voice": null,
+      "original_text_hash": 1785709548014331440
+    },
+    {
+      "id": "ARE_YOU_SURE",
+      "index": 4,
+      "text": "Are you sure?\nBecause your statement is often just a more polite way of saying\n`Attention alien vessel: Identify yourself or be destroyed.'\nIn any event, I am Spathi Captain Fwiffo of the voidship StarRunner\nplaced here in this planetary system as part of the powerful Earthguard star force\nwhich our masters the Ur-Quan established here to make sure the Earthlings don't do anything tricky.",
+      "voice": "spathi-002.ogg",
+      "original_text_hash": 10000352088179008065
+    },
+    {
+      "id": "dont_kill",
+      "index": 5,
+      "text": "Don't kill us!",
+      "voice": null,
+      "original_text_hash": 1522043405095161416
+    },
+    {
+      "id": "we_fight_1",
+      "index": 6,
+      "text": "You attacked our lander -- killed our crew! Prepare to die.",
+      "voice": null,
+      "original_text_hash": 17144021881460746570
+    },
+    {
+      "id": "we_fight_2",
+      "index": 7,
+      "text": "Enough of your slimy yammering. We fight!",
+      "voice": null,
+      "original_text_hash": 6465250123114776647
+    },
+    {
+      "id": "OK_WONT",
+      "index": 8,
+      "text": "Uh, okay... sure, we won't!\nJust remember though -- this offer may be revoked at any time.",
+      "voice": "spathi-003.ogg",
+      "original_text_hash": 16372804728024004469
+    },
+    {
+      "id": "do_cultural",
+      "index": 9,
+      "text": "We suggest you immediately perform whatever cultural practices are customary to your species preceding death.",
+      "voice": null,
+      "original_text_hash": 7365730269231145685
+    },
+    {
+      "id": "WEZZY_WEZZAH",
+      "index": 10,
+      "text": "Certainly, most gracious destroyer, as is well known, before departing this mortal helix\nall Spathi must complete the short, poignant ritual of Wezzy-Wezzah to be assured of a secure afterlife\nand by allowing us to fulfill this requirement, you too shall be granted immortality in our beautiful afterworld\nwhich is absolutely guaranteed to be free of similarly immortal monsters who would otherwise eat the both of us.",
+      "voice": "spathi-004.ogg",
+      "original_text_hash": 6236816443284708099
+    },
+    {
+      "id": "die_slugboy",
+      "index": 11,
+      "text": "Die slugboy!",
+      "voice": null,
+      "original_text_hash": 16768376879681957209
+    },
+    {
+      "id": "begin_ritual",
+      "index": 12,
+      "text": "You may begin your ritual, and if I might make a small suggestion: be done in less than 2 minutes.",
+      "voice": null,
+      "original_text_hash": 17854992422872793407
+    },
+    {
+      "id": "MUST_DO_RITUAL_AT_HOME",
+      "index": 13,
+      "text": "Grief and woe -- certainly a destroyer of innocents as well-travelled as yourself\nmust know that the formalities of Wezzy-Wezzah are invalid unless\nperformed on the large moon orbiting our homeworld, Spathiwa\nwhich is only 143 light years distant, and, if I remember correctly,\nis especially beautiful this time of year.\nShall we go now there?",
+      "voice": "spathi-005.ogg",
+      "original_text_hash": 346327920983390591
+    },
+    {
+      "id": "you_wont_die_yet",
+      "index": 14,
+      "text": "Because I am compassionate, you will not die until you have exhausted your usefulness.",
+      "voice": null,
+      "original_text_hash": 10542425626728290356
+    },
+    {
+      "id": "ETERNAL_GRATITUDE",
+      "index": 15,
+      "text": "My eternal gratitude is yours, oh devastator of helpless beings.\nIt's times like these that I am forced to feel almost, though not quite, sorry\nthat the Ur-Quan so thoroughly defeated and humiliated your species.",
+      "voice": "spathi-006.ogg",
+      "original_text_hash": 6118069888410708302
+    },
+    {
+      "id": "we_fight",
+      "index": 16,
+      "text": "We fight!",
+      "voice": null,
+      "original_text_hash": 12960214434485708638
+    },
+    {
+      "id": "pay_for_crimes",
+      "index": 17,
+      "text": "Now you must pay for the crimes of your craven masters, the evil Ur-Quan.",
+      "voice": null,
+      "original_text_hash": 14703449755168327194
+    },
+    {
+      "id": "CLUTCH_MAVEN",
+      "index": 18,
+      "text": "In this difficult situation I am reminded of what my clutch maven once said to me before my first molting.\n`Sometimes the enemy is so swift and the path so treacherous that you can run no further.\nIt is then that you must turn and resolve to fight\nand in all likelihood die horribly\nbut you never know when you are going to get lucky, so go for it!'",
+      "voice": "spathi-007.ogg",
+      "original_text_hash": 9377569621400623699
+    },
+    {
+      "id": "you_may_live",
+      "index": 19,
+      "text": "I find myself moved by your deep commitment to your rituals and ancestral ways. You may live.",
+      "voice": null,
+      "original_text_hash": 729503780766652303
+    },
+    {
+      "id": "HONEST_AND_FRIENDLY",
+      "index": 20,
+      "text": "That settles it, for now I am certain that you are an honest and friendly being\nwho is forced entirely through unfortunate circumstance - the unreasonable hostility of the Universe\nto travel the galaxy in a ship which, according to my sensors\nis best suited to conducting planetary-scale genocide.",
+      "voice": "spathi-008.ogg",
+      "original_text_hash": 309302149302239946
+    },
+    {
+      "id": "what_are_coordinates",
+      "index": 21,
+      "text": "We'd be delighted to accompany you to your homeworld. What are its HyperSpace coordinates?",
+      "voice": null,
+      "original_text_hash": 13067969397952273817
+    },
+    {
+      "id": "COORDINATES_ARE",
+      "index": 22,
+      "text": "My most wonderful planet Spathiwa circles a safe distance from the orange giant star Yuffo\nwhich is at HyperSpace coordinates\nhey -- wait a minute!\nIs this some kind of Homosap trick to get the location of my homeworld\nso that you can visit it with devastation?!",
+      "voice": "spathi-009.ogg",
+      "original_text_hash": 12625107352091464318
+    },
+    {
+      "id": "tell_me_coordinates",
+      "index": 23,
+      "text": "Just tell me the coordinates, alien dog-slime!",
+      "voice": null,
+      "original_text_hash": 4392770222804624211
+    },
+    {
+      "id": "FAKE_COORDINATES",
+      "index": 24,
+      "text": "Hmmm... I see\nVery well then, your threats have convinced me to reveal this secret.\nSpathiwa is the 1st planet out from the star at HyperSpace (570.4, 979.5)",
+      "voice": "spathi-010.ogg",
+      "original_text_hash": 14948051666252374889
+    },
+    {
+      "id": "TOO_SCARY",
+      "index": 25,
+      "text": "You've got so many ships in your fleet, that instead of joining you\nI think I'll just run away.",
+      "voice": "spathi-011.ogg",
+      "original_text_hash": 18362534215641377119
+    },
+    {
+      "id": "youve_got_me_all_wrong",
+      "index": 26,
+      "text": "No, no, no! You've got me all wrong. I promise I'll be nice.",
+      "voice": null,
+      "original_text_hash": 16500205655948467580
+    },
+    {
+      "id": "SORRY_NO_COORDS",
+      "index": 27,
+      "text": "Er... I just don't know.\nI want to believe you, I really do, but the risk to my people is just too great.\nAnyway I think I just forgot the coordinates -- let me see if I can remember them\nnope!\nI'm afraid they're gone forever, so torturing me would just be a waste of your time.",
+      "voice": "spathi-012.ogg",
+      "original_text_hash": 15559537930915272050
+    },
+    {
+      "id": "what_doing_on_pluto_1",
+      "index": 28,
+      "text": "What are you doing here on Pluto?",
+      "voice": null,
+      "original_text_hash": 3278800511808479465
+    },
+    {
+      "id": "ABOUT_20_YEARS_AGO",
+      "index": 29,
+      "text": "About 20 years ago, this region of space was dominated by a loose confederation known as the Alliance of Free Stars,\nwhich was composed of the aliens native to these parts who didn't want to be enslaved.\nThey made a valiant effort against the superior Ur-Quan forces\nand it even looked like they might miraculously defeat the combined Ur-Quan armada\nright up to the point at which the Ur-Quan totally defeated - indeed, annihilated them.",
+      "voice": "spathi-013.ogg",
+      "original_text_hash": 5414248432712760734
+    },
+    {
+      "id": "what_doing_on_pluto_2",
+      "index": 30,
+      "text": "So, what ARE you doing here on Pluto?",
+      "voice": null,
+      "original_text_hash": 8918801511675125799
+    },
+    {
+      "id": "WHEN_URQUAN_ARRIVED",
+      "index": 31,
+      "text": "When the Ur-Quan armada entered this system to subjugate formally the Earthlings,\nthe Ur-Quan presented the humans with the standard slave options:\njoin the Hierarchy as combat thralls, and retain some autonomy, including the right to travel through space\nor become a `fallow' species and return to pre-atomic savagery on the surface of their homeworld\nencased for all time beneath an impenetrable force shield.\nThe Humans chose the latter option, and so were swiftly imprisoned on the surface of Earth\nbut the Ur-Quan didn't trust them to obey the restrictions...so\nthey chose a small group of Hierarchy combat starships from the Ilwrath and Spathi fleets\nto create the so-called Earthguard, and stationed them at a base on Earth's moon.",
+      "voice": "spathi-014.ogg",
+      "original_text_hash": 7389696304682125842
+    },
+    {
+      "id": "where_are_urquan",
+      "index": 32,
+      "text": "Where are the Ur-Quan now?",
+      "voice": null,
+      "original_text_hash": 15411130438184780787
+    },
+    {
+      "id": "URQUAN_LEFT",
+      "index": 33,
+      "text": "Our masters don't really keep us very well informed about their goings on\nso all that we know is that immediately after the subjugation of the last Alliance race\nthe Yehat, I think\nthe Ur-Quan gathered their dreadnoughts and departed towards the edge of the galaxy\ncommanding us to obey the slave laws or face their wrath when they returned.",
+      "voice": "spathi-015.ogg",
+      "original_text_hash": 11006677863538650023
+    },
+    {
+      "id": "what_about_other_races",
+      "index": 34,
+      "text": "Do you know anything about other alien races?",
+      "voice": null,
+      "original_text_hash": 2372421431618643363
+    },
+    {
+      "id": "ABOUT_OTHER_RACES",
+      "index": 35,
+      "text": "We know only bits and pieces of what happened to each race; for instance,\nwhen defeated, the Yehat joined the Hierarchy as combat thralls,\nwhile the Syreen chose to be slave shielded on a planet in the BugSquirt star system.\nNo, that's not right -- I forget its name, anyway where was I?\nOh yes, the Shofixti! They were utterly wiped out in a gigantic `blaze of glory'.",
+      "voice": "spathi-016.ogg",
+      "original_text_hash": 11400318361519558902
+    },
+    {
+      "id": "what_doing_on_pluto_3",
+      "index": 36,
+      "text": "TELL ME what you are doing on Pluto, NOW!",
+      "voice": null,
+      "original_text_hash": 7252010990618026172
+    },
+    {
+      "id": "what_about_yourself",
+      "index": 37,
+      "text": "What about yourself, Fwiffo?",
+      "voice": null,
+      "original_text_hash": 13414531740308345873
+    },
+    {
+      "id": "ABOUT_MYSELF",
+      "index": 38,
+      "text": "Me? You mean me, personally? How nice of you to ask!\nI was born a poor, green encrustling, the youngest child of a family of 18,487.\nMy male parent had to work hard to support us, very hard\nbut each of my brothers and sisters and I tried to help out to make ends meet.\nThe female parent was kind and sweet to all of us.\nWhy, she once even called me by NAME; she said\n`Fwiffo! Fwiffo darling! Would you please answer the door? I think someone's there.'\nWhat a treat! A golden memory.\nI swiftly matured into a fine example of my species, and with my parents' assistance, achieved independence.\nSpecifically, they pried me from the doorjamb, and rolled me into the street.\nThus prepared, I set out to make my fortune.\nI had great dreams in those days, yes, great dreams!\nI knew that someday I would be vastly rich, wealthy enough to afford a large, well-fortified mansion.\nSurrounding my mansion would be vast tracts of land, through which I could slide at any time I wished!\nOf course, one can never be too sure that there aren't monsters hiding just behind the next bush\nso I would plant trees to climb at regular, easy to reach intervals.\nAnd being a Spathi of the World, I would know that some monsters climb trees, though often not well\nso I would have my servants place in each tree a basket of perfect stones\nnot too heavy, not too light -- just the right size for throwing at monsters.\nI was thinking about what color the stones would be painted (aqua, mauve or magenta)\nwhen a vegetable cart came careening down the street outside my house, and knocked me unconscious.\nWhen I awoke, I was aboard the voidship StarRunner, headed for Earth.\nApparently I had been out of my head for quite some time after the accident\nand with the assistance of some kind strangers\nhad been relieved of my funds and convinced to join the navy\nwhere I have been unpleasantly employed for the last 25 years.",
+      "voice": "spathi-017.ogg",
+      "original_text_hash": 5494985199225477194
+    },
+    {
+      "id": "STATIONED_ON_EARTH_MOON",
+      "index": 39,
+      "text": "Originally, we were stationed on Earth's moon, which made us Spathi a bit uneasy\nbecause with each passing day we grew more and more worried about the sneaky Earthlings making a surprise attack\nthough the Ilwrath kept telling us that was impossible\nsince the Earthlings had no ships or weapons whatsoever.\nThat made us feel a bit better, but when the Ilwrath left, again we grew fearful\nand decided to make a strategic redeployment to Mars.\nLater on we decided it would be prudent to relocate to Jupiter's moon, Ganymede\nthen later Saturn's moon, Titan\nand finally here to Pluto.",
+      "voice": "spathi-018.ogg",
+      "original_text_hash": 18392148659355805796
+    },
+    {
+      "id": "what_blaze_of_glory",
+      "index": 40,
+      "text": "What do you mean, `blaze of glory'? What happened to the Shofixti?",
+      "voice": null,
+      "original_text_hash": 2769392976795239704
+    },
+    {
+      "id": "BLAZE_IS",
+      "index": 41,
+      "text": "The Shofixti were half feral, as you know, having been uplifted by the Yehat\njust a few decades before the start of the war.\nGiven their habit of detonating those suicidal, so-called `Glory Devices' in combat\nit came as no particular surprise to me when, upon the arrival of the Ur-Quan primary task force at their homeworld\nthe Shofixti caused their sun to explode in a colossal supernova\ndestroying the entire planetary system, and not incidentally dozens of Ur-Quan Dreadnoughts!\n(Snork-snork-snork!)",
+      "voice": "spathi-019.ogg",
+      "original_text_hash": 10181468629784650216
+    },
+    {
+      "id": "what_about_moonbase",
+      "index": 42,
+      "text": "What is happening at the base on Luna then?",
+      "voice": null,
+      "original_text_hash": 18361000130932553943
+    },
+    {
+      "id": "SET_UP_BASE",
+      "index": 43,
+      "text": "We decided that if the Earthlings figured out we had abandoned the base on Luna\nthey would be more likely to try something sneaky.\nSo we rigged up some old service androids and ordered them to drive around on the lunar surface in bulldozers,\nendlessly pushing around the same piles of dirt.\nIn addition, we connected the base's local radio transmitter to an audio Melnorme FunRom\ncalled `Winky's Happy Night', hoping that they would think we were still there.",
+      "voice": "spathi-020.ogg",
+      "original_text_hash": 10473920507110152107
+    },
+    {
+      "id": "what_about_ilwrath",
+      "index": 44,
+      "text": "What happened to the Ilwrath stationed in this system?",
+      "voice": null,
+      "original_text_hash": 3825858747102021471
+    },
+    {
+      "id": "ABOUT_ILWRATH",
+      "index": 45,
+      "text": "The Ilwrath contingent were supposed to be the toughest ridge-crest, er\nthe most rigid flipper, no\nah yes - the BACKBONE of the Earthguard force; but they departed the system en masse\nnot long after the last Ur-Quan Dreadnought vanished from this region of space.\nThey claimed to have received a direct order from their Gods of Evil and Darkness,\nwho had grown dissatisfied with the Ilwraths' passivity\nand wanted them to kill or at least torture someone soon.\nPersonally, I believe they just got bored and went off to have some fun.",
+      "voice": "spathi-021.ogg",
+      "original_text_hash": 839694272497175080
+    },
+    {
+      "id": "what_about_other_spathi",
+      "index": 46,
+      "text": "What happened to the other Spathi ships?",
+      "voice": null,
+      "original_text_hash": 17815334785307842235
+    },
+    {
+      "id": "really_thousands",
+      "index": 47,
+      "text": "Hundreds? Come on.",
+      "voice": null,
+      "original_text_hash": 5761346076226896006
+    },
+    {
+      "id": "SPATHI_ARE",
+      "index": 48,
+      "text": "Over the past years, it became necessary to redeploy strategically some of our Earthguard forces\nto our homeworld in case of a sudden surprise attack by a vicious, unrelenting alien race which we Spathi call\nThe Ultimate Evil!",
+      "voice": "spathi-022.ogg",
+      "original_text_hash": 18107819333777106193
+    },
+    {
+      "id": "what_enemy",
+      "index": 49,
+      "text": "Who or what is this `Ultimate Evil'?",
+      "voice": null,
+      "original_text_hash": 14917233839606049031
+    },
+    {
+      "id": "ENEMY_IS",
+      "index": 50,
+      "text": "As yet, the Ultimate Evil remains largely unmanifest, and its powers and exact intentions are still a bit obscure\nsince it lurks just outside the range of even the most sensitive, long-range detectors\nwhich we feel gives conclusive evidence as to The Ultimate Evil's nefarious intent.",
+      "voice": "spathi-023.ogg",
+      "original_text_hash": 8006579589940296694
+    },
+    {
+      "id": "when_ilwrath",
+      "index": 51,
+      "text": "When do you expect the Ilwrath to return?",
+      "voice": null,
+      "original_text_hash": 183231255491794244
+    },
+    {
+      "id": "THEN_ILWRATH",
+      "index": 52,
+      "text": "Well, when they were pushing up into HyperSpace 18 years ago, we asked them that very question\nand I think they said something to the effect of\n`Real Soon'.",
+      "voice": "spathi-024.ogg",
+      "original_text_hash": 8705587868361745669
+    },
+    {
+      "id": "why_you_here",
+      "index": 53,
+      "text": "Why are you still here, Captain Fwiffo?",
+      "voice": null,
+      "original_text_hash": 2626154440153016180
+    },
+    {
+      "id": "DREW_SHORT_STRAW",
+      "index": 54,
+      "text": "Since it was our most powerful and unforgiving masters, the Ur-Quan, who stationed us here\nwe knew it would be grossly stupid to disobey them completely\nbut we decided that it would be okay to send just one ship home.\nWe used one of our most ancient and solemn rituals, Puun-Taffy, to pick the lucky ship.\nThen... some months later, we decided that it wouldn't REALLY hurt if we sent one more ship home\nand then later we sent another, and then another... well, you get the idea.\nAlas, as fate would have it, when the final ritual was performed\nI, Fwiffo, was left here alone, for as even the most immature encrustling knows\nthere must always be one Spathi who picks the short Ta Puun stick.",
+      "voice": "spathi-025.ogg",
+      "original_text_hash": 9850993725283876150
+    },
+    {
+      "id": "how_many_crew",
+      "index": 55,
+      "text": "How many crew do you have aboard?",
+      "voice": null,
+      "original_text_hash": 3187227679909717475
+    },
+    {
+      "id": "JUST_ME",
+      "index": 56,
+      "text": "I am undone! You are far too clever for a poor Spathi like me\nand now I must submit to your superior, alien intellect.\nI guess I am not revealing any truly important secrets if I tell you\nthat each of my species' Eluder-class Voidships typically holds 30 Spathi crewmen\nthough at present my vessel, the StarRunner, is not up to full complement\ndue to the needs of my homeworld in their resistance against the Ultimate Evil\nand in fact my vessel is somewhat understaffed right now\nseeing as how I am the only Spathi on board, which is a bit frightening as I am sure you can understand.",
+      "voice": "spathi-026.ogg",
+      "original_text_hash": 13759494749585084278
+    },
+    {
+      "id": "THOUSANDS",
+      "index": 57,
+      "text": "Dozens -- that is to say, scores and perhaps even hundreds of my brethren stride through the corridors\nof this specially modified, super-efficient, mass-destruction-oriented starship\nwhich could lay siege to an entire planetary system should we choose to do so\nwhich, fortunately for you, we have decided not to do, today.",
+      "voice": "spathi-027.ogg",
+      "original_text_hash": 14596422269922322584
+    },
+    {
+      "id": "full_of_monsters",
+      "index": 58,
+      "text": "The galaxy teems with threatening monsters. Are you happy here -- alone and vulnerable?",
+      "voice": null,
+      "original_text_hash": 896479697817713116
+    },
+    {
+      "id": "HOW_TRUE",
+      "index": 59,
+      "text": "How true, Captain, how true!\nIn truth, just between us, during the past seven years, I have been quite ill at ease\nand yet now I find myself enjoying your company, this witty dialog\nand the presence of your huge, powerful, death-dealing starship which being my friend\nyou would certainly feel compelled to use in order to save me from any hostile lifeforms\nwho threatened me with death.",
+      "voice": "spathi-028.ogg",
+      "original_text_hash": 18021994402537194406
+    },
+    {
+      "id": "join_us",
+      "index": 60,
+      "text": "I'm sure you'd feel a lot safer if you were with us. Come on, Fwiffo, join our fleet!",
+      "voice": null,
+      "original_text_hash": 6521503609896448942
+    },
+    {
+      "id": "WILL_JOIN",
+      "index": 61,
+      "text": "Happy days and jubilation!\nI discard all prejudice and hesitations and accept and celebrate your offer of protection\nand your undying commitment to my well-being!\nI must wax melancholy for just a moment though\nand make sure you understand that any other Spathi ships we meet at large in the galaxy\nare not going to be quite so responsive to your friendly gestures as myself\nsince they bear more heavily the yoke of Ur-Quan enslavement\nand are also apt to talk themselves out of allying with a totally unknown alien\nwhich I, having been left here alone, cannot do.\nWelcome me aboard, captain!",
+      "voice": "spathi-029.ogg",
+      "original_text_hash": 2601509231065301826
+    },
+    {
+      "id": "WONT_JOIN_1",
+      "index": 62,
+      "text": "Well... I really want to\nbut I am just not sure that under the present circumstances\njoining you in your exciting and also dangerous space-adventures would be the best course of action right now\nbecause the Ur-Quan could return at any minute and the punishment they would bestow on me for such treason\nwould make any other horrible death seem like big fun by comparison.\nThanks for the offer, though.",
+      "voice": "spathi-030.ogg",
+      "original_text_hash": 15450443978724344381
+    },
+    {
+      "id": "give_ship_or_die",
+      "index": 63,
+      "text": "Give us your ship or you will be destroyed!",
+      "voice": null,
+      "original_text_hash": 10521178164259566752
+    },
+    {
+      "id": "WONT_JOIN_2",
+      "index": 64,
+      "text": "You build a strong case, Captain.\nHere I am, alone and undefended on the surface of a hostile alien world.\nAbove me you hover in orbit, encrusted with beam guns, missile launchers and other, more dreadful weapons.\nSo I think to myself: Fwiffo, is it prudent to remain here, as vulnerable as a moltling on a skillet?\n`NO', I answer myself, `JOIN THE HUMAN - HE IS KIND AND GOOD!'\nBut then a wicked voice whispers:\n`beware... the human is tricking you! If you join him, you will die alone, in the cold of space.'\nAnd for reasons beyond my understanding, Captain, this voice overwhelms the other\nand so I must remain here...largely against my will.",
+      "voice": "spathi-031.ogg",
+      "original_text_hash": 10445264814100773921
+    },
+    {
+      "id": "WONT_JOIN_3",
+      "index": 65,
+      "text": "Twice before you have asked this question, Captain. Will the third time be the charm?\nAlas, I fear not.",
+      "voice": "spathi-032.ogg",
+      "original_text_hash": 2356623343463499483
+    },
+    {
+      "id": "GEE_THANKS",
+      "index": 66,
+      "text": "Gee, thanks.",
+      "voice": "spathi-033.ogg",
+      "original_text_hash": 16659874421386289453
+    },
+    {
+      "id": "changed_mind",
+      "index": 67,
+      "text": "I've changed my mind. We'll attack you.",
+      "voice": null,
+      "original_text_hash": 10009644797780958894
+    },
+    {
+      "id": "youre_forgiven",
+      "index": 68,
+      "text": "We understand that sometimes these tragic misunderstandings happen. We grieve, but are not bitter.",
+      "voice": null,
+      "original_text_hash": 17253590122921730825
+    },
+    {
+      "id": "THANKS_FOR_FORGIVENESS",
+      "index": 69,
+      "text": "Whew, thanks! For a minute there, I thought you were going to kill me!",
+      "voice": "spathi-034.ogg",
+      "original_text_hash": 1293033789900731730
+    },
+    {
+      "id": "HATE_YOU_FOREVER_SPACE",
+      "index": 70,
+      "text": "I fear to face you in combat, but I know if I do not, you will just grow stronger with each passing week.\nTherefore I must face you now.\nI set the thrusters to maximum, close my eye, and begin pressing the fire stud wildly.",
+      "voice": "spathi-035.ogg",
+      "original_text_hash": 11704021507245401738
+    },
+    {
+      "id": "INIT_ANGRY_HELLO_SPACE",
+      "index": 71,
+      "text": "You are mean, cruel and deceitful. I suspect you are an Ilwrath in ape's clothing.\nWhat do you want?",
+      "voice": "spathi-036.ogg",
+      "original_text_hash": 9997159256008961555
+    },
+    {
+      "id": "SUBSEQUENT_ANGRY_HELLO_SPACE",
+      "index": 72,
+      "text": "Ah, Mister Nasty is back. I wonder what he wants today? Peace, Happiness, Joy for all?\nNo, I fear, death and unmitigated destruction is his traditional fare.\nAm I correct?",
+      "voice": "spathi-037.ogg",
+      "original_text_hash": 13958239610726327615
+    },
+    {
+      "id": "INIT_NEUTRAL_HELLO_SPACE",
+      "index": 73,
+      "text": "Surprise and Terror!\nI am greeted by the smooth and hostile face of our old enemy, the Hootmans\nno... the Huge-glands, no, I remember, the Hunams!",
+      "voice": "spathi-038.ogg",
+      "original_text_hash": 13139233350039944663
+    },
+    {
+      "id": "SUBSEQUENT_NEUTRAL_HELLO_SPACE",
+      "index": 74,
+      "text": "Hello, Hunam, what would you like to threaten me about today?",
+      "voice": "spathi-039.ogg",
+      "original_text_hash": 16417445585603310336
+    },
+    {
+      "id": "INIT_FRIENDLY_HELLO_SPACE",
+      "index": 75,
+      "text": "Hello friend Hunam! How nice to see you again. Kill anyone today?",
+      "voice": "spathi-040.ogg",
+      "original_text_hash": 15286853901041325037
+    },
+    {
+      "id": "SUBSEQUENT_FRIENDLY_HELLO_SPACE",
+      "index": 76,
+      "text": "...No! No! Weapons Officer, don't fire! It's the Hunam again, you idiot!\nWhat! The viewscreen? What are you...oh.\nHello Friend Hunam! How are you? We are just fine, real swell.\nNo problems at all! Just fine. No problems at all!",
+      "voice": "spathi-041.ogg",
+      "original_text_hash": 10244113540925862964
+    },
+    {
+      "id": "INIT_ALLIED_HELLO_SPACE",
+      "index": 77,
+      "text": "Hello Captain Ally Hunam! We are here in this place at this time\njust like you -- how wonderful.",
+      "voice": "spathi-042.ogg",
+      "original_text_hash": 3100527444729392045
+    },
+    {
+      "id": "SUBSEQUENT_ALLIED_HELLO_SPACE",
+      "index": 78,
+      "text": "Ah, Hunam! I was just wondering... is Tuffa-Yuf still alive?\nHave you seen him, is he well?\nHe was sent to your Earth Starbase a while ago\nto captain an Eluder vessel as part of our mutual assistance pact.\nRest assured, he will be an excellent addition to your elite force.\nThose weeks of intense training always result in an officer of the highest caliber.\nIf you see him, please let him know\nthat I still consider his debt valid, and expect prompt payment.\nThank you.",
+      "voice": "spathi-043.ogg",
+      "original_text_hash": 12394614246361984464
+    },
+    {
+      "id": "give_info_space",
+      "index": 79,
+      "text": "Spathi - though we are not on the best of terms, would you please give me some information?",
+      "voice": null,
+      "original_text_hash": 2523151441562283447
+    },
+    {
+      "id": "HERES_SOME_INFO",
+      "index": 80,
+      "text": "Gladly, and here it is - now listen carefully for I will only say it once.\nDo not ask favors of people you routinely ambush and murder.",
+      "voice": "spathi-044.ogg",
+      "original_text_hash": 18352797239756040348
+    },
+    {
+      "id": "we_sorry_space",
+      "index": 81,
+      "text": "Hey, look. We've made mistakes, I admit it! But we'll just be friends, hmmm?",
+      "voice": null,
+      "original_text_hash": 5596777097433343438
+    },
+    {
+      "id": "APOLOGIZE_AT_HOMEWORLD",
+      "index": 82,
+      "text": "My soul is warmed by your sincere and heartfelt words.\nIt is decided -- we shall be friends forever.\nHowever, I soon must go about my duties, and sadly we may never see each other again.\nI will remember you forever, Captain.\nAnd as your new friend, I can confide that should you decide to make a more general plea to the Spathi\nsay for your past deeds of thuggery\nyou would be well advised to seek the High Ruling Council at Spathiwa.\nGoodbye...friend.",
+      "voice": "spathi-045.ogg",
+      "original_text_hash": 8924206872948003215
+    },
+    {
+      "id": "we_fight_again_space",
+      "index": 83,
+      "text": "This battle stuff is fun! Let's do some more of it!",
+      "voice": null,
+      "original_text_hash": 8340420175403202301
+    },
+    {
+      "id": "OK_FIGHT_AGAIN_SPACE",
+      "index": 84,
+      "text": "Aghk! You are twisted and perverse! You deserve to die.",
+      "voice": "spathi-046.ogg",
+      "original_text_hash": 599748539608996168
+    },
+    {
+      "id": "bye_angry_space",
+      "index": 85,
+      "text": "Don't go away mad, Spathi. Just go away.",
+      "voice": null,
+      "original_text_hash": 17916092937587175592
+    },
+    {
+      "id": "GOODBYE_ANGRY_SPACE",
+      "index": 86,
+      "text": "I would like to suggest a new plan for you, Hunam:\ndepart this region of space, and never return.",
+      "voice": "spathi-047.ogg",
+      "original_text_hash": 17288980451105214426
+    },
+    {
+      "id": "look_weird",
+      "index": 87,
+      "text": "Man! You look weird -- all those claws and your gooey eyeball. Yuck!",
+      "voice": null,
+      "original_text_hash": 1354753995173258493
+    },
+    {
+      "id": "YOU_LOOK_WEIRD",
+      "index": 88,
+      "text": "Beauty is in the eye of the beholder.",
+      "voice": "spathi-048.ogg",
+      "original_text_hash": 3921484857970217849
+    },
+    {
+      "id": "no_look_really_weird",
+      "index": 89,
+      "text": "No, it's not. You are plain, dog ugly.",
+      "voice": null,
+      "original_text_hash": 6963954445439638408
+    },
+    {
+      "id": "NO_YOU_LOOK_REALLY_WEIRD",
+      "index": 90,
+      "text": "Oh yeah? Oh YEAH!?\nWell...\nYou are too.",
+      "voice": "spathi-049.ogg",
+      "original_text_hash": 6844691265475268701
+    },
+    {
+      "id": "come_in_peace",
+      "index": 91,
+      "text": "We are on a peaceful mission through the Cosmos.",
+      "voice": null,
+      "original_text_hash": 11653041941666054790
+    },
+    {
+      "id": "AGAINST_NATURE",
+      "index": 92,
+      "text": "Two aspects of your last statement defy the course of nature as I know it.\nFirst\n`Peace' as you call it, is an illusion.\nIf you have `Peace', you simply haven't yet seen the thing that's trying to kill you.\nSecond\nPeaceful missions through the Cosmos rarely require weapons large enough to punch holes through a small moon.",
+      "voice": "spathi-050.ogg",
+      "original_text_hash": 17653789882462679580
+    },
+    {
+      "id": "prepare_to_die",
+      "index": 93,
+      "text": "Are you prepared to die today, Spathi?",
+      "voice": null,
+      "original_text_hash": 7109588657277019799
+    },
+    {
+      "id": "ALWAYS_PREPARED",
+      "index": 94,
+      "text": "We Spathi are always prepared to die, we know just what to do.\nIt goes something like this\nAIEEEE! No! Please be merciful! Not my claw! Please, no! I beg of you! The Pain! NO!",
+      "voice": "spathi-051.ogg",
+      "original_text_hash": 13076545641325848947
+    },
+    {
+      "id": "since_friendly_give_stuff",
+      "index": 95,
+      "text": "Since we are now friends, it is customary for you to give us things.",
+      "voice": null,
+      "original_text_hash": 10101635844084408851
+    },
+    {
+      "id": "GIVE_ADVICE",
+      "index": 96,
+      "text": "Certainly, perhaps beginning with some advice.\nDon't presume we are stupid.",
+      "voice": "spathi-052.ogg",
+      "original_text_hash": 13813262039893955114
+    },
+    {
+      "id": "whats_up_space_1",
+      "index": 97,
+      "text": "Friend Spathi, what important facts can you relate?",
+      "voice": null,
+      "original_text_hash": 2789533282065378306
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_1",
+      "index": 98,
+      "text": "I guess the only event of importance I know about concerns the low and stupid Umgah\nwhose pranks we must suffer on a regular basis.\nAt least we have removed one source of their annoying jokes -- an unusually strong HyperWave 'Caster\nwhich they used on several occasions to impersonate such frightening characters as\nthe Grand Master Planet Eaters\nJud the Ineffable Vug\nand Killmaster 18.\nNeedless to say, we did not fall for any of their high jinks.\nIn fact, we succeeded in taking from the Umgah their precious 'Caster,\nthus ending their attempts at sick levity.",
+      "voice": "spathi-053.ogg",
+      "original_text_hash": 13033462867374340633
+    },
+    {
+      "id": "bye_friendly_space",
+      "index": 99,
+      "text": "Goodbye, Spathi, I hope you remain well.",
+      "voice": null,
+      "original_text_hash": 10162476933267491589
+    },
+    {
+      "id": "GOODBYE_FRIENDLY_SPACE",
+      "index": 100,
+      "text": "Goodbye, Hunam, I hope you aren't eaten by monsters.",
+      "voice": "spathi-054.ogg",
+      "original_text_hash": 6677635043347125577
+    },
+    {
+      "id": "looking_for_a_few_good_squids",
+      "index": 101,
+      "text": "Let me be frank. We seek allies.",
+      "voice": null,
+      "original_text_hash": 15554391063727394029
+    },
+    {
+      "id": "URQUAN_SLAVES",
+      "index": 102,
+      "text": "In case you have not forgotten, we are bonded to the Ur-Quan as slaves.\nThe punishment for the plan you propose can be described as `Death'.",
+      "voice": "spathi-055.ogg",
+      "original_text_hash": 10204926909717290636
+    },
+    {
+      "id": "why_slaves",
+      "index": 103,
+      "text": "That brings up a good point. If you are such cowards, why do you fight for the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 17306942308070918452
+    },
+    {
+      "id": "UMGAH_TRICK",
+      "index": 104,
+      "text": "This is a sad tale, so do not even try to contain your tears.\nAfter the Ur-Quan demolished the Ilwrath, they turned the force of their Armada against us Spathi.\nThe term `rapidly subjugated' would best describe what happened next.\nWhen the Ur-Quan arrived at Spathiwa, there was a great ceremony.\nPart of that ceremony involved blasting portions of our planet's surface into radioactive dust\nand this part we did not enjoy.\nBut the worst was yet to come.\nOur leaders were called into the command chamber of Ur-Quan Lord 1's dreadnought\nwhere they were read a long and complicated document explaining the choices given new slaves.\nWhen our leaders heard the term `forever encased' and `impenetrable shield'\nthey grew over-excited, I'm afraid, and made a fatal error.\nThe decision was to be transmitted to the Ur-Quan via one of two rods, one colored black, the other white.\nOur leader handed the white rod to one of the Ur-Quan's servants, signifying `Fallow Slavery',\nbut the servant somehow exchanged rods and handed the Ur-Quan Lord a black rod\nindicating our desire to become fighting slaves!\nBy the time we learned of the switch, it was too late -- the Ur-Quan would not permit a change in status.\nFollowing that most tragic day, we were forced to assume the role of an Ur-Quan star-thug.\nWe tried to avoid combat, but the Ur-Quan gave us three warnings, each more strident than the last.\nWhen we learned that there would be no fourth warning, simply annihilation\nwe attended to our new role with improved vigor.\nOh, and perhaps you have already guessed -- the Ur-Quan's servant who made the switch\nwas an Umgah.",
+      "voice": "spathi-056.ogg",
+      "original_text_hash": 11355211912500135495
+    },
+    {
+      "id": "tell_us_about_you",
+      "index": 105,
+      "text": "What can you tell us of your species?",
+      "voice": null,
+      "original_text_hash": 15776878750395257558
+    },
+    {
+      "id": "ABOUT_US",
+      "index": 106,
+      "text": "We can best be described as `Meta-Mollusks'\npossessing the best qualities of both the clam and the Dravatz, which is not native to your world.\nWe are intelligent and clever, though you would never call us cunning.\nEach day when we awaken we call forth the traditional Spathi prayer\n`Oh God...Please don't let me die today! Tomorrow would be so much better!'",
+      "voice": "spathi-057.ogg",
+      "original_text_hash": 2489715135644277830
+    },
+    {
+      "id": "what_you_really_want",
+      "index": 107,
+      "text": "But what do you really want out of this great mystery called `Life'?",
+      "voice": null,
+      "original_text_hash": 13475365995604065753
+    },
+    {
+      "id": "WANT_THIS",
+      "index": 108,
+      "text": "I want to live forever, with no pain whatsoever, owning vast personal property plus a company of nubiles.\nIf this is in your power to give, I beg of you to do so.",
+      "voice": "spathi-058.ogg",
+      "original_text_hash": 18320578067057308962
+    },
+    {
+      "id": "how_about_alliance",
+      "index": 109,
+      "text": "Under the circumstances, I think it would be best if you allied with Earth immediately.",
+      "voice": null,
+      "original_text_hash": 635761452392689195
+    },
+    {
+      "id": "SURE",
+      "index": 110,
+      "text": "Sure, consider it done. Allies to the bitter end.\nNOT!",
+      "voice": "spathi-059.ogg",
+      "original_text_hash": 17223053186436263633
+    },
+    {
+      "id": "part_in_peace",
+      "index": 111,
+      "text": "We leave as we came, in peace.",
+      "voice": null,
+      "original_text_hash": 13284036762943187369
+    },
+    {
+      "id": "KEEP_IT_SECRET",
+      "index": 112,
+      "text": "Look, can we keep this as a secret between the two of us?\nIt's really rather embarrassing.",
+      "voice": "spathi-060.ogg",
+      "original_text_hash": 6016734647964481603
+    },
+    {
+      "id": "heard_youre_cowards",
+      "index": 113,
+      "text": "We have heard that you are a race of cowards. Is this true?",
+      "voice": null,
+      "original_text_hash": 5299544903797874858
+    },
+    {
+      "id": "DARN_TOOTIN",
+      "index": 114,
+      "text": "Yes, absolutely, and with no qualifications.\nThis system has kept us alive for millennia, and we see no reason to change it now.",
+      "voice": "spathi-061.ogg",
+      "original_text_hash": 6419827846505335105
+    },
+    {
+      "id": "wanna_fight",
+      "index": 115,
+      "text": "Wanna fight?",
+      "voice": null,
+      "original_text_hash": 13952222365315605919
+    },
+    {
+      "id": "YES_WE_DO",
+      "index": 116,
+      "text": "Er... Yeah, we do.",
+      "voice": "spathi-062.ogg",
+      "original_text_hash": 6827885798237823794
+    },
+    {
+      "id": "so_lets_fight",
+      "index": 117,
+      "text": "So let us fight.",
+      "voice": null,
+      "original_text_hash": 1051810695146751910
+    },
+    {
+      "id": "OK_LETS_FIGHT",
+      "index": 118,
+      "text": "Okay, let's fight. Here we go. We're rarin' to fight.",
+      "voice": "spathi-063.ogg",
+      "original_text_hash": 8435377941203489526
+    },
+    {
+      "id": "so_lets_fight_already",
+      "index": 119,
+      "text": "So let's fight, already!",
+      "voice": null,
+      "original_text_hash": 8000609972468277777
+    },
+    {
+      "id": "DONT_REALLY_WANT_TO_FIGHT",
+      "index": 120,
+      "text": "Oh! Um... we changed our minds. We don't want to. Sorry.\n(Pwappy, you idiot! I told you that wouldn't work!)",
+      "voice": "spathi-064.ogg",
+      "original_text_hash": 8609329161264473711
+    },
+    {
+      "id": "attack_you_now",
+      "index": 121,
+      "text": "Evil squid -- Prepare to Die!",
+      "voice": null,
+      "original_text_hash": 3925896583042693596
+    },
+    {
+      "id": "YIPES",
+      "index": 122,
+      "text": "I can't believe this!\nNot only is the Hunam alien unreasonably hostile but he doesn't even know his biological analogs!\nWe are much more closely related to Earth clams and\nwhat was that, Weapons Officer? His ship approaches with shields up and weapons armed...\nYipes!",
+      "voice": "spathi-065.ogg",
+      "original_text_hash": 9721466770252497948
+    },
+    {
+      "id": "whats_up_space_2",
+      "index": 123,
+      "text": "Hi folks, what's new?",
+      "voice": null,
+      "original_text_hash": 7965301365123255964
+    },
+    {
+      "id": "GENERAL_INFO_SPACE_2",
+      "index": 124,
+      "text": "Very little, I'm afraid. We've just been watching the stars.\nYou know, actually there was something that happened\nlast month on the 17th; we saw a new star appear between the Circini and Chandrasekhar star clusters.\nWe watched it and watched it -- for three days, we just watched it\nThen it went away, vanished, just like that.\nI hope it comes back.",
+      "voice": "spathi-066.ogg",
+      "original_text_hash": 5618468622002379627
+    },
+    {
+      "id": "give_us_info_from_space",
+      "index": 125,
+      "text": "Allies, grant us the boon of your wisdom.",
+      "voice": null,
+      "original_text_hash": 8471101542485951267
+    },
+    {
+      "id": "GET_INFO_FROM_SPATHIWA",
+      "index": 126,
+      "text": "Stuck as we are, here out in deep space, we learn little of interest.\nI suggest you consult the more interesting folk at Spathiwa.",
+      "voice": "spathi-067.ogg",
+      "original_text_hash": 15984213645033335599
+    },
+    {
+      "id": "give_us_resources_space",
+      "index": 127,
+      "text": "Please share your mineral wealth with us, as allies.",
+      "voice": null,
+      "original_text_hash": 2945381717273961638
+    },
+    {
+      "id": "GET_RESOURCES_FROM_SPATHIWA",
+      "index": 128,
+      "text": "As you wish. Our waste recycling unit is at your disposal.\nThere you will find quantities of methane, sulfurous gas, and some interesting organic compounds.\nFeel free, take all you want.",
+      "voice": "spathi-068.ogg",
+      "original_text_hash": 13885053050386463566
+    },
+    {
+      "id": "what_do_for_fun",
+      "index": 129,
+      "text": "What do you guys do for fun out here in deep space?",
+      "voice": null,
+      "original_text_hash": 4500224128752837780
+    },
+    {
+      "id": "DO_THIS_FOR_FUN",
+      "index": 130,
+      "text": "We used to be bored, but then we bought this cool entertainment product.\nIt simulated a grand adventure through a thousand parsecs of hostile space\nwhere we met interesting aliens, uncovered the secrets of a long-lost superior race\nand eventually, to save our world from destruction, we had to face the dread...\nnever mind, I can tell you aren't really interested.",
+      "voice": "spathi-069.ogg",
+      "original_text_hash": 16712695267326195700
+    },
+    {
+      "id": "bye_ally_space",
+      "index": 131,
+      "text": "Goodbye, Friend Spathi. I hope your journey is a safe one.",
+      "voice": null,
+      "original_text_hash": 7025169957664183787
+    },
+    {
+      "id": "GOODBYE_ALLY_SPACE",
+      "index": 132,
+      "text": "Same to you.",
+      "voice": "spathi-070.ogg",
+      "original_text_hash": 17367485379573776863
+    },
+    {
+      "id": "OK_WE_FIGHT_AT_PLUTO",
+      "index": 133,
+      "text": "My ichors pulse through my body with unusual ferocity!\nYour arrogance has whipped me into a violent frenzy\nand I am compelled to engage you in a preemptive-defensive action.\nNow you shall never learn my important secrets\nsuch as the location of the Orange Giant star around which my home planet orbits\noops -- dang! -- you made me give that away!\nCaptain, if you somehow survive my attack, I have one sincere hope\nthat you may soon be devoured slowly by an ugly, flat-toothed herbivore!",
+      "voice": "spathi-071.ogg",
+      "original_text_hash": 11888012031604459014
+    }
+  ],
+  "nodes": [
+    {
+      "id": "exit.bye_ally_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ALLY_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_ally_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_ally_space",
+      "next": "exit.bye_ally_space.speech"
+    },
+    {
+      "id": "exit.bye_friendly_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FRIENDLY_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_friendly_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_friendly_space",
+      "next": "exit.bye_friendly_space.speech"
+    },
+    {
+      "id": "exit.part_in_peace.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KEEP_IT_SECRET"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.part_in_peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_part_in_peace",
+      "next": "exit.part_in_peace.speech"
+    },
+    {
+      "id": "exit.we_sorry_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["APOLOGIZE_AT_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_sorry_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_we_sorry_space",
+      "next": "exit.we_sorry_space.speech"
+    },
+    {
+      "id": "exit.give_info_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERES_SOME_INFO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.give_info_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_give_info_space",
+      "next": "exit.give_info_space.speech"
+    },
+    {
+      "id": "exit.bye_angry_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ANGRY_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_angry_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_angry_space",
+      "next": "exit.bye_angry_space.speech"
+    },
+    {
+      "id": "exit.attack_you_now.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YIPES"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.attack_you_now",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_attack_you_now",
+      "next": "exit.attack_you_now.speech"
+    },
+    {
+      "id": "exit.we_fight_again_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_FIGHT_AGAIN_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_fight_again_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_we_fight_again_space",
+      "next": "exit.we_fight_again_space.speech"
+    },
+    {
+      "id": "exit.die_slugboy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WE_FIGHT_AT_PLUTO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.die_slugboy",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_die_slugboy",
+      "next": "exit.die_slugboy.speech"
+    },
+    {
+      "id": "exit.we_fight_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WE_FIGHT_AT_PLUTO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_fight_1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_we_fight_1",
+      "next": "exit.we_fight_1.speech"
+    },
+    {
+      "id": "exit.we_fight_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WE_FIGHT_AT_PLUTO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_fight_2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_we_fight_2",
+      "next": "exit.we_fight_2.speech"
+    },
+    {
+      "id": "exit.pay_for_crimes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WE_FIGHT_AT_PLUTO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.pay_for_crimes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_pay_for_crimes",
+      "next": "exit.pay_for_crimes.speech"
+    },
+    {
+      "id": "exit.tell_me_coordinates.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FAKE_COORDINATES", "OK_WE_FIGHT_AT_PLUTO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.tell_me_coordinates",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_tell_me_coordinates",
+      "next": "exit.tell_me_coordinates.speech"
+    },
+    {
+      "id": "exit.changed_mind.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WE_FIGHT_AT_PLUTO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.changed_mind",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_changed_mind",
+      "next": "exit.changed_mind.speech"
+    },
+    {
+      "id": "join",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "join",
+      "next": "join.capacity"
+    },
+    {
+      "id": "join.capacity",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"query": "fleet.slots", "args": ["spathi"]}, 0]}, "next": "join.full"}],
+      "otherwise": "join.offer"
+    },
+    {
+      "id": "join.full",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TOO_SCARY"]}],
+      "next": "end"
+    },
+    {
+      "id": "join.offer",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_JOIN"]}],
+      "next": "join.gift"
+    },
+    {
+      "id": "join.gift",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["spathi", "fwiffo", 1]
+      },
+      "save_as": "join_gift",
+      "next": "end"
+    },
+    {
+      "id": "hi_there",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ARE_YOU_SURE"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "dont_kill",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WONT"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "youre_forgiven",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THANKS_FOR_FORGIVENESS"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "you_wont_die_yet",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ETERNAL_GRATITUDE"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "you_may_live",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GEE_THANKS"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "youve_got_me_all_wrong",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SORRY_NO_COORDS"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "join.refuse",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["local", "join_refusals", [["WONT_JOIN_1"], ["WONT_JOIN_2"], ["WONT_JOIN_3"]], "repeat_last"]
+      },
+      "save_as": "refusal",
+      "next": "join.refuse.speech"
+    },
+    {
+      "id": "join.refuse.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "refusal.speech", 0]}}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_doing_on_pluto_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_20_YEARS_AGO"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_doing_on_pluto_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_doing_on_pluto_1", true]
+      },
+      "save_as": "what_doing_on_pluto_1",
+      "next": "what_doing_on_pluto_1.speech"
+    },
+    {
+      "id": "what_doing_on_pluto_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHEN_URQUAN_ARRIVED"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_doing_on_pluto_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_doing_on_pluto_2", true]
+      },
+      "save_as": "what_doing_on_pluto_2",
+      "next": "what_doing_on_pluto_2.speech"
+    },
+    {
+      "id": "what_doing_on_pluto_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["STATIONED_ON_EARTH_MOON"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_doing_on_pluto_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_doing_on_pluto_3", true]
+      },
+      "save_as": "what_doing_on_pluto_3",
+      "next": "what_doing_on_pluto_3.speech"
+    },
+    {
+      "id": "what_about_ilwrath.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ILWRATH"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_about_ilwrath",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_ilwrath", true]
+      },
+      "save_as": "what_about_ilwrath",
+      "next": "what_about_ilwrath.speech"
+    },
+    {
+      "id": "when_ilwrath.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THEN_ILWRATH"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "when_ilwrath",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "when_ilwrath", true]
+      },
+      "save_as": "when_ilwrath",
+      "next": "when_ilwrath.speech"
+    },
+    {
+      "id": "what_about_moonbase.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SET_UP_BASE"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_about_moonbase",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_moonbase", true]
+      },
+      "save_as": "what_about_moonbase",
+      "next": "what_about_moonbase.speech"
+    },
+    {
+      "id": "what_about_other_spathi.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SPATHI_ARE"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_about_other_spathi",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_other_spathi", true]
+      },
+      "save_as": "what_about_other_spathi",
+      "next": "what_about_other_spathi.speech"
+    },
+    {
+      "id": "how_many_crew.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THOUSANDS"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "how_many_crew",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_many_crew", true]
+      },
+      "save_as": "how_many_crew",
+      "next": "how_many_crew.speech"
+    },
+    {
+      "id": "really_thousands.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["JUST_ME"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "really_thousands",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "really_thousands", true]
+      },
+      "save_as": "really_thousands",
+      "next": "really_thousands.speech"
+    },
+    {
+      "id": "full_of_monsters.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOW_TRUE"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "full_of_monsters",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "full_of_monsters", true]
+      },
+      "save_as": "full_of_monsters",
+      "next": "full_of_monsters.speech"
+    },
+    {
+      "id": "what_enemy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ENEMY_IS"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_enemy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_enemy", true]
+      },
+      "save_as": "what_enemy",
+      "next": "what_enemy.speech"
+    },
+    {
+      "id": "why_you_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DREW_SHORT_STRAW"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "why_you_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_you_here", true]
+      },
+      "save_as": "why_you_here",
+      "next": "why_you_here.speech"
+    },
+    {
+      "id": "where_are_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_LEFT"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "where_are_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_are_urquan", true]
+      },
+      "save_as": "where_are_urquan",
+      "next": "where_are_urquan.speech"
+    },
+    {
+      "id": "what_about_other_races.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_OTHER_RACES"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_about_other_races",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_other_races", true]
+      },
+      "save_as": "what_about_other_races",
+      "next": "what_about_other_races.speech"
+    },
+    {
+      "id": "what_blaze_of_glory.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BLAZE_IS"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_blaze_of_glory",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_blaze_of_glory", true]
+      },
+      "save_as": "what_blaze_of_glory",
+      "next": "what_blaze_of_glory.speech"
+    },
+    {
+      "id": "what_about_yourself.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_MYSELF"]}],
+      "next": "pluto.menu"
+    },
+    {
+      "id": "what_about_yourself",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_yourself", true]
+      },
+      "save_as": "what_about_yourself",
+      "next": "what_about_yourself.speech"
+    },
+    {
+      "id": "pluto.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_doing_on_pluto_1",
+          "text": "what_doing_on_pluto_1",
+          "when": {"all": [true, {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}]},
+          "next": "what_doing_on_pluto_1"
+        },
+        {
+          "id": "what_doing_on_pluto_2",
+          "text": "what_doing_on_pluto_2",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "what_doing_on_pluto_2", false]}},
+              {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}}
+            ]
+          },
+          "next": "what_doing_on_pluto_2"
+        },
+        {
+          "id": "what_doing_on_pluto_3",
+          "text": "what_doing_on_pluto_3",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "what_doing_on_pluto_3", false]}},
+              {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+              {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}}
+            ]
+          },
+          "next": "what_doing_on_pluto_3"
+        },
+        {
+          "id": "what_about_ilwrath",
+          "text": "what_about_ilwrath",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "what_about_ilwrath", false]}}
+            ]
+          },
+          "next": "what_about_ilwrath"
+        },
+        {
+          "id": "when_ilwrath",
+          "text": "when_ilwrath",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "when_ilwrath", false]}},
+              {"not": {"not": {"get": ["local", "what_about_ilwrath", false]}}}
+            ]
+          },
+          "next": "when_ilwrath"
+        },
+        {
+          "id": "what_about_moonbase",
+          "text": "what_about_moonbase",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "what_about_moonbase", false]}}
+            ]
+          },
+          "next": "what_about_moonbase"
+        },
+        {
+          "id": "what_about_other_spathi",
+          "text": "what_about_other_spathi",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                  {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "what_about_other_spathi", false]}},
+              {"not": {"not": {"get": ["local", "what_about_moonbase", false]}}}
+            ]
+          },
+          "next": "what_about_other_spathi"
+        },
+        {
+          "id": "how_many_crew",
+          "text": "how_many_crew",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                    ]
+                  },
+                  {"not": {"not": {"get": ["local", "what_about_moonbase", false]}}},
+                  {"not": {"not": {"get": ["local", "what_about_other_spathi", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "how_many_crew", false]}}
+            ]
+          },
+          "next": "how_many_crew"
+        },
+        {
+          "id": "really_thousands",
+          "text": "really_thousands",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                    ]
+                  },
+                  {"not": {"not": {"get": ["local", "what_about_moonbase", false]}}},
+                  {"not": {"not": {"get": ["local", "what_about_other_spathi", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "really_thousands", false]}},
+              {"not": {"not": {"get": ["local", "how_many_crew", false]}}}
+            ]
+          },
+          "next": "really_thousands"
+        },
+        {
+          "id": "full_of_monsters",
+          "text": "full_of_monsters",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                    ]
+                  },
+                  {"not": {"not": {"get": ["local", "what_about_moonbase", false]}}},
+                  {"not": {"not": {"get": ["local", "what_about_other_spathi", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "full_of_monsters", false]}},
+              {"not": {"not": {"get": ["local", "how_many_crew", false]}}},
+              {"not": {"not": {"get": ["local", "really_thousands", false]}}}
+            ]
+          },
+          "next": "full_of_monsters"
+        },
+        {
+          "id": "what_enemy",
+          "text": "what_enemy",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                    ]
+                  },
+                  {"not": {"not": {"get": ["local", "what_about_moonbase", false]}}},
+                  {"not": {"not": {"get": ["local", "what_about_other_spathi", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "what_enemy", false]}}
+            ]
+          },
+          "next": "what_enemy"
+        },
+        {
+          "id": "why_you_here",
+          "text": "why_you_here",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_1", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_2", false]}}},
+                      {"not": {"not": {"get": ["local", "what_doing_on_pluto_3", false]}}}
+                    ]
+                  },
+                  {"not": {"not": {"get": ["local", "what_about_moonbase", false]}}},
+                  {"not": {"not": {"get": ["local", "what_about_other_spathi", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "why_you_here", false]}},
+              {"not": {"not": {"get": ["local", "what_enemy", false]}}}
+            ]
+          },
+          "next": "why_you_here"
+        },
+        {
+          "id": "where_are_urquan",
+          "text": "where_are_urquan",
+          "when": {"all": [true, {"not": {"get": ["local", "where_are_urquan", false]}}]},
+          "next": "where_are_urquan"
+        },
+        {
+          "id": "what_about_other_races",
+          "text": "what_about_other_races",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "what_about_other_races", false]}},
+              {"not": {"not": {"get": ["local", "where_are_urquan", false]}}}
+            ]
+          },
+          "next": "what_about_other_races"
+        },
+        {
+          "id": "what_blaze_of_glory",
+          "text": "what_blaze_of_glory",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "what_blaze_of_glory", false]}},
+              {"not": {"not": {"get": ["local", "where_are_urquan", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_other_races", false]}}}
+            ]
+          },
+          "next": "what_blaze_of_glory"
+        },
+        {
+          "id": "what_about_yourself",
+          "text": "what_about_yourself",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "what_about_yourself", false]}},
+              {"not": {"not": {"get": ["local", "where_are_urquan", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_other_races", false]}}},
+              {"not": {"not": {"get": ["local", "what_blaze_of_glory", false]}}}
+            ]
+          },
+          "next": "what_about_yourself"
+        },
+        {
+          "id": "join_us",
+          "text": "join_us",
+          "when": {"not": {"not": {"get": ["local", "full_of_monsters", false]}}},
+          "next": "join"
+        },
+        {
+          "id": "join_us_refused",
+          "text": "join_us",
+          "when": {"not": {"get": ["local", "full_of_monsters", false]}},
+          "next": "join.refuse"
+        },
+        {
+          "id": "changed_mind",
+          "text": "changed_mind",
+          "when": true,
+          "next": "exit.changed_mind"
+        }
+      ]
+    },
+    {
+      "id": "identify",
+      "kind": "dialogue",
+      "variants": [{"speech": ["I_FWIFFO"]}],
+      "responses": [
+        {
+          "id": "do_cultural",
+          "text": "do_cultural",
+          "when": true,
+          "next": "do_cultural"
+        },
+        {
+          "id": "youre_forgiven",
+          "text": "youre_forgiven",
+          "when": true,
+          "next": "youre_forgiven"
+        },
+        {
+          "id": "die_slugboy",
+          "text": "die_slugboy",
+          "when": true,
+          "next": "exit.die_slugboy"
+        }
+      ]
+    },
+    {
+      "id": "do_cultural",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WEZZY_WEZZAH"]}],
+      "responses": [
+        {
+          "id": "begin_ritual",
+          "text": "begin_ritual",
+          "when": true,
+          "next": "begin_ritual"
+        },
+        {
+          "id": "you_wont_die_yet",
+          "text": "you_wont_die_yet",
+          "when": true,
+          "next": "you_wont_die_yet"
+        },
+        {
+          "id": "we_fight_2",
+          "text": "we_fight_2",
+          "when": true,
+          "next": "exit.we_fight_2"
+        }
+      ]
+    },
+    {
+      "id": "begin_ritual",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MUST_DO_RITUAL_AT_HOME"]}],
+      "responses": [
+        {
+          "id": "you_may_live",
+          "text": "you_may_live",
+          "when": true,
+          "next": "you_may_live"
+        },
+        {
+          "id": "pay_for_crimes",
+          "text": "pay_for_crimes",
+          "when": true,
+          "next": "exit.pay_for_crimes"
+        },
+        {
+          "id": "what_are_coordinates",
+          "text": "what_are_coordinates",
+          "when": true,
+          "next": "what_are_coordinates"
+        }
+      ]
+    },
+    {
+      "id": "what_are_coordinates",
+      "kind": "dialogue",
+      "variants": [{"speech": ["COORDINATES_ARE"]}],
+      "responses": [
+        {
+          "id": "youve_got_me_all_wrong",
+          "text": "youve_got_me_all_wrong",
+          "when": true,
+          "next": "youve_got_me_all_wrong"
+        },
+        {
+          "id": "tell_me_coordinates",
+          "text": "tell_me_coordinates",
+          "when": true,
+          "next": "exit.tell_me_coordinates"
+        }
+      ]
+    },
+    {
+      "id": "pluto.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SORRY_ABOUT_THAT"]}],
+      "responses": [
+        {
+          "id": "identify",
+          "text": "identify",
+          "when": true,
+          "next": "identify"
+        },
+        {
+          "id": "hi_there",
+          "text": "hi_there",
+          "when": true,
+          "next": "hi_there"
+        },
+        {
+          "id": "dont_kill",
+          "text": "dont_kill",
+          "when": true,
+          "next": "dont_kill"
+        },
+        {
+          "id": "we_fight_1",
+          "text": "we_fight_1",
+          "when": true,
+          "next": "exit.we_fight_1"
+        }
+      ]
+    },
+    {
+      "id": "pluto.password",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_SPATHI_PASSWORD", 0]
+      },
+      "save_as": "pluto_password",
+      "next": "pluto.password.visits"
+    },
+    {
+      "id": "pluto.password.visits",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 0]
+      },
+      "save_as": "pluto_password_visits",
+      "next": "pluto.intro"
+    },
+    {
+      "id": "pluto.entry",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 7]}, "next": "pluto.password"}],
+      "otherwise": "pluto.intro"
+    },
+    {
+      "id": "whats_up_space_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "whats_up_space_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_space_2", true]
+      },
+      "save_as": "whats_up_space_2",
+      "next": "whats_up_space_2.speech"
+    },
+    {
+      "id": "give_us_info_from_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GET_INFO_FROM_SPATHIWA"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "give_us_info_from_space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "give_us_info_from_space", true]
+      },
+      "save_as": "give_us_info_from_space",
+      "next": "give_us_info_from_space.speech"
+    },
+    {
+      "id": "give_us_resources_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GET_RESOURCES_FROM_SPATHIWA"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "give_us_resources_space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "give_us_resources_space", true]
+      },
+      "save_as": "give_us_resources_space",
+      "next": "give_us_resources_space.speech"
+    },
+    {
+      "id": "what_do_for_fun.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_THIS_FOR_FUN"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "what_do_for_fun",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_do_for_fun", true]
+      },
+      "save_as": "what_do_for_fun",
+      "next": "what_do_for_fun.speech"
+    },
+    {
+      "id": "ally.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_space_2",
+          "text": "whats_up_space_2",
+          "when": {"not": {"get": ["local", "whats_up_space_2", false]}},
+          "next": "whats_up_space_2"
+        },
+        {
+          "id": "give_us_info_from_space",
+          "text": "give_us_info_from_space",
+          "when": {"not": {"get": ["local", "give_us_info_from_space", false]}},
+          "next": "give_us_info_from_space"
+        },
+        {
+          "id": "give_us_resources_space",
+          "text": "give_us_resources_space",
+          "when": {"not": {"get": ["local", "give_us_resources_space", false]}},
+          "next": "give_us_resources_space"
+        },
+        {
+          "id": "what_do_for_fun",
+          "text": "what_do_for_fun",
+          "when": {"not": {"get": ["local", "what_do_for_fun", false]}},
+          "next": "what_do_for_fun"
+        },
+        {
+          "id": "bye_ally_space",
+          "text": "bye_ally_space",
+          "when": true,
+          "next": "exit.bye_ally_space"
+        }
+      ]
+    },
+    {
+      "id": "whats_up_space_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_1"]}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "whats_up_space_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_space_1", true]
+      },
+      "save_as": "whats_up_space_1",
+      "next": "whats_up_space_1.speech"
+    },
+    {
+      "id": "since_friendly_give_stuff.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_ADVICE"]}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "since_friendly_give_stuff",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "since_friendly_give_stuff", true]
+      },
+      "save_as": "since_friendly_give_stuff",
+      "next": "since_friendly_give_stuff.speech"
+    },
+    {
+      "id": "friendly.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_space_1",
+          "text": "whats_up_space_1",
+          "when": {"not": {"get": ["local", "whats_up_space_1", false]}},
+          "next": "whats_up_space_1"
+        },
+        {
+          "id": "since_friendly_give_stuff",
+          "text": "since_friendly_give_stuff",
+          "when": {"not": {"get": ["local", "since_friendly_give_stuff", false]}},
+          "next": "since_friendly_give_stuff"
+        },
+        {
+          "id": "bye_friendly_space",
+          "text": "bye_friendly_space",
+          "when": true,
+          "next": "exit.bye_friendly_space"
+        }
+      ]
+    },
+    {
+      "id": "ally.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SPATHI_VISITS", [["INIT_ALLIED_HELLO_SPACE"], ["SUBSEQUENT_ALLIED_HELLO_SPACE"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "ally.greet.speech"
+    },
+    {
+      "id": "ally.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "friendly.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SPATHI_VISITS", [["INIT_FRIENDLY_HELLO_SPACE"], ["SUBSEQUENT_FRIENDLY_HELLO_SPACE"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "friendly.greet.speech"
+    },
+    {
+      "id": "friendly.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "friendly.menu"
+    },
+    {
+      "id": "neutral.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SPATHI_VISITS", [["INIT_NEUTRAL_HELLO_SPACE"], ["SUBSEQUENT_NEUTRAL_HELLO_SPACE"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "neutral.greet.speech"
+    },
+    {
+      "id": "neutral.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "angry.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SPATHI_VISITS", [["INIT_ANGRY_HELLO_SPACE"], ["SUBSEQUENT_ANGRY_HELLO_SPACE"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "angry.greet.speech"
+    },
+    {
+      "id": "angry.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "angry.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "give_info_space",
+          "text": "give_info_space",
+          "when": true,
+          "next": "exit.give_info_space"
+        },
+        {
+          "id": "we_sorry_space",
+          "text": "we_sorry_space",
+          "when": true,
+          "next": "exit.we_sorry_space"
+        },
+        {
+          "id": "we_fight_again_space",
+          "text": "we_fight_again_space",
+          "when": true,
+          "next": "exit.we_fight_again_space"
+        },
+        {
+          "id": "bye_angry_space",
+          "text": "bye_angry_space",
+          "when": true,
+          "next": "exit.bye_angry_space"
+        }
+      ]
+    },
+    {
+      "id": "hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_YOU_FOREVER_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "hate",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hate",
+      "next": "hate.speech"
+    },
+    {
+      "id": "look_weird.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_LOOK_WEIRD"]}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "look_weird",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_STACK0", 1]
+      },
+      "save_as": "look_weird",
+      "next": "look_weird.speech"
+    },
+    {
+      "id": "no_look_really_weird.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_YOU_LOOK_REALLY_WEIRD"]}],
+      "next": "neutral.menu"
+    },
+    {
+      "id": "no_look_really_weird",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_STACK0", 2]
+      },
+      "save_as": "no_look_really_weird",
+      "next": "no_look_really_weird.speech"
+    },
+    {
+      "id": "neutral.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "look_weird",
+          "text": "look_weird",
+          "when": {"eq": [{"get": ["story", "SPATHI_STACK0", 0]}, 0]},
+          "next": "look_weird"
+        },
+        {
+          "id": "no_look_really_weird",
+          "text": "no_look_really_weird",
+          "when": {"eq": [{"get": ["story", "SPATHI_STACK0", 0]}, 1]},
+          "next": "no_look_really_weird"
+        },
+        {
+          "id": "come_in_peace",
+          "text": "come_in_peace",
+          "when": {"eq": [{"get": ["story", "SPATHI_STACK1", 0]}, 0]},
+          "next": "befriend.intro"
+        },
+        {
+          "id": "prepare_to_die",
+          "text": "prepare_to_die",
+          "when": {"eq": [{"get": ["story", "SPATHI_STACK2", 0]}, 0]},
+          "next": "antagonize"
+        },
+        {
+          "id": "attack_you_now",
+          "text": "attack_you_now",
+          "when": {"not": {"eq": [{"get": ["story", "SPATHI_STACK2", 0]}, 0]}},
+          "next": "exit.attack_you_now"
+        },
+        {
+          "id": "part_in_peace",
+          "text": "part_in_peace",
+          "when": true,
+          "next": "exit.part_in_peace"
+        }
+      ]
+    },
+    {
+      "id": "antagonize.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ALWAYS_PREPARED"]}],
+      "next": "antagonize.menu"
+    },
+    {
+      "id": "antagonize",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_STACK2", 1]
+      },
+      "save_as": "antagonize",
+      "next": "antagonize.speech"
+    },
+    {
+      "id": "wanna_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YES_WE_DO"]}],
+      "next": "antagonize.menu"
+    },
+    {
+      "id": "wanna_fight",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "wanna_fight", true]
+      },
+      "save_as": "wanna_fight",
+      "next": "wanna_fight.speech"
+    },
+    {
+      "id": "so_lets_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_LETS_FIGHT"]}],
+      "next": "antagonize.menu"
+    },
+    {
+      "id": "so_lets_fight",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "so_lets_fight", true]
+      },
+      "save_as": "so_lets_fight",
+      "next": "so_lets_fight.speech"
+    },
+    {
+      "id": "so_lets_fight_already.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_REALLY_WANT_TO_FIGHT"]}],
+      "next": "antagonize.menu"
+    },
+    {
+      "id": "so_lets_fight_already",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "so_lets_fight_already", true]
+      },
+      "save_as": "so_lets_fight_already",
+      "next": "so_lets_fight_already.speech"
+    },
+    {
+      "id": "heard_youre_cowards.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DARN_TOOTIN"]}],
+      "next": "antagonize.menu"
+    },
+    {
+      "id": "heard_youre_cowards",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "heard_youre_cowards", true]
+      },
+      "save_as": "heard_youre_cowards",
+      "next": "heard_youre_cowards.speech"
+    },
+    {
+      "id": "antagonize.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "wanna_fight",
+          "text": "wanna_fight",
+          "when": {"all": [true, {"not": {"get": ["local", "wanna_fight", false]}}]},
+          "next": "wanna_fight"
+        },
+        {
+          "id": "so_lets_fight",
+          "text": "so_lets_fight",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "so_lets_fight", false]}},
+              {"not": {"not": {"get": ["local", "wanna_fight", false]}}}
+            ]
+          },
+          "next": "so_lets_fight"
+        },
+        {
+          "id": "so_lets_fight_already",
+          "text": "so_lets_fight_already",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "so_lets_fight_already", false]}},
+              {"not": {"not": {"get": ["local", "wanna_fight", false]}}},
+              {"not": {"not": {"get": ["local", "so_lets_fight", false]}}}
+            ]
+          },
+          "next": "so_lets_fight_already"
+        },
+        {
+          "id": "heard_youre_cowards",
+          "text": "heard_youre_cowards",
+          "when": {"not": {"get": ["local", "heard_youre_cowards", false]}},
+          "next": "heard_youre_cowards"
+        },
+        {
+          "id": "attack_you_now",
+          "text": "attack_you_now",
+          "when": true,
+          "next": "exit.attack_you_now"
+        }
+      ]
+    },
+    {
+      "id": "befriend.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["AGAINST_NATURE"]}],
+      "next": "befriend.route.0"
+    },
+    {
+      "id": "looking_for_a_few_good_squids.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_SLAVES"]}],
+      "next": "befriend.route.0"
+    },
+    {
+      "id": "looking_for_a_few_good_squids",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "looking_for_a_few_good_squids", true]
+      },
+      "save_as": "looking_for_a_few_good_squids",
+      "next": "looking_for_a_few_good_squids.speech"
+    },
+    {
+      "id": "why_slaves.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["UMGAH_TRICK"]}],
+      "next": "befriend.route.0"
+    },
+    {
+      "id": "why_slaves",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_slaves", true]
+      },
+      "save_as": "why_slaves",
+      "next": "why_slaves.speech"
+    },
+    {
+      "id": "tell_us_about_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US"]}],
+      "next": "befriend.route.1"
+    },
+    {
+      "id": "tell_us_about_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_us_about_you", true]
+      },
+      "save_as": "tell_us_about_you",
+      "next": "tell_us_about_you.speech"
+    },
+    {
+      "id": "what_you_really_want.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WANT_THIS"]}],
+      "next": "befriend.route.0"
+    },
+    {
+      "id": "what_you_really_want",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_you_really_want", true]
+      },
+      "save_as": "what_you_really_want",
+      "next": "what_you_really_want.speech"
+    },
+    {
+      "id": "how_about_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SURE"]}],
+      "next": "befriend.route.0"
+    },
+    {
+      "id": "how_about_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_about_alliance", true]
+      },
+      "save_as": "how_about_alliance",
+      "next": "how_about_alliance.speech"
+    },
+    {
+      "id": "befriend.route.0",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "looking_for_a_few_good_squids", false]}}},
+              {"not": {"not": {"get": ["local", "why_slaves", false]}}},
+              {"not": {"not": {"get": ["local", "tell_us_about_you", false]}}},
+              {"not": {"not": {"get": ["local", "what_you_really_want", false]}}},
+              {"not": {"not": {"get": ["local", "how_about_alliance", false]}}}
+            ]
+          },
+          "next": "befriend.done"
+        }
+      ],
+      "otherwise": "befriend.0"
+    },
+    {
+      "id": "befriend.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "looking_for_a_few_good_squids",
+          "text": "looking_for_a_few_good_squids",
+          "when": {"all": [true, {"not": {"get": ["local", "looking_for_a_few_good_squids", false]}}]},
+          "next": "looking_for_a_few_good_squids"
+        },
+        {
+          "id": "why_slaves",
+          "text": "why_slaves",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "why_slaves", false]}},
+              {"not": {"not": {"get": ["local", "looking_for_a_few_good_squids", false]}}}
+            ]
+          },
+          "next": "why_slaves"
+        },
+        {
+          "id": "tell_us_about_you",
+          "text": "tell_us_about_you",
+          "when": {"all": [{"not": {"get": ["local", "tell_us_about_you", false]}}, true]},
+          "next": "tell_us_about_you"
+        },
+        {
+          "id": "what_you_really_want",
+          "text": "what_you_really_want",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_you_really_want", false]}},
+              {"not": {"not": {"get": ["local", "tell_us_about_you", false]}}}
+            ]
+          },
+          "next": "what_you_really_want"
+        },
+        {
+          "id": "how_about_alliance",
+          "text": "how_about_alliance",
+          "when": {"not": {"get": ["local", "how_about_alliance", false]}},
+          "next": "how_about_alliance"
+        }
+      ]
+    },
+    {
+      "id": "befriend.route.1",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "looking_for_a_few_good_squids", false]}}},
+              {"not": {"not": {"get": ["local", "why_slaves", false]}}},
+              {"not": {"not": {"get": ["local", "tell_us_about_you", false]}}},
+              {"not": {"not": {"get": ["local", "what_you_really_want", false]}}},
+              {"not": {"not": {"get": ["local", "how_about_alliance", false]}}}
+            ]
+          },
+          "next": "befriend.done"
+        }
+      ],
+      "otherwise": "befriend.1"
+    },
+    {
+      "id": "befriend.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "tell_us_about_you",
+          "text": "tell_us_about_you",
+          "when": {"all": [{"not": {"get": ["local", "tell_us_about_you", false]}}, true]},
+          "next": "tell_us_about_you"
+        },
+        {
+          "id": "what_you_really_want",
+          "text": "what_you_really_want",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_you_really_want", false]}},
+              {"not": {"not": {"get": ["local", "tell_us_about_you", false]}}}
+            ]
+          },
+          "next": "what_you_really_want"
+        },
+        {
+          "id": "looking_for_a_few_good_squids",
+          "text": "looking_for_a_few_good_squids",
+          "when": {"all": [true, {"not": {"get": ["local", "looking_for_a_few_good_squids", false]}}]},
+          "next": "looking_for_a_few_good_squids"
+        },
+        {
+          "id": "why_slaves",
+          "text": "why_slaves",
+          "when": {
+            "all": [
+              true,
+              {"not": {"get": ["local", "why_slaves", false]}},
+              {"not": {"not": {"get": ["local", "looking_for_a_few_good_squids", false]}}}
+            ]
+          },
+          "next": "why_slaves"
+        },
+        {
+          "id": "how_about_alliance",
+          "text": "how_about_alliance",
+          "when": {"not": {"get": ["local", "how_about_alliance", false]}},
+          "next": "how_about_alliance"
+        }
+      ]
+    },
+    {
+      "id": "befriend.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_STACK1", 1]
+      },
+      "save_as": "befriend_done",
+      "next": "neutral.menu"
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 1]},
+          "next": "pluto.entry"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 2]},
+          "next": "hate"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 1]},
+          "next": "angry.greet"
+        },
+        {
+          "when": {"eq": [{"query": "galaxy.relationship", "args": ["spathi"]}, "allied"]},
+          "next": "ally.greet"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "SPATHI_QUEST", 0]}, 0]},
+          "next": "friendly.greet"
+        }
+      ],
+      "otherwise": "neutral.greet"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

@@ -164,3 +164,16 @@ BOOST_FIXTURE_TEST_CASE(conversation_backend_failure_releases_the_script_borrow_
     BOOST_TEST(completed == 0u);
     BOOST_CHECK_THROW(GetConversationData(), std::logic_error);
 }
+
+BOOST_FIXTURE_TEST_CASE(graph_owned_conversation_needs_no_empty_native_lifecycle_callbacks, Fixture)
+{
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Graph"}), uqm::SinglePlayerId};
+    LOCDATA data{};
+    data.AlienTextWidth = 77;
+    {
+        uqm::ConversationRuntime conversation{session, data};
+        conversation.finishWithoutDialogue();
+        BOOST_TEST(GetConversationData()->AlienTextWidth == 77u);
+    }
+    BOOST_CHECK_THROW(GetConversationData(), std::logic_error);
+}

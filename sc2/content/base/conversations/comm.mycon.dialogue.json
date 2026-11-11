@@ -1,0 +1,2837 @@
+{
+  "version": 1,
+  "node_count": 240,
+  "id": "mycon",
+  "resource": "comm.mycon.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native asset configuration and a bounded mycon.ramble bookkeeping handler remain; cached random callback selection, ordinary topics and ambush are graph data."
+  },
+  "phrases": [
+    {
+      "id": "TELL_US_ABOUT_WORLD",
+      "index": 0,
+      "text": "Your suggestion is appropriate.\nAcceptable new worlds are a priority for the rapid and complete spread of Juffo-Wup.\nWe wish to know more for our suitability assessment.\nTell us of this world.",
+      "voice": "mycon-000.ogg",
+      "original_text_hash": 7991388610420952838
+    },
+    {
+      "id": "BYE_AND_DIE_HOMEWORLD",
+      "index": 1,
+      "text": "You impede the flow of Juffo-Wup through the Universe.\nWe will now remove this clog.\nWe will now aid Juffo-Wup by eliminating you!",
+      "voice": "mycon-001.ogg",
+      "original_text_hash": 16686065030885705814
+    },
+    {
+      "id": "RAMBLE_1",
+      "index": 2,
+      "text": "A single spore lands, finds nourishment in decay and soon attains maturity..\nIn turn it exhales a cloud of new life, a thousand spores, each lands, finds nourishment in decay\nso progresses Juffo-Wup.",
+      "voice": "mycon-002.ogg",
+      "original_text_hash": 17101914656050364758
+    },
+    {
+      "id": "RAMBLE_2",
+      "index": 3,
+      "text": "Our bodies seethe with the passion of our genes.\nA thousand of your species do not possess the richness in one of my cells.",
+      "voice": "mycon-003.ogg",
+      "original_text_hash": 9320380762562425322
+    },
+    {
+      "id": "RAMBLE_3",
+      "index": 4,
+      "text": "I fill with my parents' parents' parents' parents' parents\nI am they -- and they are us. Then, and now.",
+      "voice": "mycon-004.ogg",
+      "original_text_hash": 18293032259583724474
+    },
+    {
+      "id": "RAMBLE_4",
+      "index": 5,
+      "text": "The Deep Children are part of Juffo-Wup -- home builders.\nThe dwellers in the Mohorovichic.",
+      "voice": "mycon-005.ogg",
+      "original_text_hash": 4135788851480737630
+    },
+    {
+      "id": "RAMBLE_5",
+      "index": 6,
+      "text": "I am Dugee\nI am the purity monitor\nI choose what buds are permitted to mature\nand which must be eradicated.\nI died of general misfunction 57,283 years ago.",
+      "voice": "mycon-006.ogg",
+      "original_text_hash": 4724196920426408693
+    },
+    {
+      "id": "RAMBLE_6",
+      "index": 7,
+      "text": "A cold rock, spinning silently in the Void, a womb for the Children.",
+      "voice": "mycon-007.ogg",
+      "original_text_hash": 1231279108149686068
+    },
+    {
+      "id": "RAMBLE_7",
+      "index": 8,
+      "text": "Pulsing hot liquid flows through my outstretched tendrils, sending thrills into my interior.\nThe moment has come. I swell and burst.\nAbove me a cloud of whispering life whirls through the air.\nI am content.",
+      "voice": "mycon-008.ogg",
+      "original_text_hash": 900704955248218212
+    },
+    {
+      "id": "RAMBLE_8",
+      "index": 9,
+      "text": "The Juffo-Wup is strong in this place.",
+      "voice": "mycon-009.ogg",
+      "original_text_hash": 9365872146218454364
+    },
+    {
+      "id": "RAMBLE_9",
+      "index": 10,
+      "text": "Your simple sexual process produces random mosaics of genetic instructions\nyet with the simplicity of breath, I modify my own patterns.\nYou humans improve a tool and double your capabilities.\nWe Mycon improve ourselves and increase a thousand-fold.",
+      "voice": "mycon-010.ogg",
+      "original_text_hash": 13627985890564409075
+    },
+    {
+      "id": "RAMBLE_10",
+      "index": 11,
+      "text": "The Deep Children!\nSpears of light in the darkness! \nTheir discarded husks speak of joy to come.",
+      "voice": "mycon-011.ogg",
+      "original_text_hash": 4435676399941572180
+    },
+    {
+      "id": "RAMBLE_11",
+      "index": 12,
+      "text": "I have chosen my offsprings' memories carefully from my set of remembrances\nthe sweet and warm times of my existence and those of my parents' parents' parents\nthe bits of a million lifetimes coalesced into a birth gift of complete awareness.",
+      "voice": "mycon-012.ogg",
+      "original_text_hash": 4680804561189366256
+    },
+    {
+      "id": "RAMBLE_12",
+      "index": 13,
+      "text": "In the dark they grow, the deep fire feeds the Children.\nTheir birth breathes warmth across a cold world.",
+      "voice": "mycon-013.ogg",
+      "original_text_hash": 9678426714250836068
+    },
+    {
+      "id": "RAMBLE_13",
+      "index": 14,
+      "text": "`...the system requires more energy. A convenient source lies beneath the crust...'",
+      "voice": "mycon-014.ogg",
+      "original_text_hash": 13788678483380046264
+    },
+    {
+      "id": "RAMBLE_14",
+      "index": 15,
+      "text": "We look to Juffo-Wup for direction, and it provides the pattern\nendless expansion with purity of achievement and intolerance of error.",
+      "voice": "mycon-015.ogg",
+      "original_text_hash": 11028195705704111295
+    },
+    {
+      "id": "RAMBLE_15",
+      "index": 16,
+      "text": "I am Shloosh\nI was incinerated fourteen thousand Earth years ago\nI live now, for but a moment\nand then, I am gone.",
+      "voice": "mycon-016.ogg",
+      "original_text_hash": 15979927192719061849
+    },
+    {
+      "id": "RAMBLE_16",
+      "index": 17,
+      "text": "`...incorporation of dense amphibole fibers ensure survival in environmental extremes...'",
+      "voice": "mycon-017.ogg",
+      "original_text_hash": 14719194522847328147
+    },
+    {
+      "id": "RAMBLE_17",
+      "index": 18,
+      "text": "I yearn for magma\nthe flowing warm basalts\nthe red glow of the lava pools.",
+      "voice": "mycon-018.ogg",
+      "original_text_hash": 2291118767588310319
+    },
+    {
+      "id": "RAMBLE_18",
+      "index": 19,
+      "text": "When we encounter the Non, we must absorb the Non or reject the Non so that it is no longer Non.",
+      "voice": "mycon-019.ogg",
+      "original_text_hash": 10951316710440585799
+    },
+    {
+      "id": "RAMBLE_19",
+      "index": 20,
+      "text": "`...entry of noise into the signal is unavoidable. We must include a filtering mechanism...'",
+      "voice": "mycon-020.ogg",
+      "original_text_hash": 13373338327840123315
+    },
+    {
+      "id": "RAMBLE_20",
+      "index": 21,
+      "text": "Cessation of an individual is unavoidable\na consequence of existence\nyet with the birth of life, individuality is transferred in part\nand may occasionally gain dominance for an interval\nachieving a kind of shared immortality.",
+      "voice": "mycon-021.ogg",
+      "original_text_hash": 6356062537857867583
+    },
+    {
+      "id": "RAMBLE_21",
+      "index": 22,
+      "text": "`...Survival is a priority. Expansion is a priority. Processing is a priority...'",
+      "voice": "mycon-022.ogg",
+      "original_text_hash": 14512279102726093549
+    },
+    {
+      "id": "RAMBLE_22",
+      "index": 23,
+      "text": "Juffo-Wup acknowledges the existence of un-Voidable Non\nwhen we are faced with such, we join, absorb and wait for our opportunity\nto learn the weakness that will allow us to Void the Non.",
+      "voice": "mycon-023.ogg",
+      "original_text_hash": 15726792128993819491
+    },
+    {
+      "id": "RAMBLE_23",
+      "index": 24,
+      "text": "At times, I meet another, who shares with me the life of a parent inside the mind\nand if we speak this fragment becomes predominant in the both of us\nand self meets self with occasionally enlightening results.",
+      "voice": "mycon-024.ogg",
+      "original_text_hash": 13774408680042759268
+    },
+    {
+      "id": "RAMBLE_24",
+      "index": 25,
+      "text": "The Podships thrum with the plasma containment field\nwhose offspring seek to transform the Non to Void\nthe fields grow tighter, and tighter\nthe bass rumble of the generators rises gradually to a high burning scream\nsudden silence and a flash of light announce release\nthe hot pulsing subsides slowly.",
+      "voice": "mycon-025.ogg",
+      "original_text_hash": 16992185950922962984
+    },
+    {
+      "id": "RAMBLE_25",
+      "index": 26,
+      "text": "The Deep Children fall from the Void, gathering speed for the penetration\nThe tough casing warms as it passes through the atmosphere, glowing white as it hits the surface\nsolid rock flows like liquid, and the child slips into the warm, safe depths beneath the crust.",
+      "voice": "mycon-026.ogg",
+      "original_text_hash": 10695628126158194239
+    },
+    {
+      "id": "RAMBLE_26",
+      "index": 27,
+      "text": "`...look... think... act... look... learn... remember... teach... repeat...'",
+      "voice": "mycon-027.ogg",
+      "original_text_hash": 3225316379387217215
+    },
+    {
+      "id": "RAMBLE_27",
+      "index": 28,
+      "text": "The implantation fleet has assembled in orbit above the green world\nthe patterns of weakness reveal the point of introduction.\nThe Child is prepared for its birthing trip.\nRelease!",
+      "voice": "mycon-028.ogg",
+      "original_text_hash": 17033017687166451356
+    },
+    {
+      "id": "RAMBLE_28",
+      "index": 29,
+      "text": "I am Gussh\nI attend the birthing nodes\nI died 343 Earth years ago\nI do not know how.",
+      "voice": "mycon-029.ogg",
+      "original_text_hash": 13528684560824686894
+    },
+    {
+      "id": "RAMBLE_29",
+      "index": 30,
+      "text": "When Juffo-Wup is complete\nwhen at last there is no Void, no Non\nwhen the Creators return\nthen we can finally rest.",
+      "voice": "mycon-030.ogg",
+      "original_text_hash": 1943539618949573879
+    },
+    {
+      "id": "RAMBLE_30",
+      "index": 31,
+      "text": "Darkness is Void\nJuffo-Wup is light.",
+      "voice": "mycon-031.ogg",
+      "original_text_hash": 1784001663267477267
+    },
+    {
+      "id": "RAMBLE_31",
+      "index": 32,
+      "text": "`... planetary transformer biot 94-18: take your place at the transporter dais...'",
+      "voice": "mycon-032.ogg",
+      "original_text_hash": 4098796696108674766
+    },
+    {
+      "id": "RAMBLE_32",
+      "index": 33,
+      "text": "You are the Non. You must go now, and never return.",
+      "voice": "mycon-033.ogg",
+      "original_text_hash": 10994754447889471469
+    },
+    {
+      "id": "question_1",
+      "index": 34,
+      "text": "What can you tell me about your species?",
+      "voice": null,
+      "original_text_hash": 2252048262868042230
+    },
+    {
+      "id": "question_2",
+      "index": 35,
+      "text": "Well then, what can you tell us of your history?",
+      "voice": null,
+      "original_text_hash": 12574167205238394739
+    },
+    {
+      "id": "question_3",
+      "index": 36,
+      "text": "Why are you unwilling to address my questions?",
+      "voice": null,
+      "original_text_hash": 16377048759949271054
+    },
+    {
+      "id": "question_4",
+      "index": 37,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_5",
+      "index": 38,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_6",
+      "index": 39,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_7",
+      "index": 40,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_8",
+      "index": 41,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_9",
+      "index": 42,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_10",
+      "index": 43,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_11",
+      "index": 44,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_12",
+      "index": 45,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_13",
+      "index": 46,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_14",
+      "index": 47,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_15",
+      "index": 48,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "question_16",
+      "index": 49,
+      "text": "You're not paying any attention to me, are you?",
+      "voice": null,
+      "original_text_hash": 7221808185206858026
+    },
+    {
+      "id": "bye_space",
+      "index": 50,
+      "text": "Don't trouble yourself. I'll see myself out.",
+      "voice": null,
+      "original_text_hash": 3285281165266195672
+    },
+    {
+      "id": "BYE_AND_DIE_SPACE",
+      "index": 51,
+      "text": "Juffo-Wup fills in my fibers and I grow turgid. Violent action ensues.",
+      "voice": "mycon-034.ogg",
+      "original_text_hash": 5975744725000276364
+    },
+    {
+      "id": "gonna_die",
+      "index": 52,
+      "text": "Time to die.",
+      "voice": null,
+      "original_text_hash": 7329521521547695307
+    },
+    {
+      "id": "insult_1",
+      "index": 53,
+      "text": "I wonder how you would taste, fried in butter?",
+      "voice": null,
+      "original_text_hash": 2923894323096897326
+    },
+    {
+      "id": "insult_2",
+      "index": 54,
+      "text": "You know, I probably have some of your relatives between my toes!",
+      "voice": null,
+      "original_text_hash": 9139991257010232332
+    },
+    {
+      "id": "insult_3",
+      "index": 55,
+      "text": "Is that a rock you're sitting on, or do you just have a big butt?",
+      "voice": null,
+      "original_text_hash": 13083333365689284106
+    },
+    {
+      "id": "insult_4",
+      "index": 56,
+      "text": "I don't suppose there's a chance that you'll actually respond to what I am saying, is there?",
+      "voice": null,
+      "original_text_hash": 12935155372155228447
+    },
+    {
+      "id": "insult_5",
+      "index": 57,
+      "text": "I can't believe I'm trying to have a conversation with a hot fungus.",
+      "voice": null,
+      "original_text_hash": 17786174462843164198
+    },
+    {
+      "id": "insult_6",
+      "index": 58,
+      "text": "Stop wiggling those... those... whatever they are!",
+      "voice": null,
+      "original_text_hash": 2228057919615289708
+    },
+    {
+      "id": "insult_7",
+      "index": 59,
+      "text": "Where's the Absorbine Junior when you need it?",
+      "voice": null,
+      "original_text_hash": 15814322168095585082
+    },
+    {
+      "id": "insult_8",
+      "index": 60,
+      "text": "Helloo? Ugly! Can you hear me?",
+      "voice": null,
+      "original_text_hash": 6648047725064935193
+    },
+    {
+      "id": "come_in_peace",
+      "index": 61,
+      "text": "Mycon. Please try to understand. We wish peace between our peoples.",
+      "voice": null,
+      "original_text_hash": 17273442387028463376
+    },
+    {
+      "id": "HELLO_HOMEWORLD_1",
+      "index": 62,
+      "text": "Juffo-Wup is All... omni-existent, spreading and changing the Non into Juffo-Wup.\nYou are Non, who must become Juffo-Wup or Void.\nWe are the agents of Juffo-Wup.\nWe are the Mycon.",
+      "voice": "mycon-035.ogg",
+      "original_text_hash": 4103196878224758709
+    },
+    {
+      "id": "HELLO_HOMEWORLD_2",
+      "index": 63,
+      "text": "We are the Mycon.",
+      "voice": "mycon-036.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_3",
+      "index": 64,
+      "text": "We are the Mycon.",
+      "voice": "mycon-037.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_4",
+      "index": 65,
+      "text": "We are the Mycon.",
+      "voice": "mycon-038.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_5",
+      "index": 66,
+      "text": "We are the Mycon.",
+      "voice": "mycon-039.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_6",
+      "index": 67,
+      "text": "We are the Mycon.",
+      "voice": "mycon-040.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_7",
+      "index": 68,
+      "text": "We are the Mycon.",
+      "voice": "mycon-041.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_HOMEWORLD_8",
+      "index": 69,
+      "text": "We are the Mycon.",
+      "voice": "mycon-042.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_1",
+      "index": 70,
+      "text": "We are part of Juffo-Wup.\nJuffo-Wup is the hot light in the darkness.\nAll else is unfulfilled Void.\nThe source of Juffo-Wup is at 629.1, 220.8.\nWe are the Mycon.",
+      "voice": "mycon-043.ogg",
+      "original_text_hash": 905178738910664260
+    },
+    {
+      "id": "HELLO_SPACE_2",
+      "index": 71,
+      "text": "We are the Mycon.",
+      "voice": "mycon-044.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_3",
+      "index": 72,
+      "text": "We are the Mycon.",
+      "voice": "mycon-045.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_4",
+      "index": 73,
+      "text": "We are the Mycon.",
+      "voice": "mycon-046.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_5",
+      "index": 74,
+      "text": "We are the Mycon.",
+      "voice": "mycon-047.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_6",
+      "index": 75,
+      "text": "We are the Mycon.",
+      "voice": "mycon-048.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_7",
+      "index": 76,
+      "text": "We are the Mycon.",
+      "voice": "mycon-049.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "HELLO_SPACE_8",
+      "index": 77,
+      "text": "We are the Mycon.",
+      "voice": "mycon-050.ogg",
+      "original_text_hash": 2499259314859566656
+    },
+    {
+      "id": "lets_be_friends",
+      "index": 78,
+      "text": "Let's be friends.",
+      "voice": null,
+      "original_text_hash": 5061594325911537466
+    },
+    {
+      "id": "came_to_homeworld",
+      "index": 79,
+      "text": "We have come to your homeworld to seek a truce.",
+      "voice": null,
+      "original_text_hash": 1271311682284574319
+    },
+    {
+      "id": "submit_to_us",
+      "index": 80,
+      "text": "Heinous fungus! Submit to our will!",
+      "voice": null,
+      "original_text_hash": 9420528638911696427
+    },
+    {
+      "id": "bye_sun_device",
+      "index": 81,
+      "text": "We'll just be going now.",
+      "voice": null,
+      "original_text_hash": 5002625005893152655
+    },
+    {
+      "id": "GOODBYE_SUN_DEVICE",
+      "index": 82,
+      "text": "Begone from our special place.",
+      "voice": "mycon-051.ogg",
+      "original_text_hash": 5385509540828615887
+    },
+    {
+      "id": "RESPONSE_1",
+      "index": 83,
+      "text": "This is good.",
+      "voice": "mycon-052.ogg",
+      "original_text_hash": 7917500191479170210
+    },
+    {
+      "id": "RESPONSE_2",
+      "index": 84,
+      "text": "This is good.",
+      "voice": "mycon-053.ogg",
+      "original_text_hash": 7917500191479170210
+    },
+    {
+      "id": "RESPONSE_3",
+      "index": 85,
+      "text": "This is good.",
+      "voice": "mycon-054.ogg",
+      "original_text_hash": 7917500191479170210
+    },
+    {
+      "id": "clue_1",
+      "index": 86,
+      "text": "Its air is pure and sweet.",
+      "voice": null,
+      "original_text_hash": 1227712301410936172
+    },
+    {
+      "id": "clue_2",
+      "index": 87,
+      "text": "Abundant life covers its surface.",
+      "voice": null,
+      "original_text_hash": 4120620282862246583
+    },
+    {
+      "id": "clue_3",
+      "index": 88,
+      "text": "The sun gently warms the surface.",
+      "voice": null,
+      "original_text_hash": 18121742092940025253
+    },
+    {
+      "id": "what_about_shattered",
+      "index": 89,
+      "text": "Why are the Shattered Worlds found only in your region of space?",
+      "voice": null,
+      "original_text_hash": 5136077000006556765
+    },
+    {
+      "id": "ABOUT_SHATTERED",
+      "index": 90,
+      "text": "These are the homes of the Deep Children.",
+      "voice": "mycon-055.ogg",
+      "original_text_hash": 17054699889846637214
+    },
+    {
+      "id": "HELLO_SUN_DEVICE_WORLD_1",
+      "index": 91,
+      "text": "This is a special place\nfilled with Juffo-Wup.\nBut it is not the source.\nJuffo-Wup springs forth from 629.1, 220.8.\nWe must not allow this place to be soiled by the Non.\nYou must go. Now.",
+      "voice": "mycon-056.ogg",
+      "original_text_hash": 3312411681038514809
+    },
+    {
+      "id": "HELLO_SUN_DEVICE_WORLD_2",
+      "index": 92,
+      "text": "You have returned to our special place.\nThis is not permissible.\nLeave.",
+      "voice": "mycon-057.ogg",
+      "original_text_hash": 186156947208489273
+    },
+    {
+      "id": "whats_up_sun_device",
+      "index": 93,
+      "text": "What makes this world so special to you?",
+      "voice": null,
+      "original_text_hash": 13324903788675816902
+    },
+    {
+      "id": "GENERAL_INFO_SUN_DEVICE",
+      "index": 94,
+      "text": "Juffo-Wup is the power of life... hot warmth in the cold Void. \nIt flows through all things, binding them together, making them one.\nYou are Non-Juffo-Wup, you cannot understand.\nBelow is the pod of Juffo-Wup -- there for a thousand centuries.\nWhen we are cold, the pod opens and warms us.\nWhen it is dark, the pod clenches and lo, there is light.\nYou are the Non. The pod is not for you. You must leave.",
+      "voice": "mycon-058.ogg",
+      "original_text_hash": 7842377036480118536
+    },
+    {
+      "id": "like_to_land",
+      "index": 95,
+      "text": "I have business on this world.  Move aside.",
+      "voice": null,
+      "original_text_hash": 11531770024170394604
+    },
+    {
+      "id": "NEVER_LET_LAND",
+      "index": 96,
+      "text": "Juffo-Wup flows through Time and Space. It cannot be stopped by mere energy blasts.\nHowever, you are Non -- not part of Juffo-Wup.\nYou CAN be destroyed by energy blasts.\nLet us demonstrate.",
+      "voice": "mycon-059.ogg",
+      "original_text_hash": 3381907298168537209
+    },
+    {
+      "id": "bye_homeworld",
+      "index": 97,
+      "text": "Goodbye fungus-boys!",
+      "voice": null,
+      "original_text_hash": 16857307676813836001
+    },
+    {
+      "id": "i_have_a_cunning_plan",
+      "index": 98,
+      "text": "There is a world at the star Organon. I believe it is perfect for your Deep Children.",
+      "voice": null,
+      "original_text_hash": 16013866890367369862
+    },
+    {
+      "id": "DIE_LIAR",
+      "index": 99,
+      "text": "You are an obstruction to Juffo-Wup.\nYou must be removed.",
+      "voice": "mycon-060.ogg",
+      "original_text_hash": 5984450765858483930
+    },
+    {
+      "id": "how_goes_implanting",
+      "index": 100,
+      "text": "Have you visited the planet I told you about?",
+      "voice": null,
+      "original_text_hash": 9049723819823852202
+    },
+    {
+      "id": "UNFORSEEN_DELAYS",
+      "index": 101,
+      "text": "We have experienced unforeseen delays implanting Deep Children beneath the crust of Organon 1.\nHowever, Juffo-Wup is inevitable.  The Deep Children WILL be born.",
+      "voice": "mycon-061.ogg",
+      "original_text_hash": 8027493569844914622
+    },
+    {
+      "id": "DIE_THIEF",
+      "index": 102,
+      "text": "You have taken something from us which we value\nsomething which is important to Juffo-Wup.\nWe require the Solar Manipulator.\nWe will take it back from you now!",
+      "voice": "mycon-062.ogg",
+      "original_text_hash": 16868237556258907938
+    },
+    {
+      "id": "DIE_THIEF_AGAIN",
+      "index": 103,
+      "text": "You have taken something from us which we value... which is important to Juffo-Wup.\nReturn the Solar Manipulator immediately.",
+      "voice": "mycon-063.ogg",
+      "original_text_hash": 2789128342167217720
+    },
+    {
+      "id": "GOODBYE_AND_DIE",
+      "index": 104,
+      "text": "Juffo-Wup is All\nbut you are not a part of Juffo-Wup\ntherefore you must cease existence.\nWe shall make you cease to exist, for Juffo-Wup.",
+      "voice": "mycon-064.ogg",
+      "original_text_hash": 11414623119296493393
+    },
+    {
+      "id": "AMBUSH_TAIL",
+      "index": 105,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "RAMBLE_TAIL",
+      "index": 106,
+      "text": "",
+      "voice": null,
+      "original_text_hash": 14695981039346656037
+    },
+    {
+      "id": "WE_GO_TO_IMPLANT",
+      "index": 107,
+      "text": "If your words are true, we will gladly spread Juffo-Wup to a new world!\nWe will assemble the Birthing Fleet and send them to this planet.\nWe will send many ships to protect the Children as they grow.\nYou have been of service to us.\nYour insight into the ineffable Juffo-Wup is encouraging.\nPerhaps, if we were to plant spore sacs in your brain organ\nand let its tendrils spread through your flesh\nthen you would truly understand Juffo-Wup... become part of Juffo-Wup.\nYou WOULD be happier and more fulfilled.  Consider our offer.",
+      "voice": "mycon-065.ogg",
+      "original_text_hash": 17261573256258251725
+    },
+    {
+      "id": "WONT_FALL_FOR_TRICK",
+      "index": 108,
+      "text": "We do not interpret the will of Juffo-Wup.\nOnly the source is so empowered.\nUntil instructed otherwise, Juffo-Wup requires that we remain here.",
+      "voice": "mycon-066.ogg",
+      "original_text_hash": 14916200612461996960
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "SUN_DEVICE", 0]}, 0]},
+          "next": "thief.sequence"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "MYCON_KNOW_AMBUSH", 0]}, 0]},
+          "next": "liar"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "sun.sequence"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "home.sequence"
+        }
+      ],
+      "otherwise": "space.sequence"
+    },
+    {
+      "id": "thief.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "MYCON_VISITS", [["DIE_THIEF"], ["DIE_THIEF_AGAIN"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "thief.outcome"
+    },
+    {
+      "id": "thief.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "thief_outcome",
+      "next": "thief.speech"
+    },
+    {
+      "id": "thief.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "liar.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DIE_LIAR"]}],
+      "next": "end"
+    },
+    {
+      "id": "liar",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "liar",
+      "next": "liar.speech"
+    },
+    {
+      "id": "sun.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "MYCON_SUN_VISITS", [["HELLO_SUN_DEVICE_WORLD_1"], ["HELLO_SUN_DEVICE_WORLD_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "sun.sequence.speech"
+    },
+    {
+      "id": "sun.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "sun.menu"
+    },
+    {
+      "id": "home.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MYCON_HOME_VISITS",
+          [
+            ["HELLO_HOMEWORLD_1"],
+            ["HELLO_HOMEWORLD_2"],
+            ["HELLO_HOMEWORLD_3"],
+            ["HELLO_HOMEWORLD_4"],
+            ["HELLO_HOMEWORLD_5"],
+            ["HELLO_HOMEWORLD_6"],
+            ["HELLO_HOMEWORLD_7"],
+            ["HELLO_HOMEWORLD_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "home.sequence.chance"
+    },
+    {
+      "id": "home.sequence.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "home.sequence.speech"
+    },
+    {
+      "id": "home.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "normal.route"
+    },
+    {
+      "id": "space.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "MYCON_VISITS",
+          [
+            ["HELLO_SPACE_1"],
+            ["HELLO_SPACE_2"],
+            ["HELLO_SPACE_3"],
+            ["HELLO_SPACE_4"],
+            ["HELLO_SPACE_5"],
+            ["HELLO_SPACE_6"],
+            ["HELLO_SPACE_7"],
+            ["HELLO_SPACE_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.sequence.chance"
+    },
+    {
+      "id": "space.sequence.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "space.sequence.speech"
+    },
+    {
+      "id": "space.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "normal.route"
+    },
+    {
+      "id": "exit.bye_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BYE_AND_DIE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_space",
+      "next": "exit.bye_space.speech"
+    },
+    {
+      "id": "exit.bye_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BYE_AND_DIE_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_homeworld",
+      "next": "exit.bye_homeworld.speech"
+    },
+    {
+      "id": "exit.like_to_land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEVER_LET_LAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.like_to_land",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_like_to_land",
+      "next": "exit.like_to_land.speech"
+    },
+    {
+      "id": "exit.bye_sun_device.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_SUN_DEVICE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_sun_device",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_sun_device",
+      "next": "exit.bye_sun_device.speech"
+    },
+    {
+      "id": "sun.whats_up_sun_device.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SUN_DEVICE"]}],
+      "next": "sun.menu"
+    },
+    {
+      "id": "sun.whats_up_sun_device",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_sun_device", true]
+      },
+      "save_as": "sun_whats_up_sun_device",
+      "next": "sun.whats_up_sun_device.speech"
+    },
+    {
+      "id": "sun.how_goes_implanting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["UNFORSEEN_DELAYS"]}],
+      "next": "sun.menu"
+    },
+    {
+      "id": "sun.how_goes_implanting",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_implanting", true]
+      },
+      "save_as": "sun_how_goes_implanting",
+      "next": "sun.how_goes_implanting.speech"
+    },
+    {
+      "id": "sun.plan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WONT_FALL_FOR_TRICK"]}],
+      "next": "sun.menu"
+    },
+    {
+      "id": "sun.plan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_TRICK_AT_SUN", 1]
+      },
+      "save_as": "sun_plan",
+      "next": "sun.plan.speech"
+    },
+    {
+      "id": "sun.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_sun_device",
+          "text": "whats_up_sun_device",
+          "when": {"not": {"get": ["local", "whats_up_sun_device", false]}},
+          "next": "sun.whats_up_sun_device"
+        },
+        {
+          "id": "how_goes_implanting",
+          "text": "how_goes_implanting",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "how_goes_implanting", false]}},
+              {"ne": [{"get": ["story", "MYCON_FELL_FOR_AMBUSH", 0]}, 0]}
+            ]
+          },
+          "next": "sun.how_goes_implanting"
+        },
+        {
+          "id": "like_to_land",
+          "text": "like_to_land",
+          "when": {"ne": [{"get": ["story", "MYCON_FELL_FOR_AMBUSH", 0]}, 0]},
+          "next": "exit.like_to_land"
+        },
+        {
+          "id": "i_have_a_cunning_plan",
+          "text": "i_have_a_cunning_plan",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "MYCON_FELL_FOR_AMBUSH", 0]}, 0]}},
+              {"ne": [{"get": ["story", "MYCON_AMBUSH", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "NO_TRICK_AT_SUN", 0]}, 0]}}
+            ]
+          },
+          "next": "sun.plan"
+        },
+        {
+          "id": "bye_sun_device",
+          "text": "bye_sun_device",
+          "when": true,
+          "next": "exit.bye_sun_device"
+        }
+      ]
+    },
+    {
+      "id": "come_in_peace.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "come_in_peace.disable"
+    },
+    {
+      "id": "come_in_peace.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "come_in_peace", true]
+      },
+      "save_as": "come_in_peace_disable",
+      "next": "come_in_peace.chance"
+    },
+    {
+      "id": "come_in_peace.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "come_in_peace.speech"
+    },
+    {
+      "id": "come_in_peace.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "gonna_die.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "gonna_die.disable"
+    },
+    {
+      "id": "gonna_die.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "gonna_die", true]
+      },
+      "save_as": "gonna_die_disable",
+      "next": "gonna_die.chance"
+    },
+    {
+      "id": "gonna_die.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "gonna_die.speech"
+    },
+    {
+      "id": "gonna_die.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_1.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_1.disable"
+    },
+    {
+      "id": "insult_1.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_1", true]
+      },
+      "save_as": "insult_1_disable",
+      "next": "insult_1.chance"
+    },
+    {
+      "id": "insult_1.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_1.speech"
+    },
+    {
+      "id": "insult_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_2.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_2.disable"
+    },
+    {
+      "id": "insult_2.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_2", true]
+      },
+      "save_as": "insult_2_disable",
+      "next": "insult_2.chance"
+    },
+    {
+      "id": "insult_2.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_2.speech"
+    },
+    {
+      "id": "insult_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_3.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_3.disable"
+    },
+    {
+      "id": "insult_3.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_3", true]
+      },
+      "save_as": "insult_3_disable",
+      "next": "insult_3.chance"
+    },
+    {
+      "id": "insult_3.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_3.speech"
+    },
+    {
+      "id": "insult_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_4.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_4.disable"
+    },
+    {
+      "id": "insult_4.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_4", true]
+      },
+      "save_as": "insult_4_disable",
+      "next": "insult_4.chance"
+    },
+    {
+      "id": "insult_4.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_4.speech"
+    },
+    {
+      "id": "insult_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_5.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_5.disable"
+    },
+    {
+      "id": "insult_5.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_5", true]
+      },
+      "save_as": "insult_5_disable",
+      "next": "insult_5.chance"
+    },
+    {
+      "id": "insult_5.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_5.speech"
+    },
+    {
+      "id": "insult_5.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_6.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_6.disable"
+    },
+    {
+      "id": "insult_6.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_6", true]
+      },
+      "save_as": "insult_6_disable",
+      "next": "insult_6.chance"
+    },
+    {
+      "id": "insult_6.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_6.speech"
+    },
+    {
+      "id": "insult_6.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_7.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_7.disable"
+    },
+    {
+      "id": "insult_7.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_7", true]
+      },
+      "save_as": "insult_7_disable",
+      "next": "insult_7.chance"
+    },
+    {
+      "id": "insult_7.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_7.speech"
+    },
+    {
+      "id": "insult_7.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "insult_8.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "insult_8.disable"
+    },
+    {
+      "id": "insult_8.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_8", true]
+      },
+      "save_as": "insult_8_disable",
+      "next": "insult_8.chance"
+    },
+    {
+      "id": "insult_8.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "insult_8.speech"
+    },
+    {
+      "id": "insult_8.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_1.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_1.disable"
+    },
+    {
+      "id": "question_1.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_1", true]
+      },
+      "save_as": "question_1_disable",
+      "next": "question_1.chance"
+    },
+    {
+      "id": "question_1.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_1.speech"
+    },
+    {
+      "id": "question_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_2.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_2.disable"
+    },
+    {
+      "id": "question_2.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_2", true]
+      },
+      "save_as": "question_2_disable",
+      "next": "question_2.chance"
+    },
+    {
+      "id": "question_2.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_2.speech"
+    },
+    {
+      "id": "question_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_3.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_3.disable"
+    },
+    {
+      "id": "question_3.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_3", true]
+      },
+      "save_as": "question_3_disable",
+      "next": "question_3.chance"
+    },
+    {
+      "id": "question_3.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_3.speech"
+    },
+    {
+      "id": "question_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_4.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_4.disable"
+    },
+    {
+      "id": "question_4.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_4", true]
+      },
+      "save_as": "question_4_disable",
+      "next": "question_4.chance"
+    },
+    {
+      "id": "question_4.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_4.speech"
+    },
+    {
+      "id": "question_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_5.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_5.disable"
+    },
+    {
+      "id": "question_5.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_5", true]
+      },
+      "save_as": "question_5_disable",
+      "next": "question_5.chance"
+    },
+    {
+      "id": "question_5.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_5.speech"
+    },
+    {
+      "id": "question_5.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_6.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_6.disable"
+    },
+    {
+      "id": "question_6.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_6", true]
+      },
+      "save_as": "question_6_disable",
+      "next": "question_6.chance"
+    },
+    {
+      "id": "question_6.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_6.speech"
+    },
+    {
+      "id": "question_6.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_7.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_7.disable"
+    },
+    {
+      "id": "question_7.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_7", true]
+      },
+      "save_as": "question_7_disable",
+      "next": "question_7.chance"
+    },
+    {
+      "id": "question_7.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_7.speech"
+    },
+    {
+      "id": "question_7.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_8.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_8.disable"
+    },
+    {
+      "id": "question_8.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_8", true]
+      },
+      "save_as": "question_8_disable",
+      "next": "question_8.chance"
+    },
+    {
+      "id": "question_8.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_8.speech"
+    },
+    {
+      "id": "question_8.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_9.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_9.disable"
+    },
+    {
+      "id": "question_9.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_9", true]
+      },
+      "save_as": "question_9_disable",
+      "next": "question_9.chance"
+    },
+    {
+      "id": "question_9.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_9.speech"
+    },
+    {
+      "id": "question_9.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_10.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_10.disable"
+    },
+    {
+      "id": "question_10.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_10", true]
+      },
+      "save_as": "question_10_disable",
+      "next": "question_10.chance"
+    },
+    {
+      "id": "question_10.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_10.speech"
+    },
+    {
+      "id": "question_10.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_11.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_11.disable"
+    },
+    {
+      "id": "question_11.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_11", true]
+      },
+      "save_as": "question_11_disable",
+      "next": "question_11.chance"
+    },
+    {
+      "id": "question_11.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_11.speech"
+    },
+    {
+      "id": "question_11.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_12.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_12.disable"
+    },
+    {
+      "id": "question_12.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_12", true]
+      },
+      "save_as": "question_12_disable",
+      "next": "question_12.chance"
+    },
+    {
+      "id": "question_12.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_12.speech"
+    },
+    {
+      "id": "question_12.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_13.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_13.disable"
+    },
+    {
+      "id": "question_13.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_13", true]
+      },
+      "save_as": "question_13_disable",
+      "next": "question_13.chance"
+    },
+    {
+      "id": "question_13.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_13.speech"
+    },
+    {
+      "id": "question_13.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_14.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_14.disable"
+    },
+    {
+      "id": "question_14.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_14", true]
+      },
+      "save_as": "question_14_disable",
+      "next": "question_14.chance"
+    },
+    {
+      "id": "question_14.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_14.speech"
+    },
+    {
+      "id": "question_14.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_15.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_15.disable"
+    },
+    {
+      "id": "question_15.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_15", true]
+      },
+      "save_as": "question_15_disable",
+      "next": "question_15.chance"
+    },
+    {
+      "id": "question_15.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_15.speech"
+    },
+    {
+      "id": "question_15.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "question_16.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "question_16.disable"
+    },
+    {
+      "id": "question_16.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "question_16", true]
+      },
+      "save_as": "question_16_disable",
+      "next": "question_16.chance"
+    },
+    {
+      "id": "question_16.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "question_16.speech"
+    },
+    {
+      "id": "question_16.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "lets_be_friends.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "lets_be_friends.disable"
+    },
+    {
+      "id": "lets_be_friends.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "lets_be_friends", true]
+      },
+      "save_as": "lets_be_friends_disable",
+      "next": "lets_be_friends.chance"
+    },
+    {
+      "id": "lets_be_friends.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "lets_be_friends.speech"
+    },
+    {
+      "id": "lets_be_friends.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "came_to_homeworld.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "came_to_homeworld.disable"
+    },
+    {
+      "id": "came_to_homeworld.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "came_to_homeworld", true]
+      },
+      "save_as": "came_to_homeworld_disable",
+      "next": "came_to_homeworld.chance"
+    },
+    {
+      "id": "came_to_homeworld.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "came_to_homeworld.speech"
+    },
+    {
+      "id": "came_to_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "submit_to_us.route",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["result", "chance.value", 0]}, 76]}, "next": "combat.outcome"}],
+      "otherwise": "submit_to_us.disable"
+    },
+    {
+      "id": "submit_to_us.disable",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "submit_to_us", true]
+      },
+      "save_as": "submit_to_us_disable",
+      "next": "submit_to_us.chance"
+    },
+    {
+      "id": "submit_to_us.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "submit_to_us.speech"
+    },
+    {
+      "id": "submit_to_us.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "RAMBLE_TAIL"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "combat.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "combat_outcome",
+      "next": "combat.location"
+    },
+    {
+      "id": "combat.location",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "combat.home"}],
+      "otherwise": "combat.space"
+    },
+    {
+      "id": "combat.home",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "BYE_AND_DIE_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "combat.space",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "ramble.speech", 0]}, "BYE_AND_DIE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "normal.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "normal.home"}],
+      "otherwise": "normal.space"
+    },
+    {
+      "id": "normal.space",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "come_in_peace",
+          "text": "come_in_peace",
+          "when": {"not": {"get": ["local", "come_in_peace", false]}},
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "come_in_peace"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "come_in_peace.route"}
+        },
+        {
+          "id": "gonna_die",
+          "text": "gonna_die",
+          "when": {"not": {"get": ["local", "gonna_die", false]}},
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "gonna_die"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "gonna_die.route"}
+        },
+        {
+          "id": "insult_1",
+          "text": "insult_1",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 0]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_1"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_1.route"}
+        },
+        {
+          "id": "insult_2",
+          "text": "insult_2",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 1]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_2"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_2.route"}
+        },
+        {
+          "id": "insult_3",
+          "text": "insult_3",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 2]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_3"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_3.route"}
+        },
+        {
+          "id": "insult_4",
+          "text": "insult_4",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 3]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_4"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_4.route"}
+        },
+        {
+          "id": "insult_5",
+          "text": "insult_5",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 4]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_5"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_5.route"}
+        },
+        {
+          "id": "insult_6",
+          "text": "insult_6",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 5]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_6"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_6.route"}
+        },
+        {
+          "id": "insult_7",
+          "text": "insult_7",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 6]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_7"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_7.route"}
+        },
+        {
+          "id": "insult_8",
+          "text": "insult_8",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INSULTS", 0]}, 7]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "insult_8"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "insult_8.route"}
+        },
+        {
+          "id": "bye_space",
+          "text": "bye_space",
+          "when": true,
+          "next": "exit.bye_space"
+        }
+      ]
+    },
+    {
+      "id": "normal.home",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "question_1",
+          "text": "question_1",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 0]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_1"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_1.route"}
+        },
+        {
+          "id": "question_2",
+          "text": "question_2",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 1]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_2"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_2.route"}
+        },
+        {
+          "id": "question_3",
+          "text": "question_3",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 2]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_3"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_3.route"}
+        },
+        {
+          "id": "question_4",
+          "text": "question_4",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 3]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_4"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_4.route"}
+        },
+        {
+          "id": "question_5",
+          "text": "question_5",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 4]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_5"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_5.route"}
+        },
+        {
+          "id": "question_6",
+          "text": "question_6",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 5]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_6"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_6.route"}
+        },
+        {
+          "id": "question_7",
+          "text": "question_7",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 6]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_7"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_7.route"}
+        },
+        {
+          "id": "question_8",
+          "text": "question_8",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 7]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_8"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_8.route"}
+        },
+        {
+          "id": "question_9",
+          "text": "question_9",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 8]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_9"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_9.route"}
+        },
+        {
+          "id": "question_10",
+          "text": "question_10",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 9]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_10"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_10.route"}
+        },
+        {
+          "id": "question_11",
+          "text": "question_11",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 10]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_11"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_11.route"}
+        },
+        {
+          "id": "question_12",
+          "text": "question_12",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 11]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_12"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_12.route"}
+        },
+        {
+          "id": "question_13",
+          "text": "question_13",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 12]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_13"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_13.route"}
+        },
+        {
+          "id": "question_14",
+          "text": "question_14",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 13]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_14"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_14.route"}
+        },
+        {
+          "id": "question_15",
+          "text": "question_15",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 14]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_15"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_15.route"}
+        },
+        {
+          "id": "question_16",
+          "text": "question_16",
+          "when": {
+            "all": [
+              {"not": {"get": ["result", "ramble.made_choice", false]}},
+              {"eq": [{"get": ["story", "MYCON_INFO", 0]}, 15]}
+            ]
+          },
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "question_16"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "question_16.route"}
+        },
+        {
+          "id": "lets_be_friends",
+          "text": "lets_be_friends",
+          "when": {"not": {"get": ["local", "lets_be_friends", false]}},
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "lets_be_friends"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "lets_be_friends.route"}
+        },
+        {
+          "id": "came_to_homeworld",
+          "text": "came_to_homeworld",
+          "when": {"not": {"get": ["local", "came_to_homeworld", false]}},
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "came_to_homeworld"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "came_to_homeworld.route"}
+        },
+        {
+          "id": "submit_to_us",
+          "text": "submit_to_us",
+          "when": {"not": {"get": ["local", "submit_to_us", false]}},
+          "action": {
+            "verb": "handlers.prepare_report",
+            "args": ["mycon.ramble", {"literal": {"response": "submit_to_us"}}]
+          },
+          "save_as": "ramble",
+          "then": {"ok": "submit_to_us.route"}
+        },
+        {
+          "id": "what_about_shattered",
+          "text": "what_about_shattered",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "MYCON_FELL_FOR_AMBUSH", 0]}, 0]}},
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 1]}
+            ]
+          },
+          "next": "shattered"
+        },
+        {
+          "id": "i_have_a_cunning_plan",
+          "text": "i_have_a_cunning_plan",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "MYCON_FELL_FOR_AMBUSH", 0]}, 0]}},
+              {"ne": [{"get": ["story", "MYCON_AMBUSH", 0]}, 0]}
+            ]
+          },
+          "next": "trick.plan"
+        },
+        {
+          "id": "bye_homeworld",
+          "text": "bye_homeworld",
+          "when": true,
+          "next": "exit.bye_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "shattered",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_ABOUT_SHATTERED", 2]
+      },
+      "save_as": "shattered",
+      "next": "shattered.chance"
+    },
+    {
+      "id": "shattered.chance",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "chance",
+      "next": "shattered.speech"
+    },
+    {
+      "id": "shattered.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_SHATTERED"]}],
+      "next": "normal.route"
+    },
+    {
+      "id": "trick.plan",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TELL_US_ABOUT_WORLD", "AMBUSH_TAIL"]}],
+      "next": "trick.menu"
+    },
+    {
+      "id": "clue_1.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"get": ["local", "clue_1", false]},
+              {"get": ["local", "clue_2", false]},
+              {"get": ["local", "clue_3", false]}
+            ]
+          },
+          "next": "clue_1.mark"
+        }
+      ],
+      "otherwise": "clue_1.more"
+    },
+    {
+      "id": "clue_1.more",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_1", "AMBUSH_TAIL"]}],
+      "next": "trick.menu"
+    },
+    {
+      "id": "clue_1.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MYCON_FELL_FOR_AMBUSH", 1]
+      },
+      "save_as": "clue_1_mark",
+      "next": "clue_1.schedule"
+    },
+    {
+      "id": "clue_1.schedule",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_MYCON_MISSION", 0, 0, 0]
+      },
+      "save_as": "clue_1_schedule",
+      "next": "clue_1.peace"
+    },
+    {
+      "id": "clue_1.peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "clue_1_peace",
+      "next": "clue_1.finish"
+    },
+    {
+      "id": "clue_1.finish",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_1", "WE_GO_TO_IMPLANT"]}],
+      "next": "end"
+    },
+    {
+      "id": "clue_2.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"get": ["local", "clue_1", false]},
+              {"get": ["local", "clue_2", false]},
+              {"get": ["local", "clue_3", false]}
+            ]
+          },
+          "next": "clue_2.mark"
+        }
+      ],
+      "otherwise": "clue_2.more"
+    },
+    {
+      "id": "clue_2.more",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_2", "AMBUSH_TAIL"]}],
+      "next": "trick.menu"
+    },
+    {
+      "id": "clue_2.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MYCON_FELL_FOR_AMBUSH", 1]
+      },
+      "save_as": "clue_2_mark",
+      "next": "clue_2.schedule"
+    },
+    {
+      "id": "clue_2.schedule",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_MYCON_MISSION", 0, 0, 0]
+      },
+      "save_as": "clue_2_schedule",
+      "next": "clue_2.peace"
+    },
+    {
+      "id": "clue_2.peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "clue_2_peace",
+      "next": "clue_2.finish"
+    },
+    {
+      "id": "clue_2.finish",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_2", "WE_GO_TO_IMPLANT"]}],
+      "next": "end"
+    },
+    {
+      "id": "clue_3.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"get": ["local", "clue_1", false]},
+              {"get": ["local", "clue_2", false]},
+              {"get": ["local", "clue_3", false]}
+            ]
+          },
+          "next": "clue_3.mark"
+        }
+      ],
+      "otherwise": "clue_3.more"
+    },
+    {
+      "id": "clue_3.more",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_3", "AMBUSH_TAIL"]}],
+      "next": "trick.menu"
+    },
+    {
+      "id": "clue_3.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MYCON_FELL_FOR_AMBUSH", 1]
+      },
+      "save_as": "clue_3_mark",
+      "next": "clue_3.schedule"
+    },
+    {
+      "id": "clue_3.schedule",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_MYCON_MISSION", 0, 0, 0]
+      },
+      "save_as": "clue_3_schedule",
+      "next": "clue_3.peace"
+    },
+    {
+      "id": "clue_3.peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "clue_3_peace",
+      "next": "clue_3.finish"
+    },
+    {
+      "id": "clue_3.finish",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_3", "WE_GO_TO_IMPLANT"]}],
+      "next": "end"
+    },
+    {
+      "id": "trick.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "clue_1",
+          "text": "clue_1",
+          "when": {"not": {"get": ["local", "clue_1", false]}},
+          "action": {
+            "verb": "state.set",
+            "args": ["local", "clue_1", true]
+          },
+          "then": {"ok": "clue_1.check"}
+        },
+        {
+          "id": "clue_2",
+          "text": "clue_2",
+          "when": {"not": {"get": ["local", "clue_2", false]}},
+          "action": {
+            "verb": "state.set",
+            "args": ["local", "clue_2", true]
+          },
+          "then": {"ok": "clue_2.check"}
+        },
+        {
+          "id": "clue_3",
+          "text": "clue_3",
+          "when": {"not": {"get": ["local", "clue_3", false]}},
+          "action": {
+            "verb": "state.set",
+            "args": ["local", "clue_3", true]
+          },
+          "then": {"ok": "clue_3.check"}
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ],
+  "mycon_ramble": {
+    "phrases": [
+      "RAMBLE_1",
+      "RAMBLE_2",
+      "RAMBLE_3",
+      "RAMBLE_4",
+      "RAMBLE_5",
+      "RAMBLE_6",
+      "RAMBLE_7",
+      "RAMBLE_8",
+      "RAMBLE_9",
+      "RAMBLE_10",
+      "RAMBLE_11",
+      "RAMBLE_12",
+      "RAMBLE_13",
+      "RAMBLE_14",
+      "RAMBLE_15",
+      "RAMBLE_16",
+      "RAMBLE_17",
+      "RAMBLE_18",
+      "RAMBLE_19",
+      "RAMBLE_20",
+      "RAMBLE_21",
+      "RAMBLE_22",
+      "RAMBLE_23",
+      "RAMBLE_24",
+      "RAMBLE_25",
+      "RAMBLE_26",
+      "RAMBLE_27",
+      "RAMBLE_28",
+      "RAMBLE_29",
+      "RAMBLE_30",
+      "RAMBLE_31",
+      "RAMBLE_32"
+    ],
+    "reveal_at": 24,
+    "reveal_minimum": 2
+  }
+}

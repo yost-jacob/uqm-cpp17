@@ -1,10 +1,13 @@
 # Conversation engine design prototype
 
-This is a **standalone executable C++17 design**, outside the game build. It
-implements the proposed graph traversal and JSON-to-callable binding. It does
-not replace the current alien scripts, implement a second live GameState, or
-provide SDL playback. The abstract [state contract](state.hpp) deliberately
-throws for operations that an adapter has not implemented.
+The graph engine is now production code in
+[`sc2/src/uqm/dialogue`](../../../../sc2/src/uqm/dialogue). Both game builds use it;
+the headers here forward to that implementation so design experiments and tests do
+not maintain a second engine. The Hayes/Melnorme examples below remain design
+proposals; the game uses [live compatibility graphs](../../../../sc2/content/base/conversations)
+for all 27 scripts. Twenty-four scripts use general graph/state operations; three
+graphs explicitly mark the remaining native C story bodies as `handlers.legacy_turn`. This integration is not a completed C-to-JSON
+story migration. See [live integration and remaining work](../../../conversation-runtime.md).
 
 Start with:
 
@@ -127,7 +130,7 @@ No inheritance or virtual graph interface is required.
 The default backend's `prepare` sizes storage once. `set_start` requires all slots
 to be initialized and seals allocation; later preparation or allocation throws.
 Runtime code uses the graph's public operations, with no access to backend storage
-fields or cursor internals. Definitions remain in `engine.tpp` so experiments can
+fields or cursor internals. Definitions remain in the production `engine.tpp` so experiments can
 instantiate the same engine; `engine.cpp` explicitly instantiates the default.
 Tests exercise a separate graph adapter through this contract.
 

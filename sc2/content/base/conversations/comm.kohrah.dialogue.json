@@ -1,0 +1,1660 @@
+{
+  "version": 1,
+  "node_count": 106,
+  "id": "blackur",
+  "resource": "comm.kohrah.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native asset/lifecycle configuration only; all conversation decisions and story effects are graph data."
+  },
+  "phrases": [
+    {
+      "id": "SENSE_EVIL",
+      "index": 0,
+      "text": "We sense... something... something ancient... a sickly smell... a chilling wind.\nMy ancestors scream from within their chambers in my mind\nbut I cannot understand their words.\nThis feeling... a memory? It sickens us, and for the first time in our lives\nfor the first time in generations\nWe fear.",
+      "voice": "kohrah-000.ogg",
+      "original_text_hash": 5014682545223092236
+    },
+    {
+      "id": "HELLO_AND_DIE_1",
+      "index": 1,
+      "text": "We are the Ur-Quan Kohr-Ah.\nWe cleanse our destiny.\nYou will soon die.\nMake whatever rituals are necessary for your species.",
+      "voice": "kohrah-001.ogg",
+      "original_text_hash": 15525391524761939329
+    },
+    {
+      "id": "HELLO_AND_DIE_2",
+      "index": 2,
+      "text": "We are the Ur-Quan Kohr-Ah.\nYour presence here is premature.\nWe fight the Kzer-Za for supremacy of Doctrine\nand possession of the Sa-Matra.\nWhen the battle is won, our task is simple.\nWe cleanse. You are the filth.",
+      "voice": "kohrah-002.ogg",
+      "original_text_hash": 8416304720689860497
+    },
+    {
+      "id": "HELLO_AND_DIE_3",
+      "index": 3,
+      "text": "We are the Ur-Quan Kohr-Ah.\nYou have evaded our attempts to cleanse.\nYou are no longer filth. You are a threat.\nThreats deserve greater attention than filth.",
+      "voice": "kohrah-003.ogg",
+      "original_text_hash": 13173360509052444406
+    },
+    {
+      "id": "HELLO_AND_DIE_4",
+      "index": 4,
+      "text": "We are the Ur-Quan Kohr-Ah.\nOur nature, the fulfillment of our fate\nrequires your destruction.",
+      "voice": "kohrah-004.ogg",
+      "original_text_hash": 4645984971169487759
+    },
+    {
+      "id": "HELLO_AND_DIE_5",
+      "index": 5,
+      "text": "We are the Ur-Quan Kohr-Ah.\nOur nature, the fulfillment of our fate\nrequires your destruction.",
+      "voice": "kohrah-005.ogg",
+      "original_text_hash": 4645984971169487759
+    },
+    {
+      "id": "HELLO_AND_DIE_6",
+      "index": 6,
+      "text": "We are the Ur-Quan Kohr-Ah.\nOur nature, the fulfillment of our fate\nrequires your destruction.",
+      "voice": "kohrah-006.ogg",
+      "original_text_hash": 4645984971169487759
+    },
+    {
+      "id": "HELLO_AND_DIE_7",
+      "index": 7,
+      "text": "We are the Ur-Quan Kohr-Ah.\nOur nature, the fulfillment of our fate\nrequires your destruction.",
+      "voice": "kohrah-007.ogg",
+      "original_text_hash": 4645984971169487759
+    },
+    {
+      "id": "HELLO_AND_DIE_8",
+      "index": 8,
+      "text": "We are the Ur-Quan Kohr-Ah.\nOur nature, the fulfillment of our fate\nrequires your destruction.",
+      "voice": "kohrah-008.ogg",
+      "original_text_hash": 4645984971169487759
+    },
+    {
+      "id": "HELLO_SAMATRA",
+      "index": 9,
+      "text": "FILTH! YOU may NOT approach the Sa-Matra.\nYour death was inevitable, but now it is also imminent.",
+      "voice": "kohrah-009.ogg",
+      "original_text_hash": 4026957090606648380
+    },
+    {
+      "id": "WE_KILL_ALL_1",
+      "index": 10,
+      "text": "We are the Ur-Quan Kohr-Ah.\nWe have won the ritual war against our cousins, the Kzer-Za.\nOur Doctrine, the Path of Now and Forever, shall be dominant\nuntil the Kzer-Za win such a war.\nWe now cleanse the Kzer-Za slave-races.\nThen we shall take possession of the Sa-Matra and move on\nto find new intelligence\nnew filth to cleanse.",
+      "voice": "kohrah-010.ogg",
+      "original_text_hash": 15531968178241852153
+    },
+    {
+      "id": "WE_KILL_ALL_2",
+      "index": 11,
+      "text": "We are the Ur-Quan Kohr-Ah.\nPrepare for the cleansing.",
+      "voice": "kohrah-011.ogg",
+      "original_text_hash": 5887552909946827836
+    },
+    {
+      "id": "WE_KILL_ALL_3",
+      "index": 12,
+      "text": "We are the Ur-Quan Kohr-Ah.\nPrepare for the cleansing.",
+      "voice": "kohrah-012.ogg",
+      "original_text_hash": 5887552909946827836
+    },
+    {
+      "id": "WE_KILL_ALL_4",
+      "index": 13,
+      "text": "We are the Ur-Quan Kohr-Ah.\nPrepare for the cleansing.",
+      "voice": "kohrah-013.ogg",
+      "original_text_hash": 5887552909946827836
+    },
+    {
+      "id": "why_kill_all_1",
+      "index": 14,
+      "text": "What is this madness!? Why are you trying to kill everyone?",
+      "voice": null,
+      "original_text_hash": 15273397552612159373
+    },
+    {
+      "id": "why_kill_all_2",
+      "index": 15,
+      "text": "You have no right to continue this genocide!",
+      "voice": null,
+      "original_text_hash": 1631074425402172512
+    },
+    {
+      "id": "why_kill_all_3",
+      "index": 16,
+      "text": "What has made you this way? It is insane!",
+      "voice": null,
+      "original_text_hash": 3915588257583486521
+    },
+    {
+      "id": "why_kill_all_4",
+      "index": 17,
+      "text": "I cannot understand why you do this.",
+      "voice": null,
+      "original_text_hash": 7049741136125211425
+    },
+    {
+      "id": "KILL_BECAUSE_1",
+      "index": 18,
+      "text": "We do not kill. We cleanse.\nCleansing is necessary to ensure our eternal freedom and security.\nIndeed, you fail to understand: there is no death.\nOnly termination and rebirth.\nEach termination brings around the new chance\nthe possibility to be born an Ur-Quan.\nWe merely present this opportunity, make it available to all.",
+      "voice": "kohrah-014.ogg",
+      "original_text_hash": 12934368446659628518
+    },
+    {
+      "id": "KILL_BECAUSE_2",
+      "index": 19,
+      "text": "Our Path of Now and Forever is self-justifying, it needs no confirmation.\nWe cleanse. That is all. There is no more.",
+      "voice": "kohrah-015.ogg",
+      "original_text_hash": 18400693161847793609
+    },
+    {
+      "id": "KILL_BECAUSE_3",
+      "index": 20,
+      "text": "You have not asked properly.\nIf you do not ask properly, we will not discuss this matter.\nInstead, we cleanse.",
+      "voice": "kohrah-016.ogg",
+      "original_text_hash": 735019783482118239
+    },
+    {
+      "id": "KILL_BECAUSE_4",
+      "index": 21,
+      "text": "Your understanding is not necessary.",
+      "voice": "kohrah-017.ogg",
+      "original_text_hash": 808887713362134764
+    },
+    {
+      "id": "please_dont_kill_1",
+      "index": 22,
+      "text": "Please, for the love of reason! Stop this madness!",
+      "voice": null,
+      "original_text_hash": 4514206080403398613
+    },
+    {
+      "id": "WILL_KILL_1",
+      "index": 23,
+      "text": "We have listened. We are unmoved. The cleansing will proceed.",
+      "voice": "kohrah-018.ogg",
+      "original_text_hash": 13927553442058620246
+    },
+    {
+      "id": "please_dont_kill_2",
+      "index": 24,
+      "text": "Your logic is faulty. How can you have security in the midst of an endless war?",
+      "voice": null,
+      "original_text_hash": 15778433982261292712
+    },
+    {
+      "id": "WILL_KILL_2",
+      "index": 25,
+      "text": "The cleansing ensures our freedom and security.\nThreats to this freedom and security are confined to non-Ur-Quan intelligent life forms.\nTo preserve our freedom and security, we cleanse such threats.",
+      "voice": "kohrah-019.ogg",
+      "original_text_hash": 5576769001841381552
+    },
+    {
+      "id": "please_dont_kill_3",
+      "index": 26,
+      "text": "Stop killing people! You have to stop!",
+      "voice": null,
+      "original_text_hash": 13076209494549252564
+    },
+    {
+      "id": "WILL_KILL_3",
+      "index": 27,
+      "text": "We do not have to stop. No one can make us stop except the Kzer-Za\nand they have lost the war. Our doctrine is now dominant.\nThe cleansing will continue.",
+      "voice": "kohrah-020.ogg",
+      "original_text_hash": 8907580951981453867
+    },
+    {
+      "id": "please_dont_kill_4",
+      "index": 28,
+      "text": "Is there anything we can do to make you stop the killing?",
+      "voice": null,
+      "original_text_hash": 8044768819404161314
+    },
+    {
+      "id": "WILL_KILL_4",
+      "index": 29,
+      "text": "If you eliminate all non-Ur-Quan sentient races, including yourselves\nthen we will stop.\nWe have made this offer before. No one accepts.\nSo we cleanse.",
+      "voice": "kohrah-021.ogg",
+      "original_text_hash": 13791012039579064803
+    },
+    {
+      "id": "bye_frenzy_1",
+      "index": 30,
+      "text": "We leave now. We will stop you, somehow.",
+      "voice": null,
+      "original_text_hash": 7207438183780743331
+    },
+    {
+      "id": "bye_frenzy_2",
+      "index": 31,
+      "text": "We leave now. We will stop you, somehow.",
+      "voice": null,
+      "original_text_hash": 7207438183780743331
+    },
+    {
+      "id": "bye_frenzy_3",
+      "index": 32,
+      "text": "We leave now. We will stop you, somehow.",
+      "voice": null,
+      "original_text_hash": 7207438183780743331
+    },
+    {
+      "id": "bye_frenzy_4",
+      "index": 33,
+      "text": "We leave now. We will stop you, somehow.",
+      "voice": null,
+      "original_text_hash": 7207438183780743331
+    },
+    {
+      "id": "GOODBYE_AND_DIE_FRENZY_1",
+      "index": 34,
+      "text": "You may not leave. You are filth.\nYou shall be cleansed.",
+      "voice": "kohrah-022.ogg",
+      "original_text_hash": 17046142653743295908
+    },
+    {
+      "id": "GOODBYE_AND_DIE_FRENZY_2",
+      "index": 35,
+      "text": "You may not leave. You are filth.\nYou shall be cleansed.",
+      "voice": "kohrah-023.ogg",
+      "original_text_hash": 17046142653743295908
+    },
+    {
+      "id": "GOODBYE_AND_DIE_FRENZY_3",
+      "index": 36,
+      "text": "You may not leave. You are filth.\nYou shall be cleansed.",
+      "voice": "kohrah-024.ogg",
+      "original_text_hash": 17046142653743295908
+    },
+    {
+      "id": "GOODBYE_AND_DIE_FRENZY_4",
+      "index": 37,
+      "text": "You may not leave. You are filth.\nYou shall be cleansed.",
+      "voice": "kohrah-025.ogg",
+      "original_text_hash": 17046142653743295908
+    },
+    {
+      "id": "threat_1",
+      "index": 38,
+      "text": "If you attack us, we will destroy you. Don't even try it.",
+      "voice": null,
+      "original_text_hash": 12963143829423358030
+    },
+    {
+      "id": "RESISTANCE_IS_USELESS_1",
+      "index": 39,
+      "text": "Over five thousand races have made such a claim.\nWe survived. They did not.\nNor shall you.",
+      "voice": "kohrah-026.ogg",
+      "original_text_hash": 7612615634857616746
+    },
+    {
+      "id": "threat_2",
+      "index": 40,
+      "text": "Resistance is useless. Our victory is inevitable!",
+      "voice": null,
+      "original_text_hash": 12865256773348372512
+    },
+    {
+      "id": "RESISTANCE_IS_USELESS_2",
+      "index": 41,
+      "text": "It is not.",
+      "voice": "kohrah-027.ogg",
+      "original_text_hash": 1608446485249941957
+    },
+    {
+      "id": "threat_3",
+      "index": 42,
+      "text": "You have attacked us before, and we survived! You cannot defeat us. Submit!",
+      "voice": null,
+      "original_text_hash": 17794975448053141634
+    },
+    {
+      "id": "RESISTANCE_IS_USELESS_3",
+      "index": 43,
+      "text": "We did. You did. Yes we can. No.",
+      "voice": "kohrah-028.ogg",
+      "original_text_hash": 3990985692525266358
+    },
+    {
+      "id": "threat_4",
+      "index": 44,
+      "text": "Surrender or die.",
+      "voice": null,
+      "original_text_hash": 17970239638934709326
+    },
+    {
+      "id": "RESISTANCE_IS_USELESS_4",
+      "index": 45,
+      "text": "Our counter to your statement is simpler\njust `die'.",
+      "voice": "kohrah-029.ogg",
+      "original_text_hash": 4144534450238489043
+    },
+    {
+      "id": "key_phrase",
+      "index": 46,
+      "text": "Hold! What you are doing to us is wrong! Why do you do this thing?",
+      "voice": null,
+      "original_text_hash": 2360172588683059766
+    },
+    {
+      "id": "RESPONSE_TO_KEY_PHRASE",
+      "index": 47,
+      "text": "THE WORDS!... the Words... the words\nAlien, you have spoken the Words. You have spoken them rightly.\nWe will explain to you about the Dnyarri, our slavemasters\nthe Taalo, our only friends... whom we exterminated\nand our reasons why we cleanse the galaxy of all other sentient life.\nWe have explained this before, over twenty thousand years ago.\nYour words, `Why do you do this thing?' echo that ancient plea.\nYou see, alien, we were a proud and mighty race, who were cruelly enslaved.\nFor thousands of years, we had no free will.\nWe were nothing more than tools.\nNever again will anyone enslave our people.\nWe cleanse the galaxy of such threats.",
+      "voice": "kohrah-030.ogg",
+      "original_text_hash": 12880446275756078236
+    },
+    {
+      "id": "why_do_you_destroy",
+      "index": 48,
+      "text": "Kohr-Ah, tell us about yourselves.",
+      "voice": null,
+      "original_text_hash": 12710471704656704302
+    },
+    {
+      "id": "WE_WERE_SLAVES",
+      "index": 49,
+      "text": "We evolved on a hostile world, the descendants of solitary hunters.\nIn a world where one species is the dominant killer\none's only threat is one's brother, one's sister, anyone of one's species.\nCivilization did not come easily to us, we earned it.\nWe mastered our hatreds and murderous desires to form a mighty culture.\nIn those ancient days, there was no Kohr-Ah or Kzer-Za, only the Ur-Quan.\nWe explored our world, and then the space beyond.\nHere we met the six races of the Sentient Milieu\nhere we met the Taalo... the only species we ever called `friend'.\nOur association with the Taalo and the Milieu lasted for three thousand years.\nWe, the Ur-Quan who could not tolerate the presence of others\nbecame the Milieu's scouts, their solitary explorers.",
+      "voice": "kohrah-031.ogg",
+      "original_text_hash": 12088844025028516460
+    },
+    {
+      "id": "relationship_with_urquan",
+      "index": 50,
+      "text": "Who were the Taalo?",
+      "voice": null,
+      "original_text_hash": 14350985323581510913
+    },
+    {
+      "id": "WE_ARE_URQUAN_TOO",
+      "index": 51,
+      "text": "Of all the species we have met, only the Taalo did not trigger our instinctive territoriality.\nThey were the only people we could stand with, or talk to, without the hunter inside us screaming\n`Kill the interloper! Rip out its life!'\nWe believe that the same factors that made the Taalo non-threatening to us\ntheir unusual rock-like biology\nalso gave the Taalo natural immunity to the Dnyarri's psychic compulsion.\nThe Dnyarri would not permit this.\nAfter they had conquered all six of the other races in the Milieu\nthey commanded us to attack the Taalo and we did.\nThe Taalo would not fight back... they died.",
+      "voice": "kohrah-032.ogg",
+      "original_text_hash": 4659166972821812879
+    },
+    {
+      "id": "what_about_culture",
+      "index": 52,
+      "text": "Who or what are the Dnyarri?",
+      "voice": null,
+      "original_text_hash": 6229541105528105941
+    },
+    {
+      "id": "BONE_GARDENS",
+      "index": 53,
+      "text": "It was on a routine planetfall that one of our Milieu scoutships first met the Dnyarri\nthe creatures you know as our Talking Pets.\nBut the Dnyarri were different then.\nThey were evilly intelligent and wielded psychic powers to control the minds of others.\nThey wanted to rule the universe. We had no choice but to give it to them.\nOur Ur-Quan scoutships transported the Dnyarri through the Milieu.\nThe war for dominance, such as it was, was quick and bloodless.\nWithin weeks, the Dnyarri controlled all races but one... the Taalo.",
+      "voice": "kohrah-033.ogg",
+      "original_text_hash": 12339606220710448488
+    },
+    {
+      "id": "how_leave_me_alone",
+      "index": 54,
+      "text": "How did you defeat the Dnyarri?",
+      "voice": null,
+      "original_text_hash": 3167326836392227859
+    },
+    {
+      "id": "YOU_DIE",
+      "index": 55,
+      "text": "For thousands of years, we were unthinking slaves to the Dnyarri.\nLike the five other surviving races of the old Milieu, we had no choice.\nThe Dnyarri's compulsion was too strong to resist.\nBut the Dnyarri were not satisfied with their slave races.\nThe Yuli and the Drall were inferior, they decided\nand so they instructed us to incinerate their worlds, and we did.\nThe Dnyarri had a special liking for us Ur-Quan\nso they began to tinker with our genes... to improve us, their favored slaves.\nTheir efforts split the Ur-Quan into two sub-races\nThe Green Ur-Quan, effete scientists and bureaucrats\nand the Black Ur-Quan, their Effectuators, the builders, the fighters, the doers.\nThe Kohr-Ah are the Black Ur-Quan. The Kzer-Za are the Green.\nI grow tired of talking, alien, and your time grows short.\nI will continue for but a moment longer.\nWhen we discovered that intense pain could block the Dnyarri's mental powers\nwe were able to destroy them, but it took years.\nCan you imagine, alien, what it must have been like to wear an Excruciator?\nTo live in endless screaming pain for months on end? No you cannot.",
+      "voice": "kohrah-034.ogg",
+      "original_text_hash": 11326428609521078287
+    },
+    {
+      "id": "guess_thats_all",
+      "index": 56,
+      "text": "I guess that's it. Thanks for the info. We'll just leave now.",
+      "voice": null,
+      "original_text_hash": 7040178611529538040
+    },
+    {
+      "id": "THEN_DIE",
+      "index": 57,
+      "text": "No, it is not. There is more you must hear.\nWhen the war was over, the great Kohr-Ah rose from our ranks\nand declared the Path of Now and Forever. We would cleanse the galaxy.\nNo one would ever threaten the Ur-Quan this way again.\nWe had cleansed one of the three remaining Milieu races and were in orbit around a second's homeworld.\nFrom the surface came a plea... identical to the words you spoke a few moments ago.\nThe one-eyed creatures, the Mael-Num, asked so simply, so clearly\nthat we felt compelled to explain. While we did so, the Kzer-Za appeared.\nThey would not permit us to destroy, they said. Enslave, yes. Imprison, yes. But never destroy.\nThe moment was tense. Someone opened fire. The first Doctrinal War had begun.\nWhile we fought, the Mael-Num escaped. We never found them again. \nWhen our battle was done, we, the Kohr-Ah, were defeated\nhowever, the Kzer-Za let us go. We were exiled.\nWe travelled through space, rebuilt the strength of our battle fleets\nand continued our plan, to cleanse threats from the galaxy, for all Ur-Quan.\nYou have heard our words, and perhaps you understand us a bit better.\nBut now, it is time for us to cleanse you.",
+      "voice": "kohrah-035.ogg",
+      "original_text_hash": 8568295482004655580
+    },
+    {
+      "id": "what_are_you_hovering_over",
+      "index": 58,
+      "text": "What are you hanging over?",
+      "voice": null,
+      "original_text_hash": 16506965739044557277
+    },
+    {
+      "id": "BONE_PILE",
+      "index": 59,
+      "text": "My trophy bone-pit.\nIn here is one skeleton from each of the races which I personally exterminated.\nI fondle these bones and recall the fine cleansing.\nPerhaps your bones will grace this pit momentarily\nunless they are accidentally vaporized.",
+      "voice": "kohrah-036.ogg",
+      "original_text_hash": 12232720899193830593
+    },
+    {
+      "id": "you_sure_are_creepy",
+      "index": 60,
+      "text": "You sure are creepy.",
+      "voice": null,
+      "original_text_hash": 6675252469432446265
+    },
+    {
+      "id": "YES_CREEPY",
+      "index": 61,
+      "text": "Seeing that I represent your imminent death\nas well as the termination of your entire species\nI think your fear is well justified.\nNonetheless, you require cleansing.",
+      "voice": "kohrah-037.ogg",
+      "original_text_hash": 17061534043530130805
+    },
+    {
+      "id": "stop_that_gross_blinking",
+      "index": 62,
+      "text": "Stop that gross blinking!",
+      "voice": null,
+      "original_text_hash": 11917598255185416195
+    },
+    {
+      "id": "DIE_HUMAN",
+      "index": 63,
+      "text": "The time has come. You require cleansing.",
+      "voice": "kohrah-038.ogg",
+      "original_text_hash": 4505743537823167617
+    },
+    {
+      "id": "plead_1",
+      "index": 64,
+      "text": "Please don't destroy this ship. We mean you no harm!",
+      "voice": null,
+      "original_text_hash": 14171746494862002411
+    },
+    {
+      "id": "PLEADING_IS_USELESS_1",
+      "index": 65,
+      "text": "In the twenty thousand years of our Mission\nwe have heard more pleas for mercy than you can possibly imagine.\nCivilizations which saw their doom before them called upon their geniuses to calm us\nto no avail.",
+      "voice": "kohrah-039.ogg",
+      "original_text_hash": 1752980181181235946
+    },
+    {
+      "id": "plead_2",
+      "index": 66,
+      "text": "If you let us go, we'll tell you a big secret!",
+      "voice": null,
+      "original_text_hash": 13562585433670198267
+    },
+    {
+      "id": "PLEADING_IS_USELESS_2",
+      "index": 67,
+      "text": "We are self-sufficient. We need nothing. We want nothing\nbeyond the total destruction of all non-Ur-Quan sentience.",
+      "voice": "kohrah-040.ogg",
+      "original_text_hash": 820922209251527931
+    },
+    {
+      "id": "plead_3",
+      "index": 68,
+      "text": "What if we promise to be your slaves? Will you let us live then?",
+      "voice": null,
+      "original_text_hash": 1902664380239156963
+    },
+    {
+      "id": "PLEADING_IS_USELESS_3",
+      "index": 69,
+      "text": "The ignominy of slaving we leave to our Kzer-Za cousins.\nWe have no need for inferiors as servants.",
+      "voice": "kohrah-041.ogg",
+      "original_text_hash": 18276990789763871208
+    },
+    {
+      "id": "plead_4",
+      "index": 70,
+      "text": "Don't attack us! We are not your enemies!",
+      "voice": null,
+      "original_text_hash": 2618797745923600797
+    },
+    {
+      "id": "PLEADING_IS_USELESS_4",
+      "index": 71,
+      "text": "You are right.\nYou are not our enemy.\nWe have NO enemy\nbeyond the Kzer-Za, our partners in the eternal conflict.\nYou are simply... a spore, a seed.\nToday you are nothing... insignificant.\nBut if allowed to bloom and grow someday...\nsomeday, you might represent a threat to our freedom and security.\nSo we cleanse.",
+      "voice": "kohrah-042.ogg",
+      "original_text_hash": 3788481975072634147
+    },
+    {
+      "id": "bye",
+      "index": 72,
+      "text": "I've heard enough of your madness for now. Goodbye.",
+      "voice": null,
+      "original_text_hash": 18113717581932364107
+    },
+    {
+      "id": "GOODBYE_AND_DIE",
+      "index": 73,
+      "text": "Before we destroy other thinking beings we share with them this comforting fact\nThis life of yours... which shall end immediately following this statement\nis but one of many lives you will live.\nPerhaps, in your next incarnation\nyou will be born an Ur-Quan.",
+      "voice": "kohrah-043.ogg",
+      "original_text_hash": 12497670886714896774
+    },
+    {
+      "id": "GAME_OVER_DUDE",
+      "index": 74,
+      "text": "Attention human!\nThis broadcast is to inform you of your defeat.\nWe, the Kohr-Ah, have destroyed all the sentient species in this region of space\nand now we have eliminated the Starbase orbiting your planet Earth as well.\nYour efforts to resist us are futile.\nYou are defeated!",
+      "voice": "kohrah-044.ogg",
+      "original_text_hash": 15014390793743057512
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 75,
+      "text": "We are the Ur-Quan Kohr-Ah\nThe followers of the Path of Now and Forever!\nYou are filth. We shall cleanse.\nYou WILL be annigilated... I mean annihigated.. damn!\nCUT! CUT! Let's start over!\nHey, mister director... can you PLEASE think of SOME other word besides\nagnigilate... I mean, oh what's the use. I give up.",
+      "voice": "kohrah-045.ogg",
+      "original_text_hash": 18073798102088608340
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "KOHR_AH_KILLED_ALL", 0]}, 0]},
+          "next": "game_over"
+        }
+      ],
+      "otherwise": "evil.check"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "game_over.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GAME_OVER_DUDE"]}],
+      "next": "end"
+    },
+    {
+      "id": "game_over",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "game_over",
+      "next": "game_over.speech"
+    },
+    {
+      "id": "evil.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "KOHR_AH_SENSES_EVIL", 0]}, 0]}},
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "evil.mark"
+        }
+      ],
+      "otherwise": "location"
+    },
+    {
+      "id": "evil.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_SENSES_EVIL", 1]
+      },
+      "save_as": "evil_mark",
+      "next": "evil.prefix"
+    },
+    {
+      "id": "evil.prefix",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "evil_prefix", true]
+      },
+      "save_as": "evil_prefix",
+      "next": "location"
+    },
+    {
+      "id": "location",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["encounter", "at_samatra", false]}, "next": "samatra.mark"}],
+      "otherwise": "manner"
+    },
+    {
+      "id": "samatra.mark",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "AWARE_OF_SAMATRA", 1]
+      },
+      "save_as": "samatra_mark",
+      "next": "samatra.outcome"
+    },
+    {
+      "id": "samatra.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "samatra_outcome",
+      "next": "samatra.speech"
+    },
+    {
+      "id": "samatra.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", ["HELLO_SAMATRA"]]
+        },
+        {
+          "speech": ["HELLO_SAMATRA"]
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "manner",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}, "next": "greet.frenzy"}],
+      "otherwise": "greet.normal"
+    },
+    {
+      "id": "greet.frenzy",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "KOHR_AH_VISITS",
+          [["WE_KILL_ALL_1"], ["WE_KILL_ALL_2"], ["WE_KILL_ALL_3"], ["WE_KILL_ALL_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "greeting.frenzy"
+    },
+    {
+      "id": "greet.normal",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "KOHR_AH_VISITS",
+          [["HELLO_AND_DIE_1"], ["HELLO_AND_DIE_2"], ["HELLO_AND_DIE_3"], ["HELLO_AND_DIE_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "greeting.normal"
+    },
+    {
+      "id": "greeting.frenzy",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", {"get": ["result", "greeting.speech"]}]
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech"]}
+        }
+      ],
+      "next": "menu.frenzy"
+    },
+    {
+      "id": "greeting.normal",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "evil_prefix", false]},
+          "speech": ["SENSE_EVIL", {"get": ["result", "greeting.speech"]}]
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech"]}
+        }
+      ],
+      "next": "menu.normal"
+    },
+    {
+      "id": "why_kill_all_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILL_BECAUSE_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_kill_all_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_kill_all_1_effect1",
+      "next": "why_kill_all_1.speech"
+    },
+    {
+      "id": "why_kill_all_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 1]
+      },
+      "save_as": "why_kill_all_1",
+      "next": "why_kill_all_1.effect1"
+    },
+    {
+      "id": "why_kill_all_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILL_BECAUSE_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_kill_all_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_kill_all_2_effect1",
+      "next": "why_kill_all_2.speech"
+    },
+    {
+      "id": "why_kill_all_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 2]
+      },
+      "save_as": "why_kill_all_2",
+      "next": "why_kill_all_2.effect1"
+    },
+    {
+      "id": "why_kill_all_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILL_BECAUSE_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_kill_all_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_kill_all_3_effect1",
+      "next": "why_kill_all_3.speech"
+    },
+    {
+      "id": "why_kill_all_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 3]
+      },
+      "save_as": "why_kill_all_3",
+      "next": "why_kill_all_3.effect1"
+    },
+    {
+      "id": "why_kill_all_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILL_BECAUSE_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_kill_all_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_kill_all_4_effect1",
+      "next": "why_kill_all_4.speech"
+    },
+    {
+      "id": "why_kill_all_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 3]
+      },
+      "save_as": "why_kill_all_4",
+      "next": "why_kill_all_4.effect1"
+    },
+    {
+      "id": "please_dont_kill_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_KILL_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "please_dont_kill_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "please_dont_kill_1_effect1",
+      "next": "please_dont_kill_1.speech"
+    },
+    {
+      "id": "please_dont_kill_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", 1]
+      },
+      "save_as": "please_dont_kill_1",
+      "next": "please_dont_kill_1.effect1"
+    },
+    {
+      "id": "please_dont_kill_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_KILL_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "please_dont_kill_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "please_dont_kill_2_effect1",
+      "next": "please_dont_kill_2.speech"
+    },
+    {
+      "id": "please_dont_kill_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", 2]
+      },
+      "save_as": "please_dont_kill_2",
+      "next": "please_dont_kill_2.effect1"
+    },
+    {
+      "id": "please_dont_kill_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_KILL_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "please_dont_kill_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "please_dont_kill_3_effect1",
+      "next": "please_dont_kill_3.speech"
+    },
+    {
+      "id": "please_dont_kill_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", 3]
+      },
+      "save_as": "please_dont_kill_3",
+      "next": "please_dont_kill_3.effect1"
+    },
+    {
+      "id": "please_dont_kill_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_KILL_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "please_dont_kill_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "please_dont_kill_4_effect1",
+      "next": "please_dont_kill_4.speech"
+    },
+    {
+      "id": "please_dont_kill_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", 3]
+      },
+      "save_as": "please_dont_kill_4",
+      "next": "please_dont_kill_4.effect1"
+    },
+    {
+      "id": "bye_frenzy_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_FRENZY_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_frenzy_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_frenzy_1_effect1",
+      "next": "bye_frenzy_1.speech"
+    },
+    {
+      "id": "bye_frenzy_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 1]
+      },
+      "save_as": "bye_frenzy_1",
+      "next": "bye_frenzy_1.effect1"
+    },
+    {
+      "id": "bye_frenzy_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_FRENZY_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_frenzy_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_frenzy_2_effect1",
+      "next": "bye_frenzy_2.speech"
+    },
+    {
+      "id": "bye_frenzy_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 2]
+      },
+      "save_as": "bye_frenzy_2",
+      "next": "bye_frenzy_2.effect1"
+    },
+    {
+      "id": "bye_frenzy_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_FRENZY_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_frenzy_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_frenzy_3_effect1",
+      "next": "bye_frenzy_3.speech"
+    },
+    {
+      "id": "bye_frenzy_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 3]
+      },
+      "save_as": "bye_frenzy_3",
+      "next": "bye_frenzy_3.effect1"
+    },
+    {
+      "id": "bye_frenzy_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_FRENZY_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_frenzy_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_frenzy_4_effect1",
+      "next": "bye_frenzy_4.speech"
+    },
+    {
+      "id": "bye_frenzy_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 3]
+      },
+      "save_as": "bye_frenzy_4",
+      "next": "bye_frenzy_4.effect1"
+    },
+    {
+      "id": "threat_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESISTANCE_IS_USELESS_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_1_effect1",
+      "next": "threat_1.speech"
+    },
+    {
+      "id": "threat_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 1]
+      },
+      "save_as": "threat_1",
+      "next": "threat_1.effect1"
+    },
+    {
+      "id": "threat_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESISTANCE_IS_USELESS_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_2_effect1",
+      "next": "threat_2.speech"
+    },
+    {
+      "id": "threat_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 2]
+      },
+      "save_as": "threat_2",
+      "next": "threat_2.effect1"
+    },
+    {
+      "id": "threat_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESISTANCE_IS_USELESS_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_3_effect1",
+      "next": "threat_3.speech"
+    },
+    {
+      "id": "threat_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 3]
+      },
+      "save_as": "threat_3",
+      "next": "threat_3.effect1"
+    },
+    {
+      "id": "threat_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESISTANCE_IS_USELESS_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_4_effect1",
+      "next": "threat_4.speech"
+    },
+    {
+      "id": "threat_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_REASONS", 3]
+      },
+      "save_as": "threat_4",
+      "next": "threat_4.effect1"
+    },
+    {
+      "id": "what_are_you_hovering_over.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BONE_PILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "what_are_you_hovering_over.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "what_are_you_hovering_over_effect1",
+      "next": "what_are_you_hovering_over.speech"
+    },
+    {
+      "id": "what_are_you_hovering_over",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 1]
+      },
+      "save_as": "what_are_you_hovering_over",
+      "next": "what_are_you_hovering_over.effect1"
+    },
+    {
+      "id": "you_sure_are_creepy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YES_CREEPY"]}],
+      "next": "end"
+    },
+    {
+      "id": "you_sure_are_creepy.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "you_sure_are_creepy_effect1",
+      "next": "you_sure_are_creepy.speech"
+    },
+    {
+      "id": "you_sure_are_creepy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 2]
+      },
+      "save_as": "you_sure_are_creepy",
+      "next": "you_sure_are_creepy.effect1"
+    },
+    {
+      "id": "stop_that_gross_blinking.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DIE_HUMAN"]}],
+      "next": "end"
+    },
+    {
+      "id": "stop_that_gross_blinking.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "stop_that_gross_blinking_effect1",
+      "next": "stop_that_gross_blinking.speech"
+    },
+    {
+      "id": "stop_that_gross_blinking",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_INFO", 3]
+      },
+      "save_as": "stop_that_gross_blinking",
+      "next": "stop_that_gross_blinking.effect1"
+    },
+    {
+      "id": "plead_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PLEADING_IS_USELESS_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "plead_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "plead_1_effect1",
+      "next": "plead_1.speech"
+    },
+    {
+      "id": "plead_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", 1]
+      },
+      "save_as": "plead_1",
+      "next": "plead_1.effect1"
+    },
+    {
+      "id": "plead_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PLEADING_IS_USELESS_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "plead_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "plead_2_effect1",
+      "next": "plead_2.speech"
+    },
+    {
+      "id": "plead_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", 2]
+      },
+      "save_as": "plead_2",
+      "next": "plead_2.effect1"
+    },
+    {
+      "id": "plead_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PLEADING_IS_USELESS_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "plead_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "plead_4_effect1",
+      "next": "plead_4.speech"
+    },
+    {
+      "id": "plead_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_PLEAD", {"get": ["story", "KOHR_AH_PLEAD", 0]}]
+      },
+      "save_as": "plead_4",
+      "next": "plead_4.effect1"
+    },
+    {
+      "id": "bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_effect1",
+      "next": "bye.speech"
+    },
+    {
+      "id": "bye",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_BYES", 1]
+      },
+      "save_as": "bye",
+      "next": "bye.effect1"
+    },
+    {
+      "id": "bye.again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DIE_HUMAN"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.again.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_again_effect1",
+      "next": "bye.again.speech"
+    },
+    {
+      "id": "bye.again",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KOHR_AH_BYES", 1]
+      },
+      "save_as": "bye_again",
+      "next": "bye.again.effect1"
+    },
+    {
+      "id": "bye.check",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "KOHR_AH_BYES", 0]}, 0]}, "next": "bye"}],
+      "otherwise": "bye.again"
+    },
+    {
+      "id": "menu.normal",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "threat_1",
+          "text": "threat_1",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 0]},
+          "next": "threat_1"
+        },
+        {
+          "id": "threat_2",
+          "text": "threat_2",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 1]},
+          "next": "threat_2"
+        },
+        {
+          "id": "threat_3",
+          "text": "threat_3",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 2]},
+          "next": "threat_3"
+        },
+        {
+          "id": "threat_4",
+          "text": "threat_4",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 3]},
+          "next": "threat_4"
+        },
+        {
+          "id": "key_phrase",
+          "text": "key_phrase",
+          "when": {"eq": [{"get": ["story", "KNOW_KOHR_AH_STORY", 0]}, 1]},
+          "next": "story.key"
+        },
+        {
+          "id": "what_are_you_hovering_over",
+          "text": "what_are_you_hovering_over",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 0]},
+          "next": "what_are_you_hovering_over"
+        },
+        {
+          "id": "you_sure_are_creepy",
+          "text": "you_sure_are_creepy",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 1]},
+          "next": "you_sure_are_creepy"
+        },
+        {
+          "id": "stop_that_gross_blinking",
+          "text": "stop_that_gross_blinking",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 2]},
+          "next": "stop_that_gross_blinking"
+        },
+        {
+          "id": "plead_1",
+          "text": "plead_1",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 0]},
+          "next": "plead_1"
+        },
+        {
+          "id": "plead_2",
+          "text": "plead_2",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 1]},
+          "next": "plead_2"
+        },
+        {
+          "id": "plead_4",
+          "text": "plead_4",
+          "when": {"ge": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 2]},
+          "next": "plead_4"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye.check"
+        }
+      ]
+    },
+    {
+      "id": "menu.frenzy",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_kill_all_1",
+          "text": "why_kill_all_1",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 0]},
+          "next": "why_kill_all_1"
+        },
+        {
+          "id": "why_kill_all_2",
+          "text": "why_kill_all_2",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 1]},
+          "next": "why_kill_all_2"
+        },
+        {
+          "id": "why_kill_all_3",
+          "text": "why_kill_all_3",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 2]},
+          "next": "why_kill_all_3"
+        },
+        {
+          "id": "why_kill_all_4",
+          "text": "why_kill_all_4",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_REASONS", 0]}, 3]},
+          "next": "why_kill_all_4"
+        },
+        {
+          "id": "please_dont_kill_1",
+          "text": "please_dont_kill_1",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 0]},
+          "next": "please_dont_kill_1"
+        },
+        {
+          "id": "please_dont_kill_2",
+          "text": "please_dont_kill_2",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 1]},
+          "next": "please_dont_kill_2"
+        },
+        {
+          "id": "please_dont_kill_3",
+          "text": "please_dont_kill_3",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 2]},
+          "next": "please_dont_kill_3"
+        },
+        {
+          "id": "please_dont_kill_4",
+          "text": "please_dont_kill_4",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_PLEAD", 0]}, 3]},
+          "next": "please_dont_kill_4"
+        },
+        {
+          "id": "bye_frenzy_1",
+          "text": "bye_frenzy_1",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 0]},
+          "next": "bye_frenzy_1"
+        },
+        {
+          "id": "bye_frenzy_2",
+          "text": "bye_frenzy_2",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 1]},
+          "next": "bye_frenzy_2"
+        },
+        {
+          "id": "bye_frenzy_3",
+          "text": "bye_frenzy_3",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 2]},
+          "next": "bye_frenzy_3"
+        },
+        {
+          "id": "bye_frenzy_4",
+          "text": "bye_frenzy_4",
+          "when": {"eq": [{"get": ["story", "KOHR_AH_INFO", 0]}, 3]},
+          "next": "bye_frenzy_4"
+        }
+      ]
+    },
+    {
+      "id": "story.key.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RESPONSE_TO_KEY_PHRASE"]}],
+      "next": "story.menu"
+    },
+    {
+      "id": "story.key",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_KOHR_AH_STORY", 2]
+      },
+      "save_as": "story_key",
+      "next": "story.key.speech"
+    },
+    {
+      "id": "story.why_do_you_destroy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_WERE_SLAVES"]}],
+      "next": "story.menu"
+    },
+    {
+      "id": "story.why_do_you_destroy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_do_you_destroy", true]
+      },
+      "save_as": "story_why_do_you_destroy",
+      "next": "story.why_do_you_destroy.speech"
+    },
+    {
+      "id": "story.relationship_with_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_ARE_URQUAN_TOO"]}],
+      "next": "story.menu"
+    },
+    {
+      "id": "story.relationship_with_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "relationship_with_urquan", true]
+      },
+      "save_as": "story_relationship_with_urquan",
+      "next": "story.relationship_with_urquan.speech"
+    },
+    {
+      "id": "story.what_about_culture.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BONE_GARDENS"]}],
+      "next": "story.menu"
+    },
+    {
+      "id": "story.what_about_culture",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_culture", true]
+      },
+      "save_as": "story_what_about_culture",
+      "next": "story.what_about_culture.speech"
+    },
+    {
+      "id": "story.how_leave_me_alone.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_DIE"]}],
+      "next": "story.menu"
+    },
+    {
+      "id": "story.how_leave_me_alone",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_leave_me_alone", true]
+      },
+      "save_as": "story_how_leave_me_alone",
+      "next": "story.how_leave_me_alone.speech"
+    },
+    {
+      "id": "story.done.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THEN_DIE"]}],
+      "next": "end"
+    },
+    {
+      "id": "story.done",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "story_done",
+      "next": "story.done.speech"
+    },
+    {
+      "id": "story.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_do_you_destroy",
+          "text": "why_do_you_destroy",
+          "when": {"not": {"get": ["local", "why_do_you_destroy", false]}},
+          "next": "story.why_do_you_destroy"
+        },
+        {
+          "id": "relationship_with_urquan",
+          "text": "relationship_with_urquan",
+          "when": {"not": {"get": ["local", "relationship_with_urquan", false]}},
+          "next": "story.relationship_with_urquan"
+        },
+        {
+          "id": "what_about_culture",
+          "text": "what_about_culture",
+          "when": {"not": {"get": ["local", "what_about_culture", false]}},
+          "next": "story.what_about_culture"
+        },
+        {
+          "id": "how_leave_me_alone",
+          "text": "how_leave_me_alone",
+          "when": {"not": {"get": ["local", "how_leave_me_alone", false]}},
+          "next": "story.how_leave_me_alone"
+        },
+        {
+          "id": "guess_thats_all",
+          "text": "guess_thats_all",
+          "when": true,
+          "next": "story.done"
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

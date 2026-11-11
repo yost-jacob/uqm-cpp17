@@ -142,5 +142,6 @@ extracted from existing defaults; it is not a tested replacement compositor.
   complete per-segment presentation still need real adapters. The test state
   supplies outcomes only for the paths tested; it is not game logic.
 
-The existing game and save format are unchanged. These files are for design
+The save format is unchanged. The live game now shares the core engine; see
+[live migration status](../../../conversation-runtime.md). The Hayes/Melnorme files remain design
 review and executable orchestration experiments, not a ready-to-enable content port.

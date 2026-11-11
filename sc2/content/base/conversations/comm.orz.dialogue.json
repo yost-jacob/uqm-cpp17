@@ -1,0 +1,2651 @@
+{
+  "version": 1,
+  "node_count": 143,
+  "id": "orz",
+  "resource": "comm.orz.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native resources/lifecycle and bounded color/talking-animation cues remain. All Orz story branches, alliance withdrawal and escort removal use graph/state operations."
+  },
+  "phrases": [
+    {
+      "id": "INIT_HELLO",
+      "index": 0,
+      "text": "THIS IS A SYSTEM MESSAGE FROM SHIP'S COMPUTER TRANSLATION SUBSYSTEM:\nINCOMING MESSAGE EXTREMELY UNUSUAL IN COMPOSITION.\nTRANSLATION INCLUDES MANY LINGUAL ANOMALIES.\nOVERALL ACCURACY OF TRANSLATION IS: UNKNOWN",
+      "voice": "orz-000.ogg",
+      "original_text_hash": 4776499137897502893
+    },
+    {
+      "id": "who_you",
+      "index": 1,
+      "text": "Who are you? What can you tell us about yourselves?",
+      "voice": null,
+      "original_text_hash": 11853735973558484788
+    },
+    {
+      "id": "WE_ARE_ORZ",
+      "index": 2,
+      "text": "Who are you? You are not Orz! We are Orz! Orz are happy *people energy* from the outside.\nInside is good. So much good that Orz will always *germinate*.\nCan you come together with Orz for *parties*?",
+      "voice": "orz-001.ogg",
+      "original_text_hash": 7049027151822630245
+    },
+    {
+      "id": "why_here",
+      "index": 3,
+      "text": "Okay, right. Uh... maybe you could tell me why you are here.",
+      "voice": null,
+      "original_text_hash": 16973330320335034554
+    },
+    {
+      "id": "HERE_BECAUSE",
+      "index": 4,
+      "text": "Here is *bright* and *smooth*. The other place is *hurt* Orz too much tired for keeping together.\nOther place is *Frumple*. Orz are here now, but almost not yet.\nSoon Orz are really here! You are help Orz with *parties*.\nOrz looking for you, and find you. So much joy!!\nNow *smooth* place all the time, and after now never going back to outside.\nNever!!",
+      "voice": "orz-002.ogg",
+      "original_text_hash": 17609978920877586463
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_1",
+      "index": 5,
+      "text": "Hello to our *house*. Do you feel *better* yet?\nIf you are *campers* you will enjoy *the change*, but maybe not yet.\nIt is best if many happy Orz are coming to your *house*.\nLet's *spitting* the fun words for several *pieces* and then surprising things!!!",
+      "voice": "orz-003.ogg",
+      "original_text_hash": 5691145794144022544
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_2",
+      "index": 6,
+      "text": "This is my *house*. Do you want to know a *secret*? Do not *think* it is *not campers*.\nYou are so many *lonely* *juicy* *bubbles*. It is so sad.\nNow that you are *campers* you will have more *parties*\nand no more *sad* *lonely* *bubbles*.\nThis is the *secret*.",
+      "voice": "orz-004.ogg",
+      "original_text_hash": 14675409149680572198
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_3",
+      "index": 7,
+      "text": "Happy to come to my *house* some more times. I am Orz.\nI do not have the name because I am Orz. Orz is the name.\nDo you want to *squirt*?\nIf you want to, then you do. It is best, I know it.",
+      "voice": "orz-005.ogg",
+      "original_text_hash": 8411229704120373838
+    },
+    {
+      "id": "ALLIED_HOMEWORLD_HELLO_4",
+      "index": 8,
+      "text": "Happy to come to my *house* some more times. I am Orz.\nI do not have the name because I am Orz. Orz is the name.\nDo you want to *squirt*?\nIf you want to, then you do. It is best, I know it.",
+      "voice": "orz-006.ogg",
+      "original_text_hash": 8411229704120373838
+    },
+    {
+      "id": "ALLIED_SPACE_HELLO_1",
+      "index": 9,
+      "text": "Oh, the *alliance* *party* *campers* are in the *now space*.\nIt is *happy spices*. Why are you there?\nOf course because also the Orz are in the *now space*.\nSo I am waiting for you to *spit*. It is a pleasure.",
+      "voice": "orz-007.ogg",
+      "original_text_hash": 17396830522905066670
+    },
+    {
+      "id": "ALLIED_SPACE_HELLO_2",
+      "index": 10,
+      "text": "*Campers* like to say `hello' when they *smell* the Orz.\nWe have learned this. It is *no function* but Orz want to make *campers* happy everyday.\nOkay... Hello!! Now you are happy I am sure.",
+      "voice": "orz-008.ogg",
+      "original_text_hash": 15080773577009642994
+    },
+    {
+      "id": "ALLIED_SPACE_HELLO_3",
+      "index": 11,
+      "text": "I am *expanding!* It is so much *squishy* to *smell* you!\n*Campers* are the best! I have *anticipation* and then what?\nBetter parties in *the middle* for sure.",
+      "voice": "orz-009.ogg",
+      "original_text_hash": 17205368238519905842
+    },
+    {
+      "id": "ALLIED_SPACE_HELLO_4",
+      "index": 12,
+      "text": "I am *expanding!* It is so much *squishy* to *smell* you!\n*Campers* are the best! I have *anticipation* and then what?\nBetter parties in *the middle* for sure.",
+      "voice": "orz-010.ogg",
+      "original_text_hash": 17205368238519905842
+    },
+    {
+      "id": "whats_up_ally",
+      "index": 13,
+      "text": "Uh.....Hi there. Its good to see you again....I think.",
+      "voice": null,
+      "original_text_hash": 18065392841205295496
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_1",
+      "index": 14,
+      "text": "That is *funny*. You think you *see* Orz but Orz are not *light reflections*.\nMaybe you think Orz are *many bubbles* too. It is such a joke.\nOrz are not *many bubbles* like *campers*. Orz are just Orz.\nI am Orz. I am one with many *fingers*.\nMy *fingers* reach through into *heavy space* and you *see* *Orz bubbles*\nbut it is really *fingers*.\nMaybe you do not even *smell*? That is sad.\n*Smelling* *pretty colors* is the best *game*.",
+      "voice": "orz-011.ogg",
+      "original_text_hash": 15671331229314726502
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_2",
+      "index": 15,
+      "text": "Perhaps you have not been to the *Playground*.\nThe *Playground* is for Taalo and for Orz, but *Campers* can go.\nIt more fun than several.\nThe *Playground* is 372.1, 261.9 your *silly* numbers.\nYou can go there for too much fun.",
+      "voice": "orz-012.ogg",
+      "original_text_hash": 15178833323360991261
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_3",
+      "index": 16,
+      "text": "Hello! I will say again for extra enjoyment. So much a fun game.\nHello! Hello! Next I will *spit* *slow time* words to you for better *dancing*.\nDo you know? Orz can *dance* very well.\nNow you are a *happy camper* and Orz can give *heavy space* ships for *dancing*.\nOrz will give. Orz ships have the GO! GO!. Do you know?\nThese are best for letting go near *heavy space* planet bodies.\nThen GO! GO! can going fastest to enter ships of the *other*.\nThen it is *happy time*.",
+      "voice": "orz-013.ogg",
+      "original_text_hash": 5314873057469463974
+    },
+    {
+      "id": "GENERAL_INFO_ALLY_4",
+      "index": 17,
+      "text": "Even more *pleasant combinations*. I am *successful* the most.\nPerhaps after the biggest *party* you will understanding the Orz\nand I can showing you other *levels*.\nThere are so many, but you only *play* on this one.\nOne is not enough.\nWe are *friends* now. Never be afraid to *open* enough and *spread the wax*.",
+      "voice": "orz-014.ogg",
+      "original_text_hash": 15508216677158957686
+    },
+    {
+      "id": "more_about_you",
+      "index": 18,
+      "text": "I'm afraid I'm still not exactly clear on who you are and where you're from.",
+      "voice": null,
+      "original_text_hash": 5955775532725665515
+    },
+    {
+      "id": "ABOUT_US_1",
+      "index": 19,
+      "text": "You are a *silly* *camper*. I am always Orz.\nIf I was not Orz, then I would not be, but of course I am Orz.\nWe are from the *outside*. Also the Arilou *quick babies* are from *outside*.\nIt is the same, but not.\nOrz are from *below*, Arilou are from *above*.\nOrz does not like Arilou. Arilou are too much trouble.\nWe can not have *parties* when Arilou always *jumping in front*.\nIt makes Orz *frumple* so much.\nThese are *fat* words. Do you want to play this some more?",
+      "voice": "orz-015.ogg",
+      "original_text_hash": 15893587842245293614
+    },
+    {
+      "id": "ABOUT_US_2",
+      "index": 20,
+      "text": "I will tell again the many *pieces*. You do not know *special things*.\nHere is some. *Time* is not one but many.\n*Space* is many. *Colors* are many. You are so *sticky*.\nYou cannot *slide* like Orz from *outside* to *inside* and *in between*.\nIt is sad, but Orz can *pull* the *campers* after being *connected*.\nThis is soon.\nOrz are trying to *pull* the Androsynth, but they are so *silly*, they do not want.\nArilou can *slide*. Also Taalo. Many can *slide*, but Orz are better of course.",
+      "voice": "orz-016.ogg",
+      "original_text_hash": 12223233699533089936
+    },
+    {
+      "id": "ABOUT_US_3",
+      "index": 21,
+      "text": "Here is *good news*!\nSix or nine *pieces* ago, myself the Orz did not even *smell* your *level*.\nCan you believe? It is so silly! It is such a *happy town*.\nThen the Androsynth made some *slippery places* and then Orz can *smell* it.\nIt *smells* so good Orz are surprised!\nI, myself pushed the *fingers* into the *new town* and there are so many *campers*.\nFirst the VUX, but they are such *silly cows*\nthey ask so much about the Androsynth we must *dance* with them.\nThen we can *smell* the Arilou. Again they are *jumping in front*.\nIt is always! Nnnnggaaahhhhh!\nThere is *juice squeezing* and then we are not so *frumple*.\nFinally we find you, the *happy campers* and the Taalo *playground* for sliding through.\nWhere are the Taalo? There they are. It is too much fun.\nWe are too happy, in this *slow time* *heavy space*. It is a better *level* for games.\nThis is the everything story. Now you know.",
+      "voice": "orz-017.ogg",
+      "original_text_hash": 12356370738190218736
+    },
+    {
+      "id": "ABOUT_US_4",
+      "index": 22,
+      "text": "I am already telling the everything story. It is too much.\nYou do not asking about us the many.\nNext it is the *party* and you will *become*.\nIt is best.\nAfter this you are so *happy* you do not ask the many questions.\nDo you anticipate? Yes! You do!\nI am too *tired* the *silly* word *game*.",
+      "voice": "orz-018.ogg",
+      "original_text_hash": 9768352593297306455
+    },
+    {
+      "id": "where_androsyn",
+      "index": 23,
+      "text": "Our charts show this as Androsynth space. Do you know what happened to them?",
+      "voice": null,
+      "original_text_hash": 6529617461167172053
+    },
+    {
+      "id": "DISEMBLE_ABOUT_ANDROSYN",
+      "index": 24,
+      "text": "Androsynth are not here. Orz are here.\nYou are not the same too much like Androsynth. You are *happy campers*.\nDo you want to see our surprising *toys*? No!! Do Not!!\nAndrosynth are so silly. We do not *tell stories* a lot about them.\nNo more Androsynth *stories*.",
+      "voice": "orz-019.ogg",
+      "original_text_hash": 4871231204358186180
+    },
+    {
+      "id": "must_know_about_androsyn",
+      "index": 25,
+      "text": "What happened?? Dammit, what did you do to the Androsynth?!!",
+      "voice": null,
+      "original_text_hash": 15953542625933456624
+    },
+    {
+      "id": "KNOW_TOO_MUCH",
+      "index": 26,
+      "text": "Nnnnnngaaaa!!!! I am *squeezing* the *juice*.\nYou have become too close. You are *sick* for the last time!\nNnnnnnggggaaaaaa!! It is not enough for *happy days* I am sure.\nMore and more *juice!*\nAndrosynth are not the story!!",
+      "voice": "orz-020.ogg",
+      "original_text_hash": 9534417268190679181
+    },
+    {
+      "id": "dont_really_care",
+      "index": 27,
+      "text": "Uh, that's okay. I didn't really care about them so much anyway.",
+      "voice": null,
+      "original_text_hash": 1622108837654234483
+    },
+    {
+      "id": "YOU_ARE_OUR_FRIENDS",
+      "index": 28,
+      "text": "Ahaa! I am told other Orz *cousins* you are *connected* for *camping*.\nI am so right!\nIt is happiest days to not care about Androsynth anything.\nSo now we can be *together* for friendly *dessert*.\nI am so right. I will tell them again.",
+      "voice": "orz-021.ogg",
+      "original_text_hash": 6424966438859975894
+    },
+    {
+      "id": "about_andro_1",
+      "index": 29,
+      "text": "Now please don't take this the wrong way, but what did happen to the Androsynth?",
+      "voice": null,
+      "original_text_hash": 1041397576250024040
+    },
+    {
+      "id": "FORGET_ANDRO_1",
+      "index": 30,
+      "text": "I am say best word *frumple*. Maybe you do not know.\n*Frumple* be *round* yet *lumpy*. So bad!!!\nThe asking about Androsynth is so *frumple* we are not happy.\nDo not asking it so much.\nIt is better to not *frumple* or else there is so much problems.\nNo more Androsynth is better.",
+      "voice": "orz-022.ogg",
+      "original_text_hash": 404756832522348250
+    },
+    {
+      "id": "about_andro_2",
+      "index": 31,
+      "text": "Just tell me this. Are we in for the same fate as them?",
+      "voice": null,
+      "original_text_hash": 9981490413606853682
+    },
+    {
+      "id": "FORGET_ANDRO_2",
+      "index": 32,
+      "text": "You are not same. You are *happy campers*, but already you know.\nI will not talking about *silly* Androsynth, now is stop asking.\nIf you are say the question another time\nit is *frumple* too much and Orz are *dancing* for *dissolving* the *campers*.\nI am clear!!\nYou are not so *silly*!",
+      "voice": "orz-023.ogg",
+      "original_text_hash": 15303173725689638223
+    },
+    {
+      "id": "about_andro_3",
+      "index": 33,
+      "text": "Okay, okay. Now this isn't really a question, but let's say you WERE going to talk about the Androsynth. If you were, what would you say?",
+      "voice": null,
+      "original_text_hash": 8527045172830622183
+    },
+    {
+      "id": "BLEW_IT",
+      "index": 34,
+      "text": "Nnnnnggggaaaahhhhh!!!!!! It is *dancing*!!!!",
+      "voice": "orz-024.ogg",
+      "original_text_hash": 10805401135112240346
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_1",
+      "index": 35,
+      "text": "This is my *house.* Did you come to *play*?.\nDo not be sad if you are *other*. We can still have a *party*.\nThere are never enough *campers*.",
+      "voice": "orz-025.ogg",
+      "original_text_hash": 11103388937320037674
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_2",
+      "index": 36,
+      "text": "You want to *take* *silly* words in *slow time*. It is okay.\nI will *spit* words and then perhaps it is the *party*.\nWelcome to my *house* or *other house*.\nIt is a joke! Only it is my *house*.",
+      "voice": "orz-026.ogg",
+      "original_text_hash": 12050578356847800
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_3",
+      "index": 37,
+      "text": "Again you have come to my *house*. It is the same time.\nWhy are you coming? Do you always the *slow time*?\nI am surprised!\nOh well. Now is for *fun time*, not worrying.",
+      "voice": "orz-027.ogg",
+      "original_text_hash": 5981440351350670575
+    },
+    {
+      "id": "NEUTRAL_HOMEWORLD_HELLO_4",
+      "index": 38,
+      "text": "Again you have come to my *house*. It is the same time.\nWhy are you coming? Do you always the *slow time*?\nI am surprised!\nOh well. Now is for *fun time*, not worrying.",
+      "voice": "orz-028.ogg",
+      "original_text_hash": 5981440351350670575
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_1",
+      "index": 39,
+      "text": "Hello extremely! I hope you like to *play*.\nSome *campers* are not so good for *games*.\nIs it time for *playing* yet?",
+      "voice": "orz-029.ogg",
+      "original_text_hash": 17212464793434025192
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_2",
+      "index": 40,
+      "text": "Pleasant *combinations*! We have been *anticipating* about you.\nDo you like *parties*? We do several times, and so much the better.",
+      "voice": "orz-030.ogg",
+      "original_text_hash": 597651288893248829
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_3",
+      "index": 41,
+      "text": "So much *juicy*! Let's have *party time* sooner.",
+      "voice": "orz-031.ogg",
+      "original_text_hash": 5427260771227470827
+    },
+    {
+      "id": "NEUTRAL_SPACE_HELLO_4",
+      "index": 42,
+      "text": "Hi. You seem like good *campers*.\nPerhaps we can do *snappy fun* with you everytime.",
+      "voice": "orz-032.ogg",
+      "original_text_hash": 3021866437446242195
+    },
+    {
+      "id": "hostile_1",
+      "index": 43,
+      "text": "Do not attempt any hostilities or you will be immediately destroyed.",
+      "voice": null,
+      "original_text_hash": 15357986177421438491
+    },
+    {
+      "id": "HOSTILITY_IS_BAD_1",
+      "index": 44,
+      "text": "If you are *sick* you should have a *party*.\nWe can come and *play* at your *house*.",
+      "voice": "orz-033.ogg",
+      "original_text_hash": 16115920800088355395
+    },
+    {
+      "id": "hostile_2",
+      "index": 45,
+      "text": "We have no time for childish nonsense. We require information. Comply at once.",
+      "voice": null,
+      "original_text_hash": 17784366050372304626
+    },
+    {
+      "id": "HOSTILITY_IS_BAD_2",
+      "index": 46,
+      "text": "*Extra sick fish* need *special training* for extra *fun*.\nWe will have a *happy party* now.",
+      "voice": "orz-034.ogg",
+      "original_text_hash": 9703348409976161385
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 47,
+      "text": "Greetings. I am Captain",
+      "voice": null,
+      "original_text_hash": 8121696602598017742
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 48,
+      "text": ", of the starship",
+      "voice": null,
+      "original_text_hash": 243560670124472899
+    },
+    {
+      "id": "we_are_vindicator2",
+      "index": 49,
+      "text": ". We are having some difficulty translating your messages.",
+      "voice": null,
+      "original_text_hash": 13500029743170704871
+    },
+    {
+      "id": "NICE_TO_MEET_YOU",
+      "index": 50,
+      "text": "Yes, of course. Difficulty. Problems are difficult.\nLet's be *special* together. *Spicy games* are always fun.",
+      "voice": "orz-035.ogg",
+      "original_text_hash": 5662813069678094589
+    },
+    {
+      "id": "seem_like_nice_guys",
+      "index": 51,
+      "text": "You seem like friendly fellows. Perhaps you could aid us in our mission?",
+      "voice": null,
+      "original_text_hash": 6437972366991015373
+    },
+    {
+      "id": "ARE_NICE_WANT_ALLY",
+      "index": 52,
+      "text": "Yes. Yes. We are too friendly.\nExtremely happy *sisters* should correct each other for *celebration*.\nSo much enjoyment!\nShall we come to your *house* so that we can be *relatives*?",
+      "voice": "orz-036.ogg",
+      "original_text_hash": 6912035075421131720
+    },
+    {
+      "id": "talk_about_alliance",
+      "index": 53,
+      "text": "We have reconsidered the idea of an alliance between our peoples.",
+      "voice": null,
+      "original_text_hash": 14814134682208749797
+    },
+    {
+      "id": "OK_TALK_ALLIANCE",
+      "index": 54,
+      "text": "So much the better! Orz have been waiting for *alliance* time.\nI will show you the *inside*.\nIt is so good that you will never leave.\nOh, I am so excited for expecting *alliance parties*.\nYes! Yes! Reconsider is best.",
+      "voice": "orz-037.ogg",
+      "original_text_hash": 2075555081883115331
+    },
+    {
+      "id": "yes_alliance",
+      "index": 55,
+      "text": "Uh....I presume you are talking about an alliance. Yes, we are very interested.",
+      "voice": null,
+      "original_text_hash": 622346582448550988
+    },
+    {
+      "id": "GREAT",
+      "index": 56,
+      "text": "Jumping *peppers*!! This is smiley time!\nYou are *campers* after all!!\nWe will start *alliance* *parties* for better enjoyment!",
+      "voice": "orz-038.ogg",
+      "original_text_hash": 16533444263232356846
+    },
+    {
+      "id": "no_alliance",
+      "index": 57,
+      "text": "I am not quite sure, but I think the answer is no.",
+      "voice": null,
+      "original_text_hash": 207278320681714496
+    },
+    {
+      "id": "MAYBE_LATER",
+      "index": 58,
+      "text": "Disappointing *conclusions*.\nMaybe we can play *alliance* another happy day.\nI will tell *Orz puppies* to wait for *camping*.",
+      "voice": "orz-039.ogg",
+      "original_text_hash": 14487487169159542709
+    },
+    {
+      "id": "decide_later",
+      "index": 59,
+      "text": "No point in rushing into anything. Let us think about it some more.",
+      "voice": null,
+      "original_text_hash": 4306733522934256983
+    },
+    {
+      "id": "OK_LATER",
+      "index": 60,
+      "text": "Yes! Think and then do! You will tell us soon. Soon is now.\n*Parties* can be so much fun for other reasons.\n*Alliance* is good.",
+      "voice": "orz-040.ogg",
+      "original_text_hash": 11837293022720722032
+    },
+    {
+      "id": "why_so_trusting",
+      "index": 61,
+      "text": "You seem very... uh, trusting. Why is that?",
+      "voice": null,
+      "original_text_hash": 16445070555959759857
+    },
+    {
+      "id": "TRUSTING_BECAUSE",
+      "index": 62,
+      "text": "We are not trusting. We like to be *together*.\nDo you want to be *together* with us?\nAlways the other *sad animals* go away, but first we have lots of fun.\nToo many fun is not enough!! Do you agree?\nI think you *smell* like you do.\nThis is the story about trusting.\nIt is sad and makes many Orz *dissolve* or burst into several.\nWhy is it that you are trusting? What a funny question.\nI am tired.",
+      "voice": "orz-041.ogg",
+      "original_text_hash": 15056826063858824206
+    },
+    {
+      "id": "bye_neutral",
+      "index": 63,
+      "text": "Well, it's been.... uh... well, I'm afraid I have to go now. Do you understand?",
+      "voice": null,
+      "original_text_hash": 5852376015158729534
+    },
+    {
+      "id": "GOODBYE_NEUTRAL",
+      "index": 64,
+      "text": "Going. Yes. Orz is go with you same place for *party*.\nNobody is forget.\nNext is *alliance* *party*. Always promise is good to keep.\nSo much pleasure is coming, Orz and the you is change together as soon as *camping* is started.\nYou are not even aware, and then everyone is so happy.\nYou are not forget. Alliance is promise.\nOrz are wait.",
+      "voice": "orz-042.ogg",
+      "original_text_hash": 7348544462406344253
+    },
+    {
+      "id": "ANGRY_SPACE_HELLO_1",
+      "index": 65,
+      "text": "Orz are find you! You do not *play* with Orz so it is not even *happy town*.\nOrz are think that *dissolving* is a better chance for you.\nThis is a good plan. Orz are accomplishing this for better *games*.\nNow is time for *dissolving*.",
+      "voice": "orz-043.ogg",
+      "original_text_hash": 7509728915885494023
+    },
+    {
+      "id": "ANGRY_SPACE_HELLO_2",
+      "index": 66,
+      "text": "So many times Orz are say `Hello, we are Orz', but next is always same.\nCertainly you are *silly cows*.\nNow is try again for *dissolving*. Of course this is best for extra fun.\nAfter dissolved, *silly cows* will not be *frumple*\nand Orz will have *special sauce*, not the *juice*.",
+      "voice": "orz-044.ogg",
+      "original_text_hash": 6887045078132966767
+    },
+    {
+      "id": "ANGRY_HOMEWORLD_HELLO_1",
+      "index": 67,
+      "text": "You have come to our *house* but we cannot *play* the fun *games* with you.\nNnnnngggaaahhh!!\nYou are not even *campers*. Why are you coming to our *house*?\nWe cannot *smell* you even a little.\nSo much trouble in *slow time* is not the best.",
+      "voice": "orz-045.ogg",
+      "original_text_hash": 12582550398090804283
+    },
+    {
+      "id": "ANGRY_HOMEWORLD_HELLO_2",
+      "index": 68,
+      "text": "You are not *connected*! Too many times I speak the *silly* words in *slow time*.\nNo more speaking.\nNext you must *dissolve* and *become* the second time.\nOrz will help you *dissolving*.",
+      "voice": "orz-046.ogg",
+      "original_text_hash": 12622954347795129260
+    },
+    {
+      "id": "whats_up_angry",
+      "index": 69,
+      "text": "You appear to be upset. Have I offended you somehow?",
+      "voice": null,
+      "original_text_hash": 8517401794395485640
+    },
+    {
+      "id": "GENERAL_INFO_ANGRY_1",
+      "index": 70,
+      "text": "Orz is upset! Not one the many!\nWe are *squeezing* the *juice*!\nYou are showing that you are not *happy campers*\nand so Orz cannot have the *party*.\nOrz need *party* or there is no fun and we are *frumple* everyday.\nThis is so sad, Orz is upset of course.",
+      "voice": "orz-047.ogg",
+      "original_text_hash": 5809671442662672912
+    },
+    {
+      "id": "GENERAL_INFO_ANGRY_2",
+      "index": 71,
+      "text": "Too many times explaining the silly words.\nHow many time? One? Two? Three? Seven?\nOrz are ready to find new *friends*. You do not want to *play*.\nDo not coming to our *house*.",
+      "voice": "orz-048.ogg",
+      "original_text_hash": 13879578766874732809
+    },
+    {
+      "id": "were_sorry",
+      "index": 72,
+      "text": "I'm not sure what I said wrong, but in any event, I'm sorry.",
+      "voice": null,
+      "original_text_hash": 17255272231280794485
+    },
+    {
+      "id": "APOLOGY_ACCEPTED",
+      "index": 73,
+      "text": "*Sorry* is good fun. Yes, we are see it is the *game*.\nYou are strangest *campers*, but Orz is understand now.\nWe will come to your *house* and we will be *sorry* too.\nThen is *partytime*.\nOh, the funny *joke* is *sorry*. There are no more *silly cows*.\nThis is *happy town* after all!",
+      "voice": "orz-049.ogg",
+      "original_text_hash": 9054826145138029099
+    },
+    {
+      "id": "insult_1",
+      "index": 74,
+      "text": "You are a dangerous species. We want nothing to do with you.",
+      "voice": null,
+      "original_text_hash": 10228894495847287773
+    },
+    {
+      "id": "insult_2",
+      "index": 75,
+      "text": "If anyone is going to do any `dissolving' around here it's going to be you!",
+      "voice": null,
+      "original_text_hash": 6182301912504814649
+    },
+    {
+      "id": "insult_3",
+      "index": 76,
+      "text": "That's it! I've had it! You're dead.",
+      "voice": null,
+      "original_text_hash": 14518373542852034087
+    },
+    {
+      "id": "insult_4",
+      "index": 77,
+      "text": "That's it! I've had it! You're dead.",
+      "voice": null,
+      "original_text_hash": 14518373542852034087
+    },
+    {
+      "id": "insult_5",
+      "index": 78,
+      "text": "That's it! I've had it! You're dead.",
+      "voice": null,
+      "original_text_hash": 14518373542852034087
+    },
+    {
+      "id": "insult_6",
+      "index": 79,
+      "text": "That's it! I've had it! You're dead.",
+      "voice": null,
+      "original_text_hash": 14518373542852034087
+    },
+    {
+      "id": "insult_7",
+      "index": 80,
+      "text": "That's it! I've had it! You're dead.",
+      "voice": null,
+      "original_text_hash": 14518373542852034087
+    },
+    {
+      "id": "insult_8",
+      "index": 81,
+      "text": "That's it! I've had it! You're dead.",
+      "voice": null,
+      "original_text_hash": 14518373542852034087
+    },
+    {
+      "id": "INSULTED_1",
+      "index": 82,
+      "text": "*Dangerous* is not the way! Orz are happy *fun* days all the time.\n*Silly cow* is so strange Orz think.\nNext *silly cow* are *dissolving* and no more word making in *slow time*.\nThen *happy days* are here again.",
+      "voice": "orz-050.ogg",
+      "original_text_hash": 18402400850270295274
+    },
+    {
+      "id": "INSULTED_2",
+      "index": 83,
+      "text": "Orz are not *dissolve*! Why is the *silly cow* say Orz are *dissolving*?\nToo much crazy perhaps. You are so sick even for a *party*.\nAgain I am *squeezing the juice*. Nnnggaaaahhh!!\nIt does not even helping.",
+      "voice": "orz-051.ogg",
+      "original_text_hash": 4712566779826856510
+    },
+    {
+      "id": "INSULTED_3",
+      "index": 84,
+      "text": "We are not *dead*. Orz is never *dead*.\nOrz is thinking *silly cow* are want to *dance*.\nOrz can *dance* very well *in between*\nbut not as much fun as *parties*.",
+      "voice": "orz-052.ogg",
+      "original_text_hash": 9931907060633356509
+    },
+    {
+      "id": "INSULTED_4",
+      "index": 85,
+      "text": "We are not *dead*. Orz is never *dead*.\nOrz is thinking *silly cow* are want to *dance*.\nOrz can *dance* very well *in between*\nbut not as much fun as *parties*.",
+      "voice": "orz-053.ogg",
+      "original_text_hash": 9931907060633356509
+    },
+    {
+      "id": "bye_angry",
+      "index": 86,
+      "text": "You are just too darn strange. I'm out of here.",
+      "voice": null,
+      "original_text_hash": 247800521133508403
+    },
+    {
+      "id": "GOODBYE_ANGRY",
+      "index": 87,
+      "text": "Orz cannot be *strange*. Orz is Orz. Strange is other thing.\nYou are the *silliest cow* even more so.\nAt least you can *dance* with Orz.\nAfter the *dancing* Orz think you will make good *special sauce*.\nMaybe even for other Orz *party*, so do not be sad.",
+      "voice": "orz-054.ogg",
+      "original_text_hash": 10518600884347728125
+    },
+    {
+      "id": "ANGRY_TAALO_HELLO_1",
+      "index": 88,
+      "text": "Who is it? It is the *not Campers*.\nMaybe you have come to Taalo *playground* for a *Picnic*.\nNo!!! It is not the case! *Silly Cows* can never have a *picnic*.\nOf course. Not even a party.\nIf you are gone, Orz can have fun some more.",
+      "voice": "orz-055.ogg",
+      "original_text_hash": 12767735926269076369
+    },
+    {
+      "id": "ANGRY_TAALO_HELLO_2",
+      "index": 89,
+      "text": "I am not expecting, and then what? Again the *Silly Cows*.\nYou think that the *Playground* is a *fun* place?\nI will explain. It is not.\nNow it is explained. Of course you understand.\nIt is enough talking the words. You are leaving.",
+      "voice": "orz-056.ogg",
+      "original_text_hash": 16955121563388968705
+    },
+    {
+      "id": "FRIENDLY_ALLIED_TAALO_HELLO_1",
+      "index": 90,
+      "text": "Happy *pieces*! I am *squirting nice colors*!\nWhy? The reason.\n*Camper friends* have come to Taalo *Playground*.\nWhy are you coming to this?",
+      "voice": "orz-057.ogg",
+      "original_text_hash": 18090263397929404474
+    },
+    {
+      "id": "FRIENDLY_ALLIED_TAALO_HELLO_2",
+      "index": 91,
+      "text": "I *smell* you so much. *Campers* are pleasant.\nYou are coming again to the *Playground*.\nWe can have extra fun for future *parties* in *quick time*.",
+      "voice": "orz-058.ogg",
+      "original_text_hash": 16339981190477365629
+    },
+    {
+      "id": "demand_to_land",
+      "index": 92,
+      "text": "I demand that you allow us to pass so that we can land on the surface.",
+      "voice": null,
+      "original_text_hash": 14393538234958604161
+    },
+    {
+      "id": "NO_DEMAND",
+      "index": 93,
+      "text": "NNNNgggggaaahhhhh!!!!!! You are *frumple*! You are silly!!\nIs this happy? NO!!! I cannot *spit* words with *Cows*!\nThere is no demanding!\nWe will *dance* now for several *pieces*.",
+      "voice": "orz-059.ogg",
+      "original_text_hash": 8690502388715030145
+    },
+    {
+      "id": "ASK_NICELY",
+      "index": 94,
+      "text": "You are not *spitting* happy words. Demand is not happy.\nIf you want to going onto *Playground* then *happy words* are best.\nDo you understand the most?\nIt is so simple.",
+      "voice": "orz-060.ogg",
+      "original_text_hash": 17903460294815605448
+    },
+    {
+      "id": "why_you_here",
+      "index": 95,
+      "text": "Why are you here at this planet?",
+      "voice": null,
+      "original_text_hash": 2139132629608145894
+    },
+    {
+      "id": "ANGRY_EXPLANATION",
+      "index": 96,
+      "text": "This answer is not for *Silly Cows*.\nYou do not know Taalo. Taalo are not the *friends*.\nYou are coming to the *Playground* and then making words.\nAlways you make Orz *squeezing* the *juice*. We do not have enough.\nI do not want to *smell* you now.",
+      "voice": "orz-061.ogg",
+      "original_text_hash": 12173676898651274731
+    },
+    {
+      "id": "FRIENDLY_EXPLANATION",
+      "index": 97,
+      "text": "I will tell. This is Taalo *Playground*. Do you know?\nTaalo is not anymore the *heavy space*. They are not here.\nTo *play* with Taalo, Orz must *spread* into *Pretty Space*.\nThere are so many good places for this here, Orz are happy.\nOf course you do not know Taalo. You are *Campers*.\nYou cannot going to *Pretty Space*, too bad.",
+      "voice": "orz-062.ogg",
+      "original_text_hash": 6961423403993637791
+    },
+    {
+      "id": "what_is_this_place",
+      "index": 98,
+      "text": "What do you mean by `Playground'? Can you explain some more?",
+      "voice": null,
+      "original_text_hash": 13171743561103633442
+    },
+    {
+      "id": "FRIENDLY_PLACE",
+      "index": 99,
+      "text": "Yes. Yes. You say words, then I say.\nIt is fun *in between*. More fun than *dancing*.\nMany *gravity centers* in *heavy space* make good *party places*.\nThis is why we like the *New Town*. So many *Campers* and then what?\nEven the *Playgrounds*! Such a surprise!\nAt this *Playground*, Taalo are making *Time jokes*. It is too funny for the Orz.\nTaalo are in *heavy space* and next what?\nThey spread to *Pretty Space* because Dnyarri are chasing them.\nNow Dnyarri are sleeping, so Orz can *chase* them.\nThen we can have a *party*. They are even better *campers* than you.\nDo not feeling bad. You are good enough *campers*, but not yet.",
+      "voice": "orz-063.ogg",
+      "original_text_hash": 3819740577590267031
+    },
+    {
+      "id": "ANGRY_PLACE",
+      "index": 100,
+      "text": "Why explaining? You are not a *camper*! You are too *hard*!\nIf you want *words with fluid* then you must be *campers*!\nOf course you are so silly. That is too much. Do not asking about *playgrounds*.\nIf you want to be a *camper* you can go to my *house*.\nSilly name is Gamma Vulpeculae.",
+      "voice": "orz-064.ogg",
+      "original_text_hash": 13804717811812900511
+    },
+    {
+      "id": "may_we_land",
+      "index": 101,
+      "text": "Would you mind if we did a bit of exploring on the planet's surface?",
+      "voice": null,
+      "original_text_hash": 18167740493686999058
+    },
+    {
+      "id": "SURE_LAND",
+      "index": 102,
+      "text": "You are ask if Orz are upset? Orz are not upset.\nYou are *happy campers*. Certainly you are only *slow time* *walkers*.\nIt is not fun on the surface in *slow time*.\nIf you want to go, that is okay.",
+      "voice": "orz-065.ogg",
+      "original_text_hash": 12002426729348019772
+    },
+    {
+      "id": "ALLIES_CAN_VISIT",
+      "index": 103,
+      "text": "Only *campers* can go to the *playground*.\n*Alliance parties* are often a good idea for better *parties*.\nEven for *picnics*.\nDo you want to be *campers* for the *friendly days*?",
+      "voice": "orz-066.ogg",
+      "original_text_hash": 2046678358701023236
+    },
+    {
+      "id": "make_alliance",
+      "index": 104,
+      "text": "All right, all right. We'll be `campers'. How do we do that?",
+      "voice": null,
+      "original_text_hash": 17045821170461193385
+    },
+    {
+      "id": "CANT_ALLY_HERE",
+      "index": 105,
+      "text": "*Jumping Peppers!* I am *squirting* more *nice colors*.\nIt is the best way!\nYou will be very happy *campers*. Do not be *terrified*.\nIt is better as *campers*.\nYou must going to my *house* to start *camping*.\nIt is 371.3, 253.7 location.\nWe are so busy here for starting the *campers*!",
+      "voice": "orz-067.ogg",
+      "original_text_hash": 17450522818630981397
+    },
+    {
+      "id": "why_busy",
+      "index": 106,
+      "text": "What are you busy doing?",
+      "voice": null,
+      "original_text_hash": 9330954471653242241
+    },
+    {
+      "id": "BUSY_BECAUSE",
+      "index": 107,
+      "text": "Busy is because Orz have reason. It is secret for *campers*.\nYou must going quickly to my *house*.\nIt is too bad you cannot *HYUIVBHJHG* there\nbut flying the *heavy* ship is okay.\nPerhaps next we will show you our toys. But do not look!!!\nNow you will go to my *house*.",
+      "voice": "orz-068.ogg",
+      "original_text_hash": 8583400222577678505
+    },
+    {
+      "id": "bye_taalo",
+      "index": 108,
+      "text": "Well, it's been swell, but I really should be going now.",
+      "voice": null,
+      "original_text_hash": 12688536940685404898
+    },
+    {
+      "id": "bye_ally",
+      "index": 109,
+      "text": "I could stay and talk all day, but I'm afraid I must go. Farewell, allies!",
+      "voice": null,
+      "original_text_hash": 11855642826480762290
+    },
+    {
+      "id": "GOODBYE_ALLY",
+      "index": 110,
+      "text": "Yes! We do! Goodbye is the *Game*. Hello!! I am only joke.\nIt is funny enough. Do not forget to *enjoy the sauce*!!!",
+      "voice": "orz-069.ogg",
+      "original_text_hash": 730776440318975992
+    },
+    {
+      "id": "FRIENDLY_TAALO_GOODBYE",
+      "index": 111,
+      "text": "I am so sad myself. You are not here and then I do not think of *parties*.\nOh well. It is so much excitement for the next time.\nYou must leave now so then you must come back.\nYes. I understand very well.",
+      "voice": "orz-070.ogg",
+      "original_text_hash": 847441460491153810
+    },
+    {
+      "id": "ANGRY_TAALO_GOODBYE",
+      "index": 112,
+      "text": "Finally you are *absorbing*. I am tired of *spitting* the meaning.\nGo. It is *happy days* after you are gone.\nThen I will have enough *juice*.\nSo much the better.",
+      "voice": "orz-071.ogg",
+      "original_text_hash": 17444219462756235672
+    },
+    {
+      "id": "HOSTILE_HELLO_1",
+      "index": 113,
+      "text": "Nnnnnngaaaa!!!! I am *squeezing* the *juice*.\nMore and more *juice!*\nYou are *sick* for the last time!",
+      "voice": "orz-072.ogg",
+      "original_text_hash": 3235913038790812112
+    },
+    {
+      "id": "HOSTILE_HELLO_2",
+      "index": 114,
+      "text": "Nnnnnggggaaaahhhhh!!!!!! It is *dancing*!!!!",
+      "voice": "orz-073.ogg",
+      "original_text_hash": 10805401135112240346
+    },
+    {
+      "id": "OUT_TAKES",
+      "index": 115,
+      "text": "*Happy campers* are the best. It is *happy*\nHOLD IT! I'm getting sick of this stupid dialog!\nWho wrote this stuff -- a five year old?\nOkay, okay. I'll try it again *sigh*...\n...*Happy* campers are best. It is good to *smell* you again...",
+      "voice": "orz-074.ogg",
+      "original_text_hash": 2865584233748060765
+    }
+  ],
+  "nodes": [
+    {
+      "id": "exit.bye_ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ALLY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_ally",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_ally",
+      "next": "exit.bye_ally.speech"
+    },
+    {
+      "id": "exit.bye_neutral.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_NEUTRAL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_neutral",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_neutral",
+      "next": "exit.bye_neutral.speech"
+    },
+    {
+      "id": "exit.bye_angry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ANGRY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_angry",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_angry",
+      "next": "exit.bye_angry.speech"
+    },
+    {
+      "id": "bye.taalo",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "bye.taalo.angry"}],
+      "otherwise": "bye.taalo.friendly"
+    },
+    {
+      "id": "bye.taalo.angry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ANGRY_TAALO_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.taalo.angry",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_taalo_angry",
+      "next": "bye.taalo.angry.speech"
+    },
+    {
+      "id": "bye.taalo.friendly.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_TAALO_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.taalo.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_taalo_friendly",
+      "next": "bye.taalo.friendly.speech"
+    },
+    {
+      "id": "exit.hostile_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOSTILITY_IS_BAD_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.hostile_2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_hostile_2",
+      "next": "exit.hostile_2.speech"
+    },
+    {
+      "id": "exit.demand_to_land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_DEMAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.demand_to_land",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_demand_to_land",
+      "next": "exit.demand_to_land.speech"
+    },
+    {
+      "id": "land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SURE_LAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "land.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "land_effect1",
+      "next": "land.speech"
+    },
+    {
+      "id": "land",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TAALO_UNPROTECTED", 1]
+      },
+      "save_as": "land",
+      "next": "land.effect1"
+    },
+    {
+      "id": "exit.yes_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GREAT"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.yes_alliance.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_yes_alliance_effect5",
+      "next": "exit.yes_alliance.speech"
+    },
+    {
+      "id": "exit.yes_alliance.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["orz", "allied"]
+      },
+      "save_as": "exit_yes_alliance_effect4",
+      "next": "exit.yes_alliance.effect5"
+    },
+    {
+      "id": "exit.yes_alliance.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 3]
+      },
+      "save_as": "exit_yes_alliance_effect3",
+      "next": "exit.yes_alliance.effect4"
+    },
+    {
+      "id": "exit.yes_alliance.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_PERSONAL_INFO", 0]
+      },
+      "save_as": "exit_yes_alliance_effect2",
+      "next": "exit.yes_alliance.effect3"
+    },
+    {
+      "id": "exit.yes_alliance.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_GENERAL_INFO", 0]
+      },
+      "save_as": "exit_yes_alliance_effect1",
+      "next": "exit.yes_alliance.effect2"
+    },
+    {
+      "id": "exit.yes_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 0]
+      },
+      "save_as": "exit_yes_alliance",
+      "next": "exit.yes_alliance.effect1"
+    },
+    {
+      "id": "exit.were_sorry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["APOLOGY_ACCEPTED"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.were_sorry.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_were_sorry_effect5",
+      "next": "exit.were_sorry.speech"
+    },
+    {
+      "id": "exit.were_sorry.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["orz", "allied"]
+      },
+      "save_as": "exit_were_sorry_effect4",
+      "next": "exit.were_sorry.effect5"
+    },
+    {
+      "id": "exit.were_sorry.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 3]
+      },
+      "save_as": "exit_were_sorry_effect3",
+      "next": "exit.were_sorry.effect4"
+    },
+    {
+      "id": "exit.were_sorry.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_PERSONAL_INFO", 0]
+      },
+      "save_as": "exit_were_sorry_effect2",
+      "next": "exit.were_sorry.effect3"
+    },
+    {
+      "id": "exit.were_sorry.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_GENERAL_INFO", 0]
+      },
+      "save_as": "exit_were_sorry_effect1",
+      "next": "exit.were_sorry.effect2"
+    },
+    {
+      "id": "exit.were_sorry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 0]
+      },
+      "save_as": "exit_were_sorry",
+      "next": "exit.were_sorry.effect1"
+    },
+    {
+      "id": "exit.about_andro_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BLEW_IT"], "presentation": {"before": "orz.anger"}}],
+      "next": "end"
+    },
+    {
+      "id": "exit.about_andro_3.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_about_andro_3_effect4",
+      "next": "exit.about_andro_3.speech"
+    },
+    {
+      "id": "exit.about_andro_3.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.take",
+        "args": ["orz"]
+      },
+      "save_as": "exit_about_andro_3_effect3",
+      "next": "exit.about_andro_3.effect4"
+    },
+    {
+      "id": "exit.about_andro_3.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["orz", "neutral"]
+      },
+      "save_as": "exit_about_andro_3_effect2",
+      "next": "exit.about_andro_3.effect3"
+    },
+    {
+      "id": "exit.about_andro_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 2]
+      },
+      "save_as": "exit_about_andro_3_effect1",
+      "next": "exit.about_andro_3.effect2"
+    },
+    {
+      "id": "exit.about_andro_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_VISITS", 0]
+      },
+      "save_as": "exit_about_andro_3",
+      "next": "exit.about_andro_3.effect1"
+    },
+    {
+      "id": "exit.must_know_about_androsyn.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KNOW_TOO_MUCH"], "presentation": {"before": "orz.anger"}}],
+      "next": "end"
+    },
+    {
+      "id": "exit.must_know_about_androsyn.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_must_know_about_androsyn_effect2",
+      "next": "exit.must_know_about_androsyn.speech"
+    },
+    {
+      "id": "exit.must_know_about_androsyn.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 2]
+      },
+      "save_as": "exit_must_know_about_androsyn_effect1",
+      "next": "exit.must_know_about_androsyn.effect2"
+    },
+    {
+      "id": "exit.must_know_about_androsyn",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_VISITS", 0]
+      },
+      "save_as": "exit_must_know_about_androsyn",
+      "next": "exit.must_know_about_androsyn.effect1"
+    },
+    {
+      "id": "insult",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_level", {"get": ["story", "ORZ_PERSONAL_INFO", 0]}]
+      },
+      "save_as": "insult",
+      "next": "insult.increment"
+    },
+    {
+      "id": "insult.increment",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_PERSONAL_INFO", {"min": [{"add": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 1]}, 7]}]
+      },
+      "save_as": "insult_increment",
+      "next": "insult.route"
+    },
+    {
+      "id": "insult.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["local", "insult_level", 0]}, 0]},
+          "next": "insult.0"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "insult_level", 0]}, 1]},
+          "next": "insult.1"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "insult_level", 0]}, 2]},
+          "next": "insult.2"
+        }
+      ],
+      "otherwise": "insult.3"
+    },
+    {
+      "id": "insult.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.0",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "insult_0",
+      "next": "insult.0.speech"
+    },
+    {
+      "id": "insult.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "insult_1",
+      "next": "insult.1.speech"
+    },
+    {
+      "id": "insult.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "insult_2",
+      "next": "insult.2.speech"
+    },
+    {
+      "id": "insult.3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.3",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "insult_3",
+      "next": "insult.3.speech"
+    },
+    {
+      "id": "taalo.land",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 3]},
+              {"eq": [{"query": "galaxy.relationship", "args": ["orz"]}, "allied"]}
+            ]
+          },
+          "next": "land"
+        }
+      ],
+      "otherwise": "taalo.land.reply"
+    },
+    {
+      "id": "taalo.land.reply.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ALLIES_CAN_VISIT"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.land.reply",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "may_we_land", true]
+      },
+      "save_as": "taalo_land_reply",
+      "next": "taalo.land.reply.speech"
+    },
+    {
+      "id": "taalo.demand",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "exit.demand_to_land"}],
+      "otherwise": "taalo.demand.reply"
+    },
+    {
+      "id": "taalo.demand.reply.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ASK_NICELY"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.demand.reply",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "demand_to_land", true]
+      },
+      "save_as": "taalo_demand_reply",
+      "next": "taalo.demand.reply.speech"
+    },
+    {
+      "id": "taalo.why_you_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_you_here", true]
+      },
+      "save_as": "taalo_why_you_here",
+      "next": "taalo.why_you_here.route"
+    },
+    {
+      "id": "taalo.why_you_here.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "taalo.why_you_here.angry"}],
+      "otherwise": "taalo.why_you_here.friendly"
+    },
+    {
+      "id": "taalo.why_you_here.friendly",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_EXPLANATION"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.why_you_here.angry",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ANGRY_EXPLANATION"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.what_is_this_place",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_is_this_place", true]
+      },
+      "save_as": "taalo_what_is_this_place",
+      "next": "taalo.what_is_this_place.route"
+    },
+    {
+      "id": "taalo.what_is_this_place.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "taalo.what_is_this_place.angry"}],
+      "otherwise": "taalo.what_is_this_place.friendly"
+    },
+    {
+      "id": "taalo.what_is_this_place.friendly",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_PLACE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.what_is_this_place.angry",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ANGRY_PLACE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_ALLY_HERE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.ally",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "make_alliance", true]
+      },
+      "save_as": "taalo_ally",
+      "next": "taalo.ally.speech"
+    },
+    {
+      "id": "taalo.busy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BUSY_BECAUSE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.busy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_busy", true]
+      },
+      "save_as": "taalo_busy",
+      "next": "taalo.busy.speech"
+    },
+    {
+      "id": "taalo.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "may_we_land",
+          "text": "may_we_land",
+          "when": {"not": {"get": ["local", "may_we_land", false]}},
+          "next": "taalo.land"
+        },
+        {
+          "id": "make_alliance",
+          "text": "make_alliance",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "may_we_land", false]}}},
+              {"not": {"get": ["local", "make_alliance", false]}}
+            ]
+          },
+          "next": "taalo.ally"
+        },
+        {
+          "id": "why_busy",
+          "text": "why_busy",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "may_we_land", false]}}},
+              {"not": {"not": {"get": ["local", "make_alliance", false]}}},
+              {"not": {"get": ["local", "why_busy", false]}}
+            ]
+          },
+          "next": "taalo.busy"
+        },
+        {
+          "id": "demand_to_land",
+          "text": "demand_to_land",
+          "when": {"not": {"get": ["local", "demand_to_land", false]}},
+          "next": "taalo.demand"
+        },
+        {
+          "id": "why_you_here",
+          "text": "why_you_here",
+          "when": {"not": {"get": ["local", "why_you_here", false]}},
+          "next": "taalo.why_you_here"
+        },
+        {
+          "id": "what_is_this_place",
+          "text": "what_is_this_place",
+          "when": {"not": {"get": ["local", "what_is_this_place", false]}},
+          "next": "taalo.what_is_this_place"
+        },
+        {
+          "id": "bye_taalo",
+          "text": "bye_taalo",
+          "when": true,
+          "next": "bye.taalo"
+        }
+      ]
+    },
+    {
+      "id": "whats_up_ally",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_ally", true]
+      },
+      "save_as": "whats_up_ally",
+      "next": "whats_up_ally.seq"
+    },
+    {
+      "id": "whats_up_ally.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_GENERAL_INFO",
+          [["GENERAL_INFO_ALLY_1"], ["GENERAL_INFO_ALLY_2"], ["GENERAL_INFO_ALLY_3"], ["GENERAL_INFO_ALLY_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "whats_up_ally.seq.speech"
+    },
+    {
+      "id": "whats_up_ally.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "more_about_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "more_about_you", true]
+      },
+      "save_as": "more_about_you",
+      "next": "more_about_you.seq"
+    },
+    {
+      "id": "more_about_you.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ORZ_PERSONAL_INFO", [["ABOUT_US_1"], ["ABOUT_US_2"], ["ABOUT_US_3"], ["ABOUT_US_4"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "more_about_you.seq.speech"
+    },
+    {
+      "id": "more_about_you.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "whats_up_angry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_angry", true]
+      },
+      "save_as": "whats_up_angry",
+      "next": "whats_up_angry.seq"
+    },
+    {
+      "id": "whats_up_angry.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ORZ_GENERAL_INFO", [["GENERAL_INFO_ANGRY_1"], ["GENERAL_INFO_ANGRY_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "whats_up_angry.seq.speech"
+    },
+    {
+      "id": "whats_up_angry.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "about.andro.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FORGET_ANDRO_1"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "about.andro.0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 1]
+      },
+      "save_as": "about_andro_0",
+      "next": "about.andro.0.speech"
+    },
+    {
+      "id": "about.andro.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FORGET_ANDRO_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "about.andro.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 2]
+      },
+      "save_as": "about_andro_1",
+      "next": "about.andro.1.speech"
+    },
+    {
+      "id": "ally.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "about_andro_1",
+          "text": "about_andro_1",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "about.andro.0"
+        },
+        {
+          "id": "about_andro_2",
+          "text": "about_andro_2",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "about.andro.1"
+        },
+        {
+          "id": "about_andro_3",
+          "text": "about_andro_3",
+          "when": {"ge": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+          "next": "exit.about_andro_3"
+        },
+        {
+          "id": "whats_up_ally",
+          "text": "whats_up_ally",
+          "when": {"not": {"get": ["local", "whats_up_ally", false]}},
+          "next": "whats_up_ally"
+        },
+        {
+          "id": "more_about_you",
+          "text": "more_about_you",
+          "when": {"not": {"get": ["local", "more_about_you", false]}},
+          "next": "more_about_you"
+        },
+        {
+          "id": "bye_ally",
+          "text": "bye_ally",
+          "when": true,
+          "next": "exit.bye_ally"
+        }
+      ]
+    },
+    {
+      "id": "angry.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_angry",
+          "text": "whats_up_angry",
+          "when": {"not": {"get": ["local", "whats_up_angry", false]}},
+          "next": "whats_up_angry"
+        },
+        {
+          "id": "were_sorry",
+          "text": "were_sorry",
+          "when": true,
+          "next": "exit.were_sorry"
+        },
+        {
+          "id": "insult_1",
+          "text": "insult_1",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 0]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_2",
+          "text": "insult_2",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 1]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_3",
+          "text": "insult_3",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 2]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_4",
+          "text": "insult_4",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 3]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_5",
+          "text": "insult_5",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 4]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_6",
+          "text": "insult_6",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 5]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_7",
+          "text": "insult_7",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 6]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_8",
+          "text": "insult_8",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 7]},
+          "next": "insult"
+        },
+        {
+          "id": "bye_angry",
+          "text": "bye_angry",
+          "when": true,
+          "next": "exit.bye_angry"
+        }
+      ]
+    },
+    {
+      "id": "where_androsyn.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DISEMBLE_ABOUT_ANDROSYN"]}],
+      "next": "androsyn.menu"
+    },
+    {
+      "id": "where_androsyn",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_androsyn", true]
+      },
+      "save_as": "where_androsyn",
+      "next": "where_androsyn.speech"
+    },
+    {
+      "id": "androsyn.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "must_know_about_androsyn",
+          "text": "must_know_about_androsyn",
+          "when": true,
+          "next": "exit.must_know_about_androsyn"
+        },
+        {
+          "id": "dont_really_care",
+          "text": "dont_really_care",
+          "when": true,
+          "next": "dont.really.care"
+        }
+      ]
+    },
+    {
+      "id": "dont.really.care",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_ARE_OUR_FRIENDS"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "offer.nice",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ARE_NICE_WANT_ALLY"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "offer.talk",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_TALK_ALLIANCE"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "offer.trust.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUSTING_BECAUSE"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "offer.trust",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_STACK1", 1]
+      },
+      "save_as": "offer_trust",
+      "next": "offer.trust.speech"
+    },
+    {
+      "id": "no_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAYBE_LATER"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "no_alliance.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "REFUSED_ORZ_ALLIANCE", 1]
+      },
+      "save_as": "no_alliance_effect1",
+      "next": "no_alliance.speech"
+    },
+    {
+      "id": "no_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "talk_about_alliance", true]
+      },
+      "save_as": "no_alliance",
+      "next": "no_alliance.effect1"
+    },
+    {
+      "id": "decide_later.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_LATER"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "decide_later.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "REFUSED_ORZ_ALLIANCE", 1]
+      },
+      "save_as": "decide_later_effect1",
+      "next": "decide_later.speech"
+    },
+    {
+      "id": "decide_later",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "talk_about_alliance", true]
+      },
+      "save_as": "decide_later",
+      "next": "decide_later.effect1"
+    },
+    {
+      "id": "offer.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "no_alliance",
+          "text": "no_alliance",
+          "when": true,
+          "next": "no_alliance"
+        },
+        {
+          "id": "decide_later",
+          "text": "decide_later",
+          "when": true,
+          "next": "decide_later"
+        },
+        {
+          "id": "why_so_trusting",
+          "text": "why_so_trusting",
+          "when": {"eq": [{"get": ["story", "ORZ_STACK1", 0]}, 0]},
+          "next": "offer.trust"
+        },
+        {
+          "id": "yes_alliance",
+          "text": "yes_alliance",
+          "when": true,
+          "next": "exit.yes_alliance"
+        }
+      ]
+    },
+    {
+      "id": "who_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_ARE_ORZ"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "who_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 1]
+      },
+      "save_as": "who_you",
+      "next": "who_you.speech"
+    },
+    {
+      "id": "why_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_BECAUSE"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "why_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 2]
+      },
+      "save_as": "why_here",
+      "next": "why_here.speech"
+    },
+    {
+      "id": "introduce.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NICE_TO_MEET_YOU"]}],
+      "next": "neutral.1"
+    },
+    {
+      "id": "introduce",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_STACK0", 1]
+      },
+      "save_as": "introduce",
+      "next": "introduce.speech"
+    },
+    {
+      "id": "hostile.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOSTILITY_IS_BAD_1"]}],
+      "next": "neutral.2"
+    },
+    {
+      "id": "hostile.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hostile_1", true]
+      },
+      "save_as": "hostile_1",
+      "next": "hostile.1.speech"
+    },
+    {
+      "id": "neutral.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "who_you",
+          "text": "who_you",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "who_you"
+        },
+        {
+          "id": "why_here",
+          "text": "why_here",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "why_here"
+        },
+        {
+          "id": "where_androsyn",
+          "text": "where_androsyn",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+              {"not": {"get": ["local", "where_androsyn", false]}}
+            ]
+          },
+          "next": "where_androsyn"
+        },
+        {
+          "id": "talk_about_alliance",
+          "text": "talk_about_alliance",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]},
+              {"not": {"get": ["local", "talk_about_alliance", false]}}
+            ]
+          },
+          "next": "offer.talk"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}
+            ]
+          },
+          "next": "introduce"
+        },
+        {
+          "id": "seem_like_nice_guys",
+          "text": "seem_like_nice_guys",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"not": {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}}
+            ]
+          },
+          "next": "offer.nice"
+        },
+        {
+          "id": "hostile_1",
+          "text": "hostile_1",
+          "when": {"not": {"get": ["local", "hostile_1", false]}},
+          "next": "hostile.1"
+        },
+        {
+          "id": "hostile_2",
+          "text": "hostile_2",
+          "when": {"not": {"not": {"get": ["local", "hostile_1", false]}}},
+          "next": "exit.hostile_2"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "neutral.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "talk_about_alliance",
+          "text": "talk_about_alliance",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]},
+              {"not": {"get": ["local", "talk_about_alliance", false]}}
+            ]
+          },
+          "next": "offer.talk"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}
+            ]
+          },
+          "next": "introduce"
+        },
+        {
+          "id": "seem_like_nice_guys",
+          "text": "seem_like_nice_guys",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"not": {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}}
+            ]
+          },
+          "next": "offer.nice"
+        },
+        {
+          "id": "who_you",
+          "text": "who_you",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "who_you"
+        },
+        {
+          "id": "why_here",
+          "text": "why_here",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "why_here"
+        },
+        {
+          "id": "where_androsyn",
+          "text": "where_androsyn",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+              {"not": {"get": ["local", "where_androsyn", false]}}
+            ]
+          },
+          "next": "where_androsyn"
+        },
+        {
+          "id": "hostile_1",
+          "text": "hostile_1",
+          "when": {"not": {"get": ["local", "hostile_1", false]}},
+          "next": "hostile.1"
+        },
+        {
+          "id": "hostile_2",
+          "text": "hostile_2",
+          "when": {"not": {"not": {"get": ["local", "hostile_1", false]}}},
+          "next": "exit.hostile_2"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "neutral.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "hostile_1",
+          "text": "hostile_1",
+          "when": {"not": {"get": ["local", "hostile_1", false]}},
+          "next": "hostile.1"
+        },
+        {
+          "id": "hostile_2",
+          "text": "hostile_2",
+          "when": {"not": {"not": {"get": ["local", "hostile_1", false]}}},
+          "next": "exit.hostile_2"
+        },
+        {
+          "id": "who_you",
+          "text": "who_you",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "who_you"
+        },
+        {
+          "id": "why_here",
+          "text": "why_here",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "why_here"
+        },
+        {
+          "id": "where_androsyn",
+          "text": "where_androsyn",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+              {"not": {"get": ["local", "where_androsyn", false]}}
+            ]
+          },
+          "next": "where_androsyn"
+        },
+        {
+          "id": "talk_about_alliance",
+          "text": "talk_about_alliance",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]},
+              {"not": {"get": ["local", "talk_about_alliance", false]}}
+            ]
+          },
+          "next": "offer.talk"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}
+            ]
+          },
+          "next": "introduce"
+        },
+        {
+          "id": "seem_like_nice_guys",
+          "text": "seem_like_nice_guys",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"not": {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}}
+            ]
+          },
+          "next": "offer.nice"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MET_ORZ_BEFORE", 0]}, 0]}},
+          "next": "first"
+        }
+      ],
+      "otherwise": "intro.route"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "first", true]
+      },
+      "save_as": "first",
+      "next": "first.met"
+    },
+    {
+      "id": "first.met",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MET_ORZ_BEFORE", 1]
+      },
+      "save_as": "first_met",
+      "next": "intro.route"
+    },
+    {
+      "id": "intro.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 2]},
+          "next": "hostile.greet"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "taalo.route"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 3]},
+              {"eq": [{"query": "galaxy.relationship", "args": ["orz"]}, "allied"]}
+            ]
+          },
+          "next": "ally.route"
+        },
+        {
+          "when": {"not": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}},
+          "next": "neutral.route"
+        }
+      ],
+      "otherwise": "angry.route"
+    },
+    {
+      "id": "hostile.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "HOSTILE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "HOSTILE_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "hostile.greet.outcome"
+    },
+    {
+      "id": "hostile.greet.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_greet_outcome",
+      "next": "hostile.greet.speech"
+    },
+    {
+      "id": "hostile.greet.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.hostile_map", "orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {"before": ["orz.hostile_map"]}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "taalo.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "taalo.angry"}],
+      "otherwise": "taalo.friendly"
+    },
+    {
+      "id": "taalo.angry",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TAALO_VISITS",
+          [
+            [{"phrase": "ANGRY_TAALO_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ANGRY_TAALO_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "taalo.angry.speech"
+    },
+    {
+      "id": "taalo.angry.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TAALO_VISITS",
+          [
+            [{"phrase": "FRIENDLY_ALLIED_TAALO_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "FRIENDLY_ALLIED_TAALO_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "taalo.friendly.speech"
+    },
+    {
+      "id": "taalo.friendly.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "ally.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "ally.home"}],
+      "otherwise": "ally.space"
+    },
+    {
+      "id": "ally.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_HOME_VISITS",
+          [
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.home.speech"
+    },
+    {
+      "id": "ally.home.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "ally.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "ALLIED_SPACE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_SPACE_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_SPACE_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_SPACE_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.space.speech"
+    },
+    {
+      "id": "ally.space.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "neutral.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "neutral.home"
+        }
+      ],
+      "otherwise": "neutral.space"
+    },
+    {
+      "id": "neutral.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_HOME_VISITS",
+          [
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.home.speech"
+    },
+    {
+      "id": "neutral.home.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "neutral.0"
+    },
+    {
+      "id": "neutral.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "NEUTRAL_SPACE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_SPACE_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_SPACE_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_SPACE_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.space.speech"
+    },
+    {
+      "id": "neutral.space.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "neutral.0"
+    },
+    {
+      "id": "angry.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "angry.home"}],
+      "otherwise": "angry.space"
+    },
+    {
+      "id": "angry.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_HOME_VISITS",
+          [
+            [{"phrase": "ANGRY_HOMEWORLD_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ANGRY_HOMEWORLD_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "angry.home.speech"
+    },
+    {
+      "id": "angry.home.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "angry.menu"
+    },
+    {
+      "id": "angry.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "ANGRY_SPACE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ANGRY_SPACE_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "angry.space.speech"
+    },
+    {
+      "id": "angry.space.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "angry.menu"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

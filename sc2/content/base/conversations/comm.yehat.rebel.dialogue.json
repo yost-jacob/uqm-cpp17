@@ -1,0 +1,790 @@
+{
+  "version": 1,
+  "node_count": 51,
+  "id": "rebel",
+  "resource": "comm.yehat.rebel.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native media/lifecycle configuration remains; topic pruning, dated escort gifts and final-battle cavalry use general graph/state operations."
+  },
+  "phrases": [
+    {
+      "id": "REBEL_HELLO_1",
+      "index": 0,
+      "text": "Welcome to ye, human friend and ally!\nThe revolution has begun and clans flock to our cause!",
+      "voice": "yehatrebels-000.ogg",
+      "original_text_hash": 15544418284402699456
+    },
+    {
+      "id": "REBEL_HELLO_2",
+      "index": 1,
+      "text": "Greetings friend from Earth!\nThe head of our revolution, Cheep-Guava, has led us to many great victories.\nWe have cleaned the Royalist traitors from five star systems!",
+      "voice": "yehatrebels-001.ogg",
+      "original_text_hash": 10735873162379674316
+    },
+    {
+      "id": "REBEL_HELLO_3",
+      "index": 2,
+      "text": "A greeting to ye, Captain!\nWe hope yer battles have been fierce and yer enemies are left in ruin.\nNow what can we be doing fer ye?",
+      "voice": "yehatrebels-002.ogg",
+      "original_text_hash": 17308635573923679247
+    },
+    {
+      "id": "REBEL_HELLO_4",
+      "index": 3,
+      "text": "Hello Captain. What are you needing from us this day?",
+      "voice": "yehatrebels-003.ogg",
+      "original_text_hash": 11770839321166424513
+    },
+    {
+      "id": "how_goes_revolution",
+      "index": 4,
+      "text": "How is the revolution going?",
+      "voice": null,
+      "original_text_hash": 16179368966801872026
+    },
+    {
+      "id": "REBEL_REVOLUTION_1",
+      "index": 5,
+      "text": "We have cleaned the Royalist traitors from five systems\nand even the Veep-Kreep Clan is joining with us against the false Queen!",
+      "voice": "yehatrebels-004.ogg",
+      "original_text_hash": 11688875192403323501
+    },
+    {
+      "id": "REBEL_REVOLUTION_2",
+      "index": 6,
+      "text": "It is a sad thing, this battle that has pitched Clan against Clan, ship against ship\nI myself have sent three Royalist Terminators and their brave crew to the Great Beyond!\nWhat a waste.\nWe pray that the struggle ends quickly.",
+      "voice": "yehatrebels-005.ogg",
+      "original_text_hash": 12301732886490437898
+    },
+    {
+      "id": "REBEL_REVOLUTION_3",
+      "index": 7,
+      "text": "Though we have taken grave losses -- lost brave and true shipmates\nthe enemy -- the fake Queen and her cronies,  have suffered far worse.",
+      "voice": "yehatrebels-006.ogg",
+      "original_text_hash": 12369840099847277691
+    },
+    {
+      "id": "REBEL_REVOLUTION_4",
+      "index": 8,
+      "text": "Our victory is in sight, just beyond the next battle\nor perhaps the next.",
+      "voice": "yehatrebels-007.ogg",
+      "original_text_hash": 17362096641469763788
+    },
+    {
+      "id": "any_ships",
+      "index": 9,
+      "text": "Do you have any ships available to join our fleet?",
+      "voice": null,
+      "original_text_hash": 13713238037209708541
+    },
+    {
+      "id": "NO_ROOM",
+      "index": 10,
+      "text": "The question is moot, is it not, since ye have no room fer such ships in yer fleet?",
+      "voice": "yehatrebels-008.ogg",
+      "original_text_hash": 14516724653196126670
+    },
+    {
+      "id": "HAVE_ALL_SHIPS",
+      "index": 11,
+      "text": "We are honored to help ye, Captain!\nWe shall attach four Terminators to yer fleet immediately.",
+      "voice": "yehatrebels-009.ogg",
+      "original_text_hash": 680671216424915519
+    },
+    {
+      "id": "HAVE_FEW_SHIPS",
+      "index": 12,
+      "text": "We are happy assisting ye, Captain.\nWe shall provide ye with enough of our Terminator vessels to complete yer fleet.\nFight well with them, Captain. They are our best and brightest.",
+      "voice": "yehatrebels-010.ogg",
+      "original_text_hash": 15038943012317161357
+    },
+    {
+      "id": "NO_SHIPS_YET",
+      "index": 13,
+      "text": "Alas, as yet we have no ships which we can be making available to ye at this time.\nHowever, if ye return at a later date, perhaps then we shall have something fer ye.",
+      "voice": "yehatrebels-011.ogg",
+      "original_text_hash": 7606296061127560109
+    },
+    {
+      "id": "give_info_rebels",
+      "index": 14,
+      "text": "Would you share some information with us?",
+      "voice": null,
+      "original_text_hash": 450720637945482933
+    },
+    {
+      "id": "WHAT_INFO",
+      "index": 15,
+      "text": "Of course! What knowledge do ye seek?",
+      "voice": "yehatrebels-012.ogg",
+      "original_text_hash": 2924164795173795062
+    },
+    {
+      "id": "what_about_royalty",
+      "index": 16,
+      "text": "Can you tell me about your Royal Family?",
+      "voice": null,
+      "original_text_hash": 14854474612794961449
+    },
+    {
+      "id": "ABOUT_ROYALTY",
+      "index": 17,
+      "text": "The FALSE Royals, ye should say, Captain!\nTo understand our relationship with the Veep-Neep Queens, ye must first learn a bit of our history.\nIn the ancient past, we Yehat were little more than a collection of warring Clans.\nThat history is bloody, Captain... hideous. We were barbarous then, aye... murderers all.\nMany great warlords rose from the hills and forests of our verdant homeworld to unite the clans\nto become King of all Yehat Clans. Each one failed.\nIt was no male who finally won the great prize, the High Perch of Caer Zeep-Reep!\nNo, Captain, it was a female!... a wise and powerful Queen... the first of the Veep-Neep Dynasty.\nIn exchange fer the Clans' fealty, she gave a simple, compelling promise.\nShe guaranteed that united under her wing, the Clans would NEVER suffer defeat!\nAnd she kept her promise. At long last, there was peace on our world.\nHer line kept true to this promise fer over twenty centuries\nsoothing ruffled feathers, dispensing justice, stamping out foment\nbut then came the present Queen... a true harridan!\nUnder her rule, the power of the Starship Clans was transferred\nto the sycophantic Homeworld dandies... to `warlords' who had nae seen true combat.\nWe, the beak and claw of the Yehat Empire were powerless to influence her decisions.\nWhen the Queen showed the true colors of her plumage and allied with the evil Ur-Quan worms\nwe realized that she would do anything, ANYTHING!...\n...to maintain the illusion of upholding her ancestor's promise\neven if it meant destroying our honor, everything that we stand fer, in the exchange.\nNow we, the true Yehat Clans, seek to pull the false Queen from the High Perch.\nPerhaps we will find a new Queen someday who will bring together the Clans once more.\nOr sadly, I fear we may never replace the Veep-Neeps Queens\nand we shall fight Clan against Clan until only the bloody feathers remain.",
+      "voice": "yehatrebels-013.ogg",
+      "original_text_hash": 16143737949710158217
+    },
+    {
+      "id": "what_about_war",
+      "index": 18,
+      "text": "Tell me about the end of the War.",
+      "voice": null,
+      "original_text_hash": 18247600398807960181
+    },
+    {
+      "id": "ABOUT_WAR",
+      "index": 19,
+      "text": "I will describe these events, Captain.\nThey make fer a tale, Captain, wrought with sadness... and heroism!... and betrayal.\nAfter the Chenjesu, Mmrnmhrm and yer species were defeated\nWe prepared a defense in the Shofixti homestar, Delta Gorno.\nAside our Shofixti, our adopted children, we awaited the onslaught of the Ur-Quan armada.\nWe waited with eagerness, with the hot anticipation of battle!\nBut then we received an unbelievable message from our Queen... `Retreat'.\nWe could not believe it! Tactical withdrawals, yes... but to pull back the entire fleet?\nThere was no mistake... no garbled orders.\nWe obeyed.\nOh, Captain! The eyes of the Shofixti! Their bright and valiant eyes!... as we moved away.\nWithout us... they had no hope of forming a tactical wedge.\nThey would barely slow the Hierarchy fleet.\nWhen the Ur-Quan came, the Shofixti fought as immortal heroes!...\ndarting in and out of the Dreadnought formations\nand then suddenly BLAZING!... like dying stars.\nBut... in only a few hours... the Shofixti fleet was gone\nand the Dreadnoughts moved towards the homeworld.",
+      "voice": "yehatrebels-014.ogg",
+      "original_text_hash": 14462499597934615022
+    },
+    {
+      "id": "what_about_urquan",
+      "index": 20,
+      "text": "How were the Shofixti defeated?",
+      "voice": null,
+      "original_text_hash": 15066483641002517312
+    },
+    {
+      "id": "ABOUT_URQUAN",
+      "index": 21,
+      "text": "As we abandoned the Shofixti to the oncoming Ur-Quan armada\nwe watched the situation on the sterile displays of our long-range sensors.\nSuddenly the screens flared and went black... burnt out! We ran to the windows\njust in time to see the Shofixti's sun burning with incredible light\nmany orders of magnitude greater than its normal brilliance!\nA million tongues of fusion fire spread through the star system\ndevastating the inner system's planets, but incinerating ALL the Ur-Quan vessels!\nIn that moment, the Hierarchy's war fleet was reduced by almost thirty percent.\nWe later remembered that not too many years before the appearance of the Ur-Quan\nthe Shofixti had told us that they had found `something'.\nWith the pride of a hatchling's first flight, they unveiled their find\nit was about the size of a surface transport, but cylindrical and entirely black.\nAcross its surface were a million characters scrawled in an alien script.\nThe message was clear... DANGER! DO NOT TOUCH!\nWe trusted the Shofixti to respect the warning, and left the device in their possession.\nAt the end, when the Ur-Quan were approaching their planet\nthe Shofixti must have realized that they could not win\nbut at least they could insure that both sides would lose.\nThey must have detonated the device in the outer layer of their sun.\nThe sudden removal of a section of the sun's surface layers\nallowed the pressurized plasma from the interior to burst out\nlike a miniature super nova.",
+      "voice": "yehatrebels-015.ogg",
+      "original_text_hash": 3162224823363670172
+    },
+    {
+      "id": "what_about_vux",
+      "index": 22,
+      "text": "Do you know anything about the VUX?",
+      "voice": null,
+      "original_text_hash": 2661337561498878514
+    },
+    {
+      "id": "ABOUT_VUX",
+      "index": 23,
+      "text": "The grotesque monsters? They are an effete and bigoted race, unworthy prey\nwith one exception... General ZEX.\nHe commanded the entire VUX fleet during the Great War\nand even by our high standards of battle skill, he is a genius.\nThe brilliant tactics of Fortress Square and the Dynamic Triangle are his creations.\nWithout ZEX, the VUX would have fallen to our Alliance fleets in weeks\nbut ZEX always found a way to turn his own weakness into an advantage.\nAfter the War, we learned that the Primat and the VUX High Council\ndecided to move ZEX out of the picture, and sent him off to `luxurious retirement' at Alpha Cerenkov I.\nWe have heard that he spends his time pursuing his hobby, though we do not know what more than that.",
+      "voice": "yehatrebels-016.ogg",
+      "original_text_hash": 9553732988396065686
+    },
+    {
+      "id": "what_about_clue",
+      "index": 24,
+      "text": "How can we defeat the Ur-Quan?",
+      "voice": null,
+      "original_text_hash": 7772036833888112185
+    },
+    {
+      "id": "ABOUT_CLUE",
+      "index": 25,
+      "text": "If I were ye, brave human, I'd probably be seeking the focus of the Ur-Quan's power\nand do whatever is necessary to destroy it.\nWe may have a hint as to just what that weak spot is.\nWhen we were being Hierarchy battle slaves\nwe learned that the Ur-Quan were possessing some kind of super-weapon\na huge battleship they called `Sa-Matra' with the firepower to destroy an entire star fleet.\nFor some reason, the Ur-Quan were reluctant to use the vessel.\nIt wasn't until their armada was finally held back at the coreward front\nthat they brought the Sa-Matra's power to bear on the Alliance.\nCaptain, here's my advice... ye can be destroying Dreadnoughts until the breegs come home\nbut ye are never going to defeat the Ur-Quan Hierarchy until ye eliminate their Sa-Matra.",
+      "voice": "yehatrebels-017.ogg",
+      "original_text_hash": 12219553584705742869
+    },
+    {
+      "id": "enough_info",
+      "index": 26,
+      "text": "That's sufficient information for now.",
+      "voice": null,
+      "original_text_hash": 7847006830766576959
+    },
+    {
+      "id": "OK_ENOUGH_INFO",
+      "index": 27,
+      "text": "If you need to know anything more, just ask.",
+      "voice": "yehatrebels-018.ogg",
+      "original_text_hash": 9704218320387398267
+    },
+    {
+      "id": "bye_rebel",
+      "index": 28,
+      "text": "Goodbye brave rebels. Viva la Revolution!",
+      "voice": null,
+      "original_text_hash": 9377300419370536922
+    },
+    {
+      "id": "GOODBYE_REBEL",
+      "index": 29,
+      "text": "Goodbye human comrade. Fight well!",
+      "voice": "yehatrebels-019.ogg",
+      "original_text_hash": 1682282715915041161
+    },
+    {
+      "id": "YEHAT_CAVALRY",
+      "index": 30,
+      "text": "Greetings human friend! We know ye are about to be attacking the Sa-Matra\nand probably don't like being interrupted, but we have important news!...\nThe Rebellion is WON! We are VICTORIOUS!\nWe have pulled the Veep-Neep harpy Queen and her cronies from the High Perch!\nAnd better yet... we have found a new Queen!...\n...A Queen who will unite the Clans in peace and harmony as never before!\nYou will never guess who it is, Captain!\nA PKUNK! Yes! It is TRUE!\nThey survived their absorption into our culture\nand are now providing us with insights into ourselves we never dreamed of!\nWe only THOUGHT we were being happy birds of prey! We were fooling ourselves!\nOur new Queen's name is Braky Girdy the First!... and her first command\nwas to rush here and bring ye these ships...Yehat Terminators and Pkunk Furies.\nNow, Captain, together we can attack the Sa-Matra!",
+      "voice": "yehatrebels-020.ogg",
+      "original_text_hash": 14175420467002987688
+    },
+    {
+      "id": "what_about_pkunk_rebel",
+      "index": 31,
+      "text": "We have encountered an offshoot of your species, the Pkunk. Tell us about them.",
+      "voice": null,
+      "original_text_hash": 1116946743862235248
+    },
+    {
+      "id": "PKUNK_ABSORBED_REBEL",
+      "index": 32,
+      "text": "The Pkunk have been absorbed.\nThey are no more. This is how it should be.\nNow the matter is settled, human. Do not be bringing it up again.",
+      "voice": "yehatrebels-021.ogg",
+      "original_text_hash": 6639675295489534025
+    },
+    {
+      "id": "HATE_PKUNK_REBEL",
+      "index": 33,
+      "text": "The cowards live?!! This is unbelievable!!\nIt is a SAD, SAD day to be hearing this thing from ye, human.\nThe P... the Pku... I canna even say their vile name!\nThe Pku... PKU-NK! are the greatest embarrassment our species has ever suffered!\nDo not be calling these wretched creatures an offshoot of our species!\nBetter it is that ye be calling them GARBAGE! or DROPPINGS!\nOr better yet do not be talking about them at all!",
+      "voice": "yehatrebels-022.ogg",
+      "original_text_hash": 7101807137333596789
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "intro",
+      "next": "intro.route"
+    },
+    {
+      "id": "intro.route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["encounter", "in_last_battle", false]}, "next": "cavalry.speech"}],
+      "otherwise": "greeting"
+    },
+    {
+      "id": "greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "YEHAT_REBEL_VISITS",
+          [["REBEL_HELLO_1"], ["REBEL_HELLO_2"], ["REBEL_HELLO_3"], ["REBEL_HELLO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "greeting.speech"
+    },
+    {
+      "id": "greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "main"
+    },
+    {
+      "id": "cavalry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YEHAT_CAVALRY"]}],
+      "next": "cavalry.capacity"
+    },
+    {
+      "id": "cavalry.capacity",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "cavalry_count", {"min": [{"query": "fleet.slots", "args": ["yehat_rebel"]}, 8]}]
+      },
+      "save_as": "cavalry_capacity",
+      "next": "cavalry.ready"
+    },
+    {
+      "id": "cavalry.ready",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["local", "cavalry_count", 0]}, 0]}, "next": "end"}],
+      "otherwise": "cavalry.yehat"
+    },
+    {
+      "id": "cavalry.yehat",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": [
+          "yehat_rebel",
+          {
+            "subtract": [{"get": ["local", "cavalry_count", 0]}, {"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}]
+          }
+        ]
+      },
+      "save_as": "cavalry_yehat",
+      "next": "cavalry.pkunk.ready"
+    },
+    {
+      "id": "cavalry.pkunk.ready",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}, 0]}, "next": "end"}],
+      "otherwise": "cavalry.pkunk"
+    },
+    {
+      "id": "cavalry.pkunk",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["pkunk", {"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}]
+      },
+      "save_as": "cavalry_pkunk",
+      "next": "end"
+    },
+    {
+      "id": "revolution",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_revolution", true]
+      },
+      "save_as": "revolution",
+      "next": "revolution.sequence"
+    },
+    {
+      "id": "revolution.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "YEHAT_REBEL_INFO",
+          [["REBEL_REVOLUTION_1"], ["REBEL_REVOLUTION_2"], ["REBEL_REVOLUTION_3"], ["REBEL_REVOLUTION_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "revolution.sequence.speech"
+    },
+    {
+      "id": "revolution.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "main"
+    },
+    {
+      "id": "pkunk",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "YEHAT_ABSORBED_PKUNK", 0]}, 0]}, "next": "pkunk.absorbed"}],
+      "otherwise": "pkunk.hate"
+    },
+    {
+      "id": "pkunk.absorbed.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PKUNK_ABSORBED_REBEL"]}],
+      "next": "main"
+    },
+    {
+      "id": "pkunk.absorbed",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
+      },
+      "save_as": "pkunk_absorbed",
+      "next": "pkunk.absorbed.speech"
+    },
+    {
+      "id": "pkunk.hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_PKUNK_REBEL"]}],
+      "next": "main"
+    },
+    {
+      "id": "pkunk.hate",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
+      },
+      "save_as": "pkunk_hate",
+      "next": "pkunk.hate.speech"
+    },
+    {
+      "id": "bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_REBEL"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye",
+      "next": "bye.speech"
+    },
+    {
+      "id": "info.start",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_INFO"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "info.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_urquan", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_royalty", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_war", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_vux", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_clue", false]}}}
+            ]
+          },
+          "next": "info.exhausted"
+        }
+      ],
+      "otherwise": "info.menu"
+    },
+    {
+      "id": "info.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "give_info_rebels", true]
+      },
+      "save_as": "info_exhausted",
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_urquan", true]
+      },
+      "save_as": "what_about_urquan",
+      "next": "what_about_urquan.speech"
+    },
+    {
+      "id": "what_about_royalty.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ROYALTY"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_royalty",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_royalty", true]
+      },
+      "save_as": "what_about_royalty",
+      "next": "what_about_royalty.speech"
+    },
+    {
+      "id": "what_about_war.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_WAR"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_war", true]
+      },
+      "save_as": "what_about_war",
+      "next": "what_about_war.speech"
+    },
+    {
+      "id": "what_about_vux.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_VUX"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_vux",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_vux", true]
+      },
+      "save_as": "what_about_vux",
+      "next": "what_about_vux.speech"
+    },
+    {
+      "id": "what_about_clue.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_CLUE"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_clue",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_clue", true]
+      },
+      "save_as": "what_about_clue",
+      "next": "what_about_clue.speech"
+    },
+    {
+      "id": "info.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"not": {"get": ["local", "what_about_urquan", false]}},
+          "next": "what_about_urquan"
+        },
+        {
+          "id": "what_about_royalty",
+          "text": "what_about_royalty",
+          "when": {"not": {"get": ["local", "what_about_royalty", false]}},
+          "next": "what_about_royalty"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"not": {"get": ["local", "what_about_war", false]}},
+          "next": "what_about_war"
+        },
+        {
+          "id": "what_about_vux",
+          "text": "what_about_vux",
+          "when": {"not": {"get": ["local", "what_about_vux", false]}},
+          "next": "what_about_vux"
+        },
+        {
+          "id": "what_about_clue",
+          "text": "what_about_clue",
+          "when": {"not": {"get": ["local", "what_about_clue", false]}},
+          "next": "what_about_clue"
+        },
+        {
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "info.back"
+        }
+      ]
+    },
+    {
+      "id": "info.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_INFO"]}],
+      "next": "main"
+    },
+    {
+      "id": "ships",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_ships", true]
+      },
+      "save_as": "ships",
+      "next": "ships.ready"
+    },
+    {
+      "id": "ships.ready",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "any": [
+                {"eq": [{"get": ["story", "YEHAT_SHIP_MONTH", 0]}, 0]},
+                {"gt": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "YEHAT_SHIP_YEAR", 0]}]},
+                {
+                  "all": [
+                    {
+                      "eq": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "YEHAT_SHIP_YEAR", 0]}]
+                    },
+                    {"gt": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "YEHAT_SHIP_MONTH", 0]}]}
+                  ]
+                },
+                {
+                  "all": [
+                    {
+                      "eq": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "YEHAT_SHIP_YEAR", 0]}]
+                    },
+                    {"eq": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "YEHAT_SHIP_MONTH", 0]}]},
+                    {"ge": [{"get": ["encounter", "calendar_day", 0]}, {"get": ["story", "YEHAT_SHIP_DAY", 0]}]}
+                  ]
+                }
+              ]
+            }
+          },
+          "next": "ships.wait"
+        }
+      ],
+      "otherwise": "ships.capacity"
+    },
+    {
+      "id": "ships.wait",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SHIPS_YET"]}],
+      "next": "main"
+    },
+    {
+      "id": "ships.capacity",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "ship_count", {"query": "fleet.slots", "args": ["yehat"]}]
+      },
+      "save_as": "ships_capacity",
+      "next": "ships.route"
+    },
+    {
+      "id": "ships.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["local", "ship_count", 0]}, 0]},
+          "next": "ships.full"
+        },
+        {
+          "when": {"lt": [{"get": ["local", "ship_count", 0]}, 4]},
+          "next": "ships.few"
+        }
+      ],
+      "otherwise": "ships.all"
+    },
+    {
+      "id": "ships.full",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ROOM"]}],
+      "next": "main"
+    },
+    {
+      "id": "ships.few",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_FEW_SHIPS"]}],
+      "next": "ships.give"
+    },
+    {
+      "id": "ships.all",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_ALL_SHIPS"]}],
+      "next": "ships.give"
+    },
+    {
+      "id": "ships.give",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["yehat", {"min": [{"get": ["local", "ship_count", 0]}, 4]}]
+      },
+      "save_as": "ships_give",
+      "next": "ships.month"
+    },
+    {
+      "id": "ships.month",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_MONTH", {"add": [{"mod": [{"get": ["encounter", "calendar_month", 0]}, 12]}, 1]}]
+      },
+      "save_as": "ships_month",
+      "next": "ships.day"
+    },
+    {
+      "id": "ships.day",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
+      },
+      "save_as": "ships_day",
+      "next": "ships.year.route"
+    },
+    {
+      "id": "ships.year.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["encounter", "calendar_month", 0]}, 12]}, "next": "ships.year.next"}],
+      "otherwise": "ships.year.same"
+    },
+    {
+      "id": "ships.year.next",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
+      },
+      "save_as": "ships_year_next",
+      "next": "main"
+    },
+    {
+      "id": "ships.year.same",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_YEAR", {"get": ["encounter", "calendar_campaign_year", 0]}]
+      },
+      "save_as": "ships_year_same",
+      "next": "main"
+    },
+    {
+      "id": "main",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "how_goes_revolution",
+          "text": "how_goes_revolution",
+          "when": {"not": {"get": ["local", "how_goes_revolution", false]}},
+          "next": "revolution"
+        },
+        {
+          "id": "what_about_pkunk_rebel",
+          "text": "what_about_pkunk_rebel",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "pkunk"
+        },
+        {
+          "id": "any_ships",
+          "text": "any_ships",
+          "when": {"not": {"get": ["local", "any_ships", false]}},
+          "next": "ships"
+        },
+        {
+          "id": "give_info_rebels",
+          "text": "give_info_rebels",
+          "when": {"not": {"get": ["local", "give_info_rebels", false]}},
+          "next": "info.start"
+        },
+        {
+          "id": "bye_rebel",
+          "text": "bye_rebel",
+          "when": true,
+          "next": "bye"
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

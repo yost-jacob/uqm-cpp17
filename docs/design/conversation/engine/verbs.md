@@ -1,6 +1,6 @@
 # Consolidated conversation verbs
 
-These are the verbs actually accepted by the [prototype factory](verb_factory.cpp).
+These are the verbs actually accepted by the [shared factory](../../../../sc2/src/uqm/dialogue/verb_factory.cpp).
 Game operations are declared in [state.hpp](state.hpp); implementations and result contracts are documented in [native-contracts.md](native-contracts.md).
 The [full legacy mapping](legacy-verbs.json) classifies all active script call sites. Routing, packed encodings, UI polling, drawing and playback are deliberately not new state verbs.
 
@@ -99,3 +99,7 @@ unknown names and use in the wrong context fail during loading. They use the sam
 binding and result path as general verbs and cannot take over graph traversal or
 playback. This namespace is an intentional extension point, not permission to run
 arbitrary functions named by a JSON file.
+
+`handlers.legacy_turn(script, response_slot_or_null)` is the live migration bridge.
+It preserves native story/media timing and menu order while the C bodies are
+ported. It is not a generalized replacement for those bodies.

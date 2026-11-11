@@ -1,0 +1,4455 @@
+{
+  "version": 1,
+  "node_count": 132,
+  "id": "zoqfot",
+  "resource": "comm.zoqfotpik.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Native resource/lifecycle configuration remains. Speaker transitions use registered descriptor-owned media cues; all story/topic/news/gift/alliance/event control is graph data, with mutations after playback."
+  },
+  "phrases": [
+    {
+      "id": "WE_ARE0",
+      "index": 0,
+      "text": "Attention starship!\nWe are the Zoq-Fot-Pik.",
+      "voice": "zoqfotpik-000.ogg",
+      "original_text_hash": 10413406867156327350
+    },
+    {
+      "id": "WE_ARE1",
+      "index": 1,
+      "text": "Make no hostile actions!",
+      "voice": "zoqfotpik-001.ogg",
+      "original_text_hash": 462049524386527518
+    },
+    {
+      "id": "WE_ARE2",
+      "index": 2,
+      "text": "We come in peace, and with good will.",
+      "voice": "zoqfotpik-002.ogg",
+      "original_text_hash": 16461076387982520970
+    },
+    {
+      "id": "WE_ARE3",
+      "index": 3,
+      "text": "But if you make one false move, you're vapor!",
+      "voice": "zoqfotpik-003.ogg",
+      "original_text_hash": 13669780034253037084
+    },
+    {
+      "id": "WE_ARE4",
+      "index": 4,
+      "text": "Don't worry, my companion is just a bit nervous...",
+      "voice": "zoqfotpik-004.ogg",
+      "original_text_hash": 2356597055049499746
+    },
+    {
+      "id": "WE_ARE5",
+      "index": 5,
+      "text": "No, I'm not!",
+      "voice": "zoqfotpik-005.ogg",
+      "original_text_hash": 11991266450313033799
+    },
+    {
+      "id": "WE_ARE6",
+      "index": 6,
+      "text": "...and argumentative.",
+      "voice": "zoqfotpik-006.ogg",
+      "original_text_hash": 5308655801478149692
+    },
+    {
+      "id": "WE_ARE7",
+      "index": 7,
+      "text": "No, I'm not.",
+      "voice": "zoqfotpik-007.ogg",
+      "original_text_hash": 11991254355685123478
+    },
+    {
+      "id": "SCOUT_HELLO0",
+      "index": 8,
+      "text": "We are a scout vessel\ndispatched from our homeworld.",
+      "voice": "zoqfotpik-008.ogg",
+      "original_text_hash": 5886998833074862274
+    },
+    {
+      "id": "SCOUT_HELLO1",
+      "index": 9,
+      "text": "We have travelled far\nthrough hostile, uncharted space\nto find you.\nWe hail from the green dwarf star at coordinates\nziggerfau-gerrrnuf, Ah-ah, Pahoy-hoy.",
+      "voice": "zoqfotpik-009.ogg",
+      "original_text_hash": 7814008110773164226
+    },
+    {
+      "id": "SCOUT_HELLO2",
+      "index": 10,
+      "text": "No, you idiot, in their coordinate system!",
+      "voice": "zoqfotpik-010.ogg",
+      "original_text_hash": 1543500112240835901
+    },
+    {
+      "id": "SCOUT_HELLO3",
+      "index": 11,
+      "text": "Oh! Er\nCoordinates 400.0 : 543.7.",
+      "voice": "zoqfotpik-011.ogg",
+      "original_text_hash": 1943241206425108250
+    },
+    {
+      "id": "INIT_HOME_HELLO0",
+      "index": 12,
+      "text": "You have arrived at our homeworld.",
+      "voice": "zoqfotpik-012.ogg",
+      "original_text_hash": 11070779775537620695
+    },
+    {
+      "id": "INIT_HOME_HELLO1",
+      "index": 13,
+      "text": "And we've got a billion ships here!",
+      "voice": "zoqfotpik-013.ogg",
+      "original_text_hash": 10001480892001286464
+    },
+    {
+      "id": "INIT_HOME_HELLO2",
+      "index": 14,
+      "text": "We are fortunate that you have found us in our time of need.",
+      "voice": "zoqfotpik-014.ogg",
+      "original_text_hash": 12708973486111940356
+    },
+    {
+      "id": "INIT_HOME_HELLO3",
+      "index": 15,
+      "text": "So don't even think of trying to attack us!",
+      "voice": "zoqfotpik-015.ogg",
+      "original_text_hash": 16774619108467913935
+    },
+    {
+      "id": "which_fot",
+      "index": 16,
+      "text": "Which one of you creatures is the Fot?",
+      "voice": null,
+      "original_text_hash": 6093598070952622085
+    },
+    {
+      "id": "HE_IS0",
+      "index": 17,
+      "text": "He is.",
+      "voice": "zoqfotpik-016.ogg",
+      "original_text_hash": 14185350180954764600
+    },
+    {
+      "id": "HE_IS1",
+      "index": 18,
+      "text": "No, she is!",
+      "voice": "zoqfotpik-017.ogg",
+      "original_text_hash": 1037614844428625515
+    },
+    {
+      "id": "HE_IS2",
+      "index": 19,
+      "text": "No, I'm not!",
+      "voice": "zoqfotpik-018.ogg",
+      "original_text_hash": 11991266450313033799
+    },
+    {
+      "id": "HE_IS3",
+      "index": 20,
+      "text": "Yes, you are.",
+      "voice": "zoqfotpik-019.ogg",
+      "original_text_hash": 17690410271917194961
+    },
+    {
+      "id": "HE_IS4",
+      "index": 21,
+      "text": "Cripes! We've been through this a million times!",
+      "voice": "zoqfotpik-020.ogg",
+      "original_text_hash": 8552968636303952435
+    },
+    {
+      "id": "HE_IS5",
+      "index": 22,
+      "text": "That doesn't change anything. You're the Fot!",
+      "voice": "zoqfotpik-021.ogg",
+      "original_text_hash": 1593985246706270548
+    },
+    {
+      "id": "HE_IS6",
+      "index": 23,
+      "text": "Faugh!\nWell, Captain, as you can see, this is a point of some contention.",
+      "voice": "zoqfotpik-022.ogg",
+      "original_text_hash": 17336172788301271838
+    },
+    {
+      "id": "HE_IS7",
+      "index": 24,
+      "text": "Fot!",
+      "voice": "zoqfotpik-023.ogg",
+      "original_text_hash": 558068693254244377
+    },
+    {
+      "id": "we_are_vindicator0",
+      "index": 25,
+      "text": "We are",
+      "voice": null,
+      "original_text_hash": 12464823743787377651
+    },
+    {
+      "id": "we_are_vindicator1",
+      "index": 26,
+      "text": "flagship",
+      "voice": null,
+      "original_text_hash": 7196647495998603613
+    },
+    {
+      "id": "we_are_vindicator2",
+      "index": 27,
+      "text": "from Earth.  What are your intentions?",
+      "voice": null,
+      "original_text_hash": 8794630238789395614
+    },
+    {
+      "id": "WE_GLAD0",
+      "index": 28,
+      "text": "Hurrah!\nThen we've finally found our saviors!",
+      "voice": "zoqfotpik-024.ogg",
+      "original_text_hash": 2731495289049355994
+    },
+    {
+      "id": "WE_GLAD1",
+      "index": 29,
+      "text": "Maybe.",
+      "voice": "zoqfotpik-025.ogg",
+      "original_text_hash": 11150777452586159679
+    },
+    {
+      "id": "WE_GLAD2",
+      "index": 30,
+      "text": "At last, our search is over!\nIt is just as the great Crystal ones promised!",
+      "voice": "zoqfotpik-026.ogg",
+      "original_text_hash": 12738482542937581771
+    },
+    {
+      "id": "WE_GLAD3",
+      "index": 31,
+      "text": "They look sneaky.\nI think they're lying.",
+      "voice": "zoqfotpik-027.ogg",
+      "original_text_hash": 13667119326993949011
+    },
+    {
+      "id": "WE_GLAD4",
+      "index": 32,
+      "text": "Quiet, fool!\nCan't you see our nightmare is over!?\nThis ship is from the Great Crystal One's fabled Alliance\nthe Alliance of Free Stars!",
+      "voice": "zoqfotpik-028.ogg",
+      "original_text_hash": 8517097737492215540
+    },
+    {
+      "id": "WE_GLAD5",
+      "index": 33,
+      "text": "Maybe.",
+      "voice": "zoqfotpik-029.ogg",
+      "original_text_hash": 11150777452586159679
+    },
+    {
+      "id": "quiet_toadies",
+      "index": 34,
+      "text": "SILENCE BLATHERING TOADIES! We are your new masters.",
+      "voice": null,
+      "original_text_hash": 17334682145836667150
+    },
+    {
+      "id": "TOLD_YOU0",
+      "index": 35,
+      "text": "We are disappointed.",
+      "voice": "zoqfotpik-030.ogg",
+      "original_text_hash": 9234981380024772601
+    },
+    {
+      "id": "TOLD_YOU1",
+      "index": 36,
+      "text": "See! I TOLD you!",
+      "voice": "zoqfotpik-031.ogg",
+      "original_text_hash": 14233021461460793145
+    },
+    {
+      "id": "TOLD_YOU2",
+      "index": 37,
+      "text": "We had hoped that our species could be friends.",
+      "voice": "zoqfotpik-032.ogg",
+      "original_text_hash": 6470878040501789148
+    },
+    {
+      "id": "TOLD_YOU3",
+      "index": 38,
+      "text": "Never in a million years! Just look at their beady eyes!",
+      "voice": "zoqfotpik-033.ogg",
+      "original_text_hash": 8418192838501678740
+    },
+    {
+      "id": "TOLD_YOU4",
+      "index": 39,
+      "text": "But in the spirit of understanding...",
+      "voice": "zoqfotpik-034.ogg",
+      "original_text_hash": 14113763584254190346
+    },
+    {
+      "id": "TOLD_YOU5",
+      "index": 40,
+      "text": "Oh, no! You're not even considering...",
+      "voice": "zoqfotpik-035.ogg",
+      "original_text_hash": 1022743852192901597
+    },
+    {
+      "id": "TOLD_YOU6",
+      "index": 41,
+      "text": "...We will forgive you this transgression.",
+      "voice": "zoqfotpik-036.ogg",
+      "original_text_hash": 1611356412628963858
+    },
+    {
+      "id": "TOLD_YOU7",
+      "index": 42,
+      "text": "Sheesh! What a pushover you are!",
+      "voice": "zoqfotpik-037.ogg",
+      "original_text_hash": 8502571365683961925
+    },
+    {
+      "id": "your_race",
+      "index": 43,
+      "text": "Before we go on, can you tell us more about your species?",
+      "voice": null,
+      "original_text_hash": 1468103446963696823
+    },
+    {
+      "id": "YEARS_AGO0",
+      "index": 44,
+      "text": "In our ancient past, four species evolved intelligence on our homeworld.",
+      "voice": "zoqfotpik-038.ogg",
+      "original_text_hash": 142793233212753424
+    },
+    {
+      "id": "YEARS_AGO1",
+      "index": 45,
+      "text": "Simultaneously.",
+      "voice": "zoqfotpik-039.ogg",
+      "original_text_hash": 9738259841172814343
+    },
+    {
+      "id": "YEARS_AGO2",
+      "index": 46,
+      "text": "They were the Zoq...",
+      "voice": "zoqfotpik-040.ogg",
+      "original_text_hash": 12331360492972225649
+    },
+    {
+      "id": "YEARS_AGO3",
+      "index": 47,
+      "text": "...the Fot...",
+      "voice": "zoqfotpik-041.ogg",
+      "original_text_hash": 7432408441074227573
+    },
+    {
+      "id": "YEARS_AGO4",
+      "index": 48,
+      "text": "...the Pik...",
+      "voice": "zoqfotpik-042.ogg",
+      "original_text_hash": 2980394208885121006
+    },
+    {
+      "id": "YEARS_AGO5",
+      "index": 49,
+      "text": "...and the Zebranky.",
+      "voice": "zoqfotpik-043.ogg",
+      "original_text_hash": 1587308955194176685
+    },
+    {
+      "id": "YEARS_AGO6",
+      "index": 50,
+      "text": "We three, the Zoq, Fot, and Pik evolved in such a way\nas to acquire sustenance from many sources...",
+      "voice": "zoqfotpik-044.ogg",
+      "original_text_hash": 16338776365889461826
+    },
+    {
+      "id": "YEARS_AGO7",
+      "index": 51,
+      "text": "...from airborne zooplankton...",
+      "voice": "zoqfotpik-045.ogg",
+      "original_text_hash": 12291617531179694594
+    },
+    {
+      "id": "YEARS_AGO8",
+      "index": 52,
+      "text": "...from solar and ambient energies...",
+      "voice": "zoqfotpik-046.ogg",
+      "original_text_hash": 16552571669205495355
+    },
+    {
+      "id": "YEARS_AGO9",
+      "index": 53,
+      "text": "...and from rocky fungal clingers.",
+      "voice": "zoqfotpik-047.ogg",
+      "original_text_hash": 18294315830045502138
+    },
+    {
+      "id": "YEARS_AGO10",
+      "index": 54,
+      "text": "Our favorite!",
+      "voice": "zoqfotpik-048.ogg",
+      "original_text_hash": 3258466493934838982
+    },
+    {
+      "id": "YEARS_AGO11",
+      "index": 55,
+      "text": "The Zebranky also consumed a variety of foods\nnamely: the Zoq\nthe Fot\nand the Pik.",
+      "voice": "zoqfotpik-049.ogg",
+      "original_text_hash": 16310179070646054763
+    },
+    {
+      "id": "YEARS_AGO12",
+      "index": 56,
+      "text": "To survive the predations of the Zebranky\nwe banded together\nannihilated the Zebranky...",
+      "voice": "zoqfotpik-050.ogg",
+      "original_text_hash": 722495938267598918
+    },
+    {
+      "id": "YEARS_AGO13",
+      "index": 57,
+      "text": "...and formed the cooperative union you now encounter.",
+      "voice": "zoqfotpik-051.ogg",
+      "original_text_hash": 300433137504575782
+    },
+    {
+      "id": "where_from",
+      "index": 58,
+      "text": "What do you seek from us?",
+      "voice": null,
+      "original_text_hash": 10349195846121172986
+    },
+    {
+      "id": "TRAVELED_FAR0",
+      "index": 59,
+      "text": "We are a relatively peaceful group of species.",
+      "voice": "zoqfotpik-052.ogg",
+      "original_text_hash": 3255724543706804924
+    },
+    {
+      "id": "TRAVELED_FAR1",
+      "index": 60,
+      "text": "Unless we're angry.",
+      "voice": "zoqfotpik-053.ogg",
+      "original_text_hash": 9041665668979626780
+    },
+    {
+      "id": "TRAVELED_FAR2",
+      "index": 61,
+      "text": "So we find ourselves in need of help.",
+      "voice": "zoqfotpik-054.ogg",
+      "original_text_hash": 16699198040085827681
+    },
+    {
+      "id": "TRAVELED_FAR3",
+      "index": 62,
+      "text": "We only need a LITTLE!",
+      "voice": "zoqfotpik-055.ogg",
+      "original_text_hash": 11376468398400588367
+    },
+    {
+      "id": "TRAVELED_FAR4",
+      "index": 63,
+      "text": "Because of our desperate situation.",
+      "voice": "zoqfotpik-056.ogg",
+      "original_text_hash": 18297880144956974379
+    },
+    {
+      "id": "TRAVELED_FAR5",
+      "index": 64,
+      "text": "`Desperate' is too strong a word.\nI think `troublesome' is more like it.",
+      "voice": "zoqfotpik-057.ogg",
+      "original_text_hash": 7929018694679821949
+    },
+    {
+      "id": "what_emergency",
+      "index": 65,
+      "text": "What `nightmare' are you talking about? What's the matter?",
+      "voice": null,
+      "original_text_hash": 16026123801062341657
+    },
+    {
+      "id": "UNDER_ATTACK0",
+      "index": 66,
+      "text": "Our planets are under attack from an invading horde!",
+      "voice": "zoqfotpik-058.ogg",
+      "original_text_hash": 8286093796232083250
+    },
+    {
+      "id": "UNDER_ATTACK1",
+      "index": 67,
+      "text": "We do not know who they are, or why they are here.",
+      "voice": "zoqfotpik-059.ogg",
+      "original_text_hash": 8566253723831294967
+    },
+    {
+      "id": "UNDER_ATTACK2",
+      "index": 68,
+      "text": "We are being blown to bits.",
+      "voice": "zoqfotpik-060.ogg",
+      "original_text_hash": 15115637317377434297
+    },
+    {
+      "id": "UNDER_ATTACK3",
+      "index": 69,
+      "text": "Fleets of alien ships appear out of nowhere\nthen unleash terrible destructive energies.",
+      "voice": "zoqfotpik-061.ogg",
+      "original_text_hash": 15453257549742901075
+    },
+    {
+      "id": "UNDER_ATTACK4",
+      "index": 70,
+      "text": "Fortunately...",
+      "voice": "zoqfotpik-062.ogg",
+      "original_text_hash": 6192252775392431228
+    },
+    {
+      "id": "UNDER_ATTACK5",
+      "index": 71,
+      "text": "...they release these energies on each other.",
+      "voice": "zoqfotpik-063.ogg",
+      "original_text_hash": 1615134143565706399
+    },
+    {
+      "id": "UNDER_ATTACK6",
+      "index": 72,
+      "text": "Unfortunately...",
+      "voice": "zoqfotpik-064.ogg",
+      "original_text_hash": 10638184486357707611
+    },
+    {
+      "id": "UNDER_ATTACK7",
+      "index": 73,
+      "text": "...they favor combat near strong gravity wells.\nTheir stray shots regularly strike the surface of our planets\noften with tragic results.",
+      "voice": "zoqfotpik-065.ogg",
+      "original_text_hash": 7502538572523233016
+    },
+    {
+      "id": "UNDER_ATTACK8",
+      "index": 74,
+      "text": "Fortunately...",
+      "voice": "zoqfotpik-066.ogg",
+      "original_text_hash": 6192252775392431228
+    },
+    {
+      "id": "UNDER_ATTACK9",
+      "index": 75,
+      "text": "...they have never found our homeworld, only our colony planets.",
+      "voice": "zoqfotpik-067.ogg",
+      "original_text_hash": 3887795698936246495
+    },
+    {
+      "id": "UNDER_ATTACK10",
+      "index": 76,
+      "text": "Unfortunately...",
+      "voice": "zoqfotpik-068.ogg",
+      "original_text_hash": 10638184486357707611
+    },
+    {
+      "id": "UNDER_ATTACK11",
+      "index": 77,
+      "text": "...all of our colonies have perished as a consequence.",
+      "voice": "zoqfotpik-069.ogg",
+      "original_text_hash": 6555459705124207541
+    },
+    {
+      "id": "tough_luck",
+      "index": 78,
+      "text": "Hey, space is a tough place where wimps eat flaming plasma death.",
+      "voice": null,
+      "original_text_hash": 12558482612406895781
+    },
+    {
+      "id": "NOT_HELPFUL0",
+      "index": 79,
+      "text": "Oh, dear.",
+      "voice": "zoqfotpik-070.ogg",
+      "original_text_hash": 9393620753315955608
+    },
+    {
+      "id": "NOT_HELPFUL1",
+      "index": 80,
+      "text": "I told you he looked like a creep!",
+      "voice": "zoqfotpik-071.ogg",
+      "original_text_hash": 9035538672635325997
+    },
+    {
+      "id": "NOT_HELPFUL2",
+      "index": 81,
+      "text": "No! We must try to understand.\nHis ways are not like our own.",
+      "voice": "zoqfotpik-072.ogg",
+      "original_text_hash": 7483085216853026190
+    },
+    {
+      "id": "NOT_HELPFUL3",
+      "index": 82,
+      "text": "You mean his WHOLE SPECIES are jerks?",
+      "voice": "zoqfotpik-073.ogg",
+      "original_text_hash": 3690926272886132830
+    },
+    {
+      "id": "NOT_HELPFUL4",
+      "index": 83,
+      "text": "Let us give him one more chance.",
+      "voice": "zoqfotpik-074.ogg",
+      "original_text_hash": 12638791846313509692
+    },
+    {
+      "id": "NOT_HELPFUL5",
+      "index": 84,
+      "text": "Just look at him! He's a killer, I tell you!",
+      "voice": "zoqfotpik-075.ogg",
+      "original_text_hash": 10017460966991744411
+    },
+    {
+      "id": "what_look_like",
+      "index": 85,
+      "text": "Who is attacking you? What do they look like?",
+      "voice": null,
+      "original_text_hash": 4635950209777644097
+    },
+    {
+      "id": "LOOK_LIKE0",
+      "index": 86,
+      "text": "Some of the vessels are huge, green battleships\nwhich launch wave after wave of small fighters.",
+      "voice": "zoqfotpik-076.ogg",
+      "original_text_hash": 1675599222271782007
+    },
+    {
+      "id": "LOOK_LIKE1",
+      "index": 87,
+      "text": "The other ships are black as space\nand their hulls are carved with strange alien writing.",
+      "voice": "zoqfotpik-077.ogg",
+      "original_text_hash": 12888908233566381603
+    },
+    {
+      "id": "LOOK_LIKE2",
+      "index": 88,
+      "text": "In combat the two ships seem evenly matched.",
+      "voice": "zoqfotpik-078.ogg",
+      "original_text_hash": 14876704040592646105
+    },
+    {
+      "id": "LOOK_LIKE3",
+      "index": 89,
+      "text": "One fires blasts of fusion energy\nwhile the other launches spinning projectiles.",
+      "voice": "zoqfotpik-079.ogg",
+      "original_text_hash": 7099316148849548843
+    },
+    {
+      "id": "valuable_info",
+      "index": 90,
+      "text": "You have given us valuable information. Goodbye.",
+      "voice": null,
+      "original_text_hash": 1467361268964347118
+    },
+    {
+      "id": "GOODBYE0",
+      "index": 91,
+      "text": "If you must go now, we understand.",
+      "voice": "zoqfotpik-080.ogg",
+      "original_text_hash": 10252304050855583248
+    },
+    {
+      "id": "GOODBYE1",
+      "index": 92,
+      "text": "That's it?! You're leaving?!!",
+      "voice": "zoqfotpik-081.ogg",
+      "original_text_hash": 11984571225360433551
+    },
+    {
+      "id": "GOODBYE2",
+      "index": 93,
+      "text": "We hope that on your next visit\nwe can establish a mutual assistance pact.",
+      "voice": "zoqfotpik-082.ogg",
+      "original_text_hash": 1253591798712906794
+    },
+    {
+      "id": "GOODBYE3",
+      "index": 94,
+      "text": "I can't believe that he's just leaving us here!\n...what a jerk.",
+      "voice": "zoqfotpik-083.ogg",
+      "original_text_hash": 2457811707622115025
+    },
+    {
+      "id": "all_very_interesting",
+      "index": 95,
+      "text": "Yes, yes, that's all very interesting, but now we are going to attack you!",
+      "voice": null,
+      "original_text_hash": 4595531893418515481
+    },
+    {
+      "id": "SEE_TOLD_YOU0",
+      "index": 96,
+      "text": "What?",
+      "voice": "zoqfotpik-084.ogg",
+      "original_text_hash": 15207240796898206576
+    },
+    {
+      "id": "SEE_TOLD_YOU1",
+      "index": 97,
+      "text": "See! I told you.!...\n...but would you listen... NO!",
+      "voice": "zoqfotpik-085.ogg",
+      "original_text_hash": 3063486209345240197
+    },
+    {
+      "id": "SEE_TOLD_YOU2",
+      "index": 98,
+      "text": "I don't understand!",
+      "voice": "zoqfotpik-086.ogg",
+      "original_text_hash": 15040650253457169859
+    },
+    {
+      "id": "SEE_TOLD_YOU3",
+      "index": 99,
+      "text": "So what does all your nicey-nice to the alien get us?\nNothing! That's what!\nYou should have done what I said\nand told him we were the Precursors.",
+      "voice": "zoqfotpik-087.ogg",
+      "original_text_hash": 17447774234231572574
+    },
+    {
+      "id": "how_can_i_help",
+      "index": 100,
+      "text": "We want to help. What can we do?",
+      "voice": null,
+      "original_text_hash": 14207763324680260527
+    },
+    {
+      "id": "ALLY_WITH_US0",
+      "index": 101,
+      "text": "We would like to establish\na formal mutual-assistance pact\nwith your species.",
+      "voice": "zoqfotpik-088.ogg",
+      "original_text_hash": 6672719813211318901
+    },
+    {
+      "id": "ALLY_WITH_US1",
+      "index": 102,
+      "text": "One of those `You scratch my vent\nI'll scratch your flipper' set-ups.",
+      "voice": "zoqfotpik-089.ogg",
+      "original_text_hash": 17228903290629910282
+    },
+    {
+      "id": "ALLY_WITH_US2",
+      "index": 103,
+      "text": "And as a sign of our good faith\nwe will provide you with skilled Captains\nand plans for building our `Stinger' starships.",
+      "voice": "zoqfotpik-090.ogg",
+      "original_text_hash": 6244398003516349527
+    },
+    {
+      "id": "ALLY_WITH_US3",
+      "index": 104,
+      "text": "In return, if the bad guys find our homeworld\nyou'll rush over here and vaporize 'em.",
+      "voice": "zoqfotpik-091.ogg",
+      "original_text_hash": 11281965710711744917
+    },
+    {
+      "id": "ALLY_WITH_US4",
+      "index": 105,
+      "text": "That is, essentially, correct.",
+      "voice": "zoqfotpik-092.ogg",
+      "original_text_hash": 2178583778158487663
+    },
+    {
+      "id": "ALLY_WITH_US5",
+      "index": 106,
+      "text": "Great deal, eh?\nYou can't afford to pass it up!\nSo what do you say?",
+      "voice": "zoqfotpik-093.ogg",
+      "original_text_hash": 6530935925053624491
+    },
+    {
+      "id": "decide_later",
+      "index": 107,
+      "text": "Uh... I need to consult with our, er... our Grand-High Poobah!",
+      "voice": null,
+      "original_text_hash": 703244260698240392
+    },
+    {
+      "id": "PLEASE_HURRY0",
+      "index": 108,
+      "text": "Please hurry back with word from your Poobah.\nMillions of lives are at stake!",
+      "voice": "zoqfotpik-094.ogg",
+      "original_text_hash": 14169950121829221249
+    },
+    {
+      "id": "PLEASE_HURRY1",
+      "index": 109,
+      "text": "Not the least of which is mine.",
+      "voice": "zoqfotpik-095.ogg",
+      "original_text_hash": 321038795934132323
+    },
+    {
+      "id": "EMMISSARIES0",
+      "index": 110,
+      "text": "These are the words we have prayed for!",
+      "voice": "zoqfotpik-096.ogg",
+      "original_text_hash": 12177226831901823695
+    },
+    {
+      "id": "EMMISSARIES1",
+      "index": 111,
+      "text": "Hey! This trip's not a waste after all!",
+      "voice": "zoqfotpik-097.ogg",
+      "original_text_hash": 2502210383283286571
+    },
+    {
+      "id": "EMMISSARIES2",
+      "index": 112,
+      "text": "More than anything, we seek an ally\nto help us survive in this hostile universe.",
+      "voice": "zoqfotpik-098.ogg",
+      "original_text_hash": 14554953561832705486
+    },
+    {
+      "id": "EMMISSARIES3",
+      "index": 113,
+      "text": "We are having some problems of that general nature.",
+      "voice": "zoqfotpik-099.ogg",
+      "original_text_hash": 4674495692641964381
+    },
+    {
+      "id": "EMMISSARIES4",
+      "index": 114,
+      "text": "But we are only emissaries.\nYou must meet with our leaders.\nThey are wiser... more powerful beings!",
+      "voice": "zoqfotpik-100.ogg",
+      "original_text_hash": 1227457830294446074
+    },
+    {
+      "id": "EMMISSARIES5",
+      "index": 115,
+      "text": "They look just like us, though.",
+      "voice": "zoqfotpik-101.ogg",
+      "original_text_hash": 15006828594081087040
+    },
+    {
+      "id": "EMMISSARIES6",
+      "index": 116,
+      "text": "Fly to the star called Alpha Tucanae.\nThe planet closest to the sun is our home.",
+      "voice": "zoqfotpik-102.ogg",
+      "original_text_hash": 9557228500821022553
+    },
+    {
+      "id": "EMMISSARIES7",
+      "index": 117,
+      "text": "And if possible, hurry.",
+      "voice": "zoqfotpik-103.ogg",
+      "original_text_hash": 17612769625402819316
+    },
+    {
+      "id": "sure",
+      "index": 118,
+      "text": "You are under attack by the Ur-Quan, our enemy as well.  Therefore, speaking for all the People of Earth, I accept your offer.",
+      "voice": null,
+      "original_text_hash": 3602995714339446518
+    },
+    {
+      "id": "WE_ALLY0",
+      "index": 119,
+      "text": "How wonderful!",
+      "voice": "zoqfotpik-104.ogg",
+      "original_text_hash": 15888915092593573618
+    },
+    {
+      "id": "WE_ALLY1",
+      "index": 120,
+      "text": "Hurray!",
+      "voice": "zoqfotpik-105.ogg",
+      "original_text_hash": 4606398906756728123
+    },
+    {
+      "id": "WE_ALLY2",
+      "index": 121,
+      "text": "How marvelous!",
+      "voice": "zoqfotpik-106.ogg",
+      "original_text_hash": 1662830500275370592
+    },
+    {
+      "id": "WE_ALLY3",
+      "index": 122,
+      "text": "Yee-ha!",
+      "voice": "zoqfotpik-107.ogg",
+      "original_text_hash": 15692508171923773345
+    },
+    {
+      "id": "WE_ALLY4",
+      "index": 123,
+      "text": "Captain, we shall begin fulfilling our commitment at once!\nWe will begin transporting our officers to your base immediately!",
+      "voice": "zoqfotpik-108.ogg",
+      "original_text_hash": 1661466924456751619
+    },
+    {
+      "id": "WE_ALLY5",
+      "index": 124,
+      "text": "Why, heck!\nMaybe I'll even make the trip to your planet!\nI'd make a good starship captain, Captain!\nI'm pretty darn mean in a fight\nand there ain't nobody better than me\nwith a thrusting stinger tongue attack!",
+      "voice": "zoqfotpik-109.ogg",
+      "original_text_hash": 1684385851874059708
+    },
+    {
+      "id": "never",
+      "index": 125,
+      "text": "What? Protect you failures? No way! You're too lame!",
+      "voice": null,
+      "original_text_hash": 1201089587049478430
+    },
+    {
+      "id": "WE_ENEMIES0",
+      "index": 126,
+      "text": "We have revealed ourselves to you.\nWe have held out our appendages to you in friendship!...\n...and you have treated us like dead Zebrankys.\nIt takes a great deal to anger one of my species, Captain\nBUT YOU HAVE JUST SUCCEEDED!\nAttention Shipmates! Man the spray gun! Hoist the tongue!\nPREPARE FOR BATTLE!",
+      "voice": "zoqfotpik-110.ogg",
+      "original_text_hash": 4772321205759902105
+    },
+    {
+      "id": "WE_ENEMIES1",
+      "index": 127,
+      "text": "Yeah.\nLet's toast those creeps!",
+      "voice": "zoqfotpik-111.ogg",
+      "original_text_hash": 1961978844517860662
+    },
+    {
+      "id": "HOSTILE_HELLO_10",
+      "index": 128,
+      "text": "Coming here was pointless, human.\nOur species are at war.",
+      "voice": "zoqfotpik-112.ogg",
+      "original_text_hash": 5297193885980711972
+    },
+    {
+      "id": "HOSTILE_HELLO_11",
+      "index": 129,
+      "text": "Right!\nPrepare to die, alien scum!",
+      "voice": "zoqfotpik-113.ogg",
+      "original_text_hash": 5092674700837705068
+    },
+    {
+      "id": "HOSTILE_HELLO_20",
+      "index": 130,
+      "text": "If you had allied with us, Captain",
+      "voice": "zoqfotpik-114.ogg",
+      "original_text_hash": 8686723255973572521
+    },
+    {
+      "id": "HOSTILE_HELLO_21",
+      "index": 131,
+      "text": "Which you didn't!",
+      "voice": "zoqfotpik-115.ogg",
+      "original_text_hash": 8900098845686348928
+    },
+    {
+      "id": "HOSTILE_HELLO_22",
+      "index": 132,
+      "text": "We would gladly tell you what we have learned",
+      "voice": "zoqfotpik-116.ogg",
+      "original_text_hash": 8071295226001717014
+    },
+    {
+      "id": "HOSTILE_HELLO_23",
+      "index": 133,
+      "text": "Which we won't!",
+      "voice": "zoqfotpik-117.ogg",
+      "original_text_hash": 6805874358608798116
+    },
+    {
+      "id": "HOSTILE_HELLO_24",
+      "index": 134,
+      "text": "Regarding the two warring alien factions\nthe Ur-Quan and their siblings, the Kohr-Ah.",
+      "voice": "zoqfotpik-118.ogg",
+      "original_text_hash": 17554448625184003548
+    },
+    {
+      "id": "HOSTILE_HELLO_25",
+      "index": 135,
+      "text": "But now you'll NEVER know!",
+      "voice": "zoqfotpik-119.ogg",
+      "original_text_hash": 15910552354778519968
+    },
+    {
+      "id": "HOSTILE_HELLO_30",
+      "index": 136,
+      "text": "With whatever remaining forces we have\nwe will do our best to destroy you.",
+      "voice": "zoqfotpik-120.ogg",
+      "original_text_hash": 5697596097806523282
+    },
+    {
+      "id": "HOSTILE_HELLO_31",
+      "index": 137,
+      "text": "Yeah! And she means it too!",
+      "voice": "zoqfotpik-121.ogg",
+      "original_text_hash": 4074082964726103726
+    },
+    {
+      "id": "HOSTILE_HELLO_40",
+      "index": 138,
+      "text": "Your villainy is beyond possible forgiveness!\nWe are compelled by our anger to destroy you.",
+      "voice": "zoqfotpik-122.ogg",
+      "original_text_hash": 14530391721491039997
+    },
+    {
+      "id": "HOSTILE_HELLO_41",
+      "index": 139,
+      "text": "He's probably just gonna run away again.\nThe coward!",
+      "voice": "zoqfotpik-123.ogg",
+      "original_text_hash": 12479098001030181513
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_10",
+      "index": 140,
+      "text": "Ah! It is the alien from the Chenjesu's Alliance!",
+      "voice": "zoqfotpik-124.ogg",
+      "original_text_hash": 4360290968173750506
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_11",
+      "index": 141,
+      "text": "Just look at those weapon pods on his ship.",
+      "voice": "zoqfotpik-125.ogg",
+      "original_text_hash": 7402965226294676815
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_12",
+      "index": 142,
+      "text": "We hope that during this visit\nwe can make clear to your species\nthe benefits of a mutual-assistance pact.",
+      "voice": "zoqfotpik-126.ogg",
+      "original_text_hash": 11300839073235805417
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_13",
+      "index": 143,
+      "text": "But we're also armed to the teeth\nso don't try stealing our atmosphere or anything sneaky like that!",
+      "voice": "zoqfotpik-127.ogg",
+      "original_text_hash": 17836054750774376557
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_20",
+      "index": 144,
+      "text": "Once more, the Alliance starship has returned.",
+      "voice": "zoqfotpik-128.ogg",
+      "original_text_hash": 17193797548677978726
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_21",
+      "index": 145,
+      "text": "Yeah. I bet THIS is the time they try to trick us.",
+      "voice": "zoqfotpik-129.ogg",
+      "original_text_hash": 14047004722925907773
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_22",
+      "index": 146,
+      "text": "Alien Captain, do you bring word from your Leaders?",
+      "voice": "zoqfotpik-130.ogg",
+      "original_text_hash": 11323868818504993792
+    },
+    {
+      "id": "NEUTRAL_HOME_HELLO_23",
+      "index": 147,
+      "text": "If he does, I bet it's something like\n`Submit or be Eaten'!",
+      "voice": "zoqfotpik-131.ogg",
+      "original_text_hash": 9912401524376083797
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_10",
+      "index": 148,
+      "text": "Hello friend and ally!",
+      "voice": "zoqfotpik-132.ogg",
+      "original_text_hash": 9063850084780308553
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_11",
+      "index": 149,
+      "text": "Got any presents for us?",
+      "voice": "zoqfotpik-133.ogg",
+      "original_text_hash": 10255402644770440163
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_12",
+      "index": 150,
+      "text": "We hope your struggle against the Ur-Quan goes well!",
+      "voice": "zoqfotpik-134.ogg",
+      "original_text_hash": 15302767218385182853
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_13",
+      "index": 151,
+      "text": "Darn! He never gives us anything.",
+      "voice": "zoqfotpik-135.ogg",
+      "original_text_hash": 9006028469336089812
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_20",
+      "index": 152,
+      "text": "Welcome back to our world.",
+      "voice": "zoqfotpik-136.ogg",
+      "original_text_hash": 3587949845926226381
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_21",
+      "index": 153,
+      "text": "Yeah, welcome back to our world!",
+      "voice": "zoqfotpik-137.ogg",
+      "original_text_hash": 8944919261318249103
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_22",
+      "index": 154,
+      "text": "I just said that.",
+      "voice": "zoqfotpik-138.ogg",
+      "original_text_hash": 7382073831630812582
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_23",
+      "index": 155,
+      "text": "So? It doesn't mean I can't say it too.\nBesides, you always get to talk first.\nThat's not fair!",
+      "voice": "zoqfotpik-139.ogg",
+      "original_text_hash": 5902281335328389107
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_24",
+      "index": 156,
+      "text": "Sorry, that's just the way it is.",
+      "voice": "zoqfotpik-140.ogg",
+      "original_text_hash": 1535792455610219316
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_25",
+      "index": 157,
+      "text": "Well why?! That doesn't make sense.",
+      "voice": "zoqfotpik-141.ogg",
+      "original_text_hash": 3739570405884430484
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_26",
+      "index": 158,
+      "text": "Look, don't ask me.\nI think it's something technical.",
+      "voice": "zoqfotpik-142.ogg",
+      "original_text_hash": 9745515270788041046
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_27",
+      "index": 159,
+      "text": "Yeah, right. I'm so sure.\nWhat a lame excuse.",
+      "voice": "zoqfotpik-143.ogg",
+      "original_text_hash": 4068775403621109349
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_30",
+      "index": 160,
+      "text": "Greetings Captain.\nWhat can your allies do for you?",
+      "voice": "zoqfotpik-144.ogg",
+      "original_text_hash": 9625355561725080714
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_31",
+      "index": 161,
+      "text": "Your favorite allies!",
+      "voice": "zoqfotpik-145.ogg",
+      "original_text_hash": 15907818285499326579
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_40",
+      "index": 162,
+      "text": "Hello human ally.\nWe are at your service.",
+      "voice": "zoqfotpik-146.ogg",
+      "original_text_hash": 16778601136410966621
+    },
+    {
+      "id": "ALLIED_HOME_HELLO_41",
+      "index": 163,
+      "text": "What do you want?",
+      "voice": "zoqfotpik-147.ogg",
+      "original_text_hash": 3580943424848817072
+    },
+    {
+      "id": "THANKS_FOR_RESCUE0",
+      "index": 164,
+      "text": "Our Savior! Our Savior!\nYou have rescued us from certain destruction!",
+      "voice": "zoqfotpik-148.ogg",
+      "original_text_hash": 13030297749267462256
+    },
+    {
+      "id": "THANKS_FOR_RESCUE1",
+      "index": 165,
+      "text": "Howee-baby! That was a close one!",
+      "voice": "zoqfotpik-149.ogg",
+      "original_text_hash": 16471516551130919375
+    },
+    {
+      "id": "THANKS_FOR_RESCUE2",
+      "index": 166,
+      "text": "The black ship appeared in orbit several days ago\nand began raining down bolts of destructive energy\non the surface of our planet!",
+      "voice": "zoqfotpik-150.ogg",
+      "original_text_hash": 11749607449684641406
+    },
+    {
+      "id": "THANKS_FOR_RESCUE3",
+      "index": 167,
+      "text": "Fortunately...",
+      "voice": "zoqfotpik-151.ogg",
+      "original_text_hash": 6192252775392431228
+    },
+    {
+      "id": "THANKS_FOR_RESCUE4",
+      "index": 168,
+      "text": "...we were able to focus our planetary shields\nto deflect the energy blasts away from our cities.",
+      "voice": "zoqfotpik-152.ogg",
+      "original_text_hash": 15118335648537918318
+    },
+    {
+      "id": "THANKS_FOR_RESCUE5",
+      "index": 169,
+      "text": "Unfortunately...",
+      "voice": "zoqfotpik-153.ogg",
+      "original_text_hash": 10638184486357707611
+    },
+    {
+      "id": "THANKS_FOR_RESCUE6",
+      "index": 170,
+      "text": "Large sections of our planet's beautiful wilderness\nhave been annihilated... entire ecosystems destroyed.",
+      "voice": "zoqfotpik-154.ogg",
+      "original_text_hash": 10533711764037286720
+    },
+    {
+      "id": "THANKS_FOR_RESCUE7",
+      "index": 171,
+      "text": "Oh! That makes me REALLY mad!\nI mean, attacking helpless, intelligent, alien species\nthat's one thing,\nbut toasting our cute little wood Jukes and tree Narfs\nthat is really low!",
+      "voice": "zoqfotpik-155.ogg",
+      "original_text_hash": 10724723406540740506
+    },
+    {
+      "id": "THANKS_FOR_RESCUE8",
+      "index": 172,
+      "text": "If the black ship had been accompanied by others of its kind\nwe wouldn't have been able stop the rain of destruction.\nThey would have killed us all.",
+      "voice": "zoqfotpik-156.ogg",
+      "original_text_hash": 13807275047441499071
+    },
+    {
+      "id": "THANKS_FOR_RESCUE9",
+      "index": 173,
+      "text": "Well in that case, better those Jukes and Narfs than us, right?",
+      "voice": "zoqfotpik-157.ogg",
+      "original_text_hash": 2789414970416090207
+    },
+    {
+      "id": "THANKS_FOR_RESCUE10",
+      "index": 174,
+      "text": "Captain, it is clear that in matters of war\nyou are more capable than ourselves.\nWith this in mind, we would like to give you\nour four finest starships and crew.\nI hope they bring you many victories.",
+      "voice": "zoqfotpik-158.ogg",
+      "original_text_hash": 6439121399381108702
+    },
+    {
+      "id": "THANKS_FOR_RESCUE11",
+      "index": 175,
+      "text": "Try not to lose them all right away.",
+      "voice": "zoqfotpik-159.ogg",
+      "original_text_hash": 15486469762444857384
+    },
+    {
+      "id": "bye_homeworld",
+      "index": 176,
+      "text": "Bye Zoq. Bye Fot. Bye Pik.",
+      "voice": null,
+      "original_text_hash": 16992097347187246724
+    },
+    {
+      "id": "GOODBYE_HOME0",
+      "index": 177,
+      "text": "Goodbye Captain.",
+      "voice": "zoqfotpik-160.ogg",
+      "original_text_hash": 7913817032141685662
+    },
+    {
+      "id": "GOODBYE_HOME1",
+      "index": 178,
+      "text": "See ya.",
+      "voice": "zoqfotpik-161.ogg",
+      "original_text_hash": 9956622058809810720
+    },
+    {
+      "id": "whats_up_homeworld",
+      "index": 179,
+      "text": "So, what's happening around here?",
+      "voice": null,
+      "original_text_hash": 11523102594685924547
+    },
+    {
+      "id": "GENERAL_INFO_10",
+      "index": 180,
+      "text": "We had a close call last week.",
+      "voice": "zoqfotpik-162.ogg",
+      "original_text_hash": 16395945346779187049
+    },
+    {
+      "id": "GENERAL_INFO_11",
+      "index": 181,
+      "text": "One of those black ships was snooping around the system.",
+      "voice": "zoqfotpik-163.ogg",
+      "original_text_hash": 6641513742956065134
+    },
+    {
+      "id": "GENERAL_INFO_12",
+      "index": 182,
+      "text": "But before it got to our world\nsome of the Green ships warped in\ndestroyed the black vessel\nand then left immediately.",
+      "voice": "zoqfotpik-164.ogg",
+      "original_text_hash": 17688560515059458501
+    },
+    {
+      "id": "GENERAL_INFO_13",
+      "index": 183,
+      "text": "We got lucky.",
+      "voice": "zoqfotpik-165.ogg",
+      "original_text_hash": 13738299597684585959
+    },
+    {
+      "id": "GENERAL_INFO_20",
+      "index": 184,
+      "text": "It's been pretty quiet, Captain.\nNothing new to report.",
+      "voice": "zoqfotpik-166.ogg",
+      "original_text_hash": 9004008926354226940
+    },
+    {
+      "id": "GENERAL_INFO_21",
+      "index": 185,
+      "text": "Are you CRAZY?! What about the Frungy Championships!?",
+      "voice": "zoqfotpik-167.ogg",
+      "original_text_hash": 6580556418432845338
+    },
+    {
+      "id": "GENERAL_INFO_22",
+      "index": 186,
+      "text": "Why should we tell the Earth Captain about that?\nHe wouldn't be interested.",
+      "voice": "zoqfotpik-168.ogg",
+      "original_text_hash": 3253413266357566984
+    },
+    {
+      "id": "GENERAL_INFO_23",
+      "index": 187,
+      "text": "Oh, yeah? How do you know?",
+      "voice": "zoqfotpik-169.ogg",
+      "original_text_hash": 5728644499402788754
+    },
+    {
+      "id": "GENERAL_INFO_24",
+      "index": 188,
+      "text": "Because I'M not even interested.\nNobody with any brains is interested in Frungy!",
+      "voice": "zoqfotpik-170.ogg",
+      "original_text_hash": 9575273003999750562
+    },
+    {
+      "id": "GENERAL_INFO_25",
+      "index": 189,
+      "text": "Well what about me, huh?\nI LOVE Frungy! It's the Sport of Kings!",
+      "voice": "zoqfotpik-171.ogg",
+      "original_text_hash": 1327962826096037117
+    },
+    {
+      "id": "GENERAL_INFO_26",
+      "index": 190,
+      "text": "Sheesh!",
+      "voice": "zoqfotpik-172.ogg",
+      "original_text_hash": 7101441248059503994
+    },
+    {
+      "id": "GENERAL_INFO_27",
+      "index": 191,
+      "text": "Oh, all right\nhe wouldn't know any of the teams anyway.",
+      "voice": "zoqfotpik-173.ogg",
+      "original_text_hash": 12297125911536956112
+    },
+    {
+      "id": "GENERAL_INFO_30",
+      "index": 192,
+      "text": "Although this may not pertain to the Ur-Quan\nwe have received an interesting report\nfrom one of our deep space scouts.",
+      "voice": "zoqfotpik-174.ogg",
+      "original_text_hash": 13754116333983639605
+    },
+    {
+      "id": "GENERAL_INFO_31",
+      "index": 193,
+      "text": "She found a strange metal door-thing\nembedded in the surface of an alien planet.",
+      "voice": "zoqfotpik-175.ogg",
+      "original_text_hash": 2669030209251866146
+    },
+    {
+      "id": "GENERAL_INFO_32",
+      "index": 194,
+      "text": "Although she and her crew spent many days\ntrying to open the door",
+      "voice": "zoqfotpik-176.ogg",
+      "original_text_hash": 15663760084603764793
+    },
+    {
+      "id": "GENERAL_INFO_33",
+      "index": 195,
+      "text": "they failed utterly to so much as budge it.",
+      "voice": "zoqfotpik-177.ogg",
+      "original_text_hash": 4132423276029985427
+    },
+    {
+      "id": "GENERAL_INFO_34",
+      "index": 196,
+      "text": "The reported location of this alien artifact\nis Epsilon Camelopardalis I-A.",
+      "voice": "zoqfotpik-178.ogg",
+      "original_text_hash": 11883947230169101568
+    },
+    {
+      "id": "GENERAL_INFO_35",
+      "index": 197,
+      "text": "Go open it!\nI bet there's something cool inside!",
+      "voice": "zoqfotpik-179.ogg",
+      "original_text_hash": 18203205930989422839
+    },
+    {
+      "id": "GENERAL_INFO_40",
+      "index": 198,
+      "text": "We may not have told you this before, Captain\nbut my species is somewhat sensitive\nto certain meta-psychic vibrations.",
+      "voice": "zoqfotpik-180.ogg",
+      "original_text_hash": 5610347023815489204
+    },
+    {
+      "id": "GENERAL_INFO_41",
+      "index": 199,
+      "text": "Oh, no! Not this mental stuff again!",
+      "voice": "zoqfotpik-181.ogg",
+      "original_text_hash": 9993353901196312645
+    },
+    {
+      "id": "GENERAL_INFO_42",
+      "index": 200,
+      "text": "Although my friend's species\nhas difficulty understanding our powers\nI can guarantee you, Captain\nthat our limited abilities are quite real.",
+      "voice": "zoqfotpik-182.ogg",
+      "original_text_hash": 13283917808986129071
+    },
+    {
+      "id": "GENERAL_INFO_43",
+      "index": 201,
+      "text": "Oh, yeah! Remember that time\nyou said you could fix our broken chronometers\nwith your `sympathetic psionic waves'?\nMore like `pathetic waves' if you ask me!\nNyark! Nyark! Nyark!",
+      "voice": "zoqfotpik-183.ogg",
+      "original_text_hash": 3069745589281101402
+    },
+    {
+      "id": "GENERAL_INFO_44",
+      "index": 202,
+      "text": "Even through all this negative energy, Captain\nwe have discovered that...",
+      "voice": "zoqfotpik-184.ogg",
+      "original_text_hash": 511211016435091011
+    },
+    {
+      "id": "GENERAL_INFO_45",
+      "index": 203,
+      "text": "...and THEN there was the time\nyou said you could bend dorfs with just your...",
+      "voice": "zoqfotpik-185.ogg",
+      "original_text_hash": 5333369224281699354
+    },
+    {
+      "id": "GENERAL_INFO_46",
+      "index": 204,
+      "text": "SHUT UP!",
+      "voice": "zoqfotpik-186.ogg",
+      "original_text_hash": 3349453543692548875
+    },
+    {
+      "id": "GENERAL_INFO_47",
+      "index": 205,
+      "text": "...sorry.",
+      "voice": "zoqfotpik-187.ogg",
+      "original_text_hash": 13867761791391284768
+    },
+    {
+      "id": "GENERAL_INFO_48",
+      "index": 206,
+      "text": "As I was saying, before I was so RUDELY interrupted!...",
+      "voice": "zoqfotpik-188.ogg",
+      "original_text_hash": 18286902979254443079
+    },
+    {
+      "id": "GENERAL_INFO_49",
+      "index": 207,
+      "text": "I said I was sorry.",
+      "voice": "zoqfotpik-189.ogg",
+      "original_text_hash": 954222140883682952
+    },
+    {
+      "id": "GENERAL_INFO_410",
+      "index": 208,
+      "text": "Our most talented Seers have detected\nsome ominous and powerful meta-psychic signals\nfrom the direction of the Orionis constellation.",
+      "voice": "zoqfotpik-190.ogg",
+      "original_text_hash": 11482361211687607546
+    },
+    {
+      "id": "GENERAL_INFO_411",
+      "index": 209,
+      "text": "Faker.",
+      "voice": "zoqfotpik-191.ogg",
+      "original_text_hash": 15720255868548588532
+    },
+    {
+      "id": "any_war_news",
+      "index": 210,
+      "text": "Any news about the war between the two alien races?",
+      "voice": null,
+      "original_text_hash": 16442692235630232497
+    },
+    {
+      "id": "UTWIG_DELAY0",
+      "index": 211,
+      "text": "Our scouts have witnessed an exciting event\nin the Horologii star system.",
+      "voice": "zoqfotpik-192.ogg",
+      "original_text_hash": 882335624507036477
+    },
+    {
+      "id": "UTWIG_DELAY1",
+      "index": 212,
+      "text": "Yeah! Big news!",
+      "voice": "zoqfotpik-193.ogg",
+      "original_text_hash": 3175737145863318289
+    },
+    {
+      "id": "UTWIG_DELAY2",
+      "index": 213,
+      "text": "Two alien races have entered that region of space\nfrom the coreward direction.",
+      "voice": "zoqfotpik-194.ogg",
+      "original_text_hash": 5951123419952916616
+    },
+    {
+      "id": "UTWIG_DELAY3",
+      "index": 214,
+      "text": "One of the races look like big talkin' weeds\nand the other wears a funny mask.",
+      "voice": "zoqfotpik-195.ogg",
+      "original_text_hash": 10940471150976764182
+    },
+    {
+      "id": "UTWIG_DELAY4",
+      "index": 215,
+      "text": "And they are attacking our enemies!",
+      "voice": "zoqfotpik-196.ogg",
+      "original_text_hash": 11828597008483549511
+    },
+    {
+      "id": "UTWIG_DELAY5",
+      "index": 216,
+      "text": "Well, ONE of our enemies, anyway.",
+      "voice": "zoqfotpik-197.ogg",
+      "original_text_hash": 3699227104332016415
+    },
+    {
+      "id": "UTWIG_DELAY6",
+      "index": 217,
+      "text": "Yes, the new aliens seem to be confining their hostilities\nto the sinister Kohr-Ah.",
+      "voice": "zoqfotpik-198.ogg",
+      "original_text_hash": 547636258116434942
+    },
+    {
+      "id": "UTWIG_DELAY7",
+      "index": 218,
+      "text": "Actually, that's good news.",
+      "voice": "zoqfotpik-199.ogg",
+      "original_text_hash": 1065405796612690787
+    },
+    {
+      "id": "UTWIG_DELAY8",
+      "index": 219,
+      "text": "By focusing on the Kohr-Ah\nwho have been winning their war up to this point...",
+      "voice": "zoqfotpik-200.ogg",
+      "original_text_hash": 13838338718396634958
+    },
+    {
+      "id": "UTWIG_DELAY9",
+      "index": 220,
+      "text": "They've been plastering the Ur-Quan.",
+      "voice": "zoqfotpik-201.ogg",
+      "original_text_hash": 4662173020132214704
+    },
+    {
+      "id": "UTWIG_DELAY10",
+      "index": 221,
+      "text": "The balance of power has been equalized somewhat...",
+      "voice": "zoqfotpik-202.ogg",
+      "original_text_hash": 6478912115295191288
+    },
+    {
+      "id": "UTWIG_DELAY11",
+      "index": 222,
+      "text": "But the Kohr-Ah will STILL probably win!",
+      "voice": "zoqfotpik-203.ogg",
+      "original_text_hash": 11172981558282571785
+    },
+    {
+      "id": "UTWIG_DELAY12",
+      "index": 223,
+      "text": "But we estimate that the efforts of these new alien races\nhas delayed the Kohr-Ah's eventual victory\nby nine to twelve months.",
+      "voice": "zoqfotpik-204.ogg",
+      "original_text_hash": 1910661196925277181
+    },
+    {
+      "id": "UTWIG_DELAY13",
+      "index": 224,
+      "text": "Still, it's better than nothing!",
+      "voice": "zoqfotpik-205.ogg",
+      "original_text_hash": 516944432031125597
+    },
+    {
+      "id": "KOHRAH_WINNING0",
+      "index": 225,
+      "text": "We have modified a few of our Stinger starships\nfor long-range reconnaissance missions.",
+      "voice": "zoqfotpik-206.ogg",
+      "original_text_hash": 17591689307934827425
+    },
+    {
+      "id": "KOHRAH_WINNING1",
+      "index": 226,
+      "text": "We strapped a bunch of fuel tanks on their hulls.",
+      "voice": "zoqfotpik-207.ogg",
+      "original_text_hash": 14109700517431234454
+    },
+    {
+      "id": "KOHRAH_WINNING2",
+      "index": 227,
+      "text": "The scouts were ordered to investigate the progress of the war\nbetween the green ships, who we now know as the `Ur-Quan'\nand the black ships, flown by the `Kohr-Ah'.",
+      "voice": "zoqfotpik-208.ogg",
+      "original_text_hash": 3087337525836994023
+    },
+    {
+      "id": "KOHRAH_WINNING3",
+      "index": 228,
+      "text": "We sent out ten... two came back",
+      "voice": "zoqfotpik-209.ogg",
+      "original_text_hash": 5540067316751958403
+    },
+    {
+      "id": "KOHRAH_WINNING4",
+      "index": 229,
+      "text": "But the information they gathered was worth the cost.",
+      "voice": "zoqfotpik-210.ogg",
+      "original_text_hash": 8536031192560482522
+    },
+    {
+      "id": "KOHRAH_WINNING5",
+      "index": 230,
+      "text": "Unless you were one of the scouts, I suppose?\nNyark! Nyark! Nyark!",
+      "voice": "zoqfotpik-211.ogg",
+      "original_text_hash": 9819670363185079469
+    },
+    {
+      "id": "KOHRAH_WINNING6",
+      "index": 231,
+      "text": "SHUT UP!",
+      "voice": "zoqfotpik-212.ogg",
+      "original_text_hash": 3349453543692548875
+    },
+    {
+      "id": "KOHRAH_WINNING7",
+      "index": 232,
+      "text": "...sorry.",
+      "voice": "zoqfotpik-213.ogg",
+      "original_text_hash": 13867761791391284768
+    },
+    {
+      "id": "KOHRAH_WINNING8",
+      "index": 233,
+      "text": "Anyway, as I was saying, the intelligence they gathered\nindicates that the Kohr-Ah will win their war\nsometime near the beginning of the year 2158.",
+      "voice": "zoqfotpik-214.ogg",
+      "original_text_hash": 4654037133220119577
+    },
+    {
+      "id": "KOHRAH_WINNING9",
+      "index": 234,
+      "text": "Unless someone evens up the alien forces\nby destroying about a bazillion Kohr-Ah ships.",
+      "voice": "zoqfotpik-215.ogg",
+      "original_text_hash": 6496753011283221679
+    },
+    {
+      "id": "URQUAN_NEARLY_GONE0",
+      "index": 235,
+      "text": "Our reconnaissance ships have returned once more",
+      "voice": "zoqfotpik-216.ogg",
+      "original_text_hash": 15682641957741155347
+    },
+    {
+      "id": "URQUAN_NEARLY_GONE1",
+      "index": 236,
+      "text": "With bad news.",
+      "voice": "zoqfotpik-217.ogg",
+      "original_text_hash": 18210119516354763793
+    },
+    {
+      "id": "URQUAN_NEARLY_GONE2",
+      "index": 237,
+      "text": "Based on what they have seen\nthe Kohr-Ah will defeat the Ur-Quan\nin less than six months.",
+      "voice": "zoqfotpik-218.ogg",
+      "original_text_hash": 3367871944581849442
+    },
+    {
+      "id": "URQUAN_NEARLY_GONE3",
+      "index": 238,
+      "text": "Bummer.",
+      "voice": "zoqfotpik-219.ogg",
+      "original_text_hash": 8345863919851400645
+    },
+    {
+      "id": "URQUAN_NEARLY_GONE4",
+      "index": 239,
+      "text": "And based on our last encounter with the Kohr-Ah\nwe expect that when they win their war with the Ur-Quan\nthe Kohr-Ah will move through this entire region of space\ndestroying all intelligent life.",
+      "voice": "zoqfotpik-220.ogg",
+      "original_text_hash": 4089342855261204953
+    },
+    {
+      "id": "URQUAN_NEARLY_GONE5",
+      "index": 240,
+      "text": "Major bummer!",
+      "voice": "zoqfotpik-221.ogg",
+      "original_text_hash": 17784133112580467389
+    },
+    {
+      "id": "KOHRAH_FRENZY0",
+      "index": 241,
+      "text": "I fear we have received our last scouting reports, Captain.",
+      "voice": "zoqfotpik-222.ogg",
+      "original_text_hash": 10449455688904764714
+    },
+    {
+      "id": "KOHRAH_FRENZY1",
+      "index": 242,
+      "text": "Poor Yip, Tun and Haffy! I'll really miss those guys!",
+      "voice": "zoqfotpik-223.ogg",
+      "original_text_hash": 10323650547868723791
+    },
+    {
+      "id": "KOHRAH_FRENZY2",
+      "index": 243,
+      "text": "Although none of our scouts returned home alive",
+      "voice": "zoqfotpik-224.ogg",
+      "original_text_hash": 215194890315092458
+    },
+    {
+      "id": "KOHRAH_FRENZY3",
+      "index": 244,
+      "text": "...and Jiff... and Fod... and (sniff!)...\n...and my best pal, Rogi!",
+      "voice": "zoqfotpik-225.ogg",
+      "original_text_hash": 12042256626505234408
+    },
+    {
+      "id": "KOHRAH_FRENZY4",
+      "index": 245,
+      "text": "They were able to send a last message.\nThe Kohr-Ah have won their war against the Ur-Quan\nand they have begun their hideous death march.",
+      "voice": "zoqfotpik-226.ogg",
+      "original_text_hash": 9653164592024686363
+    },
+    {
+      "id": "KOHRAH_FRENZY5",
+      "index": 246,
+      "text": "(sniff!)",
+      "voice": "zoqfotpik-227.ogg",
+      "original_text_hash": 3126801311375794655
+    },
+    {
+      "id": "KOHRAH_FRENZY6",
+      "index": 247,
+      "text": "The only piece of knowledge we have\nthat may help you defeat them\nis a fragment of a transmission we received\nfrom our agent Buppo who was in the Crateris constellation.",
+      "voice": "zoqfotpik-228.ogg",
+      "original_text_hash": 5161739430275792852
+    },
+    {
+      "id": "KOHRAH_FRENZY7",
+      "index": 248,
+      "text": "They got Buppo too?!...(SOB!)",
+      "voice": "zoqfotpik-229.ogg",
+      "original_text_hash": 1652724933590797543
+    },
+    {
+      "id": "KOHRAH_FRENZY8",
+      "index": 249,
+      "text": "He reported that the Kohr-Ah had something\n`big, dangerous and important as hell'\nin one of the nearby star systems.\nThat was all we got before Buppo's signal was cut off.",
+      "voice": "zoqfotpik-230.ogg",
+      "original_text_hash": 9976018241416419273
+    },
+    {
+      "id": "KOHRAH_FRENZY9",
+      "index": 250,
+      "text": "(SOB!)",
+      "voice": "zoqfotpik-231.ogg",
+      "original_text_hash": 12243235102043497067
+    },
+    {
+      "id": "KOHRAH_FRENZY10",
+      "index": 251,
+      "text": "You have got to stop the Kohr-Ah, Captain!...\n...before they kill us all.",
+      "voice": "zoqfotpik-232.ogg",
+      "original_text_hash": 19778667846474659
+    },
+    {
+      "id": "KOHRAH_FRENZY11",
+      "index": 252,
+      "text": "(sniff!)",
+      "voice": "zoqfotpik-233.ogg",
+      "original_text_hash": 3126801311375794655
+    },
+    {
+      "id": "NO_WAR_NEWS0",
+      "index": 253,
+      "text": "No. We have nothing new to report.",
+      "voice": "zoqfotpik-234.ogg",
+      "original_text_hash": 7640749061003614258
+    },
+    {
+      "id": "NO_WAR_NEWS1",
+      "index": 254,
+      "text": "Nope! Not a thing.",
+      "voice": "zoqfotpik-235.ogg",
+      "original_text_hash": 8118127046045322756
+    },
+    {
+      "id": "i_want_alliance",
+      "index": 255,
+      "text": "I have travelled here to seek an alliance between our peoples.",
+      "voice": null,
+      "original_text_hash": 18090973722889582132
+    },
+    {
+      "id": "GOOD0",
+      "index": 256,
+      "text": "How wonderful! We accept!",
+      "voice": "zoqfotpik-236.ogg",
+      "original_text_hash": 15450187831191286901
+    },
+    {
+      "id": "GOOD1",
+      "index": 257,
+      "text": "Hurray!",
+      "voice": "zoqfotpik-237.ogg",
+      "original_text_hash": 4606398906756728123
+    },
+    {
+      "id": "GOOD2",
+      "index": 258,
+      "text": "How marvelous!",
+      "voice": "zoqfotpik-238.ogg",
+      "original_text_hash": 1662830500275370592
+    },
+    {
+      "id": "GOOD3",
+      "index": 259,
+      "text": "Yee-ha!",
+      "voice": "zoqfotpik-239.ogg",
+      "original_text_hash": 15692508171923773345
+    },
+    {
+      "id": "GOOD4",
+      "index": 260,
+      "text": "Captain, we are delighted that your people have made this choice!",
+      "voice": "zoqfotpik-240.ogg",
+      "original_text_hash": 13281625148690320907
+    },
+    {
+      "id": "GOOD5",
+      "index": 261,
+      "text": "Now WE won't get slaughtered!",
+      "voice": "zoqfotpik-241.ogg",
+      "original_text_hash": 14587298174161286813
+    },
+    {
+      "id": "GOOD6",
+      "index": 262,
+      "text": "In exchange for our cooperation helping you with captains and ship designs\nall that we ask for is your protection.",
+      "voice": "zoqfotpik-242.ogg",
+      "original_text_hash": 18188515045025831376
+    },
+    {
+      "id": "GOOD7",
+      "index": 263,
+      "text": "So we don't get slaughtered!",
+      "voice": "zoqfotpik-243.ogg",
+      "original_text_hash": 456741040494384726
+    },
+    {
+      "id": "GOOD8",
+      "index": 264,
+      "text": "We shall begin fulfilling our commitment at once!\nWe will transport officers and our Stinger design to your base immediately!",
+      "voice": "zoqfotpik-244.ogg",
+      "original_text_hash": 95282826540416557
+    },
+    {
+      "id": "GOOD9",
+      "index": 265,
+      "text": "Why, heck!\nMaybe I'll even make the trip to your planet!\nI'd make a good starship captain, Captain!\nI'm pretty darn mean in a fight\nand there ain't nobody better than me\nwith a thrusting stinger tongue attack!",
+      "voice": "zoqfotpik-245.ogg",
+      "original_text_hash": 1684385851874059708
+    },
+    {
+      "id": "want_specific_info",
+      "index": 266,
+      "text": "I would like some specific information.",
+      "voice": null,
+      "original_text_hash": 11154544112687921628
+    },
+    {
+      "id": "WHAT_SPECIFIC_INFO0",
+      "index": 267,
+      "text": "Sure. What do you want to know?",
+      "voice": "zoqfotpik-246.ogg",
+      "original_text_hash": 10941063578375835661
+    },
+    {
+      "id": "WHAT_SPECIFIC_INFO1",
+      "index": 268,
+      "text": "Just ask away!",
+      "voice": "zoqfotpik-247.ogg",
+      "original_text_hash": 4546089220467296231
+    },
+    {
+      "id": "enough_info",
+      "index": 269,
+      "text": "That's enough info for now, thanks!",
+      "voice": null,
+      "original_text_hash": 1595866219789735967
+    },
+    {
+      "id": "OK_ENOUGH_INFO",
+      "index": 270,
+      "text": "Anything else?",
+      "voice": "zoqfotpik-248.ogg",
+      "original_text_hash": 12678183632726389133
+    },
+    {
+      "id": "what_about_others",
+      "index": 271,
+      "text": "What do you know about other alien races?",
+      "voice": null,
+      "original_text_hash": 2190196849456667905
+    },
+    {
+      "id": "ABOUT_OTHERS0",
+      "index": 272,
+      "text": "Not much, to tell the truth.",
+      "voice": "zoqfotpik-249.ogg",
+      "original_text_hash": 5725434532492767587
+    },
+    {
+      "id": "ABOUT_OTHERS1",
+      "index": 273,
+      "text": "This space exploration stuff is kinda new to us.",
+      "voice": "zoqfotpik-250.ogg",
+      "original_text_hash": 14474568633920138126
+    },
+    {
+      "id": "ABOUT_OTHERS2",
+      "index": 274,
+      "text": "Besides the green alien ships...",
+      "voice": "zoqfotpik-251.ogg",
+      "original_text_hash": 6755988342714895082
+    },
+    {
+      "id": "ABOUT_OTHERS3",
+      "index": 275,
+      "text": "Which have only tried to kill us.",
+      "voice": "zoqfotpik-252.ogg",
+      "original_text_hash": 17214676979497102615
+    },
+    {
+      "id": "ABOUT_OTHERS4",
+      "index": 276,
+      "text": "...and the black alien ships...",
+      "voice": "zoqfotpik-253.ogg",
+      "original_text_hash": 9061137638977994132
+    },
+    {
+      "id": "ABOUT_OTHERS5",
+      "index": 277,
+      "text": "Which have actually been QUITE SUCCESSFUL at killing us.",
+      "voice": "zoqfotpik-254.ogg",
+      "original_text_hash": 8488580267158266514
+    },
+    {
+      "id": "ABOUT_OTHERS6",
+      "index": 278,
+      "text": "The only other starships we have encountered\nare strange tumbling red probes\nwhich profess to be on a peaceful mission...",
+      "voice": "zoqfotpik-255.ogg",
+      "original_text_hash": 3378091203581179083
+    },
+    {
+      "id": "ABOUT_OTHERS7",
+      "index": 279,
+      "text": "...but then attack like slavering Zebrankys.",
+      "voice": "zoqfotpik-256.ogg",
+      "original_text_hash": 11415947689204803756
+    },
+    {
+      "id": "ABOUT_OTHERS8",
+      "index": 280,
+      "text": "We believe that the probes are actually robotic scouts\nwhich have suffered some kind of malfunction\nresulting in their aberrant behavior.",
+      "voice": "zoqfotpik-257.ogg",
+      "original_text_hash": 3900723736758240149
+    },
+    {
+      "id": "ABOUT_OTHERS9",
+      "index": 281,
+      "text": "And what's worse, they are multiplying.",
+      "voice": "zoqfotpik-258.ogg",
+      "original_text_hash": 2748629326907014640
+    },
+    {
+      "id": "ABOUT_OTHERS10",
+      "index": 282,
+      "text": "Yes, that's true.\nThe probes seem to be replicating at a geometric rate.",
+      "voice": "zoqfotpik-259.ogg",
+      "original_text_hash": 6877325480867122788
+    },
+    {
+      "id": "ABOUT_OTHERS11",
+      "index": 283,
+      "text": "AIEE! That means if there was only one last week\nthen next month... ah\nwait a minute... let me calculate\nuh\nThat means, next month there will be\n...A WHOLE MESS OF THOSE THINGS!",
+      "voice": "zoqfotpik-260.ogg",
+      "original_text_hash": 10959002419205134255
+    },
+    {
+      "id": "ABOUT_OTHERS12",
+      "index": 284,
+      "text": "By back-tracing the probes' course paths\nwe have been able to calculate\nthat the source of the probes\nis somewhere on a direct line\nthat includes our star, and Epsilon Muscae.",
+      "voice": "zoqfotpik-261.ogg",
+      "original_text_hash": 17042993310513944158
+    },
+    {
+      "id": "ABOUT_OTHERS13",
+      "index": 285,
+      "text": "Go get 'em, Captain!",
+      "voice": "zoqfotpik-262.ogg",
+      "original_text_hash": 10952331356096402843
+    },
+    {
+      "id": "what_about_zebranky",
+      "index": 286,
+      "text": "Tell me more about your people.",
+      "voice": null,
+      "original_text_hash": 15310779673239954768
+    },
+    {
+      "id": "ABOUT_ZEBRANKY0",
+      "index": 287,
+      "text": "Ah! Cultural exchange. A good idea.",
+      "voice": "zoqfotpik-263.ogg",
+      "original_text_hash": 5175963863902519549
+    },
+    {
+      "id": "ABOUT_ZEBRANKY1",
+      "index": 288,
+      "text": "Yeah! Let's tell him about Frungy!",
+      "voice": "zoqfotpik-264.ogg",
+      "original_text_hash": 13969057549561234244
+    },
+    {
+      "id": "ABOUT_ZEBRANKY2",
+      "index": 289,
+      "text": "Be quiet, you fool! He asked a serious question!\nHe doesn't want to know about Frungy.",
+      "voice": "zoqfotpik-265.ogg",
+      "original_text_hash": 7225483770569248896
+    },
+    {
+      "id": "ABOUT_ZEBRANKY3",
+      "index": 290,
+      "text": "How do you know? What makes you so smart?\nYou never even asked him if he wants to know about Frungy.\nWhy, I'll bet right now he's wondering\n`What is this wonderful sport, Frungy?', `How is it played?'\n`What kind of equipment do you need to play Frungy?'\nand `I wonder who's ahead in the Frungy Championships?'",
+      "voice": "zoqfotpik-266.ogg",
+      "original_text_hash": 15091613406836626575
+    },
+    {
+      "id": "ABOUT_ZEBRANKY4",
+      "index": 291,
+      "text": "AUGH! Will you SHUT UP ABOUT FRUNGY?!\nIf you say another word about that STUPID GAME\nI'm going to lose control and blow a cloud of spores at you!",
+      "voice": "zoqfotpik-267.ogg",
+      "original_text_hash": 378945363212933823
+    },
+    {
+      "id": "ABOUT_ZEBRANKY5",
+      "index": 292,
+      "text": "Yech! Okay, okay. Don't blow your sac.\nI won't mention Frungy again, I promise.",
+      "voice": "zoqfotpik-268.ogg",
+      "original_text_hash": 5409130308078404524
+    },
+    {
+      "id": "ABOUT_ZEBRANKY6",
+      "index": 293,
+      "text": "Well, Captain, as you can probably see\nour culture's predominant trait\nits greatest strength AND weakness\nis the diverse interactions between Zoq, Fot, and Pik.",
+      "voice": "zoqfotpik-269.ogg",
+      "original_text_hash": 2793171954903030479
+    },
+    {
+      "id": "ABOUT_ZEBRANKY7",
+      "index": 294,
+      "text": "FRUNGY! FRUNGY! FRUNGY!",
+      "voice": "zoqfotpik-270.ogg",
+      "original_text_hash": 8575382025598228201
+    },
+    {
+      "id": "what_about_past",
+      "index": 295,
+      "text": "What was your history like?",
+      "voice": null,
+      "original_text_hash": 10579578899328442633
+    },
+    {
+      "id": "ABOUT_PAST0",
+      "index": 296,
+      "text": "Our past? Quite a broad topic for this short conversation\nbut we'll share a key piece of our history with you.",
+      "voice": "zoqfotpik-271.ogg",
+      "original_text_hash": 3378983243431691187
+    },
+    {
+      "id": "ABOUT_PAST1",
+      "index": 297,
+      "text": "After we killed off the last Zebranky\nwe faced an interesting question.",
+      "voice": "zoqfotpik-272.ogg",
+      "original_text_hash": 4698467443255027040
+    },
+    {
+      "id": "ABOUT_PAST2",
+      "index": 298,
+      "text": "Should we proceed, and establish a culture\nwhich would advance in art, technology and social sophistication?...",
+      "voice": "zoqfotpik-273.ogg",
+      "original_text_hash": 12200366747028734667
+    },
+    {
+      "id": "ABOUT_PAST3",
+      "index": 299,
+      "text": "...Or should we just go back into the forest\nand kick back and enjoy ourselves\nknowing that a Zebranky wasn't gonna jump out of the bush and eat us!",
+      "voice": "zoqfotpik-274.ogg",
+      "original_text_hash": 13228152505679534980
+    },
+    {
+      "id": "ABOUT_PAST4",
+      "index": 300,
+      "text": "Well, we DID go back into the forest.\nWe stayed there for about five thousand years and had a great time...",
+      "voice": "zoqfotpik-275.ogg",
+      "original_text_hash": 14291426885442194178
+    },
+    {
+      "id": "ABOUT_PAST5",
+      "index": 301,
+      "text": "...then, one stormy day, a Zoq, a Fot, and a Pik were walking up a steep path\nlooking for something good to eat, when a bolt of lightning struck nearby.\nWith a huge flash of light, the bolt of energy\ncarved a strangely-shaped chunk of granite out of a cliff.",
+      "voice": "zoqfotpik-276.ogg",
+      "original_text_hash": 7752314967502241404
+    },
+    {
+      "id": "ABOUT_PAST6",
+      "index": 302,
+      "text": "It was a disk, with a hole in the middle!\nAs the rock began to roll down the hill, toward the three terrified beings\nsome dry grass got caught in its hole, and since the rock was still hot\nthe grass caught on fire.",
+      "voice": "zoqfotpik-277.ogg",
+      "original_text_hash": 5097752923852900018
+    },
+    {
+      "id": "ABOUT_PAST7",
+      "index": 303,
+      "text": "When the rock finally got to the Zoq, the Fot, and the Pik\nthey simultaneously discovered the Wheel, Fire, and Religion\nthus catapulting them on to the road of progress.",
+      "voice": "zoqfotpik-278.ogg",
+      "original_text_hash": 3748664653912072871
+    },
+    {
+      "id": "ABOUT_PAST8",
+      "index": 304,
+      "text": "Which has led us to this day, Captain.\nOh! How did the flaming wheel give religion to our Culture, you ask?",
+      "voice": "zoqfotpik-279.ogg",
+      "original_text_hash": 5176215845362810045
+    },
+    {
+      "id": "ABOUT_PAST9",
+      "index": 305,
+      "text": "I will explain.\nYou see, when it got to the threesome, the flaming wheel was going at a pretty good clip\nand it ran smack into the Zoq, killing him.",
+      "voice": "zoqfotpik-280.ogg",
+      "original_text_hash": 15693828062625189881
+    },
+    {
+      "id": "ABOUT_PAST10",
+      "index": 306,
+      "text": "The Fot and the Pik felt so bad\nthey really liked that Zoq!...\n...that they decided the Zoq hadn't really died when the wheel flattened him\nhe had just gone to `a better place.'",
+      "voice": "zoqfotpik-281.ogg",
+      "original_text_hash": 9770109519722913404
+    },
+    {
+      "id": "ABOUT_PAST11",
+      "index": 307,
+      "text": "Presumably one without lethal flaming wheels.",
+      "voice": "zoqfotpik-282.ogg",
+      "original_text_hash": 4104400926857497615
+    },
+    {
+      "id": "what_about_stinger",
+      "index": 308,
+      "text": "Can you describe your `Stinger' starship?",
+      "voice": null,
+      "original_text_hash": 14905525443317881582
+    },
+    {
+      "id": "ABOUT_STINGER0",
+      "index": 309,
+      "text": "The Stinger is the peak of our technological prowess.",
+      "voice": "zoqfotpik-283.ogg",
+      "original_text_hash": 14321776972436648902
+    },
+    {
+      "id": "ABOUT_STINGER1",
+      "index": 310,
+      "text": "It's totally awesome!",
+      "voice": "zoqfotpik-284.ogg",
+      "original_text_hash": 12106859694059949071
+    },
+    {
+      "id": "ABOUT_STINGER2",
+      "index": 311,
+      "text": "These vessels are cheap to build\nand can be quite effective in short range combat.",
+      "voice": "zoqfotpik-285.ogg",
+      "original_text_hash": 12079648790259560170
+    },
+    {
+      "id": "ABOUT_STINGER3",
+      "index": 312,
+      "text": "They turn on a... on a\nwell a small round thing that's REAL small!",
+      "voice": "zoqfotpik-286.ogg",
+      "original_text_hash": 3939022365041230071
+    },
+    {
+      "id": "ABOUT_STINGER4",
+      "index": 313,
+      "text": "Remember though, against most ships\nthe Stinger must close distance immediately\nand give unrelenting tongue attacks\nuntil either the enemy or the Stinger are destroyed.",
+      "voice": "zoqfotpik-287.ogg",
+      "original_text_hash": 6266627457806304372
+    },
+    {
+      "id": "ABOUT_STINGER5",
+      "index": 314,
+      "text": "Yeah! The tonguing is the best part!",
+      "voice": "zoqfotpik-288.ogg",
+      "original_text_hash": 4579675312984277990
+    },
+    {
+      "id": "what_about_guy_in_back",
+      "index": 315,
+      "text": "Does that guy in back ever say anything?",
+      "voice": null,
+      "original_text_hash": 840945750908245404
+    },
+    {
+      "id": "ABOUT_GUY0",
+      "index": 316,
+      "text": "Nope.",
+      "voice": "zoqfotpik-289.ogg",
+      "original_text_hash": 15903851683692773661
+    },
+    {
+      "id": "ABOUT_GUY1",
+      "index": 317,
+      "text": "Not a word.",
+      "voice": "zoqfotpik-290.ogg",
+      "original_text_hash": 16004451874324901679
+    },
+    {
+      "id": "name_1",
+      "index": 318,
+      "text": "The New Alliance of Free Stars'",
+      "voice": null,
+      "original_text_hash": 1852353983145165708
+    },
+    {
+      "id": "name_2",
+      "index": 319,
+      "text": "The Concordance of Alien Nations'",
+      "voice": null,
+      "original_text_hash": 7489423927170339380
+    },
+    {
+      "id": "name_3",
+      "index": 320,
+      "text": "The United Federation of Worlds'",
+      "voice": null,
+      "original_text_hash": 14462771386787583771
+    },
+    {
+      "id": "name_40",
+      "index": 321,
+      "text": "The Empire of",
+      "voice": null,
+      "original_text_hash": 15056979772427443985
+    },
+    {
+      "id": "name_41",
+      "index": 322,
+      "text": "'s",
+      "voice": null,
+      "original_text_hash": 557114878306146223
+    },
+    {
+      "id": "OUT_TAKES0",
+      "index": 323,
+      "text": "Thank you for playing The Ur-Quan Masters.",
+      "voice": "zoqfotpik-291.ogg",
+      "original_text_hash": 102580163306843288
+    },
+    {
+      "id": "OUT_TAKES1",
+      "index": 324,
+      "text": "This game has been brought to you by\nFrungy! The Sport of Kings!",
+      "voice": "zoqfotpik-292.ogg",
+      "original_text_hash": 14298407193255244250
+    },
+    {
+      "id": "OUT_TAKES2",
+      "index": 325,
+      "text": "No it wasn't!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 3258949525762611822
+    },
+    {
+      "id": "OUT_TAKES3",
+      "index": 326,
+      "text": "Yes it was!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 668371694476305859
+    },
+    {
+      "id": "OUT_TAKES4",
+      "index": 327,
+      "text": "Frungy had nothing to do with it!\nThis game was about war, slavery, intolerance\nheroism, justice, and the inevitable triumph of Good over Evil!",
+      "voice": "zoqfotpik-294.ogg",
+      "original_text_hash": 14214230713473689805
+    },
+    {
+      "id": "OUT_TAKES5",
+      "index": 328,
+      "text": "Are you crazy?! The developers got millions in Frungy endorsements!",
+      "voice": "zoqfotpik-291.ogg",
+      "original_text_hash": 523592291167112428
+    },
+    {
+      "id": "OUT_TAKES6",
+      "index": 329,
+      "text": "No they didn't.",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 1162664152451627364
+    },
+    {
+      "id": "OUT_TAKES7",
+      "index": 330,
+      "text": "Yes they did.",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 1058257392310423907
+    },
+    {
+      "id": "OUT_TAKES8",
+      "index": 331,
+      "text": "No they didn't!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 1162654256846973465
+    },
+    {
+      "id": "OUT_TAKES9",
+      "index": 332,
+      "text": "Yes they did!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 1058271685961590650
+    },
+    {
+      "id": "OUT_TAKES10",
+      "index": 333,
+      "text": "Did not!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 6971449276824362258
+    },
+    {
+      "id": "OUT_TAKES11",
+      "index": 334,
+      "text": "Did too!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 17108334947208060707
+    },
+    {
+      "id": "OUT_TAKES12",
+      "index": 335,
+      "text": "Did not!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 6971449276824362258
+    },
+    {
+      "id": "OUT_TAKES13",
+      "index": 336,
+      "text": "Did too!",
+      "voice": "zoqfotpik-293.ogg",
+      "original_text_hash": 17108334947208060707
+    }
+  ],
+  "nodes": [
+    {
+      "id": "exit.bye_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_homeworld",
+      "next": "exit.bye_homeworld.speech"
+    },
+    {
+      "id": "exit.bye_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "GOODBYE_HOME0", "on_start": "zoqfot.zoq"}, {"phrase": "GOODBYE_HOME1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.decide_later",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_decide_later",
+      "next": "exit.decide_later.speech"
+    },
+    {
+      "id": "exit.decide_later.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "PLEASE_HURRY0", "on_start": "zoqfot.zoq"}, {"phrase": "PLEASE_HURRY1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.valuable_info",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_valuable_info",
+      "next": "exit.valuable_info.speech"
+    },
+    {
+      "id": "exit.valuable_info.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GOODBYE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOODBYE1", "on_start": "zoqfot.pik"},
+            {"phrase": "GOODBYE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOODBYE3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.how_can_i_help",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_how_can_i_help",
+      "next": "exit.how_can_i_help.speech"
+    },
+    {
+      "id": "exit.how_can_i_help.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "EMMISSARIES0", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES1", "on_start": "zoqfot.pik"},
+            {"phrase": "EMMISSARIES2", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES3", "on_start": "zoqfot.pik"},
+            {"phrase": "EMMISSARIES4", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES5", "on_start": "zoqfot.pik"},
+            {"phrase": "EMMISSARIES6", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.sure",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_sure",
+      "next": "exit.sure.speech"
+    },
+    {
+      "id": "exit.sure.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_ALLY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ALLY1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ALLY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ALLY3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ALLY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ALLY5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "exit.sure.speech.effect0"
+    },
+    {
+      "id": "exit.sure.speech.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["zoqfot", "allied"]
+      },
+      "save_as": "exit_sure_speech_effect0",
+      "next": "exit.sure.speech.effect1"
+    },
+    {
+      "id": "exit.sure.speech.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ZOQFOT_DISTRESS_EVENT", 3, 0, 0]
+      },
+      "save_as": "exit_sure_speech_effect1",
+      "next": "exit.sure.speech.effect2"
+    },
+    {
+      "id": "exit.sure.speech.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 0]
+      },
+      "save_as": "exit_sure_speech_effect2",
+      "next": "end"
+    },
+    {
+      "id": "exit.all_very_interesting",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_all_very_interesting",
+      "next": "exit.all_very_interesting.speech"
+    },
+    {
+      "id": "exit.all_very_interesting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "SEE_TOLD_YOU0", "on_start": "zoqfot.zoq"},
+            {"phrase": "SEE_TOLD_YOU1", "on_start": "zoqfot.pik"},
+            {"phrase": "SEE_TOLD_YOU2", "on_start": "zoqfot.zoq"},
+            {"phrase": "SEE_TOLD_YOU3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "exit.all_very_interesting.speech.effect0"
+    },
+    {
+      "id": "exit.all_very_interesting.speech.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOSTILE", 1]
+      },
+      "save_as": "exit_all_very_interesting_speech_effect0",
+      "next": "exit.all_very_interesting.speech.effect1"
+    },
+    {
+      "id": "exit.all_very_interesting.speech.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 0]
+      },
+      "save_as": "exit_all_very_interesting_speech_effect1",
+      "next": "exit.all_very_interesting.speech.effect2"
+    },
+    {
+      "id": "exit.all_very_interesting.speech.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_all_very_interesting_speech_effect2",
+      "next": "end"
+    },
+    {
+      "id": "exit.never",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_never",
+      "next": "exit.never.speech"
+    },
+    {
+      "id": "exit.never.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "WE_ENEMIES0", "on_start": "zoqfot.zoq"}, {"phrase": "WE_ENEMIES1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "exit.never.speech.effect0"
+    },
+    {
+      "id": "exit.never.speech.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOSTILE", 1]
+      },
+      "save_as": "exit_never_speech_effect0",
+      "next": "exit.never.speech.effect1"
+    },
+    {
+      "id": "exit.never.speech.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 0]
+      },
+      "save_as": "exit_never_speech_effect1",
+      "next": "exit.never.speech.effect2"
+    },
+    {
+      "id": "exit.never.speech.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_never_speech_effect2",
+      "next": "end"
+    },
+    {
+      "id": "form.alliance",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLY_WITH_US0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLY_WITH_US1", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLY_WITH_US2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLY_WITH_US3", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLY_WITH_US4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLY_WITH_US5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "form.menu"
+    },
+    {
+      "id": "form.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "sure",
+          "text": "sure",
+          "when": true,
+          "next": "exit.sure"
+        },
+        {
+          "id": "never",
+          "text": "never",
+          "when": true,
+          "next": "exit.never"
+        },
+        {
+          "id": "decide_later",
+          "text": "decide_later",
+          "when": true,
+          "next": "exit.decide_later"
+        }
+      ]
+    },
+    {
+      "id": "introduce",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_GLAD0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_GLAD1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_GLAD2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_GLAD3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_GLAD4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_GLAD5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "introduce.effect0"
+    },
+    {
+      "id": "introduce.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "we_are_vindicator0", true]
+      },
+      "save_as": "introduce_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "your_race.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "YEARS_AGO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO1", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO2", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO3", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO4", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO5", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO6", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO7", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO8", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO9", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO10", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO11", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO12", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "your_race.reply.effect0"
+    },
+    {
+      "id": "your_race.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "your_race", true]
+      },
+      "save_as": "your_race_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "where_from.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "TRAVELED_FAR0", "on_start": "zoqfot.zoq"},
+            {"phrase": "TRAVELED_FAR1", "on_start": "zoqfot.pik"},
+            {"phrase": "TRAVELED_FAR2", "on_start": "zoqfot.zoq"},
+            {"phrase": "TRAVELED_FAR3", "on_start": "zoqfot.pik"},
+            {"phrase": "TRAVELED_FAR4", "on_start": "zoqfot.zoq"},
+            {"phrase": "TRAVELED_FAR5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "where_from.reply.effect0"
+    },
+    {
+      "id": "where_from.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_from", true]
+      },
+      "save_as": "where_from_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "what_emergency.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "UNDER_ATTACK0", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK1", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK2", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK3", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK4", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK5", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK6", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK7", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK8", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK9", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK10", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_emergency.reply.effect0"
+    },
+    {
+      "id": "what_emergency.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_emergency", true]
+      },
+      "save_as": "what_emergency_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "tough_luck.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "NOT_HELPFUL0", "on_start": "zoqfot.zoq"},
+            {"phrase": "NOT_HELPFUL1", "on_start": "zoqfot.pik"},
+            {"phrase": "NOT_HELPFUL2", "on_start": "zoqfot.zoq"},
+            {"phrase": "NOT_HELPFUL3", "on_start": "zoqfot.pik"},
+            {"phrase": "NOT_HELPFUL4", "on_start": "zoqfot.zoq"},
+            {"phrase": "NOT_HELPFUL5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "tough_luck.reply.effect0"
+    },
+    {
+      "id": "tough_luck.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tough_luck", true]
+      },
+      "save_as": "tough_luck_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "what_look_like.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "LOOK_LIKE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "LOOK_LIKE1", "on_start": "zoqfot.pik"},
+            {"phrase": "LOOK_LIKE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "LOOK_LIKE3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_look_like.reply.effect0"
+    },
+    {
+      "id": "what_look_like.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_look_like", true]
+      },
+      "save_as": "what_look_like_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "intro.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "your_race",
+          "text": "your_race",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"get": ["local", "your_race", false]}},
+                  {"not": {"get": ["local", "where_from", false]}},
+                  {"not": {"get": ["local", "what_emergency", false]}}
+                ]
+              },
+              {"not": {"get": ["local", "your_race", false]}}
+            ]
+          },
+          "next": "your_race.reply"
+        },
+        {
+          "id": "where_from",
+          "text": "where_from",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"get": ["local", "your_race", false]}},
+                  {"not": {"get": ["local", "where_from", false]}},
+                  {"not": {"get": ["local", "what_emergency", false]}}
+                ]
+              },
+              {"not": {"get": ["local", "where_from", false]}}
+            ]
+          },
+          "next": "where_from.reply"
+        },
+        {
+          "id": "what_emergency",
+          "text": "what_emergency",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"get": ["local", "your_race", false]}},
+                  {"not": {"get": ["local", "where_from", false]}},
+                  {"not": {"get": ["local", "what_emergency", false]}}
+                ]
+              },
+              {"not": {"get": ["local", "what_emergency", false]}}
+            ]
+          },
+          "next": "what_emergency.reply"
+        },
+        {
+          "id": "tough_luck",
+          "text": "tough_luck",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"not": {"get": ["local", "tough_luck", false]}}
+            ]
+          },
+          "next": "tough_luck.reply"
+        },
+        {
+          "id": "what_look_like",
+          "text": "what_look_like",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"not": {"get": ["local", "what_look_like", false]}}
+            ]
+          },
+          "next": "what_look_like.reply"
+        },
+        {
+          "id": "all_very_interesting",
+          "text": "all_very_interesting",
+          "when": {
+            "not": {
+              "any": [
+                {"not": {"get": ["local", "your_race", false]}},
+                {"not": {"get": ["local", "where_from", false]}},
+                {"not": {"get": ["local", "what_emergency", false]}}
+              ]
+            }
+          },
+          "next": "exit.all_very_interesting"
+        },
+        {
+          "id": "how_can_i_help",
+          "text": "how_can_i_help",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}
+            ]
+          },
+          "next": "form.alliance"
+        },
+        {
+          "id": "how_can_i_help_space",
+          "text": "how_can_i_help",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"not": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}}
+            ]
+          },
+          "next": "exit.how_can_i_help"
+        },
+        {
+          "id": "valuable_info",
+          "text": "valuable_info",
+          "when": {
+            "not": {
+              "any": [
+                {"not": {"get": ["local", "your_race", false]}},
+                {"not": {"get": ["local", "where_from", false]}},
+                {"not": {"get": ["local", "what_emergency", false]}}
+              ]
+            }
+          },
+          "next": "exit.valuable_info"
+        }
+      ]
+    },
+    {
+      "id": "which_fot.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HE_IS0", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS1", "on_start": "zoqfot.pik"},
+            {"phrase": "HE_IS2", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS3", "on_start": "zoqfot.pik"},
+            {"phrase": "HE_IS4", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS5", "on_start": "zoqfot.pik"},
+            {"phrase": "HE_IS6", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "which_fot.reply.effect0"
+    },
+    {
+      "id": "which_fot.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "which_fot", true]
+      },
+      "save_as": "which_fot_reply_effect0",
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "quiet_toadies.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "TOLD_YOU0", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU1", "on_start": "zoqfot.pik"},
+            {"phrase": "TOLD_YOU2", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU3", "on_start": "zoqfot.pik"},
+            {"phrase": "TOLD_YOU4", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU5", "on_start": "zoqfot.pik"},
+            {"phrase": "TOLD_YOU6", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "quiet_toadies.reply.effect0"
+    },
+    {
+      "id": "quiet_toadies.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "quiet_toadies", true]
+      },
+      "save_as": "quiet_toadies_reply_effect0",
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "acquaint.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "which_fot",
+          "text": "which_fot",
+          "when": {"not": {"get": ["local", "which_fot", false]}},
+          "next": "which_fot.reply"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"not": {"get": ["local", "we_are_vindicator0", false]}},
+          "next": "introduce"
+        },
+        {
+          "id": "quiet_toadies",
+          "text": "quiet_toadies",
+          "when": {"not": {"get": ["local", "quiet_toadies", false]}},
+          "next": "quiet_toadies.reply"
+        },
+        {
+          "id": "all_very_interesting",
+          "text": "all_very_interesting",
+          "when": true,
+          "next": "exit.all_very_interesting"
+        },
+        {
+          "id": "valuable_info",
+          "text": "valuable_info",
+          "when": true,
+          "next": "exit.valuable_info"
+        }
+      ]
+    },
+    {
+      "id": "info",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WHAT_SPECIFIC_INFO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WHAT_SPECIFIC_INFO1", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "info.route"
+    },
+    {
+      "id": "info.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_others", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_zebranky", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_stinger", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_guy_in_back", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_past", false]}}}
+            ]
+          },
+          "next": "info.done"
+        }
+      ],
+      "otherwise": "info.menu"
+    },
+    {
+      "id": "info.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "want_specific_info", true]
+      },
+      "save_as": "info_done",
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_others.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_OTHERS0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS5", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS6", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS7", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS8", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS9", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS10", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS11", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS12", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_others.reply.effect0"
+    },
+    {
+      "id": "what_about_others.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_others", true]
+      },
+      "save_as": "what_about_others_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_zebranky.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_ZEBRANKY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_ZEBRANKY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_ZEBRANKY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY5", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_ZEBRANKY6", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_zebranky.reply.effect0"
+    },
+    {
+      "id": "what_about_zebranky.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_zebranky", true]
+      },
+      "save_as": "what_about_zebranky_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_stinger.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_STINGER0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_STINGER1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_STINGER2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_STINGER3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_STINGER4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_STINGER5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_stinger.reply.effect0"
+    },
+    {
+      "id": "what_about_stinger.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_stinger", true]
+      },
+      "save_as": "what_about_stinger_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_guy_in_back.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "ABOUT_GUY0", "on_start": "zoqfot.zoq"}, {"phrase": "ABOUT_GUY1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_guy_in_back.reply.effect0"
+    },
+    {
+      "id": "what_about_guy_in_back.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_guy_in_back", true]
+      },
+      "save_as": "what_about_guy_in_back_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_past.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_PAST0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST5", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST6", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST7", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST8", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST9", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST10", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_past.reply.effect0"
+    },
+    {
+      "id": "what_about_past.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_past", true]
+      },
+      "save_as": "what_about_past_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "info.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_others",
+          "text": "what_about_others",
+          "when": {"not": {"get": ["local", "what_about_others", false]}},
+          "next": "what_about_others.reply"
+        },
+        {
+          "id": "what_about_zebranky",
+          "text": "what_about_zebranky",
+          "when": {"not": {"get": ["local", "what_about_zebranky", false]}},
+          "next": "what_about_zebranky.reply"
+        },
+        {
+          "id": "what_about_stinger",
+          "text": "what_about_stinger",
+          "when": {"not": {"get": ["local", "what_about_stinger", false]}},
+          "next": "what_about_stinger.reply"
+        },
+        {
+          "id": "what_about_guy_in_back",
+          "text": "what_about_guy_in_back",
+          "when": {"not": {"get": ["local", "what_about_guy_in_back", false]}},
+          "next": "what_about_guy_in_back.reply"
+        },
+        {
+          "id": "what_about_past",
+          "text": "what_about_past",
+          "when": {"not": {"get": ["local", "what_about_past", false]}},
+          "next": "what_about_past.reply"
+        },
+        {
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "info.back"
+        }
+      ]
+    },
+    {
+      "id": "info.back",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"phrase": "OK_ENOUGH_INFO", "on_start": "zoqfot.zoq"}], "presentation": {"before": "zoqfot.reset"}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_INFO", 0]}, 0]},
+          "next": "home.info.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_INFO", 0]}, 1]},
+          "next": "home.info.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_INFO", 0]}, 2]},
+          "next": "home.info.2"
+        }
+      ],
+      "otherwise": "home.info.3"
+    },
+    {
+      "id": "home.info.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_11", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_12", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.0.effect0"
+    },
+    {
+      "id": "home.info.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 1]
+      },
+      "save_as": "home_info_0_effect0",
+      "next": "home.info.0.effect1"
+    },
+    {
+      "id": "home.info.0.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_0_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_23", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_24", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_25", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_26", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_27", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.1.effect0"
+    },
+    {
+      "id": "home.info.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 2]
+      },
+      "save_as": "home_info_1_effect0",
+      "next": "home.info.1.effect1"
+    },
+    {
+      "id": "home.info.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_1_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info.2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_30", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_31", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_32", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_33", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_34", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_35", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.2.effect0"
+    },
+    {
+      "id": "home.info.2.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 3]
+      },
+      "save_as": "home_info_2_effect0",
+      "next": "home.info.2.effect1"
+    },
+    {
+      "id": "home.info.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_2_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info.3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_40", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_41", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_42", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_43", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_44", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_45", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_46", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_47", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_48", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_49", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_410", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_411", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.3.effect0"
+    },
+    {
+      "id": "home.info.3.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 3]
+      },
+      "save_as": "home_info_3_effect0",
+      "next": "home.info.3.effect1"
+    },
+    {
+      "id": "home.info.3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_3_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.alliance",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GOOD0", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD1", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD2", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD3", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD4", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD5", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD6", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD7", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD8", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD9", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.alliance.effect0"
+    },
+    {
+      "id": "home.alliance.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["zoqfot", "allied"]
+      },
+      "save_as": "home_alliance_effect0",
+      "next": "home.alliance.effect1"
+    },
+    {
+      "id": "home.alliance.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ZOQFOT_DISTRESS_EVENT", 3, 0, 0]
+      },
+      "save_as": "home_alliance_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 8]}, 0]},
+              {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}
+            ]
+          },
+          "next": "war.frenzy"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 1]}, 0]},
+              {"gt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 0]},
+              {"lt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]}
+            ]
+          },
+          "next": "war.delay"
+        }
+      ],
+      "otherwise": "war.deadline"
+    },
+    {
+      "id": "war.frenzy",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "KOHRAH_FRENZY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY1", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY3", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY5", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY6", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY7", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY8", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY9", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY10", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.frenzy.effect0"
+    },
+    {
+      "id": "war.frenzy.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_KNOW_MASK", 15]
+      },
+      "save_as": "war_frenzy_effect0",
+      "next": "war.frenzy.effect1"
+    },
+    {
+      "id": "war.frenzy.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_frenzy_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.delay",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "UTWIG_DELAY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY1", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY3", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY5", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY6", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY7", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY8", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY9", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY10", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY11", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY12", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.delay.effect0"
+    },
+    {
+      "id": "war.delay.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "ZOQFOT_KNOW_MASK", "set", 1]
+      },
+      "save_as": "war_delay_effect0",
+      "next": "war.delay.effect1"
+    },
+    {
+      "id": "war.delay.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_delay_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.deadline",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 0]}, "next": "war.deadline.extended"}],
+      "otherwise": "war.deadline.normal"
+    },
+    {
+      "id": "war.deadline.extended",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "years_left",
+          {
+            "subtract": [
+              {"add": [{"get": ["encounter", "years_to_kohrah_victory", 4]}, 1]},
+              {"get": ["encounter", "calendar_campaign_year", 0]}
+            ]
+          }
+        ]
+      },
+      "save_as": "war_deadline_extended",
+      "next": "war.warning"
+    },
+    {
+      "id": "war.deadline.normal",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "years_left",
+          {
+            "subtract": [
+              {"add": [{"get": ["encounter", "years_to_kohrah_victory", 4]}, 0]},
+              {"get": ["encounter", "calendar_campaign_year", 0]}
+            ]
+          }
+        ]
+      },
+      "save_as": "war_deadline_normal",
+      "next": "war.warning"
+    },
+    {
+      "id": "war.warning",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 4]}, 0]},
+              {
+                "any": [
+                  {"le": [{"get": ["local", "years_left", 0]}, 0]},
+                  {
+                    "all": [
+                      {"eq": [{"get": ["local", "years_left", 0]}, 1]},
+                      {"gt": [{"get": ["encounter", "calendar_month", 0]}, 2]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "war.losing"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 2]}, 0]},
+              {"eq": [{"get": ["local", "years_left", 0]}, 1]},
+              {
+                "not": {
+                  "any": [
+                    {"le": [{"get": ["local", "years_left", 0]}, 0]},
+                    {
+                      "all": [
+                        {"eq": [{"get": ["local", "years_left", 0]}, 1]},
+                        {"gt": [{"get": ["encounter", "calendar_month", 0]}, 2]}
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "war.winning"
+        }
+      ],
+      "otherwise": "war.none"
+    },
+    {
+      "id": "war.losing",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "URQUAN_NEARLY_GONE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "URQUAN_NEARLY_GONE1", "on_start": "zoqfot.pik"},
+            {"phrase": "URQUAN_NEARLY_GONE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "URQUAN_NEARLY_GONE3", "on_start": "zoqfot.pik"},
+            {"phrase": "URQUAN_NEARLY_GONE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "URQUAN_NEARLY_GONE5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.losing.effect0"
+    },
+    {
+      "id": "war.losing.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "ZOQFOT_KNOW_MASK", "set", 6]
+      },
+      "save_as": "war_losing_effect0",
+      "next": "war.losing.effect1"
+    },
+    {
+      "id": "war.losing.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_losing_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.winning",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "KOHRAH_WINNING0", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING1", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING2", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING3", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING4", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING5", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING6", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING7", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING8", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING9", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.winning.effect0"
+    },
+    {
+      "id": "war.winning.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "ZOQFOT_KNOW_MASK", "set", 2]
+      },
+      "save_as": "war_winning_effect0",
+      "next": "war.winning.effect1"
+    },
+    {
+      "id": "war.winning.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_winning_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.none",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "NO_WAR_NEWS0", "on_start": "zoqfot.zoq"}, {"phrase": "NO_WAR_NEWS1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.none.effect0"
+    },
+    {
+      "id": "war.none.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_none_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_homeworld",
+          "text": "whats_up_homeworld",
+          "when": {"not": {"get": ["local", "whats_up_homeworld", false]}},
+          "next": "home.info"
+        },
+        {
+          "id": "any_war_news",
+          "text": "any_war_news",
+          "when": {"not": {"get": ["local", "any_war_news", false]}},
+          "next": "war"
+        },
+        {
+          "id": "i_want_alliance",
+          "text": "i_want_alliance",
+          "when": {"not": {"eq": [{"query": "galaxy.relationship", "args": ["zoqfot"]}, "allied"]}},
+          "next": "home.alliance"
+        },
+        {
+          "id": "want_specific_info",
+          "text": "want_specific_info",
+          "when": {
+            "all": [
+              {"eq": [{"query": "galaxy.relationship", "args": ["zoqfot"]}, "allied"]},
+              {"not": {"get": ["local", "want_specific_info", false]}}
+            ]
+          },
+          "next": "info"
+        },
+        {
+          "id": "bye_homeworld",
+          "text": "bye_homeworld",
+          "when": true,
+          "next": "exit.bye_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ZOQFOT_HOSTILE", 0]}, 0]},
+          "next": "hostile"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MET_ZOQFOT", 0]}, 0]}},
+          "next": "first"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ZOQFOT_DISTRESS", 0]}, 0]},
+          "next": "rescue"
+        },
+        {
+          "when": {"not": {"eq": [{"query": "galaxy.relationship", "args": ["zoqfot"]}, "allied"]}},
+          "next": "neutral"
+        }
+      ],
+      "otherwise": "allied"
+    },
+    {
+      "id": "outtakes",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "OUT_TAKES0", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES1", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES2", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES3", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES4", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES5", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES6", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES7", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES8", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES9", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES10", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES11", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES12", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "outtakes.effect0"
+    },
+    {
+      "id": "outtakes.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes_effect0",
+      "next": "end"
+    },
+    {
+      "id": "hostile",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 0]},
+          "next": "hostile.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 1]},
+          "next": "hostile.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 2]},
+          "next": "hostile.2"
+        }
+      ],
+      "otherwise": "hostile.3"
+    },
+    {
+      "id": "hostile.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.0.effect0"
+    },
+    {
+      "id": "hostile.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "hostile_0_effect0",
+      "next": "hostile.0.effect1"
+    },
+    {
+      "id": "hostile.0.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_0_effect1",
+      "next": "end"
+    },
+    {
+      "id": "hostile.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "HOSTILE_HELLO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_23", "on_start": "zoqfot.pik"},
+            {"phrase": "HOSTILE_HELLO_24", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_25", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.1.effect0"
+    },
+    {
+      "id": "hostile.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 2]
+      },
+      "save_as": "hostile_1_effect0",
+      "next": "hostile.1.effect1"
+    },
+    {
+      "id": "hostile.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_1_effect1",
+      "next": "end"
+    },
+    {
+      "id": "hostile.2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_30", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_31", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.2.effect0"
+    },
+    {
+      "id": "hostile.2.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "hostile_2_effect0",
+      "next": "hostile.2.effect1"
+    },
+    {
+      "id": "hostile.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_2_effect1",
+      "next": "end"
+    },
+    {
+      "id": "hostile.3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_40", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_41", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.3.effect0"
+    },
+    {
+      "id": "hostile.3.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "hostile_3_effect0",
+      "next": "hostile.3.effect1"
+    },
+    {
+      "id": "hostile.3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_3_effect1",
+      "next": "end"
+    },
+    {
+      "id": "first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MET_ZOQFOT", 1]
+      },
+      "save_as": "first",
+      "next": "first.route"
+    },
+    {
+      "id": "first.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "first.home"}],
+      "otherwise": "first.scout"
+    },
+    {
+      "id": "first.home",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_ARE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE5", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE6", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE7", "on_start": "zoqfot.pik"},
+            {"phrase": "INIT_HOME_HELLO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "INIT_HOME_HELLO1", "on_start": "zoqfot.pik"},
+            {"phrase": "INIT_HOME_HELLO2", "on_start": "zoqfot.zoq"},
+            {"phrase": "INIT_HOME_HELLO3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "first.scout",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_ARE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE5", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE6", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE7", "on_start": "zoqfot.pik"},
+            {"phrase": "SCOUT_HELLO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "SCOUT_HELLO1", "on_start": "zoqfot.pik"},
+            {"phrase": "SCOUT_HELLO2", "on_start": "zoqfot.zoq"},
+            {"phrase": "SCOUT_HELLO3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "rescue",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "THANKS_FOR_RESCUE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE1", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE3", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE5", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE6", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE7", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE8", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE9", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE10", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "rescue.effect0"
+    },
+    {
+      "id": "rescue.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_DISTRESS", 0]
+      },
+      "save_as": "rescue_effect0",
+      "next": "rescue.effect1"
+    },
+    {
+      "id": "rescue.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["zoqfot", 4]
+      },
+      "save_as": "rescue_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "neutral",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 0]}, "next": "neutral.0"}],
+      "otherwise": "neutral.1"
+    },
+    {
+      "id": "neutral.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "NEUTRAL_HOME_HELLO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_11", "on_start": "zoqfot.pik"},
+            {"phrase": "NEUTRAL_HOME_HELLO_12", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "neutral.0.effect0"
+    },
+    {
+      "id": "neutral.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "neutral_0_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "neutral.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "NEUTRAL_HOME_HELLO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "NEUTRAL_HOME_HELLO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_23", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "neutral.1.effect0"
+    },
+    {
+      "id": "neutral.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "neutral_1_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 0]},
+          "next": "allied.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 1]},
+          "next": "allied.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 2]},
+          "next": "allied.2"
+        }
+      ],
+      "otherwise": "allied.3"
+    },
+    {
+      "id": "allied.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_11", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_12", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.0.effect0"
+    },
+    {
+      "id": "allied.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "allied_0_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_23", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_24", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_25", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_26", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_27", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.1.effect0"
+    },
+    {
+      "id": "allied.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 2]
+      },
+      "save_as": "allied_1_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied.2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_30", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_31", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.2.effect0"
+    },
+    {
+      "id": "allied.2.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "allied_2_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied.3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_40", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_41", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.3.effect0"
+    },
+    {
+      "id": "allied.3.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "allied_3_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ],
+  "alliance_name_base": "name_1"
+}

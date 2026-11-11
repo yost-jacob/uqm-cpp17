@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <unordered_set>
-namespace uqm::design::conversation {
+namespace uqm::dialogue {
 namespace engine_detail {
 inline std::string nodeString(const Json &value) {
     if (!value.is_string() || value.get_ref<const std::string &>().empty())
@@ -273,4 +273,4 @@ void BasicConversation<Graph>::choose(std::size_t entry, const std::string &id) 
     view_.reset();
     advance();
 }
-} // namespace uqm::design::conversation
+} // namespace uqm::dialogue

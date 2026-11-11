@@ -5,6 +5,8 @@
 #include "legacy_runtime.hpp"
 
 #include <cstdlib>
+#include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <utility>
 
@@ -31,6 +33,17 @@ struct LegacyStateAccess {
 }
 namespace {
 struct Field { int first, last; };
+struct NamedField { std::string_view name; Field field; };
+Field namedField(std::string_view name) {
+    static constexpr NamedField fields[] = {
+#include "story_field_names.inc"
+    };
+    const auto found = std::lower_bound(std::begin(fields), std::end(fields), name,
+        [](const NamedField &entry, std::string_view key) { return entry.name < key; });
+    if (found == std::end(fields) || found->name != name)
+        throw std::invalid_argument("unknown story field: " + std::string(name));
+    return found->field;
+}
 Field field(StoryFlag flag) {
     switch (flag) {
         case StoryFlag::SupoxUltronHelp: return {SUPOX_ULTRON_HELP, END_SUPOX_ULTRON_HELP};
@@ -188,6 +201,16 @@ void write(detail::PlayerStorage &storage, Field field, unsigned value) {
 }
 
 StoryState::StoryState(detail::PlayerStorage &storage) noexcept : storage_(storage) {}
+unsigned StoryState::readNamed(std::string_view name) const {
+    return uqm::read(storage_, namedField(name));
+}
+void StoryState::setNamed(std::string_view name, unsigned value) {
+    const auto descriptor = namedField(name);
+    const unsigned width = descriptor.last - descriptor.first + 1;
+    if (width < 32 && value >= (1u << width))
+        throw std::out_of_range("story field value exceeds its save layout: " + std::string(name));
+    write(storage_, descriptor, value);
+}
 bool StoryState::read(StoryFlag flag) const { return uqm::read(storage_, field(flag)) != 0; }
 unsigned StoryState::read(StoryCounter counter) const { return uqm::read(storage_, field(counter)); }
 void StoryState::set(StoryFlag flag) { write(storage_, field(flag), 1); }

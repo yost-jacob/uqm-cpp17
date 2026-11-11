@@ -165,6 +165,11 @@ set(UQM_SOURCES
     sc2/src/uqm/clock.c
     sc2/src/uqm/cnctdlg.c
     sc2/src/uqm/collide.cpp
+    sc2/src/uqm/conversation_state.cpp
+    sc2/src/uqm/conversation_story.cpp
+    sc2/src/uqm/conversation_text.cpp
+    sc2/src/uqm/conversation_graph.cpp
+    sc2/src/uqm/conversation_cues.cpp
     sc2/src/uqm/conversation.cpp
     sc2/src/uqm/conversation_mode.cpp
     sc2/src/uqm/conversation_context.cpp

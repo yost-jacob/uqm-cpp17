@@ -2,12 +2,17 @@
 #include <algorithm>
 #include <iterator>
 #include <type_traits>
+#include <stdexcept>
 namespace uqm {
 namespace {
 template<std::size_t N>
 std::string name(const char (&text)[N]) {
     return {text, std::find(text, text + N, '\0')};
 }
+}
+COUNT SIS::mineral(COUNT category) const {
+    if (category >= NUM_ELEMENT_CATEGORIES) throw std::out_of_range("invalid mineral category");
+    return data_.ElementAmounts[category];
 }
 SISLoadout SIS::loadout() const noexcept {
     SISLoadout result{};

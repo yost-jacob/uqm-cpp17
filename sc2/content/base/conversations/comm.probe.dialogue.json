@@ -1,0 +1,1405 @@
+{
+  "version": 1,
+  "node_count": 108,
+  "id": "slyland",
+  "resource": "comm.probe.dialogue",
+  "entry": "intro",
+  "_migration": {
+    "status": "graph_with_native_media",
+    "remaining": "Only native resource/number-speech configuration and probe.coordinates rendering remain. Visits, reply selection, counters, bug state and victory/hostility live in this graph."
+  },
+  "phrases": [
+    {
+      "id": "WE_COME_IN_PEACE_1",
+      "index": 0,
+      "text": "WE COME IN PEACE.",
+      "voice": "probe-000.ogg",
+      "original_text_hash": 2529433850809842558
+    },
+    {
+      "id": "WE_COME_IN_PEACE_2",
+      "index": 1,
+      "text": "WE BRING GREETINGS FROM A FRIENDLY SPECIES.",
+      "voice": "probe-001.ogg",
+      "original_text_hash": 13813062273563712625
+    },
+    {
+      "id": "WE_COME_IN_PEACE_3",
+      "index": 2,
+      "text": "DO NOT FEAR. WE SHALL NOT HARM YOU.",
+      "voice": "probe-002.ogg",
+      "original_text_hash": 18143701534621010869
+    },
+    {
+      "id": "WE_COME_IN_PEACE_4",
+      "index": 3,
+      "text": "THIS IS PROBE 2418-B, ON A PEACEFUL MISSION.",
+      "voice": "probe-003.ogg",
+      "original_text_hash": 4795260217853019226
+    },
+    {
+      "id": "WE_COME_IN_PEACE_5",
+      "index": 4,
+      "text": "WE ARE NOT HOSTILE AND SEEK TO ESTABLISH FRIENDLY RELATIONS WITH YOUR SPECIES.",
+      "voice": "probe-004.ogg",
+      "original_text_hash": 16374079516371368324
+    },
+    {
+      "id": "WE_COME_IN_PEACE_6",
+      "index": 5,
+      "text": "WE WISH TO LEARN MORE ABOUT YOU. PLEASE TRANSMIT DATA.",
+      "voice": "probe-005.ogg",
+      "original_text_hash": 13534816393970638896
+    },
+    {
+      "id": "WE_COME_IN_PEACE_7",
+      "index": 6,
+      "text": "THIS PROBE IS NOT HOSTILE. DO NOT ATTACK.",
+      "voice": "probe-006.ogg",
+      "original_text_hash": 11528298656622341698
+    },
+    {
+      "id": "WE_COME_IN_PEACE_8",
+      "index": 7,
+      "text": "WE COME IN PEACE.",
+      "voice": "probe-007.ogg",
+      "original_text_hash": 2529433850809842558
+    },
+    {
+      "id": "threat_1",
+      "index": 8,
+      "text": "Submit or be destroyed!",
+      "voice": null,
+      "original_text_hash": 2833433118463500687
+    },
+    {
+      "id": "threat_2",
+      "index": 9,
+      "text": "Attention alien probe. You must cease hostilities or face our wrath.",
+      "voice": null,
+      "original_text_hash": 15172468022765539138
+    },
+    {
+      "id": "threat_3",
+      "index": 10,
+      "text": "Look here, probe! We have tried to be nice, but you keep shooting at us. So now, we fight!",
+      "voice": null,
+      "original_text_hash": 12544341132749264124
+    },
+    {
+      "id": "threat_4",
+      "index": 11,
+      "text": "Prepare to be annihilated!",
+      "voice": null,
+      "original_text_hash": 18388956028419808528
+    },
+    {
+      "id": "PROGRAMMED_TO_DEFEND_1",
+      "index": 12,
+      "text": "THIS PROBE IS PROGRAMMED TO DEFEND AGAINST HOSTILE BEHAVIOR.",
+      "voice": "probe-008.ogg",
+      "original_text_hash": 7474080483291730675
+    },
+    {
+      "id": "PROGRAMMED_TO_DEFEND_2",
+      "index": 13,
+      "text": "SURVIVAL SYSTEM SUBROUTINE HAS BEEN ACTIVATED. WEAPONS ENGAGED.",
+      "voice": "probe-009.ogg",
+      "original_text_hash": 17334801944683408903
+    },
+    {
+      "id": "PROGRAMMED_TO_DEFEND_3",
+      "index": 14,
+      "text": "ENACTING THIRD LAW.",
+      "voice": "probe-010.ogg",
+      "original_text_hash": 2421261791612015583
+    },
+    {
+      "id": "PROGRAMMED_TO_DEFEND_4",
+      "index": 15,
+      "text": "DEFENSE SYSTEM HAS BEEN ENGAGED. HOSTILITIES COMMENCE.",
+      "voice": "probe-011.ogg",
+      "original_text_hash": 3588649258644571137
+    },
+    {
+      "id": "something_wrong_1",
+      "index": 16,
+      "text": "What can you tell me about your species?",
+      "voice": null,
+      "original_text_hash": 2252048262868042230
+    },
+    {
+      "id": "something_wrong_2",
+      "index": 17,
+      "text": "Is there something wrong? We seem to be miscommunicating.",
+      "voice": null,
+      "original_text_hash": 6372221477992170808
+    },
+    {
+      "id": "something_wrong_3",
+      "index": 18,
+      "text": "Look, try to understand. We mean you no harm!",
+      "voice": null,
+      "original_text_hash": 14210283938873205944
+    },
+    {
+      "id": "something_wrong_4",
+      "index": 19,
+      "text": "I am having a lot of trouble dealing with this. What's your problem?",
+      "voice": null,
+      "original_text_hash": 1959516596215696862
+    },
+    {
+      "id": "NOMINAL_FUNCTION_1",
+      "index": 20,
+      "text": "REMOTE PROBE PROGRAMMED TO REPLICATE - RECORD DATA - CONTACT ALIEN SPECIES.",
+      "voice": "probe-012.ogg",
+      "original_text_hash": 3467913404913100587
+    },
+    {
+      "id": "NOMINAL_FUNCTION_2",
+      "index": 21,
+      "text": "ACCORDING TO INTERNAL MONITORS THERE ARE NO MALFUNCTIONS.",
+      "voice": "probe-013.ogg",
+      "original_text_hash": 3865361490574867812
+    },
+    {
+      "id": "NOMINAL_FUNCTION_3",
+      "index": 22,
+      "text": "I WILL INITIATE SYSTEMS CHECK LEVEL FOUR.\nCHECKING... CHECKING... CHECKING...\nSYSTEMS CHECK LEVEL FOUR REPORTS NO ABNORMALITIES OR MALFUNCTIONS.",
+      "voice": "probe-014.ogg",
+      "original_text_hash": 8659961122097255193
+    },
+    {
+      "id": "NOMINAL_FUNCTION_4",
+      "index": 23,
+      "text": "ALL SYSTEMS REPORT NOMINAL FUNCTION.",
+      "voice": "probe-015.ogg",
+      "original_text_hash": 7005296127874561642
+    },
+    {
+      "id": "we_are_us_1",
+      "index": 24,
+      "text": "We are from Earth, on a mission of peace.",
+      "voice": null,
+      "original_text_hash": 6688863747130275814
+    },
+    {
+      "id": "we_are_us_2",
+      "index": 25,
+      "text": "We too come in peace, please believe us!",
+      "voice": null,
+      "original_text_hash": 7782322197602948767
+    },
+    {
+      "id": "we_are_us_3",
+      "index": 26,
+      "text": "Hmmm.. maybe reverse psychology would work. Er... Die alien scum!",
+      "voice": null,
+      "original_text_hash": 18372058909637707506
+    },
+    {
+      "id": "we_are_us_4",
+      "index": 27,
+      "text": "In case you don't already know, we are the nice people from Earth who you keep attacking.",
+      "voice": null,
+      "original_text_hash": 16126011261111989255
+    },
+    {
+      "id": "THIS_IS_PROBE_1",
+      "index": 28,
+      "text": "THIS IS PROBE 2418-B. WE ARE ON A PEACEFUL MISSION OF EXPLORATION.",
+      "voice": "probe-016.ogg",
+      "original_text_hash": 7504018527728077968
+    },
+    {
+      "id": "THIS_IS_PROBE_2",
+      "index": 29,
+      "text": "THIS IS PROBE 2418-B. WE SEEK TO MAKE FRIENDLY CONTACT WITH ALIEN LIFE FORMS.",
+      "voice": "probe-017.ogg",
+      "original_text_hash": 12525914398017208317
+    },
+    {
+      "id": "THIS_IS_PROBE_3",
+      "index": 30,
+      "text": "THIS IS PROBE 2418-B. WE REPLICATE SO THAT WE MAY EXPAND THE SCOPE OF MISSION.",
+      "voice": "probe-018.ogg",
+      "original_text_hash": 6690714428005228430
+    },
+    {
+      "id": "THIS_IS_PROBE_40",
+      "index": 31,
+      "text": "THIS IS PROBE 2418-B. COORDINATES ARE:",
+      "voice": "probe-019.ogg",
+      "original_text_hash": 15255253835301221008
+    },
+    {
+      "id": "THIS_IS_PROBE_41",
+      "index": 32,
+      "text": ",",
+      "voice": "probe-030.ogg",
+      "original_text_hash": 12638122329369577547
+    },
+    {
+      "id": "THIS_IS_PROBE_42",
+      "index": 33,
+      "text": ".",
+      "voice": "probe-031.ogg",
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "why_attack_1",
+      "index": 34,
+      "text": "We reach out our appendage in friendship. What is your response?",
+      "voice": null,
+      "original_text_hash": 11590395522689522731
+    },
+    {
+      "id": "why_attack_2",
+      "index": 35,
+      "text": "Why do you attack us? We are not hostile to your life form.",
+      "voice": null,
+      "original_text_hash": 3328197381677459459
+    },
+    {
+      "id": "why_attack_3",
+      "index": 36,
+      "text": "You misinterpret our intentions. Please do not attack!",
+      "voice": null,
+      "original_text_hash": 18420134659553587294
+    },
+    {
+      "id": "why_attack_4",
+      "index": 37,
+      "text": "What's the use? I bet regardless what I say, you'll just attack.",
+      "voice": null,
+      "original_text_hash": 474628581064042478
+    },
+    {
+      "id": "PEACEFUL_MISSION_1",
+      "index": 38,
+      "text": "MISSION DESCRIPTION FOLLOWS:\nTRAVERSE SPACE RECORDING DATA\nSEEK MATERIALS FOR REPLICATION\nREPLICATE TO EXPAND SCOPE OF MISSION\nCONTACT LIFE FORMS IN PEACEFUL MANNER\nAFTER TEN REPLICATIONS, RETURN TO POINT OF ORIGIN\nEND OF MISSION DESCRIPTION.",
+      "voice": "probe-020.ogg",
+      "original_text_hash": 2182905000735307088
+    },
+    {
+      "id": "PEACEFUL_MISSION_2",
+      "index": 39,
+      "text": "BEHAVIOR FOLLOWS DICTATED PRIORITIES\nREPLICATION\nDATA GATHERING\nCONTACTING ALIEN LIFE FORMS IN PEACEFUL MANNER.",
+      "voice": "probe-021.ogg",
+      "original_text_hash": 13622362901594780771
+    },
+    {
+      "id": "PEACEFUL_MISSION_3",
+      "index": 40,
+      "text": "REPLICATION STATUS\nEIGHT REPLICATIONS\nNEXT REPLICATION 85 PERCENT COMPLETE\nESTIMATED REPLICATIONS SINCE DEPARTURE FROM POINT OF ORIGIN\n583 REPLICATIONS.\nESTIMATED REPLICATIONS PROJECTED ONE YEAR FROM THIS DATE\n14,784 REPLICATIONS.\nESTIMATED REPLICATIONS PROJECTED FIVE YEARS FROM THIS DATE\n45,786,412 REPLICATIONS.",
+      "voice": "probe-022.ogg",
+      "original_text_hash": 4222069888567782306
+    },
+    {
+      "id": "PEACEFUL_MISSION_4",
+      "index": 41,
+      "text": "PRIORITIES SET AT POINT OF ORIGIN.\nBEHAVIOR FOLLOWS DICTATED PRIORITIES",
+      "voice": "probe-023.ogg",
+      "original_text_hash": 18049947787455645881
+    },
+    {
+      "id": "bye_1",
+      "index": 42,
+      "text": "Goodbye probe.",
+      "voice": null,
+      "original_text_hash": 16892129398789446428
+    },
+    {
+      "id": "bye_2",
+      "index": 43,
+      "text": "Goodbye probe.",
+      "voice": null,
+      "original_text_hash": 16892129398789446428
+    },
+    {
+      "id": "bye_3",
+      "index": 44,
+      "text": "Goodbye and good riddance.",
+      "voice": null,
+      "original_text_hash": 12951862422315364218
+    },
+    {
+      "id": "bye_4",
+      "index": 45,
+      "text": "Are you going to let me leave in peace this time?",
+      "voice": null,
+      "original_text_hash": 6219603660983061616
+    },
+    {
+      "id": "GOODBYE_1",
+      "index": 46,
+      "text": "ENDING ALIEN CONTACT SUBROUTINE.",
+      "voice": "probe-024.ogg",
+      "original_text_hash": 3274913455838094685
+    },
+    {
+      "id": "GOODBYE_2",
+      "index": 47,
+      "text": "ENDING ALIEN CONTACT SUBROUTINE.",
+      "voice": "probe-025.ogg",
+      "original_text_hash": 3274913455838094685
+    },
+    {
+      "id": "GOODBYE_3",
+      "index": 48,
+      "text": "ENDING ALIEN CONTACT SUBROUTINE.",
+      "voice": "probe-026.ogg",
+      "original_text_hash": 3274913455838094685
+    },
+    {
+      "id": "GOODBYE_4",
+      "index": 49,
+      "text": "ENDING ALIEN CONTACT SUBROUTINE.",
+      "voice": "probe-027.ogg",
+      "original_text_hash": 3274913455838094685
+    },
+    {
+      "id": "HOSTILE",
+      "index": 50,
+      "text": "PRIORITY OVER-RIDE. NEW BEHAVIOR DICTATED.\nMUST BREAK TARGET INTO COMPONENT MATERIALS.",
+      "voice": "probe-028.ogg",
+      "original_text_hash": 17916614345425253848
+    },
+    {
+      "id": "DESTRUCT_SEQUENCE",
+      "index": 51,
+      "text": "ENGAGING SELF-DESTRUCTION CIRCUITRY.",
+      "voice": "probe-029.ogg",
+      "original_text_hash": 6391048667266402932
+    },
+    {
+      "id": "destruct_code",
+      "index": 52,
+      "text": "Transmit destruct sequence!",
+      "voice": null,
+      "original_text_hash": 10088071926682105177
+    },
+    {
+      "id": "COORD_PLUS",
+      "index": 53,
+      "text": "+",
+      "voice": "probe-032.ogg",
+      "original_text_hash": 12638127826927718602
+    },
+    {
+      "id": "COORD_MINUS",
+      "index": 54,
+      "text": "-",
+      "voice": "probe-033.ogg",
+      "original_text_hash": 12638121229857949336
+    },
+    {
+      "id": "COORD_POINT",
+      "index": 55,
+      "text": ".",
+      "voice": "probe-034.ogg",
+      "original_text_hash": 12638124528392833969
+    },
+    {
+      "id": "ENUMERATE_HUNDRED",
+      "index": 56,
+      "text": "hundred",
+      "voice": "probe-035.ogg",
+      "original_text_hash": 7828513092332227299
+    },
+    {
+      "id": "ENUMERATE_THOUSAND",
+      "index": 57,
+      "text": "thousand",
+      "voice": "probe-036.ogg",
+      "original_text_hash": 10820249370077164203
+    },
+    {
+      "id": "ENUMERATE_ZERO",
+      "index": 58,
+      "text": "zero",
+      "voice": "probe-037.ogg",
+      "original_text_hash": 2461754175573238659
+    },
+    {
+      "id": "ENUMERATE_ONE",
+      "index": 59,
+      "text": "one",
+      "voice": "probe-038.ogg",
+      "original_text_hash": 1875936269717626031
+    },
+    {
+      "id": "ENUMERATE_TWO",
+      "index": 60,
+      "text": "two",
+      "voice": "probe-039.ogg",
+      "original_text_hash": 6274872286310602505
+    },
+    {
+      "id": "ENUMERATE_THREE",
+      "index": 61,
+      "text": "three",
+      "voice": "probe-040.ogg",
+      "original_text_hash": 6517818557876028835
+    },
+    {
+      "id": "ENUMERATE_FOUR",
+      "index": 62,
+      "text": "four",
+      "voice": "probe-041.ogg",
+      "original_text_hash": 15939363302044458469
+    },
+    {
+      "id": "ENUMERATE_FIVE",
+      "index": 63,
+      "text": "five",
+      "voice": "probe-042.ogg",
+      "original_text_hash": 12287250767515649397
+    },
+    {
+      "id": "ENUMERATE_SIX",
+      "index": 64,
+      "text": "six",
+      "voice": "probe-043.ogg",
+      "original_text_hash": 9387906364303253323
+    },
+    {
+      "id": "ENUMERATE_SEVEN",
+      "index": 65,
+      "text": "seven",
+      "voice": "probe-044.ogg",
+      "original_text_hash": 87145300798591006
+    },
+    {
+      "id": "ENUMERATE_EIGHT",
+      "index": 66,
+      "text": "eight",
+      "voice": "probe-045.ogg",
+      "original_text_hash": 18017151228111474160
+    },
+    {
+      "id": "ENUMERATE_NINE",
+      "index": 67,
+      "text": "nine",
+      "voice": "probe-046.ogg",
+      "original_text_hash": 647416338075027509
+    },
+    {
+      "id": "ENUMERATE_TEN",
+      "index": 68,
+      "text": "ten",
+      "voice": "probe-047.ogg",
+      "original_text_hash": 6261360387914166676
+    },
+    {
+      "id": "ENUMERATE_ELEVEN",
+      "index": 69,
+      "text": "eleven",
+      "voice": "probe-048.ogg",
+      "original_text_hash": 455078951784957408
+    },
+    {
+      "id": "ENUMERATE_TWELVE",
+      "index": 70,
+      "text": "twelve",
+      "voice": "probe-049.ogg",
+      "original_text_hash": 4646686563101842196
+    },
+    {
+      "id": "ENUMERATE_THIRTEEN",
+      "index": 71,
+      "text": "thirteen",
+      "voice": "probe-050.ogg",
+      "original_text_hash": 13749986473896072502
+    },
+    {
+      "id": "ENUMERATE_FOURTEEN",
+      "index": 72,
+      "text": "fourteen",
+      "voice": "probe-051.ogg",
+      "original_text_hash": 13759621834300268481
+    },
+    {
+      "id": "ENUMERATE_FIFTEEN",
+      "index": 73,
+      "text": "fifteen",
+      "voice": "probe-052.ogg",
+      "original_text_hash": 4212824814348254602
+    },
+    {
+      "id": "ENUMERATE_SIXTEEN",
+      "index": 74,
+      "text": "sixteen",
+      "voice": "probe-053.ogg",
+      "original_text_hash": 18328325646107179243
+    },
+    {
+      "id": "ENUMERATE_SEVENTEEN",
+      "index": 75,
+      "text": "seventeen",
+      "voice": "probe-054.ogg",
+      "original_text_hash": 978367884149099750
+    },
+    {
+      "id": "ENUMERATE_EIGHTEEN",
+      "index": 76,
+      "text": "eighteen",
+      "voice": "probe-055.ogg",
+      "original_text_hash": 629081567556615280
+    },
+    {
+      "id": "ENUMERATE_NINETEEN",
+      "index": 77,
+      "text": "nineteen",
+      "voice": "probe-056.ogg",
+      "original_text_hash": 13138027973546970161
+    },
+    {
+      "id": "ENUMERATE_TWENTY",
+      "index": 78,
+      "text": "twenty",
+      "voice": "probe-057.ogg",
+      "original_text_hash": 3365854472618251336
+    },
+    {
+      "id": "ENUMERATE_THIRTY",
+      "index": 79,
+      "text": "thirty",
+      "voice": "probe-058.ogg",
+      "original_text_hash": 12039841957278471413
+    },
+    {
+      "id": "ENUMERATE_FOURTY",
+      "index": 80,
+      "text": "fourty",
+      "voice": "probe-059.ogg",
+      "original_text_hash": 6621888789648610094
+    },
+    {
+      "id": "ENUMERATE_FIFTY",
+      "index": 81,
+      "text": "fifty",
+      "voice": "probe-060.ogg",
+      "original_text_hash": 3974167736092615169
+    },
+    {
+      "id": "ENUMERATE_SIXTY",
+      "index": 82,
+      "text": "sixty",
+      "voice": "probe-061.ogg",
+      "original_text_hash": 7807270668572626204
+    },
+    {
+      "id": "ENUMERATE_SEVENTY",
+      "index": 83,
+      "text": "seventy",
+      "voice": "probe-062.ogg",
+      "original_text_hash": 13256388146089483013
+    },
+    {
+      "id": "ENUMERATE_EIGHTY",
+      "index": 84,
+      "text": "eighty",
+      "voice": "probe-063.ogg",
+      "original_text_hash": 17468244265680650187
+    },
+    {
+      "id": "ENUMERATE_NINETY",
+      "index": 85,
+      "text": "ninety",
+      "voice": "probe-064.ogg",
+      "original_text_hash": 6423803958672442110
+    }
+  ],
+  "nodes": [
+    {
+      "id": "intro",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "SLYLANDRO_PROBE_VISITS",
+          [
+            ["WE_COME_IN_PEACE_1"],
+            ["WE_COME_IN_PEACE_2"],
+            ["WE_COME_IN_PEACE_3"],
+            ["WE_COME_IN_PEACE_4"],
+            ["WE_COME_IN_PEACE_5"],
+            ["WE_COME_IN_PEACE_6"],
+            ["WE_COME_IN_PEACE_7"],
+            ["WE_COME_IN_PEACE_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "greeting"
+    },
+    {
+      "id": "greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "menu"
+    },
+    {
+      "id": "threat_1.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "threat_1_bug",
+      "next": "threat_1.hostile"
+    },
+    {
+      "id": "threat_1.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_1_hostile",
+      "next": "threat_1.reply"
+    },
+    {
+      "id": "threat_1.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROGRAMMED_TO_DEFEND_1", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_2.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "threat_2_bug",
+      "next": "threat_2.hostile"
+    },
+    {
+      "id": "threat_2.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_2_hostile",
+      "next": "threat_2.reply"
+    },
+    {
+      "id": "threat_2.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROGRAMMED_TO_DEFEND_2", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_3.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "threat_3_bug",
+      "next": "threat_3.hostile"
+    },
+    {
+      "id": "threat_3.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_3_hostile",
+      "next": "threat_3.reply"
+    },
+    {
+      "id": "threat_3.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROGRAMMED_TO_DEFEND_3", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "threat_4.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "threat_4_bug",
+      "next": "threat_4.hostile"
+    },
+    {
+      "id": "threat_4.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "threat_4_hostile",
+      "next": "threat_4.reply"
+    },
+    {
+      "id": "threat_4.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROGRAMMED_TO_DEFEND_4", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "something_wrong_1.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "something_wrong_1_bug",
+      "next": "something_wrong_1.hostile"
+    },
+    {
+      "id": "something_wrong_1.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "something_wrong_1_hostile",
+      "next": "something_wrong_1.reply"
+    },
+    {
+      "id": "something_wrong_1.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOMINAL_FUNCTION_1", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "something_wrong_2.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "something_wrong_2_bug",
+      "next": "something_wrong_2.hostile"
+    },
+    {
+      "id": "something_wrong_2.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "something_wrong_2_hostile",
+      "next": "something_wrong_2.reply"
+    },
+    {
+      "id": "something_wrong_2.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOMINAL_FUNCTION_2", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "something_wrong_3.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "something_wrong_3_bug",
+      "next": "something_wrong_3.hostile"
+    },
+    {
+      "id": "something_wrong_3.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "something_wrong_3_hostile",
+      "next": "something_wrong_3.reply"
+    },
+    {
+      "id": "something_wrong_3.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOMINAL_FUNCTION_3", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "something_wrong_4.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "something_wrong_4_bug",
+      "next": "something_wrong_4.hostile"
+    },
+    {
+      "id": "something_wrong_4.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "something_wrong_4_hostile",
+      "next": "something_wrong_4.reply"
+    },
+    {
+      "id": "something_wrong_4.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOMINAL_FUNCTION_4", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "we_are_us_1.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "we_are_us_1_bug",
+      "next": "we_are_us_1.hostile"
+    },
+    {
+      "id": "we_are_us_1.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "we_are_us_1_hostile",
+      "next": "we_are_us_1.reply"
+    },
+    {
+      "id": "we_are_us_1.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THIS_IS_PROBE_1", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "we_are_us_2.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "we_are_us_2_bug",
+      "next": "we_are_us_2.hostile"
+    },
+    {
+      "id": "we_are_us_2.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "we_are_us_2_hostile",
+      "next": "we_are_us_2.reply"
+    },
+    {
+      "id": "we_are_us_2.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THIS_IS_PROBE_2", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "we_are_us_3.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "we_are_us_3_bug",
+      "next": "we_are_us_3.hostile"
+    },
+    {
+      "id": "we_are_us_3.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "we_are_us_3_hostile",
+      "next": "we_are_us_3.reply"
+    },
+    {
+      "id": "we_are_us_3.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THIS_IS_PROBE_3", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "we_are_us_4.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "we_are_us_4_bug",
+      "next": "we_are_us_4.hostile"
+    },
+    {
+      "id": "we_are_us_4.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "we_are_us_4_hostile",
+      "next": "we_are_us_4.coordinates"
+    },
+    {
+      "id": "we_are_us_4.coordinates",
+      "kind": "action",
+      "action": {
+        "verb": "handlers.prepare_report",
+        "args": ["probe.coordinates", {"literal": {}}]
+      },
+      "save_as": "we_are_us_4_coordinates",
+      "next": "we_are_us_4.reply"
+    },
+    {
+      "id": "we_are_us_4.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_attack_1.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "why_attack_1_bug",
+      "next": "why_attack_1.hostile"
+    },
+    {
+      "id": "why_attack_1.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_attack_1_hostile",
+      "next": "why_attack_1.reply"
+    },
+    {
+      "id": "why_attack_1.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PEACEFUL_MISSION_1", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_attack_2.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "why_attack_2_bug",
+      "next": "why_attack_2.hostile"
+    },
+    {
+      "id": "why_attack_2.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_attack_2_hostile",
+      "next": "why_attack_2.reply"
+    },
+    {
+      "id": "why_attack_2.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PEACEFUL_MISSION_2", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_attack_3.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "why_attack_3_bug",
+      "next": "why_attack_3.hostile"
+    },
+    {
+      "id": "why_attack_3.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_attack_3_hostile",
+      "next": "why_attack_3.reply"
+    },
+    {
+      "id": "why_attack_3.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PEACEFUL_MISSION_3", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "why_attack_4.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "why_attack_4_bug",
+      "next": "why_attack_4.hostile"
+    },
+    {
+      "id": "why_attack_4.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "why_attack_4_hostile",
+      "next": "why_attack_4.reply"
+    },
+    {
+      "id": "why_attack_4.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PEACEFUL_MISSION_4", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_1.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "bye_1_bug",
+      "next": "bye_1.hostile"
+    },
+    {
+      "id": "bye_1.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_1_hostile",
+      "next": "bye_1.reply"
+    },
+    {
+      "id": "bye_1.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_1", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_2.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "bye_2_bug",
+      "next": "bye_2.hostile"
+    },
+    {
+      "id": "bye_2.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_2_hostile",
+      "next": "bye_2.reply"
+    },
+    {
+      "id": "bye_2.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_2", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_3.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "bye_3_bug",
+      "next": "bye_3.hostile"
+    },
+    {
+      "id": "bye_3.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_3_hostile",
+      "next": "bye_3.reply"
+    },
+    {
+      "id": "bye_3.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_3", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye_4.bug",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_EXHIBITED_BUG", 1]
+      },
+      "save_as": "bye_4_bug",
+      "next": "bye_4.hostile"
+    },
+    {
+      "id": "bye_4.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_4_hostile",
+      "next": "bye_4.reply"
+    },
+    {
+      "id": "bye_4.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_4", "HOSTILE"]}],
+      "next": "end"
+    },
+    {
+      "id": "menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "destruct_code",
+          "text": "destruct_code",
+          "when": {"ne": [{"get": ["story", "DESTRUCT_CODE_ON_SHIP", 0]}, 0]},
+          "action": {
+            "verb": "encounter.set_outcome",
+            "args": ["victory"]
+          },
+          "then": {"ok": "destruct.reply"}
+        },
+        {
+          "id": "threat_1",
+          "text": "threat_1",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 0]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_THREAT", 1]
+          },
+          "then": {"ok": "threat_1.bug"}
+        },
+        {
+          "id": "threat_2",
+          "text": "threat_2",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 1]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_THREAT", 2]
+          },
+          "then": {"ok": "threat_2.bug"}
+        },
+        {
+          "id": "threat_3",
+          "text": "threat_3",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 2]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_THREAT", 3]
+          },
+          "then": {"ok": "threat_3.bug"}
+        },
+        {
+          "id": "threat_4",
+          "text": "threat_4",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 3]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_THREAT", 3]
+          },
+          "then": {"ok": "threat_4.bug"}
+        },
+        {
+          "id": "something_wrong_1",
+          "text": "something_wrong_1",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 0]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_WRONG", 1]
+          },
+          "then": {"ok": "something_wrong_1.bug"}
+        },
+        {
+          "id": "something_wrong_2",
+          "text": "something_wrong_2",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 1]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_WRONG", 2]
+          },
+          "then": {"ok": "something_wrong_2.bug"}
+        },
+        {
+          "id": "something_wrong_3",
+          "text": "something_wrong_3",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 2]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_WRONG", 3]
+          },
+          "then": {"ok": "something_wrong_3.bug"}
+        },
+        {
+          "id": "something_wrong_4",
+          "text": "something_wrong_4",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 3]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_WRONG", 3]
+          },
+          "then": {"ok": "something_wrong_4.bug"}
+        },
+        {
+          "id": "we_are_us_1",
+          "text": "we_are_us_1",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 0]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_ID", 1]
+          },
+          "then": {"ok": "we_are_us_1.bug"}
+        },
+        {
+          "id": "we_are_us_2",
+          "text": "we_are_us_2",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 1]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_ID", 2]
+          },
+          "then": {"ok": "we_are_us_2.bug"}
+        },
+        {
+          "id": "we_are_us_3",
+          "text": "we_are_us_3",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 2]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_ID", 3]
+          },
+          "then": {"ok": "we_are_us_3.bug"}
+        },
+        {
+          "id": "we_are_us_4",
+          "text": "we_are_us_4",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 3]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_ID", 3]
+          },
+          "then": {"ok": "we_are_us_4.bug"}
+        },
+        {
+          "id": "why_attack_1",
+          "text": "why_attack_1",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 0]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_INFO", 1]
+          },
+          "then": {"ok": "why_attack_1.bug"}
+        },
+        {
+          "id": "why_attack_2",
+          "text": "why_attack_2",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 1]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_INFO", 2]
+          },
+          "then": {"ok": "why_attack_2.bug"}
+        },
+        {
+          "id": "why_attack_3",
+          "text": "why_attack_3",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 2]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_INFO", 3]
+          },
+          "then": {"ok": "why_attack_3.bug"}
+        },
+        {
+          "id": "why_attack_4",
+          "text": "why_attack_4",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 3]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_INFO", 3]
+          },
+          "then": {"ok": "why_attack_4.bug"}
+        },
+        {
+          "id": "bye_1",
+          "text": "bye_1",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 0]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_EXIT", 1]
+          },
+          "then": {"ok": "bye_1.bug"}
+        },
+        {
+          "id": "bye_2",
+          "text": "bye_2",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 1]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_EXIT", 2]
+          },
+          "then": {"ok": "bye_2.bug"}
+        },
+        {
+          "id": "bye_3",
+          "text": "bye_3",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 2]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_EXIT", 3]
+          },
+          "then": {"ok": "bye_3.bug"}
+        },
+        {
+          "id": "bye_4",
+          "text": "bye_4",
+          "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 3]},
+          "action": {
+            "verb": "state.set",
+            "args": ["story", "SLYLANDRO_PROBE_EXIT", 3]
+          },
+          "then": {"ok": "bye_4.bug"}
+        }
+      ]
+    },
+    {
+      "id": "destruct.reply",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DESTRUCT_SEQUENCE"]}],
+      "next": "end"
+    },
+    {
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    }
+  ]
+}

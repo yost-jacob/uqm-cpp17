@@ -362,6 +362,14 @@
       "arguments": ["exclusive_upper_bound"],
       "state_accessor": "randomBelow",
       "effect": "mutating"
+    },
+    {
+      "verb": "handlers.legacy_turn",
+      "min_args": 2,
+      "max_args": 2,
+      "arguments": ["script", "response_slot_or_null"],
+      "state_accessor": "Handlers::legacyTurn",
+      "effect": "mutating"
     }
   ],
   "values": ["get", "literal", "query", "add", "subtract", "multiply", "divide", "mod", "min", "max", "bit_and"],

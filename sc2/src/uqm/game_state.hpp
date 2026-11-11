@@ -1,6 +1,7 @@
 #ifndef UQM_GAME_STATE_HPP_
 #define UQM_GAME_STATE_HPP_
 
+#include <string_view>
 #include <array>
 #include <cstdint>
 #include <memory>
@@ -198,6 +199,10 @@ class StoryState {
 public:
     StoryState(const StoryState &) = delete;
     StoryState &operator=(const StoryState &) = delete;
+    // Data-file boundary. Unknown names and out-of-range writes throw; typed
+    // C++ callers retain the enum overloads. Names address existing save fields.
+    unsigned readNamed(std::string_view field) const;
+    void setNamed(std::string_view field, unsigned value);
     bool read(StoryFlag flag) const;
     unsigned read(StoryCounter counter) const;
     void set(StoryFlag flag);
