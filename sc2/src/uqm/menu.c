@@ -513,11 +513,11 @@ DrawMenuStateStrings (BYTE beg_index, SWORD NewState)
 		if (beg_index == PM_CREW)
 			snprintf (pm_crew_str, sizeof pm_crew_str, "%s(%d)",
 					 GAME_STRING (MAINMENU_STRING_BASE + PM_CREW),
-					 GLOBAL (CrewCost));
+					 GetGameData()->prices.crew);
 		if (beg_index == PM_FUEL)
 			snprintf (pm_fuel_str, sizeof pm_fuel_str, "%s(%d)",
 					 GAME_STRING (MAINMENU_STRING_BASE + PM_FUEL),
-					 GLOBAL (FuelCost));
+					 GetGameData()->prices.fuel);
 		if (beg_index == PM_SOUND_ON)
 		{
 			end_index = beg_index + 5;
@@ -578,7 +578,7 @@ DrawMenuStateStrings (BYTE beg_index, SWORD NewState)
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (COUNT)~0;
 				t.pStr = buf;
-				snprintf (buf, sizeof buf, "%u", GLOBAL (CrewCost));
+				snprintf (buf, sizeof buf, "%u", GetGameData()->prices.crew);
 				SetContextFont (TinyFont);
 				SetContextForeGroundColor (THREEDOMENU_TEXT_COLOR);
 				font_DrawText (&t);
@@ -589,7 +589,7 @@ DrawMenuStateStrings (BYTE beg_index, SWORD NewState)
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (COUNT)~0;
 				t.pStr = buf;
-				snprintf (buf, sizeof buf, "%u", GLOBAL (FuelCost));
+				snprintf (buf, sizeof buf, "%u", GetGameData()->prices.fuel);
 				SetContextFont (TinyFont);
 				SetContextForeGroundColor (THREEDOMENU_TEXT_COLOR);
 				font_DrawText (&t);

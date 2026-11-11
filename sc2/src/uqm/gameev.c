@@ -120,7 +120,7 @@ EventHandler (BYTE selector)
 			break;
 		case SHOFIXTI_RETURN_EVENT:
 			SetRaceAllied (SHOFIXTI_SHIP, TRUE);
-			GLOBAL (CrewCost) -= 2;
+			GetGameData()->prices.crew -= 2;
 					/* crew is not an issue anymore */
 			SET_GAME_STATE (CREW_PURCHASED0, 0);
 			SET_GAME_STATE (CREW_PURCHASED1, 0);

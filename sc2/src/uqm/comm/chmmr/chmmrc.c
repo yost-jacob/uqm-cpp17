@@ -126,7 +126,7 @@ ApplyChmmrBombRefit (int starbaseAvailable)
     int i;
 		GLOBAL_SIS (ResUnits) = 1000000L;
 		GLOBAL_SIS (NumLanders) = 0;
-		GLOBAL (ModuleCost[PLANET_LANDER]) = 0;
+		GetGameData()->prices.modules[PLANET_LANDER] = 0;
 
 #define EARTH_INDEX 2 /* earth is 3rd planet --> 3 - 1 = 2 */
 /* Magic numbers for Earth */
@@ -154,7 +154,7 @@ ApplyChmmrBombRefit (int starbaseAvailable)
 			GLOBAL_SIS (FuelOnBoard) = FUEL_RESERVE;
 			GLOBAL_SIS (CrewEnlisted) = 0;
 			GLOBAL_SIS (TotalElementMass) = 0;
-			GLOBAL (ModuleCost[STORAGE_BAY]) = 0; /* disable Storage Bay */
+			GetGameData()->prices.modules[STORAGE_BAY] = 0; /* disable Storage Bay */
 			for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
 				GLOBAL_SIS (ElementAmounts[i]) = 0;
 			for (i = NUM_BOMB_MODULES; i < NUM_MODULE_SLOTS; ++i)

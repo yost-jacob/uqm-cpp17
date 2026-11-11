@@ -22,7 +22,10 @@ AssetCache &sessionAssets() {
     if (selectedRuntime) return selectedRuntime->assets;
     return gameSession().assets();
 }
-struct PlayerStorage { GLOBDATA legacy{}; };
+struct PlayerStorage {
+    GLOBDATA legacy{};
+    PlayerStorage() { legacy.Game_state.gameData = defaultGameData(); }
+};
 // Only the C boundary sees a mutable legacy aggregate. Native callers use the
 // typed state/location references and detached ship snapshots.
 struct LegacyStateAccess {
@@ -383,4 +386,15 @@ extern "C" UWORD *GetLastSessionActivity(void) {
 extern "C" UWORD *GetNextSessionActivity(void) {
     if (auto *view = uqm::detail::boundRuntime(); view && view->activities) return &view->activities->next;
     return &startupActivity.next;
+}
+
+namespace uqm {
+GameData &PlayerEntity::gameData() noexcept { return storage_->legacy.Game_state.gameData; }
+const GameData &PlayerEntity::gameData() const noexcept { return storage_->legacy.Game_state.gameData; }
+}
+extern "C" UQM_GAME_DATA *GetGameData(void) { return &GetLegacyGlobData()->Game_state.gameData; }
+extern "C" void ResetGameData(UQM_GAME_DATA *data) { *data = uqm::defaultGameData(); }
+extern "C" COUNT GetShipPrice(COUNT race) {
+    // C callers cannot receive C++ exceptions; an invalid enum is a caller bug.
+    try { return uqm::shipPrice(race); } catch (...) { std::abort(); }
 }

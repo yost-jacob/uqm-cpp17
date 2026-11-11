@@ -131,10 +131,7 @@ AddEscortShips (COUNT race, SIZE count)
 COUNT
 CalculateEscortsWorth (void)
 {
-	COUNT ShipCost[] =
-	{
-		RACE_SHIP_COST
-	};
+
 	COUNT total = 0;
 	HSHIPFRAG hStarShip, hNextShip;
 
@@ -145,7 +142,7 @@ CalculateEscortsWorth (void)
 
 		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
-		total += ShipCost[StarShipPtr->race_id];
+		total += GetShipPrice(StarShipPtr->race_id);
 		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 	return total;

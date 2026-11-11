@@ -1132,7 +1132,7 @@ calculateMineralValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 		NODE_INFO info;
 		callGenerateForScanType (system, world, i, MINERAL_SCAN, &info);
 		result += HIBYTE (info.density) *
-				GLOBAL (ElementWorth[ElementCategory (info.type)]);
+				GetGameData()->prices.minerals[ElementCategory (info.type)];
 	}
 	return result;
 }

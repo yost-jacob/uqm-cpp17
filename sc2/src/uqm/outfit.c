@@ -86,7 +86,7 @@ DrawModuleStrings (MENU_STATE *pMS, BYTE NewModule)
 		t.CharCount = (COUNT)~0;
 		t.pStr = buf;
 		sprintf (buf, "%u",
-				GLOBAL (ModuleCost[NewModule]) * MODULE_COST_SCALE);
+				GetGameData()->prices.modules[NewModule] * MODULE_COST_SCALE);
 		SetContextFont (TinyFont);
 		SetContextForeGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x1F, 0x00), 0x02));
@@ -248,7 +248,7 @@ DoInstallModule (MENU_STATE *pMS)
 			if (new_slot_piece < EMPTY_SLOT)
 			{
 				if (GLOBAL_SIS (ResUnits) <
-						(DWORD)(GLOBAL (ModuleCost[new_slot_piece])
+						(DWORD)(GetGameData()->prices.modules[new_slot_piece]
 						* MODULE_COST_SCALE))
 				{	// not enough RUs to build
 					PlayMenuSound (MENU_SOUND_FAILURE);
@@ -335,11 +335,11 @@ DoInstallModule (MENU_STATE *pMS)
 
 				if (new_slot_piece < EMPTY_SLOT)
 					DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA,
-							-(GLOBAL (ModuleCost[new_slot_piece])
+							-(GetGameData()->prices.modules[new_slot_piece]
 							* MODULE_COST_SCALE));
 				else /* if (old_slot_piece < EMPTY_SLOT) */
 					DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA,
-							GLOBAL (ModuleCost[old_slot_piece])
+							GetGameData()->prices.modules[old_slot_piece]
 							* MODULE_COST_SCALE);
 
 				if (pMS->CurState == PLANET_LANDER ||
@@ -431,7 +431,7 @@ DoInstallModule (MENU_STATE *pMS)
 					NewItem = FirstItem;
 			}
 		} while (NewState < EMPTY_SLOT
-				&& (GLOBAL (ModuleCost[NewItem]) == 0
+				&& (GetGameData()->prices.modules[NewItem] == 0
 				|| (NewItem >= GUN_WEAPON && NewItem <= CANNON_WEAPON
 				&& pMS->delta_item > 0 && pMS->delta_item < 13)));
 
@@ -558,7 +558,7 @@ ChangeFuelQuantity (void)
 	// Clamp incr to what we can afford/hold/have.
 	{
 		const int maxFit = GetFuelTankCapacity () - GLOBAL_SIS (FuelOnBoard);
-		const int maxAfford = GLOBAL_SIS (ResUnits) / GLOBAL (FuelCost);
+		const int maxAfford = GLOBAL_SIS (ResUnits) / GetGameData()->prices.fuel;
 		const int minFit = - (int) GLOBAL_SIS (FuelOnBoard);
 
 		if (incr > maxFit)
@@ -578,7 +578,7 @@ ChangeFuelQuantity (void)
 	}
 	else
 	{
-		const int cost = (incr / FUEL_TANK_SCALE) * GLOBAL (FuelCost);
+		const int cost = (incr / FUEL_TANK_SCALE) * GetGameData()->prices.fuel;
 		PreUpdateFlashRect ();
 		DeltaSISGauges (0, incr, -cost);
 		PostUpdateFlashRect ();

@@ -182,12 +182,12 @@ ExitConversation (RESPONSE_REF R)
 				if (SlaveryCount > 250 && PreviousSlaves <= 250)
 				{
 					if (PreviousSlaves > 100)
-						GLOBAL (CrewCost) += (22 - 7);
+						GetGameData()->prices.crew += (22 - 7);
 					else
-						GLOBAL (CrewCost) += 22;
+						GetGameData()->prices.crew += 22;
 				}
 				else if (SlaveryCount > 100 && PreviousSlaves <= 100)
-					GLOBAL (CrewCost) += 7;
+					GetGameData()->prices.crew += 7;
 
 				SET_GAME_STATE (CREW_SOLD_TO_DRUUGE0, LOBYTE (SlaveryCount));
 				SET_GAME_STATE (CREW_SOLD_TO_DRUUGE1, HIBYTE (SlaveryCount));
