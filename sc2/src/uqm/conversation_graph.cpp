@@ -1,79 +1,16 @@
 #include "conversation.hpp"
+#include "conversation_state.hpp"
 #include "conversation_text.hpp"
+#include "dialogue/text.hpp"
 #include "game_state.hpp"
 #include "gameev.h"
+#include "libs/mathlib.h"
 #include "libs/reslib.h"
 #include "options.h"
 #include <limits>
 #include <sstream>
 #include <stdexcept>
 namespace uqm {
-namespace {
-class CampaignDialogueState final : public dialogue::LegacyTurnState {
-  public:
-    using Report = std::function<dialogue::Result(const std::string &)>;
-    CampaignDialogueState(StoryState &story, std::string script, Callback turn, Report report,
-                          dialogue::Json context)
-        : LegacyTurnState(std::move(script), std::move(turn)), story_(story),
-          report_(std::move(report)), context_(std::move(context)) {}
-    dialogue::Json read(const std::string &scope, const std::string &key) const override {
-        if (scope == "encounter")
-            return context_.at(key);
-        if (scope != "story")
-            throw std::invalid_argument("unsupported live state scope: " + scope);
-        const StoryState &story = story_;
-        return static_cast<dialogue::Integer>(story.readNamed(key));
-    }
-    dialogue::Result set(const std::string &scope, const std::string &key,
-                         const dialogue::Json &value) override {
-        if (scope != "story")
-            throw std::invalid_argument("unsupported live state scope: " + scope);
-        if (value.is_boolean())
-            story_.setNamed(key, value.get<bool>() ? 1u : 0u);
-        else {
-            if (!value.is_number_integer() || value < 0 ||
-                value > std::numeric_limits<unsigned>::max())
-                throw std::out_of_range("invalid story field value: " + key);
-            story_.setNamed(key, value.get<unsigned>());
-        }
-        return {};
-    }
-    dialogue::Result setOutcome(const std::string &outcome) override {
-        if (outcome == "peace")
-            setSegue(Segue_peace);
-        else if (outcome == "hostile")
-            setSegue(Segue_hostile);
-        else if (outcome == "victory")
-            setSegue(Segue_victory);
-        else if (outcome == "defeat")
-            setSegue(Segue_defeat);
-        else
-            throw std::invalid_argument("unknown encounter outcome: " + outcome);
-        return {};
-    }
-    dialogue::Result scheduleEvent(const std::string &event, dialogue::Integer months,
-                                   dialogue::Integer days, dialogue::Integer years) override {
-        if (event != "ARILOU_UMGAH_CHECK")
-            throw std::invalid_argument("unregistered calendar event: " + event);
-        for (auto value : {months, days, years})
-            if (value < 0 || value > std::numeric_limits<COUNT>::max())
-                throw std::out_of_range("calendar offset out of range");
-        AddEvent(RELATIVE_EVENT, months, days, years, ARILOU_UMGAH_CHECK);
-        return {};
-    }
-    dialogue::Result prepareReport(const std::string &report,
-                                   const dialogue::Json &parameters) override {
-        if (!parameters.is_object() || !parameters.empty())
-            throw std::invalid_argument("unexpected specialized report parameters");
-        return report_(report);
-    }
-
-  private:
-    StoryState &story_;
-    Report report_;
-    const dialogue::Json context_;
-};
-} // namespace
 void ConversationRuntime::loadGraph() {
     const std::string resource = data_.ConversationPhrasesRes;
     // Resource keys come from the native descriptor, not from the JSON file.
@@ -99,11 +36,56 @@ void ConversationRuntime::loadGraph() {
         for (const auto &phrase : definition.at("phrases"))
             graphPhrases_.emplace(phrase.at("id").get<std::string>(),
                                   phrase.at("index").get<COUNT>() + 1);
+        if (definition.contains("mycon_ramble")) {
+            const auto &policy = definition.at("mycon_ramble");
+            MyconRamblePolicy ramble{policy.at("phrases").get<std::vector<std::string>>(),
+                                     policy.at("reveal_at").get<std::size_t>(),
+                                     policy.at("reveal_minimum").get<unsigned>()};
+            validateMyconRamblePolicy(ramble);
+            for (const auto &phrase : ramble.phrases)
+                graphPhrase(phrase);
+            myconRamble_ = std::move(ramble);
+        }
+        applyConversationText(definition, resource, data_.ConversationPhrases);
+        dialogue::Json player = dialogue::Json::object();
+        if (!nativeGraph_ || definition.contains("alliance_name_base")) {
+            const auto ship = session_.player().ship();
+            player = {{"captain_name", ship.commanderName}, {"ship_name", ship.shipName}};
+            if (definition.contains("alliance_name_base")) {
+                const auto base =
+                    graphPhrase(definition.at("alliance_name_base").get<std::string>()) - 1;
+                const auto variant = story_.readNamed("NEW_ALLIANCE_NAME");
+                const auto index = base + variant;
+                const auto count = GetStringTableCount(data_.ConversationPhrases);
+                if (index >= count || (variant == 3 && index + 1 >= count))
+                    throw std::out_of_range("invalid alliance name phrase range");
+                std::string name =
+                    GetStringAddress(SetAbsStringTableIndex(data_.ConversationPhrases, index));
+                if (variant == 3) {
+                    name += ship.commanderName;
+                    name += GetStringAddress(
+                        SetAbsStringTableIndex(data_.ConversationPhrases, index + 1));
+                }
+                player["alliance_name"] = std::move(name);
+            }
+        }
         graphState_ = std::make_unique<CampaignDialogueState>(
-            story_, definition.at("id").get<std::string>(),
+            session_.player(), definition.at("id").get<std::string>(),
             [this](std::optional<std::size_t> selection) { return runNativeTurn(selection); },
-            [this](const std::string &report) -> dialogue::Result {
+            [this](const std::string &report,
+                   const dialogue::Json &parameters) -> dialogue::Result {
                 const std::string resource = data_.ConversationPhrasesRes;
+                if (report == "mycon.ramble" && resource == "comm.mycon.dialogue" && myconRamble_) {
+                    if (parameters.size() != 1 || !parameters.contains("response"))
+                        throw std::invalid_argument("invalid Mycon ramble arguments");
+                    const auto response = parameters.at("response").get<std::string>();
+                    graphPhrase(response);
+                    return prepareMyconRamble(
+                        story_, (story_.readNamed("GLOBAL_FLAGS_AND_DATA") & 128) != 0, response,
+                        *myconRamble_, myconMadeChoice_);
+                }
+                if (!parameters.empty())
+                    throw std::invalid_argument("unexpected report parameters");
                 if (report == "probe.coordinates" && resource == "comm.probe.dialogue")
                     QueueProbeCoordinates();
                 else if (report == "urquan.hypno_intro" && resource == "comm.urquan.dialogue")
@@ -113,7 +95,12 @@ void ConversationRuntime::loadGraph() {
                 return {"ok", {{"speech", dialogue::Json::array()}}};
             },
             dialogue::Json{
+                {"player", std::move(player)},
                 {"won_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE},
+                {"in_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE},
+                {"calendar_campaign_year", GLOBAL(GameClock.year_index) - START_YEAR},
+                {"calendar_month", GLOBAL(GameClock.month_index)},
+                {"calendar_day", GLOBAL(GameClock.day_index)},
                 {"at_samatra",
                  LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY &&
                      GLOBAL(BattleGroupRef) != 0 &&
@@ -127,7 +114,6 @@ void ConversationRuntime::loadGraph() {
                      GLOBAL(BattleGroupRef) != 0 &&
                      GLOBAL(BattleGroupRef) == story_.read(StoryCounter::ColonyGrpoffs0)}});
         graph_ = dialogue::Conversation::load(definition, *graphState_);
-        applyConversationText(definition, resource, data_.ConversationPhrases);
     } catch (const std::exception &error) {
         throw std::runtime_error(path + ": " + error.what());
     }
@@ -166,17 +152,52 @@ COUNT ConversationRuntime::graphPhrase(const std::string &name) const {
 void ConversationRuntime::queueGraphSpeech() {
     if (graph_->ended())
         return;
+    if (!graph_->view().presentation.empty())
+        throw std::invalid_argument(
+            "graph presentation cues require a registered live media handler");
     const auto &speech = graph_->view().speech;
     if (!speech.is_array())
         throw std::invalid_argument("live speech must be a phrase array");
-    const auto enqueue = [this](auto &&self, const dialogue::Json &part) -> void {
-        if (part.is_array())
+    const auto enqueue = [this](auto &&self, const dialogue::Json &part, bool splice) -> void {
+        if (part.is_array()) {
             for (const auto &child : part)
-                self(self, child);
-        else
-            NPCPhrase(graphPhrase(part.get<std::string>()));
+                self(self, child, splice);
+            return;
+        }
+        if (part.is_string() || (part.is_object() && part.size() == 1 && part.contains("phrase"))) {
+            const auto id =
+                graphPhrase((part.is_string() ? part : part.at("phrase")).get<std::string>());
+            if (splice)
+                NPCPhrase_splice(id);
+            else
+                NPCPhrase(id);
+        } else if (part.is_object() && part.size() == 1 && part.contains("compose")) {
+            if (!part.at("compose").is_array())
+                throw std::invalid_argument("speech composition requires an array");
+            bool first = true;
+            for (const auto &child : part.at("compose")) {
+                self(self, child, splice || !first);
+                first = false;
+            }
+        } else if (part.is_object() && part.size() == 1 && part.contains("insert")) {
+            graphSpeechInsertions_.push_back(part.at("insert").get<std::string>());
+            SpliceTrack(nullptr, graphSpeechInsertions_.back().data(), nullptr, nullptr);
+        } else if (part.is_object() && part.size() == 1 && part.contains("number")) {
+            const auto &value = part.at("number");
+            if (!value.is_number_integer() ||
+                (value.is_number_unsigned() &&
+                 value.get<std::uint64_t>() >
+                     static_cast<std::uint64_t>(std::numeric_limits<dialogue::Integer>::max())))
+                throw std::out_of_range("invalid native number speech");
+            const auto number = value.get<dialogue::Integer>();
+            if (number < std::numeric_limits<int>::min() ||
+                number > std::numeric_limits<int>::max())
+                throw std::out_of_range("native number speech out of range");
+            NPCNumber(static_cast<int>(number), nullptr);
+        } else
+            throw std::invalid_argument("unsupported live speech segment");
     };
-    enqueue(enqueue, speech);
+    enqueue(enqueue, speech, false);
     // Empty graph menu nodes must not restart the retained track for replay.
     TalkingFinished = speech.empty() ? TRUE : FALSE;
 }
@@ -207,11 +228,14 @@ bool ConversationRuntime::finishGraphSpeech() {
     for (std::size_t i = 0; i < responses.size(); ++i) {
         graphResponseIds_.push_back(responses[i].id);
         if (!nativeGraph_) {
-            const auto phrase = graphPhrase(responses[i].text.get<std::string>());
             graphResponseText_[i] =
-                GetStringAddress(SetAbsStringTableIndex(data_.ConversationPhrases, phrase - 1));
+                dialogue::formatText(responses[i].text, [this](const std::string &name) {
+                    const auto *text = GetStringAddress(
+                        SetAbsStringTableIndex(data_.ConversationPhrases, graphPhrase(name) - 1));
+                    return text ? std::string(text) : std::string();
+                });
             auto &target = input_.response_list[i];
-            target.response_ref = phrase;
+            target.response_ref = 0; // Identity is the graph edge, including constructed answers.
             target.response_func = nullptr; // Graph connections replace native callback dispatch.
             target.response_text.pStr = graphResponseText_[i].data();
             target.response_text.CharCount = static_cast<COUNT>(~0u);

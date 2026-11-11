@@ -20,6 +20,8 @@ public:
     SIS(const SIS &) = delete;
     SIS &operator=(const SIS &) = delete;
     DWORD fuel() const noexcept { return data_.FuelOnBoard; }
+    COUNT biomass() const noexcept { return data_.TotalBioMass; }
+    void setBiomass(COUNT value) noexcept { data_.TotalBioMass = value; }
     COUNT crew() const noexcept { return data_.CrewEnlisted; }
     bool alive() const noexcept { return crew() != static_cast<COUNT>(~0u); }
     void setFuel(DWORD fuel) noexcept { data_.FuelOnBoard = fuel; }

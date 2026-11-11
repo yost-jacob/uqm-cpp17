@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 89,
   "id": "yehat",
   "resource": "comm.yehat.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource/lifecycle configuration remains. Home, space and royalist branches, focused topics, one-draw farewell and revolt scheduling use general graph/state operations."
   },
   "phrases": [
     {
@@ -538,125 +538,1160 @@
   "nodes": [
     {
       "id": "intro",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["encounter", "won_last_battle", false]}, "next": "outtakes"}],
+      "otherwise": "hostile"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["yehat", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
     },
     {
-      "id": "route",
+      "id": "hostile",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile",
+      "next": "intro.route"
+    },
+    {
+      "id": "intro.route",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "YEHAT_CIVIL_WAR", 0]}, 0]},
+          "next": "royal.route"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "home.greeting"
+        }
+      ],
+      "otherwise": "space.greeting"
     },
     {
-      "id": "menu",
+      "id": "royal.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "royal.home"}],
+      "otherwise": "royal.space"
+    },
+    {
+      "id": "royal.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "YEHAT_HOME_VISITS", [["ROYALIST_HOMEWORLD_HELLO_1"], ["ROYALIST_HOMEWORLD_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "royal.home.speech"
+    },
+    {
+      "id": "royal.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "royal.menu"
+    },
+    {
+      "id": "royal.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "YEHAT_VISITS", [["ROYALIST_SPACE_HELLO_1"], ["ROYALIST_SPACE_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "royal.space.speech"
+    },
+    {
+      "id": "royal.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "royal.menu"
+    },
+    {
+      "id": "home.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "YEHAT_HOME_VISITS", [["HOMEWORLD_HELLO_1"], ["HOMEWORLD_HELLO_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "home.greeting.speech"
+    },
+    {
+      "id": "home.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "space.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "YEHAT_VISITS",
+          [["SPACE_HELLO_1"], ["SPACE_HELLO_2"], ["SPACE_HELLO_3"], ["SPACE_HELLO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.greeting.speech"
+    },
+    {
+      "id": "space.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "space.0"
+    },
+    {
+      "id": "exit.bye_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_homeworld",
+      "next": "exit.bye_homeworld.speech"
+    },
+    {
+      "id": "exit.bye_royalist.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_ROYALIST"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_royalist",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_royalist",
+      "next": "exit.bye_royalist.speech"
+    },
+    {
+      "id": "exit.i_demand_you_ally_homeworld0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ENEMY_MUST_DIE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.i_demand_you_ally_homeworld0.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_i_demand_you_ally_homeworld0_effect1",
+      "next": "exit.i_demand_you_ally_homeworld0.speech"
+    },
+    {
+      "id": "exit.i_demand_you_ally_homeworld0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_ALLY_HOME", 1]
+      },
+      "save_as": "exit_i_demand_you_ally_homeworld0",
+      "next": "exit.i_demand_you_ally_homeworld0.effect1"
+    },
+    {
+      "id": "bye.space",
+      "kind": "action",
+      "action": {
+        "verb": "random.draw",
+        "args": [256]
+      },
+      "save_as": "farewell",
+      "next": "bye.route"
+    },
+    {
+      "id": "bye.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"bit_and": [{"get": ["result", "farewell.value", 0]}, 1]}, 0]}, "next": "bye.peace"}],
+      "otherwise": "bye.fight"
+    },
+    {
+      "id": "bye.peace.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GO_IN_PEACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_peace",
+      "next": "bye.peace.speech"
+    },
+    {
+      "id": "bye.fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.fight",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_fight",
+      "next": "bye.fight.speech"
+    },
+    {
+      "id": "refuse",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "refuse",
+      "next": "refuse.seq"
+    },
+    {
+      "id": "refuse.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "YEHAT_REBEL_VISITS", [["JUST_A_TRICK_1"], ["JUST_A_TRICK_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "refuse.seq.speech"
+    },
+    {
+      "id": "refuse.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "revolt.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_REVOLT"]}],
+      "next": "end"
+    },
+    {
+      "id": "revolt.effect8",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "revolt_effect8",
+      "next": "revolt.speech"
+    },
+    {
+      "id": "revolt.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["YEHAT_REBEL_EVENT", 0, 0, 0]
+      },
+      "save_as": "revolt_effect7",
+      "next": "revolt.effect8"
+    },
+    {
+      "id": "revolt.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_INFO", 0]
+      },
+      "save_as": "revolt_effect6",
+      "next": "revolt.effect7"
+    },
+    {
+      "id": "revolt.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]
+      },
+      "save_as": "revolt_effect5",
+      "next": "revolt.effect6"
+    },
+    {
+      "id": "revolt.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_INFO", 0]
+      },
+      "save_as": "revolt_effect4",
+      "next": "revolt.effect5"
+    },
+    {
+      "id": "revolt.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_VISITS", 0]
+      },
+      "save_as": "revolt_effect3",
+      "next": "revolt.effect4"
+    },
+    {
+      "id": "revolt.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_HOME_VISITS", 0]
+      },
+      "save_as": "revolt_effect2",
+      "next": "revolt.effect3"
+    },
+    {
+      "id": "revolt.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_VISITS", 0]
+      },
+      "save_as": "revolt_effect1",
+      "next": "revolt.effect2"
+    },
+    {
+      "id": "revolt",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_CIVIL_WAR", 1]
+      },
+      "save_as": "revolt",
+      "next": "revolt.effect1"
+    },
+    {
+      "id": "shofixti.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SEND_HIM_OVER_1"]}],
+      "next": "revolt.menu"
+    },
+    {
+      "id": "shofixti.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
+      },
+      "save_as": "shofixti_1",
+      "next": "shofixti.1.speech"
+    },
+    {
+      "id": "shofixti.2",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SEND_HIM_OVER_2"]}],
+      "next": "revolt.menu"
+    },
+    {
+      "id": "revolt.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "ok_send",
+          "text": "ok_send",
+          "when": {"query": "fleet.contains", "args": ["shofixti"]},
+          "next": "revolt"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "not_here",
+          "text": "not_here",
+          "when": {"not": {"query": "fleet.contains", "args": ["shofixti"]}},
+          "next": "refuse"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["yehat", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "not_send",
+          "text": "not_send",
+          "when": true,
+          "next": "refuse"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "royal.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_is_rebellion", true]
+      },
+      "save_as": "royal_info",
+      "next": "royal.info.seq"
+    },
+    {
+      "id": "royal.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "YEHAT_ROYALIST_INFO", [["ROYALIST_REBELLION_1"], ["ROYALIST_REBELLION_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "royal.info.seq.speech"
+    },
+    {
+      "id": "royal.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "royal.menu"
+    },
+    {
+      "id": "home.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info",
+      "next": "home.info.seq"
+    },
+    {
+      "id": "home.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "YEHAT_ROYALIST_INFO", [["GENERAL_INFO_HOMEWORLD_1"], ["GENERAL_INFO_HOMEWORLD_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "home.info.seq.speech"
+    },
+    {
+      "id": "home.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "royal.pkunk",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "YEHAT_ABSORBED_PKUNK", 0]}, 0]}, "next": "royal.pkunk.absorbed"}],
+      "otherwise": "royal.pkunk.hate"
+    },
+    {
+      "id": "royal.pkunk.absorbed.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PKUNK_ABSORBED_ROYALIST"]}],
+      "next": "royal.menu"
+    },
+    {
+      "id": "royal.pkunk.absorbed",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
+      },
+      "save_as": "royal_pkunk_absorbed",
+      "next": "royal.pkunk.absorbed.speech"
+    },
+    {
+      "id": "royal.pkunk.hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_PKUNK_ROYALIST"]}],
+      "next": "royal.menu"
+    },
+    {
+      "id": "royal.pkunk.hate",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
+      },
+      "save_as": "royal_pkunk_hate",
+      "next": "royal.pkunk.hate.speech"
+    },
+    {
+      "id": "home.pkunk",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "YEHAT_ABSORBED_PKUNK", 0]}, 0]}, "next": "home.pkunk.absorbed"}],
+      "otherwise": "home.pkunk.hate"
+    },
+    {
+      "id": "home.pkunk.absorbed.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PKUNK_ABSORBED_ROYALIST"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.pkunk.absorbed",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
+      },
+      "save_as": "home_pkunk_absorbed",
+      "next": "home.pkunk.absorbed.speech"
+    },
+    {
+      "id": "home.pkunk.hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_PKUNK_ROYALIST"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.pkunk.hate",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
+      },
+      "save_as": "home_pkunk_hate",
+      "next": "home.pkunk.hate.speech"
+    },
+    {
+      "id": "space.pkunk",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "YEHAT_ABSORBED_PKUNK", 0]}, 0]}, "next": "space.pkunk.absorbed"}],
+      "otherwise": "space.pkunk.hate"
+    },
+    {
+      "id": "space.pkunk.absorbed.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PKUNK_ABSORBED_ROYALIST"]}],
+      "next": "space.0"
+    },
+    {
+      "id": "space.pkunk.absorbed",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
+      },
+      "save_as": "space_pkunk_absorbed",
+      "next": "space.pkunk.absorbed.speech"
+    },
+    {
+      "id": "space.pkunk.hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_PKUNK_ROYALIST"]}],
+      "next": "space.0"
+    },
+    {
+      "id": "space.pkunk.hate",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 1]
+      },
+      "save_as": "space_pkunk_hate",
+      "next": "space.pkunk.hate.speech"
+    },
+    {
+      "id": "sorry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ALL_YOUR_FAULT"]}],
+      "next": "royal.menu"
+    },
+    {
+      "id": "sorry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_INFO", 1]
+      },
+      "save_as": "sorry",
+      "next": "sorry.speech"
+    },
+    {
+      "id": "royal.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "how_is_rebellion",
+          "text": "how_is_rebellion",
+          "when": {"not": {"get": ["local", "how_is_rebellion", false]}},
+          "next": "royal.info"
+        },
+        {
+          "id": "what_about_pkunk_royalist",
+          "text": "what_about_pkunk_royalist",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "royal.pkunk"
+        },
+        {
+          "id": "sorry_about_revolution",
+          "text": "sorry_about_revolution",
+          "when": {"not": {"ne": [{"get": ["story", "NO_YEHAT_INFO", 0]}, 0]}},
+          "next": "sorry"
+        },
+        {
+          "id": "bye_royalist",
+          "text": "bye_royalist",
+          "when": true,
+          "next": "exit.bye_royalist"
+        }
+      ]
+    },
+    {
+      "id": "help.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_HELP_ENEMY"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "help.home",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_HELP_HOME", 1]
+      },
+      "save_as": "help_home",
+      "next": "help.home.speech"
+    },
+    {
+      "id": "info.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_INFO_FOR_ENEMY"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "info.home",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_INFO", 1]
+      },
+      "save_as": "info_home",
+      "next": "info.home.speech"
+    },
+    {
+      "id": "home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_homeworld",
+          "text": "whats_up_homeworld",
+          "when": {"not": {"get": ["local", "whats_up_homeworld", false]}},
+          "next": "home.info"
+        },
+        {
+          "id": "what_about_pkunk_royalist",
+          "text": "what_about_pkunk_royalist",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "home.pkunk"
+        },
+        {
+          "id": "at_least_help_us_homeworld",
+          "text": "at_least_help_us_homeworld",
+          "when": {"not": {"ne": [{"get": ["story", "NO_YEHAT_HELP_HOME", 0]}, 0]}},
+          "next": "help.home"
+        },
+        {
+          "id": "give_info",
+          "text": "give_info",
+          "when": {"not": {"ne": [{"get": ["story", "NO_YEHAT_INFO", 0]}, 0]}},
+          "next": "info.home"
+        },
+        {
+          "id": "i_demand_you_ally_homeworld0",
+          "text": {
+            "compose": [
+              "i_demand_you_ally_homeworld0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "i_demand_you_ally_homeworld1",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "i_demand_you_ally_homeworld2",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "i_demand_you_ally_homeworld3"
+            ]
+          },
+          "when": {"not": {"ne": [{"get": ["story", "NO_YEHAT_ALLY_HOME", 0]}, 0]}},
+          "next": "exit.i_demand_you_ally_homeworld0"
+        },
+        {
+          "id": "bye_homeworld",
+          "text": "bye_homeworld",
+          "when": true,
+          "next": "exit.bye_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "space.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "space_info", true]
+      },
+      "save_as": "space_info",
+      "next": "space.info.seq"
+    },
+    {
+      "id": "space.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "YEHAT_REBEL_INFO",
+          [["GENERAL_INFO_SPACE_1"], ["GENERAL_INFO_SPACE_2"], ["GENERAL_INFO_SPACE_3"], ["GENERAL_INFO_SPACE_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.info.seq.speech"
+    },
+    {
+      "id": "space.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "space.0"
+    },
+    {
+      "id": "ally.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_CANNOT_1"]}],
+      "next": "space.2"
+    },
+    {
+      "id": "ally.space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_ALLY_SPACE", 1]
+      },
+      "save_as": "ally_space",
+      "next": "ally.space.speech"
+    },
+    {
+      "id": "obligation.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_CANNOT_2"]}],
       "next": "end"
+    },
+    {
+      "id": "obligation.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "obligation_effect1",
+      "next": "obligation.speech"
+    },
+    {
+      "id": "obligation",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_ALLY_SPACE", 2]
+      },
+      "save_as": "obligation",
+      "next": "obligation.effect1"
+    },
+    {
+      "id": "help.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SORRY_CANNOT"]}],
+      "next": "space.1"
+    },
+    {
+      "id": "help.space",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_HELP_SPACE", 1]
+      },
+      "save_as": "help_space",
+      "next": "help.space.speech"
+    },
+    {
+      "id": "dishonor.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERES_A_HINT"]}],
+      "next": "space.0"
+    },
+    {
+      "id": "dishonor",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NO_YEHAT_HELP_SPACE", 2]
+      },
+      "save_as": "dishonor",
+      "next": "dishonor.speech"
+    },
+    {
+      "id": "space.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_space_1",
+          "text": "whats_up_space_1",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 0]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_2",
+          "text": "whats_up_space_2",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 1]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_3",
+          "text": "whats_up_space_3",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 2]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_4",
+          "text": "whats_up_space_4",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 3]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "at_least_help_us_space",
+          "text": "at_least_help_us_space",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_HELP_SPACE", 0]}, 0]},
+          "next": "help.space"
+        },
+        {
+          "id": "dishonor",
+          "text": "dishonor",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_HELP_SPACE", 0]}, 1]},
+          "next": "dishonor"
+        },
+        {
+          "id": "i_demand_you_ally_space0",
+          "text": {
+            "compose": [
+              "i_demand_you_ally_space0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "i_demand_you_ally_space1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "i_demand_you_ally_space2",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "i_demand_you_ally_space3"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_ALLY_SPACE", 0]}, 0]},
+          "next": "ally.space"
+        },
+        {
+          "id": "obligation",
+          "text": "obligation",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_ALLY_SPACE", 0]}, 1]},
+          "next": "obligation"
+        },
+        {
+          "id": "what_about_pkunk_royalist",
+          "text": "what_about_pkunk_royalist",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "space.pkunk"
+        },
+        {
+          "id": "shofixti_alive_1",
+          "text": "shofixti_alive_1",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SHOFIXTI_VISITS", 0]}, 0]},
+              {"eq": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 0]}
+            ]
+          },
+          "next": "shofixti.1"
+        },
+        {
+          "id": "shofixti_alive_2",
+          "text": "shofixti_alive_2",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SHOFIXTI_VISITS", 0]}, 0]},
+              {"eq": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 1]}
+            ]
+          },
+          "next": "shofixti.2"
+        },
+        {
+          "id": "bye_space",
+          "text": "bye_space",
+          "when": true,
+          "next": "bye.space"
+        }
+      ]
+    },
+    {
+      "id": "space.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "at_least_help_us_space",
+          "text": "at_least_help_us_space",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_HELP_SPACE", 0]}, 0]},
+          "next": "help.space"
+        },
+        {
+          "id": "dishonor",
+          "text": "dishonor",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_HELP_SPACE", 0]}, 1]},
+          "next": "dishonor"
+        },
+        {
+          "id": "whats_up_space_1",
+          "text": "whats_up_space_1",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 0]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_2",
+          "text": "whats_up_space_2",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 1]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_3",
+          "text": "whats_up_space_3",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 2]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_4",
+          "text": "whats_up_space_4",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 3]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "i_demand_you_ally_space0",
+          "text": {
+            "compose": [
+              "i_demand_you_ally_space0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "i_demand_you_ally_space1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "i_demand_you_ally_space2",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "i_demand_you_ally_space3"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_ALLY_SPACE", 0]}, 0]},
+          "next": "ally.space"
+        },
+        {
+          "id": "obligation",
+          "text": "obligation",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_ALLY_SPACE", 0]}, 1]},
+          "next": "obligation"
+        },
+        {
+          "id": "what_about_pkunk_royalist",
+          "text": "what_about_pkunk_royalist",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "space.pkunk"
+        },
+        {
+          "id": "shofixti_alive_1",
+          "text": "shofixti_alive_1",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SHOFIXTI_VISITS", 0]}, 0]},
+              {"eq": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 0]}
+            ]
+          },
+          "next": "shofixti.1"
+        },
+        {
+          "id": "shofixti_alive_2",
+          "text": "shofixti_alive_2",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SHOFIXTI_VISITS", 0]}, 0]},
+              {"eq": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 1]}
+            ]
+          },
+          "next": "shofixti.2"
+        },
+        {
+          "id": "bye_space",
+          "text": "bye_space",
+          "when": true,
+          "next": "bye.space"
+        }
+      ]
+    },
+    {
+      "id": "space.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "i_demand_you_ally_space0",
+          "text": {
+            "compose": [
+              "i_demand_you_ally_space0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "i_demand_you_ally_space1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "i_demand_you_ally_space2",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "i_demand_you_ally_space3"
+            ]
+          },
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_ALLY_SPACE", 0]}, 0]},
+          "next": "ally.space"
+        },
+        {
+          "id": "obligation",
+          "text": "obligation",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_ALLY_SPACE", 0]}, 1]},
+          "next": "obligation"
+        },
+        {
+          "id": "whats_up_space_1",
+          "text": "whats_up_space_1",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 0]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_2",
+          "text": "whats_up_space_2",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 1]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_3",
+          "text": "whats_up_space_3",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 2]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "whats_up_space_4",
+          "text": "whats_up_space_4",
+          "when": {
+            "all": [{"eq": [{"get": ["story", "YEHAT_REBEL_INFO", 0]}, 3]}, {"not": {"get": ["local", "space_info", false]}}]
+          },
+          "next": "space.info"
+        },
+        {
+          "id": "at_least_help_us_space",
+          "text": "at_least_help_us_space",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_HELP_SPACE", 0]}, 0]},
+          "next": "help.space"
+        },
+        {
+          "id": "dishonor",
+          "text": "dishonor",
+          "when": {"eq": [{"get": ["story", "NO_YEHAT_HELP_SPACE", 0]}, 1]},
+          "next": "dishonor"
+        },
+        {
+          "id": "what_about_pkunk_royalist",
+          "text": "what_about_pkunk_royalist",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_ROYALIST_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "space.pkunk"
+        },
+        {
+          "id": "shofixti_alive_1",
+          "text": "shofixti_alive_1",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SHOFIXTI_VISITS", 0]}, 0]},
+              {"eq": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 0]}
+            ]
+          },
+          "next": "shofixti.1"
+        },
+        {
+          "id": "shofixti_alive_2",
+          "text": "shofixti_alive_2",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "SHOFIXTI_VISITS", 0]}, 0]},
+              {"eq": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 1]}
+            ]
+          },
+          "next": "shofixti.2"
+        },
+        {
+          "id": "bye_space",
+          "text": "bye_space",
+          "when": true,
+          "next": "bye.space"
+        }
+      ]
     },
     {
       "id": "end",
       "kind": "end",
       "outcome": "native_segue"
     }
-  ]
+  ],
+  "alliance_name_base": "name_1"
 }

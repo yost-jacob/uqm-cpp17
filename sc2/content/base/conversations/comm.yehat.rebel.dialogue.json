@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 51,
   "id": "rebel",
   "resource": "comm.yehat.rebel.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native media/lifecycle configuration remains; topic pruning, dated escort gifts and final-battle cavalry use general graph/state operations."
   },
   "phrases": [
     {
@@ -253,118 +253,533 @@
       "id": "intro",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["rebel", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "intro",
+      "next": "intro.route"
     },
     {
-      "id": "route",
+      "id": "intro.route",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"get": ["encounter", "in_last_battle", false]}, "next": "cavalry.speech"}],
+      "otherwise": "greeting"
     },
     {
-      "id": "menu",
+      "id": "greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "YEHAT_REBEL_VISITS",
+          [["REBEL_HELLO_1"], ["REBEL_HELLO_2"], ["REBEL_HELLO_3"], ["REBEL_HELLO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "greeting.speech"
+    },
+    {
+      "id": "greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "main"
+    },
+    {
+      "id": "cavalry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YEHAT_CAVALRY"]}],
+      "next": "cavalry.capacity"
+    },
+    {
+      "id": "cavalry.capacity",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "cavalry_count", {"min": [{"query": "fleet.slots", "args": ["yehat_rebel"]}, 8]}]
+      },
+      "save_as": "cavalry_capacity",
+      "next": "cavalry.ready"
+    },
+    {
+      "id": "cavalry.ready",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["local", "cavalry_count", 0]}, 0]}, "next": "end"}],
+      "otherwise": "cavalry.yehat"
+    },
+    {
+      "id": "cavalry.yehat",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": [
+          "yehat_rebel",
+          {
+            "subtract": [{"get": ["local", "cavalry_count", 0]}, {"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}]
+          }
+        ]
+      },
+      "save_as": "cavalry_yehat",
+      "next": "cavalry.pkunk.ready"
+    },
+    {
+      "id": "cavalry.pkunk.ready",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}, 0]}, "next": "end"}],
+      "otherwise": "cavalry.pkunk"
+    },
+    {
+      "id": "cavalry.pkunk",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["pkunk", {"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}]
+      },
+      "save_as": "cavalry_pkunk",
+      "next": "end"
+    },
+    {
+      "id": "revolution",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_revolution", true]
+      },
+      "save_as": "revolution",
+      "next": "revolution.sequence"
+    },
+    {
+      "id": "revolution.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "YEHAT_REBEL_INFO",
+          [["REBEL_REVOLUTION_1"], ["REBEL_REVOLUTION_2"], ["REBEL_REVOLUTION_3"], ["REBEL_REVOLUTION_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "revolution.sequence.speech"
+    },
+    {
+      "id": "revolution.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "main"
+    },
+    {
+      "id": "pkunk",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "YEHAT_ABSORBED_PKUNK", 0]}, 0]}, "next": "pkunk.absorbed"}],
+      "otherwise": "pkunk.hate"
+    },
+    {
+      "id": "pkunk.absorbed.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PKUNK_ABSORBED_REBEL"]}],
+      "next": "main"
+    },
+    {
+      "id": "pkunk.absorbed",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
+      },
+      "save_as": "pkunk_absorbed",
+      "next": "pkunk.absorbed.speech"
+    },
+    {
+      "id": "pkunk.hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_PKUNK_REBEL"]}],
+      "next": "main"
+    },
+    {
+      "id": "pkunk.hate",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
+      },
+      "save_as": "pkunk_hate",
+      "next": "pkunk.hate.speech"
+    },
+    {
+      "id": "bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_REBEL"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye",
+      "next": "bye.speech"
+    },
+    {
+      "id": "info.start",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_INFO"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "info.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_urquan", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_royalty", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_war", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_vux", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_clue", false]}}}
+            ]
+          },
+          "next": "info.exhausted"
+        }
+      ],
+      "otherwise": "info.menu"
+    },
+    {
+      "id": "info.exhausted",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "give_info_rebels", true]
+      },
+      "save_as": "info_exhausted",
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_urquan", true]
+      },
+      "save_as": "what_about_urquan",
+      "next": "what_about_urquan.speech"
+    },
+    {
+      "id": "what_about_royalty.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ROYALTY"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_royalty",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_royalty", true]
+      },
+      "save_as": "what_about_royalty",
+      "next": "what_about_royalty.speech"
+    },
+    {
+      "id": "what_about_war.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_WAR"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_war", true]
+      },
+      "save_as": "what_about_war",
+      "next": "what_about_war.speech"
+    },
+    {
+      "id": "what_about_vux.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_VUX"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_vux",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_vux", true]
+      },
+      "save_as": "what_about_vux",
+      "next": "what_about_vux.speech"
+    },
+    {
+      "id": "what_about_clue.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_CLUE"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_clue",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_clue", true]
+      },
+      "save_as": "what_about_clue",
+      "next": "what_about_clue.speech"
+    },
+    {
+      "id": "info.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"not": {"get": ["local", "what_about_urquan", false]}},
+          "next": "what_about_urquan"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_royalty",
+          "text": "what_about_royalty",
+          "when": {"not": {"get": ["local", "what_about_royalty", false]}},
+          "next": "what_about_royalty"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"not": {"get": ["local", "what_about_war", false]}},
+          "next": "what_about_war"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_vux",
+          "text": "what_about_vux",
+          "when": {"not": {"get": ["local", "what_about_vux", false]}},
+          "next": "what_about_vux"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_clue",
+          "text": "what_about_clue",
+          "when": {"not": {"get": ["local", "what_about_clue", false]}},
+          "next": "what_about_clue"
         },
         {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["rebel", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "info.back"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "info.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_INFO"]}],
+      "next": "main"
+    },
+    {
+      "id": "ships",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_ships", true]
+      },
+      "save_as": "ships",
+      "next": "ships.ready"
+    },
+    {
+      "id": "ships.ready",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "any": [
+                {"eq": [{"get": ["story", "YEHAT_SHIP_MONTH", 0]}, 0]},
+                {"gt": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "YEHAT_SHIP_YEAR", 0]}]},
+                {
+                  "all": [
+                    {
+                      "eq": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "YEHAT_SHIP_YEAR", 0]}]
+                    },
+                    {"gt": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "YEHAT_SHIP_MONTH", 0]}]}
+                  ]
+                },
+                {
+                  "all": [
+                    {
+                      "eq": [{"get": ["encounter", "calendar_campaign_year", 0]}, {"get": ["story", "YEHAT_SHIP_YEAR", 0]}]
+                    },
+                    {"eq": [{"get": ["encounter", "calendar_month", 0]}, {"get": ["story", "YEHAT_SHIP_MONTH", 0]}]},
+                    {"ge": [{"get": ["encounter", "calendar_day", 0]}, {"get": ["story", "YEHAT_SHIP_DAY", 0]}]}
+                  ]
+                }
+              ]
+            }
+          },
+          "next": "ships.wait"
+        }
+      ],
+      "otherwise": "ships.capacity"
+    },
+    {
+      "id": "ships.wait",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SHIPS_YET"]}],
+      "next": "main"
+    },
+    {
+      "id": "ships.capacity",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "ship_count", {"query": "fleet.slots", "args": ["yehat"]}]
+      },
+      "save_as": "ships_capacity",
+      "next": "ships.route"
+    },
+    {
+      "id": "ships.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["local", "ship_count", 0]}, 0]},
+          "next": "ships.full"
+        },
+        {
+          "when": {"lt": [{"get": ["local", "ship_count", 0]}, 4]},
+          "next": "ships.few"
+        }
+      ],
+      "otherwise": "ships.all"
+    },
+    {
+      "id": "ships.full",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ROOM"]}],
+      "next": "main"
+    },
+    {
+      "id": "ships.few",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_FEW_SHIPS"]}],
+      "next": "ships.give"
+    },
+    {
+      "id": "ships.all",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_ALL_SHIPS"]}],
+      "next": "ships.give"
+    },
+    {
+      "id": "ships.give",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["yehat", {"min": [{"get": ["local", "ship_count", 0]}, 4]}]
+      },
+      "save_as": "ships_give",
+      "next": "ships.month"
+    },
+    {
+      "id": "ships.month",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_MONTH", {"add": [{"mod": [{"get": ["encounter", "calendar_month", 0]}, 12]}, 1]}]
+      },
+      "save_as": "ships_month",
+      "next": "ships.day"
+    },
+    {
+      "id": "ships.day",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
+      },
+      "save_as": "ships_day",
+      "next": "ships.year.route"
+    },
+    {
+      "id": "ships.year.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["encounter", "calendar_month", 0]}, 12]}, "next": "ships.year.next"}],
+      "otherwise": "ships.year.same"
+    },
+    {
+      "id": "ships.year.next",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
+      },
+      "save_as": "ships_year_next",
+      "next": "main"
+    },
+    {
+      "id": "ships.year.same",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "YEHAT_SHIP_YEAR", {"get": ["encounter", "calendar_campaign_year", 0]}]
+      },
+      "save_as": "ships_year_same",
+      "next": "main"
+    },
+    {
+      "id": "main",
       "kind": "dialogue",
       "variants": [{"speech": []}],
-      "next": "end"
+      "responses": [
+        {
+          "id": "how_goes_revolution",
+          "text": "how_goes_revolution",
+          "when": {"not": {"get": ["local", "how_goes_revolution", false]}},
+          "next": "revolution"
+        },
+        {
+          "id": "what_about_pkunk_rebel",
+          "text": "what_about_pkunk_rebel",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "YEHAT_REBEL_TOLD_PKUNK", 0]}, 0]}},
+              {"ne": [{"get": ["story", "PKUNK_VISITS", 0]}, 0]},
+              {"ne": [{"get": ["story", "PKUNK_HOME_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "pkunk"
+        },
+        {
+          "id": "any_ships",
+          "text": "any_ships",
+          "when": {"not": {"get": ["local", "any_ships", false]}},
+          "next": "ships"
+        },
+        {
+          "id": "give_info_rebels",
+          "text": "give_info_rebels",
+          "when": {"not": {"get": ["local", "give_info_rebels", false]}},
+          "next": "info.start"
+        },
+        {
+          "id": "bye_rebel",
+          "text": "bye_rebel",
+          "when": true,
+          "next": "bye"
+        }
+      ]
     },
     {
       "id": "end",

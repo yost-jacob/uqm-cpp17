@@ -65,7 +65,8 @@ configure_file(sc2/src/config_unix.h.in generated/config_unix.h @ONLY)
 
 add_library(uqm-dialogue STATIC
     sc2/src/uqm/dialogue/engine.cpp sc2/src/uqm/dialogue/graph.cpp
-    sc2/src/uqm/dialogue/verb_factory.cpp sc2/src/uqm/dialogue/legacy_turn.cpp)
+    sc2/src/uqm/dialogue/verb_factory.cpp sc2/src/uqm/dialogue/legacy_turn.cpp
+    sc2/src/uqm/dialogue/text.cpp)
 target_link_libraries(uqm-dialogue PUBLIC nlohmann_json::nlohmann_json)
 target_include_directories(uqm-dialogue PUBLIC sc2/src)
 
@@ -92,6 +93,7 @@ if(BUILD_TESTING)
         tests/projectile.cpp sc2/src/uqm/beam.cpp sc2/src/uqm/simulation_damage.cpp sc2/src/uqm/simulation_targeting.cpp sc2/src/uqm/simulation_engine.cpp sc2/src/uqm/simulation_elements.cpp tests/simulation_engine.cpp tests/simulation_scenes.cpp sc2/src/uqm/runtime_ship_roster.cpp tests/runtime_ship_roster.cpp sc2/src/uqm/ship_selection.cpp tests/ship_selection.cpp tests/combat_entities.cpp sc2/src/uqm/gravity_field.cpp sc2/src/uqm/animation_effect.cpp sc2/src/uqm/combat_entity_legacy.cpp sc2/src/uqm/velocity.c sc2/src/uqm/sis_state.cpp sc2/src/uqm/fleet.cpp sc2/src/uqm/fleet_legacy.cpp tests/fleet.cpp
         tests/encounter_context.cpp sc2/src/uqm/encounter_context.cpp
         tests/device_inventory.cpp sc2/src/uqm/device_inventory.cpp
+        tests/dialogue_story.cpp sc2/src/uqm/conversation_story.cpp
         tests/dialogue_text.cpp sc2/src/uqm/conversation_text.cpp
         tests/conversation_mode.cpp sc2/src/uqm/conversation_mode.cpp
         tests/combat_mode.cpp tests/battle_driver.cpp sc2/src/uqm/battle_driver.cpp sc2/src/uqm/combat_mode.cpp sc2/src/uqm/campaign_combat.cpp

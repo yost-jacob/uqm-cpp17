@@ -834,6 +834,7 @@ uqm::ConversationRuntime::SelectResponse(ENCOUNTER_STATE *pES)
 			response_text->pStr);
 	FeedbackPlayerPhrase (pES->phrase_buf.data());
 	StopTrack ();
+    graphSpeechInsertions_.clear();
 	ClearSubtitles ();
 	SetSliderImage (SetAbsFrameIndex (ActivityFrame, 2));
 

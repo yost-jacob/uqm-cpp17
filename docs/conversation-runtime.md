@@ -14,7 +14,7 @@ selects the file. Names and indexed phrases are validated against its native
 string table, preserving compiled enums. `node_count` includes compact expansion.
 The loader resolves and binds the graph before running story code.
 
-The 23 remaining compatibility envelopes use an action for intro, a silent menu/farewell decision, and
+The 16 remaining compatibility envelopes use an action for intro, a silent menu/farewell decision, and
 compact responses with single-execution actions. The eight response slots preserve
 native registration order and constructed strings. `handlers.legacy_turn` invokes
 only the callback currently offered in that slot; unknown script IDs, invalid
@@ -43,10 +43,10 @@ pycparser is not a runtime or build dependency.
 
 ## Remaining work
 
-The probe, Kohr-Ah, Ur-Quan and Arilou scripts now use general state actions, conditions
+The probe, Kohr-Ah, Ur-Quan, Arilou, Ilwrath, Mycon, Umgah, Supox, Yehat rebels, Shofixti and Yehat scripts now use general state actions, conditions
 and dialogue nodes. Their old C callback bodies were removed. Probe coordinate
 number-speech, Ur-Quan hypnosis fade and native resource/lifecycle configuration
-remain explicit special cases. The other 23 C story bodies have **not** been
+remain explicit special cases. The other 16 C story bodies have **not** been
 converted to general state actions and conditions. Calling them through an explicit handler is a compatibility boundary,
 not a claim that the old logic was deleted. Hayes/Melnorme's hand-authored design
 graphs have known behavior/timing differences and unimplemented native contracts;
@@ -90,3 +90,13 @@ Arilou also preserves homeworld topic prioritization and the delayed Umgah event
 Its repeated angry-homeworld leave answer keeps a readable label instead of the
 legacy blank label; selection and consequences remain the same. This deliberate
 cosmetic difference is recorded in that definition.
+
+The shared live state adapter now covers fleet presence/count/capacity, escort
+creation, alliances, map reveals, biomass changes and registered calendar events.
+Date-sensitive dialogue receives a read-only encounter-date snapshot. Mycon's
+coupled cyclic ramble bookkeeping remains a bounded `handlers.prepare_report`
+operation whose phrase cycle and discovery threshold are defined in JSON.
+Yehat farewell randomness executes once on selection; replay cannot reroll it.
+Yehat rebel gifts and cavalry are delivered only after their speech completes.
+Shofixti's two visually identical legacy insults have separate graph response IDs,
+so both retain their original effects without ambiguous cursor traversal.

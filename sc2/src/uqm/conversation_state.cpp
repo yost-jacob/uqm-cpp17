@@ -1,0 +1,164 @@
+#include "conversation_state.hpp"
+#include "build.h"
+#include "commglue.h"
+#include "game_state.hpp"
+#include "gameev.h"
+#include "libs/mathlib.h"
+#include "sis_state.hpp"
+#include <limits>
+namespace uqm {
+CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, std::string script,
+                                             Callback turn, Report report, dialogue::Json context)
+    : LegacyTurnState(std::move(script), std::move(turn)), player_(player), story_(player.story()),
+      report_(std::move(report)), context_(std::move(context)) {}
+dialogue::Json CampaignDialogueState::read(const std::string &scope, const std::string &key) const {
+    if (scope == "player")
+        return context_.at("player").at(key);
+    if (scope == "encounter")
+        return context_.at(key);
+    if (scope != "story")
+        throw std::invalid_argument("unsupported live state scope: " + scope);
+    const StoryState &story = story_;
+    return static_cast<dialogue::Integer>(story.readNamed(key));
+}
+dialogue::Result CampaignDialogueState::set(const std::string &scope, const std::string &key,
+                                            const dialogue::Json &value) {
+    if (scope != "story")
+        throw std::invalid_argument("unsupported live state scope: " + scope);
+    if (value.is_boolean())
+        story_.setNamed(key, value.get<bool>() ? 1u : 0u);
+    else {
+        if (!value.is_number_integer() || value < 0 || value > std::numeric_limits<unsigned>::max())
+            throw std::out_of_range("invalid story field value: " + key);
+        story_.setNamed(key, value.get<unsigned>());
+    }
+    return {};
+}
+dialogue::Result CampaignDialogueState::setOutcome(const std::string &outcome) {
+    if (outcome == "peace")
+        setSegue(Segue_peace);
+    else if (outcome == "hostile")
+        setSegue(Segue_hostile);
+    else if (outcome == "victory")
+        setSegue(Segue_victory);
+    else if (outcome == "defeat")
+        setSegue(Segue_defeat);
+    else
+        throw std::invalid_argument("unknown encounter outcome: " + outcome);
+    return {};
+}
+dialogue::Integer CampaignDialogueState::randomBelow(dialogue::Integer bound) {
+    if (bound <= 0)
+        throw std::out_of_range("invalid random bound");
+    return TFB_Random() % bound;
+}
+dialogue::Result CampaignDialogueState::scheduleEvent(const std::string &event,
+                                                      dialogue::Integer months,
+                                                      dialogue::Integer days,
+                                                      dialogue::Integer years) {
+    BYTE selector;
+    if (event == "ARILOU_UMGAH_CHECK")
+        selector = ARILOU_UMGAH_CHECK;
+    else if (event == "ADVANCE_ILWRATH_MISSION")
+        selector = ADVANCE_ILWRATH_MISSION;
+    else if (event == "YEHAT_REBEL_EVENT")
+        selector = YEHAT_REBEL_EVENT;
+    else if (event == "SHOFIXTI_RETURN_EVENT")
+        selector = SHOFIXTI_RETURN_EVENT;
+    else if (event == "ADVANCE_MYCON_MISSION")
+        selector = ADVANCE_MYCON_MISSION;
+    else
+        throw std::invalid_argument("unregistered calendar event: " + event);
+    for (auto value : {months, days, years})
+        if (value < 0 || value > std::numeric_limits<COUNT>::max())
+            throw std::out_of_range("calendar offset out of range");
+    AddEvent(RELATIVE_EVENT, months, days, years, selector);
+    return {};
+}
+dialogue::Result CampaignDialogueState::prepareReport(const std::string &report,
+                                                      const dialogue::Json &parameters) {
+    if (!parameters.is_object())
+        throw std::invalid_argument("report parameters must be an object");
+    return report_(report, parameters);
+}
+
+} // namespace uqm
+namespace uqm {
+namespace {
+COUNT raceId(const std::string &name) {
+    struct NamedRace {
+        const char *name;
+        COUNT id;
+    };
+    static constexpr NamedRace races[] = {{"arilou", ARILOU_SHIP},
+                                          {"chmmr", CHMMR_SHIP},
+                                          {"human", HUMAN_SHIP},
+                                          {"orz", ORZ_SHIP},
+                                          {"pkunk", PKUNK_SHIP},
+                                          {"shofixti", SHOFIXTI_SHIP},
+                                          {"spathi", SPATHI_SHIP},
+                                          {"supox", SUPOX_SHIP},
+                                          {"thradd", THRADDASH_SHIP},
+                                          {"utwig", UTWIG_SHIP},
+                                          {"vux", VUX_SHIP},
+                                          {"yehat", YEHAT_SHIP},
+                                          {"melnorme", MELNORME_SHIP},
+                                          {"druuge", DRUUGE_SHIP},
+                                          {"ilwrath", ILWRATH_SHIP},
+                                          {"mycon", MYCON_SHIP},
+                                          {"probe", SLYLANDRO_SHIP},
+                                          {"umgah", UMGAH_SHIP},
+                                          {"urquan", URQUAN_SHIP},
+                                          {"zoqfot", ZOQFOTPIK_SHIP},
+                                          {"syreen", SYREEN_SHIP},
+                                          {"blackurq", BLACK_URQUAN_SHIP},
+                                          {"yehat_rebel", YEHAT_REBEL_SHIP},
+                                          {"lastbat", SAMATRA_SHIP}};
+    for (const auto &race : races)
+        if (name == race.name)
+            return race.id;
+    throw std::invalid_argument("unknown campaign race: " + name);
+}
+} // namespace
+dialogue::Integer CampaignDialogueState::availableSlots(const std::string &type) const {
+    return EscortFeasibilityStudy(raceId(type));
+}
+dialogue::Integer CampaignDialogueState::shipCount(const std::string &type) const {
+    return CountEscortShips(raceId(type));
+}
+bool CampaignDialogueState::hasShip(const std::string &type) const {
+    return shipCount(type) != 0;
+}
+std::string CampaignDialogueState::relationship(const std::string &type) const {
+    const auto state = CheckAlliance(raceId(type));
+    return state == GOOD_GUY ? "allied" : state == DEAD_GUY ? "extinct" : "neutral";
+}
+dialogue::Result CampaignDialogueState::giveShips(const std::string &type,
+                                                  dialogue::Integer count) {
+    if (count < 0 || count > std::numeric_limits<SIZE>::max())
+        throw std::out_of_range("invalid escort count");
+    return {"ok", {{"count", AddEscortShips(raceId(type), count)}}};
+}
+dialogue::Result CampaignDialogueState::setRelationship(const std::string &type,
+                                                        const std::string &relation) {
+    if (relation != "allied" && relation != "neutral")
+        throw std::invalid_argument("invalid alliance relation");
+    SetRaceAllied(raceId(type), relation == "allied" ? TRUE : FALSE);
+    return {};
+}
+dialogue::Result CampaignDialogueState::revealRace(const std::string &type) {
+    const auto result = StartSphereTracking(raceId(type));
+    return {"ok", {{"available", result != 0}}};
+}
+dialogue::Result CampaignDialogueState::adjustShip(const std::string &property,
+                                                   dialogue::Integer delta) {
+    if (property != "biomass")
+        throw std::invalid_argument("unsupported ship adjustment: " + property);
+    auto &sis = player_.sis();
+    const dialogue::Integer value = sis.biomass();
+    if (delta < -value || delta > std::numeric_limits<COUNT>::max() - value)
+        throw std::out_of_range("biomass adjustment exceeds storage range");
+    sis.setBiomass(static_cast<COUNT>(value + delta));
+    return {};
+}
+} // namespace uqm

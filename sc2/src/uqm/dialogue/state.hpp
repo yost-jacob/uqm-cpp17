@@ -11,7 +11,7 @@ struct Result {
     std::string code = "ok";
     Json values = Json::object();
 };
-// Proposed native state-access contract. This is not a second live GameState.
+// State-access interface for bound conversation operations; this owns no GameState.
 // The session supplies an adapter borrowing its player/galaxy objects. All const
 // queries are repeatable and must not mutate state, consume RNG or play media.
 // Methods deliberately fail until implemented by an adapter; no silent success.

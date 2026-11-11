@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 115,
   "id": "ilwrath",
   "resource": "comm.ilwrath.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource configuration only; ordinary topics, worship, deception and event scheduling are graph data."
   },
   "phrases": [
     {
@@ -769,120 +769,1224 @@
   "nodes": [
     {
       "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]}, 0]},
+          "next": "probe"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "home.greet"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "chmmr.greet"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 32]}, 0]},
+          "next": "radio.ship"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 16]}, 0]},
+          "next": "gods.greet.choose"
+        }
+      ],
+      "otherwise": "space.peace"
+    },
+    {
+      "id": "exit.you_are_weak.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["STRENGTH_NOT_ALL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.you_are_weak",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["ilwrath", null]
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_you_are_weak",
+      "next": "exit.you_are_weak.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
-    },
-    {
-      "id": "menu",
+      "id": "exit.slay_by_thousands.speech",
       "kind": "dialogue",
-      "variants": [{"speech": []}],
+      "variants": [{"speech": ["NO_SLAY_BY_THOUSANDS"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.slay_by_thousands",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_slay_by_thousands",
+      "next": "exit.slay_by_thousands.speech"
+    },
+    {
+      "id": "exit.ease_up.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_EASE_UP"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.ease_up",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_ease_up",
+      "next": "exit.ease_up.speech"
+    },
+    {
+      "id": "exit.bye_space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_SPACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_space",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_space",
+      "next": "exit.bye_space.speech"
+    },
+    {
+      "id": "exit.bye_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE_HOMEWORLD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_homeworld",
+      "next": "exit.bye_homeworld.speech"
+    },
+    {
+      "id": "exit.want_peace.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_PEACE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.want_peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_want_peace",
+      "next": "exit.want_peace.speech"
+    },
+    {
+      "id": "exit.want_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ALLIANCE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.want_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_want_alliance",
+      "next": "exit.want_alliance.speech"
+    },
+    {
+      "id": "exit.but_evil_is_defined.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_CONFUSE_US"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.but_evil_is_defined",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_but_evil_is_defined",
+      "next": "exit.but_evil_is_defined.speech"
+    },
+    {
+      "id": "exit.bye_gods.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_GODS"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_gods",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_gods",
+      "next": "exit.bye_gods.speech"
+    },
+    {
+      "id": "exit.bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_DIE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye",
+      "next": "exit.bye.speech"
+    },
+    {
+      "id": "exit.where_you_come_from.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CAME_FROM"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.where_you_come_from",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_where_you_come_from",
+      "next": "exit.where_you_come_from.speech"
+    },
+    {
+      "id": "exit.it_will_be_a_pleasure.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHO_BLASTS_WHO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.it_will_be_a_pleasure",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_it_will_be_a_pleasure",
+      "next": "exit.it_will_be_a_pleasure.speech"
+    },
+    {
+      "id": "exit.surrender.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SURRENDER"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.surrender",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_surrender",
+      "next": "exit.surrender.speech"
+    },
+    {
+      "id": "exit.be_reasonable.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_REASONABLE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.be_reasonable",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_be_reasonable",
+      "next": "exit.be_reasonable.speech"
+    },
+    {
+      "id": "probe",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SEND_MESSAGE"]}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "where_you_come_from",
+          "text": "where_you_come_from",
+          "when": true,
+          "next": "exit.where_you_come_from"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "it_will_be_a_pleasure",
+          "text": "it_will_be_a_pleasure",
+          "when": true,
+          "next": "exit.it_will_be_a_pleasure"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "surrender",
+          "text": "surrender",
+          "when": true,
+          "next": "exit.surrender"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["ilwrath", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "be_reasonable",
+          "text": "be_reasonable",
+          "when": true,
+          "next": "exit.be_reasonable"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "home.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ILWRATH_HOME_VISITS", [["INIT_HOME_HELLO"], ["SUBSEQUENT_HOME_HELLO"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "home.greet.speech"
+    },
+    {
+      "id": "home.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "chmmr.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ILWRATH_CHMMR_VISITS", [["INIT_CHMMR_HELLO"], ["SUBSEQUENT_CHMMR_HELLO"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "chmmr.greet.speech"
+    },
+    {
+      "id": "chmmr.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "chmmr.menu"
+    },
+    {
+      "id": "chmmr.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up",
+          "text": "whats_up",
+          "when": true,
+          "next": "chmmr.whats"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "exit.bye"
+        }
+      ]
+    },
+    {
+      "id": "chmmr.whats",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "chmmr_whats",
+      "next": "chmmr.info"
+    },
+    {
+      "id": "chmmr.info",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO"]}],
+      "responses": [{"id": "bye", "text": "bye", "when": true, "next": "exit.bye"}]
+    },
+    {
+      "id": "radio.ship",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_FIGHT_THRADDASH", 0]}, 0]},
+          "next": "radio.fun"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_DECEIVED", 0]}, 0]},
+          "next": "radio.fast"
+        }
+      ],
+      "otherwise": "radio.grunts"
+    },
+    {
+      "id": "radio.fun.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BIG_FUN"]}],
       "next": "end"
+    },
+    {
+      "id": "radio.fun",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "radio_fun",
+      "next": "radio.fun.speech"
+    },
+    {
+      "id": "radio.fast.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FAST_AS_CAN"]}],
+      "next": "end"
+    },
+    {
+      "id": "radio.fast",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "radio_fast",
+      "next": "radio.fast.speech"
+    },
+    {
+      "id": "radio.grunts.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["JUST_GRUNTS"]}],
+      "next": "end"
+    },
+    {
+      "id": "radio.grunts",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "radio_grunts",
+      "next": "radio.grunts.speech"
+    },
+    {
+      "id": "space.peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "space_peace",
+      "next": "space.choose"
+    },
+    {
+      "id": "space.choose",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_FIGHT_THRADDASH", 0]}, 0]},
+          "next": "space.fighting"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_DECEIVED", 0]}, 0]},
+          "next": "space.onway"
+        }
+      ],
+      "otherwise": "space.greet"
+    },
+    {
+      "id": "space.fighting",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAPPY_FIGHTING_THRADDASH"]}],
+      "next": "end"
+    },
+    {
+      "id": "space.onway",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ON_WAY_TO_THRADDASH"]}],
+      "next": "end"
+    },
+    {
+      "id": "space.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ILWRATH_VISITS",
+          [
+            ["INIT_HELLO_SPACE"],
+            ["SUBSEQUENT_HELLO_SPACE_1"],
+            ["SUBSEQUENT_HELLO_SPACE_2"],
+            ["SUBSEQUENT_HELLO_SPACE_3"],
+            ["SUBSEQUENT_HELLO_SPACE_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "space.greet.speech"
+    },
+    {
+      "id": "space.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "space.menu"
+    },
+    {
+      "id": "whats_up_space_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_space_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_space_1_effect1",
+      "next": "whats_up_space_1.speech"
+    },
+    {
+      "id": "whats_up_space_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ILWRATH_INFO", 1]
+      },
+      "save_as": "whats_up_space_1",
+      "next": "whats_up_space_1.effect1"
+    },
+    {
+      "id": "whats_up_space_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_space_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_space_2_effect1",
+      "next": "whats_up_space_2.speech"
+    },
+    {
+      "id": "whats_up_space_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ILWRATH_INFO", 2]
+      },
+      "save_as": "whats_up_space_2",
+      "next": "whats_up_space_2.effect1"
+    },
+    {
+      "id": "whats_up_space_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_space_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_space_3_effect1",
+      "next": "whats_up_space_3.speech"
+    },
+    {
+      "id": "whats_up_space_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ILWRATH_INFO", 3]
+      },
+      "save_as": "whats_up_space_3",
+      "next": "whats_up_space_3.effect1"
+    },
+    {
+      "id": "whats_up_space_4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_space_4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_space_4_effect1",
+      "next": "whats_up_space_4.speech"
+    },
+    {
+      "id": "whats_up_space_4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ILWRATH_INFO", 4]
+      },
+      "save_as": "whats_up_space_4",
+      "next": "whats_up_space_4.effect1"
+    },
+    {
+      "id": "whats_up_space_5.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_SPACE_5"]}],
+      "next": "end"
+    },
+    {
+      "id": "whats_up_space_5.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "whats_up_space_5_effect1",
+      "next": "whats_up_space_5.speech"
+    },
+    {
+      "id": "whats_up_space_5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ILWRATH_INFO", 4]
+      },
+      "save_as": "whats_up_space_5",
+      "next": "whats_up_space_5.effect1"
+    },
+    {
+      "id": "space.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_space_1",
+          "text": "whats_up_space_1",
+          "when": {"eq": [{"get": ["story", "ILWRATH_INFO", 0]}, 0]},
+          "next": "whats_up_space_1"
+        },
+        {
+          "id": "whats_up_space_2",
+          "text": "whats_up_space_2",
+          "when": {"eq": [{"get": ["story", "ILWRATH_INFO", 0]}, 1]},
+          "next": "whats_up_space_2"
+        },
+        {
+          "id": "whats_up_space_3",
+          "text": "whats_up_space_3",
+          "when": {"eq": [{"get": ["story", "ILWRATH_INFO", 0]}, 2]},
+          "next": "whats_up_space_3"
+        },
+        {
+          "id": "whats_up_space_4",
+          "text": "whats_up_space_4",
+          "when": {"eq": [{"get": ["story", "ILWRATH_INFO", 0]}, 3]},
+          "next": "whats_up_space_4"
+        },
+        {
+          "id": "whats_up_space_5",
+          "text": "whats_up_space_5",
+          "when": {"eq": [{"get": ["story", "ILWRATH_INFO", 0]}, 4]},
+          "next": "whats_up_space_5"
+        },
+        {
+          "id": "you_are_weak",
+          "text": "you_are_weak",
+          "when": true,
+          "next": "exit.you_are_weak"
+        },
+        {
+          "id": "slay_by_thousands",
+          "text": "slay_by_thousands",
+          "when": true,
+          "next": "exit.slay_by_thousands"
+        },
+        {
+          "id": "ease_up",
+          "text": "ease_up",
+          "when": true,
+          "next": "exit.ease_up"
+        },
+        {
+          "id": "bye_space",
+          "text": "bye_space",
+          "when": true,
+          "next": "exit.bye_space"
+        }
+      ]
+    },
+    {
+      "id": "home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "want_info_on_gods",
+          "text": "want_info_on_gods",
+          "when": {
+            "any": [
+              {"not": {"get": ["local", "when_start_worship", false]}},
+              {"not": {"get": ["local", "any_good_gods", false]}},
+              {"not": {"get": ["local", "how_talk_with_gods", false]}},
+              {"not": {"get": ["local", "why_44", false]}}
+            ]
+          },
+          "next": "gods.info"
+        },
+        {
+          "id": "want_info_on_ilwrath",
+          "text": "want_info_on_ilwrath",
+          "when": true,
+          "next": "info.intro"
+        },
+        {
+          "id": "want_peace",
+          "text": "want_peace",
+          "when": true,
+          "next": "exit.want_peace"
+        },
+        {
+          "id": "want_alliance",
+          "text": "want_alliance",
+          "when": true,
+          "next": "exit.want_alliance"
+        },
+        {
+          "id": "bye_homeworld",
+          "text": "bye_homeworld",
+          "when": true,
+          "next": "exit.bye_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "gods.info",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SO_MUCH_TO_KNOW"]}],
+      "next": "gods.info.menu"
+    },
+    {
+      "id": "when_start_worship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LONG_AGO"]}],
+      "next": "gods.info.menu"
+    },
+    {
+      "id": "when_start_worship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "when_start_worship", true]
+      },
+      "save_as": "when_start_worship",
+      "next": "when_start_worship.speech"
+    },
+    {
+      "id": "any_good_gods.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILLED_GOOD_GODS"]}],
+      "next": "gods.info.menu"
+    },
+    {
+      "id": "any_good_gods",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_good_gods", true]
+      },
+      "save_as": "any_good_gods",
+      "next": "any_good_gods.speech"
+    },
+    {
+      "id": "how_talk_with_gods.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CHANNEL_44"]}],
+      "next": "gods.info.menu"
+    },
+    {
+      "id": "how_talk_with_gods",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_talk_with_gods", true]
+      },
+      "save_as": "how_talk_with_gods",
+      "next": "how_talk_with_gods.speech"
+    },
+    {
+      "id": "why_44.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BECAUSE_44"]}],
+      "next": "gods.info.menu"
+    },
+    {
+      "id": "why_44",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_44", true]
+      },
+      "save_as": "why_44",
+      "next": "why_44.speech"
+    },
+    {
+      "id": "enough.gods.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_GODS"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "gods.info.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "when_start_worship",
+          "text": "when_start_worship",
+          "when": {"not": {"get": ["local", "when_start_worship", false]}},
+          "next": "when_start_worship"
+        },
+        {
+          "id": "any_good_gods",
+          "text": "any_good_gods",
+          "when": {"not": {"get": ["local", "any_good_gods", false]}},
+          "next": "any_good_gods"
+        },
+        {
+          "id": "how_talk_with_gods",
+          "text": "how_talk_with_gods",
+          "when": {"not": {"get": ["local", "how_talk_with_gods", false]}},
+          "next": "how_talk_with_gods"
+        },
+        {
+          "id": "why_44",
+          "text": "why_44",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "why_44", false]}},
+              {"not": {"not": {"get": ["local", "how_talk_with_gods", false]}}}
+            ]
+          },
+          "next": "why_44"
+        },
+        {
+          "id": "enough_gods",
+          "text": "enough_gods",
+          "when": true,
+          "next": "enough.gods.speech"
+        }
+      ]
+    },
+    {
+      "id": "info.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_ABOUT_ILWRATH"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_physio.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_PHYSIO"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_physio",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_physio", true]
+      },
+      "save_as": "what_about_physio",
+      "next": "what_about_physio.speech"
+    },
+    {
+      "id": "what_about_history.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HISTORY"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_history",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_history", true]
+      },
+      "save_as": "what_about_history",
+      "next": "what_about_history.speech"
+    },
+    {
+      "id": "what_about_culture.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_CULTURE"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_culture",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_culture", true]
+      },
+      "save_as": "what_about_culture",
+      "next": "what_about_culture.speech"
+    },
+    {
+      "id": "what_about_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_TOO_NICE"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_urquan", true]
+      },
+      "save_as": "what_about_urquan",
+      "next": "what_about_urquan.speech"
+    },
+    {
+      "id": "are_you_evil.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OF_COURSE_WERE_EVIL"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "are_you_evil",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "are_you_evil", true]
+      },
+      "save_as": "are_you_evil",
+      "next": "are_you_evil.speech"
+    },
+    {
+      "id": "enough.info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_ILWRATH"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "info.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_physio",
+          "text": "what_about_physio",
+          "when": {"not": {"get": ["local", "what_about_physio", false]}},
+          "next": "what_about_physio"
+        },
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"not": {"get": ["local", "what_about_history", false]}},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_culture",
+          "text": "what_about_culture",
+          "when": {"not": {"get": ["local", "what_about_culture", false]}},
+          "next": "what_about_culture"
+        },
+        {
+          "id": "what_about_urquan",
+          "text": "what_about_urquan",
+          "when": {"not": {"get": ["local", "what_about_urquan", false]}},
+          "next": "what_about_urquan"
+        },
+        {
+          "id": "are_you_evil",
+          "text": "are_you_evil",
+          "when": {"not": {"get": ["local", "are_you_evil", false]}},
+          "next": "are_you_evil"
+        },
+        {
+          "id": "but_evil_is_defined",
+          "text": "but_evil_is_defined",
+          "when": {"not": {"not": {"get": ["local", "are_you_evil", false]}}},
+          "next": "exit.but_evil_is_defined"
+        },
+        {
+          "id": "enough_ilwrath",
+          "text": "enough_ilwrath",
+          "when": true,
+          "next": "enough.info.speech"
+        }
+      ]
+    },
+    {
+      "id": "gods.greet.choose",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_FIGHT_THRADDASH", 0]}, 0]},
+          "next": "gods.greet.worship"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_DECEIVED", 0]}, 0]},
+          "next": "gods.greet.onway"
+        }
+      ],
+      "otherwise": "gods.greet.sequence"
+    },
+    {
+      "id": "gods.greet.worship",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GLORIOUS_WORSHIP"]}],
+      "next": "gods.menu"
+    },
+    {
+      "id": "gods.greet.onway",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ON_WAY"]}],
+      "next": "gods.menu"
+    },
+    {
+      "id": "gods.greet.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ILWRATH_GODS_SPOKEN",
+          [["ILWRATH_BELIEVE"], ["GODS_RETURN_1"], ["GODS_RETURN_2"], ["GODS_RETURN_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "gods.greet.sequence.speech"
+    },
+    {
+      "id": "gods.greet.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "gods.menu"
+    },
+    {
+      "id": "gods.thraddash.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_KILL_THRADDASH"]}],
+      "next": "gods.menu"
+    },
+    {
+      "id": "gods.thraddash.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_ILWRATH_MISSION", 0, 0, 0]
+      },
+      "save_as": "gods_thraddash_effect1",
+      "next": "gods.thraddash.speech"
+    },
+    {
+      "id": "gods.thraddash",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ILWRATH_DECEIVED", 1]
+      },
+      "save_as": "gods_thraddash",
+      "next": "gods.thraddash.effect1"
+    },
+    {
+      "id": "gods.worship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "worship_us", true]
+      },
+      "save_as": "gods_worship",
+      "next": "gods.worship.sequence"
+    },
+    {
+      "id": "gods.worship.sequence",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ILWRATH_WORSHIP", [["WE_WORSHIP_1"], ["WE_WORSHIP_2"], ["WE_WORSHIP_3"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "gods.worship.sequence.speech"
+    },
+    {
+      "id": "gods.worship.sequence.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech"]}}],
+      "next": "gods.menu"
+    },
+    {
+      "id": "gods.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "go_kill_thraddash",
+          "text": "go_kill_thraddash",
+          "when": {"not": {"ne": [{"get": ["story", "ILWRATH_DECEIVED", 0]}, 0]}},
+          "next": "gods.thraddash"
+        },
+        {
+          "id": "worship_us",
+          "text": "worship_us",
+          "when": {"not": {"get": ["local", "worship_us", false]}},
+          "next": "gods.worship"
+        },
+        {
+          "id": "other_divine_orders",
+          "text": "other_divine_orders",
+          "when": {
+            "any": [
+              {"not": {"get": ["local", "say_warship", false]}},
+              {"not": {"get": ["local", "say_dwe", false]}},
+              {"not": {"get": ["local", "say_youboo", false]}},
+              {"not": {"get": ["local", "say_dillrat", false]}}
+            ]
+          },
+          "next": "orders.intro"
+        },
+        {
+          "id": "bye_gods",
+          "text": "bye_gods",
+          "when": true,
+          "next": "exit.bye_gods"
+        }
+      ]
+    },
+    {
+      "id": "orders.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_ORDERS"]}],
+      "next": "orders.menu"
+    },
+    {
+      "id": "say_warship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WARSHIP"]}],
+      "next": "orders.menu"
+    },
+    {
+      "id": "say_warship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "say_warship", true]
+      },
+      "save_as": "say_warship",
+      "next": "say_warship.speech"
+    },
+    {
+      "id": "say_dwe.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DWE"]}],
+      "next": "orders.menu"
+    },
+    {
+      "id": "say_dwe",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "say_dwe", true]
+      },
+      "save_as": "say_dwe",
+      "next": "say_dwe.speech"
+    },
+    {
+      "id": "say_youboo.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_YOUBOO"]}],
+      "next": "orders.menu"
+    },
+    {
+      "id": "say_youboo",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "say_youboo", true]
+      },
+      "save_as": "say_youboo",
+      "next": "say_youboo.speech"
+    },
+    {
+      "id": "say_dillrat.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DILRAT"]}],
+      "next": "orders.menu"
+    },
+    {
+      "id": "say_dillrat",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "say_dillrat", true]
+      },
+      "save_as": "say_dillrat",
+      "next": "say_dillrat.speech"
+    },
+    {
+      "id": "orders.enough.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEVER_ENOUGH"]}],
+      "next": "gods.menu"
+    },
+    {
+      "id": "orders.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "say_warship",
+          "text": "say_warship",
+          "when": {"not": {"get": ["local", "say_warship", false]}},
+          "next": "say_warship"
+        },
+        {
+          "id": "say_dwe",
+          "text": "say_dwe",
+          "when": {"not": {"get": ["local", "say_dwe", false]}},
+          "next": "say_dwe"
+        },
+        {
+          "id": "say_youboo",
+          "text": "say_youboo",
+          "when": {"not": {"get": ["local", "say_youboo", false]}},
+          "next": "say_youboo"
+        },
+        {
+          "id": "say_dillrat",
+          "text": "say_dillrat",
+          "when": {"not": {"get": ["local", "say_dillrat", false]}},
+          "next": "say_dillrat"
+        },
+        {
+          "id": "enough_orders",
+          "text": "enough_orders",
+          "when": true,
+          "next": "orders.enough.speech"
+        }
+      ]
     },
     {
       "id": "end",

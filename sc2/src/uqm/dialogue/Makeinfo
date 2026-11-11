@@ -1,2 +1,2 @@
-uqm_CXXFILES="engine.cpp graph.cpp verb_factory.cpp legacy_turn.cpp"
-uqm_HFILES="state.hpp presentation.hpp graph.hpp engine.hpp verb_factory.hpp legacy_turn.hpp engine.tpp"
+uqm_CXXFILES="engine.cpp graph.cpp verb_factory.cpp legacy_turn.cpp text.cpp"
+uqm_HFILES="state.hpp presentation.hpp graph.hpp engine.hpp verb_factory.hpp legacy_turn.hpp text.hpp engine.tpp"
