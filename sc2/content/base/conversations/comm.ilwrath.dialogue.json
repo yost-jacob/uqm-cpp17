@@ -804,7 +804,7 @@
       "id": "exit.you_are_weak",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_you_are_weak",
@@ -820,7 +820,7 @@
       "id": "exit.slay_by_thousands",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_slay_by_thousands",
@@ -836,7 +836,7 @@
       "id": "exit.ease_up",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_ease_up",
@@ -852,7 +852,7 @@
       "id": "exit.bye_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_space",
@@ -868,7 +868,7 @@
       "id": "exit.bye_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_homeworld",
@@ -884,7 +884,7 @@
       "id": "exit.want_peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_want_peace",
@@ -900,7 +900,7 @@
       "id": "exit.want_alliance",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_want_alliance",
@@ -916,7 +916,7 @@
       "id": "exit.but_evil_is_defined",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_but_evil_is_defined",
@@ -932,7 +932,7 @@
       "id": "exit.bye_gods",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_gods",
@@ -948,7 +948,7 @@
       "id": "exit.bye",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye",
@@ -964,7 +964,7 @@
       "id": "exit.where_you_come_from",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_where_you_come_from",
@@ -980,7 +980,7 @@
       "id": "exit.it_will_be_a_pleasure",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_it_will_be_a_pleasure",
@@ -996,7 +996,7 @@
       "id": "exit.surrender",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_surrender",
@@ -1012,7 +1012,7 @@
       "id": "exit.be_reasonable",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_be_reasonable",
@@ -1053,7 +1053,7 @@
       "id": "home.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ILWRATH_HOME_VISITS", [["INIT_HOME_HELLO"], ["SUBSEQUENT_HOME_HELLO"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1069,7 +1069,7 @@
       "id": "chmmr.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ILWRATH_CHMMR_VISITS", [["INIT_CHMMR_HELLO"], ["SUBSEQUENT_CHMMR_HELLO"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1104,7 +1104,7 @@
       "id": "chmmr.whats",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "chmmr_whats",
@@ -1141,7 +1141,7 @@
       "id": "radio.fun",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "radio_fun",
@@ -1157,7 +1157,7 @@
       "id": "radio.fast",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "radio_fast",
@@ -1173,7 +1173,7 @@
       "id": "radio.grunts",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "radio_grunts",
@@ -1183,7 +1183,7 @@
       "id": "space.peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "space_peace",
@@ -1220,7 +1220,7 @@
       "id": "space.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ILWRATH_VISITS",
@@ -1253,7 +1253,7 @@
       "id": "whats_up_space_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_space_1_effect1",
@@ -1263,7 +1263,7 @@
       "id": "whats_up_space_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ILWRATH_INFO", 1]
       },
       "save_as": "whats_up_space_1",
@@ -1279,7 +1279,7 @@
       "id": "whats_up_space_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_space_2_effect1",
@@ -1289,7 +1289,7 @@
       "id": "whats_up_space_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ILWRATH_INFO", 2]
       },
       "save_as": "whats_up_space_2",
@@ -1305,7 +1305,7 @@
       "id": "whats_up_space_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_space_3_effect1",
@@ -1315,7 +1315,7 @@
       "id": "whats_up_space_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ILWRATH_INFO", 3]
       },
       "save_as": "whats_up_space_3",
@@ -1331,7 +1331,7 @@
       "id": "whats_up_space_4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_space_4_effect1",
@@ -1341,7 +1341,7 @@
       "id": "whats_up_space_4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ILWRATH_INFO", 4]
       },
       "save_as": "whats_up_space_4",
@@ -1357,7 +1357,7 @@
       "id": "whats_up_space_5.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "whats_up_space_5_effect1",
@@ -1367,7 +1367,7 @@
       "id": "whats_up_space_5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ILWRATH_INFO", 4]
       },
       "save_as": "whats_up_space_5",
@@ -1494,7 +1494,7 @@
       "id": "when_start_worship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "when_start_worship", true]
       },
       "save_as": "when_start_worship",
@@ -1510,7 +1510,7 @@
       "id": "any_good_gods",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_good_gods", true]
       },
       "save_as": "any_good_gods",
@@ -1526,7 +1526,7 @@
       "id": "how_talk_with_gods",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_talk_with_gods", true]
       },
       "save_as": "how_talk_with_gods",
@@ -1542,7 +1542,7 @@
       "id": "why_44",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_44", true]
       },
       "save_as": "why_44",
@@ -1612,7 +1612,7 @@
       "id": "what_about_physio",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_physio", true]
       },
       "save_as": "what_about_physio",
@@ -1628,7 +1628,7 @@
       "id": "what_about_history",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_history", true]
       },
       "save_as": "what_about_history",
@@ -1644,7 +1644,7 @@
       "id": "what_about_culture",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_culture", true]
       },
       "save_as": "what_about_culture",
@@ -1660,7 +1660,7 @@
       "id": "what_about_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_urquan", true]
       },
       "save_as": "what_about_urquan",
@@ -1676,7 +1676,7 @@
       "id": "are_you_evil",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "are_you_evil", true]
       },
       "save_as": "are_you_evil",
@@ -1768,7 +1768,7 @@
       "id": "gods.greet.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "ILWRATH_GODS_SPOKEN",
@@ -1795,7 +1795,7 @@
       "id": "gods.thraddash.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_ILWRATH_MISSION", 0, 0, 0]
       },
       "save_as": "gods_thraddash_effect1",
@@ -1805,7 +1805,7 @@
       "id": "gods.thraddash",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ILWRATH_DECEIVED", 1]
       },
       "save_as": "gods_thraddash",
@@ -1815,7 +1815,7 @@
       "id": "gods.worship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "worship_us", true]
       },
       "save_as": "gods_worship",
@@ -1825,7 +1825,7 @@
       "id": "gods.worship.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ILWRATH_WORSHIP", [["WE_WORSHIP_1"], ["WE_WORSHIP_2"], ["WE_WORSHIP_3"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1891,7 +1891,7 @@
       "id": "say_warship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "say_warship", true]
       },
       "save_as": "say_warship",
@@ -1907,7 +1907,7 @@
       "id": "say_dwe",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "say_dwe", true]
       },
       "save_as": "say_dwe",
@@ -1923,7 +1923,7 @@
       "id": "say_youboo",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "say_youboo", true]
       },
       "save_as": "say_youboo",
@@ -1939,7 +1939,7 @@
       "id": "say_dillrat",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "say_dillrat", true]
       },
       "save_as": "say_dillrat",

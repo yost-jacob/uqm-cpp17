@@ -1295,7 +1295,7 @@
       "id": "exit.friendly_bye_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_friendly_bye_space",
@@ -1311,7 +1311,7 @@
       "id": "exit.neutral_bye_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_neutral_bye_space",
@@ -1327,7 +1327,7 @@
       "id": "exit.bye_angry",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_angry",
@@ -1343,7 +1343,7 @@
       "id": "exit.bye_friendly",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_friendly",
@@ -1359,7 +1359,7 @@
       "id": "exit.suit_yourself",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_suit_yourself",
@@ -1375,7 +1375,7 @@
       "id": "exit.must_conquer.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_must_conquer_effect1",
@@ -1385,7 +1385,7 @@
       "id": "exit.must_conquer",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_MANNER", 2]
       },
       "save_as": "exit_must_conquer",
@@ -1401,7 +1401,7 @@
       "id": "exit.obey",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_obey",
@@ -1417,7 +1417,7 @@
       "id": "exit.die_idiot_fools",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_die_idiot_fools",
@@ -1441,7 +1441,7 @@
       "id": "exit.we_here_to_help.effect5",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_PKUNK_MISSION", 6, 0, 0]
       },
       "save_as": "exit_we_here_to_help_effect5",
@@ -1451,7 +1451,7 @@
       "id": "exit.we_here_to_help.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_we_here_to_help_effect4",
@@ -1461,7 +1461,7 @@
       "id": "exit.we_here_to_help.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_INFO", 0]
       },
       "save_as": "exit_we_here_to_help_effect3",
@@ -1471,7 +1471,7 @@
       "id": "exit.we_here_to_help.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_HOME_VISITS", 0]
       },
       "save_as": "exit_we_here_to_help_effect2",
@@ -1481,7 +1481,7 @@
       "id": "exit.we_here_to_help.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_VISITS", 0]
       },
       "save_as": "exit_we_here_to_help_effect1",
@@ -1491,7 +1491,7 @@
       "id": "exit.we_here_to_help",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_MANNER", 3]
       },
       "save_as": "exit_we_here_to_help",
@@ -1515,7 +1515,7 @@
       "id": "exit.we_need_help.effect5",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_PKUNK_MISSION", 6, 0, 0]
       },
       "save_as": "exit_we_need_help_effect5",
@@ -1525,7 +1525,7 @@
       "id": "exit.we_need_help.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_we_need_help_effect4",
@@ -1535,7 +1535,7 @@
       "id": "exit.we_need_help.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_INFO", 0]
       },
       "save_as": "exit_we_need_help_effect3",
@@ -1545,7 +1545,7 @@
       "id": "exit.we_need_help.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_HOME_VISITS", 0]
       },
       "save_as": "exit_we_need_help_effect2",
@@ -1555,7 +1555,7 @@
       "id": "exit.we_need_help.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_VISITS", 0]
       },
       "save_as": "exit_we_need_help_effect1",
@@ -1565,7 +1565,7 @@
       "id": "exit.we_need_help",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_MANNER", 3]
       },
       "save_as": "exit_we_need_help",
@@ -1581,7 +1581,7 @@
       "id": "alliance.gift",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["pkunk", 4]
       },
       "save_as": "gift",
@@ -1597,7 +1597,7 @@
       "id": "alliance.gift.month",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SHIP_MONTH", {"get": ["encounter", "calendar_month", 0]}]
       },
       "save_as": "alliance_gift_month",
@@ -1607,7 +1607,7 @@
       "id": "alliance.gift.day",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
       },
       "save_as": "alliance_gift_day",
@@ -1617,7 +1617,7 @@
       "id": "alliance.gift.year",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
       },
       "save_as": "alliance_gift_year",
@@ -1633,7 +1633,7 @@
       "id": "nicer.space.effect4",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "nicer_space_effect4",
@@ -1643,7 +1643,7 @@
       "id": "nicer.space.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_INFO", 0]
       },
       "save_as": "nicer_space_effect3",
@@ -1653,7 +1653,7 @@
       "id": "nicer.space.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_HOME_VISITS", 0]
       },
       "save_as": "nicer_space_effect2",
@@ -1663,7 +1663,7 @@
       "id": "nicer.space.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_VISITS", 0]
       },
       "save_as": "nicer_space_effect1",
@@ -1673,7 +1673,7 @@
       "id": "nicer.space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_MANNER", 3]
       },
       "save_as": "nicer_space",
@@ -1695,7 +1695,7 @@
       "id": "nicer.spindle.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CLEAR_SPINDLE_ON_SHIP", 1]
       },
       "save_as": "nicer_spindle_effect4",
@@ -1705,7 +1705,7 @@
       "id": "nicer.spindle.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CLEAR_SPINDLE", 1]
       },
       "save_as": "nicer_spindle_effect3",
@@ -1715,7 +1715,7 @@
       "id": "nicer.spindle.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_HOME_VISITS", 0]
       },
       "save_as": "nicer_spindle_effect2",
@@ -1725,7 +1725,7 @@
       "id": "nicer.spindle.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_VISITS", 0]
       },
       "save_as": "nicer_spindle_effect1",
@@ -1735,7 +1735,7 @@
       "id": "nicer.spindle",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_MANNER", 3]
       },
       "save_as": "nicer_spindle",
@@ -1751,7 +1751,7 @@
       "id": "nicer.known.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_HOME_VISITS", 0]
       },
       "save_as": "nicer_known_effect2",
@@ -1761,7 +1761,7 @@
       "id": "nicer.known.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_VISITS", 0]
       },
       "save_as": "nicer_known_effect1",
@@ -1771,7 +1771,7 @@
       "id": "nicer.known",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_MANNER", 3]
       },
       "save_as": "nicer_known",
@@ -1787,7 +1787,7 @@
       "id": "exit.good_reason_1.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_good_reason_1_effect2",
@@ -1797,7 +1797,7 @@
       "id": "exit.good_reason_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_PKUNK_MISSION", 0, 0, 0]
       },
       "save_as": "exit_good_reason_1_effect1",
@@ -1807,7 +1807,7 @@
       "id": "exit.good_reason_1",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "PKUNK_REASONS", "set", 1]
       },
       "save_as": "exit_good_reason_1",
@@ -1823,7 +1823,7 @@
       "id": "exit.good_reason_2.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_good_reason_2_effect2",
@@ -1833,7 +1833,7 @@
       "id": "exit.good_reason_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_PKUNK_MISSION", 0, 0, 0]
       },
       "save_as": "exit_good_reason_2_effect1",
@@ -1843,7 +1843,7 @@
       "id": "exit.good_reason_2",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "PKUNK_REASONS", "set", 2]
       },
       "save_as": "exit_good_reason_2",
@@ -1859,7 +1859,7 @@
       "id": "exit.bad_reason_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bad_reason_1_effect1",
@@ -1869,7 +1869,7 @@
       "id": "exit.bad_reason_1",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "PKUNK_REASONS", "set", 4]
       },
       "save_as": "exit_bad_reason_1",
@@ -1885,7 +1885,7 @@
       "id": "exit.bad_reason_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bad_reason_2_effect1",
@@ -1895,7 +1895,7 @@
       "id": "exit.bad_reason_2",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "PKUNK_REASONS", "set", 8]
       },
       "save_as": "exit_bad_reason_2",
@@ -1948,7 +1948,7 @@
       "id": "should_be_friends",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "should_be_friends", true]
       },
       "save_as": "should_be_friends",
@@ -1964,7 +1964,7 @@
       "id": "why_insults",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_insults", true]
       },
       "save_as": "why_insults",
@@ -1980,7 +1980,7 @@
       "id": "what_about_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_you", true]
       },
       "save_as": "what_about_you",
@@ -2055,7 +2055,7 @@
       "id": "conquer_because_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "conquer_because_1", true]
       },
       "save_as": "conquer_because_1",
@@ -2071,7 +2071,7 @@
       "id": "conquer_because_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "conquer_because_2", true]
       },
       "save_as": "conquer_because_2",
@@ -2118,7 +2118,7 @@
       "id": "conquer",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "we_conquer", true]
       },
       "save_as": "conquer",
@@ -2146,7 +2146,7 @@
       "id": "exploring_universe",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "exploring_universe", true]
       },
       "save_as": "exploring_universe",
@@ -2162,7 +2162,7 @@
       "id": "fun_cruise",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "fun_cruise", true]
       },
       "save_as": "fun_cruise",
@@ -2228,7 +2228,7 @@
       "id": "what_about_you.exhausted",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_you", true]
       },
       "save_as": "what_about_you_exhausted",
@@ -2244,7 +2244,7 @@
       "id": "what_about_history",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_history", true]
       },
       "save_as": "what_about_history",
@@ -2260,7 +2260,7 @@
       "id": "what_about_yehat",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_yehat", true]
       },
       "save_as": "what_about_yehat",
@@ -2276,7 +2276,7 @@
       "id": "what_about_culture",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_culture", true]
       },
       "save_as": "what_about_culture",
@@ -2292,7 +2292,7 @@
       "id": "elaborate_culture",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "elaborate_culture", true]
       },
       "save_as": "elaborate_culture",
@@ -2308,7 +2308,7 @@
       "id": "what_about_future",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_future", true]
       },
       "save_as": "what_about_future",
@@ -2401,7 +2401,7 @@
       "id": "what_about_ilwrath.exhausted",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_ilwrath", true]
       },
       "save_as": "what_about_ilwrath_exhausted",
@@ -2417,7 +2417,7 @@
       "id": "why_ilwrath_fight",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_ilwrath_fight", true]
       },
       "save_as": "why_ilwrath_fight",
@@ -2433,7 +2433,7 @@
       "id": "when_fight_start",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "when_fight_start", true]
       },
       "save_as": "when_fight_start",
@@ -2449,7 +2449,7 @@
       "id": "how_goes_fight",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_fight", true]
       },
       "save_as": "how_goes_fight",
@@ -2465,7 +2465,7 @@
       "id": "how_stop_fight",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_stop_fight", true]
       },
       "save_as": "how_stop_fight",
@@ -2524,7 +2524,7 @@
       "id": "ilwrath.gone",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_ilwrath", true]
       },
       "save_as": "ilwrath_gone",
@@ -2534,7 +2534,7 @@
       "id": "fleet",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SWITCH", 1]
       },
       "save_as": "fleet",
@@ -2544,7 +2544,7 @@
       "id": "fleet.counter",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "PKUNK_FLEET", 1]
       },
       "save_as": "fleet_counter",
@@ -2554,7 +2554,7 @@
       "id": "fleet.prune",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_fleet_1", true]
       },
       "save_as": "fleet_prune",
@@ -2570,7 +2570,7 @@
       "id": "fleet.returning",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "PKUNK_RETURN", [["RETURNING_FROM_YEHAT_1"], ["RETURNING_FROM_YEHAT_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -2586,7 +2586,7 @@
       "id": "fleet.migrating",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_MIGRATE",
@@ -2607,7 +2607,7 @@
       "id": "worry",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "am_worried_1", true]
       },
       "save_as": "worry",
@@ -2617,7 +2617,7 @@
       "id": "worry.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "PKUNK_WORRY", [["DONT_WORRY_1"], ["DONT_WORRY_2"], ["DONT_WORRY_3"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -2777,7 +2777,7 @@
       "id": "space.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_space", true]
       },
       "save_as": "space_info",
@@ -2832,7 +2832,7 @@
       "id": "space.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_INFO",
@@ -2862,7 +2862,7 @@
       "id": "fortune",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tell_my_fortune", true]
       },
       "save_as": "fortune",
@@ -2872,7 +2872,7 @@
       "id": "fortune.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_FORTUNE",
@@ -2902,7 +2902,7 @@
       "id": "war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_war", true]
       },
       "save_as": "war",
@@ -2927,7 +2927,7 @@
       "id": "war.knowledge",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_URQUAN_STORY", 1]
       },
       "save_as": "war_knowledge",
@@ -2937,7 +2937,7 @@
       "id": "war.kohrah",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_KOHR_AH_STORY", 1]
       },
       "save_as": "war_kohrah",
@@ -2947,7 +2947,7 @@
       "id": "war.done",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_DONE_WAR", 1]
       },
       "save_as": "war_done",
@@ -2957,7 +2957,7 @@
       "id": "war.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "PKUNK_WAR", [["WAR_GOES_1"], ["WAR_GOES_2"], ["WAR_GOES_3"], ["WAR_GOES_4"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -3009,7 +3009,7 @@
       "id": "neutral.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_neutral", true]
       },
       "save_as": "neutral_info",
@@ -3019,7 +3019,7 @@
       "id": "neutral.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_INFO",
@@ -3046,7 +3046,7 @@
       "id": "form_alliance",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "form_alliance", true]
       },
       "save_as": "form_alliance",
@@ -3062,7 +3062,7 @@
       "id": "help",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "can_you_help", true]
       },
       "save_as": "help",
@@ -3078,7 +3078,7 @@
       "id": "hostile_greeting",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "hostile_greeting", true]
       },
       "save_as": "hostile_greeting",
@@ -3173,7 +3173,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -3183,7 +3183,7 @@
       "id": "hate.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hate_outcome",
@@ -3193,7 +3193,7 @@
       "id": "hate.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_VISITS",
@@ -3214,7 +3214,7 @@
       "id": "angry.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_VISITS",
@@ -3235,7 +3235,7 @@
       "id": "migration.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_MIGRATE_VISITS",
@@ -3265,7 +3265,7 @@
       "id": "friendly.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_VISITS",
@@ -3295,7 +3295,7 @@
       "id": "neutral.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_VISITS",
@@ -3337,7 +3337,7 @@
       "id": "home.spindle",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CLEAR_SPINDLE", 1]
       },
       "save_as": "home_spindle",
@@ -3347,7 +3347,7 @@
       "id": "home.spindle.ship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "CLEAR_SPINDLE_ON_SHIP", 1]
       },
       "save_as": "home_spindle_ship",
@@ -3357,7 +3357,7 @@
       "id": "home.spindle.prefix",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "entry_prefix", ["GIVE_SPINDLE"]]
       },
       "save_as": "home_spindle_prefix",
@@ -3367,7 +3367,7 @@
       "id": "home.victory",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SENSE_VICTOR", 1]
       },
       "save_as": "home_victory",
@@ -3377,7 +3377,7 @@
       "id": "home.victory.prefix",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "entry_prefix", ["SENSE_KOHRAH_VICTORY"]]
       },
       "save_as": "home_victory_prefix",
@@ -3445,7 +3445,7 @@
       "id": "home.neutral",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_HOME_VISITS",
@@ -3471,7 +3471,7 @@
       "id": "home.friendly",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "PKUNK_HOME_VISITS",
@@ -3507,7 +3507,7 @@
       "id": "home.gift",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["pkunk", 4]
       },
       "save_as": "gift",
@@ -3523,7 +3523,7 @@
       "id": "home.gift.month",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SHIP_MONTH", {"get": ["encounter", "calendar_month", 0]}]
       },
       "save_as": "home_gift_month",
@@ -3533,7 +3533,7 @@
       "id": "home.gift.day",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
       },
       "save_as": "home_gift_day",
@@ -3543,7 +3543,7 @@
       "id": "home.gift.year",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PKUNK_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
       },
       "save_as": "home_gift_year",

@@ -1989,7 +1989,7 @@
       "id": "intro",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
+        "action": "handlers.legacy_turn",
         "args": ["melnorm", null]
       },
       "save_as": "turn",
@@ -2011,7 +2011,7 @@
           "text": {"get": ["result", "turn.text_0"]},
           "when": {"get": ["result", "turn.slot_0"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 0]
           },
           "save_as": "turn",
@@ -2022,7 +2022,7 @@
           "text": {"get": ["result", "turn.text_1"]},
           "when": {"get": ["result", "turn.slot_1"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 1]
           },
           "save_as": "turn",
@@ -2033,7 +2033,7 @@
           "text": {"get": ["result", "turn.text_2"]},
           "when": {"get": ["result", "turn.slot_2"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 2]
           },
           "save_as": "turn",
@@ -2044,7 +2044,7 @@
           "text": {"get": ["result", "turn.text_3"]},
           "when": {"get": ["result", "turn.slot_3"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 3]
           },
           "save_as": "turn",
@@ -2055,7 +2055,7 @@
           "text": {"get": ["result", "turn.text_4"]},
           "when": {"get": ["result", "turn.slot_4"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 4]
           },
           "save_as": "turn",
@@ -2066,7 +2066,7 @@
           "text": {"get": ["result", "turn.text_5"]},
           "when": {"get": ["result", "turn.slot_5"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 5]
           },
           "save_as": "turn",
@@ -2077,7 +2077,7 @@
           "text": {"get": ["result", "turn.text_6"]},
           "when": {"get": ["result", "turn.slot_6"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 6]
           },
           "save_as": "turn",
@@ -2088,7 +2088,7 @@
           "text": {"get": ["result", "turn.text_7"]},
           "when": {"get": ["result", "turn.slot_7"]},
           "action": {
-            "verb": "handlers.legacy_turn",
+            "action": "handlers.legacy_turn",
             "args": ["melnorm", 7]
           },
           "save_as": "turn",

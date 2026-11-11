@@ -812,7 +812,7 @@
       "id": "exit.compel_urquan.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_compel_urquan_effect2",
@@ -822,7 +822,7 @@
       "id": "exit.compel_urquan.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "URQUAN_MESSED_UP", 1]
       },
       "save_as": "exit_compel_urquan_effect1",
@@ -832,7 +832,7 @@
       "id": "exit.compel_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_compel_urquan",
@@ -848,7 +848,7 @@
       "id": "exit.wish_to_go_now.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_wish_to_go_now_effect1",
@@ -858,7 +858,7 @@
       "id": "exit.wish_to_go_now",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_wish_to_go_now",
@@ -874,7 +874,7 @@
       "id": "exit.bye_onboard.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_onboard_effect1",
@@ -884,7 +884,7 @@
       "id": "exit.bye_onboard",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_bye_onboard",
@@ -900,7 +900,7 @@
       "id": "exit.compel_that_ship.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_compel_that_ship_effect1",
@@ -910,7 +910,7 @@
       "id": "exit.compel_that_ship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_compel_that_ship",
@@ -926,7 +926,7 @@
       "id": "exit.ok_lets_do_it.effect7",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_ok_lets_do_it_effect7",
@@ -936,7 +936,7 @@
       "id": "exit.ok_lets_do_it.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_2", 0]
       },
       "save_as": "exit_ok_lets_do_it_effect6",
@@ -946,7 +946,7 @@
       "id": "exit.ok_lets_do_it.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_HOME_VISITS", 0]
       },
       "save_as": "exit_ok_lets_do_it_effect5",
@@ -956,7 +956,7 @@
       "id": "exit.ok_lets_do_it.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_VISITS", 0]
       },
       "save_as": "exit_ok_lets_do_it_effect4",
@@ -966,7 +966,7 @@
       "id": "exit.ok_lets_do_it.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
       },
       "save_as": "exit_ok_lets_do_it_effect3",
@@ -976,7 +976,7 @@
       "id": "exit.ok_lets_do_it.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET_ON_SHIP", 1]
       },
       "save_as": "exit_ok_lets_do_it_effect2",
@@ -986,7 +986,7 @@
       "id": "exit.ok_lets_do_it.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET", 1]
       },
       "save_as": "exit_ok_lets_do_it_effect1",
@@ -996,7 +996,7 @@
       "id": "exit.ok_lets_do_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_ok_lets_do_it",
@@ -1012,7 +1012,7 @@
       "id": "exit.want_kill_1.effect7",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_want_kill_1_effect7",
@@ -1022,7 +1022,7 @@
       "id": "exit.want_kill_1.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_2", 0]
       },
       "save_as": "exit_want_kill_1_effect6",
@@ -1032,7 +1032,7 @@
       "id": "exit.want_kill_1.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_HOME_VISITS", 0]
       },
       "save_as": "exit_want_kill_1_effect5",
@@ -1042,7 +1042,7 @@
       "id": "exit.want_kill_1.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_VISITS", 0]
       },
       "save_as": "exit_want_kill_1_effect4",
@@ -1052,7 +1052,7 @@
       "id": "exit.want_kill_1.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
       },
       "save_as": "exit_want_kill_1_effect3",
@@ -1062,7 +1062,7 @@
       "id": "exit.want_kill_1.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET_ON_SHIP", 1]
       },
       "save_as": "exit_want_kill_1_effect2",
@@ -1072,7 +1072,7 @@
       "id": "exit.want_kill_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET", 1]
       },
       "save_as": "exit_want_kill_1_effect1",
@@ -1082,7 +1082,7 @@
       "id": "exit.want_kill_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_want_kill_1",
@@ -1098,7 +1098,7 @@
       "id": "exit.want_kill_2.effect7",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_want_kill_2_effect7",
@@ -1108,7 +1108,7 @@
       "id": "exit.want_kill_2.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_2", 0]
       },
       "save_as": "exit_want_kill_2_effect6",
@@ -1118,7 +1118,7 @@
       "id": "exit.want_kill_2.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_HOME_VISITS", 0]
       },
       "save_as": "exit_want_kill_2_effect5",
@@ -1128,7 +1128,7 @@
       "id": "exit.want_kill_2.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_VISITS", 0]
       },
       "save_as": "exit_want_kill_2_effect4",
@@ -1138,7 +1138,7 @@
       "id": "exit.want_kill_2.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
       },
       "save_as": "exit_want_kill_2_effect3",
@@ -1148,7 +1148,7 @@
       "id": "exit.want_kill_2.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET_ON_SHIP", 1]
       },
       "save_as": "exit_want_kill_2_effect2",
@@ -1158,7 +1158,7 @@
       "id": "exit.want_kill_2.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET", 1]
       },
       "save_as": "exit_want_kill_2_effect1",
@@ -1168,7 +1168,7 @@
       "id": "exit.want_kill_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_want_kill_2",
@@ -1184,7 +1184,7 @@
       "id": "exit.want_kill_3.effect7",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_want_kill_3_effect7",
@@ -1194,7 +1194,7 @@
       "id": "exit.want_kill_3.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ARILOU_STACK_2", 0]
       },
       "save_as": "exit_want_kill_3_effect6",
@@ -1204,7 +1204,7 @@
       "id": "exit.want_kill_3.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_HOME_VISITS", 0]
       },
       "save_as": "exit_want_kill_3_effect5",
@@ -1214,7 +1214,7 @@
       "id": "exit.want_kill_3.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_VISITS", 0]
       },
       "save_as": "exit_want_kill_3_effect4",
@@ -1224,7 +1224,7 @@
       "id": "exit.want_kill_3.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
       },
       "save_as": "exit_want_kill_3_effect3",
@@ -1234,7 +1234,7 @@
       "id": "exit.want_kill_3.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET_ON_SHIP", 1]
       },
       "save_as": "exit_want_kill_3_effect2",
@@ -1244,7 +1244,7 @@
       "id": "exit.want_kill_3.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET", 1]
       },
       "save_as": "exit_want_kill_3_effect1",
@@ -1254,7 +1254,7 @@
       "id": "exit.want_kill_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "exit_want_kill_3",
@@ -1270,7 +1270,7 @@
       "id": "what_now",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now", true]
       },
       "save_as": "what_now",
@@ -1286,7 +1286,7 @@
       "id": "im_scared",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "im_scared", true]
       },
       "save_as": "im_scared",
@@ -1388,7 +1388,7 @@
       "id": "what_about_physiology",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_physiology", true]
       },
       "save_as": "what_about_physiology",
@@ -1404,7 +1404,7 @@
       "id": "what_about_your_history",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_your_history", true]
       },
       "save_as": "what_about_your_history",
@@ -1420,7 +1420,7 @@
       "id": "sentient_milieu",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "sentient_milieu", true]
       },
       "save_as": "sentient_milieu",
@@ -1436,7 +1436,7 @@
       "id": "what_about_war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_war", true]
       },
       "save_as": "what_about_war",
@@ -1506,7 +1506,7 @@
       "id": "whats_up_onboard",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_onboard", true]
       },
       "save_as": "whats_up_onboard",
@@ -1516,7 +1516,7 @@
       "id": "whats_up_onboard.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "TALKING_PET_INFO",
@@ -1546,7 +1546,7 @@
       "id": "any_suggestions",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_suggestions", true]
       },
       "save_as": "any_suggestions",
@@ -1556,7 +1556,7 @@
       "id": "any_suggestions.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "TALKING_PET_SUGGESTIONS",
@@ -1592,7 +1592,7 @@
       "id": "you_lied",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "DNYARRI_LIED", 0]
       },
       "save_as": "you_lied",
@@ -1656,7 +1656,7 @@
       "id": "what_are_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_are_you", true]
       },
       "save_as": "what_are_you",
@@ -1672,7 +1672,7 @@
       "id": "what_do_to_umgah",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_do_to_umgah", true]
       },
       "save_as": "what_do_to_umgah",
@@ -1688,7 +1688,7 @@
       "id": "we_are_vindicator0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "we_are_vindicator0", true]
       },
       "save_as": "we_are_vindicator0",
@@ -1698,7 +1698,7 @@
       "id": "hypnotize.talking_pets_dumb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
       },
       "save_as": "hypnotize_talking_pets_dumb",
@@ -1725,7 +1725,7 @@
       "id": "hypnotize.talking_pets_dumb.shield",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hypnotize_talking_pets_dumb_shield",
@@ -1741,7 +1741,7 @@
       "id": "hypnotize.talking_pets_dumb.unshield",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HYPNOTIZED", 1]
       },
       "save_as": "hypnotize_talking_pets_dumb_unshield",
@@ -1751,7 +1751,7 @@
       "id": "hypnotize.umgah_zombies",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
       },
       "save_as": "hypnotize_umgah_zombies",
@@ -1778,7 +1778,7 @@
       "id": "hypnotize.umgah_zombies.shield",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hypnotize_umgah_zombies_shield",
@@ -1794,7 +1794,7 @@
       "id": "hypnotize.umgah_zombies.unshield",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HYPNOTIZED", 1]
       },
       "save_as": "hypnotize_umgah_zombies_unshield",
@@ -1804,7 +1804,7 @@
       "id": "hypnotize.must_explain_presence",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
       },
       "save_as": "hypnotize_must_explain_presence",
@@ -1831,7 +1831,7 @@
       "id": "hypnotize.must_explain_presence.shield",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hypnotize_must_explain_presence_shield",
@@ -1847,7 +1847,7 @@
       "id": "hypnotize.must_explain_presence.unshield",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HYPNOTIZED", 1]
       },
       "save_as": "hypnotize_must_explain_presence_unshield",
@@ -1857,7 +1857,7 @@
       "id": "hypnotize.bye_at_umgah",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
       },
       "save_as": "hypnotize_bye_at_umgah",
@@ -1879,7 +1879,7 @@
       "id": "hypnotize.bye_at_umgah.shield",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hypnotize_bye_at_umgah_shield",
@@ -1895,7 +1895,7 @@
       "id": "hypnotize.bye_at_umgah.unshield",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HYPNOTIZED", 1]
       },
       "save_as": "hypnotize_bye_at_umgah_unshield",
@@ -2088,7 +2088,7 @@
       "id": "deal.what_kind_of_deal",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_kind_of_deal", true]
       },
       "save_as": "deal_what_kind_of_deal",
@@ -2104,7 +2104,7 @@
       "id": "deal.how_trust",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_trust", true]
       },
       "save_as": "deal_how_trust",
@@ -2120,7 +2120,7 @@
       "id": "deal.boneless_dweeb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "boneless_dweeb", true]
       },
       "save_as": "deal_boneless_dweeb",
@@ -2136,7 +2136,7 @@
       "id": "deal.what_are_you_really",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_are_you_really", true]
       },
       "save_as": "deal_what_are_you_really",
@@ -2152,7 +2152,7 @@
       "id": "deal.hard_to_believe.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "DNYARRI_LIED", 1]
       },
       "save_as": "deal_hard_to_believe_effect1",
@@ -2162,7 +2162,7 @@
       "id": "deal.hard_to_believe",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "hard_to_believe", true]
       },
       "save_as": "deal_hard_to_believe",
@@ -2178,7 +2178,7 @@
       "id": "deal.bullshit",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "bullshit", true]
       },
       "save_as": "deal_bullshit",
@@ -2194,7 +2194,7 @@
       "id": "deal.kill_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "kill_you", true]
       },
       "save_as": "deal_kill_you",
@@ -2323,7 +2323,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -2333,7 +2333,7 @@
       "id": "final",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "final",
@@ -2355,7 +2355,7 @@
       "id": "final.cyborg",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "final_cyborg",
@@ -2371,7 +2371,7 @@
       "id": "final.human",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "final_human",
@@ -2381,7 +2381,7 @@
       "id": "ready",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHIP_TO_COMPEL", 0]
       },
       "save_as": "ready",
@@ -2391,7 +2391,7 @@
       "id": "ready.clear",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "READY_TO_CONFUSE_URQUAN", 0]
       },
       "save_as": "ready_clear",
@@ -2401,7 +2401,7 @@
       "id": "ready.aware",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "AWARE_OF_SAMATRA", 1]
       },
       "save_as": "ready_aware",
@@ -2438,7 +2438,7 @@
       "id": "ready.need",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ready_need",
@@ -2454,7 +2454,7 @@
       "id": "ready.soup",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ready_soup",
@@ -2470,7 +2470,7 @@
       "id": "ready.done",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ready_done",
@@ -2502,7 +2502,7 @@
       "id": "device.skip.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "TALKING_PET_VISITS", 1]
       },
       "save_as": "device_skip_first",
@@ -2512,7 +2512,7 @@
       "id": "device.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "TALKING_PET_VISITS",
@@ -2548,7 +2548,7 @@
       "id": "home.clear",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UMGAH_VISITS", 0]
       },
       "save_as": "home_clear",
@@ -2558,7 +2558,7 @@
       "id": "home.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "TALKING_PET_HOME_VISITS",
@@ -2606,7 +2606,7 @@
       "id": "home.hypnotized.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "home_hypnotized_effect1",
@@ -2616,7 +2616,7 @@
       "id": "home.hypnotized",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HYPNOTIZED", 1]
       },
       "save_as": "home_hypnotized",
@@ -2632,7 +2632,7 @@
       "id": "home.shield",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "home_shield",
@@ -2642,7 +2642,7 @@
       "id": "deal.reveal",
       "kind": "action",
       "action": {
-        "verb": "galaxy.reveal",
+        "action": "galaxy.reveal",
         "args": ["umgah"]
       },
       "save_as": "umgah",
@@ -2680,7 +2680,7 @@
       "id": "deal.no.trust",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_trust", true]
       },
       "save_as": "deal_no_trust",

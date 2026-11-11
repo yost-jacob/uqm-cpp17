@@ -36,6 +36,8 @@ Generic `get(scope,key[,default])` covers typed story/local/player quantities. B
 
 | Verb | Arguments | Native operation |
 | --- | --- | --- |
+| `set` | one or more objects of story assignments | atomic `setStoryBatch` |
+| `transact` | player-gives package, player-receives package | atomic `Inventory::transact` |
 | `state.set` | `scope`, `key`, `value` | `set / local memory` |
 | `state.add` | `scope`, `key`, `signed_delta` | `set / local memory` |
 | `state.bits` | `scope`, `key`, `set_or_clear`, `mask` | `set / local memory` |
@@ -103,3 +105,9 @@ arbitrary functions named by a JSON file.
 `handlers.legacy_turn(script, response_slot_or_null)` is the live migration bridge.
 It preserves native story/media timing and menu order while the C bodies are
 ported. It is not a generalized replacement for those bodies.
+
+New instructions use `{"action":"name","args":[...]}`. `verb` remains a legacy
+spelling; specifying both names is rejected. Package values may be positive integer
+literals or read-only value expressions. Story values may also be booleans. Names
+are checked when binding; all runtime values are evaluated before mutation.
+See [package actions](../package-actions.md).

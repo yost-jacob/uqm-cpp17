@@ -253,7 +253,7 @@
       "id": "intro",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "intro",
@@ -269,7 +269,7 @@
       "id": "greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "YEHAT_REBEL_VISITS",
@@ -296,7 +296,7 @@
       "id": "cavalry.capacity",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "cavalry_count", {"min": [{"query": "fleet.slots", "args": ["yehat_rebel"]}, 8]}]
       },
       "save_as": "cavalry_capacity",
@@ -312,7 +312,7 @@
       "id": "cavalry.yehat",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": [
           "yehat_rebel",
           {
@@ -333,7 +333,7 @@
       "id": "cavalry.pkunk",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["pkunk", {"divide": [{"get": ["local", "cavalry_count", 0]}, 2]}]
       },
       "save_as": "cavalry_pkunk",
@@ -343,7 +343,7 @@
       "id": "revolution",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_revolution", true]
       },
       "save_as": "revolution",
@@ -353,7 +353,7 @@
       "id": "revolution.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "YEHAT_REBEL_INFO",
@@ -386,7 +386,7 @@
       "id": "pkunk.absorbed",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
       },
       "save_as": "pkunk_absorbed",
@@ -402,7 +402,7 @@
       "id": "pkunk.hate",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_REBEL_TOLD_PKUNK", 1]
       },
       "save_as": "pkunk_hate",
@@ -418,7 +418,7 @@
       "id": "bye",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "bye",
@@ -453,7 +453,7 @@
       "id": "info.exhausted",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "give_info_rebels", true]
       },
       "save_as": "info_exhausted",
@@ -469,7 +469,7 @@
       "id": "what_about_urquan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_urquan", true]
       },
       "save_as": "what_about_urquan",
@@ -485,7 +485,7 @@
       "id": "what_about_royalty",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_royalty", true]
       },
       "save_as": "what_about_royalty",
@@ -501,7 +501,7 @@
       "id": "what_about_war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_war", true]
       },
       "save_as": "what_about_war",
@@ -517,7 +517,7 @@
       "id": "what_about_vux",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_vux", true]
       },
       "save_as": "what_about_vux",
@@ -533,7 +533,7 @@
       "id": "what_about_clue",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_clue", true]
       },
       "save_as": "what_about_clue",
@@ -592,7 +592,7 @@
       "id": "ships",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_ships", true]
       },
       "save_as": "ships",
@@ -643,7 +643,7 @@
       "id": "ships.capacity",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "ship_count", {"query": "fleet.slots", "args": ["yehat"]}]
       },
       "save_as": "ships_capacity",
@@ -686,7 +686,7 @@
       "id": "ships.give",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["yehat", {"min": [{"get": ["local", "ship_count", 0]}, 4]}]
       },
       "save_as": "ships_give",
@@ -696,7 +696,7 @@
       "id": "ships.month",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_SHIP_MONTH", {"add": [{"mod": [{"get": ["encounter", "calendar_month", 0]}, 12]}, 1]}]
       },
       "save_as": "ships_month",
@@ -706,7 +706,7 @@
       "id": "ships.day",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_SHIP_DAY", {"min": [{"get": ["encounter", "calendar_day", 0]}, 28]}]
       },
       "save_as": "ships_day",
@@ -722,7 +722,7 @@
       "id": "ships.year.next",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_SHIP_YEAR", {"add": [{"get": ["encounter", "calendar_campaign_year", 0]}, 1]}]
       },
       "save_as": "ships_year_next",
@@ -732,7 +732,7 @@
       "id": "ships.year.same",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "YEHAT_SHIP_YEAR", {"get": ["encounter", "calendar_campaign_year", 0]}]
       },
       "save_as": "ships_year_same",

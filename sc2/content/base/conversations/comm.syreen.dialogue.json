@@ -938,7 +938,7 @@
       "id": "exit.bye",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye",
@@ -954,7 +954,7 @@
       "id": "exit.bye_before_vault",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_before_vault",
@@ -970,7 +970,7 @@
       "id": "exit.bye_after_vault",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_after_vault",
@@ -986,7 +986,7 @@
       "id": "exit.bye_before_ambush",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_before_ambush",
@@ -1002,7 +1002,7 @@
       "id": "exit.bye_after_ambush",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_after_ambush",
@@ -1018,7 +1018,7 @@
       "id": "exit.im_on_my_way",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_im_on_my_way",
@@ -1034,7 +1034,7 @@
       "id": "exit.doing_this_for_you",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_doing_this_for_you",
@@ -1050,7 +1050,7 @@
       "id": "exit.if_i_die",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_if_i_die",
@@ -1060,7 +1060,7 @@
       "id": "exit.hands_off",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_hands_off",
@@ -1076,7 +1076,7 @@
       "id": "exit.not_much_more_to_say",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_not_much_more_to_say",
@@ -1092,7 +1092,7 @@
       "id": "intimacy.had",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HAD_SEX", 1]
       },
       "save_as": "intimacy_had",
@@ -1102,7 +1102,7 @@
       "id": "intimacy.clear",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HAVING_SEX", 0]
       },
       "save_as": "intimacy_clear",
@@ -1136,7 +1136,7 @@
       "id": "what_happens_if_i_touch_this",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_happens_if_i_touch_this", true]
       },
       "save_as": "what_happens_if_i_touch_this",
@@ -1152,7 +1152,7 @@
       "id": "are_you_sure_this_is_ok",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "are_you_sure_this_is_ok", true]
       },
       "save_as": "are_you_sure_this_is_ok",
@@ -1168,7 +1168,7 @@
       "id": "boy_they_never_taught",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "boy_they_never_taught", true]
       },
       "save_as": "boy_they_never_taught",
@@ -1227,7 +1227,7 @@
       "id": "foreplay.flag",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PLAYER_HAVING_SEX", 1]
       },
       "save_as": "foreplay_flag",
@@ -1243,7 +1243,7 @@
       "id": "why_lights_off",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_lights_off", true]
       },
       "save_as": "why_lights_off",
@@ -1259,7 +1259,7 @@
       "id": "evil_monster",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "evil_monster", true]
       },
       "save_as": "evil_monster",
@@ -1322,7 +1322,7 @@
       "id": "after.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_after_ambush", true]
       },
       "save_as": "after_info",
@@ -1332,7 +1332,7 @@
       "id": "after.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SYREEN_INFO",
@@ -1364,7 +1364,7 @@
       "id": "what_about_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_you", true]
       },
       "save_as": "what_about_you",
@@ -1380,7 +1380,7 @@
       "id": "what_now_after_ambush",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_after_ambush", true]
       },
       "save_as": "what_now_after_ambush",
@@ -1438,7 +1438,7 @@
       "id": "repeat_plan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "repeat_plan", true]
       },
       "save_as": "repeat_plan",
@@ -1473,7 +1473,7 @@
       "id": "vault_hint",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "vault_hint", true]
       },
       "save_as": "vault_hint",
@@ -1508,7 +1508,7 @@
       "id": "where_is_it.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_is_it", true]
       },
       "save_as": "where_is_it_effect2",
@@ -1518,7 +1518,7 @@
       "id": "where_is_it.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_SHUTTLE_ON_SHIP", 1]
       },
       "save_as": "where_is_it_effect1",
@@ -1528,7 +1528,7 @@
       "id": "where_is_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_SHUTTLE", 1]
       },
       "save_as": "where_is_it",
@@ -1544,7 +1544,7 @@
       "id": "been_there.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "been_there", true]
       },
       "save_as": "been_there_effect2",
@@ -1554,7 +1554,7 @@
       "id": "been_there.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_SHUTTLE_ON_SHIP", 1]
       },
       "save_as": "been_there_effect1",
@@ -1564,7 +1564,7 @@
       "id": "been_there",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_SHUTTLE", 1]
       },
       "save_as": "been_there",
@@ -1580,7 +1580,7 @@
       "id": "whats_next_step",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_next_step", true]
       },
       "save_as": "whats_next_step",
@@ -1596,7 +1596,7 @@
       "id": "what_do_i_get_for_this",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_do_i_get_for_this", true]
       },
       "save_as": "what_do_i_get_for_this",
@@ -1612,7 +1612,7 @@
       "id": "not_sure",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "not_sure", true]
       },
       "save_as": "not_sure",
@@ -1737,7 +1737,7 @@
       "id": "deep.children",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "know_about_deep_children", true]
       },
       "save_as": "deep_children",
@@ -1753,7 +1753,7 @@
       "id": "mycons_involved",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_ABOUT_SHATTERED", 3]
       },
       "save_as": "mycons_involved",
@@ -1769,7 +1769,7 @@
       "id": "have_proof",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "have_proof", true]
       },
       "save_as": "have_proof",
@@ -1785,7 +1785,7 @@
       "id": "have_no_proof",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_WANT_PROOF", 1]
       },
       "save_as": "have_no_proof",
@@ -1801,7 +1801,7 @@
       "id": "proof.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "proof_effect2",
@@ -1811,7 +1811,7 @@
       "id": "proof.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_KNOW_ABOUT_MYCON", 1]
       },
       "save_as": "proof_effect1",
@@ -1821,7 +1821,7 @@
       "id": "proof",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_HOME_VISITS", 0]
       },
       "save_as": "proof",
@@ -1837,7 +1837,7 @@
       "id": "what_doing_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK0", 1]
       },
       "save_as": "what_doing_here",
@@ -1853,7 +1853,7 @@
       "id": "what_about_war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK0", 2]
       },
       "save_as": "what_about_war",
@@ -1869,7 +1869,7 @@
       "id": "help_us",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK0", 3]
       },
       "save_as": "help_us",
@@ -1885,7 +1885,7 @@
       "id": "what_about_history",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK1", 1]
       },
       "save_as": "what_about_history",
@@ -1901,7 +1901,7 @@
       "id": "what_about_homeworld",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK1", 2]
       },
       "save_as": "what_about_homeworld",
@@ -1917,7 +1917,7 @@
       "id": "what_happened.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 1]
       },
       "save_as": "what_happened_effect1",
@@ -1927,7 +1927,7 @@
       "id": "what_happened",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK1", 3]
       },
       "save_as": "what_happened",
@@ -1943,7 +1943,7 @@
       "id": "what_about_outfit",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK2", 1]
       },
       "save_as": "what_about_outfit",
@@ -1959,7 +1959,7 @@
       "id": "where_mates",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK2", 2]
       },
       "save_as": "where_mates",
@@ -1975,7 +1975,7 @@
       "id": "get_lonely",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_STACK2", 3]
       },
       "save_as": "get_lonely",
@@ -2618,7 +2618,7 @@
       "id": "i_need_you.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "i_need_touch_o_vision", true]
       },
       "save_as": "i_need_you_effect1",
@@ -2628,7 +2628,7 @@
       "id": "i_need_you",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "i_need_you", true]
       },
       "save_as": "i_need_you",
@@ -2644,7 +2644,7 @@
       "id": "i_need_touch_o_vision.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "i_need_touch_o_vision", true]
       },
       "save_as": "i_need_touch_o_vision_effect1",
@@ -2654,7 +2654,7 @@
       "id": "i_need_touch_o_vision",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "i_need_you", true]
       },
       "save_as": "i_need_touch_o_vision",
@@ -2740,7 +2740,7 @@
       "id": "plan.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_HOME_VISITS", 0]
       },
       "save_as": "plan_effect1",
@@ -2750,7 +2750,7 @@
       "id": "plan",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MYCON_AMBUSH", 1]
       },
       "save_as": "plan",
@@ -2812,7 +2812,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -2828,7 +2828,7 @@
       "id": "after.ally",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["syreen", "allied"]
       },
       "save_as": "after_ally",
@@ -2838,7 +2838,7 @@
       "id": "after.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SYREEN_HOME_VISITS",
@@ -2865,7 +2865,7 @@
       "id": "ambush.greeting",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SYREEN_HOME_VISITS", 0]
       },
       "save_as": "ambush_greeting",
@@ -2875,7 +2875,7 @@
       "id": "before.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SYREEN_HOME_VISITS",
@@ -2902,7 +2902,7 @@
       "id": "vault.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "SYREEN_HOME_VISITS", [["FOUND_VAULT_YET_1"], ["FOUND_VAULT_YET_2"]], "repeat_last"]
       },
       "save_as": "greeting",

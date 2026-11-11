@@ -13,7 +13,7 @@ def dumps(value, width=120):
     def render(item, depth):
         compact = json.dumps(item, ensure_ascii=False)
         record = isinstance(item, dict) and any(
-            key in item for key in ("id", "kind", "text", "verb", "when", "speech")
+            key in item for key in ("id", "kind", "text", "verb", "action", "when", "speech")
         )
         if not isinstance(item, (dict, list)) or not item:
             return compact

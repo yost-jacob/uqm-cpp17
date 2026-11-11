@@ -20,7 +20,9 @@ flowchart TD
     Mode[ConversationMode / ConversationRuntime] --> Adapter[CampaignDialogueState]
     Adapter -->|borrow| Player[Session-owned PlayerEntity]
     Player --> Story[StoryState]
-    Player --> Fleet[Fleet and optional SIS]
+    Player --> Inventory[Inventory]
+    Inventory --> Fleet[Fleet and optional SIS]
+    Inventory --> Cargo[Cargo / items / accounts]
     Adapter --> Quotes[Read-only quotes and availability]
     Adapter --> Transactions[Validated purchase / sale / rescue commit]
     Adapter --> Reports[Visit-owned report and rescue plans]
@@ -118,3 +120,32 @@ speech path are connected; a renamed whole-turn handler is not a completed port.
 Related work: [dialogue graphs #25](https://github.com/yost-jacob/uqm-cpp17/issues/25),
 [state operations #19](https://github.com/yost-jacob/uqm-cpp17/issues/19),
 [animation composition #31](https://github.com/yost-jacob/uqm-cpp17/issues/31).
+
+## Implemented package boundary
+
+The selected authoring convention is now `action` plus positional `args`:
+
+```json
+{"action":"transact","args":[{"credits":100},{"fuel":10}]}
+{"action":"transact","args":[{},{"crew":100,"items.sun_device":1}]}
+{"action":"set","args":[{"MET_ARILOU":true},{"ARILOU_VISITS":2}]}
+```
+
+The two transaction packages mean **player gives, then player receives**. Native
+`Inventory` owns the fleet and stages whole resource/item exchanges against the
+existing SIS and packed save fields. Story batches go through `StoryState`;
+`set` rejects fields owned by inventory. Existing `state.set` instructions remain
+a compatibility path while old authored operations migrate. See
+[package actions](package-actions.md) for exact supported keys and limits.
+
+Prices and story consequences belong to callers/story helpers. They construct an
+explicit exchange; inventory does not infer a merchant, change narrative progress,
+or update crew-price penalties. A success can be followed by a story action through
+ordinary graph edges. A transaction and a subsequent story batch are separate
+commits; coupled one-time rewards still need a bounded story helper.
+
+This establishes resource/item packages, not the completion of the three remaining
+commerce/report scripts. Atomic fleet creation/removal, merchant-specific offers,
+precise partial-tank purchases, stored rescue proposals, and report preparation/
+acknowledgement are still required. Their native handlers remain enabled rather
+than reporting unimplemented operations as successful transactions.

@@ -617,7 +617,7 @@
       "id": "intro",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SLYLANDRO_PROBE_VISITS",
@@ -647,7 +647,7 @@
       "id": "threat_1.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "threat_1_bug",
@@ -657,7 +657,7 @@
       "id": "threat_1.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_1_hostile",
@@ -673,7 +673,7 @@
       "id": "threat_2.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "threat_2_bug",
@@ -683,7 +683,7 @@
       "id": "threat_2.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_2_hostile",
@@ -699,7 +699,7 @@
       "id": "threat_3.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "threat_3_bug",
@@ -709,7 +709,7 @@
       "id": "threat_3.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_3_hostile",
@@ -725,7 +725,7 @@
       "id": "threat_4.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "threat_4_bug",
@@ -735,7 +735,7 @@
       "id": "threat_4.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "threat_4_hostile",
@@ -751,7 +751,7 @@
       "id": "something_wrong_1.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "something_wrong_1_bug",
@@ -761,7 +761,7 @@
       "id": "something_wrong_1.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "something_wrong_1_hostile",
@@ -777,7 +777,7 @@
       "id": "something_wrong_2.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "something_wrong_2_bug",
@@ -787,7 +787,7 @@
       "id": "something_wrong_2.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "something_wrong_2_hostile",
@@ -803,7 +803,7 @@
       "id": "something_wrong_3.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "something_wrong_3_bug",
@@ -813,7 +813,7 @@
       "id": "something_wrong_3.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "something_wrong_3_hostile",
@@ -829,7 +829,7 @@
       "id": "something_wrong_4.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "something_wrong_4_bug",
@@ -839,7 +839,7 @@
       "id": "something_wrong_4.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "something_wrong_4_hostile",
@@ -855,7 +855,7 @@
       "id": "we_are_us_1.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "we_are_us_1_bug",
@@ -865,7 +865,7 @@
       "id": "we_are_us_1.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "we_are_us_1_hostile",
@@ -881,7 +881,7 @@
       "id": "we_are_us_2.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "we_are_us_2_bug",
@@ -891,7 +891,7 @@
       "id": "we_are_us_2.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "we_are_us_2_hostile",
@@ -907,7 +907,7 @@
       "id": "we_are_us_3.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "we_are_us_3_bug",
@@ -917,7 +917,7 @@
       "id": "we_are_us_3.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "we_are_us_3_hostile",
@@ -933,7 +933,7 @@
       "id": "we_are_us_4.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "we_are_us_4_bug",
@@ -943,7 +943,7 @@
       "id": "we_are_us_4.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "we_are_us_4_hostile",
@@ -953,7 +953,7 @@
       "id": "we_are_us_4.coordinates",
       "kind": "action",
       "action": {
-        "verb": "handlers.prepare_report",
+        "action": "handlers.prepare_report",
         "args": ["probe.coordinates", {"literal": {}}]
       },
       "save_as": "we_are_us_4_coordinates",
@@ -969,7 +969,7 @@
       "id": "why_attack_1.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "why_attack_1_bug",
@@ -979,7 +979,7 @@
       "id": "why_attack_1.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_attack_1_hostile",
@@ -995,7 +995,7 @@
       "id": "why_attack_2.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "why_attack_2_bug",
@@ -1005,7 +1005,7 @@
       "id": "why_attack_2.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_attack_2_hostile",
@@ -1021,7 +1021,7 @@
       "id": "why_attack_3.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "why_attack_3_bug",
@@ -1031,7 +1031,7 @@
       "id": "why_attack_3.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_attack_3_hostile",
@@ -1047,7 +1047,7 @@
       "id": "why_attack_4.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "why_attack_4_bug",
@@ -1057,7 +1057,7 @@
       "id": "why_attack_4.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "why_attack_4_hostile",
@@ -1073,7 +1073,7 @@
       "id": "bye_1.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "bye_1_bug",
@@ -1083,7 +1083,7 @@
       "id": "bye_1.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_1_hostile",
@@ -1099,7 +1099,7 @@
       "id": "bye_2.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "bye_2_bug",
@@ -1109,7 +1109,7 @@
       "id": "bye_2.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_2_hostile",
@@ -1125,7 +1125,7 @@
       "id": "bye_3.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "bye_3_bug",
@@ -1135,7 +1135,7 @@
       "id": "bye_3.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_3_hostile",
@@ -1151,7 +1151,7 @@
       "id": "bye_4.bug",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "PROBE_EXHIBITED_BUG", 1]
       },
       "save_as": "bye_4_bug",
@@ -1161,7 +1161,7 @@
       "id": "bye_4.hostile",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_4_hostile",
@@ -1183,7 +1183,7 @@
           "text": "destruct_code",
           "when": {"ne": [{"get": ["story", "DESTRUCT_CODE_ON_SHIP", 0]}, 0]},
           "action": {
-            "verb": "encounter.set_outcome",
+            "action": "encounter.set_outcome",
             "args": ["victory"]
           },
           "then": {"ok": "destruct.reply"}
@@ -1193,7 +1193,7 @@
           "text": "threat_1",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 0]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_THREAT", 1]
           },
           "then": {"ok": "threat_1.bug"}
@@ -1203,7 +1203,7 @@
           "text": "threat_2",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 1]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_THREAT", 2]
           },
           "then": {"ok": "threat_2.bug"}
@@ -1213,7 +1213,7 @@
           "text": "threat_3",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 2]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_THREAT", 3]
           },
           "then": {"ok": "threat_3.bug"}
@@ -1223,7 +1223,7 @@
           "text": "threat_4",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_THREAT", 0]}, 3]}, 3]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_THREAT", 3]
           },
           "then": {"ok": "threat_4.bug"}
@@ -1233,7 +1233,7 @@
           "text": "something_wrong_1",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 0]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_WRONG", 1]
           },
           "then": {"ok": "something_wrong_1.bug"}
@@ -1243,7 +1243,7 @@
           "text": "something_wrong_2",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 1]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_WRONG", 2]
           },
           "then": {"ok": "something_wrong_2.bug"}
@@ -1253,7 +1253,7 @@
           "text": "something_wrong_3",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 2]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_WRONG", 3]
           },
           "then": {"ok": "something_wrong_3.bug"}
@@ -1263,7 +1263,7 @@
           "text": "something_wrong_4",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_WRONG", 0]}, 3]}, 3]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_WRONG", 3]
           },
           "then": {"ok": "something_wrong_4.bug"}
@@ -1273,7 +1273,7 @@
           "text": "we_are_us_1",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 0]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_ID", 1]
           },
           "then": {"ok": "we_are_us_1.bug"}
@@ -1283,7 +1283,7 @@
           "text": "we_are_us_2",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 1]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_ID", 2]
           },
           "then": {"ok": "we_are_us_2.bug"}
@@ -1293,7 +1293,7 @@
           "text": "we_are_us_3",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 2]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_ID", 3]
           },
           "then": {"ok": "we_are_us_3.bug"}
@@ -1303,7 +1303,7 @@
           "text": "we_are_us_4",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_ID", 0]}, 3]}, 3]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_ID", 3]
           },
           "then": {"ok": "we_are_us_4.bug"}
@@ -1313,7 +1313,7 @@
           "text": "why_attack_1",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 0]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_INFO", 1]
           },
           "then": {"ok": "why_attack_1.bug"}
@@ -1323,7 +1323,7 @@
           "text": "why_attack_2",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 1]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_INFO", 2]
           },
           "then": {"ok": "why_attack_2.bug"}
@@ -1333,7 +1333,7 @@
           "text": "why_attack_3",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 2]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_INFO", 3]
           },
           "then": {"ok": "why_attack_3.bug"}
@@ -1343,7 +1343,7 @@
           "text": "why_attack_4",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_INFO", 0]}, 3]}, 3]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_INFO", 3]
           },
           "then": {"ok": "why_attack_4.bug"}
@@ -1353,7 +1353,7 @@
           "text": "bye_1",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 0]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_EXIT", 1]
           },
           "then": {"ok": "bye_1.bug"}
@@ -1363,7 +1363,7 @@
           "text": "bye_2",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 1]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_EXIT", 2]
           },
           "then": {"ok": "bye_2.bug"}
@@ -1373,7 +1373,7 @@
           "text": "bye_3",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 2]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_EXIT", 3]
           },
           "then": {"ok": "bye_3.bug"}
@@ -1383,7 +1383,7 @@
           "text": "bye_4",
           "when": {"eq": [{"min": [{"get": ["story", "SLYLANDRO_PROBE_EXIT", 0]}, 3]}, 3]},
           "action": {
-            "verb": "state.set",
+            "action": "state.set",
             "args": ["story", "SLYLANDRO_PROBE_EXIT", 3]
           },
           "then": {"ok": "bye_4.bug"}

@@ -854,7 +854,7 @@
       "id": "allied.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "UTWIG_HOME_VISITS",
@@ -880,7 +880,7 @@
       "id": "before",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_VISITS", [["HELLO_BEFORE_KOHRAH_SPACE_1"], ["HELLO_BEFORE_KOHRAH_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -896,7 +896,7 @@
       "id": "during",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_VISITS", [["HELLO_DURING_KOHRAH_SPACE_1"], ["HELLO_DURING_KOHRAH_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -912,7 +912,7 @@
       "id": "after",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_VISITS", [["HELLO_AFTER_KOHRAH_SPACE_1"], ["HELLO_AFTER_KOHRAH_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -934,7 +934,7 @@
       "id": "exit.bye_after_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_after_space",
@@ -950,7 +950,7 @@
       "id": "exit.bye_before_space",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_before_space",
@@ -966,7 +966,7 @@
       "id": "exit.bye_allied_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_allied_homeworld",
@@ -994,7 +994,7 @@
       "id": "help.give",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["utwig", 4]
       },
       "save_as": "help_give",
@@ -1004,7 +1004,7 @@
       "id": "before.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_before_space", true]
       },
       "save_as": "before_info",
@@ -1014,7 +1014,7 @@
       "id": "before.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_INFO", [["GENERAL_INFO_BEFORE_SPACE_1"], ["GENERAL_INFO_BEFORE_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1036,7 +1036,7 @@
       "id": "what_now_before_space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_before_space", true]
       },
       "save_as": "what_now_before_space",
@@ -1071,7 +1071,7 @@
       "id": "after.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_after_space", true]
       },
       "save_as": "after_info",
@@ -1081,7 +1081,7 @@
       "id": "after.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_INFO", [["GENERAL_INFO_AFTER_SPACE_1"], ["GENERAL_INFO_AFTER_SPACE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1103,7 +1103,7 @@
       "id": "what_now_after_space",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_after_space", true]
       },
       "save_as": "what_now_after_space",
@@ -1144,7 +1144,7 @@
       "id": "how_went_war",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "UTWIG_WAR_NEWS", "set", 1]
       },
       "save_as": "how_went_war",
@@ -1154,7 +1154,7 @@
       "id": "how_goes_war",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_war", true]
       },
       "save_as": "how_goes_war",
@@ -1191,7 +1191,7 @@
       "id": "war.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 1]
       },
       "save_as": "war_first",
@@ -1207,7 +1207,7 @@
       "id": "war.second",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 2]
       },
       "save_as": "war_second",
@@ -1217,7 +1217,7 @@
       "id": "learn_new_info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "learn_new_info", true]
       },
       "save_as": "learn_new_info",
@@ -1245,7 +1245,7 @@
       "id": "new.samatra",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "UTWIG_WAR_NEWS", "set", 2]
       },
       "save_as": "new_samatra",
@@ -1255,7 +1255,7 @@
       "id": "what_now_homeworld",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_now_homeworld", true]
       },
       "save_as": "what_now_homeworld",
@@ -1289,7 +1289,7 @@
       "id": "how_is_ultron",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_is_ultron", true]
       },
       "save_as": "how_is_ultron",
@@ -1385,7 +1385,7 @@
       "id": "exit.bye_neutral",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_neutral",
@@ -1401,7 +1401,7 @@
       "id": "exit.bye_bomb",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_bomb",
@@ -1444,7 +1444,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -1469,7 +1469,7 @@
       "id": "hostile.bomb",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "BOMB_VISITS", [["HOSTILE_BOMB_HELLO_1"], ["HOSTILE_BOMB_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1485,7 +1485,7 @@
       "id": "hostile.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_HOME_VISITS", [["HOSTILE_HOMEWORLD_HELLO_1"], ["HOSTILE_HOMEWORLD_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1501,7 +1501,7 @@
       "id": "hostile.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_VISITS", [["HOSTILE_SPACE_HELLO_1"], ["HOSTILE_SPACE_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1533,7 +1533,7 @@
       "id": "hostile.end",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile_end",
@@ -1549,7 +1549,7 @@
       "id": "neutral.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "UTWIG_HOME_VISITS",
@@ -1575,7 +1575,7 @@
       "id": "neutral.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "UTWIG_VISITS", [["NEUTRAL_SPACE_HELLO_1"], ["NEUTRAL_SPACE_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1591,7 +1591,7 @@
       "id": "bomb.greeting",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "BOMB_VISITS", [["BOMB_WORLD_HELLO_1"], ["BOMB_WORLD_HELLO_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1607,7 +1607,7 @@
       "id": "ultron.normal",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "ultron_lead", ["DONT_WANT_TO_LOOK"]]
       },
       "save_as": "ultron_normal",
@@ -1617,7 +1617,7 @@
       "id": "ultron.normal.flag",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "ultron_taunt", false]
       },
       "save_as": "ultron_normal_flag",
@@ -1627,7 +1627,7 @@
       "id": "ultron.taunt",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "ultron_lead", ["TAUNT_US_BUT_WE_LOOK"]]
       },
       "save_as": "ultron_taunt",
@@ -1637,7 +1637,7 @@
       "id": "ultron.taunt.flag",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "ultron_taunt", true]
       },
       "save_as": "ultron_taunt_flag",
@@ -1668,7 +1668,7 @@
       "id": "ultron.refused.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ultron_refused_effect1",
@@ -1678,7 +1678,7 @@
       "id": "ultron.refused",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "REFUSED_ULTRON_AT_BOMB", 1]
       },
       "save_as": "ultron_refused",
@@ -1706,7 +1706,7 @@
       "id": "ultron.trick.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "ultron_trick_1_effect1",
@@ -1716,7 +1716,7 @@
       "id": "ultron.trick.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 1]
       },
       "save_as": "ultron_trick_1",
@@ -1732,7 +1732,7 @@
       "id": "ultron.trick.2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "ultron_trick_2_effect1",
@@ -1742,7 +1742,7 @@
       "id": "ultron.trick.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 1]
       },
       "save_as": "ultron_trick_2",
@@ -1764,7 +1764,7 @@
       "id": "ultron.sick.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ultron_sick_1_effect1",
@@ -1774,7 +1774,7 @@
       "id": "ultron.sick.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 1]
       },
       "save_as": "ultron_sick_1",
@@ -1790,7 +1790,7 @@
       "id": "ultron.sick.2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ultron_sick_2_effect1",
@@ -1800,7 +1800,7 @@
       "id": "ultron.sick.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 1]
       },
       "save_as": "ultron_sick_2",
@@ -1822,7 +1822,7 @@
       "id": "ultron.fixed.late.effect15",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ultron_fixed_late_effect15",
@@ -1832,7 +1832,7 @@
       "id": "ultron.fixed.late.effect14",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["supox", "allied"]
       },
       "save_as": "ultron_fixed_late_effect14",
@@ -1842,7 +1842,7 @@
       "id": "ultron.fixed.late.effect13",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["utwig", "allied"]
       },
       "save_as": "ultron_fixed_late_effect13",
@@ -1852,7 +1852,7 @@
       "id": "ultron.fixed.late.effect12",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOSTILE", 0]
       },
       "save_as": "ultron_fixed_late_effect12",
@@ -1862,7 +1862,7 @@
       "id": "ultron.fixed.late.effect11",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_HOSTILE", 0]
       },
       "save_as": "ultron_fixed_late_effect11",
@@ -1872,7 +1872,7 @@
       "id": "ultron.fixed.late.effect10",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 0]
       },
       "save_as": "ultron_fixed_late_effect10",
@@ -1882,7 +1882,7 @@
       "id": "ultron.fixed.late.effect9",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 0]
       },
       "save_as": "ultron_fixed_late_effect9",
@@ -1892,7 +1892,7 @@
       "id": "ultron.fixed.late.effect8",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 0]
       },
       "save_as": "ultron_fixed_late_effect8",
@@ -1902,7 +1902,7 @@
       "id": "ultron.fixed.late.effect7",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_INFO", 0]
       },
       "save_as": "ultron_fixed_late_effect7",
@@ -1912,7 +1912,7 @@
       "id": "ultron.fixed.late.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_VISITS", 0]
       },
       "save_as": "ultron_fixed_late_effect6",
@@ -1922,7 +1922,7 @@
       "id": "ultron.fixed.late.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_HOME_VISITS", 0]
       },
       "save_as": "ultron_fixed_late_effect5",
@@ -1932,7 +1932,7 @@
       "id": "ultron.fixed.late.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOME_VISITS", 0]
       },
       "save_as": "ultron_fixed_late_effect4",
@@ -1942,7 +1942,7 @@
       "id": "ultron.fixed.late.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_VISITS", 0]
       },
       "save_as": "ultron_fixed_late_effect3",
@@ -1952,7 +1952,7 @@
       "id": "ultron.fixed.late.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_VISITS", 0]
       },
       "save_as": "ultron_fixed_late_effect2",
@@ -1962,7 +1962,7 @@
       "id": "ultron.fixed.late.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ULTRON_CONDITION", 5]
       },
       "save_as": "ultron_fixed_late_effect1",
@@ -1972,7 +1972,7 @@
       "id": "ultron.fixed.late",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HAVE_ULTRON", 1]
       },
       "save_as": "ultron_fixed_late",
@@ -1988,7 +1988,7 @@
       "id": "ultron.fixed.mission.effect16",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ultron_fixed_mission_effect16",
@@ -1998,7 +1998,7 @@
       "id": "ultron.fixed.mission.effect15",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["supox", "allied"]
       },
       "save_as": "ultron_fixed_mission_effect15",
@@ -2008,7 +2008,7 @@
       "id": "ultron.fixed.mission.effect14",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["utwig", "allied"]
       },
       "save_as": "ultron_fixed_mission_effect14",
@@ -2018,7 +2018,7 @@
       "id": "ultron.fixed.mission.effect13",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOSTILE", 0]
       },
       "save_as": "ultron_fixed_mission_effect13",
@@ -2028,7 +2028,7 @@
       "id": "ultron.fixed.mission.effect12",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_HOSTILE", 0]
       },
       "save_as": "ultron_fixed_mission_effect12",
@@ -2038,7 +2038,7 @@
       "id": "ultron.fixed.mission.effect11",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 0]
       },
       "save_as": "ultron_fixed_mission_effect11",
@@ -2048,7 +2048,7 @@
       "id": "ultron.fixed.mission.effect10",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_WAR_NEWS", 0]
       },
       "save_as": "ultron_fixed_mission_effect10",
@@ -2058,7 +2058,7 @@
       "id": "ultron.fixed.mission.effect9",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 0]
       },
       "save_as": "ultron_fixed_mission_effect9",
@@ -2068,7 +2068,7 @@
       "id": "ultron.fixed.mission.effect8",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_INFO", 0]
       },
       "save_as": "ultron_fixed_mission_effect8",
@@ -2078,7 +2078,7 @@
       "id": "ultron.fixed.mission.effect7",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_VISITS", 0]
       },
       "save_as": "ultron_fixed_mission_effect7",
@@ -2088,7 +2088,7 @@
       "id": "ultron.fixed.mission.effect6",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_HOME_VISITS", 0]
       },
       "save_as": "ultron_fixed_mission_effect6",
@@ -2098,7 +2098,7 @@
       "id": "ultron.fixed.mission.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOME_VISITS", 0]
       },
       "save_as": "ultron_fixed_mission_effect5",
@@ -2108,7 +2108,7 @@
       "id": "ultron.fixed.mission.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SUPOX_VISITS", 0]
       },
       "save_as": "ultron_fixed_mission_effect4",
@@ -2118,7 +2118,7 @@
       "id": "ultron.fixed.mission.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_VISITS", 0]
       },
       "save_as": "ultron_fixed_mission_effect3",
@@ -2128,7 +2128,7 @@
       "id": "ultron.fixed.mission.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ULTRON_CONDITION", 5]
       },
       "save_as": "ultron_fixed_mission_effect2",
@@ -2138,7 +2138,7 @@
       "id": "ultron.fixed.mission.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HAVE_ULTRON", 1]
       },
       "save_as": "ultron_fixed_mission_effect1",
@@ -2148,7 +2148,7 @@
       "id": "ultron.fixed.mission",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_UTWIG_SUPOX_MISSION", 0, 0, 0]
       },
       "save_as": "ultron_fixed_mission",
@@ -2164,7 +2164,7 @@
       "id": "mock.effect6",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "mock_effect6",
@@ -2174,7 +2174,7 @@
       "id": "mock.effect5",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_VISITS", 0]
       },
       "save_as": "mock_effect5",
@@ -2184,7 +2184,7 @@
       "id": "mock.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_VISITS", 0]
       },
       "save_as": "mock_effect4",
@@ -2194,7 +2194,7 @@
       "id": "mock.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOME_VISITS", 0]
       },
       "save_as": "mock_effect3",
@@ -2204,7 +2204,7 @@
       "id": "mock.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 0]
       },
       "save_as": "mock_effect2",
@@ -2214,7 +2214,7 @@
       "id": "mock.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOSTILE", 1]
       },
       "save_as": "mock_effect1",
@@ -2224,7 +2224,7 @@
       "id": "mock",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK1", 4]
       },
       "save_as": "mock",
@@ -2240,7 +2240,7 @@
       "id": "sympathy",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK1", 4]
       },
       "save_as": "sympathy",
@@ -2256,7 +2256,7 @@
       "id": "we_are_vindicator0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK1", 1]
       },
       "save_as": "we_are_vindicator0",
@@ -2272,7 +2272,7 @@
       "id": "why_sad",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK1", 2]
       },
       "save_as": "why_sad",
@@ -2288,7 +2288,7 @@
       "id": "what_ultron",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK1", 3]
       },
       "save_as": "what_ultron",
@@ -2304,7 +2304,7 @@
       "id": "about.you.0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 1]
       },
       "save_as": "about_you_0",
@@ -2320,7 +2320,7 @@
       "id": "about.you.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "galaxy.reveal",
+        "action": "galaxy.reveal",
         "args": ["supox"]
       },
       "save_as": "about_you_1_effect1",
@@ -2330,7 +2330,7 @@
       "id": "about.you.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 2]
       },
       "save_as": "about_you_1",
@@ -2346,7 +2346,7 @@
       "id": "about.you.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_WAR_NEWS", 3]
       },
       "save_as": "about_you_2",
@@ -2362,7 +2362,7 @@
       "id": "about.urquan.0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK2", 1]
       },
       "save_as": "about_urquan_0",
@@ -2378,7 +2378,7 @@
       "id": "about.urquan.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_STACK2", 2]
       },
       "save_as": "about_urquan_1",
@@ -2673,7 +2673,7 @@
       "id": "why_you_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_STACK1", 1]
       },
       "save_as": "why_you_here",
@@ -2689,7 +2689,7 @@
       "id": "what_about_bomb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_STACK1", 2]
       },
       "save_as": "what_about_bomb",
@@ -2705,7 +2705,7 @@
       "id": "give_us_bomb_or_die",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_STACK1", 3]
       },
       "save_as": "give_us_bomb_or_die",
@@ -2721,7 +2721,7 @@
       "id": "demand.bomb.effect5",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "demand_bomb_effect5",
@@ -2731,7 +2731,7 @@
       "id": "demand.bomb.effect4",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_VISITS", 0]
       },
       "save_as": "demand_bomb_effect4",
@@ -2741,7 +2741,7 @@
       "id": "demand.bomb.effect3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_VISITS", 0]
       },
       "save_as": "demand_bomb_effect3",
@@ -2751,7 +2751,7 @@
       "id": "demand.bomb.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOME_VISITS", 0]
       },
       "save_as": "demand_bomb_effect2",
@@ -2761,7 +2761,7 @@
       "id": "demand.bomb.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_INFO", 0]
       },
       "save_as": "demand_bomb_effect1",
@@ -2771,7 +2771,7 @@
       "id": "demand.bomb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "UTWIG_HOSTILE", 1]
       },
       "save_as": "demand_bomb",
@@ -2787,7 +2787,7 @@
       "id": "may_we_have_bomb",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_STACK2", 1]
       },
       "save_as": "may_we_have_bomb",
@@ -2803,7 +2803,7 @@
       "id": "please",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_STACK2", 2]
       },
       "save_as": "please",
@@ -2813,7 +2813,7 @@
       "id": "bomb.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_bomb", true]
       },
       "save_as": "bomb_info",
@@ -2841,7 +2841,7 @@
       "id": "bomb.info.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "BOMB_INFO", 1]
       },
       "save_as": "bomb_info_first",

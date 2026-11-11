@@ -1099,7 +1099,7 @@
       "id": "exit.bye_hostile_2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_hostile_2",
@@ -1115,7 +1115,7 @@
       "id": "exit.bye_hostile_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_hostile_1_effect1",
@@ -1125,7 +1125,7 @@
       "id": "exit.bye_hostile_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_HOSTILE_STACK_5", 1]
       },
       "save_as": "exit_bye_hostile_1",
@@ -1141,7 +1141,7 @@
       "id": "exit.submit_1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_submit_1_effect1",
@@ -1151,7 +1151,7 @@
       "id": "exit.submit_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_HOSTILE_STACK_2", 1]
       },
       "save_as": "exit_submit_1",
@@ -1167,7 +1167,7 @@
       "id": "exit.submit_2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_submit_2",
@@ -1183,7 +1183,7 @@
       "id": "exit.bye_hostile_helix",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_bye_hostile_helix",
@@ -1199,7 +1199,7 @@
       "id": "exit.demand_to_land",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_demand_to_land",
@@ -1215,7 +1215,7 @@
       "id": "exit.i_need_to_land_lie",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_i_need_to_land_lie",
@@ -1231,7 +1231,7 @@
       "id": "exit.got_idea.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_got_idea_effect2",
@@ -1241,7 +1241,7 @@
       "id": "exit.got_idea.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 5]
       },
       "save_as": "exit_got_idea_effect1",
@@ -1251,7 +1251,7 @@
       "id": "exit.got_idea",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ADVANCE_THRADD_MISSION", 0, 0, 0]
       },
       "save_as": "exit_got_idea",
@@ -1267,7 +1267,7 @@
       "id": "exit.may_i_land.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_may_i_land_effect1",
@@ -1277,7 +1277,7 @@
       "id": "exit.may_i_land",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "HELIX_UNPROTECTED", 1]
       },
       "save_as": "exit_may_i_land",
@@ -1287,7 +1287,7 @@
       "id": "exit.bye_ally",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_STACK_1",
@@ -1303,7 +1303,7 @@
       "id": "exit.bye_ally.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_ally_outcome",
@@ -1325,7 +1325,7 @@
       "id": "exit.contemplative.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_contemplative_effect1",
@@ -1335,7 +1335,7 @@
       "id": "exit.contemplative",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_DEMEANOR", 0]
       },
       "save_as": "exit_contemplative",
@@ -1351,7 +1351,7 @@
       "id": "exit.friendly.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_friendly_effect1",
@@ -1361,7 +1361,7 @@
       "id": "exit.friendly",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_DEMEANOR", 1]
       },
       "save_as": "exit_friendly",
@@ -1377,7 +1377,7 @@
       "id": "exit.wacky.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_wacky_effect1",
@@ -1387,7 +1387,7 @@
       "id": "exit.wacky",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_DEMEANOR", 2]
       },
       "save_as": "exit_wacky",
@@ -1403,7 +1403,7 @@
       "id": "exit.just_like_us.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_just_like_us_effect1",
@@ -1413,7 +1413,7 @@
       "id": "exit.just_like_us",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_DEMEANOR", 3]
       },
       "save_as": "exit_just_like_us",
@@ -1429,7 +1429,7 @@
       "id": "why_you_here_ally",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_you_here_ally", true]
       },
       "save_as": "why_you_here_ally",
@@ -1445,7 +1445,7 @@
       "id": "whats_helix_ally",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_helix_ally", true]
       },
       "save_as": "whats_helix_ally",
@@ -1514,7 +1514,7 @@
       "id": "ally.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_ally", true]
       },
       "save_as": "ally_info",
@@ -1524,7 +1524,7 @@
       "id": "ally.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_INFO",
@@ -1587,7 +1587,7 @@
       "id": "culture.info.0.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_0_effect1",
@@ -1597,7 +1597,7 @@
       "id": "culture.info.0",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_0",
@@ -1613,7 +1613,7 @@
       "id": "culture.info.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_1_effect1",
@@ -1623,7 +1623,7 @@
       "id": "culture.info.1",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_1",
@@ -1639,7 +1639,7 @@
       "id": "culture.info.2.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_2_effect1",
@@ -1649,7 +1649,7 @@
       "id": "culture.info.2",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_2",
@@ -1665,7 +1665,7 @@
       "id": "culture.info.3.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_3_effect1",
@@ -1675,7 +1675,7 @@
       "id": "culture.info.3",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_3",
@@ -1691,7 +1691,7 @@
       "id": "culture.info.4.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_4_effect1",
@@ -1701,7 +1701,7 @@
       "id": "culture.info.4",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_4",
@@ -1717,7 +1717,7 @@
       "id": "culture.info.5.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_5_effect1",
@@ -1727,7 +1727,7 @@
       "id": "culture.info.5",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_5",
@@ -1743,7 +1743,7 @@
       "id": "culture.info.6.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_6_effect1",
@@ -1753,7 +1753,7 @@
       "id": "culture.info.6",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_6",
@@ -1769,7 +1769,7 @@
       "id": "culture.info.7.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "how_goes_culture", true]
       },
       "save_as": "culture_info_7_effect1",
@@ -1779,7 +1779,7 @@
       "id": "culture.info.7",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "THRADD_DEMEANOR", "set", 4]
       },
       "save_as": "culture_info_7",
@@ -1795,7 +1795,7 @@
       "id": "be_polite",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INTRO", 0]
       },
       "save_as": "be_polite",
@@ -1811,7 +1811,7 @@
       "id": "use_rhymes",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INTRO", 1]
       },
       "save_as": "use_rhymes",
@@ -1827,7 +1827,7 @@
       "id": "speak_pig_latin",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INTRO", 2]
       },
       "save_as": "speak_pig_latin",
@@ -1843,7 +1843,7 @@
       "id": "just_the_way_we_do",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INTRO", 3]
       },
       "save_as": "just_the_way_we_do",
@@ -1884,7 +1884,7 @@
       "id": "culture.name.decide",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_CULTURE", 1]
       },
       "save_as": "culture_name_decide",
@@ -1900,7 +1900,7 @@
       "id": "culture.name.fat",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_CULTURE", 2]
       },
       "save_as": "culture_name_fat",
@@ -1916,7 +1916,7 @@
       "id": "culture.name.slave",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_CULTURE", 3]
       },
       "save_as": "culture_name_slave",
@@ -1963,7 +1963,7 @@
       "id": "worship.effect3",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["thradd", "allied"]
       },
       "save_as": "worship_effect3",
@@ -1973,7 +1973,7 @@
       "id": "worship.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 0]
       },
       "save_as": "worship_effect2",
@@ -1983,7 +1983,7 @@
       "id": "worship.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_MANNER", 1]
       },
       "save_as": "worship_effect1",
@@ -1993,7 +1993,7 @@
       "id": "worship",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_VISITS", 0]
       },
       "save_as": "worship",
@@ -2040,7 +2040,7 @@
       "id": "why_you_here_hostile",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_CULTURE", 1]
       },
       "save_as": "why_you_here_hostile",
@@ -2056,7 +2056,7 @@
       "id": "what_about_this_world",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INTRO", 1]
       },
       "save_as": "what_about_this_world",
@@ -2072,7 +2072,7 @@
       "id": "whats_helix_hostile",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INTRO", 2]
       },
       "save_as": "whats_helix_hostile",
@@ -2131,7 +2131,7 @@
       "id": "info.hostile.first.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_hostile_2", true]
       },
       "save_as": "info_hostile_first_effect1",
@@ -2141,7 +2141,7 @@
       "id": "info.hostile.first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_INFO", 1]
       },
       "save_as": "info_hostile_first",
@@ -2151,7 +2151,7 @@
       "id": "info.hostile",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_hostile_2", true]
       },
       "save_as": "info_hostile",
@@ -2161,7 +2161,7 @@
       "id": "info.hostile.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_INFO",
@@ -2189,7 +2189,7 @@
       "id": "what_about_you_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 1]
       },
       "save_as": "what_about_you_1",
@@ -2205,7 +2205,7 @@
       "id": "what_about_you_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 2]
       },
       "save_as": "what_about_you_2",
@@ -2221,7 +2221,7 @@
       "id": "what_about_urquan_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 3]
       },
       "save_as": "what_about_urquan_1",
@@ -2237,7 +2237,7 @@
       "id": "what_about_urquan_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 4]
       },
       "save_as": "what_about_urquan_2",
@@ -2253,7 +2253,7 @@
       "id": "be_friends_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_HOSTILE_STACK_3", 1]
       },
       "save_as": "be_friends_1",
@@ -2269,7 +2269,7 @@
       "id": "be_friends_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "be_friends_2", true]
       },
       "save_as": "be_friends_2",
@@ -2285,7 +2285,7 @@
       "id": "how_impressed_urquan_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_HOSTILE_STACK_4", 1]
       },
       "save_as": "how_impressed_urquan_1",
@@ -2301,7 +2301,7 @@
       "id": "how_impressed_urquan_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_MISSION", 5]
       },
       "save_as": "how_impressed_urquan_2",
@@ -2324,7 +2324,7 @@
       "id": "hostile.prune",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_STACK_1", 5]
       },
       "save_as": "hostile_prune",
@@ -2495,7 +2495,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -2505,7 +2505,7 @@
       "id": "thief",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "HELIX_VISITS", [["DIE_THIEF_1"], ["DIE_THIEF_2"]], "repeat_last", 0]
       },
       "save_as": "greeting",
@@ -2515,7 +2515,7 @@
       "id": "thief.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "thief_outcome",
@@ -2537,7 +2537,7 @@
       "id": "ilwrath.friendly",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "THRADD_VISITS", [["HAVING_FUN_WITH_ILWRATH_1"], ["HAVING_FUN_WITH_ILWRATH_2"]], "repeat_last", 0]
       },
       "save_as": "greeting",
@@ -2547,7 +2547,7 @@
       "id": "ilwrath.friendly.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ilwrath_friendly_outcome",
@@ -2563,7 +2563,7 @@
       "id": "ilwrath.hostile",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "THRADD_VISITS", [["GO_AWAY_FIGHTING_ILWRATH_1"], ["GO_AWAY_FIGHTING_ILWRATH_2"]], "repeat_last", 0]
       },
       "save_as": "greeting",
@@ -2573,7 +2573,7 @@
       "id": "ilwrath.hostile.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "ilwrath_hostile_outcome",
@@ -2589,7 +2589,7 @@
       "id": "helix.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "HELIX_VISITS", [["HOSTILE_HELIX_HELLO_1"], ["HOSTILE_HELIX_HELLO_2"]], "repeat_last", 0]
       },
       "save_as": "greeting",
@@ -2623,7 +2623,7 @@
       "id": "ally.culture.1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "culture_name", "CULTURE"]
       },
       "save_as": "ally_culture_1",
@@ -2633,7 +2633,7 @@
       "id": "ally.culture.2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "culture_name", "FAT_JERKS"]
       },
       "save_as": "ally_culture_2",
@@ -2643,7 +2643,7 @@
       "id": "ally.culture.3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "culture_name", "SLAVE_EMPIRE"]
       },
       "save_as": "ally_culture_3",
@@ -2672,7 +2672,7 @@
       "id": "ally.style.0",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_VISITS",
@@ -2687,7 +2687,7 @@
       "id": "ally.style.1",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_VISITS",
@@ -2702,7 +2702,7 @@
       "id": "ally.style.2",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_VISITS",
@@ -2717,7 +2717,7 @@
       "id": "ally.style.3",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_VISITS",
@@ -2817,7 +2817,7 @@
       "id": "body.impressive",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_BODY_LEVEL", 2]
       },
       "save_as": "body_impressive",
@@ -2827,7 +2827,7 @@
       "id": "body.impressive.prefix",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "body_prefix", ["IMPRESSIVE_PERFORMANCE"]]
       },
       "save_as": "body_impressive_prefix",
@@ -2837,7 +2837,7 @@
       "id": "body.adequate",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "THRADD_BODY_LEVEL", 1]
       },
       "save_as": "body_adequate",
@@ -2847,7 +2847,7 @@
       "id": "body.adequate.prefix",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "body_prefix", ["ADEQUATE_PERFORMANCE"]]
       },
       "save_as": "body_adequate_prefix",
@@ -2882,7 +2882,7 @@
       "id": "hostile.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_HOME_VISITS",
@@ -2909,7 +2909,7 @@
       "id": "hostile.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_VISITS",
@@ -2931,7 +2931,7 @@
       "id": "mission.1",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "THRADD_MISSION_VISITS",
@@ -2953,7 +2953,7 @@
       "id": "mission.2",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "THRADD_MISSION_VISITS", [["WE_IMPRESSING_URQUAN_1"], ["WE_IMPRESSING_URQUAN_2"]], "repeat_last", 0]
       },
       "save_as": "greeting",
@@ -2969,7 +2969,7 @@
       "id": "mission.3",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "THRADD_MISSION_VISITS", [["WE_IMPRESSED_URQUAN_1"], ["WE_IMPRESSED_URQUAN_2"]], "repeat_last", 0]
       },
       "save_as": "greeting",

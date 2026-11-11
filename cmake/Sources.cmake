@@ -243,6 +243,7 @@ set(UQM_SOURCES
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/arcade_session.cpp
+    sc2/src/uqm/inventory.cpp
     sc2/src/uqm/game_state.cpp
     sc2/src/uqm/asset_cache.cpp sc2/src/uqm/game_assets.cpp
     sc2/src/uqm/ship_tuning.cpp

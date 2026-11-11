@@ -148,11 +148,11 @@ helpers keep literal and state-derived arguments on the same path. Overload
 selection for `fleet.give` happens while binding:
 
 ```json
-{"verb":"fleet.give", "args":["spathi"]}
+{"action":"fleet.give", "args":["spathi"]}
 ```
 
 ```json
-{"verb":"fleet.give", "args":["spathi","Fwiffo",1]}
+{"action":"fleet.give", "args":["spathi","Fwiffo",1]}
 ```
 
 The first binds the default-producing overload. It generates the captain name
@@ -215,7 +215,7 @@ A response may contain its availability, action and result destinations together
   "id": "buy_five",
   "text": "melnorme.buy_5_fuel",
   "when": {"gt": [{"query": "ship.free_fuel", "args": []}, 0]},
-  "action": {"verb": "trade.purchase", "args": ["melnorme", "fuel", 5]},
+  "action": {"action": "trade.purchase", "args": ["melnorme", "fuel", 5]},
   "save_as": "fuel_purchase",
   "then": {"ok": "fuel.success", "no_credit": "fuel.no_credit", "no_room": "fuel.no_room"},
   "otherwise": "error"
@@ -246,7 +246,7 @@ existing result names, speech payloads and failure destinations.
 {
   "id":"purchase",
   "kind":"action",
-  "action":{"verb":"trade.purchase","args":["melnorme","fuel",10]},
+  "action":{"action":"trade.purchase","args":["melnorme","fuel",10]},
   "save_as":"fuel_purchase",
   "next":"purchase_result"
 }

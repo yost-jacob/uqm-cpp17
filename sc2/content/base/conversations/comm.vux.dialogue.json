@@ -754,7 +754,7 @@
       "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes",
@@ -764,7 +764,7 @@
       "id": "normal.home",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "VUX_HOME_VISITS",
@@ -785,7 +785,7 @@
       "id": "normal.space",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "VUX_VISITS",
@@ -806,7 +806,7 @@
       "id": "normal.info",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_hostile", true]
       },
       "save_as": "normal_info",
@@ -816,7 +816,7 @@
       "id": "normal.info.seq",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "VUX_INFO",
@@ -848,7 +848,7 @@
       "id": "why_so_mean",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "why_so_mean",
@@ -864,7 +864,7 @@
       "id": "deeper_reason",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "VUX_STACK_1", 2]
       },
       "save_as": "deeper_reason",
@@ -880,7 +880,7 @@
       "id": "if_we_apologize",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "VUX_STACK_1", 3]
       },
       "save_as": "if_we_apologize",
@@ -896,7 +896,7 @@
       "id": "try_any_way.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "try_any_way_effect1",
@@ -906,7 +906,7 @@
       "id": "try_any_way",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "VUX_STACK_1", 4]
       },
       "save_as": "try_any_way",
@@ -922,7 +922,7 @@
       "id": "apology.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_1_effect1",
@@ -932,7 +932,7 @@
       "id": "apology.1",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_1",
@@ -948,7 +948,7 @@
       "id": "apology.2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_2_effect1",
@@ -958,7 +958,7 @@
       "id": "apology.2",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_2",
@@ -974,7 +974,7 @@
       "id": "apology.3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_3_effect1",
@@ -984,7 +984,7 @@
       "id": "apology.3",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_3",
@@ -1000,7 +1000,7 @@
       "id": "apology.4.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_4_effect1",
@@ -1010,7 +1010,7 @@
       "id": "apology.4",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_4",
@@ -1026,7 +1026,7 @@
       "id": "apology.5.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_5_effect1",
@@ -1036,7 +1036,7 @@
       "id": "apology.5",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_5",
@@ -1052,7 +1052,7 @@
       "id": "apology.6.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_6_effect1",
@@ -1062,7 +1062,7 @@
       "id": "apology.6",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_6",
@@ -1078,7 +1078,7 @@
       "id": "apology.7.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_7_effect1",
@@ -1088,7 +1088,7 @@
       "id": "apology.7",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_7",
@@ -1104,7 +1104,7 @@
       "id": "apology.8.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_8_effect1",
@@ -1114,7 +1114,7 @@
       "id": "apology.8",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_8",
@@ -1130,7 +1130,7 @@
       "id": "apology.9.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_9_effect1",
@@ -1140,7 +1140,7 @@
       "id": "apology.9",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_9",
@@ -1156,7 +1156,7 @@
       "id": "apology.10.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "apology_10_effect1",
@@ -1166,7 +1166,7 @@
       "id": "apology.10",
       "kind": "action",
       "action": {
-        "verb": "state.add",
+        "action": "state.add",
         "args": ["story", "VUX_STACK_1", 1]
       },
       "save_as": "apology_10",
@@ -1182,7 +1182,7 @@
       "id": "kill.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "kill_effect1",
@@ -1192,7 +1192,7 @@
       "id": "kill",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "VUX_STACK_2", {"min": [{"add": [{"get": ["story", "VUX_STACK_2", 0]}, 1]}, 3]}]
       },
       "save_as": "kill",
@@ -1202,7 +1202,7 @@
       "id": "friends",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "VUX_STACK_3",
@@ -1217,7 +1217,7 @@
       "id": "friends.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "friends_outcome",
@@ -1233,7 +1233,7 @@
       "id": "bye.normal",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "VUX_STACK_4",
@@ -1253,7 +1253,7 @@
       "id": "bye.normal.outcome",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "bye_normal_outcome",
@@ -1434,7 +1434,7 @@
       "id": "zex.fight.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ZEX_VISITS", [["FIGHT_OR_TRADE_1"], ["FIGHT_OR_TRADE_2"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1450,7 +1450,7 @@
       "id": "zex.greet",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": ["story", "ZEX_VISITS", [["ZEX_HELLO_1"], ["ZEX_HELLO_2"], ["ZEX_HELLO_3"], ["ZEX_HELLO_4"]], "repeat_last"]
       },
       "save_as": "greeting",
@@ -1472,7 +1472,7 @@
       "id": "zex.bye",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "zex_bye",
@@ -1488,7 +1488,7 @@
       "id": "zex.kill",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "zex_kill",
@@ -1504,7 +1504,7 @@
       "id": "zex.regardless.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "zex_regardless_effect2",
@@ -1514,7 +1514,7 @@
       "id": "zex.regardless.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_VISITS", 0]
       },
       "save_as": "zex_regardless_effect1",
@@ -1524,7 +1524,7 @@
       "id": "zex.regardless",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_3", 2]
       },
       "save_as": "zex_regardless",
@@ -1540,7 +1540,7 @@
       "id": "what_you_do_here",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_1", 1]
       },
       "save_as": "what_you_do_here",
@@ -1556,7 +1556,7 @@
       "id": "what_about_menagerie",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_1", 2]
       },
       "save_as": "what_about_menagerie",
@@ -1572,7 +1572,7 @@
       "id": "what_about_creature.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_creature", true]
       },
       "save_as": "what_about_creature_effect2",
@@ -1582,7 +1582,7 @@
       "id": "what_about_creature.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "KNOW_ZEX_WANTS_MONSTER", 1]
       },
       "save_as": "what_about_creature_effect1",
@@ -1592,7 +1592,7 @@
       "id": "what_about_creature",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_1", 3]
       },
       "save_as": "what_about_creature",
@@ -1608,7 +1608,7 @@
       "id": "about_creature_again",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "about_creature_again", true]
       },
       "save_as": "about_creature_again",
@@ -1624,7 +1624,7 @@
       "id": "why_dont_you_attack",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_2", 1]
       },
       "save_as": "why_dont_you_attack",
@@ -1640,7 +1640,7 @@
       "id": "why_like_me",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_2", 2]
       },
       "save_as": "why_like_me",
@@ -1656,7 +1656,7 @@
       "id": "are_you_a_pervert",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_2", 3]
       },
       "save_as": "are_you_a_pervert",
@@ -1672,7 +1672,7 @@
       "id": "take_by_force",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_3", 1]
       },
       "save_as": "take_by_force",
@@ -1688,7 +1688,7 @@
       "id": "you_lied",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_STACK_3", 3]
       },
       "save_as": "you_lied",
@@ -2127,7 +2127,7 @@
       "id": "why_trust_1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_trust_1", true]
       },
       "save_as": "why_trust_1",
@@ -2143,7 +2143,7 @@
       "id": "why_trust_2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_trust_2", true]
       },
       "save_as": "why_trust_2",
@@ -2159,7 +2159,7 @@
       "id": "why_trust_3",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "why_trust_3", true]
       },
       "save_as": "why_trust_3",
@@ -2211,7 +2211,7 @@
       "id": "beast.release",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "beast_release",
@@ -2227,7 +2227,7 @@
       "id": "beast.gone",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "VUX_BEAST_ON_SHIP", 0]
       },
       "save_as": "beast_gone",
@@ -2237,7 +2237,7 @@
       "id": "zex.dead",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZEX_IS_DEAD", 1]
       },
       "save_as": "zex_dead",
@@ -2247,7 +2247,7 @@
       "id": "beast.peace",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "beast_peace",

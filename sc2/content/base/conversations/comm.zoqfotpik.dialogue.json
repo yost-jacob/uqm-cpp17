@@ -2374,7 +2374,7 @@
       "id": "exit.bye_homeworld",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye_homeworld",
@@ -2395,7 +2395,7 @@
       "id": "exit.decide_later",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_decide_later",
@@ -2416,7 +2416,7 @@
       "id": "exit.valuable_info",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_valuable_info",
@@ -2442,7 +2442,7 @@
       "id": "exit.how_can_i_help",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_how_can_i_help",
@@ -2472,7 +2472,7 @@
       "id": "exit.sure",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_sure",
@@ -2500,7 +2500,7 @@
       "id": "exit.sure.speech.effect0",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["zoqfot", "allied"]
       },
       "save_as": "exit_sure_speech_effect0",
@@ -2510,7 +2510,7 @@
       "id": "exit.sure.speech.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ZOQFOT_DISTRESS_EVENT", 3, 0, 0]
       },
       "save_as": "exit_sure_speech_effect1",
@@ -2520,7 +2520,7 @@
       "id": "exit.sure.speech.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 0]
       },
       "save_as": "exit_sure_speech_effect2",
@@ -2530,7 +2530,7 @@
       "id": "exit.all_very_interesting",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_all_very_interesting",
@@ -2556,7 +2556,7 @@
       "id": "exit.all_very_interesting.speech.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOSTILE", 1]
       },
       "save_as": "exit_all_very_interesting_speech_effect0",
@@ -2566,7 +2566,7 @@
       "id": "exit.all_very_interesting.speech.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 0]
       },
       "save_as": "exit_all_very_interesting_speech_effect1",
@@ -2576,7 +2576,7 @@
       "id": "exit.all_very_interesting.speech.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_all_very_interesting_speech_effect2",
@@ -2586,7 +2586,7 @@
       "id": "exit.never",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_never",
@@ -2607,7 +2607,7 @@
       "id": "exit.never.speech.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOSTILE", 1]
       },
       "save_as": "exit_never_speech_effect0",
@@ -2617,7 +2617,7 @@
       "id": "exit.never.speech.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 0]
       },
       "save_as": "exit_never_speech_effect1",
@@ -2627,7 +2627,7 @@
       "id": "exit.never.speech.effect2",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_never_speech_effect2",
@@ -2698,7 +2698,7 @@
       "id": "introduce.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "we_are_vindicator0", true]
       },
       "save_as": "introduce_effect0",
@@ -2734,7 +2734,7 @@
       "id": "your_race.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "your_race", true]
       },
       "save_as": "your_race_reply_effect0",
@@ -2762,7 +2762,7 @@
       "id": "where_from.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "where_from", true]
       },
       "save_as": "where_from_reply_effect0",
@@ -2796,7 +2796,7 @@
       "id": "what_emergency.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_emergency", true]
       },
       "save_as": "what_emergency_reply_effect0",
@@ -2824,7 +2824,7 @@
       "id": "tough_luck.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "tough_luck", true]
       },
       "save_as": "tough_luck_reply_effect0",
@@ -2850,7 +2850,7 @@
       "id": "what_look_like.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_look_like", true]
       },
       "save_as": "what_look_like_reply_effect0",
@@ -3042,7 +3042,7 @@
       "id": "which_fot.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "which_fot", true]
       },
       "save_as": "which_fot_reply_effect0",
@@ -3072,7 +3072,7 @@
       "id": "quiet_toadies.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "quiet_toadies", true]
       },
       "save_as": "quiet_toadies_reply_effect0",
@@ -3160,7 +3160,7 @@
       "id": "info.done",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "want_specific_info", true]
       },
       "save_as": "info_done",
@@ -3196,7 +3196,7 @@
       "id": "what_about_others.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_others", true]
       },
       "save_as": "what_about_others_reply_effect0",
@@ -3226,7 +3226,7 @@
       "id": "what_about_zebranky.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_zebranky", true]
       },
       "save_as": "what_about_zebranky_reply_effect0",
@@ -3254,7 +3254,7 @@
       "id": "what_about_stinger.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_stinger", true]
       },
       "save_as": "what_about_stinger_reply_effect0",
@@ -3275,7 +3275,7 @@
       "id": "what_about_guy_in_back.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_guy_in_back", true]
       },
       "save_as": "what_about_guy_in_back_reply_effect0",
@@ -3309,7 +3309,7 @@
       "id": "what_about_past.reply.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "what_about_past", true]
       },
       "save_as": "what_about_past_reply_effect0",
@@ -3403,7 +3403,7 @@
       "id": "home.info.0.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_INFO", 1]
       },
       "save_as": "home_info_0_effect0",
@@ -3413,7 +3413,7 @@
       "id": "home.info.0.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_homeworld", true]
       },
       "save_as": "home_info_0_effect1",
@@ -3443,7 +3443,7 @@
       "id": "home.info.1.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_INFO", 2]
       },
       "save_as": "home_info_1_effect0",
@@ -3453,7 +3453,7 @@
       "id": "home.info.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_homeworld", true]
       },
       "save_as": "home_info_1_effect1",
@@ -3481,7 +3481,7 @@
       "id": "home.info.2.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_INFO", 3]
       },
       "save_as": "home_info_2_effect0",
@@ -3491,7 +3491,7 @@
       "id": "home.info.2.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_homeworld", true]
       },
       "save_as": "home_info_2_effect1",
@@ -3525,7 +3525,7 @@
       "id": "home.info.3.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_INFO", 3]
       },
       "save_as": "home_info_3_effect0",
@@ -3535,7 +3535,7 @@
       "id": "home.info.3.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "whats_up_homeworld", true]
       },
       "save_as": "home_info_3_effect1",
@@ -3567,7 +3567,7 @@
       "id": "home.alliance.effect0",
       "kind": "action",
       "action": {
-        "verb": "galaxy.set_relationship",
+        "action": "galaxy.set_relationship",
         "args": ["zoqfot", "allied"]
       },
       "save_as": "home_alliance_effect0",
@@ -3577,7 +3577,7 @@
       "id": "home.alliance.effect1",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["ZOQFOT_DISTRESS_EVENT", 3, 0, 0]
       },
       "save_as": "home_alliance_effect1",
@@ -3637,7 +3637,7 @@
       "id": "war.frenzy.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_KNOW_MASK", 15]
       },
       "save_as": "war_frenzy_effect0",
@@ -3647,7 +3647,7 @@
       "id": "war.frenzy.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_war_news", true]
       },
       "save_as": "war_frenzy_effect1",
@@ -3683,7 +3683,7 @@
       "id": "war.delay.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "ZOQFOT_KNOW_MASK", "set", 1]
       },
       "save_as": "war_delay_effect0",
@@ -3693,7 +3693,7 @@
       "id": "war.delay.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_war_news", true]
       },
       "save_as": "war_delay_effect1",
@@ -3709,7 +3709,7 @@
       "id": "war.deadline.extended",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": [
           "local",
           "years_left",
@@ -3728,7 +3728,7 @@
       "id": "war.deadline.normal",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": [
           "local",
           "years_left",
@@ -3813,7 +3813,7 @@
       "id": "war.losing.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "ZOQFOT_KNOW_MASK", "set", 6]
       },
       "save_as": "war_losing_effect0",
@@ -3823,7 +3823,7 @@
       "id": "war.losing.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_war_news", true]
       },
       "save_as": "war_losing_effect1",
@@ -3855,7 +3855,7 @@
       "id": "war.winning.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.bits",
+        "action": "state.bits",
         "args": ["story", "ZOQFOT_KNOW_MASK", "set", 2]
       },
       "save_as": "war_winning_effect0",
@@ -3865,7 +3865,7 @@
       "id": "war.winning.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_war_news", true]
       },
       "save_as": "war_winning_effect1",
@@ -3886,7 +3886,7 @@
       "id": "war.none.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "any_war_news", true]
       },
       "save_as": "war_none_effect0",
@@ -3991,7 +3991,7 @@
       "id": "outtakes.effect0",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "outtakes_effect0",
@@ -4034,7 +4034,7 @@
       "id": "hostile.0.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 1]
       },
       "save_as": "hostile_0_effect0",
@@ -4044,7 +4044,7 @@
       "id": "hostile.0.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile_0_effect1",
@@ -4072,7 +4072,7 @@
       "id": "hostile.1.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 2]
       },
       "save_as": "hostile_1_effect0",
@@ -4082,7 +4082,7 @@
       "id": "hostile.1.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile_1_effect1",
@@ -4106,7 +4106,7 @@
       "id": "hostile.2.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 3]
       },
       "save_as": "hostile_2_effect0",
@@ -4116,7 +4116,7 @@
       "id": "hostile.2.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile_2_effect1",
@@ -4140,7 +4140,7 @@
       "id": "hostile.3.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 3]
       },
       "save_as": "hostile_3_effect0",
@@ -4150,7 +4150,7 @@
       "id": "hostile.3.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "hostile_3_effect1",
@@ -4160,7 +4160,7 @@
       "id": "first",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MET_ZOQFOT", 1]
       },
       "save_as": "first",
@@ -4248,7 +4248,7 @@
       "id": "rescue.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_DISTRESS", 0]
       },
       "save_as": "rescue_effect0",
@@ -4258,7 +4258,7 @@
       "id": "rescue.effect1",
       "kind": "action",
       "action": {
-        "verb": "fleet.give",
+        "action": "fleet.give",
         "args": ["zoqfot", 4]
       },
       "save_as": "rescue_effect1",
@@ -4290,7 +4290,7 @@
       "id": "neutral.0.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 1]
       },
       "save_as": "neutral_0_effect0",
@@ -4316,7 +4316,7 @@
       "id": "neutral.1.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 1]
       },
       "save_as": "neutral_1_effect0",
@@ -4361,7 +4361,7 @@
       "id": "allied.0.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 1]
       },
       "save_as": "allied_0_effect0",
@@ -4391,7 +4391,7 @@
       "id": "allied.1.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 2]
       },
       "save_as": "allied_1_effect0",
@@ -4415,7 +4415,7 @@
       "id": "allied.2.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 3]
       },
       "save_as": "allied_2_effect0",
@@ -4439,7 +4439,7 @@
       "id": "allied.3.effect0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "ZOQFOT_HOME_VISITS", 3]
       },
       "save_as": "allied_3_effect0",

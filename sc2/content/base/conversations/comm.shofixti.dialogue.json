@@ -680,7 +680,7 @@
       "id": "intro",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "intro",
@@ -711,7 +711,7 @@
       "id": "name.katana",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "name", "katana"]
       },
       "save_as": "name_katana",
@@ -721,7 +721,7 @@
       "id": "name.tanaka",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "name", "tanaka"]
       },
       "save_as": "name_tanaka",
@@ -752,7 +752,7 @@
       "id": "greet.katana",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SHOFIXTI_VISITS",
@@ -773,7 +773,7 @@
       "id": "greet.tanaka",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SHOFIXTI_VISITS",
@@ -809,7 +809,7 @@
       "id": "exit.bye0",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_bye0",
@@ -825,7 +825,7 @@
       "id": "exit.go_ahead",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_go_ahead",
@@ -841,7 +841,7 @@
       "id": "exit.need_you_for_duty",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "exit_need_you_for_duty",
@@ -857,7 +857,7 @@
       "id": "exit.dont_attack.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_dont_attack_effect1",
@@ -867,7 +867,7 @@
       "id": "exit.dont_attack",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 1]
       },
       "save_as": "exit_dont_attack",
@@ -883,7 +883,7 @@
       "id": "exit.hey_stop.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_hey_stop_effect1",
@@ -893,7 +893,7 @@
       "id": "exit.hey_stop",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 2]
       },
       "save_as": "exit_hey_stop",
@@ -909,7 +909,7 @@
       "id": "exit.look_you_are.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_look_you_are_effect1",
@@ -919,7 +919,7 @@
       "id": "exit.look_you_are",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 3]
       },
       "save_as": "exit_look_you_are",
@@ -935,7 +935,7 @@
       "id": "exit.no_one_insults.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_no_one_insults_effect1",
@@ -945,7 +945,7 @@
       "id": "exit.no_one_insults",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK2", 1]
       },
       "save_as": "exit_no_one_insults",
@@ -961,7 +961,7 @@
       "id": "exit.mighty_words.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_mighty_words_effect1",
@@ -971,7 +971,7 @@
       "id": "exit.mighty_words",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK2", 2]
       },
       "save_as": "exit_mighty_words",
@@ -987,7 +987,7 @@
       "id": "exit.dont_know.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_dont_know_effect1",
@@ -997,7 +997,7 @@
       "id": "exit.dont_know",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK3", 1]
       },
       "save_as": "exit_dont_know",
@@ -1013,7 +1013,7 @@
       "id": "exit.look0.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_look0_effect1",
@@ -1023,7 +1023,7 @@
       "id": "exit.look0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK3", 2]
       },
       "save_as": "exit_look0",
@@ -1039,7 +1039,7 @@
       "id": "exit.no_bloodshed.effect1",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "exit_no_bloodshed_effect1",
@@ -1049,7 +1049,7 @@
       "id": "exit.no_bloodshed",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK3", 3]
       },
       "save_as": "exit_no_bloodshed",
@@ -1059,7 +1059,7 @@
       "id": "fight",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["hostile"]
       },
       "save_as": "fight",
@@ -1069,7 +1069,7 @@
       "id": "fight.sequence",
       "kind": "action",
       "action": {
-        "verb": "sequence.next",
+        "action": "sequence.next",
         "args": [
           "story",
           "SHOFIXTI_STACK4",
@@ -1168,7 +1168,7 @@
       "id": "mistake.effect2",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK2", 3]
       },
       "save_as": "mistake_effect2",
@@ -1178,7 +1178,7 @@
       "id": "mistake.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK3", 0]
       },
       "save_as": "mistake_effect1",
@@ -1188,7 +1188,7 @@
       "id": "mistake",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 0]
       },
       "save_as": "mistake",
@@ -1288,7 +1288,7 @@
       "id": "dont_do_it",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "dont_do_it", true]
       },
       "save_as": "dont_do_it",
@@ -1397,7 +1397,7 @@
       "id": "recruit.effect3",
       "kind": "action",
       "action": {
-        "verb": "encounter.set_outcome",
+        "action": "encounter.set_outcome",
         "args": ["peace"]
       },
       "save_as": "recruit_effect3",
@@ -1407,7 +1407,7 @@
       "id": "recruit.effect2",
       "kind": "action",
       "action": {
-        "verb": "calendar.schedule",
+        "action": "calendar.schedule",
         "args": ["SHOFIXTI_RETURN_EVENT", 2, 0, 0]
       },
       "save_as": "recruit_effect2",
@@ -1417,7 +1417,7 @@
       "id": "recruit.effect1",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "MAIDENS_ON_SHIP", 0]
       },
       "save_as": "recruit_effect1",
@@ -1427,7 +1427,7 @@
       "id": "recruit",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_RECRUITED", 1]
       },
       "save_as": "recruit",
@@ -1443,7 +1443,7 @@
       "id": "report",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["local", "report0", true]
       },
       "save_as": "report",
@@ -1459,7 +1459,7 @@
       "id": "why_here0",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 1]
       },
       "save_as": "why_here0",
@@ -1475,7 +1475,7 @@
       "id": "what_happened",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 2]
       },
       "save_as": "what_happened",
@@ -1491,7 +1491,7 @@
       "id": "glory_device",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK1", 3]
       },
       "save_as": "glory_device",
@@ -1507,7 +1507,7 @@
       "id": "where_world",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK3", 1]
       },
       "save_as": "where_world",
@@ -1523,7 +1523,7 @@
       "id": "how_survive",
       "kind": "action",
       "action": {
-        "verb": "state.set",
+        "action": "state.set",
         "args": ["story", "SHOFIXTI_STACK3", 2]
       },
       "save_as": "how_survive",
