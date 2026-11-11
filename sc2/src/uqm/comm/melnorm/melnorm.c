@@ -323,7 +323,7 @@ HasTech (TechId_t techId)
 	switch (techData->type)
 	{
 		case TECH_TYPE_MODULE:
-			return GLOBAL (ModuleCost[techData->subtype]) != 0;
+			return GetGameData()->prices.modules[techData->subtype] != 0;
 		case TECH_TYPE_LANDER_SHIELD:
 			return (GET_GAME_STATE (LANDER_SHIELDS) & (1 << techData->subtype)) != 0;
 		case TECH_TYPE_STATE:
@@ -342,7 +342,7 @@ GrantTech (TechId_t techId)
 	switch (techData->type)
 	{
 		case TECH_TYPE_MODULE:
-			GLOBAL (ModuleCost[techData->subtype]) = techData->info / MODULE_COST_SCALE;
+			GetGameData()->prices.modules[techData->subtype] = techData->info / MODULE_COST_SCALE;
 			return;
 		case TECH_TYPE_LANDER_SHIELD:
 		{
@@ -494,16 +494,16 @@ ShipWorth (void)
 	COUNT worth;
 
 	worth = GLOBAL_SIS (NumLanders)
-			* GLOBAL (ModuleCost[PLANET_LANDER]);
+			* GetGameData()->prices.modules[PLANET_LANDER];
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 	{
 		if (GLOBAL_SIS (DriveSlots[i]) < EMPTY_SLOT)
-			worth += GLOBAL (ModuleCost[FUSION_THRUSTER]);
+			worth += GetGameData()->prices.modules[FUSION_THRUSTER];
 	}
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
 	{
 		if (GLOBAL_SIS (JetSlots[i]) < EMPTY_SLOT)
-			worth += GLOBAL (ModuleCost[TURNING_JETS]);
+			worth += GetGameData()->prices.modules[TURNING_JETS];
 	}
 
 	crew_pods = -(SBYTE)(
@@ -518,7 +518,7 @@ ShipWorth (void)
 		if (which_module < BOMB_MODULE_0
 				&& (which_module != CREW_POD || ++crew_pods > 0))
 		{
-			worth += GLOBAL (ModuleCost[which_module]);
+			worth += GetGameData()->prices.modules[which_module];
 		}
 	}
 
@@ -721,7 +721,7 @@ StripShip (COUNT fuel_required)
 			else if (which_module > end_mod)
 				end_mod = which_module;
 			++module_count[which_module];
-			total += GLOBAL (ModuleCost[which_module]);
+			total += GetGameData()->prices.modules[which_module];
 		}
 
 		if (total == 0)

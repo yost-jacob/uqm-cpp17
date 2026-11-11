@@ -118,7 +118,7 @@ DrawElementAmount (COUNT element, bool selected)
 		SetContextForeGroundColor (selected ?
 				CARGO_SELECTED_WORTH_COLOR : CARGO_WORTH_COLOR);
 		t.baseline.x = ELEMENT_COL_1;
-		snprintf (buf, sizeof buf, "%u", GLOBAL (ElementWorth[element]));
+		snprintf (buf, sizeof buf, "%u", GetGameData()->prices.minerals[element]);
 		t.CharCount = (COUNT)~0;
 		font_DrawText (&t);
 		

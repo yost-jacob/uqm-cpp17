@@ -81,10 +81,7 @@ typedef enum {
 	DMS_Mode_exit,       // Leaving DoModifyShips() mode.
 } DMS_Mode;
 
-static COUNT ShipCost[] =
-{
-	RACE_SHIP_COST
-};
+
 
 
 static void
@@ -245,7 +242,7 @@ DrawRaceStrings (MENU_STATE *pMS, BYTE NewRaceItem)
 		t.align = ALIGN_RIGHT;
 		t.CharCount = (COUNT)~0;
 		t.pStr = buf;
-		sprintf (buf, "%u", ShipCost[NewRaceItem]);
+		sprintf (buf, "%u", GetShipPrice(NewRaceItem));
 		SetContextFont (TinyFont);
 		SetContextForeGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x1F, 0x00), 0x02));
@@ -522,7 +519,7 @@ CrewTransaction (SIZE crew_delta)
 			if (crew_bought >= CREW_EXPENSE_THRESHOLD
 					&& crew_bought - crew_delta < CREW_EXPENSE_THRESHOLD)
 			{
-				GLOBAL (CrewCost) += 2;
+				GetGameData()->prices.crew += 2;
 				DrawMenuStateStrings (PM_CREW, SHIPYARD_CREW);
 			}
 		}
@@ -531,7 +528,7 @@ CrewTransaction (SIZE crew_delta)
 			if (crew_bought < CREW_EXPENSE_THRESHOLD
 					&& crew_bought - crew_delta >= CREW_EXPENSE_THRESHOLD)
 			{
-				GLOBAL (CrewCost) -= 2;
+				GetGameData()->prices.crew -= 2;
 				DrawMenuStateStrings (PM_CREW, SHIPYARD_CREW);
 			}
 		}
@@ -724,7 +721,7 @@ DMS_HireFlagShipCrew (void)
 		return 0;
 	}
 		
-	if (GLOBAL_SIS (ResUnits) < (DWORD)GLOBAL (CrewCost))
+	if (GLOBAL_SIS (ResUnits) < (DWORD)GetGameData()->prices.crew)
 	{
 		// Not enough RUs.
 		return 0;
@@ -736,7 +733,7 @@ DMS_HireFlagShipCrew (void)
 	// Update the crew counter and RU. Note that the crew counter is
 	// flashing.
 	PreUpdateFlashRect ();
-	DeltaSISGauges (1, 0, -GLOBAL (CrewCost));
+	DeltaSISGauges (1, 0, -GetGameData()->prices.crew);
 	PostUpdateFlashRect ();
 
 	return 1;
@@ -765,7 +762,7 @@ DMS_DismissFlagShipCrew (void)
 	// Update the crew counter and RU. Note that the crew counter is
 	// flashing.
 	PreUpdateFlashRect ();
-	DeltaSISGauges (-1, 0, GLOBAL (CrewCost) -
+	DeltaSISGauges (-1, 0, GetGameData()->prices.crew -
 			(crew_bought == CREW_EXPENSE_THRESHOLD ? 2 : 0));
 	PostUpdateFlashRect ();
 
@@ -797,7 +794,7 @@ DMS_HireEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hTemplate);
 	}
 	
-	if (GLOBAL_SIS (ResUnits) < (DWORD)GLOBAL (CrewCost))
+	if (GLOBAL_SIS (ResUnits) < (DWORD)GetGameData()->prices.crew)
 	{
 		// Not enough money to hire a crew member.
 		return 0;
@@ -817,12 +814,12 @@ DMS_HireEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 
 	if (StarShipPtr->crew_level > 0)
 	{
-		DeltaSISGauges (0, 0, -GLOBAL (CrewCost));
+		DeltaSISGauges (0, 0, -GetGameData()->prices.crew);
 	}
 	else
 	{
 		// Buy a ship.
-		DeltaSISGauges (0, 0, -(COUNT)ShipCost[StarShipPtr->race_id]);
+		DeltaSISGauges (0, 0, -(COUNT)GetShipPrice(StarShipPtr->race_id));
 	}
 
 	++StarShipPtr->crew_level;
@@ -855,14 +852,14 @@ DMS_DismissEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 					GET_GAME_STATE (CREW_PURCHASED0),
 					GET_GAME_STATE (CREW_PURCHASED1));
 
-			DeltaSISGauges (0, 0, GLOBAL (CrewCost)
+			DeltaSISGauges (0, 0, GetGameData()->prices.crew
 					- (crew_bought == CREW_EXPENSE_THRESHOLD ? 2 : 0));
 		}
 		else
 		{
 			// With the last crew member, the ship will be scrapped.
 			// Give RU for the ship.
-			DeltaSISGauges (0, 0, (COUNT)ShipCost[StarShipPtr->race_id]);
+			DeltaSISGauges (0, 0, (COUNT)GetShipPrice(StarShipPtr->race_id));
 		}
 		crew_delta = -1;
 		--StarShipPtr->crew_level;
@@ -956,7 +953,7 @@ DMS_TryAddEscortShip (MENU_STATE *pMS)
 			LOBYTE (pMS->delta_item));
 	COUNT Index = GetIndexFromStarShip (&GLOBAL (avail_race_q), shipInfo);
 
-	if (GLOBAL_SIS (ResUnits) >= (DWORD)ShipCost[Index]
+	if (GLOBAL_SIS (ResUnits) >= (DWORD)GetShipPrice(Index)
 			&& CloneShipFragment (Index, GetPlayerFleetQueue(), 1))
 	{
 		ShowCombatShip (pMS, pMS->CurState, NULL);
@@ -964,7 +961,7 @@ DMS_TryAddEscortShip (MENU_STATE *pMS)
 		DrawMenuStateStrings (PM_CREW, SHIPYARD_CREW);
 
 		DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA,
-				-((int)ShipCost[Index]));
+				-((int)GetShipPrice(Index)));
 		DMS_SetMode (pMS, DMS_Mode_editCrew);
 	}
 	else

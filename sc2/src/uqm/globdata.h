@@ -25,6 +25,7 @@
 #include "libs/reslib.h"
 #include "libs/sndlib.h"
 #include "sis.h"
+#include "game_data.h"
 #include "velocity.h"
 #include "commanim.h"
 
@@ -920,9 +921,7 @@ typedef struct
 	BYTE glob_flags;
 			// See above for the meaning of the bits.
 
-	BYTE CrewCost, FuelCost;
-	BYTE ModuleCost[NUM_MODULES];
-	BYTE ElementWorth[NUM_ELEMENT_CATEGORIES];
+	UQM_GAME_DATA gameData;
 
 	PRIMITIVE *DisplayArray;
 	ACTIVITY CurrentActivity;

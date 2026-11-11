@@ -332,10 +332,10 @@ SaveGameState (const GAME_STATE *GSPtr, uio_Stream *fh)
 	write_32  (fh, GLOBAL_STATE_TAG);
 	write_32  (fh, 75);
 	write_8   (fh, GSPtr->glob_flags);
-	write_8   (fh, GSPtr->CrewCost);
-	write_8   (fh, GSPtr->FuelCost);
-	write_a8  (fh, GSPtr->ModuleCost, NUM_MODULES);
-	write_a8  (fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
+	write_8   (fh, GSPtr->gameData.prices.crew);
+	write_8   (fh, GSPtr->gameData.prices.fuel);
+	write_a8  (fh, GSPtr->gameData.prices.modules, NUM_MODULES);
+	write_a8  (fh, GSPtr->gameData.prices.minerals, NUM_ELEMENT_CATEGORIES);
 	write_16  (fh, GSPtr->CurrentActivity);
 
 	SaveClockState (&GSPtr->GameClock, fh);

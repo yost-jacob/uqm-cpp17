@@ -387,3 +387,46 @@ BOOST_AUTO_TEST_CASE(story_data_names_share_typed_storage_and_reject_bad_writes)
     BOOST_CHECK_THROW(story.readNamed("UNKNOWN_STORY_FLAG"), std::invalid_argument);
     BOOST_CHECK_THROW(story.setNamed("UNKNOWN_STORY_FLAG", 1), std::invalid_argument);
 }
+
+static_assert(std::is_same_v<decltype(std::declval<const GameSession &>().gameData()), const GameData &>);
+static_assert(std::is_same_v<decltype(std::declval<PlayerEntity &>().gameData()), GameData &>);
+static_assert(sizeof(PriceTables) == 2 + NUM_MODULES + NUM_ELEMENT_CATEGORIES,
+              "Saved price fields retain byte widths without padding");
+
+BOOST_AUTO_TEST_CASE(game_data_mutations_are_owned_by_the_selected_player)
+{
+    auto firstState = std::make_shared<GameState>(UserProfile{PlayerId{31}, "First"});
+    auto secondState = std::make_shared<GameState>(UserProfile{PlayerId{32}, "Second"});
+    GameSession first{firstState, PlayerId{31}}, second{secondState, PlayerId{32}};
+    auto &prices = first.gameData().prices;
+    prices.crew += 7;
+    prices.modules[PLANET_LANDER] = 0;
+    BOOST_TEST(first.player().gameData().prices.crew == 10u);
+    BOOST_TEST(second.gameData().prices.crew == 3u);
+    BOOST_TEST(second.gameData().prices.modules[PLANET_LANDER] == 500 / MODULE_COST_SCALE);
+    BOOST_TEST(defaultGameData().prices.crew == 3u);
+    BOOST_TEST(shipPrice(ARILOU_SHIP) == 1600u);
+    BOOST_TEST(shipPrice(YEHAT_REBEL_SHIP) == 2300u);
+    BOOST_CHECK_THROW(shipPrice(ShipPrices.size()), std::out_of_range);
+}
+
+BOOST_FIXTURE_TEST_CASE(game_data_c_projection_and_legacy_restore_share_storage, LegacyPlayerFixture)
+{
+    auto &data = gameSession().gameData();
+    BOOST_TEST(&data == GetGameData());
+    ResetGameData(GetGameData());
+    data.prices.crew = 25;
+    data.prices.fuel = 17;
+    data.prices.modules[GUN_WEAPON] = 42;
+    data.prices.minerals[EXOTIC] = 19;
+    game_state_c_save();
+    ResetGameData(GetGameData());
+    BOOST_TEST(data.prices.crew == 3u);
+    game_state_c_restore();
+    BOOST_TEST(&data == GetGameData());
+    BOOST_TEST(data.prices.crew == 25u);
+    BOOST_TEST(data.prices.fuel == 17u);
+    BOOST_TEST(data.prices.modules[GUN_WEAPON] == 42u);
+    BOOST_TEST(data.prices.minerals[EXOTIC] == 19u);
+    BOOST_TEST(GetShipPrice(HUMAN_SHIP) == shipPrice(HUMAN_SHIP));
+}

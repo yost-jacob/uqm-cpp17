@@ -310,10 +310,10 @@ LoadGameState (GAME_STATE *GSPtr, void *fh)
 		return FALSE;
 	}
 	read_8   (fh, &GSPtr->glob_flags);
-	read_8   (fh, &GSPtr->CrewCost);
-	read_8   (fh, &GSPtr->FuelCost);
-	read_a8  (fh, GSPtr->ModuleCost, NUM_MODULES);
-	read_a8  (fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
+	read_8   (fh, &GSPtr->gameData.prices.crew);
+	read_8   (fh, &GSPtr->gameData.prices.fuel);
+	read_a8  (fh, GSPtr->gameData.prices.modules, NUM_MODULES);
+	read_a8  (fh, GSPtr->gameData.prices.minerals, NUM_ELEMENT_CATEGORIES);
 	read_16  (fh, &GSPtr->CurrentActivity);
 
 	LoadClockState (&GSPtr->GameClock, fh);

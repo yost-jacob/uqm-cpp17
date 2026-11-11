@@ -37,7 +37,6 @@
 #	include "libs/log.h"
 #endif
 
-
 static void CreateRadar (void);
 
 CONTEXT RadarContext;
@@ -195,22 +194,15 @@ InitGameStructures (void)
 	InitGroupInfo (TRUE);
 
 	GLOBAL (glob_flags) = 0;
+	ResetGameData (GetGameData ());
 
-	GLOBAL (ElementWorth[COMMON]) = 1;
 	GLOBAL_SIS (ElementAmounts[COMMON]) = 0;
-	GLOBAL (ElementWorth[CORROSIVE]) = 2;
 	GLOBAL_SIS (ElementAmounts[CORROSIVE]) = 0;
-	GLOBAL (ElementWorth[BASE_METAL]) = 3;
 	GLOBAL_SIS (ElementAmounts[BASE_METAL]) = 0;
-	GLOBAL (ElementWorth[NOBLE]) = 4;
 	GLOBAL_SIS (ElementAmounts[NOBLE]) = 0;
-	GLOBAL (ElementWorth[RARE_EARTH]) = 5;
 	GLOBAL_SIS (ElementAmounts[RARE_EARTH]) = 0;
-	GLOBAL (ElementWorth[PRECIOUS]) = 6;
 	GLOBAL_SIS (ElementAmounts[PRECIOUS]) = 0;
-	GLOBAL (ElementWorth[RADIOACTIVE]) = 8;
 	GLOBAL_SIS (ElementAmounts[RADIOACTIVE]) = 0;
-	GLOBAL (ElementWorth[EXOTIC]) = 25;
 	GLOBAL_SIS (ElementAmounts[EXOTIC]) = 0;
 
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
@@ -240,16 +232,6 @@ InitGameStructures (void)
 	GLOBAL (CurrentActivity) = IN_INTERPLANETARY | START_INTERPLANETARY;
 
 	GLOBAL_SIS (ResUnits) = 0;
-	GLOBAL (CrewCost) = 3;
-	GLOBAL (FuelCost) = 20;
-	GLOBAL (ModuleCost[PLANET_LANDER]) = 500 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[FUSION_THRUSTER]) = 500 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[TURNING_JETS]) = 500 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[CREW_POD]) = 2000 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[STORAGE_BAY]) = 750 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[FUEL_TANK]) = 500 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[DYNAMO_UNIT]) = 2000 / MODULE_COST_SCALE;
-	GLOBAL (ModuleCost[GUN_WEAPON]) = 2000 / MODULE_COST_SCALE;
 
 	GLOBAL_SIS (NumLanders) = 1;
 
@@ -332,7 +314,6 @@ InitGlobData (void)
 
 	GLOBAL (DisplayArray) = DisplayArray;
 }
-
 
 BOOLEAN
 inFullGame (void)

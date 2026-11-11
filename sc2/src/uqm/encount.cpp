@@ -1,3 +1,4 @@
+#include "game_data.hpp"
 //Copyright Paul Reiche, Fred Ford. 1992-2002
 
 /*
@@ -457,10 +458,7 @@ uqm::EncounterRuntime::finish()
 		};
         constexpr auto NUM_SHIP_FADES = std::size(fade_ship_cycle);
 
-		COUNT race_bounty[] =
-		{
-			RACE_SHIP_COST
-		};
+
 
 		story_.set(uqm::StoryFlag::BattleSegue, 0);
 		story_.set(uqm::StoryFlag::BombCarrier, 0);
@@ -590,7 +588,7 @@ uqm::EncounterRuntime::finish()
 							DrawFilledRectangle (&r);
 
 							/* collect bounty ResUnits */
-							j = race_bounty[EncounterRace] >> 3;
+							j = uqm::shipPrice(EncounterRace) >> 3;
 							RecycleAmount += j;
 							sprintf (buf, "%u", RecycleAmount);
 							t.baseline.x = r.corner.x + r.extent.width - 1;

@@ -488,10 +488,10 @@ LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh)
 
 	cread_8   (fh, &dummy8); /* obsolete */
 	cread_8   (fh, &GSPtr->glob_flags);
-	cread_8   (fh, &GSPtr->CrewCost);
-	cread_8   (fh, &GSPtr->FuelCost);
-	cread_a8  (fh, GSPtr->ModuleCost, NUM_MODULES);
-	cread_a8  (fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
+	cread_8   (fh, &GSPtr->gameData.prices.crew);
+	cread_8   (fh, &GSPtr->gameData.prices.fuel);
+	cread_a8  (fh, GSPtr->gameData.prices.modules, NUM_MODULES);
+	cread_a8  (fh, GSPtr->gameData.prices.minerals, NUM_ELEMENT_CATEGORIES);
 	cread_ptr (fh); /* not loading ptr; PRIMITIVE *DisplayArray */
 	cread_16  (fh, &GSPtr->CurrentActivity);
 	

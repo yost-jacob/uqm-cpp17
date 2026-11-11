@@ -1,6 +1,7 @@
 #ifndef UQM_GAME_STATE_HPP_
 #define UQM_GAME_STATE_HPP_
 
+#include "game_data.hpp"
 #include <string_view>
 #include <array>
 #include <cstdint>
@@ -274,7 +275,10 @@ public:
     // Storage quantities only; gameplay callers must enforce capacity/cost rules.
     void setFuel(std::uint32_t fuel) noexcept;
     void setCrew(std::uint16_t crew) noexcept;
-    // Borrow owned escorts; valid for this player's lifetime.
+    // Borrow this player's economic tables; valid until the player is destroyed.
+    GameData &gameData() noexcept;
+    const GameData &gameData() const noexcept;
+    // Borrow owned flagship/escorts; valid for this player's lifetime.
     SIS &sis() noexcept;
     const SIS &sis() const noexcept;
     Fleet &fleet() noexcept;
@@ -337,6 +341,8 @@ public:
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
     HyperSpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
     PlayerId playerId() const noexcept;
+    GameData &gameData() { return player().gameData(); }
+    const GameData &gameData() const { return player().gameData(); }
     PlayerEntity &player();
     const PlayerEntity &player() const;
     WorldState &world() noexcept;
