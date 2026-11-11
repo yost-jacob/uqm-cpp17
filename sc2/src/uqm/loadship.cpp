@@ -19,42 +19,47 @@
 #include "build.h"
 #include "ship_factory.hpp"
 #include "ship_assets_legacy.hpp"
+#include "game_assets.hpp"
+#include "legacy_runtime.hpp"
 #include "nameref.h"
 #include "init.h"
 #include "libs/log.h"
 #include <exception>
+#include <stdexcept>
 #include <memory>
 
 namespace {
 // Keep the legacy selective-transfer contract: master/fleet callers sometimes
 // retain icons after the behavior owner is destroyed. This does not publish state.
-void freeAssets(RACE_DESC &descriptor, bool iconData, bool battleData) noexcept {
-	if (battleData)
-	{
-		DATA_STUFF *shipData = &descriptor.ship_data;
-
-		free_image (shipData->special);
-		free_image (shipData->weapon);
-		free_image (shipData->ship);
-
-		DestroyDrawable (
-				ReleaseDrawable (shipData->captain_control.background));
-		DestroyMusic (shipData->victory_ditty);
-		DestroySound (ReleaseSound (shipData->ship_sounds));
-	}
-
-	if (iconData)
-	{
-		SHIP_INFO *shipInfo = &descriptor.ship_info;
-
-		DestroyDrawable (ReleaseDrawable (shipInfo->melee_icon));
-		DestroyDrawable (ReleaseDrawable (shipInfo->icons));
-		DestroyStringTable (ReleaseStringTable (shipInfo->race_strings));
-	}
+void freeAssets(RACE_DESC &descriptor, bool iconData) noexcept {
+    // Battle resources are shared owners in Ship, never manually freed here.
+    // Icons retain the existing explicit transfer into fleet/menu storage.
+    if (iconData) {
+        auto &info = descriptor.ship_info;
+        DestroyDrawable(ReleaseDrawable(info.melee_icon));
+        DestroyDrawable(ReleaseDrawable(info.icons));
+        DestroyStringTable(ReleaseStringTable(info.race_strings));
+    }
+}
+FRAME graphic(uqm::combat::Ship &ship, uqm::AssetCache &cache, RESOURCE id) {
+    if (!id) throw std::invalid_argument("missing required ship graphic");
+    auto asset = cache.find({uqm::AssetKind::Graphic, id});
+    const auto frame = dynamic_cast<const uqm::GraphicAsset &>(*asset).frame();
+    ship.retainAsset(std::move(asset));
+    return frame;
+}
+void animation(uqm::combat::Ship &ship, uqm::AssetCache &cache, FRAME *frames, const RESOURCE *ids) {
+    // Missing smaller views alias the last available view, as in load_animation.
+    FRAME previous = nullptr;
+    for (unsigned i = 0; i < NUM_VIEWS; ++i) {
+        if (i == 0 || ids[i] != NULL_RESOURCE) previous = graphic(ship, cache, ids[i]);
+        frames[i] = previous;
+    }
 }
 // Resource functions and required/optional asset policy are unchanged. Only
 // construction ownership and rollback move into this native boundary.
-bool loadAssets(RACE_DESC &descriptor, bool battleData) {
+void loadAssets(uqm::combat::Ship &ship, uqm::AssetCache &cache, bool battleData) {
+    auto &descriptor = ship.legacyData();
 	if (descriptor.ship_info.icons_rsc != NULL_RESOURCE)
 	{
 		descriptor.ship_info.icons = CaptureDrawable (LoadGraphic (
@@ -76,62 +81,31 @@ bool loadAssets(RACE_DESC &descriptor, bool battleData) {
 	if (battleData)
 	{
 		DATA_STUFF *RawPtr = &descriptor.ship_data;
-		if (!load_animation (RawPtr->ship,
-				RawPtr->ship_rsc[0],
-				RawPtr->ship_rsc[1],
-				RawPtr->ship_rsc[2]))
-			return false;
-
-		if (RawPtr->weapon_rsc[0] != NULL_RESOURCE)
-		{
-			if (!load_animation (RawPtr->weapon,
-					RawPtr->weapon_rsc[0],
-					RawPtr->weapon_rsc[1],
-					RawPtr->weapon_rsc[2]))
-				return false;
-		}
-
-		if (RawPtr->special_rsc[0] != NULL_RESOURCE)
-		{
-			if (!load_animation (RawPtr->special,
-					RawPtr->special_rsc[0],
-					RawPtr->special_rsc[1],
-					RawPtr->special_rsc[2]))
-				return false;
-		}
-
-		if (RawPtr->captain_control.captain_rsc != NULL_RESOURCE)
-		{
-			RawPtr->captain_control.background = CaptureDrawable (LoadGraphic (
-					RawPtr->captain_control.captain_rsc));
-			if (!RawPtr->captain_control.background)
-				return false;
-		}
-
-		if (RawPtr->victory_ditty_rsc != NULL_RESOURCE)
-		{
-			RawPtr->victory_ditty =
-					LoadMusic (RawPtr->victory_ditty_rsc);
-			if (!RawPtr->victory_ditty)
-				return false;
-		}
-
-		if (RawPtr->ship_sounds_rsc != NULL_RESOURCE)
-		{
-			RawPtr->ship_sounds = CaptureSound (
-					LoadSound (RawPtr->ship_sounds_rsc));
-			if (!RawPtr->ship_sounds)
-				return false;
-		}
+        animation(ship, cache, RawPtr->ship, RawPtr->ship_rsc);
+        if (RawPtr->weapon_rsc[0] != NULL_RESOURCE)
+            animation(ship, cache, RawPtr->weapon, RawPtr->weapon_rsc);
+        if (RawPtr->special_rsc[0] != NULL_RESOURCE)
+            animation(ship, cache, RawPtr->special, RawPtr->special_rsc);
+        if (RawPtr->captain_control.captain_rsc != NULL_RESOURCE)
+            RawPtr->captain_control.background = graphic(ship, cache, RawPtr->captain_control.captain_rsc);
+        if (RawPtr->victory_ditty_rsc != NULL_RESOURCE) {
+            auto asset = cache.find({uqm::AssetKind::Music, RawPtr->victory_ditty_rsc});
+            RawPtr->victory_ditty = dynamic_cast<const uqm::MusicAsset &>(*asset).music();
+            ship.retainAsset(std::move(asset));
+        }
+        if (RawPtr->ship_sounds_rsc != NULL_RESOURCE) {
+            auto asset = cache.find({uqm::AssetKind::Sound, RawPtr->ship_sounds_rsc});
+            RawPtr->ship_sounds = dynamic_cast<const uqm::SoundAsset &>(*asset).sound();
+            ship.retainAsset(std::move(asset));
+        }
 	}
 
-    return true;
 }
 struct AssetLoadRollback {
     RACE_DESC &descriptor;
     bool committed = false;
     ~AssetLoadRollback() {
-        if (!committed) freeAssets(descriptor, true, true);
+        if (!committed) freeAssets(descriptor, true);
     }
 };
 }
@@ -141,7 +115,7 @@ extern "C" RACE_DESC *load_ship(SPECIES_ID species, BOOLEAN battleData) {
         auto ship = uqm::combat::createShip(species);
         if (!ship) return nullptr;
         AssetLoadRollback rollback{ship->legacyData()};
-        if (!loadAssets(ship->legacyData(), battleData != FALSE)) return nullptr;
+        loadAssets(*ship, uqm::detail::sessionAssets(), battleData != FALSE);
         rollback.committed = true;
         // The C gameplay layer temporarily owns this object through its borrowed
         // descriptor. free_ship reconstructs the unique owner at the same boundary.
@@ -155,14 +129,14 @@ extern "C" RACE_DESC *load_ship(SPECIES_ID species, BOOLEAN battleData) {
     return nullptr;
 }
 
-extern "C" void free_ship(RACE_DESC *descriptor, BOOLEAN iconData, BOOLEAN battleData) {
+extern "C" void free_ship(RACE_DESC *descriptor, BOOLEAN iconData) {
     if (!descriptor) return;
     std::unique_ptr<uqm::combat::Ship> owner(&uqm::combat::shipFor(*descriptor));
     owner->finish(); // Explicit legacy campaign completion precedes asset release.
-    freeAssets(owner->legacyData(), iconData != FALSE, battleData != FALSE);
+    freeAssets(owner->legacyData(), iconData != FALSE);
 }
 
 void uqm::detail::discardLoadedShip(RACE_DESC &descriptor) noexcept {
     std::unique_ptr<uqm::combat::Ship> owner(&uqm::combat::shipFor(descriptor));
-    freeAssets(owner->legacyData(), true, true);
+    freeAssets(owner->legacyData(), true);
 }

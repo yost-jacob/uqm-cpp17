@@ -103,7 +103,7 @@ void uqm::detail::BattleScene::complete() {
             ship->crew_level = info.crew_level;
             survivors[ship->playerNr] = ship;
             auto *descriptor = std::exchange(ship->RaceDescPtr, nullptr);
-            free_ship(descriptor, TRUE, TRUE); // Explicit Ship::finish, never teardown.
+            free_ship(descriptor, TRUE); // Explicit Ship::finish, never teardown.
         }
         UnlockElement(handle);
         handle = next;

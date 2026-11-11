@@ -2,6 +2,10 @@
 #include "uqm/ship_builders.hpp"
 #include "uqm/build.h"
 #include "uqm/init.h"
+#include "uqm/game_state.hpp"
+#include "libs/strings/strintrn.h"
+#include <map>
+#include <string>
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
 #include <set>
@@ -14,6 +18,10 @@ unsigned liveShips = 0;
 bool failConstruction = false;
 bool assetFixture = false;
 bool failAnimation = false;
+bool battleSuccess = false;
+std::map<std::string, unsigned> graphicLoads;
+std::set<MUSIC_REF> musicHandles;
+unsigned soundHandles = 0;
 unsigned completions = 0;
 struct alignas(std::max_align_t) FakeImage {};
 std::set<void *> images;
@@ -29,10 +37,12 @@ private:
             result.ship_info.icons_rsc = "test.icons";
             result.ship_info.melee_icon_rsc = "test.melee";
             result.ship_data.ship_rsc[0] = "test.ship";
+            result.ship_data.ship_rsc[1] = "test.ship.medium";
             result.ship_data.weapon_rsc[0] = "test.weapon";
             result.ship_data.special_rsc[0] = "test.special";
             result.ship_data.captain_control.captain_rsc = "test.captain";
             result.ship_data.victory_ditty_rsc = "test.music.failure";
+            result.ship_data.ship_sounds_rsc = "test.sounds";
         }
         return result;
     }
@@ -111,12 +121,16 @@ struct AssetFixture {
         BOOST_REQUIRE(liveShips == 0u);
         assetFixture = true;
         completions = 0;
+        graphicLoads.clear();
     }
     ~AssetFixture() {
         assetFixture = false;
         failAnimation = false;
+        battleSuccess = false;
         failConstruction = false;
         BOOST_TEST(images.empty());
+        BOOST_TEST(musicHandles.empty());
+        BOOST_TEST(soundHandles == 0u);
         BOOST_TEST(liveShips == 0u);
         for (auto *image : images) delete static_cast<FakeImage *>(image);
         images.clear();
@@ -125,7 +139,9 @@ struct AssetFixture {
 }
 // Minimal resource backend for the loader ownership tests. Opaque graphics are
 // never dereferenced; string-table functions use the real existing test linkage.
-extern "C" void *LoadGraphicInstance(RESOURCE) {
+extern "C" void *LoadGraphicInstance(RESOURCE resource) {
+    if (failAnimation && std::string(resource) == "test.ship.medium") return nullptr;
+    ++graphicLoads[resource];
     auto *image = new FakeImage;
     images.insert(image);
     return image;
@@ -142,25 +158,15 @@ extern "C" BOOLEAN DestroyDrawable(DRAWABLE drawable) {
     delete image;
     return TRUE;
 }
-extern "C" BOOLEAN load_animation(FRAME *frames, RESOURCE big, RESOURCE, RESOURCE) {
-    frames[0] = CaptureDrawable(static_cast<DRAWABLE>(LoadGraphicInstance(big)));
-    if (failAnimation) return FALSE; // Partial group, as a missing medium view would leave it.
-    frames[1] = frames[2] = frames[0]; // The real backend permits aliased views.
-    return TRUE;
+extern "C" MUSIC_REF LoadMusicInstance(RESOURCE) {
+    if (!battleSuccess) return nullptr; // Required late-stage failure fixture.
+    auto handle = reinterpret_cast<MUSIC_REF>(new FakeImage);
+    musicHandles.insert(handle);
+    return handle;
 }
-extern "C" BOOLEAN free_image(FRAME *frames) {
-    std::set<FRAME> unique;
-    for (unsigned i = 0; i < NUM_VIEWS; ++i) {
-        if (frames[i]) unique.insert(frames[i]);
-        frames[i] = nullptr;
-    }
-    for (auto frame : unique) DestroyDrawable(ReleaseDrawable(frame));
-    return TRUE;
-}
-extern "C" MUSIC_REF LoadMusicInstance(RESOURCE) { return nullptr; } // Required late-stage failure.
-extern "C" SOUND_REF LoadSoundInstance(RESOURCE) { return nullptr; }
-extern "C" BOOLEAN DestroyMusic(MUSIC_REF music) { BOOST_TEST(music == nullptr); return TRUE; }
-extern "C" BOOLEAN DestroySound(SOUND_REF sound) { BOOST_TEST(sound == nullptr); return TRUE; }
+extern "C" SOUND_REF LoadSoundInstance(RESOURCE) { if (!battleSuccess) return nullptr; ++soundHandles; return AllocStringTable(1); }
+extern "C" BOOLEAN DestroyMusic(MUSIC_REF music) { if (music) { BOOST_TEST(musicHandles.erase(music) == 1u); delete reinterpret_cast<FakeImage *>(music); } return TRUE; }
+extern "C" BOOLEAN DestroySound(SOUND_REF sound) { if (sound) { --soundHandles; DestroyStringTable(sound); } return TRUE; }
 
 BOOST_FIXTURE_TEST_CASE(ship_load_failure_rolls_back_partial_animation_without_publishing_state, AssetFixture)
 {
@@ -190,11 +196,42 @@ BOOST_FIXTURE_TEST_CASE(ship_release_preserves_explicit_icon_transfer_to_legacy_
     const auto icon = descriptor->ship_info.icons;
     const auto melee = descriptor->ship_info.melee_icon;
     BOOST_TEST(images.size() == 2u);
-    free_ship(descriptor, FALSE, FALSE); // Master ship list now owns these icons.
+    free_ship(descriptor, FALSE); // Master ship list now owns these icons.
     BOOST_TEST(images.size() == 2u);
     BOOST_TEST(completions == 1u);
     BOOST_TEST(liveShips == 0u);
     DestroyDrawable(ReleaseDrawable(icon));
     DestroyDrawable(ReleaseDrawable(melee));
-    free_ship(nullptr, TRUE, TRUE);
+    free_ship(nullptr, TRUE);
+}
+
+BOOST_FIXTURE_TEST_CASE(repeated_ships_share_battle_assets_but_not_gameplay_or_transferred_icons, AssetFixture)
+{
+    battleSuccess = true;
+    auto &cache = uqm::gameSession().assets();
+    BOOST_TEST(cache.size() == 0u);
+    auto *first = load_ship(ARILOU_ID, TRUE);
+    BOOST_REQUIRE(first);
+    const auto once = images.size();
+    auto *second = load_ship(ARILOU_ID, TRUE);
+    BOOST_REQUIRE(second);
+    BOOST_TEST(images.size() == once + 2u); // Only separately transferred icons duplicate.
+    BOOST_TEST(first->ship_data.ship[0] == second->ship_data.ship[0]);
+    BOOST_TEST(first->ship_data.ship[1] == second->ship_data.ship[2]); // Small view aliases medium.
+    BOOST_TEST(first->ship_data.captain_control.background == second->ship_data.captain_control.background);
+    BOOST_TEST(first->ship_data.victory_ditty == second->ship_data.victory_ditty);
+    BOOST_TEST(first->ship_data.ship_sounds == second->ship_data.ship_sounds);
+    first->ship_info.crew_level = 17;
+    BOOST_TEST(second->ship_info.crew_level == 0u);
+    BOOST_TEST(graphicLoads["test.ship"] == 1u);
+    BOOST_TEST(musicHandles.size() == 1u);
+    BOOST_TEST(soundHandles == 1u);
+    free_ship(first, TRUE);
+    BOOST_TEST(cache.size() != 0u);
+    BOOST_TEST(graphicLoads["test.ship"] == 1u);
+    free_ship(second, TRUE);
+    BOOST_TEST(cache.size() == 0u);
+    BOOST_TEST(images.empty());
+    BOOST_TEST(musicHandles.empty());
+    BOOST_TEST(soundHandles == 0u);
 }

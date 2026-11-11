@@ -175,7 +175,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			s.origin.x = s.origin.y = 0;
 			s.frame = RDPtr->ship_data.captain_control.background;
 			DrawStamp (&s);
-			DestroyDrawable (ReleaseDrawable (s.frame));
+			// The descriptor drops its view; the shared asset remains Ship-owned.
 			RDPtr->ship_data.captain_control.background = 0;
 			SetContext (OldContext);
 		}
