@@ -1,4 +1,8 @@
 #include "fleet_legacy.hpp"
+#include "build.h"
+#include "libs/math/random.hpp"
+#include <algorithm>
+#include <array>
 #include <atomic>
 #include <cstddef>
 #include <exception>
@@ -48,6 +52,43 @@ std::optional<ShipId> Fleet::create(const ShipSpec &spec) {
     record.index = spec.slot;
     PutQueue(&queue_, link);
     return ShipId{id};
+}
+std::optional<ShipId> Fleet::create(COUNT race, const FLEET_INFO &definition, RandomStream &random) {
+    if (race >= NUM_AVAILABLE_RACES || definition.SpeciesID <= NO_ID || definition.SpeciesID >= NUM_SPECIES_ID ||
+        !definition.crew_level || definition.crew_level == INFINITE_FLEET || definition.crew_level > definition.max_crew)
+        throw std::invalid_argument("invalid escort template");
+    if (size() == capacity_ || size() >= 256) return std::nullopt;
+    const auto ids = ships();
+    BYTE slot = 0;
+    while (std::any_of(ids.begin(), ids.end(), [&](ShipId id) { return find(id)->get().slot() == slot; })) ++slot;
+    std::array<bool, NUM_CAPTAINS_NAMES> occupied{};
+    for (const auto id : ids) {
+        const auto &ship = find(id)->get();
+        if (ship.species() == definition.SpeciesID && ship.captain() >= NAME_OFFSET && ship.captain() < NAME_OFFSET + NUM_CAPTAINS_NAMES)
+            occupied[ship.captain() - NAME_OFFSET] = true;
+    }
+    if (std::all_of(occupied.begin(), occupied.end(), [](bool value) { return value; })) return std::nullopt;
+    BYTE captain;
+    do { captain = NAME_OFFSET + random() % NUM_CAPTAINS_NAMES; }
+    while (std::any_of(ids.begin(), ids.end(), [&](ShipId id) {
+        const auto &ship = find(id)->get();
+        return ship.species() == definition.SpeciesID && ship.captain() == captain;
+    }));
+    const auto id = create({definition.SpeciesID, static_cast<BYTE>(race),
+        captain, definition.crew_level, definition.max_crew, slot});
+    if (id) {
+        auto &record = detail::FleetAccess::record(find(*id)->get());
+        record.race_strings = definition.race_strings;
+        record.icons = definition.icons;
+        record.melee_icon = definition.melee_icon;
+        record.max_energy = definition.max_energy;
+        // Keep native entries in picker order, including a newly filled gap.
+        RemoveQueue(&queue_, &record);
+        auto next = queue_.head;
+        while (next && LockShipFrag(&queue_, next)->index < slot) next = _GetSuccLink(next);
+        InsertQueue(&queue_, &record, next);
+    }
+    return id;
 }
 std::optional<std::reference_wrapper<Ship>> Fleet::find(ShipId id) { return detail::findShip(queue_, id); }
 std::optional<std::reference_wrapper<const Ship>> Fleet::find(ShipId id) const { return detail::findShip(queue_, id); }

@@ -22,6 +22,7 @@ void alternateQuarter(CallbackArg) {
 void alternateHalf(CallbackArg) {
     fade(1, ONE_SECOND / 2);
 }
+void blueMap(CallbackArg) { fade(2, ONE_SECOND / 2); }
 void alternateSecond(CallbackArg) {
     fade(1, ONE_SECOND);
 }
@@ -84,6 +85,11 @@ CallbackFunction conversationCue(const std::string &resource, const std::string 
         CallbackFunction callback;
     };
     static const Cue cues[] = {
+        {"comm.melnorme.dialogue", "melnorme.purple", alternateHalf},
+        {"comm.melnorme.dialogue", "melnorme.blue", blueMap},
+        {"comm.melnorme.dialogue", "melnorme.yellow", defaultHalf},
+        {"comm.starbase.dialogue", "starbase.scientist", talkingOff},
+        {"comm.starbase.dialogue", "starbase.commander", talkingOn},
         {"comm.commander.dialogue", "commander.emergency_map", alternateMap},
         {"comm.commander.dialogue", "commander.restore_power", commanderPower},
         {"comm.zoqfotpik.dialogue", "zoqfot.reset", zoqReset},

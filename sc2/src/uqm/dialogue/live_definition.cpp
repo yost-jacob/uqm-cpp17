@@ -1,24 +1,6 @@
-#include "legacy_turn.hpp"
+#include "live_definition.hpp"
 #include <set>
 namespace uqm::dialogue {
-LegacyTurnState::LegacyTurnState(std::string script, Callback callback)
-    : script_(std::move(script)), callback_(std::move(callback)) {
-    if (script_.empty() || !callback_)
-        throw std::invalid_argument("legacy conversation handler requires script and callback");
-}
-Result LegacyTurnState::legacyTurn(const std::string &script, const Json &selection) {
-    if (script != script_)
-        throw std::invalid_argument("unknown conversation handler script: " + script);
-    if (selection.is_null()) {
-        if (started_)
-            throw std::logic_error("conversation intro handler invoked twice");
-        started_ = true;
-        return callback_(std::nullopt);
-    }
-    if (!started_ || !selection.is_number_integer() || selection < 0 || selection >= 8)
-        throw std::invalid_argument("invalid native conversation response slot");
-    return callback_(selection.get<std::size_t>());
-}
 std::uint64_t textFingerprint(std::string_view text) noexcept {
     std::uint64_t value = 14695981039346656037ULL;
     for (const unsigned char byte : text)

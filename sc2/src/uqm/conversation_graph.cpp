@@ -32,9 +32,8 @@ void ConversationRuntime::loadGraph() {
         dialogue::validateLiveDefinition(definition, resource,
                                          GetStringTableCount(data_.ConversationPhrases));
         const auto status = definition.at("_migration").at("status");
-        if (status != "native_handlers" && status != "graph_with_native_media")
+        if (status != "graph_with_native_media")
             throw std::invalid_argument("unknown conversation migration status");
-        nativeGraph_ = status == "native_handlers";
         const auto validateCues = [&](auto &&self, const dialogue::Json &part,
                                       bool composed) -> void {
             if (part.is_object() && part.contains("presentation")) {
@@ -72,7 +71,7 @@ void ConversationRuntime::loadGraph() {
         }
         applyConversationText(definition, resource, data_.ConversationPhrases);
         dialogue::Json player = dialogue::Json::object();
-        if (!nativeGraph_ || definition.contains("alliance_name_base")) {
+        {
             const auto ship = session_.player().ship();
             player = {{"captain_name", ship.commanderName}, {"ship_name", ship.shipName}};
             if (definition.contains("alliance_name_base")) {
@@ -94,8 +93,7 @@ void ConversationRuntime::loadGraph() {
             }
         }
         graphState_ = std::make_unique<CampaignDialogueState>(
-            session_.player(), session_.clock(), definition.at("id").get<std::string>(),
-            [this](std::optional<std::size_t> selection) { return runNativeTurn(selection); },
+            session_.player(), session_.clock(),
             [this](const std::string &report,
                    const dialogue::Json &parameters) -> dialogue::Result {
                 const std::string resource = data_.ConversationPhrasesRes;
@@ -120,6 +118,8 @@ void ConversationRuntime::loadGraph() {
             },
             dialogue::Json{
                 {"player", std::move(player)},
+                {"markets", definition.value("markets", dialogue::Json::object())},
+                {"phrases", definition.at("phrases")},
                 {"won_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE},
                 {"in_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE},
                 {"cyborg_enabled", (GLOBAL(glob_flags) & CYBORG_ENABLED) != 0},
@@ -146,33 +146,6 @@ void ConversationRuntime::loadGraph() {
     } catch (const std::exception &error) {
         throw std::runtime_error(path + ": " + error.what());
     }
-}
-dialogue::Result ConversationRuntime::runNativeTurn(std::optional<std::size_t> selection) {
-    if (selection) {
-        if (*selection >= input_.num_responses)
-            throw std::out_of_range("native response is no longer offered");
-        const auto selected = input_.response_list[*selection];
-        if (!selected.response_func)
-            throw std::logic_error("native response has no handler");
-        input_.num_responses = 0;
-        selected.response_func(selected.response_ref);
-    } else {
-        if (!data_.init_encounter_func)
-            throw std::logic_error("conversation has no native turn handler");
-        data_.init_encounter_func();
-    }
-    dialogue::Json values = {{"has_responses", input_.num_responses != 0}};
-    for (std::size_t slot = 0; slot < MaxResponses; ++slot) {
-        const bool available = slot < input_.num_responses;
-        values["slot_" + std::to_string(slot)] = available;
-        if (available) {
-            const auto *text = input_.response_list[slot].response_text.pStr;
-            if (!text)
-                throw std::logic_error("native response has no text");
-            values["text_" + std::to_string(slot)] = text;
-        }
-    }
-    return {"ok", std::move(values)};
 }
 COUNT ConversationRuntime::graphPhrase(const std::string &name) const {
     const auto found = graphPhrases_.find(name);
@@ -254,7 +227,7 @@ bool ConversationRuntime::finishGraphSpeech() {
         completedPresentationEntry_ = entry;
     }
     graph_->finishDialogue(entry);
-    if (!nativeGraph_ && !graph_->ended() && graph_->view().entry != entry) {
+    if (!graph_->ended() && graph_->view().entry != entry) {
         queueGraphSpeech();
         return true;
     }
@@ -263,11 +236,10 @@ bool ConversationRuntime::finishGraphSpeech() {
         return false;
     }
     const auto responses = graph_->responses();
-    if (responses.size() > MaxResponses ||
-        (nativeGraph_ && responses.size() != input_.num_responses))
+    if (responses.size() > MaxResponses)
         throw std::logic_error("conversation graph and native response menu disagree");
     graphResponseIds_.clear();
-    if (!nativeGraph_) {
+    {
         input_.num_responses = responses.size();
         input_.cur_response = 0;
         input_.top_response = static_cast<BYTE>(~0u);
@@ -275,7 +247,7 @@ bool ConversationRuntime::finishGraphSpeech() {
     }
     for (std::size_t i = 0; i < responses.size(); ++i) {
         graphResponseIds_.push_back(responses[i].id);
-        if (!nativeGraph_) {
+        {
             graphResponseText_[i] =
                 dialogue::formatText(responses[i].text, [this](const std::string &name) {
                     const auto *text = GetStringAddress(

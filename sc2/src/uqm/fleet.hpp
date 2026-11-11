@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstdint>
 namespace uqm {
+class RandomStream;
 struct ShipId {
     std::uint64_t value = 0;
     friend bool operator==(ShipId a, ShipId b) noexcept { return a.value == b.value; }
@@ -60,6 +61,9 @@ public:
     Fleet &operator=(const Fleet &) = delete;
     // Validate before allocation; returns nullopt when full. No partial insertion.
     std::optional<ShipId> create(const ShipSpec &spec);
+    // Create with template defaults and an ordinary unoccupied captain name.
+    // The template's resource owners must outlive this fleet. Full means no RNG use.
+    std::optional<ShipId> create(COUNT race, const FLEET_INFO &definition, RandomStream &random);
     std::optional<std::reference_wrapper<Ship>> find(ShipId id);
     std::optional<std::reference_wrapper<const Ship>> find(ShipId id) const;
     std::vector<ShipId> ships() const; // IDs in fleet/display order, including dead.

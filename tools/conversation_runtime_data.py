@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-"""Build live graph envelopes and editable text for every current conversation.
+"""Refresh indexed text metadata while preserving authored live conversation graphs.
 
-The compatibility envelope explicitly calls handlers.legacy_turn. It preserves
-native story/media timing; it does not claim those C bodies have been ported.
-Development only: pycparser is used by the source catalog, never by the game.
+Development only: source phrase indexing uses pycparser; the game never does.
 """
 
 import argparse
@@ -27,73 +25,12 @@ def fingerprint(text):
 
 
 def definition(script, resource, bank, symbols):
-    def get(field):
-        return {"get": ["result", "turn." + field]}
-
-    def action(selection):
-        return {"action": "handlers.legacy_turn", "args": [script, selection]}
-
-    nodes = [
-        {
-            "id": "intro",
-            "kind": "action",
-            "action": action(None),
-            "save_as": "turn",
-            "next": "route",
-        },
-        {
-            "id": "route",
-            "kind": "decision",
-            "branches": [{"when": get("has_responses"), "next": "menu"}],
-            "otherwise": "farewell",
-        },
-        {
-            "id": "menu",
-            "kind": "dialogue",
-            "variants": [{"speech": []}],
-            "responses": [
-                {
-                    "id": "slot_" + str(i),
-                    "text": get("text_" + str(i)),
-                    "when": get("slot_" + str(i)),
-                    "action": action(i),
-                    "save_as": "turn",
-                    "then": {"ok": "route"},
-                }
-                for i in range(8)
-            ],
-        },
-        {
-            "id": "farewell",
-            "kind": "dialogue",
-            "variants": [{"speech": []}],
-            "next": "end",
-        },
-        {"id": "end", "kind": "end", "outcome": "native_segue"},
-    ]
     return {
-        "version": 1,
-        "node_count": 21,
-        "id": script,
-        "resource": resource,
-        "entry": "intro",
-        "_migration": {
-            "status": "native_handlers",
-            "remaining": "Story conditions/actions and speech callbacks remain in the native script. "
-            "The graph owns turn routing; native presentation consumes the queued tracks. "
-            "Response slots preserve source registration order and constructed text.",
-        },
-        "phrases": [
-            {
-                "id": name,
-                "index": index,
-                "text": bank[name]["text"],
-                "voice": bank[name]["voice"] or None,
-                "original_text_hash": fingerprint(bank[name]["text"]),
-            }
-            for index, name in enumerate(symbols)
-        ],
-        "nodes": nodes,
+        "id": script, "resource": resource,
+        "phrases": [{"id": name, "index": index, "text": bank[name]["text"],
+                     "voice": bank[name]["voice"] or None,
+                     "original_text_hash": fingerprint(bank[name]["text"])}
+                    for index, name in enumerate(symbols)]
     }
 
 
@@ -126,19 +63,19 @@ def generate(check=False):
         data = definition(path.parent.name, resource, bank, symbols)
         # Migrated JSON is the source of truth. Refresh indexed text metadata,
         # but never regenerate its story graph from another programming language.
+        if not output.exists():
+            raise ValueError(f"missing authored conversation graph: {output}")
         if output.exists():
             previous = json.loads(output.read_text())
-            if (
-                previous.get("_migration", {}).get("status")
-                == "graph_with_native_media"
-            ):
-                previous["phrases"] = data["phrases"]
-                data = previous
-                data["node_count"] = len(data["nodes"]) + 2 * sum(
-                    "action" in edge
-                    for node in data["nodes"]
-                    for edge in node.get("responses", [])
-                )
+            if previous.get("_migration", {}).get("status") != "graph_with_native_media":
+                raise ValueError(f"conversation is not graph-owned: {output}")
+            previous["phrases"] = data["phrases"]
+            data = previous
+            data["node_count"] = len(data["nodes"]) + 2 * sum(
+                "action" in edge
+                for node in data["nodes"]
+                for edge in node.get("responses", [])
+            )
         encoded = dumps(data)
         if check:
             assert (
@@ -152,7 +89,7 @@ def generate(check=False):
         count += 1
         total += len(symbols)
     print(
-        f"{count} live graph envelopes; {total} indexed source phrases; native story bodies remain explicitly marked"
+        f"{count} authored live graphs; {total} indexed source phrases; all story turns are graph-owned"
     )
 
 

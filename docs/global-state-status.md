@@ -25,7 +25,9 @@ Application settings already have a `GameConfiguration` owner in `UQM_Context`.
 Mutable economic tables already have `GameSession::gameData()` / player ownership.
 `PlayerEntity::inventory()` now owns its fleet and provides exact resource/device
 transactions over the existing save storage. Narrative updates remain in StoryState;
-legacy callers and packed inventory bits have not all been removed.
+legacy callers and packed inventory bits have not all been removed. All 27
+conversation trees now use graph-owned story routing; bounded merchant and
+starbase report operations borrow these owners explicitly.
 Merchant recipes and other compiled game/presentation definitions have not all
 been consolidated into catalogs. See [game data](game-data.md) and
 [session definitions](session-definitions.md).

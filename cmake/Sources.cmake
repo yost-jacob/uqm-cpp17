@@ -167,6 +167,8 @@ set(UQM_SOURCES
     sc2/src/uqm/cnctdlg.c
     sc2/src/uqm/collide.cpp
     sc2/src/uqm/conversation_state.cpp
+    sc2/src/uqm/conversation_commerce.cpp
+    sc2/src/uqm/conversation_reports.cpp
     sc2/src/uqm/conversation_story.cpp
     sc2/src/uqm/conversation_text.cpp
     sc2/src/uqm/conversation_graph.cpp

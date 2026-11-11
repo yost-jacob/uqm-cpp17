@@ -1866,37 +1866,15 @@ def melnorme():
 
 
 def technology_catalog():
-    import re
-
-    text = (ROOT / "sc2/src/uqm/comm/melnorm/melnorm.c").read_text()
-    sales = re.search(r"tech_sale_catalog\[\]\s*=\s*\{(.*?)\};", text, re.S)[1]
-    grants = re.search(r"tech_data_table\[\]\s*=\s*\{(.*?)\};", text, re.S)[1]
-    rules = {}
-    for id, kind, key, value in re.findall(
-        r"\{\s*(TECH_\w+)\s*,\s*(TECH_TYPE_\w+)\s*,\s*(\w+)\s*,\s*(-?\d+)\s*\}", grants
-    ):
-        if kind == "TECH_TYPE_MODULE":
-            rules[id] = {
-                "kind": "module_unlock",
-                "module": key,
-                "build_cost_ru": int(value),
-            }
-        elif kind == "TECH_TYPE_STATE":
-            rules[id] = {"kind": "state", "key": key, "value": int(value)}
-        else:
-            rules[id] = {"kind": "lander_shield", "hazard": key}
-    return [
-        {
-            "id": id,
-            "price": 150,
-            "pitch": ["melnorme." + pitch],
-            "sold": ["melnorme." + sold],
-            "grant": rules[id],
-        }
-        for id, pitch, sold in re.findall(
-            r"\{\s*(TECH_\w+)\s*,\s*TECHPRICE\s*,\s*(\w+)\s*,\s*(\w+)\s*\}", sales
-        )
-    ]
+    """Reuse the live catalog; do not reconstruct deleted C technology tables."""
+    import json
+    import copy
+    source = ROOT / "sc2/content/base/conversations/comm.melnorme.dialogue.json"
+    catalog = copy.deepcopy(json.loads(source.read_text())["markets"]["melnorme"]["technology"])
+    for offer in catalog:
+        for key in ("pitch", "sold"):
+            offer[key] = [line if line.startswith("melnorme.") else "melnorme." + line for line in offer[key]]
+    return catalog
 
 
 if __name__ == "__main__":

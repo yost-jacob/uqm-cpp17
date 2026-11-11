@@ -102,12 +102,5 @@ binding and result path as general verbs and cannot take over graph traversal or
 playback. This namespace is an intentional extension point, not permission to run
 arbitrary functions named by a JSON file.
 
-`handlers.legacy_turn(script, response_slot_or_null)` is the live migration bridge.
-It preserves native story/media timing and menu order while the C bodies are
-ported. It is not a generalized replacement for those bodies.
-
-New instructions use `{"action":"name","args":[...]}`. `verb` remains a legacy
-spelling; specifying both names is rejected. Package values may be positive integer
-literals or read-only value expressions. Story values may also be booleans. Names
-are checked when binding; all runtime values are evaluated before mutation.
-See [package actions](../package-actions.md).
+The native-turn compatibility action has been removed after all 27 production
+conversations migrated. Metadata validation remains in `live_definition.*`.

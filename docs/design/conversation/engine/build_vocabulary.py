@@ -67,7 +67,6 @@ aargs = {
     "handlers.prepare_report": ["report", "parameters"],
     "encounter.set_outcome": ["outcome"],
     "random.draw": ["exclusive_upper_bound"],
-    "handlers.legacy_turn": ["script", "response_slot_or_null"],
 }
 qmethod = [
     "hasShip",
@@ -113,7 +112,6 @@ amethod = [
     "Handlers::prepareReport",
     "setOutcome",
     "randomBelow",
-    "Handlers::legacyTurn",
 ]
 assert len(specs("queries")) == len(qmethod) == len(qargs)
 assert len(specs("actions")) == len(amethod) == len(aargs)

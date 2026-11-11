@@ -65,7 +65,7 @@ configure_file(sc2/src/config_unix.h.in generated/config_unix.h @ONLY)
 
 add_library(uqm-dialogue STATIC
     sc2/src/uqm/dialogue/engine.cpp sc2/src/uqm/dialogue/graph.cpp
-    sc2/src/uqm/dialogue/verb_factory.cpp sc2/src/uqm/dialogue/legacy_turn.cpp
+    sc2/src/uqm/dialogue/verb_factory.cpp sc2/src/uqm/dialogue/live_definition.cpp
     sc2/src/uqm/dialogue/text.cpp)
 target_link_libraries(uqm-dialogue PUBLIC nlohmann_json::nlohmann_json)
 target_include_directories(uqm-dialogue PUBLIC sc2/src)
@@ -94,6 +94,7 @@ if(BUILD_TESTING)
         tests/encounter_context.cpp sc2/src/uqm/encounter_context.cpp
         tests/device_inventory.cpp sc2/src/uqm/device_inventory.cpp
         tests/dialogue_story.cpp sc2/src/uqm/conversation_story.cpp
+        tests/conversation_commerce.cpp sc2/src/uqm/conversation_state.cpp sc2/src/uqm/conversation_commerce.cpp sc2/src/uqm/conversation_reports.cpp
         tests/dialogue_text.cpp sc2/src/uqm/conversation_text.cpp
         tests/conversation_mode.cpp sc2/src/uqm/conversation_mode.cpp
         tests/combat_mode.cpp tests/battle_driver.cpp sc2/src/uqm/battle_driver.cpp sc2/src/uqm/combat_mode.cpp sc2/src/uqm/campaign_combat.cpp

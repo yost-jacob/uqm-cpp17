@@ -844,9 +844,9 @@ uqm::ConversationRuntime::SelectResponse(ENCOUNTER_STATE *pES)
 	TalkingFinished = FALSE;
     if (!graph_ || graph_->ended())
         throw std::logic_error("response selected outside a live conversation graph");
-    if (!nativeGraph_) pES->num_responses = 0;
+    pES->num_responses = 0;
     graph_->choose(graph_->view().entry, graphResponseIds_.at(pES->cur_response));
-    if (!nativeGraph_) queueGraphSpeech();
+    queueGraphSpeech();
 }
 
 // Called when the player presses the cancel button in comm.
@@ -1174,7 +1174,7 @@ uqm::ConversationRuntime::run()
 	LastActivity |= CHECK_LOAD; /* prevent spurious input */
     playback_ = true;
     graph_->advance();
-    if (!nativeGraph_) queueGraphSpeech();
+    queueGraphSpeech();
 	DoInput (&ES, FALSE);
     finishScript();
 }

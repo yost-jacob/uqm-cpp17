@@ -49,6 +49,8 @@ BOOLEAN DestroyFont(FONT font) { ++fontsFreed; delete reinterpret_cast<char *>(f
 BOOLEAN DestroyContext(CONTEXT context) { ++contextsFreed; delete reinterpret_cast<char *>(context); return TRUE; }
 void GetMenuSounds(MENU_SOUND_FLAGS *first, MENU_SOUND_FLAGS *second) { *first = arrows; *second = menuSelect; }
 void SetMenuSounds(MENU_SOUND_FLAGS first, MENU_SOUND_FLAGS second) { arrows = first; menuSelect = second; }
+StatMsgMode SetStatusMessageMode(StatMsgMode mode) { static auto current = SMM_DATE; const auto old = current; current = mode; return old; }
+Segue getSegue(void) { return Segue_peace; }
 void StopSound() {}
 void StopMusic() {}
 void StopTrack() {}

@@ -179,11 +179,6 @@ class State {
     virtual Result setOutcome(const std::string &) {
         missing("setOutcome");
     }
-    // Transitional native script turn. Null selects intro; integer selects the
-    // currently offered response slot. The live adapter validates script identity.
-    virtual Result legacyTurn(const std::string &, const Json &) {
-        missing("handlers.legacy_turn");
-    }
     virtual Integer randomBelow(Integer) {
         missing("randomBelow");
     }

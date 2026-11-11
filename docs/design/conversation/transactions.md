@@ -1,129 +1,26 @@
 # Campaign transactions and conversation reports
 
-This is the next implementation boundary for the live graph migration. Druuge,
-Melnorme and the operational starbase still run through explicit native-turn
-bridges. Their text is editable and they use the live graph runner, but their C
-story bodies have not been replaced. The initial Commander Hayes script is already
-ported independently; the combined Hayes design example is not a replacement for
-these two live resources.
-
-The graph format and its dialogue/decision/action separation remain unchanged.
-The missing work is in campaign operations behind `CampaignDialogueState`, not
-another scripting language or another conversation engine. The existing abstract
-`State` interface already lists purchase/sale, inventory, technology, rescue,
-calendar and report operations. Unsupported operations currently throw.
-
-## Ownership and calls
+The final Druuge, Melnorme and operational-starbase graphs now run through the
+same engine as the other 24 conversations. Their native story turns are removed.
+This page records the operation boundary; see [implementation contracts](../../conversation-commerce.md)
+for the completed migration and its deliberate presentation/timing differences.
 
 ```mermaid
 flowchart TD
     Mode[ConversationMode / ConversationRuntime] --> Adapter[CampaignDialogueState]
-    Adapter -->|borrow| Player[Session-owned PlayerEntity]
+    Adapter --> Player[Session-owned PlayerEntity]
     Player --> Story[StoryState]
-    Player --> Inventory[Inventory]
-    Inventory --> Fleet[Fleet and optional SIS]
-    Inventory --> Cargo[Cargo / items / accounts]
-    Adapter --> Quotes[Read-only quotes and availability]
-    Adapter --> Transactions[Validated purchase / sale / rescue commit]
-    Adapter --> Reports[Visit-owned report and rescue plans]
-    Reports --> Speech[Resolved speech values for dialogue nodes]
-    Speech --> Completed[Playback completes]
-    Completed --> Commit[Single-execution action applies the planned changes]
+    Player --> Inventory[Inventory / Fleet / SIS]
+    Adapter --> Commerce[Visit-owned ConversationCommerce]
+    Commerce --> Catalog[Immutable JSON market definitions]
+    Commerce --> Offer[Stored rescue offer]
+    Adapter --> Reports[Visit-owned StarbaseReports]
+    Reports --> Speech[Prepared speech and commit token]
+    Speech --> Playback[Ordinary dialogue playback]
+    Playback --> Commit[Explicit report commit action]
 ```
 
-Keep the player/session lifetime rules already used by the live adapter. A pending
-rescue offer or report plan is an owned value inside that adapter, destroyed with
-the conversation. It does not own the player, expose legacy queue pointers or
-change the save layout. No shared ownership, networking framework or transaction
-manager is required for the current single-threaded campaign.
-
-A small value vocabulary is sufficient for the native implementation:
-
-```cpp
-enum class Account { ResourceUnits, MerchantCredit };
-struct Price { Account account; std::int64_t amount; };
-struct Quote {
-    std::string item;
-    std::int64_t quantity;
-    Price total;
-};
-enum class PurchaseStatus { Completed, Unavailable, InsufficientFunds, NoCapacity };
-struct PurchaseResult {
-    PurchaseStatus status;
-    std::int64_t quantity;
-};
-```
-
-These are a wireframe, not additional production classes. Put their implementation
-where the campaign already owns the relevant ship, fleet and story state. Public
-JSON verbs continue to bind ordinary accessors and actions at load time. Parse
-untrusted names and quantities before selecting a typed operation.
-
-## Query and action contracts
-
-* Quotes and eligibility queries borrow const state. They cannot debit currency,
-  grant technology, reserve fleet slots, change story flags or consume RNG.
-* A purchase checks price, eligibility, payment, cargo capacity and escort capacity
-  together before committing any change. A failed purchase returns an explicit
-  result code and changes nothing. A graph response directs each result to its
-  own dialogue node.
-* Prepare anything that can fail, including vessel allocation, before charging.
-  A failed allocation must not charge the player or leave a partial purchase.
-  Only the successful commit updates the UI. Existing free `fleet.give` gifts may
-  still clamp to available slots; a paid fleet purchase needs its own contract.
-* Default ship crew and captain selection happen during creation, not during a
-  read-only availability check. Explicit named-captain creation currently resolves
-  Fwiffo's native entry; that is not support for arbitrary captain names.
-* Rescue preparation is an action if it needs a random choice. Store the selected
-  offer once. Replaying text and pruning responses cannot reroll it. Acceptance
-  applies that stored offer once after rechecking that its requirements still hold.
-* Keep resource units, merchant credits, crew, biomass and fuel as distinct units.
-  The public conversation fuel contract uses displayed units; native SIS storage
-  uses hundredths. Quote and charge rounding must match the offered quantity,
-  including the final partial tank unit. Check all narrowing and account limits.
-* Purchases and report commits are actions. A query must never hide a sale,
-  collection, resource grant or report acknowledgement.
-
-## Reports need a plan
-
-The native starbase `DiscussDevices(FALSE)` path still writes zero-valued story
-flags. It cannot be called from the const `reportAvailable` query unchanged.
-Extract its scan into a read-only report plan containing the selected utterances
-and the state changes to apply. The same applies to bulletins, timed reports and
-mineral-sale summaries that interleave speech and bookkeeping today.
-
-Queue the plan's speech through an ordinary dialogue node. Commit its bookkeeping
-at the source's playback boundary through a bounded registered action. Add a
-shared commit-report verb if that proves useful across reports; do not add one
-public method per bulletin or expose an unchecked JSON list of native calls.
-Aborting before playback completes must not acknowledge an unplayed report.
-Replaying a completed report must not repeat a grant, sale or acknowledgement.
-
-## Migration order and checks
-
-1. Druuge: separate prices and transactions from speech, including crew payment,
-   artifacts, escort capacity and the fuel-tank deal. Bind them to the existing
-   purchase/sale and inventory vocabulary, then port its graph.
-2. Melnorme: implement credit accounting, technology/information availability,
-   biomass and rainbow-world sales, fuel purchases and the stored rescue offer.
-   Audit the design example's documented differences against the actual script.
-3. Operational starbase: implement read-only bulletin/device scans, report commits,
-   date boundaries and mineral sale reporting. Keep its resource/phrase bank
-   separate from the initial Commander conversation.
-
-Use Boost.Test for insufficient funds, full cargo/fleets, partial fuel capacity,
-account limits, failed allocation, rescue preparation/acceptance and report
-prepare/replay/commit boundaries. Continue running the ordinary and legacy game
-builds. Remove each native-turn bridge only when its real operations and live
-speech path are connected; a renamed whole-turn handler is not a completed port.
-
-Related work: [dialogue graphs #25](https://github.com/yost-jacob/uqm-cpp17/issues/25),
-[state operations #19](https://github.com/yost-jacob/uqm-cpp17/issues/19),
-[animation composition #31](https://github.com/yost-jacob/uqm-cpp17/issues/31).
-
-## Implemented package boundary
-
-The selected authoring convention is now `action` plus positional `args`:
+## State operations
 
 ```json
 {"action":"transact","args":[{"credits":100},{"fuel":10}]}
@@ -131,21 +28,45 @@ The selected authoring convention is now `action` plus positional `args`:
 {"action":"set","args":[{"MET_ARILOU":true},{"ARILOU_VISITS":2}]}
 ```
 
-The two transaction packages mean **player gives, then player receives**. Native
-`Inventory` owns the fleet and stages whole resource/item exchanges against the
-existing SIS and packed save fields. Story batches go through `StoryState`;
-`set` rejects fields owned by inventory. Existing `state.set` instructions remain
-a compatibility path while old authored operations migrate. See
-[package actions](package-actions.md) for exact supported keys and limits.
+Packages mean player-gives first, player-receives second. Inventory validates and
+stages exact scalar/item exchanges over authoritative save storage. Bare `set`
+validates all narrative writes before applying them; inventory fields are excluded.
+Local memory continues to use `state.set`. Inventory applies no merchant pricing
+or narrative effects. See [package actions](package-actions.md).
 
-Prices and story consequences belong to callers/story helpers. They construct an
-explicit exchange; inventory does not infer a merchant, change narrative progress,
-or update crew-price penalties. A success can be followed by a story action through
-ordinary graph edges. A transaction and a subsequent story batch are separate
-commits; coupled one-time rewards still need a bounded story helper.
+Merchant `trade.purchase`/`trade.sell` operations coordinate their bounded policies
+with inventory/fleet: validate payment/capacity, prepare vessel allocations and
+speech, then commit. Ordinary failures return typed codes; malformed data throws.
+The generic package vocabulary does not yet support arbitrary ship bags. Paid
+Druuge ships use the native Fleet factory with rollback of failed reservations;
+free barter gifts explicitly retain up-to-available-space semantics.
 
-This establishes resource/item packages, not the completion of the three remaining
-commerce/report scripts. Atomic fleet creation/removal, merchant-specific offers,
-precise partial-tank purchases, stored rescue proposals, and report preparation/
-acknowledgement are still required. Their native handlers remain enabled rather
-than reporting unimplemented operations as successful transactions.
+Public `fuel` uses displayed units. Explicit `fuel_hundredths` supports precise
+quotes/delivery. Melnorme fill charges ceiling units and fills the exact remaining
+space; capped crew-for-fuel trades choose the smaller delivery explicitly.
+
+## Plans and read-only queries
+
+Quotes, market eligibility and report availability use const state, without
+payment, grants, acknowledgement or RNG. Rescue preparation owns its selected
+seeded offer until acceptance or visit destruction. Acceptance rejects a changed
+ship or redeemed token. Replay invokes neither preparation nor acceptance.
+
+A starbase report prepares speech plus proposed effects. The graph's separate
+`hayes.commit` action acknowledges it after playback or skip. A pending plan dies
+on cancellation; old tokens are stale and duplicate current commits do nothing.
+Bulletin replay retains speech without repeating the Arilou gift. Played one-time
+rewards have durable markers even if farewell is never reached.
+
+The ready-base grant, devices, bulletins, timing, analysis and mineral-sale paths
+are implemented. Native descriptor/media services remain; the old per-unit cargo
+sale animation/mutation loops are removed in favor of one commit and gauge refresh.
+
+## Limits and follow-ups
+
+A transaction and a later narrative batch are separate commits. This is not a
+cross-domain transaction framework. Named specialized policies define their own
+coupled behavior. Existing C save fields remain storage; generic inventory flag
+migration and wider shared state operations continue under #19. Fatal C/service
+error handling is #23, animations #31, and menu reuse #63. No save format or
+multiplayer authority model is introduced here.

@@ -1,4 +1,4 @@
-#include "uqm/dialogue/legacy_turn.hpp"
+#include "uqm/dialogue/live_definition.hpp"
 #include "uqm/dialogue/text.hpp"
 #include <boost/test/unit_test.hpp>
 #include <filesystem>
@@ -13,114 +13,28 @@ dd::Json read(const std::filesystem::path &path) {
         throw std::runtime_error("missing dialogue fixture: " + path.string());
     return dd::Json::parse(input);
 }
-dd::Result offered(std::size_t count) {
-    dd::Json values = {{"has_responses", count != 0}};
-    for (std::size_t slot = 0; slot < 8; ++slot) {
-        values["slot_" + std::to_string(slot)] = slot < count;
-        if (slot < count)
-            values["text_" + std::to_string(slot)] = "constructed answer " + std::to_string(slot);
-    }
-    return {"ok", std::move(values)};
-}
 } // namespace
-BOOST_AUTO_TEST_CASE(all_live_graphs_preserve_turn_order_completion_and_all_eight_response_slots) {
+BOOST_AUTO_TEST_CASE(all_live_conversations_are_graph_owned_and_bind_without_story_execution) {
     unsigned files = 0;
+    struct DefinitionState final : dd::State {
+        dd::Integer storyMaximum(const std::string &name) const override {
+            if (name != "LANDERS_LOST") throw std::invalid_argument("unexpected story field");
+            return 255;
+        }
+        void validateInventoryKey(const std::string &key) const override {
+            if (key != "landers") throw std::invalid_argument("unexpected inventory key");
+        }
+    } state;
     for (const auto &file : std::filesystem::directory_iterator(LIVE_DIALOGUE_ROOT)) {
-        if (file.path().extension() != ".json")
-            continue;
+        if (file.path().extension() != ".json") continue;
         const auto data = read(file.path());
         dd::validateLiveDefinition(data, data.at("resource"), data.at("phrases").size());
+        BOOST_TEST(data.at("_migration").at("status").get<std::string>() == "graph_with_native_media");
+        const auto graph = dd::Conversation::load(data, state);
+        BOOST_TEST(graph->nodeCount() == data.at("node_count").get<std::size_t>());
         ++files;
-        if (data.at("_migration").at("status") != "native_handlers") {
-            struct DefinitionState final : dd::State {
-                dd::Integer storyMaximum(const std::string &name) const override {
-                    if (name != "LANDERS_LOST") throw std::invalid_argument("unexpected story field");
-                    return 255;
-                }
-                void validateInventoryKey(const std::string &key) const override {
-                    if (key != "landers") throw std::invalid_argument("unexpected inventory key");
-                }
-            } validationState;
-            const auto graph = dd::Conversation::load(data, validationState);
-            BOOST_TEST(graph->nodeCount() == data.at("node_count").get<std::size_t>());
-            continue;
-        }
-        const auto id = data.at("id").get<std::string>();
-        for (std::size_t selected = 0; selected < 8; ++selected) {
-            unsigned introCalls = 0, responseCalls = 0;
-            dd::LegacyTurnState state{id, [&](std::optional<std::size_t> selection) {
-                                          if (!selection) {
-                                              ++introCalls;
-                                              return offered(8);
-                                          }
-                                          BOOST_TEST(*selection == selected);
-                                          ++responseCalls;
-                                          return offered(0);
-                                      }};
-            auto graph = dd::Conversation::load(data, state);
-            BOOST_TEST(introCalls == 0u);
-            graph->advance();
-            BOOST_TEST(introCalls == 1u);
-            auto entry = graph->view().entry;
-            BOOST_CHECK_THROW(graph->responses(), std::logic_error);
-            graph->finishDialogue(entry);
-            const auto menu = graph->responses();
-            BOOST_TEST(menu.size() == 8u);
-            for (std::size_t slot = 0; slot < menu.size(); ++slot) {
-                BOOST_TEST(menu[slot].id == "slot_" + std::to_string(slot));
-                BOOST_TEST(menu[slot].text.get<std::string>() ==
-                           "constructed answer " + std::to_string(slot));
-            }
-            graph->choose(entry, "slot_" + std::to_string(selected));
-            BOOST_TEST(responseCalls == 1u);
-            BOOST_TEST(!graph->ended()); // Final queued speech completes before exit.
-            BOOST_CHECK_THROW(graph->choose(entry, "slot_0"), std::invalid_argument);
-            graph->finishDialogue(graph->view().entry);
-            BOOST_TEST(graph->ended());
-            BOOST_TEST(responseCalls == 1u);
-        }
     }
     BOOST_TEST(files == 27u);
-}
-BOOST_AUTO_TEST_CASE(native_handlers_fail_closed_on_unknown_script_bad_slots_and_partial_commit) {
-    unsigned calls = 0;
-    dd::LegacyTurnState state{"arilou", [&](std::optional<std::size_t>) {
-                                  ++calls;
-                                  return offered(0);
-                              }};
-    BOOST_CHECK_THROW(state.legacyTurn("unknown", nullptr), std::invalid_argument);
-    BOOST_CHECK_THROW(state.legacyTurn("arilou", 0), std::invalid_argument);
-    state.legacyTurn("arilou", nullptr);
-    BOOST_CHECK_THROW(state.legacyTurn("arilou", nullptr), std::logic_error);
-    BOOST_CHECK_THROW(state.legacyTurn("arilou", -1), std::invalid_argument);
-    BOOST_CHECK_THROW(state.legacyTurn("arilou", 8), std::invalid_argument);
-    BOOST_CHECK_THROW(state.legacyTurn("arilou", 1.0), std::invalid_argument);
-    BOOST_TEST(calls == 1u);
-    const dd::Json data = {
-        {"version", 1},
-        {"id", "failure"},
-        {"entry", "intro"},
-        {"node_count", 3},
-        {"nodes",
-         dd::Json::array(
-             {{{"id", "intro"},
-               {"kind", "action"},
-               {"action", {{"verb", "handlers.legacy_turn"}, {"args", {"failure", nullptr}}}},
-               {"save_as", "turn"},
-               {"next", "farewell"}},
-              {{"id", "farewell"},
-               {"kind", "dialogue"},
-               {"variants", dd::Json::array({{{"speech", dd::Json::array()}}})},
-               {"next", "end"}},
-              {{"id", "end"}, {"kind", "end"}, {"outcome", "native_segue"}}})}};
-    dd::LegacyTurnState failure{"failure", [&](std::optional<std::size_t>) -> dd::Result {
-                                    ++calls;
-                                    throw std::runtime_error("failure after story update");
-                                }};
-    auto graph = dd::Conversation::load(data, failure);
-    BOOST_CHECK_THROW(graph->advance(), std::runtime_error);
-    BOOST_CHECK_THROW(graph->advance(), std::logic_error);
-    BOOST_TEST(calls == 2u);
 }
 BOOST_AUTO_TEST_CASE(live_phrase_metadata_rejects_bad_indices_duplicate_names_and_embedded_nuls) {
     const auto original =
