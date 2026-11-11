@@ -17,6 +17,7 @@
  */
 
 
+#include "uqm/planet_render_legacy.hpp"
 #include "../system_runtime.hpp"
 #include "../device_menu.hpp"
 #include "../system_behavior.hpp"
@@ -1267,6 +1268,14 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 		}
 	}
 
+    {
+        auto &body = uqm::orbitalWorld(system);
+        uqm::detail::PlanetRenderBorrow rendering{system, body};
+        auto &graphics = body.renderResources();
+        struct OrbitServices {
+            uqm::PlanetRenderResources &graphics;
+            ~OrbitServices() { if (graphics.hasSurface()) FinishPlanetOrbit(); }
+        } services{graphics};
 	uqm::loadPlanetProgress(system);
 	uqm::systemBehavior(system).generateOrbital(system, *(system.pOrbitalDesc));
 	LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
@@ -1276,14 +1285,15 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 		return;
 
 	// Implement a to-do in generate.h for a better test
-	if (system.TopoFrame)
+	if (graphics.hasSurface())
 	{	// We've entered orbit; LoadPlanet() called planet surface-gen code
         uqm::ExplorationViewScope view{*system.worlds, uqm::ExplorationView::Orbit};
 		PlanetOrbitMenu ();
-		FreePlanet ();
 	}
 	// Otherwise, generateOrbital function started a homeworld conversation,
 	// and we did not get to the planet no matter what.
+
+    } // Orbit services end; the World retains its graphics.
 
 	// START_ENCOUNTER could be set by Devices menu a number of ways:
 	// Talking Pet, Sun Device or a Caster over Chmmr, or

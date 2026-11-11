@@ -43,7 +43,7 @@ void
 DrawPlanetSphere (int x, int y)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	s.origin.x = x;
 	s.origin.y = y;
@@ -72,7 +72,7 @@ DrawDefaultPlanetSphere (void)
 void
 InitSphereRotation (int direction, BOOLEAN shielded)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	rotDirection = direction;
 	rotPointIndex = 0;
@@ -99,7 +99,7 @@ InitSphereRotation (int direction, BOOLEAN shielded)
 void
 UninitSphereRotation (void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	if (Orbit->WorkFrame)
 	{
@@ -112,7 +112,7 @@ UninitSphereRotation (void)
 void
 PrepareNextRotationFrame (void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	// Generate the next rotation frame
 	// We alternate between the frames because we do not call FlushGraphics()
@@ -147,7 +147,7 @@ PrepareNextRotationFrame (void)
 void
 ZoomInPlanetSphere (void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 	const int base = GSCALE_IDENTITY;
 	int dx, dy;
 	int oldScale;
@@ -233,7 +233,7 @@ RotatePlanetSphere (BOOLEAN keepRate)
 static void
 renderTintFrame (Color tintColor)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 	CONTEXT oldContext;
 	DrawMode mode, oldMode;
 	STAMP s;
@@ -248,7 +248,7 @@ renderTintFrame (Color tintColor)
 	// copy the topo frame to the tint frame
 	s.origin.x = 0;
 	s.origin.y = 0;
-	s.frame = pSolarSysState->TopoFrame;
+	s.frame = pSolarSysState->graphics->TopoFrame;
 	DrawStamp (&s);
 
 	// apply the tint
@@ -270,7 +270,7 @@ void
 DrawPlanet (int tintY, Color tintColor)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	s.origin.x = 0;
 	s.origin.y = 0;
@@ -278,7 +278,7 @@ DrawPlanet (int tintY, Color tintColor)
 	BatchGraphics ();
 	if (sameColor (tintColor, BLACK_COLOR))
 	{	// no tint -- just draw the surface
-		s.frame = pSolarSysState->TopoFrame;
+		s.frame = pSolarSysState->graphics->TopoFrame;
 		DrawStamp (&s);
 	}
 	else
@@ -294,7 +294,7 @@ DrawPlanet (int tintY, Color tintColor)
 		
 		if (tintY < height - 1)
 		{	// untinted piece showing, draw regular topo
-			s.frame = pSolarSysState->TopoFrame;
+			s.frame = pSolarSysState->graphics->TopoFrame;
 			DrawStamp (&s);
 		}
 

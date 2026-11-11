@@ -162,7 +162,7 @@ SpathiSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		if (!story_.read(StoryFlag::UmgahBroadcasters))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->PlanetSideFrame[1] =
+			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (UMGAH_BCS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (UMGAH_BCS_STRTAB));

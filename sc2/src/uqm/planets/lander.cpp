@@ -630,7 +630,7 @@ shotCreature (ELEMENT *ElementPtr, BYTE value,
 		// Can creature.
 		ElementPtr->mass_points = value;
 		DisplayArray[ElementPtr->PrimIndex].Object.Stamp.frame =
-				planetSideDesc->system.PlanetSideFrame[0];
+				planetSideDesc->system.graphics->PlanetSideFrame[0];
 	}
 	else if (CreatureData[ElementPtr->mass_points & ~CREATURE_AWARE]
 			.Attributes & SPEED_MASK)
@@ -1163,7 +1163,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 		ClearDrawable ();
 		s.origin.x = -new_pt.x + (SURFACE_WIDTH >> 1);
 		s.origin.y = -new_pt.y + (SURFACE_HEIGHT >> 1);
-		s.frame = planetSideDesc->system.Orbit.TopoZoomFrame;
+		s.frame = planetSideDesc->system.graphics->Orbit.TopoZoomFrame;
 		DrawStamp (&s);
 		s.origin.x += MAP_WIDTH << MAG_SHIFT;
 		DrawStamp (&s);
@@ -1424,7 +1424,7 @@ InitPlanetSide (POINT pt)
 			ClearDrawable ();
 			s.origin.x = -pt.x + (SURFACE_WIDTH >> 1);
 			s.origin.y = -pt.y + (SURFACE_HEIGHT >> 1);
-			s.frame = planetSideDesc->system.Orbit.TopoZoomFrame;
+			s.frame = planetSideDesc->system.graphics->Orbit.TopoZoomFrame;
 			DrawStamp (&s);
 			s.origin.x += MAP_WIDTH << MAG_SHIFT;
 			DrawStamp (&s);

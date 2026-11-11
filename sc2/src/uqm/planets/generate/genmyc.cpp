@@ -158,7 +158,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				if (!story_.read(StoryFlag::SunDevice))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->PlanetSideFrame[1] =
+					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 									LoadGraphic (SUN_DEVICE_MASK_PMAP_ANIM));
 					solarSys->SysInfo.PlanetInfo.DiscoveryString =
@@ -176,7 +176,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 						ENERGY_SCAN, 0))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->PlanetSideFrame[1] =
+					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 									LoadGraphic (EGG_CASE_MASK_PMAP_ANIM));
 					solarSys->SysInfo.PlanetInfo.DiscoveryString =

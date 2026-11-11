@@ -94,7 +94,7 @@ RenderTopography (FRAME DstFrame, SBYTE *pTopoData, int w, int h)
 
 	OldFrame = SetContextFGFrame (DstFrame);
 
-	if (pSolarSysState->XlatRef == 0)
+	if (pSolarSysState->graphics->XlatRef == 0)
 	{
 		// There is currently nothing we can do w/o an xlat table
 		// This is still called for Earth for 4x scaled topo, but we
@@ -133,9 +133,9 @@ RenderTopography (FRAME DstFrame, SBYTE *pTopoData, int w, int h)
 				];
 		AlgoType = PLANALGO (PlanDataPtr->Type);
 		base = PlanDataPtr->base_elevation;
-		xlatDesc = (const XLAT_DESC *) pSolarSysState->XlatPtr;
+		xlatDesc = (const XLAT_DESC *) pSolarSysState->graphics->XlatPtr;
 		xlat_tab = (const BYTE *) xlatDesc->xlat_tab;
-		cbase = GetColorMapAddress (pSolarSysState->OrbitalCMap);
+		cbase = GetColorMapAddress (pSolarSysState->graphics->OrbitalCMap);
 
 		i = NUM_BATCH_POINTS;
 		pBatch = &BatchArray[i];
@@ -516,7 +516,7 @@ CreateShieldMask (void)
 	Color *pix;
 	int x, y;
 	FRAME ShieldFrame;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	ShieldFrame = CaptureDrawable (
 			CreateDrawable (WANT_PIXMAP | WANT_ALPHA,
@@ -607,7 +607,7 @@ SetShieldThrobEffect (FRAME ShieldFrame, int offset, FRAME ThrobFrame)
 {
 	int i;
 	int width, height;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 	Color *pix;
 	int level;
 
@@ -649,7 +649,7 @@ ApplyShieldTint (void)
 	RECT r;
 
 	// TopoFrame will be permanently changed
-	oldFrame = SetContextFGFrame (pSolarSysState->TopoFrame);
+	oldFrame = SetContextFGFrame (pSolarSysState->graphics->TopoFrame);
 	SetContextClipRect (NULL);
 	GetContextClipRect (&r);
 
@@ -702,7 +702,7 @@ get_map_elev (SBYTE *elevs, int x, int y, int offset)
 void
 RenderPlanetSphere (FRAME MaskFrame, int offset, BOOLEAN doThrob)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 	POINT pt;
 	Color *pix;
 	Color clear;
@@ -1293,7 +1293,7 @@ ValidateMap (SBYTE *DepthArray)
 static void
 planet_orbit_init (void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	Orbit->SphereFrame = CaptureDrawable (CreateDrawable (
 			WANT_PIXMAP | WANT_ALPHA, DIAMETER, DIAMETER, 2));
@@ -1729,7 +1729,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 	POINT loc;
 	CONTEXT OldContext;
 	CONTEXT TopoContext;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 	BOOLEAN shielded = (pPlanetDesc->data_index & PLANET_SHIELDED) != 0;
 
 	RandomContext_SeedRandom (&SysGenRNG, pPlanetDesc->rand_seed);
@@ -1751,13 +1751,13 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 		if (GetFrameWidth (SurfDefFrame) != MAP_WIDTH
 				|| GetFrameHeight (SurfDefFrame) != MAP_HEIGHT)
 		{
-			pSolarSysState->TopoFrame = CaptureDrawable (RescaleFrame (
+			pSolarSysState->graphics->TopoFrame = CaptureDrawable (RescaleFrame (
 					SurfDefFrame, MAP_WIDTH, MAP_HEIGHT));
 			// will not need the passed FRAME anymore
 			DeleteDef = TRUE;
 		}
 		else
-			pSolarSysState->TopoFrame = SurfDefFrame;
+			pSolarSysState->graphics->TopoFrame = SurfDefFrame;
 
 		if (GetFrameCount (SurfDefFrame) > 1)
 		{	// 2nd frame is elevation data 
@@ -1858,30 +1858,30 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 					break;
 			}
 		}
-		pSolarSysState->TopoFrame = CaptureDrawable (
+		pSolarSysState->graphics->TopoFrame = CaptureDrawable (
 				CreateDrawable (WANT_PIXMAP, (SIZE)MAP_WIDTH,
 				(SIZE)MAP_HEIGHT, 1));
-		pSolarSysState->OrbitalCMap = CaptureColorMap (
+		pSolarSysState->graphics->OrbitalCMap = CaptureColorMap (
 				LoadColorMap (PlanDataPtr->CMapInstance));
-		pSolarSysState->XlatRef = CaptureStringTable (
+		pSolarSysState->graphics->XlatRef = CaptureStringTable (
 				LoadStringTable (PlanDataPtr->XlatTabInstance));
 
 		if (PlanetInfo->SurfaceTemperature > HOT_THRESHOLD)
 		{
-			pSolarSysState->OrbitalCMap = SetAbsColorMapIndex (
-					pSolarSysState->OrbitalCMap, 2);
-			pSolarSysState->XlatRef = SetAbsStringTableIndex (
-					pSolarSysState->XlatRef, 2);
+			pSolarSysState->graphics->OrbitalCMap = SetAbsColorMapIndex (
+					pSolarSysState->graphics->OrbitalCMap, 2);
+			pSolarSysState->graphics->XlatRef = SetAbsStringTableIndex (
+					pSolarSysState->graphics->XlatRef, 2);
 		}
 		else if (PlanetInfo->SurfaceTemperature > COLD_THRESHOLD)
 		{
-			pSolarSysState->OrbitalCMap = SetAbsColorMapIndex (
-					pSolarSysState->OrbitalCMap, 1);
-			pSolarSysState->XlatRef = SetAbsStringTableIndex (
-					pSolarSysState->XlatRef, 1);
+			pSolarSysState->graphics->OrbitalCMap = SetAbsColorMapIndex (
+					pSolarSysState->graphics->OrbitalCMap, 1);
+			pSolarSysState->graphics->XlatRef = SetAbsStringTableIndex (
+					pSolarSysState->graphics->XlatRef, 1);
 		}
-		pSolarSysState->XlatPtr = GetStringAddress (pSolarSysState->XlatRef);
-		RenderTopography (pSolarSysState->TopoFrame,
+		pSolarSysState->graphics->XlatPtr = GetStringAddress (pSolarSysState->graphics->XlatRef);
+		RenderTopography (pSolarSysState->graphics->TopoFrame,
 				Orbit->lpTopoData, MAP_WIDTH, MAP_HEIGHT);
 
 	}
@@ -1907,7 +1907,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 	// WAP_WIDTH+SPHERE_SPAN_X wide and we need this method for Earth anyway.
 	// It may be more efficient to build it from lpTopoData instead of the
 	// FRAMPTR though.
-	ReadFramePixelColors (pSolarSysState->TopoFrame, Orbit->TopoColors,
+	ReadFramePixelColors (pSolarSysState->graphics->TopoFrame, Orbit->TopoColors,
 			MAP_WIDTH + SPHERE_SPAN_X, MAP_HEIGHT);
 	// Extend the width from MAP_WIDTH to MAP_WIDTH+SPHERE_SPAN_X
 	for (y = 0; y < MAP_HEIGHT * (MAP_WIDTH + SPHERE_SPAN_X);
@@ -1943,7 +1943,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 	InitSphereRotation (1 - 2 * (PlanetInfo->AxialTilt & 1), shielded);
 
 	if (shielded)
-	{	// This overwrites pSolarSysState->TopoFrame, so everything that
+	{	// This overwrites pSolarSysState->graphics->TopoFrame, so everything that
 		// needs it has to come before
 		ApplyShieldTint ();
 	}

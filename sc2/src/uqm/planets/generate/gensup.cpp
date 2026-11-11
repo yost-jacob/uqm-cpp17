@@ -102,7 +102,7 @@ SupoxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		else
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->PlanetSideFrame[1] =
+			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (SUPOX_RUINS_STRTAB));

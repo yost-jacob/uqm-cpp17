@@ -130,6 +130,7 @@ extern "C" void *LoadGraphicInstance(RESOURCE) {
     images.insert(image);
     return image;
 }
+std::size_t liveTestDrawables() noexcept { return images.size(); }
 extern "C" FRAME CaptureDrawable(DRAWABLE drawable) { return reinterpret_cast<FRAME>(drawable); }
 extern "C" DRAWABLE ReleaseDrawable(FRAME frame) { return reinterpret_cast<DRAWABLE>(frame); }
 extern "C" BOOLEAN DestroyDrawable(DRAWABLE drawable) {

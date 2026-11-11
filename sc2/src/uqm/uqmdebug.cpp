@@ -18,6 +18,7 @@
 
 
 #include "system_runtime.hpp"
+#include "planet_render_legacy.hpp"
 #include "system_behavior.hpp"
 #include "uqmdebug.h"
 
@@ -692,6 +693,8 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPre != NULL)
 	{
 		system->pOrbitalDesc = planet;
+        uqm::detail::PlanetRenderBorrow rendering{*system,
+            system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
 				// When GenerateDefaultFunctions is used as genFuncs,
 				// generateOrbital will also call DoPlanetaryAnalysis,
@@ -715,6 +718,8 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPost != NULL)
 	{
 		system->pOrbitalDesc = planet;
+        uqm::detail::PlanetRenderBorrow rendering{*system,
+            system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
 				// When GenerateDefaultFunctions is used as genFuncs,
 				// generateOrbital will also call DoPlanetaryAnalysis,
@@ -739,6 +744,8 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->moonFunc != NULL)
 	{
 		system->pOrbitalDesc = moon;
+        uqm::detail::PlanetRenderBorrow rendering{*system,
+            system->worlds->system->world(planet - system->PlanetDesc).child(moon - system->MoonDesc)};
 		if (moon->data_index != HIERARCHY_STARBASE && moon->data_index != SA_MATRA)
 		{
 			DoPlanetaryAnalysis (&system->SysInfo, moon);
@@ -1019,7 +1026,7 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 		typeStr = planetTypeString (moon->data_index & ~PLANET_SHIELDED);
 	}
 	fprintf (out, "  - Moon %-30c  %s\n",
-			'a' + (moon - &pSolarSysState->MoonDesc[0]), typeStr);
+			'a' + static_cast<int>(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld (out, moon);
 }
@@ -1619,7 +1626,7 @@ dumpStrings (FILE *out)
 	
 	if (GAMESTR_COUNT != numStrings) {
 		fprintf(stderr, "Warning: GAMESTR_COUNT is %d, but GameStrings "
-				"contains %d strings.\n", GAMESTR_COUNT, numStrings);
+				"contains %zu strings.\n", GAMESTR_COUNT, numStrings);
 	}
 
 	categoryI = 0;
@@ -1627,7 +1634,7 @@ dumpStrings (FILE *out)
 		while (categoryI < numCategories &&
 				stringI >= categories[categoryI + 1].base)
 			categoryI++;
-		fprintf(out, "[ %s + %d ]  %s\n", categories[categoryI].name,
+		fprintf(out, "[ %s + %zu ]  %s\n", categories[categoryI].name,
 				stringI - categories[categoryI].base, GAME_STRING(stringI));
 	}
 }
@@ -1710,7 +1717,6 @@ countVisibleContexts (void)
 static void
 drawContext (CONTEXT context, double hue /* no pun intended */)
 {
-	FRAME drawFrame;
 	CONTEXT oldContext;
 	FONT oldFont;
 	DrawMode oldMode;
@@ -1718,13 +1724,11 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	Color rectCol;
 	Color lineCol;
 	Color textCol;
-	bool haveClippingRect;
 	RECT rect;
 	LINE line;
 	TEXT text;
 	POINT p1, p2, p3, p4;
 
-	drawFrame = GetContextFGFrame ();
 	rectCol = hsvaToRgba (hue, 1.0, 0.5, 100);
 	lineCol = hsvaToRgba (hue, 1.0, 1.0, 90);
 	textCol = lineCol;
@@ -1733,7 +1737,7 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	oldContext = SetContext (context);
 	
 	// Get the clipping rectangle of the specified context.
-	haveClippingRect = GetContextClipRect (&rect);
+	(void) GetContextClipRect (&rect);
 
 	// Switch back the old context; we're going to draw in it.
 	(void) SetContext (oldContext);
