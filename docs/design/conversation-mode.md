@@ -1,5 +1,9 @@
 # Conversation child mode
 
+For the actual scripts, see the [conversation graph catalog](conversation/README.md).
+The separate [proposed engine model](conversation/model.md) records the future design.
+This page describes the existing runtime.
+
 `EncounterRuntime::communicate` selects hail versus attack. Hail creates an owned
 `ConversationRuntime` and hands `ConversationMode` to `GameSession::swapGameMode`.
 The dispatcher destroys the conversation before returning to the encounter.
