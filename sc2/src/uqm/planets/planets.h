@@ -247,6 +247,8 @@ extern void ZoomInPlanetSphere (void);
 extern void RotatePlanetSphere (BOOLEAN keepRate);
 
 extern void DrawScannedObjects (BOOLEAN Reversed);
+// Construct the selected World's owned surface; active orbit view required.
+extern void ConstructPlanetSurface (FRAME surfaceDefinition);
 extern void GeneratePlanetSurface (PLANET_DESC *pPlanetDesc,
 		FRAME SurfDefFrame);
 extern void DeltaTopography (COUNT num_iterations, SBYTE *DepthArray,

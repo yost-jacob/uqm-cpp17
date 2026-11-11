@@ -8,7 +8,11 @@
 #include <string>
 #include <vector>
 
+struct solarsys_state;
+struct planet_desc;
+struct star_desc;
 namespace uqm {
+namespace detail { struct WorldGeneration; }
 class StoryState;
 class SystemBehavior;
 class PlanetRenderResources;
@@ -19,7 +23,7 @@ struct WorldDefinition {
     std::uint32_t seed;
     bool shielded;
     std::string name;
-    std::uint16_t moonCount = 0; // Generated layout, before moon descriptors are loaded.
+    std::uint16_t moonCount = 0; // Declared moon count in the generated layout.
 };
 // Owns a runtime world's behavior and generated children. Physical persistence
 // stays in the shared state; personal progress stays in the interacting story state.
@@ -29,6 +33,12 @@ public:
     World(WorldDefinition definition, std::shared_ptr<WorldState> state);
     World(WorldDefinition definition, std::shared_ptr<WorldState> state,
             std::unique_ptr<EnergyBehavior> energy);
+    // Generate this planet's moon layout during construction. The prepared
+    // system descriptors and behavior are borrowed only for this call.
+    World(WorldDefinition definition, std::shared_ptr<WorldState> state,
+            solarsys_state &system, planet_desc &planet, SystemBehavior &behavior);
+    // Copy owned moon descriptors into the active legacy flight view.
+    void projectMoons(solarsys_state &system, planet_desc &planet) const;
     ~World();
     World(const World &) = delete;
     World &operator=(const World &) = delete;
@@ -67,6 +77,7 @@ private:
     std::unique_ptr<EnergyBehavior> energy_;
     std::unique_ptr<PlanetRenderResources> rendering_;
     std::vector<std::unique_ptr<World>> children_;
+    std::unique_ptr<detail::WorldGeneration> generation_;
 };
 class SolarSystem {
 public:
@@ -77,6 +88,11 @@ public:
     // story state must outlive this system; the selected behavior borrows it.
     SolarSystem(StarId star, std::shared_ptr<WorldState> state,
             StoryState &story, std::uint8_t specialSystem);
+    // Construct a complete generated layout. system must be the active legacy
+    // generation view; star/session outlive the selected behavior. No orbit
+    // handlers, encounters or presentation are run by this constructor.
+    SolarSystem(StarId star, std::shared_ptr<WorldState> state, StoryState &story,
+            const star_desc &description, solarsys_state &system, class GameSession *session);
     ~SolarSystem();
     SystemBehavior &behavior();
     const SystemBehavior &behavior() const;

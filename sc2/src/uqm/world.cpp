@@ -1,6 +1,11 @@
 #include "world.hpp"
+#include "world_legacy.hpp"
 #include "system_behavior.hpp"
 #include "planet_render.hpp"
+#include "gendef.h"
+#include "starmap.h"
+#include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <utility>
 
@@ -35,6 +40,66 @@ World::World(WorldDefinition definition, std::shared_ptr<WorldState> state,
     : definition_(std::move(definition)), state_(std::move(state)), energy_(std::move(energy)) {
     if (!state_ || !energy_) throw std::invalid_argument("world requires state and energy behavior");
     if (id().universe != state_->id()) throw std::invalid_argument("world belongs to another universe");
+}
+World::World(WorldDefinition description, std::shared_ptr<WorldState> state,
+        SOLARSYS_STATE &system, PLANET_DESC &planet, SystemBehavior &behavior)
+    : World(std::move(description), std::move(state)) {
+    if (planet.NumPlanets > MAX_MOONS)
+        throw std::out_of_range("declared moon count exceeds descriptor capacity");
+    generation_ = std::make_unique<detail::WorldGeneration>();
+    RandomContext_SeedRandom(&SysGenRNG, planet.rand_seed);
+    std::fill(std::begin(system.MoonDesc), std::end(system.MoonDesc), PLANET_DESC{});
+    behavior.generateMoons(system, planet);
+    if (planet.NumPlanets > MAX_MOONS)
+        throw std::out_of_range("generated moon count exceeds descriptor capacity");
+    if (planet.NumPlanets != definition_.moonCount)
+        throw std::logic_error("moon generation changed the declared layout");
+    generation_->moons.reserve(planet.NumPlanets);
+    children_.reserve(planet.NumPlanets);
+    for (COUNT i = 0; i < planet.NumPlanets; ++i) {
+        auto moon = system.MoonDesc[i];
+        moon.pPrevDesc = nullptr; // Snapshots retain no borrow into the active view.
+        generation_->moons.push_back(moon);
+        auto moonId = id();
+        moonId.moon = i;
+        children_.push_back(std::make_unique<World>(
+            detail::describeWorld(moonId, WorldKind::Moon, moon), state_));
+    }
+}
+void World::projectMoons(SOLARSYS_STATE &system, PLANET_DESC &planet) const {
+    if (!generation_) throw std::logic_error("world has no constructed moon layout");
+    std::fill(std::begin(system.MoonDesc), std::end(system.MoonDesc), PLANET_DESC{});
+    std::copy(generation_->moons.begin(), generation_->moons.end(), system.MoonDesc);
+    for (auto &moon : system.MoonDesc) {
+        moon.pPrevDesc = &planet;
+        moon.temp_color = planet.temp_color;
+    }
+}
+SolarSystem::SolarSystem(StarId starId, std::shared_ptr<WorldState> state,
+        StoryState &story, const STAR_DESC &star, SOLARSYS_STATE &system, GameSession *session)
+    : SolarSystem(starId, std::move(state), story, star.Index) {
+    behavior_->attachStar(star);
+    if (session) behavior_->attachSession(*session);
+    RandomContext_SeedRandom(&SysGenRNG, MAKE_DWORD(star.star_pt.x, star.star_pt.y));
+    system.SunDesc[0] = {};
+    system.SunDesc[0].rand_seed = RandomContext_Random(&SysGenRNG);
+    system.SunDesc[0].data_index = STAR_TYPE(star.Type);
+    behavior_->generatePlanets(system);
+    if (system.SunDesc[0].NumPlanets > MAX_PLANETS)
+        throw std::out_of_range("generated planet count exceeds descriptor capacity");
+    for (COUNT i = 0; i < system.SunDesc[0].NumPlanets; ++i) {
+        system.PlanetDesc[i].pPrevDesc = &system.SunDesc[0];
+        layout_.push_back(system.PlanetDesc[i].NumPlanets);
+    }
+    worlds_.reserve(layout_.size());
+    for (COUNT i = 0; i < layout_.size(); ++i) {
+        auto planet = std::make_unique<World>(
+            detail::describeWorld({state_->id(), star_, i, std::nullopt}, WorldKind::Planet, system.PlanetDesc[i]),
+            state_, system, system.PlanetDesc[i], *behavior_);
+        planet->attachLayout(layout_);
+        for (auto &moon : planet->children_) moon->attachLayout(layout_);
+        worlds_.push_back(std::move(planet));
+    }
 }
 World::~World() = default;
 const WorldDefinition &World::definition() const noexcept { return definition_; }
