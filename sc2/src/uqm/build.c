@@ -26,29 +26,6 @@
 #include "libs/mathlib.h"
 
 
-// Allocate a new STARSHIP or SHIP_FRAGMENT and put it in the queue
-HLINK
-Build (QUEUE *pQueue, SPECIES_ID SpeciesID)
-{
-	HLINK hNewShip;
-	SHIP_BASE *ShipPtr;
-
-	assert (GetLinkSize (pQueue) == sizeof (STARSHIP) ||
-			GetLinkSize (pQueue) == sizeof (SHIP_FRAGMENT));
-
-	hNewShip = AllocLink (pQueue);
-	if (!hNewShip)
-		return 0;
-
-	ShipPtr = (SHIP_BASE *) LockLink (pQueue, hNewShip);
-	memset (ShipPtr, 0, GetLinkSize (pQueue));
-	ShipPtr->SpeciesID = SpeciesID;
-
-	UnlockLink (pQueue, hNewShip);
-	PutQueue (pQueue, hNewShip);
-
-	return hNewShip;
-}
 
 HLINK
 GetStarShipFromIndex (QUEUE *pShipQ, COUNT Index)
@@ -75,19 +52,19 @@ GetEscortByStarShipIndex (COUNT index)
 	HSHIPFRAG hNextShip;
 	SHIP_FRAGMENT *StarShipPtr;
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue());
 			hStarShip; hStarShip = hNextShip)
 	{
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 		if (StarShipPtr->index == index)
 		{
-			UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 			break;
 		}
 
 		hNextShip = _GetSuccLink (StarShipPtr);
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 
 	return hStarShip;
@@ -118,30 +95,30 @@ AddEscortShips (COUNT race, SIZE count)
 		HSHIPFRAG hOldShip;
 		SHIP_FRAGMENT *StarShipPtr;
 
-		hStarShip = CloneShipFragment (race, &GLOBAL (built_ship_q), 0);
+		hStarShip = CloneShipFragment (race, GetPlayerFleetQueue(), 0);
 		if (!hStarShip)
 			break;
 
-		RemoveQueue (&GLOBAL (built_ship_q), hStarShip);
+		RemoveQueue (GetPlayerFleetQueue(), hStarShip);
 
 		/* Find first available escort window */
 		while ((hOldShip = GetStarShipFromIndex (
-				&GLOBAL (built_ship_q), which_window++)))
+				GetPlayerFleetQueue(), which_window++)))
 		{
 			BYTE win_loc;
 
-			StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hOldShip);
+			StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hOldShip);
 			win_loc = StarShipPtr->index;
-			UnlockShipFrag (&GLOBAL (built_ship_q), hOldShip);
+			UnlockShipFrag (GetPlayerFleetQueue(), hOldShip);
 			if (which_window <= win_loc)
 				break;
 		}
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		StarShipPtr->index = which_window - 1;
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
-		InsertQueue (&GLOBAL (built_ship_q), hStarShip, hOldShip);
+		InsertQueue (GetPlayerFleetQueue(), hStarShip, hOldShip);
 	}
 
 	DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
@@ -161,15 +138,15 @@ CalculateEscortsWorth (void)
 	COUNT total = 0;
 	HSHIPFRAG hStarShip, hNextShip;
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue());
 			hStarShip; hStarShip = hNextShip)
 	{
 		SHIP_FRAGMENT *StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
 		total += ShipCost[StarShipPtr->race_id];
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 	return total;
 }
@@ -283,16 +260,16 @@ CountEscortShips (COUNT race)
 	if (!hFleet)
 		return 0;
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q)); hStarShip;
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue()); hStarShip;
 			hStarShip = hNextShip)
 	{
 		BYTE ship_type;
 		SHIP_FRAGMENT *StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
 		ship_type = StarShipPtr->race_id;
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 		if (ship_type == race)
 			result++;
@@ -324,7 +301,7 @@ EscortFeasibilityStudy (COUNT race)
 	if (!hFleet)
 		return 0;
 
-	return (MAX_BUILT_SHIPS - CountLinks (&GLOBAL (built_ship_q)));
+	return (MAX_BUILT_SHIPS - CountLinks (GetPlayerFleetQueue()));
 }
 
 /*
@@ -363,21 +340,21 @@ RemoveSomeEscortShips (COUNT race, COUNT count)
 	if (count == 0)
 		return 0;
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q)); hStarShip;
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue()); hStarShip;
 			hStarShip = hNextShip)
 	{
 		BOOLEAN RemoveShip;
 		SHIP_FRAGMENT *StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
 		RemoveShip = (StarShipPtr->race_id == race);
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 
 		if (RemoveShip)
 		{
-			RemoveQueue (&GLOBAL (built_ship_q), hStarShip);
-			FreeShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			RemoveQueue (GetPlayerFleetQueue(), hStarShip);
+			FreeShipFrag (GetPlayerFleetQueue(), hStarShip);
 			count--;
 			if (count == 0)
 				break;
@@ -523,21 +500,21 @@ SetEscortCrewComplement (COUNT which_ship, COUNT crew_level, BYTE captain)
 	TemplatePtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 
 	/* Find first ship of which_ship race */
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q)), Index = 0;
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue()), Index = 0;
 			hStarShip; hStarShip = hNextShip, ++Index)
 	{
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
 		if (which_ship == StarShipPtr->race_id &&
 				StarShipPtr->crew_level == TemplatePtr->crew_level)
 			break; /* found one */
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 	if (hStarShip)
 	{
 		StarShipPtr->crew_level = crew_level;
 		StarShipPtr->captains_name_index = captain;
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 	else
 		Index = -1;

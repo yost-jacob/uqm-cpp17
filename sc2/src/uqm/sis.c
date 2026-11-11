@@ -960,21 +960,21 @@ DrawSupportShips (void)
 		SUPPORT_SHIP_PTS
 	};
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q)),
+	for (hStarShip = GetHeadLink (GetPlayerFleetQueue()),
 			pship_pos = ship_pos;
 			hStarShip; hStarShip = hNextShip, ++pship_pos)
 	{
 		SHIP_FRAGMENT *StarShipPtr;
 		STAMP s;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		hNextShip = _GetSuccLink (StarShipPtr);
 
 		s.origin = *pship_pos;
 		s.frame = StarShipPtr->icons;
 		DrawStamp (&s);
 
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 	}
 }
 

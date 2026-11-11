@@ -14,6 +14,7 @@ flowchart TD
     State -->|shared_ptr| World[WorldState]
     World --> Archives[Vector-backed legacy scan and NPC archives]
     Player --> Profile[Immutable user identity and display profile]
+    Player --> Fleet[Fleet: owned persistent escort Ship records]
     Player --> Storage[Owned legacy payload]
     Player --> Story[StoryState value member]
     Story -->|view of existing packed bytes| Storage
@@ -186,3 +187,7 @@ owns the suspended parent until returning it, and session exits propagate after
 ownership restoration. Child exceptions currently abort with a graceful-shutdown
 TODO. Orbital system encounters now use this path while dialogue/combat internals
 remain unchanged. See the [runtime encapsulation map](design/runtime-encapsulation.md).
+
+Persistent escort ownership and identity-based combat results are described in
+[fleet ownership](design/fleet-ownership.md). The escort queue no longer belongs
+to the mutable legacy GAME_STATE payload.

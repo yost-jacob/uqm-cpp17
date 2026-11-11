@@ -1,7 +1,9 @@
 #ifndef UQM_DESIGN_PLAYER_ENTITY_HPP_
 #define UQM_DESIGN_PLAYER_ENTITY_HPP_
 
+#include <memory>
 #include "story_state.hpp"
+namespace uqm { class Fleet; }
 #include "world_state.hpp"
 
 namespace uqm::design {
@@ -13,6 +15,7 @@ struct PlayerSnapshot {
     PlayerLocation location;
     FlagshipState ship;
     StorySnapshot story;
+    std::vector<FleetProgress> escorts;
 };
 
 // Simulation-thread confined. GameState owns the entity; sessions borrow it.
@@ -27,6 +30,8 @@ public:
     UserProfile profile() const;
     PlayerPresence presence() const; // Public projection, excluding private data.
     FlagshipState ship() const;
+    uqm::Fleet &fleet() noexcept;
+    const uqm::Fleet &fleet() const noexcept;
     StoryState &story() noexcept;
     const StoryState &story() const noexcept;
     PlayerSnapshot snapshot() const; // Copy at an authoritative action boundary.
@@ -40,6 +45,7 @@ private:
     PlayerLocation location_;
     FlagshipState ship_;
     StoryState story_;
+    std::unique_ptr<uqm::Fleet> fleet_;
 };
 } // namespace uqm::design
 #endif

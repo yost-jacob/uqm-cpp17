@@ -1,5 +1,6 @@
 #include "game_state.hpp"
 #include "globdata.h"
+#include "fleet_legacy.hpp"
 
 #include <algorithm>
 #include <cstdlib>
@@ -197,7 +198,7 @@ void StoryState::set(StoryCounter counter, unsigned value) {
 
 PlayerEntity::PlayerEntity(UserProfile profile)
     : profile_(std::move(profile)), storage_(std::make_unique<detail::PlayerStorage>()),
-      story_(*storage_) {}
+      story_(*storage_), fleet_(std::make_unique<Fleet>(MAX_BUILT_SHIPS)) {}
 PlayerEntity::~PlayerEntity() = default;
 PlayerId PlayerEntity::id() const noexcept { return profile_.id; }
 NavigationState &PlayerEntity::navigationState() noexcept { return navigation_; }
@@ -239,6 +240,8 @@ PlayerLocation PlayerEntity::location() const noexcept {
 }
 void PlayerEntity::setFuel(std::uint32_t fuel) noexcept { storage_->legacy.SIS_state.FuelOnBoard = fuel; }
 void PlayerEntity::setCrew(std::uint16_t crew) noexcept { storage_->legacy.SIS_state.CrewEnlisted = crew; }
+Fleet &PlayerEntity::fleet() noexcept { return *fleet_; }
+const Fleet &PlayerEntity::fleet() const noexcept { return *fleet_; }
 StoryState &PlayerEntity::story() noexcept { return story_; }
 const StoryState &PlayerEntity::story() const noexcept { return story_; }
 
@@ -291,4 +294,9 @@ extern "C" GLOBDATA *GetLegacyGlobData(void) {
         // missing global storage; never let a C++ exception cross its ABI.
         std::abort();
     }
+}
+
+extern "C" QUEUE *GetPlayerFleetQueue(void) {
+    try { return &uqm::detail::FleetAccess::queue(uqm::gameSession().player().fleet()); }
+    catch (...) { std::abort(); }
 }

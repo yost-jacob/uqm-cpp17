@@ -465,15 +465,15 @@ PrepareSummary (SUMMARY_DESC *SummPtr, const char *name)
 	{
 		HSHIPFRAG hStarShip, hNextShip;
 
-		for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q)), SummPtr->NumShips = 0;
+		for (hStarShip = GetHeadLink (GetPlayerFleetQueue()), SummPtr->NumShips = 0;
 				hStarShip; hStarShip = hNextShip, ++SummPtr->NumShips)
 		{
 			SHIP_FRAGMENT *StarShipPtr;
 
-			StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			StarShipPtr = LockShipFrag (GetPlayerFleetQueue(), hStarShip);
 			hNextShip = _GetSuccLink (StarShipPtr);
 			SummPtr->ShipList[SummPtr->NumShips] = StarShipPtr->race_id;
-			UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+			UnlockShipFrag (GetPlayerFleetQueue(), hStarShip);
 		}
 	}
 
@@ -774,7 +774,7 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 				//   and so will we until we can prove we do not need to.
 				SaveGroupQueue (out_fp, &GLOBAL (ip_group_q));
 		}
-		SaveShipQueue (out_fp, &GLOBAL (built_ship_q), SHIP_Q_TAG);
+		SaveShipQueue (out_fp, GetPlayerFleetQueue(), SHIP_Q_TAG);
 
 		// Save the game event chunk
 		SaveEvents (out_fp);

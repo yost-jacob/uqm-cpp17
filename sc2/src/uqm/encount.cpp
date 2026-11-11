@@ -18,6 +18,7 @@
 
 #include "encount.h"
 #include "encounter_runtime.hpp"
+#include "fleet_legacy.hpp"
 #include "game_state.hpp"
 #include <iterator>
 
@@ -97,7 +98,7 @@ static QUEUE *
 GetShipFragQueueForPlayer (COUNT playerNr)
 {
 	if (playerNr == RPG_PLAYER_NUM)
-		return &GLOBAL (built_ship_q);
+		return GetPlayerFleetQueue();
 	else
 		return &GLOBAL (npc_built_ship_q);
 }
@@ -137,7 +138,9 @@ uqm::EncounterRuntime::buildBattle(COUNT which_player)
 				break;
 		}
 	}
-	pQueue = GetShipFragQueueForPlayer (which_player);
+	pQueue = which_player == RPG_PLAYER_NUM && session_
+        ? &uqm::detail::FleetAccess::queue(session_->player().fleet())
+        : GetShipFragQueueForPlayer(which_player);
 
 	ReinitQueue (&race_q[which_player]);
 	for (hStarShip = GetHeadLink (pQueue);
@@ -154,6 +157,8 @@ uqm::EncounterRuntime::buildBattle(COUNT which_player)
 		if (hBuiltShip)
 		{
 			BuiltShipPtr = LockStarShip (&race_q[which_player], hBuiltShip);
+			BuiltShipPtr->fleet_owner = pQueue;
+            BuiltShipPtr->fleet_ship_id = FragPtr->ship_id;
 			BuiltShipPtr->captains_name_index = FragPtr->captains_name_index;
 			BuiltShipPtr->playerNr = which_player;
 			if (FragPtr->crew_level != INFINITE_FLEET)
@@ -215,47 +220,6 @@ FleetIsInfinite (COUNT playerNr)
 	return ret;
 }
 
-void
-UpdateShipFragCrew (STARSHIP *StarShipPtr)
-{
-	QUEUE *frag_q;
-	HSHIPFRAG hShipFrag, hNextFrag;
-	SHIP_FRAGMENT *frag;
-	QUEUE *ship_q;
-	HSTARSHIP hStarShip, hNextShip;
-	STARSHIP *ship;
-
-	frag_q = GetShipFragQueueForPlayer (StarShipPtr->playerNr);
-	ship_q = &race_q[StarShipPtr->playerNr];
-
-	// Find a SHIP_FRAGMENT that corresponds to the given STARSHIP
-	// The ships and fragments are in the same order in two queues
-	// XXX: It would probably be simpler to keep HSHIPFRAG in STARSHIP struct
-	for (hShipFrag = GetHeadLink (frag_q), hStarShip = GetHeadLink (ship_q);
-			hShipFrag != 0 && hStarShip != 0;
-			hShipFrag = hNextFrag, hStarShip = hNextShip)
-	{
-		ship = LockStarShip (ship_q, hStarShip);
-		hNextShip = _GetSuccLink (ship);
-		frag = LockShipFrag (frag_q, hShipFrag);
-		hNextFrag = _GetSuccLink (frag);
-		
-		if (ship == StarShipPtr)
-		{
-			assert (frag->crew_level != INFINITE_FLEET);
-			
-			// Record crew left after the battle */
-			frag->crew_level = ship->crew_level;
-			
-			UnlockShipFrag (frag_q, hShipFrag);
-			UnlockStarShip (ship_q, hStarShip);
-			break;
-		}
-		
-		UnlockShipFrag (frag_q, hShipFrag);
-		UnlockStarShip (ship_q, hStarShip);
-	}
-}
 
 /*
  * Encountering an alien.
@@ -561,7 +525,7 @@ uqm::EncounterRuntime::finish()
 			HSHIPFRAG hNextShip;
 
 			if (i == 0)
-				pQueue = &GLOBAL (built_ship_q);
+				pQueue = GetPlayerFleetQueue();
 			else
 			{
 				if (VictoryState < 0)
@@ -707,9 +671,15 @@ uqm::EncounterRuntime::finish()
 						}
 					}
 
+                    const uqm::ShipId vessel{FragPtr->ship_id};
 					UnlockShipFrag (pQueue, hStarShip);
-					RemoveQueue (pQueue, hStarShip);
-					FreeShipFrag (pQueue, hStarShip);
+                    if (pQueue == GetPlayerFleetQueue()) {
+                        auto &player = session_ ? session_->player() : uqm::gameSession().player();
+                        player.fleet().erase(vessel);
+                    } else {
+					    RemoveQueue (pQueue, hStarShip);
+					    FreeShipFrag (pQueue, hStarShip);
+                    }
 
 					continue;
 				}

@@ -72,7 +72,9 @@ manual verification on a desktop; the command-line tests do not cover them.
 
 The [runtime encapsulation roadmap](docs/design/encapsulation-roadmap.md) records
 current owners, remaining legacy boundaries, and the next steps in the active
-exploration → encounter → conversation/combat work.
+exploration → encounter → conversation/combat work. Persistent escorts now belong
+to the player's [Fleet](docs/design/fleet-ownership.md); combat crew updates use
+stable vessel IDs instead of matching queue order.
 
 Resource string tables (priority 8) use per-entry standard string storage and
 typed name lookup, retaining the C API and binary byte lengths.

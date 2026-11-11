@@ -230,8 +230,7 @@ InitGameStructures (void)
 	GLOBAL_SIS (ModuleSlots[1]) = FUEL_TANK;
 	GLOBAL_SIS (FuelOnBoard) = 10 * FUEL_TANK_SCALE;
 
-	InitQueue (&GLOBAL (built_ship_q),
-			MAX_BUILT_SHIPS, QUEUE_SHIP_FRAGMENT);
+	ReinitQueue (GetPlayerFleetQueue());
 	InitQueue (&GLOBAL (npc_built_ship_q), MAX_SHIPS_PER_SIDE,
 			QUEUE_SHIP_FRAGMENT);
 	InitQueue (&GLOBAL (ip_group_q), MAX_BATTLE_GROUPS,
@@ -261,7 +260,7 @@ InitGameStructures (void)
 			GAME_STRING (NAMING_STRING_BASE + 3));
 
 	SetRaceAllied (HUMAN_SHIP, TRUE);
-	CloneShipFragment (HUMAN_SHIP, &GLOBAL (built_ship_q), 0);
+	CloneShipFragment (HUMAN_SHIP, GetPlayerFleetQueue(), 0);
 
 	GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (SOL_X);
 	GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (SOL_Y);
@@ -293,7 +292,7 @@ UninitGameStructures (void)
 	UninitQueue (&GLOBAL (encounter_q));
 	UninitQueue (&GLOBAL (ip_group_q));
 	UninitQueue (&GLOBAL (npc_built_ship_q));
-	UninitQueue (&GLOBAL (built_ship_q));
+	ReinitQueue (GetPlayerFleetQueue());
 	UninitGroupInfo ();
 	UninitPlanetInfo ();
 
