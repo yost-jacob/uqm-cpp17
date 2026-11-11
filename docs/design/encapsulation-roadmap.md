@@ -34,7 +34,7 @@ a load does not decode a replacement campaign while these objects remain alive.
 
 | Area | Owner and state dependency | Remaining boundary |
 | --- | --- | --- |
-| Exploration | SolarSystemMode owns SolarSystemExploration and native systems; behaviors borrow campaign and catalogue star | Legacy planet/input/render descriptors and process services |
+| Exploration | SolarSystemMode owns exploration, native systems, per-visit view frames, zoom bounds and draw order; flight helpers borrow their system explicitly | Legacy descriptor arrays, entity callbacks, shared artwork and device services |
 | Orbital encounter | SystemEncounterMode owns EncounterRuntime, borrowing its session's campaign and star | Activity flags, physical fleet queues, selection UI and aftermath |
 | Conversation | ConversationMode owns runtime, script storage, resources and animation state | C race callbacks, story globals, shared audio/render services |
 | Campaign combat | CombatMode owns its engine and temporarily takes the encounter roster; backend scopes sounds, cyborg input and activity | Participant records, C entity callbacks and presentation services |
@@ -175,3 +175,24 @@ orbit/scan/lander code borrows the active body. Generated descriptor refresh
 preserves unchanged native bodies instead of discarding their resources. See
 [planet rendering ownership](planet-render-ownership.md) for scope and remaining
 system-wide presentation boundaries.
+
+## Planned shared-services runtime
+
+The proposed `UQM_runtime` is not implemented yet. Its asset-cache member should
+carry this synchronization contract:
+
+```cpp
+struct UQM_runtime {
+    DeviceServices devices;
+    // Internally synchronized: find() and erase() use RAII lock guards.
+    // Callers and asset deleters use these methods; the map and mutex are private.
+    AssetCache asset_cache;
+};
+```
+
+`find(id)` handles lazy loading internally and returns shared ownership.
+The asset deleter calls `erase(id, token)`; that method checks the entry token
+under the lock so it cannot erase a newer replacement. Cache implementation
+must avoid recursive locking and releasing a last asset owner while holding its
+mutex. Sessions, asset owners and worker threads must finish before runtime
+teardown; device services outlive the cache so asset cleanup can use them.

@@ -116,7 +116,6 @@ struct planet_desc
 	POINT location;
 
 	Color temp_color;
-	COUNT NextIndex;
 	STAMP image;
 
 	PLANET_DESC *pPrevDesc;
@@ -189,13 +188,6 @@ struct solarsys_state
 			// currently orbiting.
 			// In inner system: points into PlanetDesc to the planet whose
 			// inner system the ship is inside
-	SIZE FirstPlanetIndex, LastPlanetIndex;
-			// The planets get sorted on their image.origin.y value.
-			// PlanetDesc[FirstPlanetIndex] is the planet with the lowest
-			// image.origin.y, and PlanetDesc[LastPlanetIndex] has the
-			// highest image.origin.y.
-			// PlanetDesc[PlanetDesc[i].NextIndex] is the next planet
-			// after PlanetDesc[i] in the ordering.
 
 	BYTE turn_counter;
 	BYTE turn_wait;
@@ -245,7 +237,6 @@ extern void LoadStdLanderFont (PLANET_INFO *info);
 extern void FreeLanderFont (PLANET_INFO *info);
 
 extern void DrawStarBackGround (void);
-extern void XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);
 extern void DrawFilledOval (RECT *pRect);
 extern void FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,

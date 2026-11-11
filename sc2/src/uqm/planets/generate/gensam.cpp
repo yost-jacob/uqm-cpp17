@@ -122,14 +122,13 @@ SaMatraSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 		COUNT angle;
 		POINT org;
 
-		org = planetOuterLocation (4);
+		org = uqm::planetOuterLocation(*solarSys, 4);
         auto &position = uqm::systemLocation(system).flight.position;
 		angle = ARCTAN (position.x - org.x,
 				position.y - org.y);
 		position.x = org.x + COSINE (angle, 3000);
 		position.y = org.y + SINE (angle, 3000);
-		XFormIPLoc (&position,
-				&GLOBAL (ShipStamp.origin), TRUE);
+		GLOBAL (ShipStamp.origin) = uqm::transformLocation(system, position, true);
 	}
 
 	(void) solarSys;
@@ -284,7 +283,7 @@ SaMatraSystemBehavior::BuildUrquanGuard(SOLARSYS_STATE *solarSys)
 
 	GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP);
 
-	org = planetOuterLocation (4);
+	org = uqm::planetOuterLocation(*solarSys, 4);
 	hGroup = GetHeadLink (&GLOBAL (ip_group_q));
 	for (b0 = 0, b1 = 0;
 			b0 < NUM_URQUAN_GUARDS0;

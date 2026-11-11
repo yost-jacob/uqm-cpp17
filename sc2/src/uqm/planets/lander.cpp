@@ -1741,7 +1741,7 @@ drawTakeoffBackdrop (void)
 
 	SetTransitionSource (&r);
 	BatchGraphics ();
-	DrawStarBackGround ();
+	uqm::drawStarBackground(planetSideDesc->system);
 	DrawPlanetSurfaceBorder ();
 	uqm::redrawSurfaceScan(planetSideDesc->system, nullptr);
 	ScreenTransition (3, &r);

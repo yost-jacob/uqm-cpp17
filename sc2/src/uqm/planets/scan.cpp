@@ -84,12 +84,12 @@ RepairBackRect (RECT *pRect)
 }
 
 static void
-EraseCoarseScan (void)
+EraseCoarseScan(SOLARSYS_STATE &system)
 {
 	SetContext (PlanetContext);
 	
 	BatchGraphics ();
-	DrawStarBackGround ();
+	uqm::drawStarBackground(system);
 	DrawDefaultPlanetSphere ();
 	UnbatchGraphics ();
 }
@@ -622,7 +622,7 @@ DispatchLander(SOLARSYS_STATE &system)
     auto &cursor = system.worlds->scan;
 	SIZE landingFuel = getLandingFuelNeeded(system);
 
-	EraseCoarseScan ();
+	EraseCoarseScan(system);
 
 
 	DeltaSISGauges (0, -landingFuel, 0);
@@ -645,7 +645,7 @@ DispatchLander(SOLARSYS_STATE &system)
 
 		NextActivity |= CHECK_LOAD; /* fake a load game */
 		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-		SaveSolarSysLocation ();
+		uqm::saveSolarSystemLocation(system);
 
 		return FALSE;
 	}
@@ -1213,7 +1213,7 @@ uqm::runScan(SOLARSYS_STATE &system)
 	BatchGraphics ();
 	SetContext (ScanContext);
 	DrawPlanet (0, BLACK_COLOR);
-	EraseCoarseScan ();
+	EraseCoarseScan(system);
 	UnbatchGraphics ();
 
 
@@ -1388,13 +1388,13 @@ setNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr)
 }
 
 void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
-    if (!system.graphics->TopoFrame || view == ExplorationView::Flight) return;
+    if (view == ExplorationView::Flight || !system.graphics->TopoFrame) return;
     struct ContextRestore {
         CONTEXT previous;
         ~ContextRestore() { SetContext(previous); }
     } restore{SetContext(PlanetContext)};
     BatchGraphics();
-    DrawStarBackGround();
+    uqm::drawStarBackground(system);
     DrawDefaultPlanetSphere();
     DrawPlanetSurfaceBorder();
     uqm::redrawSurfaceScan(system, nullptr);
