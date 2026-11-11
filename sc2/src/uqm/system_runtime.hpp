@@ -69,6 +69,8 @@ void drawStarBackground(const SOLARSYS_STATE &system);
 void saveSolarSystemLocation(SOLARSYS_STATE &system);
 // Borrowed lookup; system must have a prepared native runtime.
 SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
+// Construct the complete native layout in the prepared active descriptor view.
+void constructSystemWorlds(SOLARSYS_STATE &system, const STAR_DESC &star);
 // Mode-owned exploration lifetime. The story state outlives this object.
 class SolarSystemExploration {
 public:

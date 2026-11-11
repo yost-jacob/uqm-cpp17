@@ -802,3 +802,28 @@ BOOST_AUTO_TEST_CASE(legacy_selected_body_views_resolve_native_ids_without_retai
     BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == nullptr);
     BOOST_TEST(context.system->inInnerSystem());
 }
+
+BOOST_AUTO_TEST_CASE(system_constructor_builds_special_planets_and_moons_without_orbit_actions)
+{
+    resetCalls();
+    uqm::GameState campaign{{uqm::SinglePlayerId, "Constructor campaign"}};
+    STAR_DESC star{};
+    star.Index = CHMMR_DEFINED;
+    star.star_pt = {1752, 1450};
+    SOLARSYS_STATE projection{};
+    uqm::SolarSystem system{StarId{3}, campaign.worldOwner(),
+        campaign.player(uqm::SinglePlayerId).story(), star, projection, nullptr};
+    BOOST_TEST(system.worldCount() == 2u);
+    BOOST_TEST(system.world(1).childCount() == 1u);
+    BOOST_TEST(system.world(1).definition().shielded);
+    BOOST_TEST(system.world(1).child(0).id().moon.value() == 0u);
+    auto progress = system.world(1).child(0).progress();
+    progress.minerals.set(3);
+    system.world(1).child(0).mergeProgress(progress);
+    system.world(1).projectMoons(projection, projection.PlanetDesc[1]);
+    BOOST_TEST(projection.MoonDesc[0].pPrevDesc == &projection.PlanetDesc[1]);
+    BOOST_TEST(system.world(1).child(0).progress().minerals.test(3));
+    BOOST_TEST(defaultCalls[5] == 0u); // No naming / story selection.
+    BOOST_TEST(defaultCalls[6] == 0u); // No orbit-entry actions.
+    BOOST_TEST(communications == 0u);
+}

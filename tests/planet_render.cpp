@@ -1,4 +1,7 @@
 #include "uqm/world.hpp"
+#include "uqm/system_behavior.hpp"
+#include "uqm/gendef.h"
+#include "uqm/game_state.hpp"
 #include "uqm/planet_render_legacy.hpp"
 #include "libs/strings/strintrn.h"
 #include "libs/memlib.h"
@@ -114,5 +117,72 @@ BOOST_AUTO_TEST_CASE(generated_descriptor_refresh_preserves_planet_and_moon_reso
         detail::PlanetRenderAccess::data(system.world(0).renderResources()).TopoFrame = frame();
         detail::PlanetRenderAccess::data(system.world(1).renderResources()).TopoFrame = frame();
     }
+    BOOST_TEST(liveTestDrawables() == initial);
+}
+
+BOOST_AUTO_TEST_CASE(planet_constructor_owns_moons_and_projects_without_regenerating)
+{
+    class MoonBehavior final : public SystemBehavior {
+    public:
+        explicit MoonBehavior(StoryState &story) : SystemBehavior(story) {}
+        unsigned calls = 0;
+        bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &parent) override {
+            ++calls;
+            BOOST_TEST(parent.NumPlanets == 1u);
+            system.MoonDesc[0].rand_seed = 456;
+            system.MoonDesc[0].data_index = SELENIC_WORLD;
+            system.MoonDesc[0].radius = 100;
+            return true;
+        }
+    };
+    GameState campaign{{SinglePlayerId, "Constructor test"}};
+    MoonBehavior behavior{campaign.player(SinglePlayerId).story()};
+    auto state = std::make_shared<WorldState>(UniverseId{501});
+    SOLARSYS_STATE projection{};
+    auto &parent = projection.PlanetDesc[0];
+    parent.NumPlanets = 1;
+    parent.rand_seed = 123;
+    World body{planet(0, 1), state, projection, parent, behavior};
+    BOOST_TEST(body.childCount() == 1u);
+    BOOST_TEST(body.child(0).definition().seed == 456u);
+    projection.MoonDesc[0].rand_seed = 999; // Simulate another inner flight view.
+    body.projectMoons(projection, parent);
+    BOOST_TEST(projection.MoonDesc[0].rand_seed == 456u);
+    BOOST_TEST(projection.MoonDesc[0].pPrevDesc == &parent);
+    body.projectMoons(projection, parent);
+    BOOST_TEST(behavior.calls == 1u);
+}
+
+namespace {
+unsigned surfaceGenerations = 0;
+bool failSurfaceGeneration = false;
+}
+// Device-free stand-in: exercise production construction and unwind ownership.
+extern "C" void GeneratePlanetSurface(PLANET_DESC *, FRAME) {
+    ++surfaceGenerations;
+    pSolarSysState->graphics->TopoFrame = frame();
+    pSolarSysState->graphics->Orbit.SphereFrame = frame();
+    if (failSurfaceGeneration) throw std::runtime_error("surface generation failed");
+}
+BOOST_AUTO_TEST_CASE(surface_constructor_owns_generation_and_unwinds_partial_failure)
+{
+    const auto initial = liveTestDrawables();
+    SOLARSYS_STATE projection{};
+    auto *previous = pSolarSysState;
+    struct Restore { SOLARSYS_STATE *value; ~Restore() { pSolarSysState = value; } } restore{previous};
+    pSolarSysState = &projection;
+    PlanetRenderResources resources;
+    projection.graphics = &detail::PlanetRenderAccess::data(resources);
+    PLANET_DESC descriptor{};
+    failSurfaceGeneration = true;
+    BOOST_CHECK_THROW(resources.createSurface(projection, descriptor, nullptr), std::runtime_error);
+    failSurfaceGeneration = false;
+    BOOST_TEST(!resources.hasSurface());
+    BOOST_TEST(liveTestDrawables() == initial);
+    resources.createSurface(projection, descriptor, nullptr);
+    BOOST_TEST(resources.hasSurface());
+    BOOST_TEST(liveTestDrawables() == initial + 2u);
+    BOOST_CHECK_THROW(resources.createSurface(projection, descriptor, nullptr), std::logic_error);
+    resources.reset();
     BOOST_TEST(liveTestDrawables() == initial);
 }

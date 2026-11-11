@@ -266,7 +266,7 @@ LoadPlanet (FRAME SurfDefFrame)
 	StopMusic ();
 
 	pPlanetDesc = GetSystemSelectedDescriptor(pSolarSysState);
-	GeneratePlanetSurface (pPlanetDesc, SurfDefFrame);
+	ConstructPlanetSurface (SurfDefFrame);
 	SetPlanetMusic (pPlanetDesc->data_index & ~PLANET_SHIELDED);
 	GeneratePlanetSide ();
 

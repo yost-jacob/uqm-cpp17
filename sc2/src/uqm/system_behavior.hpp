@@ -22,7 +22,7 @@ public:
     virtual bool initNpcs(SOLARSYS_STATE &system);
     virtual bool reinitNpcs(SOLARSYS_STATE &system);
     virtual bool uninitNpcs(SOLARSYS_STATE &system);
-    // Build descriptors in place; the C engine attaches native world data afterward.
+    // Construction hooks build descriptors; SolarSystem/World constructors own the resulting layout.
     virtual bool generatePlanets(SOLARSYS_STATE &system);
     virtual bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &world);
     virtual bool generateName(const SOLARSYS_STATE &system, const PLANET_DESC &world);

@@ -55,6 +55,15 @@ void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQ
 
 }
 namespace uqm {
+void constructSystemWorlds(SOLARSYS_STATE &system, const STAR_DESC &star) {
+    auto &context = *system.worlds;
+    const StarId starId{GetStarIndex(&star)};
+    if (starId.value >= NUM_SOLAR_SYSTEMS) throw std::out_of_range("invalid system star");
+    auto generated = std::make_unique<SolarSystem>(starId, context.world, context.story,
+            star, system, context.session);
+    importSystemDiscoveries(*generated, star, context);
+    context.system = std::move(generated);
+}
 World &orbitalWorld(SOLARSYS_STATE &system) {
     auto &native = runtime(system);
     return native.selectedWorld();
@@ -79,6 +88,9 @@ void publishPlanetProgress(SOLARSYS_STATE &system) {
 } // namespace uqm
 
 namespace uqm::detail {
+WorldDefinition describeWorld(WorldId world, WorldKind kind, const PLANET_DESC &descriptor) {
+    return definition(world, kind, descriptor);
+}
 const PLANET_DESC &worldDescriptor(const SOLARSYS_STATE &system, const World &world) {
     const auto &id = world.id();
     return id.moon ? system.MoonDesc[*id.moon] : system.PlanetDesc[id.planet];

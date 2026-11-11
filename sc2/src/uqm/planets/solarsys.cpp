@@ -178,28 +178,13 @@ playerInPlanetOrbit (void)
 bool
 playerInInnerSystem(void) { return uqm::inInnerSystem(*pSolarSysState); }
 
-// Sets the SysGenRNG to the required state first.
+// Select the already constructed moon layout; naming remains a visit action.
 static void
-GenerateMoons(SOLARSYS_STATE &system, PLANET_DESC &planet)
+ProjectMoons(SOLARSYS_STATE &system, PLANET_DESC &planet)
 {
-	COUNT i;
-	PLANET_DESC *pMoonDesc;
-
-	RandomContext_SeedRandom (&SysGenRNG, planet.rand_seed);
-
-	uqm::systemBehavior(system).generateName(system, planet);
-	uqm::systemBehavior(system).generateMoons(system, planet);
-    BuildMoonWorlds (&system, &planet);
-
-	for (i = 0, pMoonDesc = &system.MoonDesc[0];
-			i < MAX_MOONS; ++i, ++pMoonDesc)
-	{
-		pMoonDesc->pPrevDesc = &planet;
-		if (i >= planet.NumPlanets)
-			continue;
-		
-		pMoonDesc->temp_color = planet.temp_color;
-	}
+    auto &world = uqm::detail::worldFromDescriptor(system, planet);
+    uqm::systemBehavior(system).generateName(system, planet);
+    world.projectMoons(system, planet);
 }
 
 void
@@ -276,7 +261,7 @@ GetRandomSeedForStar (const STAR_DESC *star)
 
 // Returns an orbital PLANET_DESC when player is in orbit
 static std::optional<std::reference_wrapper<uqm::World>>
-LoadSolarSys(SOLARSYS_STATE &system)
+LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 {
     auto &flight = uqm::systemLocation(system).flight;
 	COUNT i;
@@ -292,22 +277,10 @@ LoadSolarSys(SOLARSYS_STATE &system)
 		BUILD_COLOR (MAKE_RGB15_INIT (0x0F, 0x08, 0x00), 0x75),
 	};
 
-	RandomContext_SeedRandom (&SysGenRNG, GetRandomSeedForStar (&uqm::systemStar(system)));
-
-	SunFrame = SetAbsFrameIndex (SunFrame, STAR_TYPE (uqm::systemStar(system).Type));
-
-	pCurDesc = &system.SunDesc[0];
-	pCurDesc->pPrevDesc = 0;
-	pCurDesc->rand_seed = RandomContext_Random (&SysGenRNG);
-
-	pCurDesc->data_index = STAR_TYPE (uqm::systemStar(system).Type);
-	pCurDesc->location.x = 0;
-	pCurDesc->location.y = 0;
-	pCurDesc->image.origin = pCurDesc->location;
-	pCurDesc->image.frame = SunFrame;
-
-	uqm::systemBehavior(system).generatePlanets(system);
-    BuildSystemWorlds (&system, &uqm::systemStar(system));
+    if (regenerate) uqm::constructSystemWorlds(system, *GetCurrentStar());
+    SunFrame = SetAbsFrameIndex(SunFrame, STAR_TYPE(uqm::systemStar(system).Type));
+    system.SunDesc[0].image.origin = system.SunDesc[0].location;
+    system.SunDesc[0].image.frame = SunFrame;
 
 	for (i = 0, pCurDesc = system.PlanetDesc;
 			i < MAX_PLANETS; ++i, ++pCurDesc)
@@ -345,7 +318,7 @@ LoadSolarSys(SOLARSYS_STATE &system)
 
 		i = flight.planet - 1;
 		bodies(system).selectWorld(bodies(system).world(i).id());
-        GenerateMoons(system, selectedDescriptor(system));
+        ProjectMoons(system, selectedDescriptor(system));
         bodies(system).enterInnerSystem(bodies(system).world(i).id());
 
 		uqm::systemStory(system).clear(uqm::StoryFlag::PlanetaryLanding);
@@ -811,7 +784,7 @@ enterInnerSystem(SOLARSYS_STATE &system, uqm::World &planet)
 			uqm::planetOuterLocation(system, planet.id().planet);
 	ZeroVelocityComponents (&GLOBAL (velocity));
 
-	GenerateMoons(system, uqm::detail::worldDescriptor(system, planet));
+	ProjectMoons(system, uqm::detail::worldDescriptor(system, planet));
 	bodies(system).enterInnerSystem(planet.id());
 }
 
@@ -1196,7 +1169,7 @@ InitSolarSys(SOLARSYS_STATE &system)
 	SetContextFGFrame (Screen);
 	SetContextBackGroundColor (BLACK_COLOR);
 
-	orbital = LoadSolarSys(system);
+	orbital = LoadSolarSys(system, false);
 	InnerSystem = CheckZoomLevel(system);
 	ValidateOrbits(system);
 	if (InnerSystem)
@@ -1563,7 +1536,7 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
     pSolarSysState = &system;
 
 	system.worlds = &runtime;
-	PrepareSystemWorlds (&system, GetCurrentStar());
+	uqm::constructSystemWorlds(system, *GetCurrentStar());
     location.system = runtime.system->star();
 
 	InitSolarSys(system);
