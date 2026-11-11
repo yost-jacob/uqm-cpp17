@@ -158,31 +158,10 @@ static LOCDATA shofixti_desc =
 
 // Story branches and actions are defined in comm.shofixti.dialogue.json.
 // Keep the native descriptor as the media/lifecycle compatibility boundary.
-static void
-Intro (void)
-{
-}
-
-static COUNT
-uninit_shofixti (void)
-{
-	return(0);
-}
-
-static void
-post_shofixti_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_shofixti_comm (void)
 {
 	LOCDATA *retval;
-
-	shofixti_desc.init_encounter_func = Intro;
-	shofixti_desc.post_encounter_func = post_shofixti_enc;
-	shofixti_desc.uninit_encounter_func = uninit_shofixti;
 
 	shofixti_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	shofixti_desc.AlienTextBaseline.y = 0;

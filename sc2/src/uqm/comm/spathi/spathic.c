@@ -147,17 +147,6 @@ static LOCDATA spathi_desc =
 // Story branches and actions are defined in comm.spathi.dialogue.json.
 // Keep the native descriptor as the media/lifecycle compatibility boundary.
 static void
-Intro (void)
-{
-}
-
-static COUNT
-uninit_spathi (void)
-{
-	return (0);
-}
-
-static void
 post_spathi_enc (void)
 {
 	BYTE Manner;
@@ -187,9 +176,7 @@ init_spathi_comm (void)
 {
 	LOCDATA *retval;
 
-	spathi_desc.init_encounter_func = Intro;
 	spathi_desc.post_encounter_func = post_spathi_enc;
-	spathi_desc.uninit_encounter_func = uninit_spathi;
 
 	spathi_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	spathi_desc.AlienTextBaseline.y = 0;

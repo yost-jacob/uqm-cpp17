@@ -6,15 +6,12 @@
 
 Script: [utwigc.c](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L1). Phrase bank: [utwig.txt](../../../../sc2/content/base/comm/utwig/utwig.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 117 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 117 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_utwig_comm</code> | No enclosing branch condition; [224](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L224) |
-| <code>post_encounter_func</code> | [<code>post_utwig_enc</code>](#node-post_utwig_enc) | <code>init_utwig_comm</code> | No enclosing branch condition; [225](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L225) |
-| <code>uninit_encounter_func</code> | [<code>uninit_utwig</code>](#node-uninit_utwig) | <code>init_utwig_comm</code> | No enclosing branch condition; [226](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L226) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_utwig"]
-    n2["post_utwig_enc"]
-    n3["init_utwig_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_utwig_comm"]
 ```
 
 ## Condition catalog
@@ -50,69 +41,11 @@ Presentation descriptor <code>utwig_desc</code>: [source](../../../../sc2/src/uq
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L203).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_utwig"></a>
-
-### uninit_utwig
-
-<code>static COUNT uninit_utwig(void)</code> — [source](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L208).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [210](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L210) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_utwig_enc"></a>
-
-### post_utwig_enc
-
-<code>static void post_utwig_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L214).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_utwig_comm"></a>
 
 ### init_utwig_comm
 
-<code>LOCDATA *init_utwig_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L220).
+<code>LOCDATA *init_utwig_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L203).
 
 #### Actions, queries, local updates, and control flow
 
@@ -120,23 +53,20 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>utwig_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [224](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L224) |
-| update | <code>utwig_desc.post_encounter_func = post_utwig_enc</code> | No enclosing branch condition | [225](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L225) |
-| update | <code>utwig_desc.uninit_encounter_func = uninit_utwig</code> | No enclosing branch condition | [226](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L226) |
-| update | <code>utwig_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [228](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L228) |
-| update | <code>utwig_desc.AlienTextBaseline.y = 70</code> | No enclosing branch condition | [229](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L229) |
-| update | <code>utwig_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [230](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L230) |
-| call | <code>GET_GAME_STATE(UTWIG_HAVE_ULTRON)</code> | No enclosing branch condition | [232](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L232) |
-| update | <code>utwig_desc.AlienAltSongRes = UTWIG_ULTRON_MUSIC</code> | [C1](#condition-c1) | [234](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L234) |
-| update | <code>utwig_desc.AlienSongFlags &#124;= LDASF_USE_ALTERNATE</code> | [C1](#condition-c1) | [235](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L235) |
-| update | <code>utwig_desc.AlienSongFlags &amp;= ~LDASF_USE_ALTERNATE</code> | [C2](#condition-c2) | [239](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L239) |
-| call | <code>GET_GAME_STATE(UTWIG_HAVE_ULTRON)</code> | No enclosing branch condition | [242](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L242) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C2](#condition-c2) | [243](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L243) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C2](#condition-c2) | [243](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L243) |
-| call | <code>setSegue(Segue_peace)</code> | [C3](#condition-c3) | [245](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L245) |
-| call | <code>setSegue(Segue_hostile)</code> | [C4](#condition-c4) | [249](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L249) |
-| update | <code>retval = &amp;utwig_desc</code> | No enclosing branch condition | [251](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L251) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [253](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L253) |
+| update | <code>utwig_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [207](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L207) |
+| update | <code>utwig_desc.AlienTextBaseline.y = 70</code> | No enclosing branch condition | [208](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L208) |
+| update | <code>utwig_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [209](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L209) |
+| call | <code>GET_GAME_STATE(UTWIG_HAVE_ULTRON)</code> | No enclosing branch condition | [211](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L211) |
+| update | <code>utwig_desc.AlienAltSongRes = UTWIG_ULTRON_MUSIC</code> | [C1](#condition-c1) | [213](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L213) |
+| update | <code>utwig_desc.AlienSongFlags &#124;= LDASF_USE_ALTERNATE</code> | [C1](#condition-c1) | [214](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L214) |
+| update | <code>utwig_desc.AlienSongFlags &amp;= ~LDASF_USE_ALTERNATE</code> | [C2](#condition-c2) | [218](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L218) |
+| call | <code>GET_GAME_STATE(UTWIG_HAVE_ULTRON)</code> | No enclosing branch condition | [221](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L221) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C2](#condition-c2) | [222](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L222) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C2](#condition-c2) | [222](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L222) |
+| call | <code>setSegue(Segue_peace)</code> | [C3](#condition-c3) | [224](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L224) |
+| call | <code>setSegue(Segue_hostile)</code> | [C4](#condition-c4) | [228](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L228) |
+| update | <code>retval = &amp;utwig_desc</code> | No enclosing branch condition | [230](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L230) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [232](../../../../sc2/src/uqm/comm/utwig/utwigc.c#L232) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -144,10 +74,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	utwig_desc.init_encounter_func = Intro;
-	utwig_desc.post_encounter_func = post_utwig_enc;
-	utwig_desc.uninit_encounter_func = uninit_utwig;
 
 	utwig_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	utwig_desc.AlienTextBaseline.y = 70;

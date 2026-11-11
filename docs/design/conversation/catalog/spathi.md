@@ -6,15 +6,13 @@
 
 Script: [spathic.c](../../../../sc2/src/uqm/comm/spathi/spathic.c#L1). Phrase bank: [spathi.txt](../../../../sc2/content/base/comm/spathi/spathi.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 134 phrase records.
+2 handler/helper nodes; 0 response registration sites; 0 direct local calls; 134 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_spathi_comm</code> | No enclosing branch condition; [190](../../../../sc2/src/uqm/comm/spathi/spathic.c#L190) |
-| <code>post_encounter_func</code> | [<code>post_spathi_enc</code>](#node-post_spathi_enc) | <code>init_spathi_comm</code> | No enclosing branch condition; [191](../../../../sc2/src/uqm/comm/spathi/spathic.c#L191) |
-| <code>uninit_encounter_func</code> | [<code>uninit_spathi</code>](#node-uninit_spathi) | <code>init_spathi_comm</code> | No enclosing branch condition; [192](../../../../sc2/src/uqm/comm/spathi/spathic.c#L192) |
+| <code>post_encounter_func</code> | [<code>post_spathi_enc</code>](#node-post_spathi_enc) | <code>init_spathi_comm</code> | No enclosing branch condition; [179](../../../../sc2/src/uqm/comm/spathi/spathic.c#L179) |
 
 ## Handler graph
 
@@ -22,13 +20,9 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_spathi"]
-    n2["post_spathi_enc"]
-    n3["init_spathi_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["post_spathi_enc"]
+    n1["init_spathi_comm"]
+    n1 -. "post_encounter_func" .-> n0
 ```
 
 ## Condition catalog
@@ -55,52 +49,11 @@ Presentation descriptor <code>spathi_desc</code>: [source](../../../../sc2/src/u
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/spathi/spathic.c#L150).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_spathi"></a>
-
-### uninit_spathi
-
-<code>static COUNT uninit_spathi(void)</code> — [source](../../../../sc2/src/uqm/comm/spathi/spathic.c#L155).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [157](../../../../sc2/src/uqm/comm/spathi/spathic.c#L157) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
 <a id="node-post_spathi_enc"></a>
 
 ### post_spathi_enc
 
-<code>static void post_spathi_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/spathi/spathic.c#L161).
+<code>static void post_spathi_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/spathi/spathic.c#L150).
 
 #### Actions, queries, local updates, and control flow
 
@@ -108,15 +61,15 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| call | <code>GET_GAME_STATE(FOUND_PLUTO_SPATHI)</code> | No enclosing branch condition | [165](../../../../sc2/src/uqm/comm/spathi/spathic.c#L165) |
-| call | <code>SET_GAME_STATE(FOUND_PLUTO_SPATHI, 2)</code> | [C1](#condition-c1) | [167](../../../../sc2/src/uqm/comm/spathi/spathic.c#L167) |
-| call | <code>getSegue()</code> | [C2](#condition-c2) | [169](../../../../sc2/src/uqm/comm/spathi/spathic.c#L169) |
-| update | <code>Manner = GET_GAME_STATE(SPATHI_MANNER)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [170](../../../../sc2/src/uqm/comm/spathi/spathic.c#L170) |
-| call | <code>GET_GAME_STATE(SPATHI_MANNER)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [170](../../../../sc2/src/uqm/comm/spathi/spathic.c#L170) |
-| call | <code>SET_GAME_STATE(SPATHI_MANNER, 1)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) | [172](../../../../sc2/src/uqm/comm/spathi/spathic.c#L172) |
-| call | <code>SET_GAME_STATE(SPATHI_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) ∧ [C5](#condition-c5) | [175](../../../../sc2/src/uqm/comm/spathi/spathic.c#L175) |
-| call | <code>GET_GAME_STATE(SPATHI_HOME_VISITS)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) ∧ [C5](#condition-c5) | [177](../../../../sc2/src/uqm/comm/spathi/spathic.c#L177) |
-| call | <code>SET_GAME_STATE(SPATHI_HOME_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) ∧ [C5](#condition-c5) ∧ [C6](#condition-c6) | [179](../../../../sc2/src/uqm/comm/spathi/spathic.c#L179) |
+| call | <code>GET_GAME_STATE(FOUND_PLUTO_SPATHI)</code> | No enclosing branch condition | [154](../../../../sc2/src/uqm/comm/spathi/spathic.c#L154) |
+| call | <code>SET_GAME_STATE(FOUND_PLUTO_SPATHI, 2)</code> | [C1](#condition-c1) | [156](../../../../sc2/src/uqm/comm/spathi/spathic.c#L156) |
+| call | <code>getSegue()</code> | [C2](#condition-c2) | [158](../../../../sc2/src/uqm/comm/spathi/spathic.c#L158) |
+| update | <code>Manner = GET_GAME_STATE(SPATHI_MANNER)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [159](../../../../sc2/src/uqm/comm/spathi/spathic.c#L159) |
+| call | <code>GET_GAME_STATE(SPATHI_MANNER)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [159](../../../../sc2/src/uqm/comm/spathi/spathic.c#L159) |
+| call | <code>SET_GAME_STATE(SPATHI_MANNER, 1)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) | [161](../../../../sc2/src/uqm/comm/spathi/spathic.c#L161) |
+| call | <code>SET_GAME_STATE(SPATHI_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) ∧ [C5](#condition-c5) | [164](../../../../sc2/src/uqm/comm/spathi/spathic.c#L164) |
+| call | <code>GET_GAME_STATE(SPATHI_HOME_VISITS)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) ∧ [C5](#condition-c5) | [166](../../../../sc2/src/uqm/comm/spathi/spathic.c#L166) |
+| call | <code>SET_GAME_STATE(SPATHI_HOME_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) ∧ [C5](#condition-c5) ∧ [C6](#condition-c6) | [168](../../../../sc2/src/uqm/comm/spathi/spathic.c#L168) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -152,7 +105,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 ### init_spathi_comm
 
-<code>LOCDATA *init_spathi_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/spathi/spathic.c#L186).
+<code>LOCDATA *init_spathi_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/spathi/spathic.c#L175).
 
 #### Actions, queries, local updates, and control flow
 
@@ -160,24 +113,22 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>spathi_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [190](../../../../sc2/src/uqm/comm/spathi/spathic.c#L190) |
-| update | <code>spathi_desc.post_encounter_func = post_spathi_enc</code> | No enclosing branch condition | [191](../../../../sc2/src/uqm/comm/spathi/spathic.c#L191) |
-| update | <code>spathi_desc.uninit_encounter_func = uninit_spathi</code> | No enclosing branch condition | [192](../../../../sc2/src/uqm/comm/spathi/spathic.c#L192) |
-| update | <code>spathi_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [194](../../../../sc2/src/uqm/comm/spathi/spathic.c#L194) |
-| update | <code>spathi_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [195](../../../../sc2/src/uqm/comm/spathi/spathic.c#L195) |
-| update | <code>spathi_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [196](../../../../sc2/src/uqm/comm/spathi/spathic.c#L196) |
-| call | <code>GET_GAME_STATE(FOUND_PLUTO_SPATHI)</code> | No enclosing branch condition | [198](../../../../sc2/src/uqm/comm/spathi/spathic.c#L198) |
-| update | <code>spathi_desc.AlienAltSongRes = FWIFFO_MUSIC</code> | [C1](#condition-c1) | [200](../../../../sc2/src/uqm/comm/spathi/spathic.c#L200) |
-| update | <code>spathi_desc.AlienSongFlags &#124;= LDASF_USE_ALTERNATE</code> | [C1](#condition-c1) | [201](../../../../sc2/src/uqm/comm/spathi/spathic.c#L201) |
-| update | <code>spathi_desc.AlienSongFlags &amp;= ~LDASF_USE_ALTERNATE</code> | [C2](#condition-c2) | [205](../../../../sc2/src/uqm/comm/spathi/spathic.c#L205) |
-| call | <code>GET_GAME_STATE(FOUND_PLUTO_SPATHI)</code> | No enclosing branch condition | [208](../../../../sc2/src/uqm/comm/spathi/spathic.c#L208) |
-| call | <code>GET_GAME_STATE(SPATHI_MANNER)</code> | [C2](#condition-c2) | [209](../../../../sc2/src/uqm/comm/spathi/spathic.c#L209) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C7](#condition-c7) | [210](../../../../sc2/src/uqm/comm/spathi/spathic.c#L210) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C7](#condition-c7) | [210](../../../../sc2/src/uqm/comm/spathi/spathic.c#L210) |
-| call | <code>setSegue(Segue_peace)</code> | [C8](#condition-c8) | [212](../../../../sc2/src/uqm/comm/spathi/spathic.c#L212) |
-| call | <code>setSegue(Segue_hostile)</code> | [C9](#condition-c9) | [216](../../../../sc2/src/uqm/comm/spathi/spathic.c#L216) |
-| update | <code>retval = &amp;spathi_desc</code> | No enclosing branch condition | [218](../../../../sc2/src/uqm/comm/spathi/spathic.c#L218) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [220](../../../../sc2/src/uqm/comm/spathi/spathic.c#L220) |
+| update | <code>spathi_desc.post_encounter_func = post_spathi_enc</code> | No enclosing branch condition | [179](../../../../sc2/src/uqm/comm/spathi/spathic.c#L179) |
+| update | <code>spathi_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [181](../../../../sc2/src/uqm/comm/spathi/spathic.c#L181) |
+| update | <code>spathi_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [182](../../../../sc2/src/uqm/comm/spathi/spathic.c#L182) |
+| update | <code>spathi_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [183](../../../../sc2/src/uqm/comm/spathi/spathic.c#L183) |
+| call | <code>GET_GAME_STATE(FOUND_PLUTO_SPATHI)</code> | No enclosing branch condition | [185](../../../../sc2/src/uqm/comm/spathi/spathic.c#L185) |
+| update | <code>spathi_desc.AlienAltSongRes = FWIFFO_MUSIC</code> | [C1](#condition-c1) | [187](../../../../sc2/src/uqm/comm/spathi/spathic.c#L187) |
+| update | <code>spathi_desc.AlienSongFlags &#124;= LDASF_USE_ALTERNATE</code> | [C1](#condition-c1) | [188](../../../../sc2/src/uqm/comm/spathi/spathic.c#L188) |
+| update | <code>spathi_desc.AlienSongFlags &amp;= ~LDASF_USE_ALTERNATE</code> | [C2](#condition-c2) | [192](../../../../sc2/src/uqm/comm/spathi/spathic.c#L192) |
+| call | <code>GET_GAME_STATE(FOUND_PLUTO_SPATHI)</code> | No enclosing branch condition | [195](../../../../sc2/src/uqm/comm/spathi/spathic.c#L195) |
+| call | <code>GET_GAME_STATE(SPATHI_MANNER)</code> | [C2](#condition-c2) | [196](../../../../sc2/src/uqm/comm/spathi/spathic.c#L196) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C7](#condition-c7) | [197](../../../../sc2/src/uqm/comm/spathi/spathic.c#L197) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C7](#condition-c7) | [197](../../../../sc2/src/uqm/comm/spathi/spathic.c#L197) |
+| call | <code>setSegue(Segue_peace)</code> | [C8](#condition-c8) | [199](../../../../sc2/src/uqm/comm/spathi/spathic.c#L199) |
+| call | <code>setSegue(Segue_hostile)</code> | [C9](#condition-c9) | [203](../../../../sc2/src/uqm/comm/spathi/spathic.c#L203) |
+| update | <code>retval = &amp;spathi_desc</code> | No enclosing branch condition | [205](../../../../sc2/src/uqm/comm/spathi/spathic.c#L205) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [207](../../../../sc2/src/uqm/comm/spathi/spathic.c#L207) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -186,9 +137,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 {
 	LOCDATA *retval;
 
-	spathi_desc.init_encounter_func = Intro;
 	spathi_desc.post_encounter_func = post_spathi_enc;
-	spathi_desc.uninit_encounter_func = uninit_spathi;
 
 	spathi_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	spathi_desc.AlienTextBaseline.y = 0;

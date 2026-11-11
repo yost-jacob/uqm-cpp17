@@ -196,14 +196,6 @@ static LOCDATA umgah_desc =
 };
 
 // Native asset/lifecycle configuration; dialogue behavior is external graph data.
-static void Intro (void) {}
-
-static COUNT
-uninit_umgah (void)
-{
-	return (0);
-}
-
 static void
 post_umgah_enc (void)
 {
@@ -218,9 +210,7 @@ init_umgah_comm (void)
 {
 	LOCDATA *retval;
 
-	umgah_desc.init_encounter_func = Intro;
 	umgah_desc.post_encounter_func = post_umgah_enc;
-	umgah_desc.uninit_encounter_func = uninit_umgah;
 
 	umgah_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	umgah_desc.AlienTextBaseline.y = 0;

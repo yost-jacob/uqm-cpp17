@@ -6,15 +6,12 @@
 
 Script: [ilwrathc.c](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L1). Phrase bank: [ilwrath.txt](../../../../sc2/content/base/comm/ilwrath/ilwrath.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 108 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 108 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_ilwrath_comm</code> | No enclosing branch condition; [122](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L122) |
-| <code>post_encounter_func</code> | [<code>post_ilwrath_enc</code>](#node-post_ilwrath_enc) | <code>init_ilwrath_comm</code> | No enclosing branch condition; [123](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L123) |
-| <code>uninit_encounter_func</code> | [<code>uninit_ilwrath</code>](#node-uninit_ilwrath) | <code>init_ilwrath_comm</code> | No enclosing branch condition; [124](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L124) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_ilwrath"]
-    n2["post_ilwrath_enc"]
-    n3["init_ilwrath_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_ilwrath_comm"]
 ```
 
 ## Condition catalog
@@ -50,68 +41,11 @@ Presentation descriptor <code>ilwrath_desc</code>: [source](../../../../sc2/src/
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L103).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_ilwrath"></a>
-
-### uninit_ilwrath
-
-<code>static COUNT uninit_ilwrath(void)</code> — [source](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L106).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [108](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L108) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_ilwrath_enc"></a>
-
-### post_ilwrath_enc
-
-<code>static void post_ilwrath_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L112).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_ilwrath_comm"></a>
 
 ### init_ilwrath_comm
 
-<code>LOCDATA *init_ilwrath_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L118).
+<code>LOCDATA *init_ilwrath_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L104).
 
 #### Actions, queries, local updates, and control flow
 
@@ -119,20 +53,17 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>ilwrath_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [122](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L122) |
-| update | <code>ilwrath_desc.post_encounter_func = post_ilwrath_enc</code> | No enclosing branch condition | [123](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L123) |
-| update | <code>ilwrath_desc.uninit_encounter_func = uninit_ilwrath</code> | No enclosing branch condition | [124](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L124) |
-| update | <code>ilwrath_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [126](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L126) |
-| update | <code>ilwrath_desc.AlienTextBaseline.y = 70</code> | No enclosing branch condition | [127](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L127) |
-| update | <code>ilwrath_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [128](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L128) |
-| call | <code>GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER)</code> | No enclosing branch condition | [130](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L130) |
-| call | <code>GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA)</code> | [C1](#condition-c1) | [131](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L131) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C2](#condition-c2) | [133](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L133) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C2](#condition-c2) | [133](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L133) |
-| call | <code>setSegue(Segue_peace)</code> | [C3](#condition-c3) | [135](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L135) |
-| call | <code>setSegue(Segue_hostile)</code> | [C4](#condition-c4) | [139](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L139) |
-| update | <code>retval = &amp;ilwrath_desc</code> | No enclosing branch condition | [141](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L141) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [143](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L143) |
+| update | <code>ilwrath_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [108](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L108) |
+| update | <code>ilwrath_desc.AlienTextBaseline.y = 70</code> | No enclosing branch condition | [109](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L109) |
+| update | <code>ilwrath_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [110](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L110) |
+| call | <code>GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER)</code> | No enclosing branch condition | [112](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L112) |
+| call | <code>GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA)</code> | [C1](#condition-c1) | [113](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L113) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C2](#condition-c2) | [115](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L115) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C2](#condition-c2) | [115](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L115) |
+| call | <code>setSegue(Segue_peace)</code> | [C3](#condition-c3) | [117](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L117) |
+| call | <code>setSegue(Segue_hostile)</code> | [C4](#condition-c4) | [121](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L121) |
+| update | <code>retval = &amp;ilwrath_desc</code> | No enclosing branch condition | [123](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L123) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [125](../../../../sc2/src/uqm/comm/ilwrath/ilwrathc.c#L125) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -140,10 +71,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	ilwrath_desc.init_encounter_func = Intro;
-	ilwrath_desc.post_encounter_func = post_ilwrath_enc;
-	ilwrath_desc.uninit_encounter_func = uninit_ilwrath;
 
 	ilwrath_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	ilwrath_desc.AlienTextBaseline.y = 70;

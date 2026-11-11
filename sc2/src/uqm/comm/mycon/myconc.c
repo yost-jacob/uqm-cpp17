@@ -109,28 +109,10 @@ static LOCDATA mycon_desc =
 };
 
 // Native asset/lifecycle configuration. Graph data owns dialogue control flow.
-static void Intro (void) {}
-
-static COUNT
-uninit_mycon (void)
-{
-	return (0);
-}
-
-static void
-post_mycon_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_mycon_comm (void)
 {
 	LOCDATA *retval;
-
-	mycon_desc.init_encounter_func = Intro;
-	mycon_desc.post_encounter_func = post_mycon_enc;
-	mycon_desc.uninit_encounter_func = uninit_mycon;
 
 	mycon_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	mycon_desc.AlienTextBaseline.y = 0;

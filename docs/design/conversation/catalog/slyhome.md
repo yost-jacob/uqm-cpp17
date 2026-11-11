@@ -6,15 +6,12 @@
 
 Script: [slyhome.c](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L1). Phrase bank: [slylandro.txt](../../../../sc2/content/base/comm/slylandro/slylandro.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 116 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 116 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_slylandro_comm</code> | No enclosing branch condition; [198](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L198) |
-| <code>post_encounter_func</code> | [<code>post_slylandro_enc</code>](#node-post_slylandro_enc) | <code>init_slylandro_comm</code> | No enclosing branch condition; [199](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L199) |
-| <code>uninit_encounter_func</code> | [<code>uninit_slylandro</code>](#node-uninit_slylandro) | <code>init_slylandro_comm</code> | No enclosing branch condition; [200](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L200) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_slylandro"]
-    n2["post_slylandro_enc"]
-    n3["init_slylandro_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_slylandro_comm"]
 ```
 
 ## Condition catalog
@@ -46,69 +37,11 @@ Presentation descriptor <code>slylandro_desc</code>: [source](../../../../sc2/sr
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L177).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_slylandro"></a>
-
-### uninit_slylandro
-
-<code>static COUNT uninit_slylandro(void)</code> — [source](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L182).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [184](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L184) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_slylandro_enc"></a>
-
-### post_slylandro_enc
-
-<code>static void post_slylandro_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L188).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_slylandro_comm"></a>
 
 ### init_slylandro_comm
 
-<code>LOCDATA *init_slylandro_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L194).
+<code>LOCDATA *init_slylandro_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L177).
 
 #### Actions, queries, local updates, and control flow
 
@@ -116,15 +49,12 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>slylandro_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [198](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L198) |
-| update | <code>slylandro_desc.post_encounter_func = post_slylandro_enc</code> | No enclosing branch condition | [199](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L199) |
-| update | <code>slylandro_desc.uninit_encounter_func = uninit_slylandro</code> | No enclosing branch condition | [200](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L200) |
-| update | <code>slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [202](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L202) |
-| update | <code>slylandro_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [203](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L203) |
-| update | <code>slylandro_desc.AlienTextWidth = SIS_TEXT_WIDTH</code> | No enclosing branch condition | [204](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L204) |
-| call | <code>setSegue(Segue_peace)</code> | No enclosing branch condition | [206](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L206) |
-| update | <code>retval = &amp;slylandro_desc</code> | No enclosing branch condition | [207](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L207) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [209](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L209) |
+| update | <code>slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [181](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L181) |
+| update | <code>slylandro_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [182](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L182) |
+| update | <code>slylandro_desc.AlienTextWidth = SIS_TEXT_WIDTH</code> | No enclosing branch condition | [183](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L183) |
+| call | <code>setSegue(Segue_peace)</code> | No enclosing branch condition | [185](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L185) |
+| update | <code>retval = &amp;slylandro_desc</code> | No enclosing branch condition | [186](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L186) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [188](../../../../sc2/src/uqm/comm/slyhome/slyhome.c#L188) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -132,10 +62,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	slylandro_desc.init_encounter_func = Intro;
-	slylandro_desc.post_encounter_func = post_slylandro_enc;
-	slylandro_desc.uninit_encounter_func = uninit_slylandro;
 
 	slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	slylandro_desc.AlienTextBaseline.y = 0;

@@ -102,31 +102,10 @@ static LOCDATA supox_desc =
 
 // Dialogue branches and story actions are defined in comm.supox.dialogue.json.
 // The descriptor retains only native media and encounter lifecycle bindings.
-static void
-Intro (void)
-{
-}
-
-static COUNT
-uninit_supox (void)
-{
-	return (0);
-}
-
-static void
-post_supox_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_supox_comm (void)
 {
 	LOCDATA *retval;
-
-	supox_desc.init_encounter_func = Intro;
-	supox_desc.post_encounter_func = post_supox_enc;
-	supox_desc.uninit_encounter_func = uninit_supox;
 
 	supox_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	supox_desc.AlienTextBaseline.y = 0;

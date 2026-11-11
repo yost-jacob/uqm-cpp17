@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 171,
   "id": "talkpet",
   "resource": "comm.talkingpet.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native media/lifecycle configuration and a one-shot strobe cue remain; all onboard, hypnosis, recruitment and final-battle story branches use graph/state operations."
   },
   "phrases": [
     {
@@ -803,121 +803,1894 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.compel_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_WE_GO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.compel_urquan.effect2",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["talkpet", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_compel_urquan_effect2",
+      "next": "exit.compel_urquan.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "exit.compel_urquan.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "URQUAN_MESSED_UP", 1]
+      },
+      "save_as": "exit_compel_urquan_effect1",
+      "next": "exit.compel_urquan.effect2"
     },
     {
-      "id": "menu",
+      "id": "exit.compel_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_compel_urquan",
+      "next": "exit.compel_urquan.effect1"
+    },
+    {
+      "id": "exit.wish_to_go_now.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["EXCELLENT_IDEA"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.wish_to_go_now.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_wish_to_go_now_effect1",
+      "next": "exit.wish_to_go_now.speech"
+    },
+    {
+      "id": "exit.wish_to_go_now",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_wish_to_go_now",
+      "next": "exit.wish_to_go_now.effect1"
+    },
+    {
+      "id": "exit.bye_onboard.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ONBOARD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_onboard.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_onboard_effect1",
+      "next": "exit.bye_onboard.speech"
+    },
+    {
+      "id": "exit.bye_onboard",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_bye_onboard",
+      "next": "exit.bye_onboard.effect1"
+    },
+    {
+      "id": "exit.compel_that_ship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SAVING_MY_POWER"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.compel_that_ship.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_compel_that_ship_effect1",
+      "next": "exit.compel_that_ship.speech"
+    },
+    {
+      "id": "exit.compel_that_ship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_compel_that_ship",
+      "next": "exit.compel_that_ship.effect1"
+    },
+    {
+      "id": "exit.ok_lets_do_it.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["COMING_ABOARD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_ok_lets_do_it_effect7",
+      "next": "exit.ok_lets_do_it.speech"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_2", 0]
+      },
+      "save_as": "exit_ok_lets_do_it_effect6",
+      "next": "exit.ok_lets_do_it.effect7"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_HOME_VISITS", 0]
+      },
+      "save_as": "exit_ok_lets_do_it_effect5",
+      "next": "exit.ok_lets_do_it.effect6"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_VISITS", 0]
+      },
+      "save_as": "exit_ok_lets_do_it_effect4",
+      "next": "exit.ok_lets_do_it.effect5"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
+      },
+      "save_as": "exit_ok_lets_do_it_effect3",
+      "next": "exit.ok_lets_do_it.effect4"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET_ON_SHIP", 1]
+      },
+      "save_as": "exit_ok_lets_do_it_effect2",
+      "next": "exit.ok_lets_do_it.effect3"
+    },
+    {
+      "id": "exit.ok_lets_do_it.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET", 1]
+      },
+      "save_as": "exit_ok_lets_do_it_effect1",
+      "next": "exit.ok_lets_do_it.effect2"
+    },
+    {
+      "id": "exit.ok_lets_do_it",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_ok_lets_do_it",
+      "next": "exit.ok_lets_do_it.effect1"
+    },
+    {
+      "id": "exit.want_kill_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GLAD_YOU_WONT_KILL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.want_kill_1.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_want_kill_1_effect7",
+      "next": "exit.want_kill_1.speech"
+    },
+    {
+      "id": "exit.want_kill_1.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_2", 0]
+      },
+      "save_as": "exit_want_kill_1_effect6",
+      "next": "exit.want_kill_1.effect7"
+    },
+    {
+      "id": "exit.want_kill_1.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_HOME_VISITS", 0]
+      },
+      "save_as": "exit_want_kill_1_effect5",
+      "next": "exit.want_kill_1.effect6"
+    },
+    {
+      "id": "exit.want_kill_1.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_VISITS", 0]
+      },
+      "save_as": "exit_want_kill_1_effect4",
+      "next": "exit.want_kill_1.effect5"
+    },
+    {
+      "id": "exit.want_kill_1.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
+      },
+      "save_as": "exit_want_kill_1_effect3",
+      "next": "exit.want_kill_1.effect4"
+    },
+    {
+      "id": "exit.want_kill_1.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET_ON_SHIP", 1]
+      },
+      "save_as": "exit_want_kill_1_effect2",
+      "next": "exit.want_kill_1.effect3"
+    },
+    {
+      "id": "exit.want_kill_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET", 1]
+      },
+      "save_as": "exit_want_kill_1_effect1",
+      "next": "exit.want_kill_1.effect2"
+    },
+    {
+      "id": "exit.want_kill_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_want_kill_1",
+      "next": "exit.want_kill_1.effect1"
+    },
+    {
+      "id": "exit.want_kill_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GLAD_YOU_WONT_KILL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.want_kill_2.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_want_kill_2_effect7",
+      "next": "exit.want_kill_2.speech"
+    },
+    {
+      "id": "exit.want_kill_2.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_2", 0]
+      },
+      "save_as": "exit_want_kill_2_effect6",
+      "next": "exit.want_kill_2.effect7"
+    },
+    {
+      "id": "exit.want_kill_2.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_HOME_VISITS", 0]
+      },
+      "save_as": "exit_want_kill_2_effect5",
+      "next": "exit.want_kill_2.effect6"
+    },
+    {
+      "id": "exit.want_kill_2.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_VISITS", 0]
+      },
+      "save_as": "exit_want_kill_2_effect4",
+      "next": "exit.want_kill_2.effect5"
+    },
+    {
+      "id": "exit.want_kill_2.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
+      },
+      "save_as": "exit_want_kill_2_effect3",
+      "next": "exit.want_kill_2.effect4"
+    },
+    {
+      "id": "exit.want_kill_2.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET_ON_SHIP", 1]
+      },
+      "save_as": "exit_want_kill_2_effect2",
+      "next": "exit.want_kill_2.effect3"
+    },
+    {
+      "id": "exit.want_kill_2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET", 1]
+      },
+      "save_as": "exit_want_kill_2_effect1",
+      "next": "exit.want_kill_2.effect2"
+    },
+    {
+      "id": "exit.want_kill_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_want_kill_2",
+      "next": "exit.want_kill_2.effect1"
+    },
+    {
+      "id": "exit.want_kill_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GLAD_YOU_WONT_KILL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.want_kill_3.effect7",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_want_kill_3_effect7",
+      "next": "exit.want_kill_3.speech"
+    },
+    {
+      "id": "exit.want_kill_3.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ARILOU_STACK_2", 0]
+      },
+      "save_as": "exit_want_kill_3_effect6",
+      "next": "exit.want_kill_3.effect7"
+    },
+    {
+      "id": "exit.want_kill_3.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_HOME_VISITS", 0]
+      },
+      "save_as": "exit_want_kill_3_effect5",
+      "next": "exit.want_kill_3.effect6"
+    },
+    {
+      "id": "exit.want_kill_3.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_VISITS", 0]
+      },
+      "save_as": "exit_want_kill_3_effect4",
+      "next": "exit.want_kill_3.effect5"
+    },
+    {
+      "id": "exit.want_kill_3.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_ZOMBIE_BLOBBIES", 0]
+      },
+      "save_as": "exit_want_kill_3_effect3",
+      "next": "exit.want_kill_3.effect4"
+    },
+    {
+      "id": "exit.want_kill_3.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET_ON_SHIP", 1]
+      },
+      "save_as": "exit_want_kill_3_effect2",
+      "next": "exit.want_kill_3.effect3"
+    },
+    {
+      "id": "exit.want_kill_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET", 1]
+      },
+      "save_as": "exit_want_kill_3_effect1",
+      "next": "exit.want_kill_3.effect2"
+    },
+    {
+      "id": "exit.want_kill_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "exit_want_kill_3",
+      "next": "exit.want_kill_3.effect1"
+    },
+    {
+      "id": "what_now.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_THIS"]}],
+      "next": "urquan.menu"
+    },
+    {
+      "id": "what_now",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_now", true]
+      },
+      "save_as": "what_now",
+      "next": "what_now.speech"
+    },
+    {
+      "id": "im_scared.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["STUPID_FOP"]}],
+      "next": "urquan.menu"
+    },
+    {
+      "id": "im_scared",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "im_scared", true]
+      },
+      "save_as": "im_scared",
+      "next": "im_scared.speech"
+    },
+    {
+      "id": "urquan.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_now",
+          "text": "what_now",
+          "when": {"not": {"get": ["local", "what_now", false]}},
+          "next": "what_now"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "im_scared",
+          "text": "im_scared",
+          "when": {"not": {"get": ["local", "im_scared", false]}},
+          "next": "im_scared"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["talkpet", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "compel_urquan",
+          "text": "compel_urquan",
+          "when": true,
+          "next": "exit.compel_urquan"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "powers",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_POWERS_BUT_FLOWERS"], "presentation": {"after": "talkpet.strobe"}}],
+      "next": "powers.menu"
+    },
+    {
+      "id": "powers.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [{"id": "yes_flowers", "text": "yes_flowers", "when": true, "next": "flowers"}]
+    },
+    {
+      "id": "flowers",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_HUMAN"], "presentation": {"after": "talkpet.strobe"}}],
+      "next": "flowers.menu"
+    },
+    {
+      "id": "flowers.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [{"id": "wish_to_go_now", "text": "wish_to_go_now", "when": true, "next": "exit.wish_to_go_now"}]
+    },
+    {
+      "id": "kill",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_KILL"], "presentation": {"after": "talkpet.strobe"}}],
+      "next": "kill.menu"
+    },
+    {
+      "id": "kill.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "want_kill_1",
+          "text": "want_kill_1",
+          "when": true,
+          "next": "exit.want_kill_1"
+        },
+        {
+          "id": "want_kill_2",
+          "text": "want_kill_2",
+          "when": true,
+          "next": "exit.want_kill_2"
+        },
+        {
+          "id": "want_kill_3",
+          "text": "want_kill_3",
+          "when": true,
+          "next": "exit.want_kill_3"
+        }
+      ]
+    },
+    {
+      "id": "race",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_ABOUT_RACE"]}],
+      "next": "race.menu"
+    },
+    {
+      "id": "what_about_physiology.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_TALK_ABOUT_SELF"]}],
+      "next": "race.menu"
+    },
+    {
+      "id": "what_about_physiology",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_physiology", true]
+      },
+      "save_as": "what_about_physiology",
+      "next": "what_about_physiology.speech"
+    },
+    {
+      "id": "what_about_your_history.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HISTORY"]}],
+      "next": "race.menu"
+    },
+    {
+      "id": "what_about_your_history",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_your_history", true]
+      },
+      "save_as": "what_about_your_history",
+      "next": "what_about_your_history.speech"
+    },
+    {
+      "id": "sentient_milieu.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_SENTIENT_MILIEU"]}],
+      "next": "race.menu"
+    },
+    {
+      "id": "sentient_milieu",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "sentient_milieu", true]
+      },
+      "save_as": "sentient_milieu",
+      "next": "sentient_milieu.speech"
+    },
+    {
+      "id": "what_about_war.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_WAR"]}],
+      "next": "race.menu"
+    },
+    {
+      "id": "what_about_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_war", true]
+      },
+      "save_as": "what_about_war",
+      "next": "what_about_war.speech"
+    },
+    {
+      "id": "race.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_physiology",
+          "text": "what_about_physiology",
+          "when": {"not": {"get": ["local", "what_about_physiology", false]}},
+          "next": "what_about_physiology"
+        },
+        {
+          "id": "what_about_powers",
+          "text": "what_about_powers",
+          "when": {"not": {"not": {"get": ["local", "what_about_physiology", false]}}},
+          "next": "powers"
+        },
+        {
+          "id": "what_about_your_history",
+          "text": "what_about_your_history",
+          "when": {"all": [{"not": {"get": ["local", "what_about_your_history", false]}}]},
+          "next": "what_about_your_history"
+        },
+        {
+          "id": "sentient_milieu",
+          "text": "sentient_milieu",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "sentient_milieu", false]}},
+              {"not": {"not": {"get": ["local", "what_about_your_history", false]}}}
+            ]
+          },
+          "next": "sentient_milieu"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_war", false]}},
+              {"not": {"not": {"get": ["local", "what_about_your_history", false]}}},
+              {"not": {"not": {"get": ["local", "sentient_milieu", false]}}}
+            ]
+          },
+          "next": "what_about_war"
+        },
+        {
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "device.back"
+        }
+      ]
+    },
+    {
+      "id": "device.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_INFO"]}],
+      "next": "device.menu"
+    },
+    {
+      "id": "whats_up_onboard",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_onboard", true]
+      },
+      "save_as": "whats_up_onboard",
+      "next": "whats_up_onboard.seq"
+    },
+    {
+      "id": "whats_up_onboard.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TALKING_PET_INFO",
+          [
+            ["GENERAL_INFO_ONBOARD_1"],
+            ["GENERAL_INFO_ONBOARD_2"],
+            ["GENERAL_INFO_ONBOARD_3"],
+            ["GENERAL_INFO_ONBOARD_4"],
+            ["GENERAL_INFO_ONBOARD_5"],
+            ["GENERAL_INFO_ONBOARD_6"],
+            ["GENERAL_INFO_ONBOARD_7"],
+            ["GENERAL_INFO_ONBOARD_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "whats_up_onboard.seq.speech"
+    },
+    {
+      "id": "whats_up_onboard.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "device.menu"
+    },
+    {
+      "id": "any_suggestions",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_suggestions", true]
+      },
+      "save_as": "any_suggestions",
+      "next": "any_suggestions.seq"
+    },
+    {
+      "id": "any_suggestions.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TALKING_PET_SUGGESTIONS",
+          [
+            ["SUGGESTION_1"],
+            ["SUGGESTION_2"],
+            ["SUGGESTION_3"],
+            ["SUGGESTION_4"],
+            ["SUGGESTION_5"],
+            ["SUGGESTION_6"],
+            ["SUGGESTION_7"],
+            ["SUGGESTION_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "any_suggestions.seq.speech"
+    },
+    {
+      "id": "any_suggestions.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "device.menu"
+    },
+    {
+      "id": "you_lied.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SO_WHAT"]}],
+      "next": "device.menu"
+    },
+    {
+      "id": "you_lied",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "DNYARRI_LIED", 0]
+      },
+      "save_as": "you_lied",
+      "next": "you_lied.speech"
+    },
+    {
+      "id": "device.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "compel_that_ship",
+          "text": "compel_that_ship",
+          "when": {"ne": [{"get": ["story", "SHIP_TO_COMPEL", 0]}, 0]},
+          "next": "exit.compel_that_ship"
+        },
+        {
+          "id": "whats_up_onboard",
+          "text": "whats_up_onboard",
+          "when": {"not": {"get": ["local", "whats_up_onboard", false]}},
+          "next": "whats_up_onboard"
+        },
+        {
+          "id": "any_suggestions",
+          "text": "any_suggestions",
+          "when": {"not": {"get": ["local", "any_suggestions", false]}},
+          "next": "any_suggestions"
+        },
+        {
+          "id": "about_your_race",
+          "text": "about_your_race",
+          "when": true,
+          "next": "race"
+        },
+        {
+          "id": "you_lied",
+          "text": "you_lied",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "DNYARRI_LIED", 0]}, 0]},
+              {"ne": [{"get": ["story", "LEARNED_TALKING_PET", 0]}, 0]}
+            ]
+          },
+          "next": "you_lied"
+        },
+        {
+          "id": "bye_onboard",
+          "text": "bye_onboard",
+          "when": true,
+          "next": "exit.bye_onboard"
+        }
+      ]
+    },
+    {
+      "id": "what_are_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["JUST_TALKING_PET"]}],
+      "next": "compel.0"
+    },
+    {
+      "id": "what_are_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_are_you", true]
+      },
+      "save_as": "what_are_you",
+      "next": "what_are_you.speech"
+    },
+    {
+      "id": "what_do_to_umgah.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DID_NOTHING"]}],
+      "next": "compel.1"
+    },
+    {
+      "id": "what_do_to_umgah",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_do_to_umgah", true]
+      },
+      "save_as": "what_do_to_umgah",
+      "next": "what_do_to_umgah.speech"
+    },
+    {
+      "id": "we_are_vindicator0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_FOR_YOU"]}],
+      "next": "compel.2"
+    },
+    {
+      "id": "we_are_vindicator0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "we_are_vindicator0", true]
+      },
+      "save_as": "we_are_vindicator0",
+      "next": "we_are_vindicator0.speech"
+    },
+    {
+      "id": "hypnotize.talking_pets_dumb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
+      },
+      "save_as": "hypnotize_talking_pets_dumb",
+      "next": "hypnotize.talking_pets_dumb.route"
+    },
+    {
+      "id": "hypnotize.talking_pets_dumb.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]},
+          "next": "hypnotize.talking_pets_dumb.shield"
+        }
+      ],
+      "otherwise": "hypnotize.talking_pets_dumb.unshield"
+    },
+    {
+      "id": "hypnotize.talking_pets_dumb.shield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OH_NO_YOU_DONT", "CANT_COMPEL"]}],
       "next": "end"
+    },
+    {
+      "id": "hypnotize.talking_pets_dumb.shield",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hypnotize_talking_pets_dumb_shield",
+      "next": "hypnotize.talking_pets_dumb.shield.speech"
+    },
+    {
+      "id": "hypnotize.talking_pets_dumb.unshield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OH_NO_YOU_DONT"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.talking_pets_dumb.unshield",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HYPNOTIZED", 1]
+      },
+      "save_as": "hypnotize_talking_pets_dumb_unshield",
+      "next": "hypnotize.talking_pets_dumb.unshield.speech"
+    },
+    {
+      "id": "hypnotize.umgah_zombies",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
+      },
+      "save_as": "hypnotize_umgah_zombies",
+      "next": "hypnotize.umgah_zombies.route"
+    },
+    {
+      "id": "hypnotize.umgah_zombies.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]},
+          "next": "hypnotize.umgah_zombies.shield"
+        }
+      ],
+      "otherwise": "hypnotize.umgah_zombies.unshield"
+    },
+    {
+      "id": "hypnotize.umgah_zombies.shield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WORKS_LIKE_THIS", "CANT_COMPEL"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.umgah_zombies.shield",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hypnotize_umgah_zombies_shield",
+      "next": "hypnotize.umgah_zombies.shield.speech"
+    },
+    {
+      "id": "hypnotize.umgah_zombies.unshield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WORKS_LIKE_THIS"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.umgah_zombies.unshield",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HYPNOTIZED", 1]
+      },
+      "save_as": "hypnotize_umgah_zombies_unshield",
+      "next": "hypnotize.umgah_zombies.unshield.speech"
+    },
+    {
+      "id": "hypnotize.must_explain_presence",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
+      },
+      "save_as": "hypnotize_must_explain_presence",
+      "next": "hypnotize.must_explain_presence.route"
+    },
+    {
+      "id": "hypnotize.must_explain_presence.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]},
+          "next": "hypnotize.must_explain_presence.shield"
+        }
+      ],
+      "otherwise": "hypnotize.must_explain_presence.unshield"
+    },
+    {
+      "id": "hypnotize.must_explain_presence.shield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["EXPLAIN_NOTHING_MONKEY_BOY", "CANT_COMPEL"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.must_explain_presence.shield",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hypnotize_must_explain_presence_shield",
+      "next": "hypnotize.must_explain_presence.shield.speech"
+    },
+    {
+      "id": "hypnotize.must_explain_presence.unshield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["EXPLAIN_NOTHING_MONKEY_BOY"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.must_explain_presence.unshield",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HYPNOTIZED", 1]
+      },
+      "save_as": "hypnotize_must_explain_presence_unshield",
+      "next": "hypnotize.must_explain_presence.unshield.speech"
+    },
+    {
+      "id": "hypnotize.bye_at_umgah",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_UMGAH_ZOMBIES", 1]
+      },
+      "save_as": "hypnotize_bye_at_umgah",
+      "next": "hypnotize.bye_at_umgah.route"
+    },
+    {
+      "id": "hypnotize.bye_at_umgah.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]}, "next": "hypnotize.bye_at_umgah.shield"}],
+      "otherwise": "hypnotize.bye_at_umgah.unshield"
+    },
+    {
+      "id": "hypnotize.bye_at_umgah.shield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AT_UMGAH", "CANT_COMPEL"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.bye_at_umgah.shield",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hypnotize_bye_at_umgah_shield",
+      "next": "hypnotize.bye_at_umgah.shield.speech"
+    },
+    {
+      "id": "hypnotize.bye_at_umgah.unshield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AT_UMGAH"]}],
+      "next": "end"
+    },
+    {
+      "id": "hypnotize.bye_at_umgah.unshield",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HYPNOTIZED", 1]
+      },
+      "save_as": "hypnotize_bye_at_umgah_unshield",
+      "next": "hypnotize.bye_at_umgah.unshield.speech"
+    },
+    {
+      "id": "compel.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_are_you",
+          "text": "what_are_you",
+          "when": {"not": {"get": ["local", "what_are_you", false]}},
+          "next": "what_are_you"
+        },
+        {
+          "id": "talking_pets_dumb",
+          "text": "talking_pets_dumb",
+          "when": {"not": {"not": {"get": ["local", "what_are_you", false]}}},
+          "next": "hypnotize.talking_pets_dumb"
+        },
+        {
+          "id": "what_do_to_umgah",
+          "text": "what_do_to_umgah",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]},
+              {"not": {"get": ["local", "what_do_to_umgah", false]}}
+            ]
+          },
+          "next": "what_do_to_umgah"
+        },
+        {
+          "id": "umgah_zombies",
+          "text": "umgah_zombies",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "what_do_to_umgah", false]}}}
+            ]
+          },
+          "next": "hypnotize.umgah_zombies"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {"compose": ["we_are_vindicator0", {"insert": {"get": ["player", "ship_name", ""]}}, "we_are_vindicator1"]},
+          "when": {"not": {"get": ["local", "we_are_vindicator0", false]}},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "must_explain_presence",
+          "text": "must_explain_presence",
+          "when": {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}},
+          "next": "hypnotize.must_explain_presence"
+        },
+        {
+          "id": "bye_at_umgah",
+          "text": "bye_at_umgah",
+          "when": true,
+          "next": "hypnotize.bye_at_umgah"
+        }
+      ]
+    },
+    {
+      "id": "compel.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_do_to_umgah",
+          "text": "what_do_to_umgah",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]},
+              {"not": {"get": ["local", "what_do_to_umgah", false]}}
+            ]
+          },
+          "next": "what_do_to_umgah"
+        },
+        {
+          "id": "umgah_zombies",
+          "text": "umgah_zombies",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "what_do_to_umgah", false]}}}
+            ]
+          },
+          "next": "hypnotize.umgah_zombies"
+        },
+        {
+          "id": "what_are_you",
+          "text": "what_are_you",
+          "when": {"not": {"get": ["local", "what_are_you", false]}},
+          "next": "what_are_you"
+        },
+        {
+          "id": "talking_pets_dumb",
+          "text": "talking_pets_dumb",
+          "when": {"not": {"not": {"get": ["local", "what_are_you", false]}}},
+          "next": "hypnotize.talking_pets_dumb"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {"compose": ["we_are_vindicator0", {"insert": {"get": ["player", "ship_name", ""]}}, "we_are_vindicator1"]},
+          "when": {"not": {"get": ["local", "we_are_vindicator0", false]}},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "must_explain_presence",
+          "text": "must_explain_presence",
+          "when": {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}},
+          "next": "hypnotize.must_explain_presence"
+        },
+        {
+          "id": "bye_at_umgah",
+          "text": "bye_at_umgah",
+          "when": true,
+          "next": "hypnotize.bye_at_umgah"
+        }
+      ]
+    },
+    {
+      "id": "compel.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_are_vindicator0",
+          "text": {"compose": ["we_are_vindicator0", {"insert": {"get": ["player", "ship_name", ""]}}, "we_are_vindicator1"]},
+          "when": {"not": {"get": ["local", "we_are_vindicator0", false]}},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "must_explain_presence",
+          "text": "must_explain_presence",
+          "when": {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}},
+          "next": "hypnotize.must_explain_presence"
+        },
+        {
+          "id": "what_are_you",
+          "text": "what_are_you",
+          "when": {"not": {"get": ["local", "what_are_you", false]}},
+          "next": "what_are_you"
+        },
+        {
+          "id": "talking_pets_dumb",
+          "text": "talking_pets_dumb",
+          "when": {"not": {"not": {"get": ["local", "what_are_you", false]}}},
+          "next": "hypnotize.talking_pets_dumb"
+        },
+        {
+          "id": "what_do_to_umgah",
+          "text": "what_do_to_umgah",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]},
+              {"not": {"get": ["local", "what_do_to_umgah", false]}}
+            ]
+          },
+          "next": "what_do_to_umgah"
+        },
+        {
+          "id": "umgah_zombies",
+          "text": "umgah_zombies",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_UMGAH_ZOMBIES", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "what_do_to_umgah", false]}}}
+            ]
+          },
+          "next": "hypnotize.umgah_zombies"
+        },
+        {
+          "id": "bye_at_umgah",
+          "text": "bye_at_umgah",
+          "when": true,
+          "next": "hypnotize.bye_at_umgah"
+        }
+      ]
+    },
+    {
+      "id": "deal.what_kind_of_deal.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HELP_DEFEAT_URQUAN"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.what_kind_of_deal",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_kind_of_deal", true]
+      },
+      "save_as": "deal_what_kind_of_deal",
+      "next": "deal.what_kind_of_deal.speech"
+    },
+    {
+      "id": "deal.how_trust.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUST"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.how_trust",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_trust", true]
+      },
+      "save_as": "deal_how_trust",
+      "next": "deal.how_trust.speech"
+    },
+    {
+      "id": "deal.boneless_dweeb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOUR_BONELESS_DWEEB"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.boneless_dweeb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "boneless_dweeb", true]
+      },
+      "save_as": "deal_boneless_dweeb",
+      "next": "deal.boneless_dweeb.speech"
+    },
+    {
+      "id": "deal.what_are_you_really.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["POOR_DNYARRI"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.what_are_you_really",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_are_you_really", true]
+      },
+      "save_as": "deal_what_are_you_really",
+      "next": "deal.what_are_you_really.speech"
+    },
+    {
+      "id": "deal.hard_to_believe.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ITS_TRUE"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.hard_to_believe.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "DNYARRI_LIED", 1]
+      },
+      "save_as": "deal_hard_to_believe_effect1",
+      "next": "deal.hard_to_believe.speech"
+    },
+    {
+      "id": "deal.hard_to_believe",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hard_to_believe", true]
+      },
+      "save_as": "deal_hard_to_believe",
+      "next": "deal.hard_to_believe.effect1"
+    },
+    {
+      "id": "deal.bullshit.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WORTH_A_TRY"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.bullshit",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "bullshit", true]
+      },
+      "save_as": "deal_bullshit",
+      "next": "deal.bullshit.speech"
+    },
+    {
+      "id": "deal.kill_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PLEASE_DONT"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.kill_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "kill_you", true]
+      },
+      "save_as": "deal_kill_you",
+      "next": "deal.kill_you.speech"
+    },
+    {
+      "id": "deal.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_kind_of_deal",
+          "text": "what_kind_of_deal",
+          "when": {"not": {"get": ["local", "what_kind_of_deal", false]}},
+          "next": "deal.what_kind_of_deal"
+        },
+        {
+          "id": "how_trust",
+          "text": "how_trust",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_kind_of_deal", false]}}},
+              {"not": {"get": ["local", "how_trust", false]}}
+            ]
+          },
+          "next": "deal.how_trust"
+        },
+        {
+          "id": "boneless_dweeb",
+          "text": "boneless_dweeb",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_kind_of_deal", false]}}},
+              {"not": {"not": {"get": ["local", "how_trust", false]}}},
+              {"not": {"get": ["local", "boneless_dweeb", false]}}
+            ]
+          },
+          "next": "deal.boneless_dweeb"
+        },
+        {
+          "id": "ok_lets_do_it",
+          "text": "ok_lets_do_it",
+          "when": {"not": {"not": {"get": ["local", "what_kind_of_deal", false]}}},
+          "next": "exit.ok_lets_do_it"
+        },
+        {
+          "id": "what_are_you_really",
+          "text": "what_are_you_really",
+          "when": {"not": {"get": ["local", "what_are_you_really", false]}},
+          "next": "deal.what_are_you_really"
+        },
+        {
+          "id": "hard_to_believe",
+          "text": "hard_to_believe",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_are_you_really", false]}}},
+              {"not": {"get": ["local", "hard_to_believe", false]}},
+              {"not": {"ne": [{"get": ["story", "LEARNED_TALKING_PET", 0]}, 0]}}
+            ]
+          },
+          "next": "deal.hard_to_believe"
+        },
+        {
+          "id": "bullshit",
+          "text": "bullshit",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_are_you_really", false]}}},
+              {"not": {"get": ["local", "bullshit", false]}},
+              {"ne": [{"get": ["story", "LEARNED_TALKING_PET", 0]}, 0]}
+            ]
+          },
+          "next": "deal.bullshit"
+        },
+        {
+          "id": "kill_you",
+          "text": "kill_you",
+          "when": {"not": {"get": ["local", "kill_you", false]}},
+          "next": "deal.kill_you"
+        },
+        {
+          "id": "must_kill",
+          "text": "must_kill",
+          "when": {
+            "all": [{"not": {"not": {"get": ["local", "kill_you", false]}}}, {"not": {"get": ["local", "must_kill", false]}}]
+          },
+          "next": "kill"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"get": ["encounter", "in_last_battle", false]},
+          "next": "final"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "READY_TO_CONFUSE_URQUAN", 0]}, 0]},
+          "next": "ready"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]},
+          "next": "device.skip"
+        },
+        {
+          "when": {"get": ["encounter", "has_npc_ships", false]},
+          "next": "home.first"
+        }
+      ],
+      "otherwise": "deal.reveal"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "final",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "final",
+      "next": "final.route"
+    },
+    {
+      "id": "final.route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["encounter", "cyborg_enabled", false]}, "next": "final.cyborg"}],
+      "otherwise": "final.human"
+    },
+    {
+      "id": "final.cyborg.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CYBORG_PEP_TALK"]}],
+      "next": "end"
+    },
+    {
+      "id": "final.cyborg",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "final_cyborg",
+      "next": "final.cyborg.speech"
+    },
+    {
+      "id": "final.human.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HUMAN_PEP_TALK"]}],
+      "next": "end"
+    },
+    {
+      "id": "final.human",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "final_human",
+      "next": "final.human.speech"
+    },
+    {
+      "id": "ready",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SHIP_TO_COMPEL", 0]
+      },
+      "save_as": "ready",
+      "next": "ready.clear"
+    },
+    {
+      "id": "ready.clear",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "READY_TO_CONFUSE_URQUAN", 0]
+      },
+      "save_as": "ready_clear",
+      "next": "ready.aware"
+    },
+    {
+      "id": "ready.aware",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "AWARE_OF_SAMATRA", 1]
+      },
+      "save_as": "ready_aware",
+      "next": "ready.route"
+    },
+    {
+      "id": "ready.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"not": {"eq": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 3]}},
+          "next": "ready.bomb"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "URQUAN_MESSED_UP", 0]}, 0]},
+          "next": "ready.done"
+        }
+      ],
+      "otherwise": "ready.slaves"
+    },
+    {
+      "id": "ready.bomb",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}}, "next": "ready.need"}],
+      "otherwise": "ready.soup"
+    },
+    {
+      "id": "ready.need.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVENT_GOT_EVERYTHING", "NEED_BOMB"]}],
+      "next": "end"
+    },
+    {
+      "id": "ready.need",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ready_need",
+      "next": "ready.need.speech"
+    },
+    {
+      "id": "ready.soup.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVENT_GOT_EVERYTHING", "SOUP_UP_BOMB"]}],
+      "next": "end"
+    },
+    {
+      "id": "ready.soup",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ready_soup",
+      "next": "ready.soup.speech"
+    },
+    {
+      "id": "ready.done.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HELLO_AFTER_COMPEL_URQUAN"]}],
+      "next": "end"
+    },
+    {
+      "id": "ready.done",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ready_done",
+      "next": "ready.done.speech"
+    },
+    {
+      "id": "ready.slaves",
+      "kind": "dialogue",
+      "variants": [{"speech": ["I_SENSE_MY_SLAVES"]}],
+      "next": "urquan.menu"
+    },
+    {
+      "id": "device.skip",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]}},
+              {"eq": [{"get": ["story", "TALKING_PET_VISITS", 0]}, 0]}
+            ]
+          },
+          "next": "device.skip.first"
+        }
+      ],
+      "otherwise": "device.greet"
+    },
+    {
+      "id": "device.skip.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TALKING_PET_VISITS", 1]
+      },
+      "save_as": "device_skip_first",
+      "next": "device.greet"
+    },
+    {
+      "id": "device.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TALKING_PET_VISITS",
+          [
+            ["HELLO_AS_DEVICE_1"],
+            ["HELLO_AS_DEVICE_2"],
+            ["HELLO_AS_DEVICE_3"],
+            ["HELLO_AS_DEVICE_4"],
+            ["HELLO_AS_DEVICE_5"],
+            ["HELLO_AS_DEVICE_6"],
+            ["HELLO_AS_DEVICE_7"],
+            ["HELLO_AS_DEVICE_8"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "device.greet.speech"
+    },
+    {
+      "id": "device.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "device.menu"
+    },
+    {
+      "id": "home.first",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "TALKING_PET_HOME_VISITS", 0]}, 0]}, "next": "home.clear"}],
+      "otherwise": "home.seq"
+    },
+    {
+      "id": "home.clear",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UMGAH_VISITS", 0]
+      },
+      "save_as": "home_clear",
+      "next": "home.seq"
+    },
+    {
+      "id": "home.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TALKING_PET_HOME_VISITS",
+          [
+            ["HELLO_AT_UMGAH"],
+            ["HYPNOTIZE_AGAIN_1"],
+            ["HYPNOTIZE_AGAIN_2"],
+            ["HYPNOTIZE_AGAIN_3"],
+            ["HYPNOTIZE_AGAIN_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "home.route"
+    },
+    {
+      "id": "home.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "TALKING_PET_HOME_VISITS", 0]}, 1]},
+          "next": "home.intro"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]}},
+          "next": "home.hypnotized"
+        }
+      ],
+      "otherwise": "home.shield"
+    },
+    {
+      "id": "home.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "compel.0"
+    },
+    {
+      "id": "home.hypnotized.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "home.hypnotized.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "home_hypnotized_effect1",
+      "next": "home.hypnotized.speech"
+    },
+    {
+      "id": "home.hypnotized",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HYPNOTIZED", 1]
+      },
+      "save_as": "home_hypnotized",
+      "next": "home.hypnotized.effect1"
+    },
+    {
+      "id": "home.shield.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["result", "greeting.speech", 0]}, "CANT_COMPEL"]}],
+      "next": "end"
+    },
+    {
+      "id": "home.shield",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "home_shield",
+      "next": "home.shield.speech"
+    },
+    {
+      "id": "deal.reveal",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.reveal",
+        "args": ["umgah"]
+      },
+      "save_as": "umgah",
+      "next": "deal.route"
+    },
+    {
+      "id": "deal.route",
+      "kind": "decision",
+      "branches": [{"when": {"get": ["result", "umgah.available", false]}, "next": "deal.alive"}],
+      "otherwise": "deal.dead.route"
+    },
+    {
+      "id": "deal.alive",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LETS_MAKE_A_DEAL"]}],
+      "next": "deal.menu"
+    },
+    {
+      "id": "deal.dead.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {"eq": [{"get": ["story", "TALKING_PET_HOME_VISITS", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "TAALO_PROTECTOR_ON_SHIP", 0]}, 0]}}
+            ]
+          },
+          "next": "deal.no.trust"
+        }
+      ],
+      "otherwise": "deal.dead"
+    },
+    {
+      "id": "deal.no.trust",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_trust", true]
+      },
+      "save_as": "deal_no_trust",
+      "next": "deal.dead"
+    },
+    {
+      "id": "deal.dead",
+      "kind": "dialogue",
+      "variants": [{"speech": ["UMGAH_ALL_GONE"]}],
+      "next": "deal.menu"
     },
     {
       "id": "end",

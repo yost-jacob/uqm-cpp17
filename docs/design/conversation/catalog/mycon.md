@@ -6,15 +6,12 @@
 
 Script: [myconc.c](../../../../sc2/src/uqm/comm/mycon/myconc.c#L1). Phrase bank: [mycon.txt](../../../../sc2/content/base/comm/mycon/mycon.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 109 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 109 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_mycon_comm</code> | No enclosing branch condition; [131](../../../../sc2/src/uqm/comm/mycon/myconc.c#L131) |
-| <code>post_encounter_func</code> | [<code>post_mycon_enc</code>](#node-post_mycon_enc) | <code>init_mycon_comm</code> | No enclosing branch condition; [132](../../../../sc2/src/uqm/comm/mycon/myconc.c#L132) |
-| <code>uninit_encounter_func</code> | [<code>uninit_mycon</code>](#node-uninit_mycon) | <code>init_mycon_comm</code> | No enclosing branch condition; [133](../../../../sc2/src/uqm/comm/mycon/myconc.c#L133) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_mycon"]
-    n2["post_mycon_enc"]
-    n3["init_mycon_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_mycon_comm"]
 ```
 
 ## Condition catalog
@@ -48,68 +39,11 @@ Presentation descriptor <code>mycon_desc</code>: [source](../../../../sc2/src/uq
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/mycon/myconc.c#L112).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_mycon"></a>
-
-### uninit_mycon
-
-<code>static COUNT uninit_mycon(void)</code> — [source](../../../../sc2/src/uqm/comm/mycon/myconc.c#L115).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [117](../../../../sc2/src/uqm/comm/mycon/myconc.c#L117) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_mycon_enc"></a>
-
-### post_mycon_enc
-
-<code>static void post_mycon_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/mycon/myconc.c#L121).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_mycon_comm"></a>
 
 ### init_mycon_comm
 
-<code>LOCDATA *init_mycon_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/mycon/myconc.c#L127).
+<code>LOCDATA *init_mycon_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/mycon/myconc.c#L113).
 
 #### Actions, queries, local updates, and control flow
 
@@ -117,18 +51,15 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>mycon_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [131](../../../../sc2/src/uqm/comm/mycon/myconc.c#L131) |
-| update | <code>mycon_desc.post_encounter_func = post_mycon_enc</code> | No enclosing branch condition | [132](../../../../sc2/src/uqm/comm/mycon/myconc.c#L132) |
-| update | <code>mycon_desc.uninit_encounter_func = uninit_mycon</code> | No enclosing branch condition | [133](../../../../sc2/src/uqm/comm/mycon/myconc.c#L133) |
-| update | <code>mycon_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [135](../../../../sc2/src/uqm/comm/mycon/myconc.c#L135) |
-| update | <code>mycon_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [136](../../../../sc2/src/uqm/comm/mycon/myconc.c#L136) |
-| update | <code>mycon_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [137](../../../../sc2/src/uqm/comm/mycon/myconc.c#L137) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | No enclosing branch condition | [140](../../../../sc2/src/uqm/comm/mycon/myconc.c#L140) |
-| call | <code>GLOBAL(CurrentActivity)</code> | No enclosing branch condition | [140](../../../../sc2/src/uqm/comm/mycon/myconc.c#L140) |
-| call | <code>setSegue(Segue_hostile)</code> | [C1](#condition-c1) | [142](../../../../sc2/src/uqm/comm/mycon/myconc.c#L142) |
-| call | <code>setSegue(Segue_peace)</code> | [C2](#condition-c2) | [146](../../../../sc2/src/uqm/comm/mycon/myconc.c#L146) |
-| update | <code>retval = &amp;mycon_desc</code> | No enclosing branch condition | [148](../../../../sc2/src/uqm/comm/mycon/myconc.c#L148) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [150](../../../../sc2/src/uqm/comm/mycon/myconc.c#L150) |
+| update | <code>mycon_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [117](../../../../sc2/src/uqm/comm/mycon/myconc.c#L117) |
+| update | <code>mycon_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [118](../../../../sc2/src/uqm/comm/mycon/myconc.c#L118) |
+| update | <code>mycon_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [119](../../../../sc2/src/uqm/comm/mycon/myconc.c#L119) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | No enclosing branch condition | [122](../../../../sc2/src/uqm/comm/mycon/myconc.c#L122) |
+| call | <code>GLOBAL(CurrentActivity)</code> | No enclosing branch condition | [122](../../../../sc2/src/uqm/comm/mycon/myconc.c#L122) |
+| call | <code>setSegue(Segue_hostile)</code> | [C1](#condition-c1) | [124](../../../../sc2/src/uqm/comm/mycon/myconc.c#L124) |
+| call | <code>setSegue(Segue_peace)</code> | [C2](#condition-c2) | [128](../../../../sc2/src/uqm/comm/mycon/myconc.c#L128) |
+| update | <code>retval = &amp;mycon_desc</code> | No enclosing branch condition | [130](../../../../sc2/src/uqm/comm/mycon/myconc.c#L130) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [132](../../../../sc2/src/uqm/comm/mycon/myconc.c#L132) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -136,10 +67,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	mycon_desc.init_encounter_func = Intro;
-	mycon_desc.post_encounter_func = post_mycon_enc;
-	mycon_desc.uninit_encounter_func = uninit_mycon;
 
 	mycon_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	mycon_desc.AlienTextBaseline.y = 0;

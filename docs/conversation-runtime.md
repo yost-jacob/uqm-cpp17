@@ -14,10 +14,10 @@ selects the file. Names and indexed phrases are validated against its native
 string table, preserving compiled enums. `node_count` includes compact expansion.
 The loader resolves and binds the graph before running story code.
 
-The 12 remaining compatibility envelopes use an action for intro, a silent menu/farewell decision, and
-compact responses with single-execution actions. The eight response slots preserve
+The three remaining compatibility envelopes use an action for intro, a silent
+menu/farewell decision, and compact responses with single-execution actions. The eight response slots preserve
 native registration order and constructed strings. `handlers.legacy_turn` invokes
-only the callback currently offered in that slot; unknown script IDs, invalid
+only the callback currently offered in that slot; mismatched script IDs, invalid
 slots, missing handlers and bad data throw. A failed operation cannot be retried
 through the same graph. The final node completes after queued farewell speech;
 native `getSegue` still determines combat/victory/defeat. Replay does not rerun
@@ -43,10 +43,12 @@ pycparser is not a runtime or build dependency.
 
 ## Remaining work
 
-The probe, Kohr-Ah, Ur-Quan, Arilou, Ilwrath, Mycon, Umgah, Supox, Yehat rebels, Shofixti, Yehat, Pkunk, Slylandro homeworld, Spathi and Utwig scripts now use general state actions, conditions
-and dialogue nodes. Their old C callback bodies were removed. Probe coordinate
+The probe, Kohr-Ah, Ur-Quan, Arilou, Ilwrath, Mycon, Umgah, Supox, Yehat rebels,
+Shofixti, Yehat, Pkunk, Slylandro homeworld, Spathi, Utwig, VUX, Talking Pet, Orz,
+Syreen, Spathi council, Chmmr, Zoq-Fot-Pik, Thraddash and initial Commander Hayes
+scripts now use general state actions, conditions and dialogue nodes. Their old C callback bodies were removed. Probe coordinate
 number-speech, Ur-Quan hypnosis fade and native resource/lifecycle configuration
-remain explicit special cases. The other 12 C story bodies have **not** been
+remain explicit special cases. The other three C story bodies have **not** been
 converted to general state actions and conditions. Calling them through an explicit handler is a compatibility boundary,
 not a claim that the old logic was deleted. Hayes/Melnorme's hand-authored design
 graphs have known behavior/timing differences and unimplemented native contracts;
@@ -100,3 +102,50 @@ Yehat farewell randomness executes once on selection; replay cannot reroll it.
 Yehat rebel gifts and cavalry are delivered only after their speech completes.
 Shofixti's two visually identical legacy insults have separate graph response IDs,
 so both retain their original effects without ambiguous cursor traversal.
+
+## Timed media cues
+
+A standalone speech phrase can specify `on_start`, for example
+`{"phrase":"FOOL_AIEE1","on_start":"vux.beast_escape"}`. The native player invokes
+that registered callback at phrase start, including replay. A variant can also
+specify `presentation: {"before":"cue.name", "after":"cue.name"}`. A phase also accepts an ordered array of cue names. Before cues
+run when the new entry is queued; after cues run once when that entry finishes,
+before its graph successor. Redrawing and replay completion do not reapply after
+cues. These callbacks change presentation only: they never write story fields,
+consume RNG or select graph edges. All cue names are validated against the native
+resource before any story actions run. Unknown names or phases throw. Cues in
+spliced compositions are rejected; split those into standalone speech phrases.
+
+VUX uses a phrase-start color transition. The Talking Pet uses an after-playback
+strobe. Their former C story functions are deleted; only bounded media callbacks
+and resource/lifecycle configuration remain native.
+
+The three remaining native story bodies are Druuge, Melnorme, and the operational
+starbase. Their graphs and editable text are live, but they still explicitly use
+`handlers.legacy_turn`. Completing them requires the [transaction/report boundary](design/conversation/transactions.md),
+including atomic payment/capacity checks and report queries that do not mutate
+story flags. This checkpoint does not claim those three callbacks were rewritten.
+
+Chmmr's special bomb refit remains a bounded native inventory/transport operation
+behind `ship.configure("chmmr_bomb_refit", {})`. The graph owns its story flags and
+alliance; that operation retains the established SIS module layout, resource
+policy and Earth/starbase transport behavior. The shared adapter now supports
+live fuel/capacity, lander and radioactive-cargo queries, checked gauge adjustments,
+and explicit named-captain recruitment for Fwiffo. Fuel actions use displayed
+units; the native adapter converts to legacy hundredths with a range check.
+
+Media adapters are consolidated in `conversation_cues.cpp`. Zoq-Fot-Pik selects
+speakers from the active descriptor's talk profile; there is no global LastAlien
+variable. The queued callbacks and all before/after cue names are validated for
+the selected resource before story execution.
+
+Converted scripts no longer need empty native intro/post/uninit callbacks. The
+runtime accepts absent hooks and retains only real native post-encounter policy;
+resource destruction remains RAII-owned. A native-turn graph with no native intro
+handler throws rather than calling a null pointer. This removes 65 empty native
+callbacks and their assignments.
+
+A one-time audit against the design-branch source baseline found all 739 distinct
+statically registered response labels represented in the 24 migrated graphs.
+This complements the branch tests; it does not cover every computed response,
+condition combination or interactive media behavior.

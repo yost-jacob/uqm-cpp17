@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 170,
   "id": "thradd",
   "resource": "comm.thraddash.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Only native resource/lifecycle configuration remains. Culture/name/style/demeanor, body-count recognition, Helix and mission branches use general graph/state operations; redundant phrase-switch functions are deleted."
   },
   "phrases": [
     {
@@ -1090,121 +1090,1896 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.bye_hostile_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_HOSTILE_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_hostile_2",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["thradd", null]
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_bye_hostile_2",
+      "next": "exit.bye_hostile_2.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "exit.bye_hostile_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_HOSTILE_1"]}],
+      "next": "end"
     },
     {
-      "id": "menu",
+      "id": "exit.bye_hostile_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_hostile_1_effect1",
+      "next": "exit.bye_hostile_1.speech"
+    },
+    {
+      "id": "exit.bye_hostile_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_HOSTILE_STACK_5", 1]
+      },
+      "save_as": "exit_bye_hostile_1",
+      "next": "exit.bye_hostile_1.effect1"
+    },
+    {
+      "id": "exit.submit_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SUBMIT_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.submit_1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_submit_1_effect1",
+      "next": "exit.submit_1.speech"
+    },
+    {
+      "id": "exit.submit_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_HOSTILE_STACK_2", 1]
+      },
+      "save_as": "exit_submit_1",
+      "next": "exit.submit_1.effect1"
+    },
+    {
+      "id": "exit.submit_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SUBMIT_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.submit_2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_submit_2",
+      "next": "exit.submit_2.speech"
+    },
+    {
+      "id": "exit.bye_hostile_helix.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_HOSTILE_HELIX"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_hostile_helix",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_bye_hostile_helix",
+      "next": "exit.bye_hostile_helix.speech"
+    },
+    {
+      "id": "exit.demand_to_land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_DEMAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.demand_to_land",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_demand_to_land",
+      "next": "exit.demand_to_land.speech"
+    },
+    {
+      "id": "exit.i_need_to_land_lie.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CAUGHT_LIE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.i_need_to_land_lie",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_i_need_to_land_lie",
+      "next": "exit.i_need_to_land_lie.speech"
+    },
+    {
+      "id": "exit.got_idea.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_IDEA"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.got_idea.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_got_idea_effect2",
+      "next": "exit.got_idea.speech"
+    },
+    {
+      "id": "exit.got_idea.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 5]
+      },
+      "save_as": "exit_got_idea_effect1",
+      "next": "exit.got_idea.effect2"
+    },
+    {
+      "id": "exit.got_idea",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ADVANCE_THRADD_MISSION", 0, 0, 0]
+      },
+      "save_as": "exit_got_idea",
+      "next": "exit.got_idea.effect1"
+    },
+    {
+      "id": "exit.may_i_land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SURE_LAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.may_i_land.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_may_i_land_effect1",
+      "next": "exit.may_i_land.speech"
+    },
+    {
+      "id": "exit.may_i_land",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "HELIX_UNPROTECTED", 1]
+      },
+      "save_as": "exit_may_i_land",
+      "next": "exit.may_i_land.effect1"
+    },
+    {
+      "id": "exit.bye_ally",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_STACK_1",
+          [["GOODBYE_ALLY_1"], ["GOODBYE_ALLY_2"], ["GOODBYE_ALLY_3"], ["GOODBYE_ALLY_4"]],
+          "repeat_last",
+          0
+        ]
+      },
+      "save_as": "greeting",
+      "next": "exit.bye_ally.outcome"
+    },
+    {
+      "id": "exit.bye_ally.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_ally_outcome",
+      "next": "exit.bye_ally.speech"
+    },
+    {
+      "id": "exit.bye_ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "exit.contemplative.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_CONTEMPLATIVE", "WORK_TO_DO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.contemplative.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_contemplative_effect1",
+      "next": "exit.contemplative.speech"
+    },
+    {
+      "id": "exit.contemplative",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_DEMEANOR", 0]
+      },
+      "save_as": "exit_contemplative",
+      "next": "exit.contemplative.effect1"
+    },
+    {
+      "id": "exit.friendly.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_FRIENDLY", "WORK_TO_DO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.friendly.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_friendly_effect1",
+      "next": "exit.friendly.speech"
+    },
+    {
+      "id": "exit.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_DEMEANOR", 1]
+      },
+      "save_as": "exit_friendly",
+      "next": "exit.friendly.effect1"
+    },
+    {
+      "id": "exit.wacky.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WACKY", "WORK_TO_DO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.wacky.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_wacky_effect1",
+      "next": "exit.wacky.speech"
+    },
+    {
+      "id": "exit.wacky",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_DEMEANOR", 2]
+      },
+      "save_as": "exit_wacky",
+      "next": "exit.wacky.effect1"
+    },
+    {
+      "id": "exit.just_like_us.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_JUST_LIKE_YOU", "WORK_TO_DO"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.just_like_us.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_just_like_us_effect1",
+      "next": "exit.just_like_us.speech"
+    },
+    {
+      "id": "exit.just_like_us",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_DEMEANOR", 3]
+      },
+      "save_as": "exit_just_like_us",
+      "next": "exit.just_like_us.effect1"
+    },
+    {
+      "id": "why_you_here_ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GUARDING_HELIX_ALLY"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "why_you_here_ally",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_you_here_ally", true]
+      },
+      "save_as": "why_you_here_ally",
+      "next": "why_you_here_ally.speech"
+    },
+    {
+      "id": "whats_helix_ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HELIX_IS_ALLY"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "whats_helix_ally",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_helix_ally", true]
+      },
+      "save_as": "whats_helix_ally",
+      "next": "whats_helix_ally.speech"
+    },
+    {
+      "id": "ally.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 0]
+          "id": "why_you_here_ally",
+          "text": "why_you_here_ally",
+          "when": {
+            "all": [
+              {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+              {"not": {"get": ["local", "why_you_here_ally", false]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "why_you_here_ally"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 1]
+          "id": "whats_helix_ally",
+          "text": "whats_helix_ally",
+          "when": {
+            "all": [
+              {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+              {"not": {"not": {"get": ["local", "why_you_here_ally", false]}}},
+              {"not": {"get": ["local", "whats_helix_ally", false]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "whats_helix_ally"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 2]
+          "id": "may_i_land",
+          "text": "may_i_land",
+          "when": {
+            "all": [
+              {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+              {"not": {"not": {"get": ["local", "why_you_here_ally", false]}}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "exit.may_i_land"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "whats_up_ally",
+          "text": "whats_up_ally",
+          "when": {"not": {"get": ["local", "whats_up_ally", false]}},
+          "next": "ally.info"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "how_goes_culture",
+          "text": "how_goes_culture",
+          "when": {"not": {"get": ["local", "how_goes_culture", false]}},
+          "next": "culture.info"
         },
         {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["thradd", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bye_ally",
+          "text": "bye_ally",
+          "when": true,
+          "next": "exit.bye_ally"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "ally.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_ally", true]
+      },
+      "save_as": "ally_info",
+      "next": "ally.info.seq"
+    },
+    {
+      "id": "ally.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_INFO",
+          [["GENERAL_INFO_ALLY_1"], ["GENERAL_INFO_ALLY_2"], ["GENERAL_INFO_ALLY_3"], ["GENERAL_INFO_ALLY_4"]],
+          "repeat_last",
+          0
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.info.seq.speech"
+    },
+    {
+      "id": "ally.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 0]},
+          "next": "culture.info.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 1]},
+          "next": "culture.info.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 2]},
+          "next": "culture.info.2"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 3]},
+          "next": "culture.info.3"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 4]},
+          "next": "culture.info.4"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 5]},
+          "next": "culture.info.5"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 6]},
+          "next": "culture.info.6"
+        }
+      ],
+      "otherwise": "culture.info.7"
+    },
+    {
+      "id": "culture.info.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CONTEMP_GOES_1"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.0.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_0_effect1",
+      "next": "culture.info.0.speech"
+    },
+    {
+      "id": "culture.info.0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_0",
+      "next": "culture.info.0.effect1"
+    },
+    {
+      "id": "culture.info.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_GOES_1"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_1_effect1",
+      "next": "culture.info.1.speech"
+    },
+    {
+      "id": "culture.info.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_1",
+      "next": "culture.info.1.effect1"
+    },
+    {
+      "id": "culture.info.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WACKY_GOES_1"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_2_effect1",
+      "next": "culture.info.2.speech"
+    },
+    {
+      "id": "culture.info.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_2",
+      "next": "culture.info.2.effect1"
+    },
+    {
+      "id": "culture.info.3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LIKE_YOU_GOES_1"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_3_effect1",
+      "next": "culture.info.3.speech"
+    },
+    {
+      "id": "culture.info.3",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_3",
+      "next": "culture.info.3.effect1"
+    },
+    {
+      "id": "culture.info.4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CONTEMP_GOES_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_4_effect1",
+      "next": "culture.info.4.speech"
+    },
+    {
+      "id": "culture.info.4",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_4",
+      "next": "culture.info.4.effect1"
+    },
+    {
+      "id": "culture.info.5.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_GOES_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.5.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_5_effect1",
+      "next": "culture.info.5.speech"
+    },
+    {
+      "id": "culture.info.5",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_5",
+      "next": "culture.info.5.effect1"
+    },
+    {
+      "id": "culture.info.6.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WACKY_GOES_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.6.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_6_effect1",
+      "next": "culture.info.6.speech"
+    },
+    {
+      "id": "culture.info.6",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_6",
+      "next": "culture.info.6.effect1"
+    },
+    {
+      "id": "culture.info.7.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LIKE_YOU_GOES_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "culture.info.7.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_goes_culture", true]
+      },
+      "save_as": "culture_info_7_effect1",
+      "next": "culture.info.7.speech"
+    },
+    {
+      "id": "culture.info.7",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "THRADD_DEMEANOR", "set", 4]
+      },
+      "save_as": "culture_info_7",
+      "next": "culture.info.7.effect1"
+    },
+    {
+      "id": "be_polite.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_POLITE", "WHAT_NAME_FOR_CULTURE"]}],
+      "next": "culture.name.menu"
+    },
+    {
+      "id": "be_polite",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INTRO", 0]
+      },
+      "save_as": "be_polite",
+      "next": "be_polite.speech"
+    },
+    {
+      "id": "use_rhymes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_RHYMES", "WHAT_NAME_FOR_CULTURE"]}],
+      "next": "culture.name.menu"
+    },
+    {
+      "id": "use_rhymes",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INTRO", 1]
+      },
+      "save_as": "use_rhymes",
+      "next": "use_rhymes.speech"
+    },
+    {
+      "id": "speak_pig_latin.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_PIG_LATIN", "WHAT_NAME_FOR_CULTURE"]}],
+      "next": "culture.name.menu"
+    },
+    {
+      "id": "speak_pig_latin",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INTRO", 2]
+      },
+      "save_as": "speak_pig_latin",
+      "next": "speak_pig_latin.speech"
+    },
+    {
+      "id": "just_the_way_we_do.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WAY_YOU_DO", "WHAT_NAME_FOR_CULTURE"]}],
+      "next": "culture.name.menu"
+    },
+    {
+      "id": "just_the_way_we_do",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INTRO", 3]
+      },
+      "save_as": "just_the_way_we_do",
+      "next": "just_the_way_we_do.speech"
+    },
+    {
+      "id": "culture.name.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "you_decide",
+          "text": "you_decide",
+          "when": true,
+          "next": "culture.name.decide"
+        },
+        {
+          "id": "fat",
+          "text": "fat",
+          "when": true,
+          "next": "culture.name.fat"
+        },
+        {
+          "id": "the_slave_empire0",
+          "text": {"compose": ["the_slave_empire0", {"insert": {"get": ["player", "captain_name", ""]}}, "the_slave_empire1"]},
+          "when": true,
+          "next": "culture.name.slave"
+        }
+      ]
+    },
+    {
+      "id": "culture.name.decide.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_CULTURE_20", "HOW_SHOULD_WE_ACT"]}],
+      "next": "culture.demeanor.menu"
+    },
+    {
+      "id": "culture.name.decide",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_CULTURE", 1]
+      },
+      "save_as": "culture_name_decide",
+      "next": "culture.name.decide.speech"
+    },
+    {
+      "id": "culture.name.fat.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_FAT", "HOW_SHOULD_WE_ACT"]}],
+      "next": "culture.demeanor.menu"
+    },
+    {
+      "id": "culture.name.fat",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_CULTURE", 2]
+      },
+      "save_as": "culture_name_fat",
+      "next": "culture.name.fat.speech"
+    },
+    {
+      "id": "culture.name.slave.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_SLAVE", "HOW_SHOULD_WE_ACT"]}],
+      "next": "culture.demeanor.menu"
+    },
+    {
+      "id": "culture.name.slave",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_CULTURE", 3]
+      },
+      "save_as": "culture_name_slave",
+      "next": "culture.name.slave.speech"
+    },
+    {
+      "id": "culture.demeanor.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "contemplative",
+          "text": "contemplative",
+          "when": true,
+          "next": "exit.contemplative"
+        },
+        {
+          "id": "friendly",
+          "text": "friendly",
+          "when": true,
+          "next": "exit.friendly"
+        },
+        {
+          "id": "wacky",
+          "text": "wacky",
+          "when": true,
+          "next": "exit.wacky"
+        },
+        {
+          "id": "just_like_us",
+          "text": "just_like_us",
+          "when": true,
+          "next": "exit.just_like_us"
+        }
+      ]
+    },
+    {
+      "id": "worship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["AMAZING_PERFORMANCE"]}],
+      "next": "worship.menu"
+    },
+    {
+      "id": "worship.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["thradd", "allied"]
+      },
+      "save_as": "worship_effect3",
+      "next": "worship.speech"
+    },
+    {
+      "id": "worship.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 0]
+      },
+      "save_as": "worship_effect2",
+      "next": "worship.effect3"
+    },
+    {
+      "id": "worship.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_MANNER", 1]
+      },
+      "save_as": "worship_effect1",
+      "next": "worship.effect2"
+    },
+    {
+      "id": "worship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_VISITS", 0]
+      },
+      "save_as": "worship",
+      "next": "worship.effect1"
+    },
+    {
+      "id": "worship.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "be_polite",
+          "text": "be_polite",
+          "when": true,
+          "next": "be_polite"
+        },
+        {
+          "id": "speak_pig_latin",
+          "text": "speak_pig_latin",
+          "when": true,
+          "next": "speak_pig_latin"
+        },
+        {
+          "id": "use_rhymes",
+          "text": "use_rhymes",
+          "when": true,
+          "next": "use_rhymes"
+        },
+        {
+          "id": "just_the_way_we_do",
+          "text": "just_the_way_we_do",
+          "when": true,
+          "next": "just_the_way_we_do"
+        }
+      ]
+    },
+    {
+      "id": "why_you_here_hostile.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NONE_OF_YOUR_CONCERN"]}],
+      "next": "helix.menu"
+    },
+    {
+      "id": "why_you_here_hostile",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_CULTURE", 1]
+      },
+      "save_as": "why_you_here_hostile",
+      "next": "why_you_here_hostile.speech"
+    },
+    {
+      "id": "what_about_this_world.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BLUE_HELIX"]}],
+      "next": "helix.menu"
+    },
+    {
+      "id": "what_about_this_world",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INTRO", 1]
+      },
+      "save_as": "what_about_this_world",
+      "next": "what_about_this_world.speech"
+    },
+    {
+      "id": "whats_helix_hostile.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HELIX_IS_HOSTILE"]}],
+      "next": "helix.menu"
+    },
+    {
+      "id": "whats_helix_hostile",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INTRO", 2]
+      },
+      "save_as": "whats_helix_hostile",
+      "next": "whats_helix_hostile.speech"
+    },
+    {
+      "id": "helix.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_you_here_hostile",
+          "text": "why_you_here_hostile",
+          "when": {"not": {"ne": [{"get": ["story", "THRADD_CULTURE", 0]}, 0]}},
+          "next": "why_you_here_hostile"
+        },
+        {
+          "id": "demand_to_land",
+          "text": "demand_to_land",
+          "when": {"ne": [{"get": ["story", "THRADD_CULTURE", 0]}, 0]},
+          "next": "exit.demand_to_land"
+        },
+        {
+          "id": "what_about_this_world",
+          "text": "what_about_this_world",
+          "when": {"eq": [{"get": ["story", "THRADD_INTRO", 0]}, 0]},
+          "next": "what_about_this_world"
+        },
+        {
+          "id": "whats_helix_hostile",
+          "text": "whats_helix_hostile",
+          "when": {"eq": [{"get": ["story", "THRADD_INTRO", 0]}, 1]},
+          "next": "whats_helix_hostile"
+        },
+        {
+          "id": "i_need_to_land_lie",
+          "text": "i_need_to_land_lie",
+          "when": {"not": {"ne": [{"get": ["story", "THRADD_DEMEANOR", 0]}, 0]}},
+          "next": "exit.i_need_to_land_lie"
+        },
+        {
+          "id": "bye_hostile_helix",
+          "text": "bye_hostile_helix",
+          "when": true,
+          "next": "exit.bye_hostile_helix"
+        }
+      ]
+    },
+    {
+      "id": "info.hostile.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GENERAL_INFO_HOSTILE_1"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "info.hostile.first.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_hostile_2", true]
+      },
+      "save_as": "info_hostile_first_effect1",
+      "next": "info.hostile.first.speech"
+    },
+    {
+      "id": "info.hostile.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_INFO", 1]
+      },
+      "save_as": "info_hostile_first",
+      "next": "info.hostile.first.effect1"
+    },
+    {
+      "id": "info.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_hostile_2", true]
+      },
+      "save_as": "info_hostile",
+      "next": "info.hostile.seq"
+    },
+    {
+      "id": "info.hostile.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_INFO",
+          [["GENERAL_INFO_HOSTILE_2"], ["GENERAL_INFO_HOSTILE_3"], ["GENERAL_INFO_HOSTILE_4"]],
+          "repeat_last",
+          1
+        ]
+      },
+      "save_as": "greeting",
+      "next": "info.hostile.seq.speech"
+    },
+    {
+      "id": "info.hostile.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "what_about_you_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US_1"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "what_about_you_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 1]
+      },
+      "save_as": "what_about_you_1",
+      "next": "what_about_you_1.speech"
+    },
+    {
+      "id": "what_about_you_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US_2"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "what_about_you_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 2]
+      },
+      "save_as": "what_about_you_2",
+      "next": "what_about_you_2.speech"
+    },
+    {
+      "id": "what_about_urquan_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN_1"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "what_about_urquan_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 3]
+      },
+      "save_as": "what_about_urquan_1",
+      "next": "what_about_urquan_1.speech"
+    },
+    {
+      "id": "what_about_urquan_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_URQUAN_2"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "what_about_urquan_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 4]
+      },
+      "save_as": "what_about_urquan_2",
+      "next": "what_about_urquan_2.speech"
+    },
+    {
+      "id": "be_friends_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_FRIENDS_1"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "be_friends_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_HOSTILE_STACK_3", 1]
+      },
+      "save_as": "be_friends_1",
+      "next": "be_friends_1.speech"
+    },
+    {
+      "id": "be_friends_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_FRIENDS_2"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "be_friends_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "be_friends_2", true]
+      },
+      "save_as": "be_friends_2",
+      "next": "be_friends_2.speech"
+    },
+    {
+      "id": "how_impressed_urquan_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IMPRESSED_LIKE_SO_1"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "how_impressed_urquan_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_HOSTILE_STACK_4", 1]
+      },
+      "save_as": "how_impressed_urquan_1",
+      "next": "how_impressed_urquan_1.speech"
+    },
+    {
+      "id": "how_impressed_urquan_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IMPRESSED_LIKE_SO_2"]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "how_impressed_urquan_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_MISSION", 5]
+      },
+      "save_as": "how_impressed_urquan_2",
+      "next": "how_impressed_urquan_2.speech"
+    },
+    {
+      "id": "hostile.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [{"eq": [{"get": ["story", "THRADD_STACK_1", 0]}, 4]}, {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}]
+          },
+          "next": "hostile.prune"
+        }
+      ],
+      "otherwise": "hostile.menu"
+    },
+    {
+      "id": "hostile.prune",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_STACK_1", 5]
+      },
+      "save_as": "hostile_prune",
+      "next": "hostile.menu"
+    },
+    {
+      "id": "hostile.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_hostile_1",
+          "text": "whats_up_hostile_1",
+          "when": {"eq": [{"get": ["story", "THRADD_INFO", 0]}, 0]},
+          "next": "info.hostile.first"
+        },
+        {
+          "id": "whats_up_hostile_2",
+          "text": "whats_up_hostile_2",
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "THRADD_INFO", 0]}, 0]}},
+              {"not": {"get": ["local", "whats_up_hostile_2", false]}}
+            ]
+          },
+          "next": "info.hostile"
+        },
+        {
+          "id": "what_about_you_1",
+          "text": "what_about_you_1",
+          "when": {"eq": [{"get": ["story", "THRADD_STACK_1", 0]}, 0]},
+          "next": "what_about_you_1"
+        },
+        {
+          "id": "what_about_you_2",
+          "text": "what_about_you_2",
+          "when": {"eq": [{"get": ["story", "THRADD_STACK_1", 0]}, 1]},
+          "next": "what_about_you_2"
+        },
+        {
+          "id": "what_about_urquan_1",
+          "text": "what_about_urquan_1",
+          "when": {"eq": [{"get": ["story", "THRADD_STACK_1", 0]}, 2]},
+          "next": "what_about_urquan_1"
+        },
+        {
+          "id": "what_about_urquan_2",
+          "text": "what_about_urquan_2",
+          "when": {"eq": [{"get": ["story", "THRADD_STACK_1", 0]}, 3]},
+          "next": "what_about_urquan_2"
+        },
+        {
+          "id": "got_idea",
+          "text": "got_idea",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "THRADD_STACK_1", 0]}, 4]},
+              {"not": {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}}
+            ]
+          },
+          "next": "exit.got_idea"
+        },
+        {
+          "id": "submit_1",
+          "text": "submit_1",
+          "when": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_2", 0]}, 0]},
+          "next": "exit.submit_1"
+        },
+        {
+          "id": "submit_2",
+          "text": "submit_2",
+          "when": {"not": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_2", 0]}, 0]}},
+          "next": "exit.submit_2"
+        },
+        {
+          "id": "be_friends_1",
+          "text": "be_friends_1",
+          "when": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_3", 0]}, 0]},
+          "next": "be_friends_1"
+        },
+        {
+          "id": "be_friends_2",
+          "text": "be_friends_2",
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_3", 0]}, 0]}},
+              {"not": {"get": ["local", "be_friends_2", false]}}
+            ]
+          },
+          "next": "be_friends_2"
+        },
+        {
+          "id": "how_impressed_urquan_1",
+          "text": "how_impressed_urquan_1",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "THRADD_MISSION", 0]}, 4]},
+              {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_4", 0]}, 0]}
+            ]
+          },
+          "next": "how_impressed_urquan_1"
+        },
+        {
+          "id": "how_impressed_urquan_2",
+          "text": "how_impressed_urquan_2",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "THRADD_MISSION", 0]}, 4]},
+              {"not": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_4", 0]}, 0]}}
+            ]
+          },
+          "next": "how_impressed_urquan_2"
+        },
+        {
+          "id": "bye_hostile_1",
+          "text": "bye_hostile_1",
+          "when": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_5", 0]}, 0]},
+          "next": "exit.bye_hostile_1"
+        },
+        {
+          "id": "bye_hostile_2",
+          "text": "bye_hostile_2",
+          "when": {"not": {"eq": [{"get": ["story", "THRADD_HOSTILE_STACK_5", 0]}, 0]}},
+          "next": "exit.bye_hostile_2"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "AQUA_HELIX", 0]}, 0]},
+          "next": "thief"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ILWRATH_FIGHT_THRADDASH", 0]}, 0]},
+          "next": "ilwrath.route"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "THRADD_MANNER", 0]}, 0]},
+          "next": "ally.culture"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "helix.greet"
+        },
+        {
+          "when": {
+            "ge": [{"get": ["story", "THRADDASH_BODY_COUNT", 0]}, {"get": ["encounter", "thraddash_body_threshold", 25]}]
+          },
+          "next": "worship"
+        }
+      ],
+      "otherwise": "body.route"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
       "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "thief",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "HELIX_VISITS", [["DIE_THIEF_1"], ["DIE_THIEF_2"]], "repeat_last", 0]
+      },
+      "save_as": "greeting",
+      "next": "thief.outcome"
+    },
+    {
+      "id": "thief.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "thief_outcome",
+      "next": "thief.speech"
+    },
+    {
+      "id": "thief.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "ilwrath.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "THRADD_MANNER", 0]}, 0]}, "next": "ilwrath.friendly"}],
+      "otherwise": "ilwrath.hostile"
+    },
+    {
+      "id": "ilwrath.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "THRADD_VISITS", [["HAVING_FUN_WITH_ILWRATH_1"], ["HAVING_FUN_WITH_ILWRATH_2"]], "repeat_last", 0]
+      },
+      "save_as": "greeting",
+      "next": "ilwrath.friendly.outcome"
+    },
+    {
+      "id": "ilwrath.friendly.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ilwrath_friendly_outcome",
+      "next": "ilwrath.friendly.speech"
+    },
+    {
+      "id": "ilwrath.friendly.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "ilwrath.hostile",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "THRADD_VISITS", [["GO_AWAY_FIGHTING_ILWRATH_1"], ["GO_AWAY_FIGHTING_ILWRATH_2"]], "repeat_last", 0]
+      },
+      "save_as": "greeting",
+      "next": "ilwrath.hostile.outcome"
+    },
+    {
+      "id": "ilwrath.hostile.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "ilwrath_hostile_outcome",
+      "next": "ilwrath.hostile.speech"
+    },
+    {
+      "id": "ilwrath.hostile.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "helix.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "HELIX_VISITS", [["HOSTILE_HELIX_HELLO_1"], ["HOSTILE_HELIX_HELLO_2"]], "repeat_last", 0]
+      },
+      "save_as": "greeting",
+      "next": "helix.greet.speech"
+    },
+    {
+      "id": "helix.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "helix.menu"
+    },
+    {
+      "id": "ally.culture",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_CULTURE", 0]}, 1]},
+          "next": "ally.culture.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_CULTURE", 0]}, 2]},
+          "next": "ally.culture.2"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_CULTURE", 0]}, 3]},
+          "next": "ally.culture.3"
+        }
+      ]
+    },
+    {
+      "id": "ally.culture.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "culture_name", "CULTURE"]
+      },
+      "save_as": "ally_culture_1",
+      "next": "ally.style"
+    },
+    {
+      "id": "ally.culture.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "culture_name", "FAT_JERKS"]
+      },
+      "save_as": "ally_culture_2",
+      "next": "ally.style"
+    },
+    {
+      "id": "ally.culture.3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "culture_name", "SLAVE_EMPIRE"]
+      },
+      "save_as": "ally_culture_3",
+      "next": "ally.style"
+    },
+    {
+      "id": "ally.style",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_INTRO", 0]}, 0]},
+          "next": "ally.style.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_INTRO", 0]}, 1]},
+          "next": "ally.style.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_INTRO", 0]}, 2]},
+          "next": "ally.style.2"
+        }
+      ],
+      "otherwise": "ally.style.3"
+    },
+    {
+      "id": "ally.style.0",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_VISITS",
+          [["HELLO_POLITE_1"], ["HELLO_POLITE_2"], ["HELLO_POLITE_3"], ["HELLO_POLITE_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.location"
+    },
+    {
+      "id": "ally.style.1",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_VISITS",
+          [["HELLO_RHYME_1"], ["HELLO_RHYME_2"], ["HELLO_RHYME_3"], ["HELLO_RHYME_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.location"
+    },
+    {
+      "id": "ally.style.2",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_VISITS",
+          [["HELLO_PIG_LATIN_1"], ["HELLO_PIG_LATIN_2"], ["HELLO_PIG_LATIN_3"], ["HELLO_PIG_LATIN_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.location"
+    },
+    {
+      "id": "ally.style.3",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_VISITS",
+          [["HELLO_LIKE_YOU_1"], ["HELLO_LIKE_YOU_2"], ["HELLO_LIKE_YOU_3"], ["HELLO_LIKE_YOU_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.location"
+    },
+    {
+      "id": "ally.location",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "ally.helix"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "ally.home"
+        }
+      ],
+      "otherwise": "ally.space"
+    },
+    {
+      "id": "ally.helix",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"get": ["result", "greeting.speech", 0]},
+            "WELCOME_HELIX0",
+            {"phrase": {"get": ["local", "culture_name", 0]}},
+            "WELCOME_HELIX1"
+          ]
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "ally.home",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"get": ["result", "greeting.speech", 0]},
+            "WELCOME_HOMEWORLD0",
+            {"phrase": {"get": ["local", "culture_name", 0]}},
+            "WELCOME_HOMEWORLD1"
+          ]
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "ally.space",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"get": ["result", "greeting.speech", 0]},
+            "WELCOME_SPACE0",
+            {"phrase": {"get": ["local", "culture_name", 0]}},
+            "WELCOME_SPACE1"
+          ]
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "body.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "THRADDASH_BODY_COUNT", 0]}, 16]},
+              {"eq": [{"get": ["story", "THRADD_BODY_LEVEL", 0]}, 1]}
+            ]
+          },
+          "next": "body.impressive"
+        },
+        {
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "THRADDASH_BODY_COUNT", 0]}, 8]},
+              {"eq": [{"get": ["story", "THRADD_BODY_LEVEL", 0]}, 0]}
+            ]
+          },
+          "next": "body.adequate"
+        }
+      ],
+      "otherwise": "hostile.location"
+    },
+    {
+      "id": "body.impressive",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_BODY_LEVEL", 2]
+      },
+      "save_as": "body_impressive",
+      "next": "body.impressive.prefix"
+    },
+    {
+      "id": "body.impressive.prefix",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "body_prefix", ["IMPRESSIVE_PERFORMANCE"]]
+      },
+      "save_as": "body_impressive_prefix",
+      "next": "hostile.location"
+    },
+    {
+      "id": "body.adequate",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "THRADD_BODY_LEVEL", 1]
+      },
+      "save_as": "body_adequate",
+      "next": "body.adequate.prefix"
+    },
+    {
+      "id": "body.adequate.prefix",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "body_prefix", ["ADEQUATE_PERFORMANCE"]]
+      },
+      "save_as": "body_adequate_prefix",
+      "next": "hostile.location"
+    },
+    {
+      "id": "hostile.location",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "hostile.home"
+        },
+        {
+          "when": {
+            "any": [{"eq": [{"get": ["story", "THRADD_MISSION", 0]}, 0]}, {"gt": [{"get": ["story", "THRADD_MISSION", 0]}, 3]}]
+          },
+          "next": "hostile.space"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_MISSION", 0]}, 1]},
+          "next": "mission.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "THRADD_MISSION", 0]}, 2]},
+          "next": "mission.2"
+        }
+      ],
+      "otherwise": "mission.3"
+    },
+    {
+      "id": "hostile.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_HOME_VISITS",
+          [
+            ["HOSTILE_HOMEWORLD_HELLO_1"],
+            ["HOSTILE_HOMEWORLD_HELLO_2"],
+            ["HOSTILE_HOMEWORLD_HELLO_3"],
+            ["HOSTILE_HOMEWORLD_HELLO_4"]
+          ],
+          "repeat_last",
+          0
+        ]
+      },
+      "save_as": "greeting",
+      "next": "hostile.home.speech"
+    },
+    {
+      "id": "hostile.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "body_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "hostile.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_VISITS",
+          [["HOSTILE_SPACE_HELLO_1"], ["HOSTILE_SPACE_HELLO_2"], ["HOSTILE_SPACE_HELLO_3"], ["HOSTILE_SPACE_HELLO_4"]],
+          "repeat_last",
+          0
+        ]
+      },
+      "save_as": "greeting",
+      "next": "hostile.space.speech"
+    },
+    {
+      "id": "hostile.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "body_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "mission.1",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "THRADD_MISSION_VISITS",
+          [["WE_GO_TO_IMPRESS_URQUAN_1"], ["WE_GO_TO_IMPRESS_URQUAN_2"]],
+          "repeat_last",
+          0
+        ]
+      },
+      "save_as": "greeting",
+      "next": "mission.1.speech"
+    },
+    {
+      "id": "mission.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "body_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "mission.2",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "THRADD_MISSION_VISITS", [["WE_IMPRESSING_URQUAN_1"], ["WE_IMPRESSING_URQUAN_2"]], "repeat_last", 0]
+      },
+      "save_as": "greeting",
+      "next": "mission.2.speech"
+    },
+    {
+      "id": "mission.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "body_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "hostile.route"
+    },
+    {
+      "id": "mission.3",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "THRADD_MISSION_VISITS", [["WE_IMPRESSED_URQUAN_1"], ["WE_IMPRESSED_URQUAN_2"]], "repeat_last", 0]
+      },
+      "save_as": "greeting",
+      "next": "mission.3.speech"
+    },
+    {
+      "id": "mission.3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"get": ["local", "body_prefix", []]}, {"get": ["result", "greeting.speech", 0]}]}],
+      "next": "hostile.route"
     },
     {
       "id": "end",

@@ -1,11 +1,14 @@
 #include "conversation_state.hpp"
 #include "build.h"
 #include "commglue.h"
+#include "conversation_native.h"
 #include "game_state.hpp"
 #include "gameev.h"
 #include "libs/mathlib.h"
+#include "planets/elemdata.h"
 #include "ship_tuning.hpp"
 #include "sis_state.hpp"
+#include <algorithm>
 #include <limits>
 namespace uqm {
 CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, std::string script,
@@ -62,6 +65,12 @@ dialogue::Result CampaignDialogueState::scheduleEvent(const std::string &event,
         selector = ARILOU_UMGAH_CHECK;
     else if (event == "ADVANCE_ILWRATH_MISSION")
         selector = ADVANCE_ILWRATH_MISSION;
+    else if (event == "ADVANCE_THRADD_MISSION")
+        selector = ADVANCE_THRADD_MISSION;
+    else if (event == "ZOQFOT_DISTRESS_EVENT")
+        selector = ZOQFOT_DISTRESS_EVENT;
+    else if (event == "SPATHI_SHIELD_EVENT")
+        selector = SPATHI_SHIELD_EVENT;
     else if (event == "ADVANCE_UTWIG_SUPOX_MISSION")
         selector = ADVANCE_UTWIG_SUPOX_MISSION;
     else if (event == "SLYLANDRO_RAMP_DOWN")
@@ -127,6 +136,22 @@ COUNT raceId(const std::string &name) {
     throw std::invalid_argument("unknown campaign race: " + name);
 }
 } // namespace
+dialogue::Integer CampaignDialogueState::fuel() const {
+    return player_.sis().fuel() / FUEL_TANK_SCALE;
+}
+dialogue::Integer CampaignDialogueState::fuelCapacity() const {
+    return GetFuelTankCapacity() / FUEL_TANK_SCALE;
+}
+dialogue::Integer CampaignDialogueState::quantity(const std::string &item) const {
+    const auto &sis = static_cast<const PlayerEntity &>(player_).sis();
+    if (item == "landers")
+        return sis.landers();
+    if (item == "radioactive")
+        return sis.mineral(RADIOACTIVE);
+    if (item == "biomass")
+        return sis.biomass();
+    throw std::invalid_argument("unsupported inventory quantity: " + item);
+}
 dialogue::Integer CampaignDialogueState::availableSlots(const std::string &type) const {
     return EscortFeasibilityStudy(raceId(type));
 }
@@ -160,6 +185,19 @@ dialogue::Result CampaignDialogueState::giveShips(const std::string &type,
     const auto race = raceId(type);
     return {"ok", {{"count", count ? AddEscortShips(race, count) : 0}}};
 }
+dialogue::Result CampaignDialogueState::removeShips(const std::string &type,
+                                                    dialogue::Integer count) {
+    if (count < 0 || count > std::numeric_limits<COUNT>::max())
+        throw std::out_of_range("invalid escort removal count");
+    const auto race = raceId(type);
+    const auto available = CountEscortShips(race);
+    const auto removed = std::min<dialogue::Integer>(count, available);
+    if (count >= available)
+        RemoveEscortShips(race);
+    else
+        RemoveSomeEscortShips(race, static_cast<COUNT>(count));
+    return {"ok", {{"count", removed}}};
+}
 dialogue::Result CampaignDialogueState::setRelationship(const std::string &type,
                                                         const std::string &relation) {
     if (relation != "allied" && relation != "neutral")
@@ -167,12 +205,49 @@ dialogue::Result CampaignDialogueState::setRelationship(const std::string &type,
     SetRaceAllied(raceId(type), relation == "allied" ? TRUE : FALSE);
     return {};
 }
+bool CampaignDialogueState::raceAvailable(const std::string &type) const {
+    const auto fleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), raceId(type));
+    if (!fleet)
+        return false;
+    const auto *info = LockFleetInfo(&GLOBAL(avail_race_q), fleet);
+    const bool available = info->actual_strength != 0 || info->allied_state != DEAD_GUY;
+    UnlockFleetInfo(&GLOBAL(avail_race_q), fleet);
+    return available;
+}
 dialogue::Result CampaignDialogueState::revealRace(const std::string &type) {
-    const auto result = StartSphereTracking(raceId(type));
-    return {"ok", {{"available", result != 0}}};
+    // The native reveal returns a race index; Arilou's valid index is zero.
+    const bool available = raceAvailable(type);
+    StartSphereTracking(raceId(type));
+    return {"ok", {{"available", available}}};
+}
+dialogue::Result CampaignDialogueState::configureShip(const std::string &operation,
+                                                      const dialogue::Json &parameters) {
+    if (operation != "chmmr_bomb_refit" || !parameters.is_object() || !parameters.empty())
+        throw std::invalid_argument("unregistered ship configuration: " + operation);
+    ApplyChmmrBombRefit(story_.readNamed("STARBASE_AVAILABLE") != 0);
+    return {};
 }
 dialogue::Result CampaignDialogueState::adjustShip(const std::string &property,
                                                    dialogue::Integer delta) {
+    if (property == "fuel" || property == "crew") {
+        const auto scale = property == "fuel" ? FUEL_TANK_SCALE : 1;
+        // SIZE is the signed native gauge argument; never narrow into its sentinel.
+        const auto bound = std::numeric_limits<SIZE>::max() / scale;
+        if (delta < -bound || delta > bound)
+            throw std::out_of_range("gauge adjustment exceeds native range");
+        DeltaSISGauges(property == "crew" ? static_cast<SIZE>(delta) : 0,
+                       property == "fuel" ? static_cast<SIZE>(delta * scale) : 0, 0);
+        return {};
+    }
+    if (property == "landers") {
+        auto &sis = player_.sis();
+        const dialogue::Integer value = sis.landers();
+        if (delta < -value || delta > MAX_LANDERS - value)
+            throw std::out_of_range("lander adjustment exceeds capacity");
+        sis.setLanders(static_cast<BYTE>(value + delta));
+        DrawLanders();
+        return {};
+    }
     if (property != "biomass")
         throw std::invalid_argument("unsupported ship adjustment: " + property);
     auto &sis = player_.sis();

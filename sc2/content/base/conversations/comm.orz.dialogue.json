@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 143,
   "id": "orz",
   "resource": "comm.orz.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resources/lifecycle and bounded color/talking-animation cues remain. All Orz story branches, alliance withdrawal and escort removal use graph/state operations."
   },
   "phrases": [
     {
@@ -824,121 +824,1823 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.bye_ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ALLY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_ally",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["orz", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_bye_ally",
+      "next": "exit.bye_ally.speech"
     },
     {
-      "id": "route",
+      "id": "exit.bye_neutral.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_NEUTRAL"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_neutral",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_neutral",
+      "next": "exit.bye_neutral.speech"
+    },
+    {
+      "id": "exit.bye_angry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ANGRY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_angry",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_angry",
+      "next": "exit.bye_angry.speech"
+    },
+    {
+      "id": "bye.taalo",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "bye.taalo.angry"}],
+      "otherwise": "bye.taalo.friendly"
     },
     {
-      "id": "menu",
+      "id": "bye.taalo.angry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ANGRY_TAALO_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.taalo.angry",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_taalo_angry",
+      "next": "bye.taalo.angry.speech"
+    },
+    {
+      "id": "bye.taalo.friendly.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_TAALO_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "bye.taalo.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "bye_taalo_friendly",
+      "next": "bye.taalo.friendly.speech"
+    },
+    {
+      "id": "exit.hostile_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOSTILITY_IS_BAD_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.hostile_2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_hostile_2",
+      "next": "exit.hostile_2.speech"
+    },
+    {
+      "id": "exit.demand_to_land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_DEMAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.demand_to_land",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_demand_to_land",
+      "next": "exit.demand_to_land.speech"
+    },
+    {
+      "id": "land.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SURE_LAND"]}],
+      "next": "end"
+    },
+    {
+      "id": "land.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "land_effect1",
+      "next": "land.speech"
+    },
+    {
+      "id": "land",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "TAALO_UNPROTECTED", 1]
+      },
+      "save_as": "land",
+      "next": "land.effect1"
+    },
+    {
+      "id": "exit.yes_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GREAT"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.yes_alliance.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_yes_alliance_effect5",
+      "next": "exit.yes_alliance.speech"
+    },
+    {
+      "id": "exit.yes_alliance.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["orz", "allied"]
+      },
+      "save_as": "exit_yes_alliance_effect4",
+      "next": "exit.yes_alliance.effect5"
+    },
+    {
+      "id": "exit.yes_alliance.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 3]
+      },
+      "save_as": "exit_yes_alliance_effect3",
+      "next": "exit.yes_alliance.effect4"
+    },
+    {
+      "id": "exit.yes_alliance.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_PERSONAL_INFO", 0]
+      },
+      "save_as": "exit_yes_alliance_effect2",
+      "next": "exit.yes_alliance.effect3"
+    },
+    {
+      "id": "exit.yes_alliance.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_GENERAL_INFO", 0]
+      },
+      "save_as": "exit_yes_alliance_effect1",
+      "next": "exit.yes_alliance.effect2"
+    },
+    {
+      "id": "exit.yes_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 0]
+      },
+      "save_as": "exit_yes_alliance",
+      "next": "exit.yes_alliance.effect1"
+    },
+    {
+      "id": "exit.were_sorry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["APOLOGY_ACCEPTED"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.were_sorry.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_were_sorry_effect5",
+      "next": "exit.were_sorry.speech"
+    },
+    {
+      "id": "exit.were_sorry.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["orz", "allied"]
+      },
+      "save_as": "exit_were_sorry_effect4",
+      "next": "exit.were_sorry.effect5"
+    },
+    {
+      "id": "exit.were_sorry.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 3]
+      },
+      "save_as": "exit_were_sorry_effect3",
+      "next": "exit.were_sorry.effect4"
+    },
+    {
+      "id": "exit.were_sorry.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_PERSONAL_INFO", 0]
+      },
+      "save_as": "exit_were_sorry_effect2",
+      "next": "exit.were_sorry.effect3"
+    },
+    {
+      "id": "exit.were_sorry.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_GENERAL_INFO", 0]
+      },
+      "save_as": "exit_were_sorry_effect1",
+      "next": "exit.were_sorry.effect2"
+    },
+    {
+      "id": "exit.were_sorry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 0]
+      },
+      "save_as": "exit_were_sorry",
+      "next": "exit.were_sorry.effect1"
+    },
+    {
+      "id": "exit.about_andro_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BLEW_IT"], "presentation": {"before": "orz.anger"}}],
+      "next": "end"
+    },
+    {
+      "id": "exit.about_andro_3.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_about_andro_3_effect4",
+      "next": "exit.about_andro_3.speech"
+    },
+    {
+      "id": "exit.about_andro_3.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.take",
+        "args": ["orz"]
+      },
+      "save_as": "exit_about_andro_3_effect3",
+      "next": "exit.about_andro_3.effect4"
+    },
+    {
+      "id": "exit.about_andro_3.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["orz", "neutral"]
+      },
+      "save_as": "exit_about_andro_3_effect2",
+      "next": "exit.about_andro_3.effect3"
+    },
+    {
+      "id": "exit.about_andro_3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 2]
+      },
+      "save_as": "exit_about_andro_3_effect1",
+      "next": "exit.about_andro_3.effect2"
+    },
+    {
+      "id": "exit.about_andro_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_VISITS", 0]
+      },
+      "save_as": "exit_about_andro_3",
+      "next": "exit.about_andro_3.effect1"
+    },
+    {
+      "id": "exit.must_know_about_androsyn.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KNOW_TOO_MUCH"], "presentation": {"before": "orz.anger"}}],
+      "next": "end"
+    },
+    {
+      "id": "exit.must_know_about_androsyn.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_must_know_about_androsyn_effect2",
+      "next": "exit.must_know_about_androsyn.speech"
+    },
+    {
+      "id": "exit.must_know_about_androsyn.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_MANNER", 2]
+      },
+      "save_as": "exit_must_know_about_androsyn_effect1",
+      "next": "exit.must_know_about_androsyn.effect2"
+    },
+    {
+      "id": "exit.must_know_about_androsyn",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_VISITS", 0]
+      },
+      "save_as": "exit_must_know_about_androsyn",
+      "next": "exit.must_know_about_androsyn.effect1"
+    },
+    {
+      "id": "insult",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "insult_level", {"get": ["story", "ORZ_PERSONAL_INFO", 0]}]
+      },
+      "save_as": "insult",
+      "next": "insult.increment"
+    },
+    {
+      "id": "insult.increment",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_PERSONAL_INFO", {"min": [{"add": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 1]}, 7]}]
+      },
+      "save_as": "insult_increment",
+      "next": "insult.route"
+    },
+    {
+      "id": "insult.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["local", "insult_level", 0]}, 0]},
+          "next": "insult.0"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "insult_level", 0]}, 1]},
+          "next": "insult.1"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "insult_level", 0]}, 2]},
+          "next": "insult.2"
+        }
+      ],
+      "otherwise": "insult.3"
+    },
+    {
+      "id": "insult.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.0",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "insult_0",
+      "next": "insult.0.speech"
+    },
+    {
+      "id": "insult.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "insult_1",
+      "next": "insult.1.speech"
+    },
+    {
+      "id": "insult.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "insult_2",
+      "next": "insult.2.speech"
+    },
+    {
+      "id": "insult.3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INSULTED_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "insult.3",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "insult_3",
+      "next": "insult.3.speech"
+    },
+    {
+      "id": "taalo.land",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 3]},
+              {"eq": [{"query": "galaxy.relationship", "args": ["orz"]}, "allied"]}
+            ]
+          },
+          "next": "land"
+        }
+      ],
+      "otherwise": "taalo.land.reply"
+    },
+    {
+      "id": "taalo.land.reply.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ALLIES_CAN_VISIT"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.land.reply",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "may_we_land", true]
+      },
+      "save_as": "taalo_land_reply",
+      "next": "taalo.land.reply.speech"
+    },
+    {
+      "id": "taalo.demand",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "exit.demand_to_land"}],
+      "otherwise": "taalo.demand.reply"
+    },
+    {
+      "id": "taalo.demand.reply.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ASK_NICELY"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.demand.reply",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "demand_to_land", true]
+      },
+      "save_as": "taalo_demand_reply",
+      "next": "taalo.demand.reply.speech"
+    },
+    {
+      "id": "taalo.why_you_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_you_here", true]
+      },
+      "save_as": "taalo_why_you_here",
+      "next": "taalo.why_you_here.route"
+    },
+    {
+      "id": "taalo.why_you_here.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "taalo.why_you_here.angry"}],
+      "otherwise": "taalo.why_you_here.friendly"
+    },
+    {
+      "id": "taalo.why_you_here.friendly",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_EXPLANATION"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.why_you_here.angry",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ANGRY_EXPLANATION"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.what_is_this_place",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_is_this_place", true]
+      },
+      "save_as": "taalo_what_is_this_place",
+      "next": "taalo.what_is_this_place.route"
+    },
+    {
+      "id": "taalo.what_is_this_place.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "taalo.what_is_this_place.angry"}],
+      "otherwise": "taalo.what_is_this_place.friendly"
+    },
+    {
+      "id": "taalo.what_is_this_place.friendly",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_PLACE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.what_is_this_place.angry",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ANGRY_PLACE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_ALLY_HERE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.ally",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "make_alliance", true]
+      },
+      "save_as": "taalo_ally",
+      "next": "taalo.ally.speech"
+    },
+    {
+      "id": "taalo.busy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BUSY_BECAUSE"]}],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.busy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_busy", true]
+      },
+      "save_as": "taalo_busy",
+      "next": "taalo.busy.speech"
+    },
+    {
+      "id": "taalo.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "may_we_land",
+          "text": "may_we_land",
+          "when": {"not": {"get": ["local", "may_we_land", false]}},
+          "next": "taalo.land"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 1]
+          "id": "make_alliance",
+          "text": "make_alliance",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "may_we_land", false]}}},
+              {"not": {"get": ["local", "make_alliance", false]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "taalo.ally"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 2]
+          "id": "why_busy",
+          "text": "why_busy",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "may_we_land", false]}}},
+              {"not": {"not": {"get": ["local", "make_alliance", false]}}},
+              {"not": {"get": ["local", "why_busy", false]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "taalo.busy"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "demand_to_land",
+          "text": "demand_to_land",
+          "when": {"not": {"get": ["local", "demand_to_land", false]}},
+          "next": "taalo.demand"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "why_you_here",
+          "text": "why_you_here",
+          "when": {"not": {"get": ["local", "why_you_here", false]}},
+          "next": "taalo.why_you_here"
         },
         {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_is_this_place",
+          "text": "what_is_this_place",
+          "when": {"not": {"get": ["local", "what_is_this_place", false]}},
+          "next": "taalo.what_is_this_place"
         },
         {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["orz", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bye_taalo",
+          "text": "bye_taalo",
+          "when": true,
+          "next": "bye.taalo"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "whats_up_ally",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_ally", true]
+      },
+      "save_as": "whats_up_ally",
+      "next": "whats_up_ally.seq"
+    },
+    {
+      "id": "whats_up_ally.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_GENERAL_INFO",
+          [["GENERAL_INFO_ALLY_1"], ["GENERAL_INFO_ALLY_2"], ["GENERAL_INFO_ALLY_3"], ["GENERAL_INFO_ALLY_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "whats_up_ally.seq.speech"
+    },
+    {
+      "id": "whats_up_ally.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "more_about_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "more_about_you", true]
+      },
+      "save_as": "more_about_you",
+      "next": "more_about_you.seq"
+    },
+    {
+      "id": "more_about_you.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ORZ_PERSONAL_INFO", [["ABOUT_US_1"], ["ABOUT_US_2"], ["ABOUT_US_3"], ["ABOUT_US_4"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "more_about_you.seq.speech"
+    },
+    {
+      "id": "more_about_you.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "whats_up_angry",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_angry", true]
+      },
+      "save_as": "whats_up_angry",
+      "next": "whats_up_angry.seq"
+    },
+    {
+      "id": "whats_up_angry.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ORZ_GENERAL_INFO", [["GENERAL_INFO_ANGRY_1"], ["GENERAL_INFO_ANGRY_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "whats_up_angry.seq.speech"
+    },
+    {
+      "id": "whats_up_angry.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "angry.menu"
+    },
+    {
+      "id": "about.andro.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FORGET_ANDRO_1"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "about.andro.0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 1]
+      },
+      "save_as": "about_andro_0",
+      "next": "about.andro.0.speech"
+    },
+    {
+      "id": "about.andro.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FORGET_ANDRO_2"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "about.andro.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 2]
+      },
+      "save_as": "about_andro_1",
+      "next": "about.andro.1.speech"
+    },
+    {
+      "id": "ally.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "about_andro_1",
+          "text": "about_andro_1",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "about.andro.0"
+        },
+        {
+          "id": "about_andro_2",
+          "text": "about_andro_2",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "about.andro.1"
+        },
+        {
+          "id": "about_andro_3",
+          "text": "about_andro_3",
+          "when": {"ge": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+          "next": "exit.about_andro_3"
+        },
+        {
+          "id": "whats_up_ally",
+          "text": "whats_up_ally",
+          "when": {"not": {"get": ["local", "whats_up_ally", false]}},
+          "next": "whats_up_ally"
+        },
+        {
+          "id": "more_about_you",
+          "text": "more_about_you",
+          "when": {"not": {"get": ["local", "more_about_you", false]}},
+          "next": "more_about_you"
+        },
+        {
+          "id": "bye_ally",
+          "text": "bye_ally",
+          "when": true,
+          "next": "exit.bye_ally"
+        }
+      ]
+    },
+    {
+      "id": "angry.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_angry",
+          "text": "whats_up_angry",
+          "when": {"not": {"get": ["local", "whats_up_angry", false]}},
+          "next": "whats_up_angry"
+        },
+        {
+          "id": "were_sorry",
+          "text": "were_sorry",
+          "when": true,
+          "next": "exit.were_sorry"
+        },
+        {
+          "id": "insult_1",
+          "text": "insult_1",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 0]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_2",
+          "text": "insult_2",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 1]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_3",
+          "text": "insult_3",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 2]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_4",
+          "text": "insult_4",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 3]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_5",
+          "text": "insult_5",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 4]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_6",
+          "text": "insult_6",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 5]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_7",
+          "text": "insult_7",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 6]},
+          "next": "insult"
+        },
+        {
+          "id": "insult_8",
+          "text": "insult_8",
+          "when": {"eq": [{"get": ["story", "ORZ_PERSONAL_INFO", 0]}, 7]},
+          "next": "insult"
+        },
+        {
+          "id": "bye_angry",
+          "text": "bye_angry",
+          "when": true,
+          "next": "exit.bye_angry"
+        }
+      ]
+    },
+    {
+      "id": "where_androsyn.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DISEMBLE_ABOUT_ANDROSYN"]}],
+      "next": "androsyn.menu"
+    },
+    {
+      "id": "where_androsyn",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_androsyn", true]
+      },
+      "save_as": "where_androsyn",
+      "next": "where_androsyn.speech"
+    },
+    {
+      "id": "androsyn.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "must_know_about_androsyn",
+          "text": "must_know_about_androsyn",
+          "when": true,
+          "next": "exit.must_know_about_androsyn"
+        },
+        {
+          "id": "dont_really_care",
+          "text": "dont_really_care",
+          "when": true,
+          "next": "dont.really.care"
+        }
+      ]
+    },
+    {
+      "id": "dont.really.care",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_ARE_OUR_FRIENDS"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "offer.nice",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ARE_NICE_WANT_ALLY"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "offer.talk",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_TALK_ALLIANCE"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "offer.trust.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUSTING_BECAUSE"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "offer.trust",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_STACK1", 1]
+      },
+      "save_as": "offer_trust",
+      "next": "offer.trust.speech"
+    },
+    {
+      "id": "no_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAYBE_LATER"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "no_alliance.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "REFUSED_ORZ_ALLIANCE", 1]
+      },
+      "save_as": "no_alliance_effect1",
+      "next": "no_alliance.speech"
+    },
+    {
+      "id": "no_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "talk_about_alliance", true]
+      },
+      "save_as": "no_alliance",
+      "next": "no_alliance.effect1"
+    },
+    {
+      "id": "decide_later.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_LATER"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "decide_later.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "REFUSED_ORZ_ALLIANCE", 1]
+      },
+      "save_as": "decide_later_effect1",
+      "next": "decide_later.speech"
+    },
+    {
+      "id": "decide_later",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "talk_about_alliance", true]
+      },
+      "save_as": "decide_later",
+      "next": "decide_later.effect1"
+    },
+    {
+      "id": "offer.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "no_alliance",
+          "text": "no_alliance",
+          "when": true,
+          "next": "no_alliance"
+        },
+        {
+          "id": "decide_later",
+          "text": "decide_later",
+          "when": true,
+          "next": "decide_later"
+        },
+        {
+          "id": "why_so_trusting",
+          "text": "why_so_trusting",
+          "when": {"eq": [{"get": ["story", "ORZ_STACK1", 0]}, 0]},
+          "next": "offer.trust"
+        },
+        {
+          "id": "yes_alliance",
+          "text": "yes_alliance",
+          "when": true,
+          "next": "exit.yes_alliance"
+        }
+      ]
+    },
+    {
+      "id": "who_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_ARE_ORZ"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "who_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 1]
+      },
+      "save_as": "who_you",
+      "next": "who_you.speech"
+    },
+    {
+      "id": "why_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_BECAUSE"]}],
+      "next": "neutral.0"
+    },
+    {
+      "id": "why_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_ANDRO_STATE", 2]
+      },
+      "save_as": "why_here",
+      "next": "why_here.speech"
+    },
+    {
+      "id": "introduce.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NICE_TO_MEET_YOU"]}],
+      "next": "neutral.1"
+    },
+    {
+      "id": "introduce",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ORZ_STACK0", 1]
+      },
+      "save_as": "introduce",
+      "next": "introduce.speech"
+    },
+    {
+      "id": "hostile.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOSTILITY_IS_BAD_1"]}],
+      "next": "neutral.2"
+    },
+    {
+      "id": "hostile.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hostile_1", true]
+      },
+      "save_as": "hostile_1",
+      "next": "hostile.1.speech"
+    },
+    {
+      "id": "neutral.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "who_you",
+          "text": "who_you",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "who_you"
+        },
+        {
+          "id": "why_here",
+          "text": "why_here",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "why_here"
+        },
+        {
+          "id": "where_androsyn",
+          "text": "where_androsyn",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+              {"not": {"get": ["local", "where_androsyn", false]}}
+            ]
+          },
+          "next": "where_androsyn"
+        },
+        {
+          "id": "talk_about_alliance",
+          "text": "talk_about_alliance",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]},
+              {"not": {"get": ["local", "talk_about_alliance", false]}}
+            ]
+          },
+          "next": "offer.talk"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}
+            ]
+          },
+          "next": "introduce"
+        },
+        {
+          "id": "seem_like_nice_guys",
+          "text": "seem_like_nice_guys",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"not": {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}}
+            ]
+          },
+          "next": "offer.nice"
+        },
+        {
+          "id": "hostile_1",
+          "text": "hostile_1",
+          "when": {"not": {"get": ["local", "hostile_1", false]}},
+          "next": "hostile.1"
+        },
+        {
+          "id": "hostile_2",
+          "text": "hostile_2",
+          "when": {"not": {"not": {"get": ["local", "hostile_1", false]}}},
+          "next": "exit.hostile_2"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "neutral.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "talk_about_alliance",
+          "text": "talk_about_alliance",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]},
+              {"not": {"get": ["local", "talk_about_alliance", false]}}
+            ]
+          },
+          "next": "offer.talk"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}
+            ]
+          },
+          "next": "introduce"
+        },
+        {
+          "id": "seem_like_nice_guys",
+          "text": "seem_like_nice_guys",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"not": {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}}
+            ]
+          },
+          "next": "offer.nice"
+        },
+        {
+          "id": "who_you",
+          "text": "who_you",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "who_you"
+        },
+        {
+          "id": "why_here",
+          "text": "why_here",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "why_here"
+        },
+        {
+          "id": "where_androsyn",
+          "text": "where_androsyn",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+              {"not": {"get": ["local", "where_androsyn", false]}}
+            ]
+          },
+          "next": "where_androsyn"
+        },
+        {
+          "id": "hostile_1",
+          "text": "hostile_1",
+          "when": {"not": {"get": ["local", "hostile_1", false]}},
+          "next": "hostile.1"
+        },
+        {
+          "id": "hostile_2",
+          "text": "hostile_2",
+          "when": {"not": {"not": {"get": ["local", "hostile_1", false]}}},
+          "next": "exit.hostile_2"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "neutral.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "hostile_1",
+          "text": "hostile_1",
+          "when": {"not": {"get": ["local", "hostile_1", false]}},
+          "next": "hostile.1"
+        },
+        {
+          "id": "hostile_2",
+          "text": "hostile_2",
+          "when": {"not": {"not": {"get": ["local", "hostile_1", false]}}},
+          "next": "exit.hostile_2"
+        },
+        {
+          "id": "who_you",
+          "text": "who_you",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 0]},
+          "next": "who_you"
+        },
+        {
+          "id": "why_here",
+          "text": "why_here",
+          "when": {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 1]},
+          "next": "why_here"
+        },
+        {
+          "id": "where_androsyn",
+          "text": "where_androsyn",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_ANDRO_STATE", 0]}, 2]},
+              {"not": {"get": ["local", "where_androsyn", false]}}
+            ]
+          },
+          "next": "where_androsyn"
+        },
+        {
+          "id": "talk_about_alliance",
+          "text": "talk_about_alliance",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]},
+              {"not": {"get": ["local", "talk_about_alliance", false]}}
+            ]
+          },
+          "next": "offer.talk"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}
+            ]
+          },
+          "next": "introduce"
+        },
+        {
+          "id": "seem_like_nice_guys",
+          "text": "seem_like_nice_guys",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "REFUSED_ORZ_ALLIANCE", 0]}, 0]}},
+              {"not": {"eq": [{"get": ["story", "ORZ_STACK0", 0]}, 0]}}
+            ]
+          },
+          "next": "offer.nice"
+        },
+        {
+          "id": "bye_neutral",
+          "text": "bye_neutral",
+          "when": true,
+          "next": "exit.bye_neutral"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MET_ORZ_BEFORE", 0]}, 0]}},
+          "next": "first"
+        }
+      ],
+      "otherwise": "intro.route"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
       "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "first", true]
+      },
+      "save_as": "first",
+      "next": "first.met"
+    },
+    {
+      "id": "first.met",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MET_ORZ_BEFORE", 1]
+      },
+      "save_as": "first_met",
+      "next": "intro.route"
+    },
+    {
+      "id": "intro.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 2]},
+          "next": "hostile.greet"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "taalo.route"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 3]},
+              {"eq": [{"query": "galaxy.relationship", "args": ["orz"]}, "allied"]}
+            ]
+          },
+          "next": "ally.route"
+        },
+        {
+          "when": {"not": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}},
+          "next": "neutral.route"
+        }
+      ],
+      "otherwise": "angry.route"
+    },
+    {
+      "id": "hostile.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "HOSTILE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "HOSTILE_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "hostile.greet.outcome"
+    },
+    {
+      "id": "hostile.greet.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_greet_outcome",
+      "next": "hostile.greet.speech"
+    },
+    {
+      "id": "hostile.greet.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.hostile_map", "orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {"before": ["orz.hostile_map"]}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "taalo.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ORZ_MANNER", 0]}, 1]}, "next": "taalo.angry"}],
+      "otherwise": "taalo.friendly"
+    },
+    {
+      "id": "taalo.angry",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TAALO_VISITS",
+          [
+            [{"phrase": "ANGRY_TAALO_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ANGRY_TAALO_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "taalo.angry.speech"
+    },
+    {
+      "id": "taalo.angry.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "taalo.friendly",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "TAALO_VISITS",
+          [
+            [{"phrase": "FRIENDLY_ALLIED_TAALO_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "FRIENDLY_ALLIED_TAALO_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "taalo.friendly.speech"
+    },
+    {
+      "id": "taalo.friendly.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "taalo.menu"
+    },
+    {
+      "id": "ally.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "ally.home"}],
+      "otherwise": "ally.space"
+    },
+    {
+      "id": "ally.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_HOME_VISITS",
+          [
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_HOMEWORLD_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.home.speech"
+    },
+    {
+      "id": "ally.home.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "ally.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "ALLIED_SPACE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_SPACE_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_SPACE_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "ALLIED_SPACE_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.space.speech"
+    },
+    {
+      "id": "ally.space.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "ally.menu"
+    },
+    {
+      "id": "neutral.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "neutral.home"
+        }
+      ],
+      "otherwise": "neutral.space"
+    },
+    {
+      "id": "neutral.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_HOME_VISITS",
+          [
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_HOMEWORLD_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.home.speech"
+    },
+    {
+      "id": "neutral.home.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "neutral.0"
+    },
+    {
+      "id": "neutral.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "NEUTRAL_SPACE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_SPACE_HELLO_2", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_SPACE_HELLO_3", "on_start": "orz.talking_on"}],
+            [{"phrase": "NEUTRAL_SPACE_HELLO_4", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "neutral.space.speech"
+    },
+    {
+      "id": "neutral.space.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "neutral.0"
+    },
+    {
+      "id": "angry.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "angry.home"}],
+      "otherwise": "angry.space"
+    },
+    {
+      "id": "angry.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_HOME_VISITS",
+          [
+            [{"phrase": "ANGRY_HOMEWORLD_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ANGRY_HOMEWORLD_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "angry.home.speech"
+    },
+    {
+      "id": "angry.home.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "angry.menu"
+    },
+    {
+      "id": "angry.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "ORZ_VISITS",
+          [
+            [{"phrase": "ANGRY_SPACE_HELLO_1", "on_start": "orz.talking_on"}],
+            [{"phrase": "ANGRY_SPACE_HELLO_2", "on_start": "orz.talking_on"}]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "angry.space.speech"
+    },
+    {
+      "id": "angry.space.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"get": ["local", "first", false]},
+          "speech": ["INIT_HELLO", {"get": ["result", "greeting.speech", 0]}],
+          "presentation": {"before": ["orz.talking_off"]}
+        },
+        {
+          "speech": {"get": ["result", "greeting.speech", 0]},
+          "presentation": {}
+        }
+      ],
+      "next": "angry.menu"
     },
     {
       "id": "end",

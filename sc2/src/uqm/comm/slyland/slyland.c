@@ -230,28 +230,10 @@ QueueProbeCoordinates (void)
 }
 
 // Configuration/lifecycle compatibility only. The JSON graph owns the intro.
-static void Intro (void) {}
-
-static COUNT
-uninit_slyland (void)
-{
-	return (0);
-}
-
-static void
-post_slyland_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_slyland_comm (void)
 {
 	LOCDATA *retval;
-
-	slylandro_desc.init_encounter_func = Intro;
-	slylandro_desc.post_encounter_func = post_slyland_enc;
-	slylandro_desc.uninit_encounter_func = uninit_slyland;
 
 	slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	slylandro_desc.AlienTextBaseline.y = 0;

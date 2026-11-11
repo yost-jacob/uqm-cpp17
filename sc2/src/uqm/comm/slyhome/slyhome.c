@@ -173,31 +173,10 @@ static LOCDATA slylandro_desc =
 
 // Story branches and actions are defined in comm.slylandro.dialogue.json.
 // Keep the native descriptor as the media/lifecycle compatibility boundary.
-static void
-Intro (void)
-{
-}
-
-static COUNT
-uninit_slylandro (void)
-{
-	return (0);
-}
-
-static void
-post_slylandro_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_slylandro_comm (void)
 {
 	LOCDATA *retval;
-
-	slylandro_desc.init_encounter_func = Intro;
-	slylandro_desc.post_encounter_func = post_slylandro_enc;
-	slylandro_desc.uninit_encounter_func = uninit_slylandro;
 
 	slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	slylandro_desc.AlienTextBaseline.y = 0;

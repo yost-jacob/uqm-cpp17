@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 132,
   "id": "zoqfot",
   "resource": "comm.zoqfotpik.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource/lifecycle configuration remains. Speaker transitions use registered descriptor-owned media cues; all story/topic/news/gift/alliance/event control is graph data, with mutations after playback."
   },
   "phrases": [
     {
@@ -2371,126 +2371,2085 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.bye_homeworld",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["zoqfot", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_bye_homeworld",
+      "next": "exit.bye_homeworld.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "exit.bye_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "GOODBYE_HOME0", "on_start": "zoqfot.zoq"}, {"phrase": "GOODBYE_HOME1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
     },
     {
-      "id": "menu",
+      "id": "exit.decide_later",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_decide_later",
+      "next": "exit.decide_later.speech"
+    },
+    {
+      "id": "exit.decide_later.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "PLEASE_HURRY0", "on_start": "zoqfot.zoq"}, {"phrase": "PLEASE_HURRY1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.valuable_info",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_valuable_info",
+      "next": "exit.valuable_info.speech"
+    },
+    {
+      "id": "exit.valuable_info.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GOODBYE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOODBYE1", "on_start": "zoqfot.pik"},
+            {"phrase": "GOODBYE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOODBYE3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.how_can_i_help",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_how_can_i_help",
+      "next": "exit.how_can_i_help.speech"
+    },
+    {
+      "id": "exit.how_can_i_help.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "EMMISSARIES0", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES1", "on_start": "zoqfot.pik"},
+            {"phrase": "EMMISSARIES2", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES3", "on_start": "zoqfot.pik"},
+            {"phrase": "EMMISSARIES4", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES5", "on_start": "zoqfot.pik"},
+            {"phrase": "EMMISSARIES6", "on_start": "zoqfot.zoq"},
+            {"phrase": "EMMISSARIES7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "exit.sure",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_sure",
+      "next": "exit.sure.speech"
+    },
+    {
+      "id": "exit.sure.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_ALLY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ALLY1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ALLY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ALLY3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ALLY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ALLY5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "exit.sure.speech.effect0"
+    },
+    {
+      "id": "exit.sure.speech.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["zoqfot", "allied"]
+      },
+      "save_as": "exit_sure_speech_effect0",
+      "next": "exit.sure.speech.effect1"
+    },
+    {
+      "id": "exit.sure.speech.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ZOQFOT_DISTRESS_EVENT", 3, 0, 0]
+      },
+      "save_as": "exit_sure_speech_effect1",
+      "next": "exit.sure.speech.effect2"
+    },
+    {
+      "id": "exit.sure.speech.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 0]
+      },
+      "save_as": "exit_sure_speech_effect2",
+      "next": "end"
+    },
+    {
+      "id": "exit.all_very_interesting",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_all_very_interesting",
+      "next": "exit.all_very_interesting.speech"
+    },
+    {
+      "id": "exit.all_very_interesting.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "SEE_TOLD_YOU0", "on_start": "zoqfot.zoq"},
+            {"phrase": "SEE_TOLD_YOU1", "on_start": "zoqfot.pik"},
+            {"phrase": "SEE_TOLD_YOU2", "on_start": "zoqfot.zoq"},
+            {"phrase": "SEE_TOLD_YOU3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "exit.all_very_interesting.speech.effect0"
+    },
+    {
+      "id": "exit.all_very_interesting.speech.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOSTILE", 1]
+      },
+      "save_as": "exit_all_very_interesting_speech_effect0",
+      "next": "exit.all_very_interesting.speech.effect1"
+    },
+    {
+      "id": "exit.all_very_interesting.speech.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 0]
+      },
+      "save_as": "exit_all_very_interesting_speech_effect1",
+      "next": "exit.all_very_interesting.speech.effect2"
+    },
+    {
+      "id": "exit.all_very_interesting.speech.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_all_very_interesting_speech_effect2",
+      "next": "end"
+    },
+    {
+      "id": "exit.never",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_never",
+      "next": "exit.never.speech"
+    },
+    {
+      "id": "exit.never.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "WE_ENEMIES0", "on_start": "zoqfot.zoq"}, {"phrase": "WE_ENEMIES1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "exit.never.speech.effect0"
+    },
+    {
+      "id": "exit.never.speech.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOSTILE", 1]
+      },
+      "save_as": "exit_never_speech_effect0",
+      "next": "exit.never.speech.effect1"
+    },
+    {
+      "id": "exit.never.speech.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 0]
+      },
+      "save_as": "exit_never_speech_effect1",
+      "next": "exit.never.speech.effect2"
+    },
+    {
+      "id": "exit.never.speech.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_never_speech_effect2",
+      "next": "end"
+    },
+    {
+      "id": "form.alliance",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLY_WITH_US0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLY_WITH_US1", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLY_WITH_US2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLY_WITH_US3", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLY_WITH_US4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLY_WITH_US5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "form.menu"
+    },
+    {
+      "id": "form.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "sure",
+          "text": "sure",
+          "when": true,
+          "next": "exit.sure"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "never",
+          "text": "never",
+          "when": true,
+          "next": "exit.never"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["zoqfot", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "decide_later",
+          "text": "decide_later",
+          "when": true,
+          "next": "exit.decide_later"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "introduce",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_GLAD0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_GLAD1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_GLAD2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_GLAD3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_GLAD4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_GLAD5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "introduce.effect0"
+    },
+    {
+      "id": "introduce.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "we_are_vindicator0", true]
+      },
+      "save_as": "introduce_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "your_race.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "YEARS_AGO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO1", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO2", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO3", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO4", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO5", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO6", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO7", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO8", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO9", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO10", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO11", "on_start": "zoqfot.pik"},
+            {"phrase": "YEARS_AGO12", "on_start": "zoqfot.zoq"},
+            {"phrase": "YEARS_AGO13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "your_race.reply.effect0"
+    },
+    {
+      "id": "your_race.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "your_race", true]
+      },
+      "save_as": "your_race_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "where_from.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "TRAVELED_FAR0", "on_start": "zoqfot.zoq"},
+            {"phrase": "TRAVELED_FAR1", "on_start": "zoqfot.pik"},
+            {"phrase": "TRAVELED_FAR2", "on_start": "zoqfot.zoq"},
+            {"phrase": "TRAVELED_FAR3", "on_start": "zoqfot.pik"},
+            {"phrase": "TRAVELED_FAR4", "on_start": "zoqfot.zoq"},
+            {"phrase": "TRAVELED_FAR5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "where_from.reply.effect0"
+    },
+    {
+      "id": "where_from.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_from", true]
+      },
+      "save_as": "where_from_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "what_emergency.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "UNDER_ATTACK0", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK1", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK2", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK3", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK4", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK5", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK6", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK7", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK8", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK9", "on_start": "zoqfot.pik"},
+            {"phrase": "UNDER_ATTACK10", "on_start": "zoqfot.zoq"},
+            {"phrase": "UNDER_ATTACK11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_emergency.reply.effect0"
+    },
+    {
+      "id": "what_emergency.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_emergency", true]
+      },
+      "save_as": "what_emergency_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "tough_luck.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "NOT_HELPFUL0", "on_start": "zoqfot.zoq"},
+            {"phrase": "NOT_HELPFUL1", "on_start": "zoqfot.pik"},
+            {"phrase": "NOT_HELPFUL2", "on_start": "zoqfot.zoq"},
+            {"phrase": "NOT_HELPFUL3", "on_start": "zoqfot.pik"},
+            {"phrase": "NOT_HELPFUL4", "on_start": "zoqfot.zoq"},
+            {"phrase": "NOT_HELPFUL5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "tough_luck.reply.effect0"
+    },
+    {
+      "id": "tough_luck.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tough_luck", true]
+      },
+      "save_as": "tough_luck_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "what_look_like.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "LOOK_LIKE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "LOOK_LIKE1", "on_start": "zoqfot.pik"},
+            {"phrase": "LOOK_LIKE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "LOOK_LIKE3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_look_like.reply.effect0"
+    },
+    {
+      "id": "what_look_like.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_look_like", true]
+      },
+      "save_as": "what_look_like_reply_effect0",
+      "next": "intro.menu"
+    },
+    {
+      "id": "intro.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "your_race",
+          "text": "your_race",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"get": ["local", "your_race", false]}},
+                  {"not": {"get": ["local", "where_from", false]}},
+                  {"not": {"get": ["local", "what_emergency", false]}}
+                ]
+              },
+              {"not": {"get": ["local", "your_race", false]}}
+            ]
+          },
+          "next": "your_race.reply"
+        },
+        {
+          "id": "where_from",
+          "text": "where_from",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"get": ["local", "your_race", false]}},
+                  {"not": {"get": ["local", "where_from", false]}},
+                  {"not": {"get": ["local", "what_emergency", false]}}
+                ]
+              },
+              {"not": {"get": ["local", "where_from", false]}}
+            ]
+          },
+          "next": "where_from.reply"
+        },
+        {
+          "id": "what_emergency",
+          "text": "what_emergency",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"get": ["local", "your_race", false]}},
+                  {"not": {"get": ["local", "where_from", false]}},
+                  {"not": {"get": ["local", "what_emergency", false]}}
+                ]
+              },
+              {"not": {"get": ["local", "what_emergency", false]}}
+            ]
+          },
+          "next": "what_emergency.reply"
+        },
+        {
+          "id": "tough_luck",
+          "text": "tough_luck",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"not": {"get": ["local", "tough_luck", false]}}
+            ]
+          },
+          "next": "tough_luck.reply"
+        },
+        {
+          "id": "what_look_like",
+          "text": "what_look_like",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"not": {"get": ["local", "what_look_like", false]}}
+            ]
+          },
+          "next": "what_look_like.reply"
+        },
+        {
+          "id": "all_very_interesting",
+          "text": "all_very_interesting",
+          "when": {
+            "not": {
+              "any": [
+                {"not": {"get": ["local", "your_race", false]}},
+                {"not": {"get": ["local", "where_from", false]}},
+                {"not": {"get": ["local", "what_emergency", false]}}
+              ]
+            }
+          },
+          "next": "exit.all_very_interesting"
+        },
+        {
+          "id": "how_can_i_help",
+          "text": "how_can_i_help",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}
+            ]
+          },
+          "next": "form.alliance"
+        },
+        {
+          "id": "how_can_i_help_space",
+          "text": "how_can_i_help",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "any": [
+                    {"not": {"get": ["local", "your_race", false]}},
+                    {"not": {"get": ["local", "where_from", false]}},
+                    {"not": {"get": ["local", "what_emergency", false]}}
+                  ]
+                }
+              },
+              {"not": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}}
+            ]
+          },
+          "next": "exit.how_can_i_help"
+        },
+        {
+          "id": "valuable_info",
+          "text": "valuable_info",
+          "when": {
+            "not": {
+              "any": [
+                {"not": {"get": ["local", "your_race", false]}},
+                {"not": {"get": ["local", "where_from", false]}},
+                {"not": {"get": ["local", "what_emergency", false]}}
+              ]
+            }
+          },
+          "next": "exit.valuable_info"
+        }
+      ]
+    },
+    {
+      "id": "which_fot.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HE_IS0", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS1", "on_start": "zoqfot.pik"},
+            {"phrase": "HE_IS2", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS3", "on_start": "zoqfot.pik"},
+            {"phrase": "HE_IS4", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS5", "on_start": "zoqfot.pik"},
+            {"phrase": "HE_IS6", "on_start": "zoqfot.zoq"},
+            {"phrase": "HE_IS7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "which_fot.reply.effect0"
+    },
+    {
+      "id": "which_fot.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "which_fot", true]
+      },
+      "save_as": "which_fot_reply_effect0",
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "quiet_toadies.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "TOLD_YOU0", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU1", "on_start": "zoqfot.pik"},
+            {"phrase": "TOLD_YOU2", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU3", "on_start": "zoqfot.pik"},
+            {"phrase": "TOLD_YOU4", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU5", "on_start": "zoqfot.pik"},
+            {"phrase": "TOLD_YOU6", "on_start": "zoqfot.zoq"},
+            {"phrase": "TOLD_YOU7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "quiet_toadies.reply.effect0"
+    },
+    {
+      "id": "quiet_toadies.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "quiet_toadies", true]
+      },
+      "save_as": "quiet_toadies_reply_effect0",
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "acquaint.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "which_fot",
+          "text": "which_fot",
+          "when": {"not": {"get": ["local", "which_fot", false]}},
+          "next": "which_fot.reply"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "alliance_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"not": {"get": ["local", "we_are_vindicator0", false]}},
+          "next": "introduce"
+        },
+        {
+          "id": "quiet_toadies",
+          "text": "quiet_toadies",
+          "when": {"not": {"get": ["local", "quiet_toadies", false]}},
+          "next": "quiet_toadies.reply"
+        },
+        {
+          "id": "all_very_interesting",
+          "text": "all_very_interesting",
+          "when": true,
+          "next": "exit.all_very_interesting"
+        },
+        {
+          "id": "valuable_info",
+          "text": "valuable_info",
+          "when": true,
+          "next": "exit.valuable_info"
+        }
+      ]
+    },
+    {
+      "id": "info",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WHAT_SPECIFIC_INFO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WHAT_SPECIFIC_INFO1", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "info.route"
+    },
+    {
+      "id": "info.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_others", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_zebranky", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_stinger", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_guy_in_back", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_past", false]}}}
+            ]
+          },
+          "next": "info.done"
+        }
+      ],
+      "otherwise": "info.menu"
+    },
+    {
+      "id": "info.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "want_specific_info", true]
+      },
+      "save_as": "info_done",
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_others.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_OTHERS0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS5", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS6", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS7", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS8", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS9", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS10", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS11", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_OTHERS12", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_OTHERS13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_others.reply.effect0"
+    },
+    {
+      "id": "what_about_others.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_others", true]
+      },
+      "save_as": "what_about_others_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_zebranky.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_ZEBRANKY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_ZEBRANKY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_ZEBRANKY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY5", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_ZEBRANKY6", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_ZEBRANKY7", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_zebranky.reply.effect0"
+    },
+    {
+      "id": "what_about_zebranky.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_zebranky", true]
+      },
+      "save_as": "what_about_zebranky_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_stinger.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_STINGER0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_STINGER1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_STINGER2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_STINGER3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_STINGER4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_STINGER5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_stinger.reply.effect0"
+    },
+    {
+      "id": "what_about_stinger.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_stinger", true]
+      },
+      "save_as": "what_about_stinger_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_guy_in_back.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "ABOUT_GUY0", "on_start": "zoqfot.zoq"}, {"phrase": "ABOUT_GUY1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_guy_in_back.reply.effect0"
+    },
+    {
+      "id": "what_about_guy_in_back.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_guy_in_back", true]
+      },
+      "save_as": "what_about_guy_in_back_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_past.reply",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ABOUT_PAST0", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST1", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST2", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST3", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST4", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST5", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST6", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST7", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST8", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST9", "on_start": "zoqfot.pik"},
+            {"phrase": "ABOUT_PAST10", "on_start": "zoqfot.zoq"},
+            {"phrase": "ABOUT_PAST11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "what_about_past.reply.effect0"
+    },
+    {
+      "id": "what_about_past.reply.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_past", true]
+      },
+      "save_as": "what_about_past_reply_effect0",
+      "next": "info.route"
+    },
+    {
+      "id": "info.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_others",
+          "text": "what_about_others",
+          "when": {"not": {"get": ["local", "what_about_others", false]}},
+          "next": "what_about_others.reply"
+        },
+        {
+          "id": "what_about_zebranky",
+          "text": "what_about_zebranky",
+          "when": {"not": {"get": ["local", "what_about_zebranky", false]}},
+          "next": "what_about_zebranky.reply"
+        },
+        {
+          "id": "what_about_stinger",
+          "text": "what_about_stinger",
+          "when": {"not": {"get": ["local", "what_about_stinger", false]}},
+          "next": "what_about_stinger.reply"
+        },
+        {
+          "id": "what_about_guy_in_back",
+          "text": "what_about_guy_in_back",
+          "when": {"not": {"get": ["local", "what_about_guy_in_back", false]}},
+          "next": "what_about_guy_in_back.reply"
+        },
+        {
+          "id": "what_about_past",
+          "text": "what_about_past",
+          "when": {"not": {"get": ["local", "what_about_past", false]}},
+          "next": "what_about_past.reply"
+        },
+        {
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "info.back"
+        }
+      ]
+    },
+    {
+      "id": "info.back",
+      "kind": "dialogue",
+      "variants": [{"speech": [{"phrase": "OK_ENOUGH_INFO", "on_start": "zoqfot.zoq"}], "presentation": {"before": "zoqfot.reset"}}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_INFO", 0]}, 0]},
+          "next": "home.info.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_INFO", 0]}, 1]},
+          "next": "home.info.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_INFO", 0]}, 2]},
+          "next": "home.info.2"
+        }
+      ],
+      "otherwise": "home.info.3"
+    },
+    {
+      "id": "home.info.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_11", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_12", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.0.effect0"
+    },
+    {
+      "id": "home.info.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 1]
+      },
+      "save_as": "home_info_0_effect0",
+      "next": "home.info.0.effect1"
+    },
+    {
+      "id": "home.info.0.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_0_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_23", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_24", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_25", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_26", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_27", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.1.effect0"
+    },
+    {
+      "id": "home.info.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 2]
+      },
+      "save_as": "home_info_1_effect0",
+      "next": "home.info.1.effect1"
+    },
+    {
+      "id": "home.info.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_1_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info.2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_30", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_31", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_32", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_33", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_34", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_35", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.2.effect0"
+    },
+    {
+      "id": "home.info.2.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 3]
+      },
+      "save_as": "home_info_2_effect0",
+      "next": "home.info.2.effect1"
+    },
+    {
+      "id": "home.info.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_2_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.info.3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GENERAL_INFO_40", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_41", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_42", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_43", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_44", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_45", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_46", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_47", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_48", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_49", "on_start": "zoqfot.pik"},
+            {"phrase": "GENERAL_INFO_410", "on_start": "zoqfot.zoq"},
+            {"phrase": "GENERAL_INFO_411", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.info.3.effect0"
+    },
+    {
+      "id": "home.info.3.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_INFO", 3]
+      },
+      "save_as": "home_info_3_effect0",
+      "next": "home.info.3.effect1"
+    },
+    {
+      "id": "home.info.3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_homeworld", true]
+      },
+      "save_as": "home_info_3_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.alliance",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "GOOD0", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD1", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD2", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD3", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD4", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD5", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD6", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD7", "on_start": "zoqfot.pik"},
+            {"phrase": "GOOD8", "on_start": "zoqfot.zoq"},
+            {"phrase": "GOOD9", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "home.alliance.effect0"
+    },
+    {
+      "id": "home.alliance.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["zoqfot", "allied"]
+      },
+      "save_as": "home_alliance_effect0",
+      "next": "home.alliance.effect1"
+    },
+    {
+      "id": "home.alliance.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["ZOQFOT_DISTRESS_EVENT", 3, 0, 0]
+      },
+      "save_as": "home_alliance_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 8]}, 0]},
+              {"ne": [{"get": ["story", "KOHR_AH_FRENZY", 0]}, 0]}
+            ]
+          },
+          "next": "war.frenzy"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 1]}, 0]},
+              {"gt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 0]},
+              {"lt": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 5]}
+            ]
+          },
+          "next": "war.delay"
+        }
+      ],
+      "otherwise": "war.deadline"
+    },
+    {
+      "id": "war.frenzy",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "KOHRAH_FRENZY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY1", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY3", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY5", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY6", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY7", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY8", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY9", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_FRENZY10", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_FRENZY11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.frenzy.effect0"
+    },
+    {
+      "id": "war.frenzy.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_KNOW_MASK", 15]
+      },
+      "save_as": "war_frenzy_effect0",
+      "next": "war.frenzy.effect1"
+    },
+    {
+      "id": "war.frenzy.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_frenzy_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.delay",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "UTWIG_DELAY0", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY1", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY2", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY3", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY4", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY5", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY6", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY7", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY8", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY9", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY10", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY11", "on_start": "zoqfot.pik"},
+            {"phrase": "UTWIG_DELAY12", "on_start": "zoqfot.zoq"},
+            {"phrase": "UTWIG_DELAY13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.delay.effect0"
+    },
+    {
+      "id": "war.delay.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "ZOQFOT_KNOW_MASK", "set", 1]
+      },
+      "save_as": "war_delay_effect0",
+      "next": "war.delay.effect1"
+    },
+    {
+      "id": "war.delay.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_delay_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.deadline",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "UTWIG_SUPOX_MISSION", 0]}, 0]}, "next": "war.deadline.extended"}],
+      "otherwise": "war.deadline.normal"
+    },
+    {
+      "id": "war.deadline.extended",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "years_left",
+          {
+            "subtract": [
+              {"add": [{"get": ["encounter", "years_to_kohrah_victory", 4]}, 1]},
+              {"get": ["encounter", "calendar_campaign_year", 0]}
+            ]
+          }
+        ]
+      },
+      "save_as": "war_deadline_extended",
+      "next": "war.warning"
+    },
+    {
+      "id": "war.deadline.normal",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": [
+          "local",
+          "years_left",
+          {
+            "subtract": [
+              {"add": [{"get": ["encounter", "years_to_kohrah_victory", 4]}, 0]},
+              {"get": ["encounter", "calendar_campaign_year", 0]}
+            ]
+          }
+        ]
+      },
+      "save_as": "war_deadline_normal",
+      "next": "war.warning"
+    },
+    {
+      "id": "war.warning",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 4]}, 0]},
+              {
+                "any": [
+                  {"le": [{"get": ["local", "years_left", 0]}, 0]},
+                  {
+                    "all": [
+                      {"eq": [{"get": ["local", "years_left", 0]}, 1]},
+                      {"gt": [{"get": ["encounter", "calendar_month", 0]}, 2]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "war.losing"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"bit_and": [{"get": ["story", "ZOQFOT_KNOW_MASK", 0]}, 2]}, 0]},
+              {"eq": [{"get": ["local", "years_left", 0]}, 1]},
+              {
+                "not": {
+                  "any": [
+                    {"le": [{"get": ["local", "years_left", 0]}, 0]},
+                    {
+                      "all": [
+                        {"eq": [{"get": ["local", "years_left", 0]}, 1]},
+                        {"gt": [{"get": ["encounter", "calendar_month", 0]}, 2]}
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "war.winning"
+        }
+      ],
+      "otherwise": "war.none"
+    },
+    {
+      "id": "war.losing",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "URQUAN_NEARLY_GONE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "URQUAN_NEARLY_GONE1", "on_start": "zoqfot.pik"},
+            {"phrase": "URQUAN_NEARLY_GONE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "URQUAN_NEARLY_GONE3", "on_start": "zoqfot.pik"},
+            {"phrase": "URQUAN_NEARLY_GONE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "URQUAN_NEARLY_GONE5", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.losing.effect0"
+    },
+    {
+      "id": "war.losing.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "ZOQFOT_KNOW_MASK", "set", 6]
+      },
+      "save_as": "war_losing_effect0",
+      "next": "war.losing.effect1"
+    },
+    {
+      "id": "war.losing.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_losing_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.winning",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "KOHRAH_WINNING0", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING1", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING2", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING3", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING4", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING5", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING6", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING7", "on_start": "zoqfot.pik"},
+            {"phrase": "KOHRAH_WINNING8", "on_start": "zoqfot.zoq"},
+            {"phrase": "KOHRAH_WINNING9", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.winning.effect0"
+    },
+    {
+      "id": "war.winning.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.bits",
+        "args": ["story", "ZOQFOT_KNOW_MASK", "set", 2]
+      },
+      "save_as": "war_winning_effect0",
+      "next": "war.winning.effect1"
+    },
+    {
+      "id": "war.winning.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_winning_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "war.none",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [{"phrase": "NO_WAR_NEWS0", "on_start": "zoqfot.zoq"}, {"phrase": "NO_WAR_NEWS1", "on_start": "zoqfot.pik"}],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "war.none.effect0"
+    },
+    {
+      "id": "war.none.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "any_war_news", true]
+      },
+      "save_as": "war_none_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_homeworld",
+          "text": "whats_up_homeworld",
+          "when": {"not": {"get": ["local", "whats_up_homeworld", false]}},
+          "next": "home.info"
+        },
+        {
+          "id": "any_war_news",
+          "text": "any_war_news",
+          "when": {"not": {"get": ["local", "any_war_news", false]}},
+          "next": "war"
+        },
+        {
+          "id": "i_want_alliance",
+          "text": "i_want_alliance",
+          "when": {"not": {"eq": [{"query": "galaxy.relationship", "args": ["zoqfot"]}, "allied"]}},
+          "next": "home.alliance"
+        },
+        {
+          "id": "want_specific_info",
+          "text": "want_specific_info",
+          "when": {
+            "all": [
+              {"eq": [{"query": "galaxy.relationship", "args": ["zoqfot"]}, "allied"]},
+              {"not": {"get": ["local", "want_specific_info", false]}}
+            ]
+          },
+          "next": "info"
+        },
+        {
+          "id": "bye_homeworld",
+          "text": "bye_homeworld",
+          "when": true,
+          "next": "exit.bye_homeworld"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ZOQFOT_HOSTILE", 0]}, 0]},
+          "next": "hostile"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MET_ZOQFOT", 0]}, 0]}},
+          "next": "first"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "ZOQFOT_DISTRESS", 0]}, 0]},
+          "next": "rescue"
+        },
+        {
+          "when": {"not": {"eq": [{"query": "galaxy.relationship", "args": ["zoqfot"]}, "allied"]}},
+          "next": "neutral"
+        }
+      ],
+      "otherwise": "allied"
+    },
+    {
+      "id": "outtakes",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "OUT_TAKES0", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES1", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES2", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES3", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES4", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES5", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES6", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES7", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES8", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES9", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES10", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES11", "on_start": "zoqfot.pik"},
+            {"phrase": "OUT_TAKES12", "on_start": "zoqfot.zoq"},
+            {"phrase": "OUT_TAKES13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "outtakes.effect0"
+    },
+    {
+      "id": "outtakes.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes_effect0",
       "next": "end"
+    },
+    {
+      "id": "hostile",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 0]},
+          "next": "hostile.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 1]},
+          "next": "hostile.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 2]},
+          "next": "hostile.2"
+        }
+      ],
+      "otherwise": "hostile.3"
+    },
+    {
+      "id": "hostile.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.0.effect0"
+    },
+    {
+      "id": "hostile.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "hostile_0_effect0",
+      "next": "hostile.0.effect1"
+    },
+    {
+      "id": "hostile.0.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_0_effect1",
+      "next": "end"
+    },
+    {
+      "id": "hostile.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "HOSTILE_HELLO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_23", "on_start": "zoqfot.pik"},
+            {"phrase": "HOSTILE_HELLO_24", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_25", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.1.effect0"
+    },
+    {
+      "id": "hostile.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 2]
+      },
+      "save_as": "hostile_1_effect0",
+      "next": "hostile.1.effect1"
+    },
+    {
+      "id": "hostile.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_1_effect1",
+      "next": "end"
+    },
+    {
+      "id": "hostile.2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_30", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_31", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.2.effect0"
+    },
+    {
+      "id": "hostile.2.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "hostile_2_effect0",
+      "next": "hostile.2.effect1"
+    },
+    {
+      "id": "hostile.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_2_effect1",
+      "next": "end"
+    },
+    {
+      "id": "hostile.3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "HOSTILE_HELLO_40", "on_start": "zoqfot.zoq"},
+            {"phrase": "HOSTILE_HELLO_41", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "hostile.3.effect0"
+    },
+    {
+      "id": "hostile.3.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "hostile_3_effect0",
+      "next": "hostile.3.effect1"
+    },
+    {
+      "id": "hostile.3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hostile_3_effect1",
+      "next": "end"
+    },
+    {
+      "id": "first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MET_ZOQFOT", 1]
+      },
+      "save_as": "first",
+      "next": "first.route"
+    },
+    {
+      "id": "first.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]}, "next": "first.home"}],
+      "otherwise": "first.scout"
+    },
+    {
+      "id": "first.home",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_ARE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE5", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE6", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE7", "on_start": "zoqfot.pik"},
+            {"phrase": "INIT_HOME_HELLO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "INIT_HOME_HELLO1", "on_start": "zoqfot.pik"},
+            {"phrase": "INIT_HOME_HELLO2", "on_start": "zoqfot.zoq"},
+            {"phrase": "INIT_HOME_HELLO3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "first.scout",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "WE_ARE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE1", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE3", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE5", "on_start": "zoqfot.pik"},
+            {"phrase": "WE_ARE6", "on_start": "zoqfot.zoq"},
+            {"phrase": "WE_ARE7", "on_start": "zoqfot.pik"},
+            {"phrase": "SCOUT_HELLO0", "on_start": "zoqfot.zoq"},
+            {"phrase": "SCOUT_HELLO1", "on_start": "zoqfot.pik"},
+            {"phrase": "SCOUT_HELLO2", "on_start": "zoqfot.zoq"},
+            {"phrase": "SCOUT_HELLO3", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "acquaint.menu"
+    },
+    {
+      "id": "rescue",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "THANKS_FOR_RESCUE0", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE1", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE2", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE3", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE4", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE5", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE6", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE7", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE8", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE9", "on_start": "zoqfot.pik"},
+            {"phrase": "THANKS_FOR_RESCUE10", "on_start": "zoqfot.zoq"},
+            {"phrase": "THANKS_FOR_RESCUE11", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "rescue.effect0"
+    },
+    {
+      "id": "rescue.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_DISTRESS", 0]
+      },
+      "save_as": "rescue_effect0",
+      "next": "rescue.effect1"
+    },
+    {
+      "id": "rescue.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "fleet.give",
+        "args": ["zoqfot", 4]
+      },
+      "save_as": "rescue_effect1",
+      "next": "home.menu"
+    },
+    {
+      "id": "neutral",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 0]}, "next": "neutral.0"}],
+      "otherwise": "neutral.1"
+    },
+    {
+      "id": "neutral.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "NEUTRAL_HOME_HELLO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_11", "on_start": "zoqfot.pik"},
+            {"phrase": "NEUTRAL_HOME_HELLO_12", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "neutral.0.effect0"
+    },
+    {
+      "id": "neutral.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "neutral_0_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "neutral.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "NEUTRAL_HOME_HELLO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "NEUTRAL_HOME_HELLO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "NEUTRAL_HOME_HELLO_23", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "neutral.1.effect0"
+    },
+    {
+      "id": "neutral.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "neutral_1_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 0]},
+          "next": "allied.0"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 1]},
+          "next": "allied.1"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "ZOQFOT_HOME_VISITS", 0]}, 2]},
+          "next": "allied.2"
+        }
+      ],
+      "otherwise": "allied.3"
+    },
+    {
+      "id": "allied.0",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_10", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_11", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_12", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_13", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.0.effect0"
+    },
+    {
+      "id": "allied.0.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 1]
+      },
+      "save_as": "allied_0_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied.1",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_20", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_21", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_22", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_23", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_24", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_25", "on_start": "zoqfot.pik"},
+            {"phrase": "ALLIED_HOME_HELLO_26", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_27", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.1.effect0"
+    },
+    {
+      "id": "allied.1.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 2]
+      },
+      "save_as": "allied_1_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied.2",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_30", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_31", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.2.effect0"
+    },
+    {
+      "id": "allied.2.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "allied_2_effect0",
+      "next": "home.menu"
+    },
+    {
+      "id": "allied.3",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            {"phrase": "ALLIED_HOME_HELLO_40", "on_start": "zoqfot.zoq"},
+            {"phrase": "ALLIED_HOME_HELLO_41", "on_start": "zoqfot.pik"}
+          ],
+          "presentation": {"before": "zoqfot.reset"}
+        }
+      ],
+      "next": "allied.3.effect0"
+    },
+    {
+      "id": "allied.3.effect0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZOQFOT_HOME_VISITS", 3]
+      },
+      "save_as": "allied_3_effect0",
+      "next": "home.menu"
     },
     {
       "id": "end",
       "kind": "end",
       "outcome": "native_segue"
     }
-  ]
+  ],
+  "alliance_name_base": "name_1"
 }

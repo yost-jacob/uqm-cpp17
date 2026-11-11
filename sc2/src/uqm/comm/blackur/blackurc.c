@@ -130,28 +130,10 @@ static LOCDATA blackurq_desc =
 };
 
 // Asset/lifecycle compatibility only. The JSON graph owns story behavior.
-static void Intro (void) {}
-
-static COUNT
-uninit_blackurq (void)
-{
-	return (0);
-}
-
-static void
-post_blackurq_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_blackurq_comm (void)
 {
 	LOCDATA *retval;
-
-	blackurq_desc.init_encounter_func = Intro;
-	blackurq_desc.post_encounter_func = post_blackurq_enc;
-	blackurq_desc.uninit_encounter_func = uninit_blackurq;
 
 	blackurq_desc.AlienTextBaseline.x =	TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	blackurq_desc.AlienTextBaseline.y = 0;

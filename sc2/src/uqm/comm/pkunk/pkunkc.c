@@ -97,18 +97,7 @@ static LOCDATA pkunk_desc =
 
 // Story branches and actions are defined in comm.pkunk.dialogue.json.
 // Keep the native descriptor as the media/lifecycle compatibility boundary.
-static void
-Intro (void)
-{
-}
-
 // Called after combat or communications
-static COUNT
-uninit_pkunk (void)
-{
-	return (0);
-}
-
 static void
 post_pkunk_enc (void)
 {
@@ -131,9 +120,7 @@ init_pkunk_comm (void)
 {
 	LOCDATA *retval;
 
-	pkunk_desc.init_encounter_func = Intro;
 	pkunk_desc.post_encounter_func = post_pkunk_enc;
-	pkunk_desc.uninit_encounter_func = uninit_pkunk;
 
 	pkunk_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	pkunk_desc.AlienTextBaseline.y = 0;

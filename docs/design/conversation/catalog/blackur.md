@@ -6,15 +6,12 @@
 
 Script: [blackurc.c](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L1). Phrase bank: [kohrah.txt](../../../../sc2/content/base/comm/kohrah/kohrah.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 76 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 76 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_blackurq_comm</code> | No enclosing branch condition; [152](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L152) |
-| <code>post_encounter_func</code> | [<code>post_blackurq_enc</code>](#node-post_blackurq_enc) | <code>init_blackurq_comm</code> | No enclosing branch condition; [153](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L153) |
-| <code>uninit_encounter_func</code> | [<code>uninit_blackurq</code>](#node-uninit_blackurq) | <code>init_blackurq_comm</code> | No enclosing branch condition; [154](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L154) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_blackurq"]
-    n2["post_blackurq_enc"]
-    n3["init_blackurq_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_blackurq_comm"]
 ```
 
 ## Condition catalog
@@ -49,68 +40,11 @@ Presentation descriptor <code>blackurq_desc</code>: [source](../../../../sc2/src
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L133).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_blackurq"></a>
-
-### uninit_blackurq
-
-<code>static COUNT uninit_blackurq(void)</code> — [source](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L136).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [138](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L138) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_blackurq_enc"></a>
-
-### post_blackurq_enc
-
-<code>static void post_blackurq_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L142).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_blackurq_comm"></a>
 
 ### init_blackurq_comm
 
-<code>LOCDATA *init_blackurq_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L148).
+<code>LOCDATA *init_blackurq_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L134).
 
 #### Actions, queries, local updates, and control flow
 
@@ -118,19 +52,16 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>blackurq_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [152](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L152) |
-| update | <code>blackurq_desc.post_encounter_func = post_blackurq_enc</code> | No enclosing branch condition | [153](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L153) |
-| update | <code>blackurq_desc.uninit_encounter_func = uninit_blackurq</code> | No enclosing branch condition | [154](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L154) |
-| update | <code>blackurq_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [156](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L156) |
-| update | <code>blackurq_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [157](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L157) |
-| update | <code>blackurq_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [158](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L158) |
-| call | <code>GET_GAME_STATE(KOHR_AH_KILLED_ALL)</code> | No enclosing branch condition | [160](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L160) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C1](#condition-c1) | [161](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L161) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C1](#condition-c1) | [161](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L161) |
-| call | <code>setSegue(Segue_hostile)</code> | [C2](#condition-c2) | [163](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L163) |
-| call | <code>setSegue(Segue_peace)</code> | [C3](#condition-c3) | [167](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L167) |
-| update | <code>retval = &amp;blackurq_desc</code> | No enclosing branch condition | [169](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L169) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [171](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L171) |
+| update | <code>blackurq_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [138](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L138) |
+| update | <code>blackurq_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [139](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L139) |
+| update | <code>blackurq_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [140](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L140) |
+| call | <code>GET_GAME_STATE(KOHR_AH_KILLED_ALL)</code> | No enclosing branch condition | [142](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L142) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C1](#condition-c1) | [143](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L143) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C1](#condition-c1) | [143](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L143) |
+| call | <code>setSegue(Segue_hostile)</code> | [C2](#condition-c2) | [145](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L145) |
+| call | <code>setSegue(Segue_peace)</code> | [C3](#condition-c3) | [149](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L149) |
+| update | <code>retval = &amp;blackurq_desc</code> | No enclosing branch condition | [151](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L151) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [153](../../../../sc2/src/uqm/comm/blackur/blackurc.c#L153) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -138,10 +69,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	blackurq_desc.init_encounter_func = Intro;
-	blackurq_desc.post_encounter_func = post_blackurq_enc;
-	blackurq_desc.uninit_encounter_func = uninit_blackurq;
 
 	blackurq_desc.AlienTextBaseline.x =	TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	blackurq_desc.AlienTextBaseline.y = 0;

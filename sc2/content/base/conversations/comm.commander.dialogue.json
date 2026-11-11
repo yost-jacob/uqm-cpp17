@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 127,
   "id": "comandr",
   "resource": "comm.commander.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource/lifecycle configuration remains. First-contact aid, radio delivery, power restoration, Moon/Ilwrath and alliance naming use graph/state operations and a bounded media cue."
   },
   "phrases": [
     {
@@ -705,121 +705,1518 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.ok_i_will_get_radios",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THANKS_FOR_HELPING"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.well_go_get_them_now",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GLAD_WHEN_YOU_COME_BACK"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_will_take_care_of_base.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_LUCK_WITH_BASE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_will_take_care_of_base",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["comandr", null]
+        "verb": "state.set",
+        "args": ["story", "WILL_DESTROY_BASE", 1]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_we_will_take_care_of_base",
+      "next": "exit.we_will_take_care_of_base.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "exit.take_care_of_base_again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_LUCK_AGAIN"]}],
+      "next": "end"
     },
     {
-      "id": "menu",
+      "id": "exit.base_was_abandoned.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IT_WAS_ABANDONED", "HERE_COMES_ILWRATH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.base_was_abandoned",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
+      },
+      "save_as": "exit_base_was_abandoned",
+      "next": "exit.base_was_abandoned.speech"
+    },
+    {
+      "id": "exit.i_lied_it_was_abandoned.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IT_WAS_ABANDONED", "HERE_COMES_ILWRATH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.i_lied_it_was_abandoned",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
+      },
+      "save_as": "exit_i_lied_it_was_abandoned",
+      "next": "exit.i_lied_it_was_abandoned.speech"
+    },
+    {
+      "id": "exit.oh_yes_big_fight.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IM_GLAD_YOU_WON", "HERE_COMES_ILWRATH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.oh_yes_big_fight",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
+      },
+      "save_as": "exit_oh_yes_big_fight",
+      "next": "exit.oh_yes_big_fight.speech"
+    },
+    {
+      "id": "exit.i_cant_talk_about_it.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["IM_SURE_IT_WAS_DIFFICULT", "HERE_COMES_ILWRATH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.i_cant_talk_about_it",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 1]
+      },
+      "save_as": "exit_i_cant_talk_about_it",
+      "next": "exit.i_cant_talk_about_it.speech"
+    },
+    {
+      "id": "cook_their_butts.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["COOK_BUTTS", "THIS_MAY_SEEM_SILLY"]}],
+      "next": "names.menu"
+    },
+    {
+      "id": "cook_their_butts.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "STARBASE_AVAILABLE", 1]
+      },
+      "save_as": "cook_their_butts_effect1",
+      "next": "cook_their_butts.speech"
+    },
+    {
+      "id": "cook_their_butts",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]
+      },
+      "save_as": "cook_their_butts",
+      "next": "cook_their_butts.effect1"
+    },
+    {
+      "id": "overthrow_evil_aliens.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OVERTHROW_ALIENS", "THIS_MAY_SEEM_SILLY"]}],
+      "next": "names.menu"
+    },
+    {
+      "id": "overthrow_evil_aliens.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "STARBASE_AVAILABLE", 1]
+      },
+      "save_as": "overthrow_evil_aliens_effect1",
+      "next": "overthrow_evil_aliens.speech"
+    },
+    {
+      "id": "overthrow_evil_aliens",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]
+      },
+      "save_as": "overthrow_evil_aliens",
+      "next": "overthrow_evil_aliens.effect1"
+    },
+    {
+      "id": "annihilate_those_monsters.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILL_MONSTERS", "THIS_MAY_SEEM_SILLY"]}],
+      "next": "names.menu"
+    },
+    {
+      "id": "annihilate_those_monsters.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "STARBASE_AVAILABLE", 1]
+      },
+      "save_as": "annihilate_those_monsters_effect1",
+      "next": "annihilate_those_monsters.speech"
+    },
+    {
+      "id": "annihilate_those_monsters",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]
+      },
+      "save_as": "annihilate_those_monsters",
+      "next": "annihilate_those_monsters.effect1"
+    },
+    {
+      "id": "name.0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_THE_NAFS", "STARBASE_WILL_BE_READY"]}],
+      "next": "end"
+    },
+    {
+      "id": "name.0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NEW_ALLIANCE_NAME", 0]
+      },
+      "save_as": "name_0",
+      "next": "name.0.speech"
+    },
+    {
+      "id": "name.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_THE_CAN", "STARBASE_WILL_BE_READY"]}],
+      "next": "end"
+    },
+    {
+      "id": "name.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NEW_ALLIANCE_NAME", 1]
+      },
+      "save_as": "name_1",
+      "next": "name.1.speech"
+    },
+    {
+      "id": "name.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_THE_UFW", "STARBASE_WILL_BE_READY"]}],
+      "next": "end"
+    },
+    {
+      "id": "name.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NEW_ALLIANCE_NAME", 2]
+      },
+      "save_as": "name_2",
+      "next": "name.2.speech"
+    },
+    {
+      "id": "name.3.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "speech": [
+            "OK_THE_NAME_IS_EMPIRE0",
+            {"insert": {"get": ["player", "captain_name", ""]}},
+            "OK_THE_NAME_IS_EMPIRE1",
+            "STARBASE_WILL_BE_READY"
+          ]
+        }
+      ],
+      "next": "end"
+    },
+    {
+      "id": "name.3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "NEW_ALLIANCE_NAME", 3]
+      },
+      "save_as": "name_3",
+      "next": "name.3.speech"
+    },
+    {
+      "id": "names.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "name_1",
+          "text": "name_1",
+          "when": true,
+          "next": "name.0"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "name_2",
+          "text": "name_2",
+          "when": true,
+          "next": "name.1"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "name_3",
+          "text": "name_3",
+          "when": true,
+          "next": "name.2"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["comandr", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "name_40",
+          "text": {"compose": ["name_40", {"insert": {"get": ["player", "captain_name", ""]}}, "name_41"]},
+          "when": true,
+          "next": "name.3"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "no_but_well_help0",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THE_WHAT_FROM_WHERE"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "what_slave_planet",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_KNOW_WHO_YOU_ARE"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "i_lied",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_KNOW_WHO_YOU_ARE"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "plumb_out",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_KIND_OF_IDIOT"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "supply.yes",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_TIME"]}],
+      "next": "supply.route"
+    },
+    {
+      "id": "supply.route",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"query": "inventory.quantity", "args": ["radioactive"]}, 0]}, "next": "radios.menu"}],
+      "otherwise": "supply.empty"
+    },
+    {
+      "id": "supply.empty",
       "kind": "dialogue",
       "variants": [{"speech": []}],
-      "next": "end"
+      "responses": [
+        {
+          "id": "i_lied",
+          "text": "i_lied",
+          "when": true,
+          "next": "i_lied"
+        },
+        {
+          "id": "plumb_out",
+          "text": "plumb_out",
+          "when": true,
+          "next": "plumb_out"
+        }
+      ]
+    },
+    {
+      "id": "no.route",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"query": "inventory.quantity", "args": ["radioactive"]}, 0]}, "next": "radios.menu"}],
+      "otherwise": "no.menu"
+    },
+    {
+      "id": "no.i_lost_my_lander.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_IS_A_NEW_LANDER"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "no.i_lost_my_lander.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "LANDERS_LOST", 1]
+      },
+      "save_as": "no_i_lost_my_lander_effect2",
+      "next": "no.i_lost_my_lander.speech"
+    },
+    {
+      "id": "no.i_lost_my_lander.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["crew", 4]
+      },
+      "save_as": "no_i_lost_my_lander_effect1",
+      "next": "no.i_lost_my_lander.effect2"
+    },
+    {
+      "id": "no.i_lost_my_lander",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["landers", 1]
+      },
+      "save_as": "no_i_lost_my_lander",
+      "next": "no.i_lost_my_lander.effect1"
+    },
+    {
+      "id": "no.i_lost_another_lander.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_IS_ANOTHER_LANDER"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "no.i_lost_another_lander.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["crew", 4]
+      },
+      "save_as": "no_i_lost_another_lander_effect1",
+      "next": "no.i_lost_another_lander.speech"
+    },
+    {
+      "id": "no.i_lost_another_lander",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["landers", 1]
+      },
+      "save_as": "no_i_lost_another_lander",
+      "next": "no.i_lost_another_lander.effect1"
+    },
+    {
+      "id": "no.need_fuel_mercury.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_FUEL"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "no.need_fuel_mercury.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "GIVEN_FUEL_BEFORE", 1]
+      },
+      "save_as": "no_need_fuel_mercury_effect1",
+      "next": "no.need_fuel_mercury.speech"
+    },
+    {
+      "id": "no.need_fuel_mercury",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["fuel", 5]
+      },
+      "save_as": "no_need_fuel_mercury",
+      "next": "no.need_fuel_mercury.effect1"
+    },
+    {
+      "id": "no.need_fuel_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_FUEL_AGAIN"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "no.need_fuel_again",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["fuel", 5]
+      },
+      "save_as": "no_need_fuel_again",
+      "next": "no.need_fuel_again.speech"
+    },
+    {
+      "id": "where.can.radios.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RADIOS_ON_MERCURY"]}],
+      "next": "no.route"
+    },
+    {
+      "id": "where.can.radios",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_can_i_get_radios", true]
+      },
+      "save_as": "where_can_radios",
+      "next": "where.can.radios.speech"
+    },
+    {
+      "id": "no.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "i_lost_my_lander",
+          "text": "i_lost_my_lander",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "LANDERS_LOST", 0]}, 0]}}
+            ]
+          },
+          "next": "no.i_lost_my_lander"
+        },
+        {
+          "id": "i_lost_another_lander",
+          "text": "i_lost_another_lander",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
+                ]
+              },
+              {"ne": [{"get": ["story", "LANDERS_LOST", 0]}, 0]}
+            ]
+          },
+          "next": "no.i_lost_another_lander"
+        },
+        {
+          "id": "need_fuel_mercury",
+          "text": "need_fuel_mercury",
+          "when": {
+            "all": [
+              {"lt": [{"query": "ship.fuel", "args": []}, 2]},
+              {"not": {"ne": [{"get": ["story", "GIVEN_FUEL_BEFORE", 0]}, 0]}}
+            ]
+          },
+          "next": "no.need_fuel_mercury"
+        },
+        {
+          "id": "need_fuel_again",
+          "text": "need_fuel_again",
+          "when": {
+            "all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"ne": [{"get": ["story", "GIVEN_FUEL_BEFORE", 0]}, 0]}]
+          },
+          "next": "no.need_fuel_again"
+        },
+        {
+          "id": "ok_i_will_get_radios",
+          "text": "ok_i_will_get_radios",
+          "when": true,
+          "next": "exit.ok_i_will_get_radios"
+        },
+        {
+          "id": "where_can_i_get_radios",
+          "text": "where_can_i_get_radios",
+          "when": {"not": {"get": ["local", "where_can_i_get_radios", false]}},
+          "next": "where.can.radios"
+        }
+      ]
+    },
+    {
+      "id": "ask.i_lost_my_lander.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_IS_A_NEW_LANDER"]}],
+      "next": "ask.menu"
+    },
+    {
+      "id": "ask.i_lost_my_lander.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "LANDERS_LOST", 1]
+      },
+      "save_as": "ask_i_lost_my_lander_effect2",
+      "next": "ask.i_lost_my_lander.speech"
+    },
+    {
+      "id": "ask.i_lost_my_lander.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["crew", 4]
+      },
+      "save_as": "ask_i_lost_my_lander_effect1",
+      "next": "ask.i_lost_my_lander.effect2"
+    },
+    {
+      "id": "ask.i_lost_my_lander",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["landers", 1]
+      },
+      "save_as": "ask_i_lost_my_lander",
+      "next": "ask.i_lost_my_lander.effect1"
+    },
+    {
+      "id": "ask.i_lost_another_lander.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_IS_ANOTHER_LANDER"]}],
+      "next": "ask.menu"
+    },
+    {
+      "id": "ask.i_lost_another_lander.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["crew", 4]
+      },
+      "save_as": "ask_i_lost_another_lander_effect1",
+      "next": "ask.i_lost_another_lander.speech"
+    },
+    {
+      "id": "ask.i_lost_another_lander",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["landers", 1]
+      },
+      "save_as": "ask_i_lost_another_lander",
+      "next": "ask.i_lost_another_lander.effect1"
+    },
+    {
+      "id": "ask.need_fuel_mercury.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_FUEL"]}],
+      "next": "ask.menu"
+    },
+    {
+      "id": "ask.need_fuel_mercury.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "GIVEN_FUEL_BEFORE", 1]
+      },
+      "save_as": "ask_need_fuel_mercury_effect1",
+      "next": "ask.need_fuel_mercury.speech"
+    },
+    {
+      "id": "ask.need_fuel_mercury",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["fuel", 5]
+      },
+      "save_as": "ask_need_fuel_mercury",
+      "next": "ask.need_fuel_mercury.effect1"
+    },
+    {
+      "id": "ask.need_fuel_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_FUEL_AGAIN"]}],
+      "next": "ask.menu"
+    },
+    {
+      "id": "ask.need_fuel_again",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["fuel", 5]
+      },
+      "save_as": "ask_need_fuel_again",
+      "next": "ask.need_fuel_again.speech"
+    },
+    {
+      "id": "where.get.radios.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RADIOS_ON_MERCURY"]}],
+      "next": "ask.menu"
+    },
+    {
+      "id": "where.get.radios",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_get_radios", true]
+      },
+      "save_as": "where_get_radios",
+      "next": "where.get.radios.speech"
+    },
+    {
+      "id": "ask.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "i_lost_my_lander",
+          "text": "i_lost_my_lander",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "LANDERS_LOST", 0]}, 0]}}
+            ]
+          },
+          "next": "ask.i_lost_my_lander"
+        },
+        {
+          "id": "i_lost_another_lander",
+          "text": "i_lost_another_lander",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
+                ]
+              },
+              {"ne": [{"get": ["story", "LANDERS_LOST", 0]}, 0]}
+            ]
+          },
+          "next": "ask.i_lost_another_lander"
+        },
+        {
+          "id": "need_fuel_mercury",
+          "text": "need_fuel_mercury",
+          "when": {
+            "all": [
+              {"lt": [{"query": "ship.fuel", "args": []}, 2]},
+              {"not": {"ne": [{"get": ["story", "GIVEN_FUEL_BEFORE", 0]}, 0]}}
+            ]
+          },
+          "next": "ask.need_fuel_mercury"
+        },
+        {
+          "id": "need_fuel_again",
+          "text": "need_fuel_again",
+          "when": {
+            "all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"ne": [{"get": ["story", "GIVEN_FUEL_BEFORE", 0]}, 0]}]
+          },
+          "next": "ask.need_fuel_again"
+        },
+        {
+          "id": "well_go_get_them_now",
+          "text": "well_go_get_them_now",
+          "when": true,
+          "next": "exit.well_go_get_them_now"
+        },
+        {
+          "id": "where_get_radios",
+          "text": "where_get_radios",
+          "when": {"not": {"get": ["local", "where_get_radios", false]}},
+          "next": "where.get.radios"
+        }
+      ]
+    },
+    {
+      "id": "base.fought",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_REALLY_FOUGHT_BASE"]}],
+      "responses": [
+        {
+          "id": "oh_yes_big_fight",
+          "text": "oh_yes_big_fight",
+          "when": true,
+          "next": "exit.oh_yes_big_fight"
+        },
+        {
+          "id": "i_lied_it_was_abandoned",
+          "text": "i_lied_it_was_abandoned",
+          "when": true,
+          "next": "exit.i_lied_it_was_abandoned"
+        },
+        {
+          "id": "i_cant_talk_about_it",
+          "text": "i_cant_talk_about_it",
+          "when": true,
+          "next": "exit.i_cant_talk_about_it"
+        }
+      ]
+    },
+    {
+      "id": "base.destroyed.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "base_was_abandoned",
+          "text": "base_was_abandoned",
+          "when": true,
+          "next": "exit.base_was_abandoned"
+        },
+        {
+          "id": "we_fought_them",
+          "text": "we_fought_them",
+          "when": true,
+          "next": "base.fought"
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BASE_ON_MOON"]}],
+      "next": "help.route"
+    },
+    {
+      "id": "help.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "MOONBASE_DESTROYED", 0]}, 0]}, "next": "base.destroyed.menu"}],
+      "otherwise": "moon.menu"
+    },
+    {
+      "id": "moon.greet",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEALT_WITH_BASE_YET"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "base.greet",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEALT_WITH_BASE_YET"]}],
+      "next": "base.destroyed.menu"
+    },
+    {
+      "id": "moon.about",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "STARBASE_YACK_STACK1", 0]}, 0]}, "next": "moon.about.first"}],
+      "otherwise": "moon.about.again"
+    },
+    {
+      "id": "moon.about.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_BASE"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "moon.about.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "STARBASE_YACK_STACK1", 1]
+      },
+      "save_as": "moon_about_first",
+      "next": "moon.about.first.speech"
+    },
+    {
+      "id": "moon.about.again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_BASE_AGAIN"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "moon.i_lost_my_lander.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_IS_A_NEW_LANDER"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "moon.i_lost_my_lander.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "LANDERS_LOST", 1]
+      },
+      "save_as": "moon_i_lost_my_lander_effect2",
+      "next": "moon.i_lost_my_lander.speech"
+    },
+    {
+      "id": "moon.i_lost_my_lander.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["crew", 4]
+      },
+      "save_as": "moon_i_lost_my_lander_effect1",
+      "next": "moon.i_lost_my_lander.effect2"
+    },
+    {
+      "id": "moon.i_lost_my_lander",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["landers", 1]
+      },
+      "save_as": "moon_i_lost_my_lander",
+      "next": "moon.i_lost_my_lander.effect1"
+    },
+    {
+      "id": "moon.i_lost_another_lander.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERE_IS_ANOTHER_LANDER"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "moon.i_lost_another_lander.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["crew", 4]
+      },
+      "save_as": "moon_i_lost_another_lander_effect1",
+      "next": "moon.i_lost_another_lander.speech"
+    },
+    {
+      "id": "moon.i_lost_another_lander",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["landers", 1]
+      },
+      "save_as": "moon_i_lost_another_lander",
+      "next": "moon.i_lost_another_lander.effect1"
+    },
+    {
+      "id": "moon.need_fuel_luna.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_FUEL"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "moon.need_fuel_luna.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "GIVEN_FUEL_BEFORE", 1]
+      },
+      "save_as": "moon_need_fuel_luna_effect1",
+      "next": "moon.need_fuel_luna.speech"
+    },
+    {
+      "id": "moon.need_fuel_luna",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["fuel", 5]
+      },
+      "save_as": "moon_need_fuel_luna",
+      "next": "moon.need_fuel_luna.effect1"
+    },
+    {
+      "id": "moon.need_fuel_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_FUEL_AGAIN"]}],
+      "next": "moon.menu"
+    },
+    {
+      "id": "moon.need_fuel_again",
+      "kind": "action",
+      "action": {
+        "verb": "ship.adjust",
+        "args": ["fuel", 5]
+      },
+      "save_as": "moon_need_fuel_again",
+      "next": "moon.need_fuel_again.speech"
+    },
+    {
+      "id": "moon.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "i_lost_my_lander",
+          "text": "i_lost_my_lander",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
+                ]
+              },
+              {"not": {"ne": [{"get": ["story", "LANDERS_LOST", 0]}, 0]}}
+            ]
+          },
+          "next": "moon.i_lost_my_lander"
+        },
+        {
+          "id": "i_lost_another_lander",
+          "text": "i_lost_another_lander",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"eq": [{"query": "inventory.quantity", "args": ["landers"]}, 0]},
+                  {"lt": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]}
+                ]
+              },
+              {"ne": [{"get": ["story", "LANDERS_LOST", 0]}, 0]}
+            ]
+          },
+          "next": "moon.i_lost_another_lander"
+        },
+        {
+          "id": "need_fuel_luna",
+          "text": "need_fuel_luna",
+          "when": {
+            "all": [
+              {"lt": [{"query": "ship.fuel", "args": []}, 2]},
+              {"not": {"ne": [{"get": ["story", "GIVEN_FUEL_BEFORE", 0]}, 0]}}
+            ]
+          },
+          "next": "moon.need_fuel_luna"
+        },
+        {
+          "id": "need_fuel_again",
+          "text": "need_fuel_again",
+          "when": {
+            "all": [{"lt": [{"query": "ship.fuel", "args": []}, 2]}, {"ne": [{"get": ["story", "GIVEN_FUEL_BEFORE", 0]}, 0]}]
+          },
+          "next": "moon.need_fuel_again"
+        },
+        {
+          "id": "we_will_take_care_of_base",
+          "text": "we_will_take_care_of_base",
+          "when": {"not": {"ne": [{"get": ["story", "WILL_DESTROY_BASE", 0]}, 0]}},
+          "next": "exit.we_will_take_care_of_base"
+        },
+        {
+          "id": "take_care_of_base_again",
+          "text": "take_care_of_base_again",
+          "when": {"ne": [{"get": ["story", "WILL_DESTROY_BASE", 0]}, 0]},
+          "next": "exit.take_care_of_base_again"
+        },
+        {
+          "id": "tell_me_about_base",
+          "text": "tell_me_about_base",
+          "when": {"eq": [{"get": ["story", "STARBASE_YACK_STACK1", 0]}, 0]},
+          "next": "moon.about"
+        },
+        {
+          "id": "tell_me_again",
+          "text": "tell_me_again",
+          "when": {"not": {"eq": [{"get": ["story", "STARBASE_YACK_STACK1", 0]}, 0]}},
+          "next": "moon.about"
+        }
+      ]
+    },
+    {
+      "id": "we_are_vindicator0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THATS_IMPOSSIBLE"]}],
+      "next": "reveal.0"
+    },
+    {
+      "id": "we_are_vindicator0",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "we_are_vindicator0", true]
+      },
+      "save_as": "we_are_vindicator0",
+      "next": "we_are_vindicator0.speech"
+    },
+    {
+      "id": "our_mission_was_secret.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ACKNOWLEDGE_SECRET"]}],
+      "next": "reveal.0"
+    },
+    {
+      "id": "our_mission_was_secret",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "our_mission_was_secret", true]
+      },
+      "save_as": "our_mission_was_secret",
+      "next": "our_mission_was_secret.speech"
+    },
+    {
+      "id": "first_give_info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ASK_AWAY"]}],
+      "next": "reveal.1"
+    },
+    {
+      "id": "first_give_info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "first_give_info", true]
+      },
+      "save_as": "first_give_info",
+      "next": "first_give_info.speech"
+    },
+    {
+      "id": "whats_this_starbase.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["STARBASE_IS"]}],
+      "next": "reveal.1"
+    },
+    {
+      "id": "whats_this_starbase",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_this_starbase", true]
+      },
+      "save_as": "whats_this_starbase",
+      "next": "whats_this_starbase.speech"
+    },
+    {
+      "id": "what_about_earth.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAPPENED_TO_EARTH"]}],
+      "next": "reveal.1"
+    },
+    {
+      "id": "what_about_earth",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_earth", true]
+      },
+      "save_as": "what_about_earth",
+      "next": "what_about_earth.speech"
+    },
+    {
+      "id": "where_are_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_LEFT"]}],
+      "next": "reveal.1"
+    },
+    {
+      "id": "where_are_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_are_urquan", true]
+      },
+      "save_as": "where_are_urquan",
+      "next": "where_are_urquan.speech"
+    },
+    {
+      "id": "reveal.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"all": [{"not": {"get": ["local", "we_are_vindicator0", false]}}, true]},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "our_mission_was_secret",
+          "text": "our_mission_was_secret",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "our_mission_was_secret", false]}},
+              {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}}
+            ]
+          },
+          "next": "our_mission_was_secret"
+        },
+        {
+          "id": "we_are_here_to_help",
+          "text": "we_are_here_to_help",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}},
+              {"not": {"not": {"get": ["local", "our_mission_was_secret", false]}}}
+            ]
+          },
+          "next": "help"
+        },
+        {
+          "id": "first_give_info",
+          "text": "first_give_info",
+          "when": {"all": [{"not": {"get": ["local", "first_give_info", false]}}]},
+          "next": "first_give_info"
+        },
+        {
+          "id": "whats_this_starbase",
+          "text": "whats_this_starbase",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "whats_this_starbase", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}}
+            ]
+          },
+          "next": "whats_this_starbase"
+        },
+        {
+          "id": "what_about_earth",
+          "text": "what_about_earth",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_earth", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}},
+              {"not": {"not": {"get": ["local", "whats_this_starbase", false]}}}
+            ]
+          },
+          "next": "what_about_earth"
+        },
+        {
+          "id": "where_are_urquan",
+          "text": "where_are_urquan",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "where_are_urquan", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}},
+              {"not": {"not": {"get": ["local", "whats_this_starbase", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_earth", false]}}}
+            ]
+          },
+          "next": "where_are_urquan"
+        },
+        {
+          "id": "what_was_red_thing",
+          "text": "what_was_red_thing",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_was_red_thing", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}},
+              {"not": {"not": {"get": ["local", "whats_this_starbase", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_earth", false]}}},
+              {"not": {"not": {"get": ["local", "where_are_urquan", false]}}}
+            ]
+          },
+          "next": "probe"
+        }
+      ]
+    },
+    {
+      "id": "reveal.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "first_give_info",
+          "text": "first_give_info",
+          "when": {"all": [{"not": {"get": ["local", "first_give_info", false]}}]},
+          "next": "first_give_info"
+        },
+        {
+          "id": "whats_this_starbase",
+          "text": "whats_this_starbase",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "whats_this_starbase", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}}
+            ]
+          },
+          "next": "whats_this_starbase"
+        },
+        {
+          "id": "what_about_earth",
+          "text": "what_about_earth",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_earth", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}},
+              {"not": {"not": {"get": ["local", "whats_this_starbase", false]}}}
+            ]
+          },
+          "next": "what_about_earth"
+        },
+        {
+          "id": "where_are_urquan",
+          "text": "where_are_urquan",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "where_are_urquan", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}},
+              {"not": {"not": {"get": ["local", "whats_this_starbase", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_earth", false]}}}
+            ]
+          },
+          "next": "where_are_urquan"
+        },
+        {
+          "id": "what_was_red_thing",
+          "text": "what_was_red_thing",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_was_red_thing", false]}},
+              {"not": {"not": {"get": ["local", "first_give_info", false]}}},
+              {"not": {"not": {"get": ["local", "whats_this_starbase", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_earth", false]}}},
+              {"not": {"not": {"get": ["local", "where_are_urquan", false]}}}
+            ]
+          },
+          "next": "probe"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {"all": [{"not": {"get": ["local", "we_are_vindicator0", false]}}, true]},
+          "next": "we_are_vindicator0"
+        },
+        {
+          "id": "our_mission_was_secret",
+          "text": "our_mission_was_secret",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "our_mission_was_secret", false]}},
+              {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}}
+            ]
+          },
+          "next": "our_mission_was_secret"
+        },
+        {
+          "id": "we_are_here_to_help",
+          "text": "we_are_here_to_help",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "we_are_vindicator0", false]}}},
+              {"not": {"not": {"get": ["local", "our_mission_was_secret", false]}}}
+            ]
+          },
+          "next": "help"
+        }
+      ]
+    },
+    {
+      "id": "probe.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THAT_WAS_PROBE"]}],
+      "next": "probe.menu"
+    },
+    {
+      "id": "probe",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_was_red_thing", true]
+      },
+      "save_as": "probe",
+      "next": "probe.speech"
+    },
+    {
+      "id": "probe.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "it_went_away",
+          "text": "it_went_away",
+          "when": true,
+          "next": "it_went_away"
+        },
+        {
+          "id": "we_destroyed_it",
+          "text": "we_destroyed_it",
+          "when": true,
+          "next": "we_destroyed_it"
+        },
+        {
+          "id": "what_probe",
+          "text": "what_probe",
+          "when": true,
+          "next": "what_probe"
+        }
+      ]
+    },
+    {
+      "id": "it_went_away",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEEP_TROUBLE"]}],
+      "next": "reveal.0"
+    },
+    {
+      "id": "we_destroyed_it",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_NEWS"]}],
+      "next": "reveal.0"
+    },
+    {
+      "id": "what_probe",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SURE_HOPE"]}],
+      "next": "reveal.0"
+    },
+    {
+      "id": "radios.transfer.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FUEL_UP0", {"phrase": "FUEL_UP1", "on_start": "commander.restore_power"}]}],
+      "next": "reveal.0"
+    },
+    {
+      "id": "radios.transfer",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "RADIOACTIVES_PROVIDED", 1]
+      },
+      "save_as": "radios_transfer",
+      "next": "radios.transfer.speech"
+    },
+    {
+      "id": "radios.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_will_transfer_now",
+          "text": "we_will_transfer_now",
+          "when": true,
+          "next": "radios.transfer"
+        },
+        {
+          "id": "what_will_you_give_us",
+          "text": "what_will_you_give_us",
+          "when": true,
+          "next": "radios.price"
+        },
+        {
+          "id": "before_radios_we_need_info",
+          "text": "before_radios_we_need_info",
+          "when": true,
+          "next": "radios.info"
+        }
+      ]
+    },
+    {
+      "id": "radios.price",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MESSAGE_GARBLED_1"]}],
+      "next": "radios.menu"
+    },
+    {
+      "id": "radios.info",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MESSAGE_GARBLED_2"]}],
+      "next": "radios.menu"
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"get": ["story", "PROBE_ILWRATH_ENCOUNTER", 0]}, 0]},
+          "next": "impressive"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "STARBASE_VISITED", 0]}, 0]},
+          "next": "visited"
+        }
+      ],
+      "otherwise": "first"
+    },
+    {
+      "id": "impressive",
+      "kind": "dialogue",
+      "variants": [{"speech": ["VERY_IMPRESSIVE"]}],
+      "responses": [
+        {
+          "id": "cook_their_butts",
+          "text": "cook_their_butts",
+          "when": true,
+          "next": "cook_their_butts"
+        },
+        {
+          "id": "overthrow_evil_aliens",
+          "text": "overthrow_evil_aliens",
+          "when": true,
+          "next": "overthrow_evil_aliens"
+        },
+        {
+          "id": "annihilate_those_monsters",
+          "text": "annihilate_those_monsters",
+          "when": true,
+          "next": "annihilate_those_monsters"
+        }
+      ]
+    },
+    {
+      "id": "visited",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "RADIOACTIVES_PROVIDED", 0]}, 0]}, "next": "visited.radios"}],
+      "otherwise": "visited.ask"
+    },
+    {
+      "id": "visited.radios",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "MOONBASE_DESTROYED", 0]}, 0]}, "next": "base.greet"}],
+      "otherwise": "moon.greet"
+    },
+    {
+      "id": "visited.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_YOU_HAVE_RADIO_THIS_TIME"], "presentation": {"before": "commander.emergency_map"}}],
+      "next": "visited.ask.route"
+    },
+    {
+      "id": "visited.ask.route",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"query": "inventory.quantity", "args": ["radioactive"]}, 0]}, "next": "radios.menu"}],
+      "otherwise": "ask.menu"
+    },
+    {
+      "id": "first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ARE_YOU_SUPPLY_SHIP"], "presentation": {"before": "commander.emergency_map"}}],
+      "next": "first.menu"
+    },
+    {
+      "id": "first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "STARBASE_VISITED", 1]
+      },
+      "save_as": "first",
+      "next": "first.speech"
+    },
+    {
+      "id": "first.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "no_but_well_help0",
+          "text": {"compose": ["no_but_well_help0", {"insert": {"get": ["player", "ship_name", ""]}}, "no_but_well_help1"]},
+          "when": true,
+          "next": "no_but_well_help0"
+        },
+        {
+          "id": "yes_this_is_supply_ship",
+          "text": "yes_this_is_supply_ship",
+          "when": true,
+          "next": "supply.yes"
+        },
+        {
+          "id": "what_slave_planet",
+          "text": "what_slave_planet",
+          "when": true,
+          "next": "what_slave_planet"
+        }
+      ]
     },
     {
       "id": "end",

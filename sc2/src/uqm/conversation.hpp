@@ -144,6 +144,7 @@ private:
     CONTEXT oldContext_ = nullptr;
     MENU_SOUND_FLAGS oldArrows_{}, oldSelect_{};
     bool started_ = false, playback_ = false, fontBound_ = false, scriptFinished_ = false;
+    std::optional<std::size_t> completedPresentationEntry_;
     std::deque<std::string> graphSpeechInsertions_; // Stable through retained replay tracks.
     std::vector<std::string> graphResponseIds_, graphResponseText_;
     std::unordered_map<std::string, COUNT> graphPhrases_;

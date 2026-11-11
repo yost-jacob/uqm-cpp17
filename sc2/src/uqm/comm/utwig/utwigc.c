@@ -199,31 +199,10 @@ static LOCDATA utwig_desc =
 
 // Story branches and actions are defined in comm.utwig.dialogue.json.
 // Keep the native descriptor as the media/lifecycle compatibility boundary.
-static void
-Intro (void)
-{
-}
-
-static COUNT
-uninit_utwig (void)
-{
-	return (0);
-}
-
-static void
-post_utwig_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_utwig_comm (void)
 {
 	LOCDATA *retval;
-
-	utwig_desc.init_encounter_func = Intro;
-	utwig_desc.post_encounter_func = post_utwig_enc;
-	utwig_desc.uninit_encounter_func = uninit_utwig;
 
 	utwig_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	utwig_desc.AlienTextBaseline.y = 70;

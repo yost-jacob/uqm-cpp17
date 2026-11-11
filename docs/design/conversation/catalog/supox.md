@@ -6,15 +6,12 @@
 
 Script: [supoxc.c](../../../../sc2/src/uqm/comm/supox/supoxc.c#L1). Phrase bank: [supox.txt](../../../../sc2/content/base/comm/supox/supox.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 97 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 97 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_supox_comm</code> | No enclosing branch condition; [127](../../../../sc2/src/uqm/comm/supox/supoxc.c#L127) |
-| <code>post_encounter_func</code> | [<code>post_supox_enc</code>](#node-post_supox_enc) | <code>init_supox_comm</code> | No enclosing branch condition; [128](../../../../sc2/src/uqm/comm/supox/supoxc.c#L128) |
-| <code>uninit_encounter_func</code> | [<code>uninit_supox</code>](#node-uninit_supox) | <code>init_supox_comm</code> | No enclosing branch condition; [129](../../../../sc2/src/uqm/comm/supox/supoxc.c#L129) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_supox"]
-    n2["post_supox_enc"]
-    n3["init_supox_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_supox_comm"]
 ```
 
 ## Condition catalog
@@ -49,69 +40,11 @@ Presentation descriptor <code>supox_desc</code>: [source](../../../../sc2/src/uq
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/supox/supoxc.c#L106).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_supox"></a>
-
-### uninit_supox
-
-<code>static COUNT uninit_supox(void)</code> — [source](../../../../sc2/src/uqm/comm/supox/supoxc.c#L111).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [113](../../../../sc2/src/uqm/comm/supox/supoxc.c#L113) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_supox_enc"></a>
-
-### post_supox_enc
-
-<code>static void post_supox_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/supox/supoxc.c#L117).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_supox_comm"></a>
 
 ### init_supox_comm
 
-<code>LOCDATA *init_supox_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/supox/supoxc.c#L123).
+<code>LOCDATA *init_supox_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/supox/supoxc.c#L106).
 
 #### Actions, queries, local updates, and control flow
 
@@ -119,19 +52,16 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>supox_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [127](../../../../sc2/src/uqm/comm/supox/supoxc.c#L127) |
-| update | <code>supox_desc.post_encounter_func = post_supox_enc</code> | No enclosing branch condition | [128](../../../../sc2/src/uqm/comm/supox/supoxc.c#L128) |
-| update | <code>supox_desc.uninit_encounter_func = uninit_supox</code> | No enclosing branch condition | [129](../../../../sc2/src/uqm/comm/supox/supoxc.c#L129) |
-| update | <code>supox_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [131](../../../../sc2/src/uqm/comm/supox/supoxc.c#L131) |
-| update | <code>supox_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [132](../../../../sc2/src/uqm/comm/supox/supoxc.c#L132) |
-| update | <code>supox_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [133](../../../../sc2/src/uqm/comm/supox/supoxc.c#L133) |
-| call | <code>GET_GAME_STATE(SUPOX_HOSTILE)</code> | No enclosing branch condition | [135](../../../../sc2/src/uqm/comm/supox/supoxc.c#L135) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C1](#condition-c1) | [136](../../../../sc2/src/uqm/comm/supox/supoxc.c#L136) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C1](#condition-c1) | [136](../../../../sc2/src/uqm/comm/supox/supoxc.c#L136) |
-| call | <code>setSegue(Segue_peace)</code> | [C2](#condition-c2) | [138](../../../../sc2/src/uqm/comm/supox/supoxc.c#L138) |
-| call | <code>setSegue(Segue_hostile)</code> | [C3](#condition-c3) | [142](../../../../sc2/src/uqm/comm/supox/supoxc.c#L142) |
-| update | <code>retval = &amp;supox_desc</code> | No enclosing branch condition | [144](../../../../sc2/src/uqm/comm/supox/supoxc.c#L144) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [146](../../../../sc2/src/uqm/comm/supox/supoxc.c#L146) |
+| update | <code>supox_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [110](../../../../sc2/src/uqm/comm/supox/supoxc.c#L110) |
+| update | <code>supox_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [111](../../../../sc2/src/uqm/comm/supox/supoxc.c#L111) |
+| update | <code>supox_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [112](../../../../sc2/src/uqm/comm/supox/supoxc.c#L112) |
+| call | <code>GET_GAME_STATE(SUPOX_HOSTILE)</code> | No enclosing branch condition | [114](../../../../sc2/src/uqm/comm/supox/supoxc.c#L114) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C1](#condition-c1) | [115](../../../../sc2/src/uqm/comm/supox/supoxc.c#L115) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C1](#condition-c1) | [115](../../../../sc2/src/uqm/comm/supox/supoxc.c#L115) |
+| call | <code>setSegue(Segue_peace)</code> | [C2](#condition-c2) | [117](../../../../sc2/src/uqm/comm/supox/supoxc.c#L117) |
+| call | <code>setSegue(Segue_hostile)</code> | [C3](#condition-c3) | [121](../../../../sc2/src/uqm/comm/supox/supoxc.c#L121) |
+| update | <code>retval = &amp;supox_desc</code> | No enclosing branch condition | [123](../../../../sc2/src/uqm/comm/supox/supoxc.c#L123) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [125](../../../../sc2/src/uqm/comm/supox/supoxc.c#L125) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -139,10 +69,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	supox_desc.init_encounter_func = Intro;
-	supox_desc.post_encounter_func = post_supox_enc;
-	supox_desc.uninit_encounter_func = uninit_supox;
 
 	supox_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	supox_desc.AlienTextBaseline.y = 0;

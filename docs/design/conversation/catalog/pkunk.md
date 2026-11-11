@@ -6,15 +6,13 @@
 
 Script: [pkunkc.c](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L1). Phrase bank: [pkunk.txt](../../../../sc2/content/base/comm/pkunk/pkunk.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 182 phrase records.
+2 handler/helper nodes; 0 response registration sites; 0 direct local calls; 182 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_pkunk_comm</code> | No enclosing branch condition; [134](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L134) |
-| <code>post_encounter_func</code> | [<code>post_pkunk_enc</code>](#node-post_pkunk_enc) | <code>init_pkunk_comm</code> | No enclosing branch condition; [135](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L135) |
-| <code>uninit_encounter_func</code> | [<code>uninit_pkunk</code>](#node-uninit_pkunk) | <code>init_pkunk_comm</code> | No enclosing branch condition; [136](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L136) |
+| <code>post_encounter_func</code> | [<code>post_pkunk_enc</code>](#node-post_pkunk_enc) | <code>init_pkunk_comm</code> | No enclosing branch condition; [123](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L123) |
 
 ## Handler graph
 
@@ -22,13 +20,9 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_pkunk"]
-    n2["post_pkunk_enc"]
-    n3["init_pkunk_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["post_pkunk_enc"]
+    n1["init_pkunk_comm"]
+    n1 -. "post_encounter_func" .-> n0
 ```
 
 ## Condition catalog
@@ -52,52 +46,11 @@ Presentation descriptor <code>pkunk_desc</code>: [source](../../../../sc2/src/uq
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L101).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_pkunk"></a>
-
-### uninit_pkunk
-
-<code>static COUNT uninit_pkunk(void)</code> — [source](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L107).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [109](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L109) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
 <a id="node-post_pkunk_enc"></a>
 
 ### post_pkunk_enc
 
-<code>static void post_pkunk_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L113).
+<code>static void post_pkunk_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L102).
 
 #### Actions, queries, local updates, and control flow
 
@@ -105,12 +58,12 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| call | <code>getSegue()</code> | No enclosing branch condition | [117](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L117) |
-| update | <code>Manner = GET_GAME_STATE(PKUNK_MANNER)</code> | [C1](#condition-c1) | [118](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L118) |
-| call | <code>GET_GAME_STATE(PKUNK_MANNER)</code> | [C1](#condition-c1) | [118](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L118) |
-| call | <code>SET_GAME_STATE(PKUNK_MANNER, 1)</code> | [C2](#condition-c2) | [120](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L120) |
-| call | <code>SET_GAME_STATE(PKUNK_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [123](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L123) |
-| call | <code>SET_GAME_STATE(PKUNK_HOME_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [124](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L124) |
+| call | <code>getSegue()</code> | No enclosing branch condition | [106](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L106) |
+| update | <code>Manner = GET_GAME_STATE(PKUNK_MANNER)</code> | [C1](#condition-c1) | [107](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L107) |
+| call | <code>GET_GAME_STATE(PKUNK_MANNER)</code> | [C1](#condition-c1) | [107](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L107) |
+| call | <code>SET_GAME_STATE(PKUNK_MANNER, 1)</code> | [C2](#condition-c2) | [109](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L109) |
+| call | <code>SET_GAME_STATE(PKUNK_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [112](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L112) |
+| call | <code>SET_GAME_STATE(PKUNK_HOME_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [113](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L113) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -138,7 +91,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 ### init_pkunk_comm
 
-<code>LOCDATA *init_pkunk_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L130).
+<code>LOCDATA *init_pkunk_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L119).
 
 #### Actions, queries, local updates, and control flow
 
@@ -146,19 +99,17 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>pkunk_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [134](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L134) |
-| update | <code>pkunk_desc.post_encounter_func = post_pkunk_enc</code> | No enclosing branch condition | [135](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L135) |
-| update | <code>pkunk_desc.uninit_encounter_func = uninit_pkunk</code> | No enclosing branch condition | [136](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L136) |
-| update | <code>pkunk_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [138](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L138) |
-| update | <code>pkunk_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [139](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L139) |
-| update | <code>pkunk_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [140](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L140) |
-| call | <code>GET_GAME_STATE(PKUNK_MANNER)</code> | No enclosing branch condition | [142](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L142) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C4](#condition-c4) | [143](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L143) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C4](#condition-c4) | [143](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L143) |
-| call | <code>setSegue(Segue_peace)</code> | [C5](#condition-c5) | [146](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L146) |
-| call | <code>setSegue(Segue_hostile)</code> | [C6](#condition-c6) | [151](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L151) |
-| update | <code>retval = &amp;pkunk_desc</code> | No enclosing branch condition | [153](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L153) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [155](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L155) |
+| update | <code>pkunk_desc.post_encounter_func = post_pkunk_enc</code> | No enclosing branch condition | [123](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L123) |
+| update | <code>pkunk_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [125](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L125) |
+| update | <code>pkunk_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [126](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L126) |
+| update | <code>pkunk_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [127](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L127) |
+| call | <code>GET_GAME_STATE(PKUNK_MANNER)</code> | No enclosing branch condition | [129](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L129) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C4](#condition-c4) | [130](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L130) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C4](#condition-c4) | [130](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L130) |
+| call | <code>setSegue(Segue_peace)</code> | [C5](#condition-c5) | [133](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L133) |
+| call | <code>setSegue(Segue_hostile)</code> | [C6](#condition-c6) | [138](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L138) |
+| update | <code>retval = &amp;pkunk_desc</code> | No enclosing branch condition | [140](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L140) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [142](../../../../sc2/src/uqm/comm/pkunk/pkunkc.c#L142) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -167,9 +118,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 {
 	LOCDATA *retval;
 
-	pkunk_desc.init_encounter_func = Intro;
 	pkunk_desc.post_encounter_func = post_pkunk_enc;
-	pkunk_desc.uninit_encounter_func = uninit_pkunk;
 
 	pkunk_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	pkunk_desc.AlienTextBaseline.y = 0;

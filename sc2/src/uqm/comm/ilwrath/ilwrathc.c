@@ -100,28 +100,10 @@ static LOCDATA ilwrath_desc =
 };
 
 // Native asset/lifecycle configuration; story branches live in JSON.
-static void Intro (void) {}
-
-static COUNT
-uninit_ilwrath (void)
-{
-	return (0);
-}
-
-static void
-post_ilwrath_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_ilwrath_comm (void)
 {
 	LOCDATA *retval;
-
-	ilwrath_desc.init_encounter_func = Intro;
-	ilwrath_desc.post_encounter_func = post_ilwrath_enc;
-	ilwrath_desc.uninit_encounter_func = uninit_ilwrath;
 
 	ilwrath_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	ilwrath_desc.AlienTextBaseline.y = 70;

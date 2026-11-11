@@ -6,15 +6,12 @@
 
 Script: [slyland.c](../../../../sc2/src/uqm/comm/slyland/slyland.c#L1). Phrase bank: [probe.txt](../../../../sc2/content/base/comm/probe/probe.txt#L1).
 
-6 handler/helper nodes; 0 response registration sites; 2 direct local calls; 86 phrase records.
+3 handler/helper nodes; 0 response registration sites; 2 direct local calls; 86 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_slyland_comm</code> | No enclosing branch condition; [252](../../../../sc2/src/uqm/comm/slyland/slyland.c#L252) |
-| <code>post_encounter_func</code> | [<code>post_slyland_enc</code>](#node-post_slyland_enc) | <code>init_slyland_comm</code> | No enclosing branch condition; [253](../../../../sc2/src/uqm/comm/slyland/slyland.c#L253) |
-| <code>uninit_encounter_func</code> | [<code>uninit_slyland</code>](#node-uninit_slyland) | <code>init_slyland_comm</code> | No enclosing branch condition; [254](../../../../sc2/src/uqm/comm/slyland/slyland.c#L254) |
 
 ## Handler graph
 
@@ -24,14 +21,8 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 flowchart LR
     n0["sayCoord"]
     n1["QueueProbeCoordinates"]
-    n2["Intro"]
-    n3["uninit_slyland"]
-    n4["post_slyland_enc"]
-    n5["init_slyland_comm"]
+    n2["init_slyland_comm"]
     n1 -.-> n0
-    n5 -. "init_encounter_func" .-> n2
-    n5 -. "post_encounter_func" .-> n4
-    n5 -. "uninit_encounter_func" .-> n3
 ```
 
 ## Condition catalog
@@ -194,68 +185,11 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 </details>
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/slyland/slyland.c#L233).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_slyland"></a>
-
-### uninit_slyland
-
-<code>static COUNT uninit_slyland(void)</code> — [source](../../../../sc2/src/uqm/comm/slyland/slyland.c#L236).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [238](../../../../sc2/src/uqm/comm/slyland/slyland.c#L238) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_slyland_enc"></a>
-
-### post_slyland_enc
-
-<code>static void post_slyland_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/slyland/slyland.c#L242).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_slyland_comm"></a>
 
 ### init_slyland_comm
 
-<code>LOCDATA *init_slyland_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/slyland/slyland.c#L248).
+<code>LOCDATA *init_slyland_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/slyland/slyland.c#L234).
 
 #### Actions, queries, local updates, and control flow
 
@@ -263,15 +197,12 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>slylandro_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [252](../../../../sc2/src/uqm/comm/slyland/slyland.c#L252) |
-| update | <code>slylandro_desc.post_encounter_func = post_slyland_enc</code> | No enclosing branch condition | [253](../../../../sc2/src/uqm/comm/slyland/slyland.c#L253) |
-| update | <code>slylandro_desc.uninit_encounter_func = uninit_slyland</code> | No enclosing branch condition | [254](../../../../sc2/src/uqm/comm/slyland/slyland.c#L254) |
-| update | <code>slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [256](../../../../sc2/src/uqm/comm/slyland/slyland.c#L256) |
-| update | <code>slylandro_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [257](../../../../sc2/src/uqm/comm/slyland/slyland.c#L257) |
-| update | <code>slylandro_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [258](../../../../sc2/src/uqm/comm/slyland/slyland.c#L258) |
-| call | <code>setSegue(Segue_hostile)</code> | No enclosing branch condition | [260](../../../../sc2/src/uqm/comm/slyland/slyland.c#L260) |
-| update | <code>retval = &amp;slylandro_desc</code> | No enclosing branch condition | [261](../../../../sc2/src/uqm/comm/slyland/slyland.c#L261) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [263](../../../../sc2/src/uqm/comm/slyland/slyland.c#L263) |
+| update | <code>slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [238](../../../../sc2/src/uqm/comm/slyland/slyland.c#L238) |
+| update | <code>slylandro_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [239](../../../../sc2/src/uqm/comm/slyland/slyland.c#L239) |
+| update | <code>slylandro_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [240](../../../../sc2/src/uqm/comm/slyland/slyland.c#L240) |
+| call | <code>setSegue(Segue_hostile)</code> | No enclosing branch condition | [242](../../../../sc2/src/uqm/comm/slyland/slyland.c#L242) |
+| update | <code>retval = &amp;slylandro_desc</code> | No enclosing branch condition | [243](../../../../sc2/src/uqm/comm/slyland/slyland.c#L243) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [245](../../../../sc2/src/uqm/comm/slyland/slyland.c#L245) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -279,10 +210,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	slylandro_desc.init_encounter_func = Intro;
-	slylandro_desc.post_encounter_func = post_slyland_enc;
-	slylandro_desc.uninit_encounter_func = uninit_slyland;
 
 	slylandro_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	slylandro_desc.AlienTextBaseline.y = 0;

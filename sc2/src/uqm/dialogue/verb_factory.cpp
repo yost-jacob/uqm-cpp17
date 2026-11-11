@@ -459,6 +459,17 @@ Value QueryFactory::speech(const Json &definition) const {
         return std::bind(&QueryFactory::evaluate, std::move(segments));
     }
     if (definition.is_object()) {
+        if (definition.contains("on_start")) {
+            shape(definition, {"phrase", "on_start"});
+            const auto cue = text(definition.at("on_start"));
+            if (cue.empty())
+                throw std::invalid_argument("empty phrase-start cue");
+            return std::bind(
+                [](const Value &phrase, const std::string &callback) -> Json {
+                    return {{"phrase", text(std::invoke(phrase))}, {"on_start", callback}};
+                },
+                value(definition.at("phrase")), cue);
+        }
         for (const auto *kind : {"insert", "number", "phrase", "compose"}) {
             if (definition.contains(kind)) {
                 shape(definition, {kind});

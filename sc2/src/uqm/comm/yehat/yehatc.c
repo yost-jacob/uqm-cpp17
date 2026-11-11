@@ -193,31 +193,10 @@ static LOCDATA yehat_desc =
 
 // Story branches and actions are defined in comm.yehat.dialogue.json.
 // Keep the native descriptor as the media/lifecycle compatibility boundary.
-static void
-Intro (void)
-{
-}
-
-static COUNT
-uninit_yehat (void)
-{
-	return (0);
-}
-
-static void
-post_yehat_enc (void)
-{
-	// nothing defined so far
-}
-
 LOCDATA*
 init_yehat_comm (void)
 {
 	LOCDATA *retval;
-
-	yehat_desc.init_encounter_func = Intro;
-	yehat_desc.post_encounter_func = post_yehat_enc;
-	yehat_desc.uninit_encounter_func = uninit_yehat;
 
 	yehat_desc.AlienTextBaseline.x = SIS_SCREEN_WIDTH * 2 / 3;
 	yehat_desc.AlienTextBaseline.y = 60;

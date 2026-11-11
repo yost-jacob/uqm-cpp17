@@ -1,7 +1,7 @@
 # Proposed conversation engine
 
 The [standalone C++17 design prototype](engine/README.md) implements graph loading,
-bound conditions/actions and traversal. It shares the production graph implementation; fifteen live scripts use graph/state operations and twelve retain explicitly marked native-handler envelopes. The
+bound conditions/actions and traversal. It shares the production graph implementation; twenty-four live scripts use graph/state operations and three retain explicitly marked native-handler envelopes. The
 [current conversation catalog](README.md) remains the source-backed record of
 existing behavior; prototype JSON does not yet replace those scripts.
 

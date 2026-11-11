@@ -17,17 +17,23 @@ class CampaignDialogueState final : public dialogue::LegacyTurnState {
     dialogue::Result scheduleEvent(const std::string &, dialogue::Integer, dialogue::Integer,
                                    dialogue::Integer) override;
     dialogue::Result prepareReport(const std::string &, const dialogue::Json &) override;
+    dialogue::Integer fuel() const override;
+    dialogue::Integer fuelCapacity() const override;
+    dialogue::Integer quantity(const std::string &) const override;
     dialogue::Integer availableSlots(const std::string &) const override;
     dialogue::Integer shipCount(const std::string &) const override;
     bool hasShip(const std::string &) const override;
     std::string relationship(const std::string &) const override;
+    bool raceAvailable(const std::string &) const override;
     // Explicit captain IDs currently resolve the named Fwiffo resource entry.
     // Validate the crew before recruitment; a full fleet returns count zero.
     dialogue::Result createShip(const std::string &, const std::string &,
                                 dialogue::Integer) override;
     dialogue::Result giveShips(const std::string &, dialogue::Integer) override;
+    dialogue::Result removeShips(const std::string &, dialogue::Integer) override;
     dialogue::Result setRelationship(const std::string &, const std::string &) override;
     dialogue::Result revealRace(const std::string &) override;
+    dialogue::Result configureShip(const std::string &, const dialogue::Json &) override;
     dialogue::Result adjustShip(const std::string &, dialogue::Integer) override;
 
   private:

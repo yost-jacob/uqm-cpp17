@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 89,
   "id": "chmmr",
   "resource": "comm.chmmr.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource/lifecycle configuration and the bounded SIS bomb-refit/transport operation remain. All shielded/freed/advice/readiness/bomb story branches and mutation timing are graph data."
   },
   "phrases": [
     {
@@ -558,121 +558,1075 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["chmmr", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_bye",
+      "next": "exit.bye.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "exit.bye_shielded.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_SHIELDED"]}],
+      "next": "end"
     },
     {
-      "id": "menu",
+      "id": "exit.bye_shielded",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_shielded",
+      "next": "exit.bye_shielded.speech"
+    },
+    {
+      "id": "exit.bye_after_bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AFTER_BOMB"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_after_bomb",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_after_bomb",
+      "next": "exit.bye_after_bomb.speech"
+    },
+    {
+      "id": "refit.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TAKE_2_WEEKS"]}],
+      "next": "end"
+    },
+    {
+      "id": "refit.effect6",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "refit_effect6",
+      "next": "refit.speech"
+    },
+    {
+      "id": "refit.effect5",
+      "kind": "action",
+      "action": {
+        "verb": "ship.configure",
+        "args": ["chmmr_bomb_refit", {"literal": {}}]
+      },
+      "save_as": "refit_effect5",
+      "next": "refit.effect6"
+    },
+    {
+      "id": "refit.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "UTWIG_BOMB_ON_SHIP", 0]
+      },
+      "save_as": "refit_effect4",
+      "next": "refit.effect5"
+    },
+    {
+      "id": "refit.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_BOMB_STATE", 2]
+      },
+      "save_as": "refit_effect3",
+      "next": "refit.effect4"
+    },
+    {
+      "id": "refit.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_STACK", 0]
+      },
+      "save_as": "refit_effect2",
+      "next": "refit.effect3"
+    },
+    {
+      "id": "refit.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_HOME_VISITS", 0]
+      },
+      "save_as": "refit_effect1",
+      "next": "refit.effect2"
+    },
+    {
+      "id": "refit",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["chmmr", "allied"]
+      },
+      "save_as": "refit",
+      "next": "refit.effect1"
+    },
+    {
+      "id": "notready",
+      "kind": "dialogue",
+      "variants": [{"speech": ["RETURN_WHEN_READY"]}],
+      "next": "notready.menu"
+    },
+    {
+      "id": "tech_help.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["USE_OUR_SHIPS_BEFORE"]}],
+      "next": "notready.menu"
+    },
+    {
+      "id": "tech_help",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["chmmr", "allied"]
+      },
+      "save_as": "tech_help",
+      "next": "tech_help.speech"
+    },
+    {
+      "id": "further_assistance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_FURTHER_ASSISTANCE"]}],
+      "next": "notready.menu"
+    },
+    {
+      "id": "further_assistance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "further_assistance", true]
+      },
+      "save_as": "further_assistance",
+      "next": "further_assistance.speech"
+    },
+    {
+      "id": "where_weapon.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PRECURSOR_WEAPON"]}],
+      "next": "notready.menu"
+    },
+    {
+      "id": "where_weapon",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_weapon", true]
+      },
+      "save_as": "where_weapon",
+      "next": "where_weapon.speech"
+    },
+    {
+      "id": "where_distraction.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PSYCHIC_WEAPONRY"]}],
+      "next": "notready.menu"
+    },
+    {
+      "id": "where_distraction",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_distraction", true]
+      },
+      "save_as": "where_distraction",
+      "next": "where_distraction.speech"
+    },
+    {
+      "id": "notready.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "tech_help",
+          "text": "tech_help",
+          "when": {"not": {"eq": [{"query": "galaxy.relationship", "args": ["chmmr"]}, "allied"]}},
+          "next": "tech_help"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 1]
+          "id": "further_assistance",
+          "text": "further_assistance",
+          "when": {
+            "all": [
+              {"eq": [{"query": "galaxy.relationship", "args": ["chmmr"]}, "allied"]},
+              {"not": {"get": ["local", "further_assistance", false]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "further_assistance"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 2]
+          "id": "where_weapon",
+          "text": "where_weapon",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "where_weapon", false]}},
+              {"not": {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "where_weapon"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 3]
+          "id": "where_distraction",
+          "text": "where_distraction",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "where_distraction", false]}},
+              {"not": {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "where_distraction"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["chmmr", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "exit.bye"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "what_now.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MODIFY_VESSEL"]}],
+      "next": "improve.menu"
+    },
+    {
+      "id": "what_now",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_now", true]
+      },
+      "save_as": "what_now",
+      "next": "what_now.speech"
+    },
+    {
+      "id": "wont_hurt_my_ship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_DESTROY_IT"]}],
+      "next": "improve.menu"
+    },
+    {
+      "id": "wont_hurt_my_ship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "wont_hurt_my_ship", true]
+      },
+      "save_as": "wont_hurt_my_ship",
+      "next": "wont_hurt_my_ship.speech"
+    },
+    {
+      "id": "bummer_about_my_ship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEAD_SILENCE"]}],
+      "next": "improve.menu"
+    },
+    {
+      "id": "bummer_about_my_ship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "bummer_about_my_ship", true]
+      },
+      "save_as": "bummer_about_my_ship",
+      "next": "bummer_about_my_ship.speech"
+    },
+    {
+      "id": "other_assistance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["USE_OUR_SHIPS_AFTER"]}],
+      "next": "improve.menu"
+    },
+    {
+      "id": "other_assistance",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["chmmr", "allied"]
+      },
+      "save_as": "other_assistance",
+      "next": "other_assistance.speech"
+    },
+    {
+      "id": "improve.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
-      "next": "end"
+      "responses": [
+        {
+          "id": "what_now",
+          "text": "what_now",
+          "when": {"all": [{"not": {"get": ["local", "what_now", false]}}]},
+          "next": "what_now"
+        },
+        {
+          "id": "wont_hurt_my_ship",
+          "text": "wont_hurt_my_ship",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "wont_hurt_my_ship", false]}},
+              {"not": {"not": {"get": ["local", "what_now", false]}}}
+            ]
+          },
+          "next": "wont_hurt_my_ship"
+        },
+        {
+          "id": "bummer_about_my_ship",
+          "text": "bummer_about_my_ship",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "bummer_about_my_ship", false]}},
+              {"not": {"not": {"get": ["local", "what_now", false]}}},
+              {"not": {"not": {"get": ["local", "wont_hurt_my_ship", false]}}}
+            ]
+          },
+          "next": "bummer_about_my_ship"
+        },
+        {
+          "id": "other_assistance",
+          "text": "other_assistance",
+          "when": {"not": {"eq": [{"query": "galaxy.relationship", "args": ["chmmr"]}, "allied"]}},
+          "next": "other_assistance"
+        },
+        {
+          "id": "proceed",
+          "text": "proceed",
+          "when": true,
+          "next": "refit"
+        }
+      ]
+    },
+    {
+      "id": "ready",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_ARE_READY", "WE_WILL_IMPROVE_BOMB"]}],
+      "next": "improve.menu"
+    },
+    {
+      "id": "why",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHY_HAVE_YOU_FREED_US"]}],
+      "next": "emerging.clear"
+    },
+    {
+      "id": "emerging.clear",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_EMERGING", 0]
+      },
+      "save_as": "emerging_clear",
+      "next": "serious.menu"
+    },
+    {
+      "id": "serious.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "serious_1",
+          "text": "serious_1",
+          "when": true,
+          "next": "analysis.route"
+        },
+        {
+          "id": "serious_2",
+          "text": "serious_2",
+          "when": true,
+          "next": "analysis.route"
+        },
+        {
+          "id": "silly",
+          "text": "silly",
+          "when": true,
+          "next": "analysis.route"
+        }
+      ]
+    },
+    {
+      "id": "analysis.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "AWARE_OF_SAMATRA", 0]}, 0]}, "next": "analysis.known"}],
+      "otherwise": "analysis.unknown"
+    },
+    {
+      "id": "analysis.known",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "samatra_line", ["YOU_KNOW_SAMATRA"]]
+      },
+      "save_as": "analysis_known",
+      "next": "analysis.aware"
+    },
+    {
+      "id": "analysis.unknown",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "samatra_line", ["DONT_KNOW_ABOUT_SAMATRA"]]
+      },
+      "save_as": "analysis_unknown",
+      "next": "analysis.aware"
+    },
+    {
+      "id": "analysis.aware",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "AWARE_OF_SAMATRA", 1]
+      },
+      "save_as": "analysis_aware",
+      "next": "analysis.speech"
+    },
+    {
+      "id": "analysis.speech",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]},
+              {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "speech": [
+            "WILL_HELP_ANALYZE_LOGS",
+            {"get": ["local", "samatra_line", []]},
+            "HAVE_TALKING_PET",
+            "HAVE_BOMB",
+            "WE_WILL_IMPROVE_BOMB"
+          ]
+        },
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]},
+              {"not": {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}}
+            ]
+          },
+          "speech": [
+            "WILL_HELP_ANALYZE_LOGS",
+            {"get": ["local", "samatra_line", []]},
+            "HAVE_TALKING_PET",
+            "NEED_WEAPON",
+            "RETURN_WHEN_READY"
+          ]
+        },
+        {
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]}},
+              {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "speech": [
+            "WILL_HELP_ANALYZE_LOGS",
+            {"get": ["local", "samatra_line", []]},
+            "NEED_DISTRACTION",
+            "HAVE_BOMB",
+            "RETURN_WHEN_READY"
+          ]
+        },
+        {
+          "speech": [
+            "WILL_HELP_ANALYZE_LOGS",
+            {"get": ["local", "samatra_line", []]},
+            "NEED_DISTRACTION",
+            "NEED_WEAPON",
+            "RETURN_WHEN_READY"
+          ]
+        }
+      ],
+      "next": "analysis.next"
+    },
+    {
+      "id": "analysis.next",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]},
+              {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "improve.menu"
+        }
+      ],
+      "otherwise": "notready.menu"
+    },
+    {
+      "id": "how_defeat_urquan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEFEAT_LIKE_SO"]}],
+      "next": "advice.route"
+    },
+    {
+      "id": "how_defeat_urquan.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_BOMB_STATE", 1]
+      },
+      "save_as": "how_defeat_urquan_effect1",
+      "next": "how_defeat_urquan.speech"
+    },
+    {
+      "id": "how_defeat_urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_defeat_urquan", true]
+      },
+      "save_as": "how_defeat_urquan",
+      "next": "how_defeat_urquan.effect1"
+    },
+    {
+      "id": "what_about_tpet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SCARY_BUT_USEFUL"]}],
+      "next": "advice.route"
+    },
+    {
+      "id": "what_about_tpet",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_tpet", true]
+      },
+      "save_as": "what_about_tpet",
+      "next": "what_about_tpet.speech"
+    },
+    {
+      "id": "what_about_bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_BOMB"]}],
+      "next": "advice.route"
+    },
+    {
+      "id": "what_about_bomb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_bomb", true]
+      },
+      "save_as": "what_about_bomb",
+      "next": "what_about_bomb.speech"
+    },
+    {
+      "id": "what_about_sun_device.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_SUN_DEVICE"]}],
+      "next": "advice.route"
+    },
+    {
+      "id": "what_about_sun_device",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_sun_device", true]
+      },
+      "save_as": "what_about_sun_device",
+      "next": "what_about_sun_device.speech"
+    },
+    {
+      "id": "what_about_samatra.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_SAMATRA"]}],
+      "next": "advice.route"
+    },
+    {
+      "id": "what_about_samatra",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_samatra", true]
+      },
+      "save_as": "what_about_samatra",
+      "next": "what_about_samatra.speech"
+    },
+    {
+      "id": "advice",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_ADVICE"]}],
+      "next": "advice.route"
+    },
+    {
+      "id": "advice.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "not": {
+              "any": [
+                {"all": [{"not": {"get": ["local", "how_defeat_urquan", false]}}, true]},
+                {
+                  "all": [
+                    {"not": {"get": ["local", "what_about_tpet", false]}},
+                    {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]}
+                  ]
+                },
+                {
+                  "all": [
+                    {"not": {"get": ["local", "what_about_bomb", false]}},
+                    {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}
+                  ]
+                },
+                {
+                  "all": [
+                    {"not": {"get": ["local", "what_about_sun_device", false]}},
+                    {"ne": [{"get": ["story", "SUN_DEVICE_ON_SHIP", 0]}, 0]}
+                  ]
+                },
+                {
+                  "all": [
+                    {"not": {"get": ["local", "what_about_samatra", false]}},
+                    {"ne": [{"get": ["story", "AWARE_OF_SAMATRA", 0]}, 0]}
+                  ]
+                }
+              ]
+            }
+          },
+          "next": "advice.done"
+        }
+      ],
+      "otherwise": "advice.menu"
+    },
+    {
+      "id": "advice.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "need_advice", true]
+      },
+      "save_as": "advice_done",
+      "next": "advice.menu"
+    },
+    {
+      "id": "advice.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "how_defeat_urquan",
+          "text": "how_defeat_urquan",
+          "when": {"all": [{"not": {"get": ["local", "how_defeat_urquan", false]}}, true]},
+          "next": "how_defeat_urquan"
+        },
+        {
+          "id": "what_about_tpet",
+          "text": "what_about_tpet",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_tpet", false]}},
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "what_about_tpet"
+        },
+        {
+          "id": "what_about_bomb",
+          "text": "what_about_bomb",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_bomb", false]}},
+              {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "what_about_bomb"
+        },
+        {
+          "id": "what_about_sun_device",
+          "text": "what_about_sun_device",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_sun_device", false]}},
+              {"ne": [{"get": ["story", "SUN_DEVICE_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "what_about_sun_device"
+        },
+        {
+          "id": "what_about_samatra",
+          "text": "what_about_samatra",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "what_about_samatra", false]}},
+              {"ne": [{"get": ["story", "AWARE_OF_SAMATRA", 0]}, 0]}
+            ]
+          },
+          "next": "what_about_samatra"
+        },
+        {
+          "id": "enough_advice",
+          "text": "enough_advice",
+          "when": true,
+          "next": "advice.back"
+        }
+      ]
+    },
+    {
+      "id": "advice.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_ADVICE"]}],
+      "next": "shield.menu"
+    },
+    {
+      "id": "need_help.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_HELP"]}],
+      "next": "shield.menu"
+    },
+    {
+      "id": "need_help",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_STACK", 1]
+      },
+      "save_as": "need_help",
+      "next": "need_help.speech"
+    },
+    {
+      "id": "why_no_help.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LONG_TIME"]}],
+      "next": "shield.menu"
+    },
+    {
+      "id": "why_no_help",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_STACK", 2]
+      },
+      "save_as": "why_no_help",
+      "next": "why_no_help.speech"
+    },
+    {
+      "id": "what_if_more_energy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DANGER_TO_US"]}],
+      "next": "shield.menu"
+    },
+    {
+      "id": "what_if_more_energy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_STACK", 3]
+      },
+      "save_as": "what_if_more_energy",
+      "next": "what_if_more_energy.speech"
+    },
+    {
+      "id": "find_out_whats_up.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HYBRID_PROCESS"]}],
+      "next": "shield.menu"
+    },
+    {
+      "id": "find_out_whats_up",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "find_out_whats_up", true]
+      },
+      "save_as": "find_out_whats_up",
+      "next": "find_out_whats_up.speech"
+    },
+    {
+      "id": "shield.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "need_help",
+          "text": "need_help",
+          "when": {"eq": [{"get": ["story", "CHMMR_STACK", 0]}, 0]},
+          "next": "need_help"
+        },
+        {
+          "id": "why_no_help",
+          "text": "why_no_help",
+          "when": {"eq": [{"get": ["story", "CHMMR_STACK", 0]}, 1]},
+          "next": "why_no_help"
+        },
+        {
+          "id": "what_if_more_energy",
+          "text": "what_if_more_energy",
+          "when": {"eq": [{"get": ["story", "CHMMR_STACK", 0]}, 2]},
+          "next": "what_if_more_energy"
+        },
+        {
+          "id": "find_out_whats_up",
+          "text": "find_out_whats_up",
+          "when": {"not": {"get": ["local", "find_out_whats_up", false]}},
+          "next": "find_out_whats_up"
+        },
+        {
+          "id": "need_advice",
+          "text": "need_advice",
+          "when": {"not": {"get": ["local", "need_advice", false]}},
+          "next": "advice"
+        },
+        {
+          "id": "bye_shielded",
+          "text": "bye_shielded",
+          "when": true,
+          "next": "exit.bye_shielded"
+        }
+      ]
+    },
+    {
+      "id": "after.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_after_bomb", true]
+      },
+      "save_as": "after_info",
+      "next": "after.info.seq"
+    },
+    {
+      "id": "after.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "CHMMR_STACK", [["GENERAL_INFO_AFTER_BOMB_1"], ["GENERAL_INFO_AFTER_BOMB_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "after.info.seq.speech"
+    },
+    {
+      "id": "after.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_do_after_bomb.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_AFTER_BOMB"]}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_do_after_bomb",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_do_after_bomb", true]
+      },
+      "save_as": "what_do_after_bomb",
+      "next": "what_do_after_bomb.speech"
+    },
+    {
+      "id": "after.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_after_bomb",
+          "text": "whats_up_after_bomb",
+          "when": {"not": {"get": ["local", "whats_up_after_bomb", false]}},
+          "next": "after.info"
+        },
+        {
+          "id": "what_do_after_bomb",
+          "text": "what_do_after_bomb",
+          "when": {"not": {"get": ["local", "what_do_after_bomb", false]}},
+          "next": "what_do_after_bomb"
+        },
+        {
+          "id": "bye_after_bomb",
+          "text": "bye_after_bomb",
+          "when": true,
+          "next": "exit.bye_after_bomb"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ge": [{"get": ["story", "CHMMR_BOMB_STATE", 0]}, 2]},
+          "next": "after.greeting"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "CHMMR_UNLEASHED", 0]}, 0]},
+          "next": "free.ready"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "CHMMR_EMERGING", 0]}, 0]}},
+          "next": "shield.greeting"
+        }
+      ],
+      "otherwise": "emerging.route"
+    },
+    {
+      "id": "after.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "CHMMR_HOME_VISITS", [["HELLO_AFTER_BOMB_1"], ["HELLO_AFTER_BOMB_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "after.greeting.speech"
+    },
+    {
+      "id": "after.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "after.menu"
+    },
+    {
+      "id": "free.ready",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "TALKING_PET_ON_SHIP", 0]}, 0]},
+              {"ne": [{"get": ["story", "UTWIG_BOMB_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "ready"
+        }
+      ],
+      "otherwise": "notready"
+    },
+    {
+      "id": "shield.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "CHMMR_HOME_VISITS",
+          [["WHY_YOU_HERE_1"], ["WHY_YOU_HERE_2"], ["WHY_YOU_HERE_3"], ["WHY_YOU_HERE_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "shield.greeting.speech"
+    },
+    {
+      "id": "shield.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}, "presentation": {"before": "chmmr.shielded_map"}}],
+      "next": "shield.menu"
+    },
+    {
+      "id": "emerging.route",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "CHMMR_HOME_VISITS", 0]}, 0]}, "next": "emerging.known"}],
+      "otherwise": "emerging.unknown"
+    },
+    {
+      "id": "emerging.known",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_UNLEASHED", 1]
+      },
+      "save_as": "emerging_known",
+      "next": "emerging.known.visits"
+    },
+    {
+      "id": "emerging.known.visits",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_HOME_VISITS", 0]
+      },
+      "save_as": "emerging_known_visits",
+      "next": "emerging.known.speech"
+    },
+    {
+      "id": "emerging.known.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_ARE_FREE", "WHY_HAVE_YOU_FREED_US"], "presentation": {"before": "chmmr.emerging"}}],
+      "next": "emerging.clear"
+    },
+    {
+      "id": "emerging.unknown",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_UNLEASHED", 1]
+      },
+      "save_as": "emerging_unknown",
+      "next": "emerging.unknown.visits"
+    },
+    {
+      "id": "emerging.unknown.visits",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "CHMMR_HOME_VISITS", 0]
+      },
+      "save_as": "emerging_unknown_visits",
+      "next": "emerging.unknown.speech"
+    },
+    {
+      "id": "emerging.unknown.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_ARE_FREE", "WHO_ARE_YOU"], "presentation": {"before": "chmmr.emerging"}}],
+      "next": "identify"
+    },
+    {
+      "id": "identify",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "i_am_captain0",
+          "text": {
+            "compose": [
+              "i_am_captain0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "i_am_captain1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "i_am_captain2"
+            ]
+          },
+          "when": true,
+          "next": "why"
+        },
+        {
+          "id": "i_am_savior",
+          "text": "i_am_savior",
+          "when": true,
+          "next": "why"
+        },
+        {
+          "id": "i_am_silly",
+          "text": "i_am_silly",
+          "when": true,
+          "next": "why"
+        }
+      ]
     },
     {
       "id": "end",

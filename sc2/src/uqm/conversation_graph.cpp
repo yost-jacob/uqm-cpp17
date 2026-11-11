@@ -1,4 +1,5 @@
 #include "conversation.hpp"
+#include "conversation_cues.hpp"
 #include "conversation_state.hpp"
 #include "conversation_text.hpp"
 #include "dialogue/text.hpp"
@@ -7,6 +8,7 @@
 #include "libs/mathlib.h"
 #include "libs/reslib.h"
 #include "options.h"
+#include "setup.h"
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -33,6 +35,28 @@ void ConversationRuntime::loadGraph() {
         if (status != "native_handlers" && status != "graph_with_native_media")
             throw std::invalid_argument("unknown conversation migration status");
         nativeGraph_ = status == "native_handlers";
+        const auto validateCues = [&](auto &&self, const dialogue::Json &part,
+                                      bool composed) -> void {
+            if (part.is_object() && part.contains("presentation")) {
+                const auto &presentation = part.at("presentation");
+                if (!presentation.is_object())
+                    throw std::invalid_argument("invalid presentation cues");
+                for (const auto &cue : presentation.items()) {
+                    if (cue.key() != "before" && cue.key() != "after")
+                        throw std::invalid_argument("unknown presentation phase: " + cue.key());
+                    conversationCues(resource, cue.value());
+                }
+            }
+            if (part.is_object() && part.contains("on_start")) {
+                if (composed)
+                    throw std::invalid_argument("a composed phrase cannot start a media cue");
+                conversationCue(resource, part.at("on_start").get<std::string>());
+            }
+            if (part.is_structured())
+                for (const auto &child : part)
+                    self(self, child, composed || (part.is_object() && part.contains("compose")));
+        };
+        validateCues(validateCues, definition.at("nodes"), false);
         for (const auto &phrase : definition.at("phrases"))
             graphPhrases_.emplace(phrase.at("id").get<std::string>(),
                                   phrase.at("index").get<COUNT>() + 1);
@@ -98,7 +122,12 @@ void ConversationRuntime::loadGraph() {
                 {"player", std::move(player)},
                 {"won_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE},
                 {"in_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE},
+                {"cyborg_enabled", (GLOBAL(glob_flags) & CYBORG_ENABLED) != 0},
+                {"using_speech", usingSpeech != FALSE},
+                {"has_npc_ships", GetHeadLink(&GLOBAL(npc_built_ship_q)) != nullptr},
                 {"calendar_campaign_year", GLOBAL(GameClock.year_index) - START_YEAR},
+                {"years_to_kohrah_victory", YEARS_TO_KOHRAH_VICTORY},
+                {"thraddash_body_threshold", THRADDASH_BODY_THRESHOLD},
                 {"calendar_month", GLOBAL(GameClock.month_index)},
                 {"calendar_day", GLOBAL(GameClock.day_index)},
                 {"at_samatra",
@@ -128,6 +157,8 @@ dialogue::Result ConversationRuntime::runNativeTurn(std::optional<std::size_t> s
         input_.num_responses = 0;
         selected.response_func(selected.response_ref);
     } else {
+        if (!data_.init_encounter_func)
+            throw std::logic_error("conversation has no native turn handler");
         data_.init_encounter_func();
     }
     dialogue::Json values = {{"has_responses", input_.num_responses != 0}};
@@ -152,9 +183,11 @@ COUNT ConversationRuntime::graphPhrase(const std::string &name) const {
 void ConversationRuntime::queueGraphSpeech() {
     if (graph_->ended())
         return;
-    if (!graph_->view().presentation.empty())
-        throw std::invalid_argument(
-            "graph presentation cues require a registered live media handler");
+    const auto &presentation = graph_->view().presentation;
+    if (presentation.contains("before"))
+        for (const auto cue :
+             conversationCues(data_.ConversationPhrasesRes, presentation.at("before")))
+            cue(nullptr);
     const auto &speech = graph_->view().speech;
     if (!speech.is_array())
         throw std::invalid_argument("live speech must be a phrase array");
@@ -164,10 +197,17 @@ void ConversationRuntime::queueGraphSpeech() {
                 self(self, child, splice);
             return;
         }
-        if (part.is_string() || (part.is_object() && part.size() == 1 && part.contains("phrase"))) {
+        if (part.is_string() ||
+            (part.is_object() && part.contains("phrase") &&
+             (part.size() == 1 || (part.size() == 2 && part.contains("on_start"))))) {
             const auto id =
                 graphPhrase((part.is_string() ? part : part.at("phrase")).get<std::string>());
-            if (splice)
+            if (part.is_object() && part.contains("on_start")) {
+                if (splice)
+                    throw std::invalid_argument("a spliced phrase cannot start a media cue");
+                NPCPhrase_cb(id, conversationCue(data_.ConversationPhrasesRes,
+                                                 part.at("on_start").get<std::string>()));
+            } else if (splice)
                 NPCPhrase_splice(id);
             else
                 NPCPhrase(id);
@@ -205,6 +245,14 @@ bool ConversationRuntime::finishGraphSpeech() {
     if (!graph_ || graph_->ended())
         return false;
     const auto entry = graph_->view().entry;
+    if (completedPresentationEntry_ != entry) {
+        const auto &presentation = graph_->view().presentation;
+        if (presentation.contains("after"))
+            for (const auto cue :
+                 conversationCues(data_.ConversationPhrasesRes, presentation.at("after")))
+                cue(nullptr);
+        completedPresentationEntry_ = entry;
+    }
     graph_->finishDialogue(entry);
     if (!nativeGraph_ && !graph_->ended() && graph_->view().entry != entry) {
         queueGraphSpeech();

@@ -6,15 +6,13 @@
 
 Script: [urquanc.c](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L1). Phrase bank: [urquan.txt](../../../../sc2/content/base/comm/urquan/urquan.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 76 phrase records.
+2 handler/helper nodes; 0 response registration sites; 0 direct local calls; 76 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_urquan_comm</code> | No enclosing branch condition; [145](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L145) |
-| <code>post_encounter_func</code> | [<code>post_urquan_enc</code>](#node-post_urquan_enc) | <code>init_urquan_comm</code> | No enclosing branch condition; [146](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L146) |
-| <code>uninit_encounter_func</code> | [<code>uninit_urquan</code>](#node-uninit_urquan) | <code>init_urquan_comm</code> | No enclosing branch condition; [147](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L147) |
+| <code>post_encounter_func</code> | [<code>post_urquan_enc</code>](#node-post_urquan_enc) | <code>init_urquan_comm</code> | No enclosing branch condition; [137](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L137) |
 
 ## Handler graph
 
@@ -22,13 +20,9 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_urquan"]
-    n2["post_urquan_enc"]
-    n3["init_urquan_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["post_urquan_enc"]
+    n1["init_urquan_comm"]
+    n1 -. "post_encounter_func" .-> n0
 ```
 
 ## Condition catalog
@@ -52,51 +46,11 @@ Presentation descriptor <code>urquan_desc</code>: [source](../../../../sc2/src/u
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L124).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_urquan"></a>
-
-### uninit_urquan
-
-<code>static COUNT uninit_urquan(void)</code> — [source](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L127).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [129](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L129) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
 <a id="node-post_urquan_enc"></a>
 
 ### post_urquan_enc
 
-<code>static void post_urquan_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L133).
+<code>static void post_urquan_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L125).
 
 #### Actions, queries, local updates, and control flow
 
@@ -104,7 +58,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| call | <code>SET_GAME_STATE(PLAYER_HYPNOTIZED, 0)</code> | No enclosing branch condition | [135](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L135) |
+| call | <code>SET_GAME_STATE(PLAYER_HYPNOTIZED, 0)</code> | No enclosing branch condition | [127](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L127) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -121,7 +75,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 ### init_urquan_comm
 
-<code>LOCDATA *init_urquan_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L139).
+<code>LOCDATA *init_urquan_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L131).
 
 #### Actions, queries, local updates, and control flow
 
@@ -129,25 +83,23 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>urquan_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [145](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L145) |
-| update | <code>urquan_desc.post_encounter_func = post_urquan_enc</code> | No enclosing branch condition | [146](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L146) |
-| update | <code>urquan_desc.uninit_encounter_func = uninit_urquan</code> | No enclosing branch condition | [147](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L147) |
-| update | <code>urquan_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [149](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L149) |
-| update | <code>urquan_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [150](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L150) |
-| update | <code>urquan_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [151](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L151) |
-| update | <code>GrpOffs = GET_GAME_STATE_32(URQUAN_PROBE_GRPOFFS0)</code> | No enclosing branch condition | [153](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L153) |
-| call | <code>GET_GAME_STATE_32(URQUAN_PROBE_GRPOFFS0)</code> | No enclosing branch condition | [153](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L153) |
-| call | <code>GET_GAME_STATE(PLAYER_HYPNOTIZED)</code> | No enclosing branch condition | [154](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L154) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C1](#condition-c1) | [155](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L155) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C1](#condition-c1) | [155](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L155) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C2](#condition-c2) | [156](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L156) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C2](#condition-c2) | [156](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L156) |
-| call | <code>GLOBAL(BattleGroupRef)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [157](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L157) |
-| call | <code>GLOBAL(BattleGroupRef)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) | [158](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L158) |
-| call | <code>setSegue(Segue_peace)</code> | [C5](#condition-c5) | [160](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L160) |
-| call | <code>setSegue(Segue_hostile)</code> | [C6](#condition-c6) | [164](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L164) |
-| update | <code>retval = &amp;urquan_desc</code> | No enclosing branch condition | [166](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L166) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [168](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L168) |
+| update | <code>urquan_desc.post_encounter_func = post_urquan_enc</code> | No enclosing branch condition | [137](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L137) |
+| update | <code>urquan_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [139](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L139) |
+| update | <code>urquan_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [140](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L140) |
+| update | <code>urquan_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [141](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L141) |
+| update | <code>GrpOffs = GET_GAME_STATE_32(URQUAN_PROBE_GRPOFFS0)</code> | No enclosing branch condition | [143](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L143) |
+| call | <code>GET_GAME_STATE_32(URQUAN_PROBE_GRPOFFS0)</code> | No enclosing branch condition | [143](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L143) |
+| call | <code>GET_GAME_STATE(PLAYER_HYPNOTIZED)</code> | No enclosing branch condition | [144](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L144) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C1](#condition-c1) | [145](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L145) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C1](#condition-c1) | [145](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L145) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C2](#condition-c2) | [146](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L146) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C2](#condition-c2) | [146](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L146) |
+| call | <code>GLOBAL(BattleGroupRef)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [147](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L147) |
+| call | <code>GLOBAL(BattleGroupRef)</code> | [C2](#condition-c2) ∧ [C4](#condition-c4) | [148](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L148) |
+| call | <code>setSegue(Segue_peace)</code> | [C5](#condition-c5) | [150](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L150) |
+| call | <code>setSegue(Segue_hostile)</code> | [C6](#condition-c6) | [154](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L154) |
+| update | <code>retval = &amp;urquan_desc</code> | No enclosing branch condition | [156](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L156) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [158](../../../../sc2/src/uqm/comm/urquan/urquanc.c#L158) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -158,9 +110,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 	DWORD GrpOffs;
 
-	urquan_desc.init_encounter_func = Intro;
 	urquan_desc.post_encounter_func = post_urquan_enc;
-	urquan_desc.uninit_encounter_func = uninit_urquan;
 
 	urquan_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	urquan_desc.AlienTextBaseline.y = 0;

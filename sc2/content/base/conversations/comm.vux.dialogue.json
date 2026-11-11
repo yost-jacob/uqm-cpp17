@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 109,
   "id": "vux",
   "resource": "comm.vux.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native media/lifecycle configuration and one replayable color-map cue remain. All VUX and Zex story branches and post-speech beast consequences are graph/state operations."
   },
   "phrases": [
     {
@@ -727,119 +727,1530 @@
   "nodes": [
     {
       "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "zex.route"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "normal.home"
+        }
+      ],
+      "otherwise": "normal.space"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "end"
+    },
+    {
+      "id": "outtakes",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["vux", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "normal.home",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "VUX_HOME_VISITS",
+          [["HOMEWORLD_HELLO_1"], ["HOMEWORLD_HELLO_2"], ["HOMEWORLD_HELLO_3"], ["HOMEWORLD_HELLO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "normal.home.speech"
     },
     {
-      "id": "menu",
+      "id": "normal.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "normal.space",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "VUX_VISITS",
+          [["SPACE_HELLO_1"], ["SPACE_HELLO_2"], ["SPACE_HELLO_3"], ["SPACE_HELLO_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "normal.space.speech"
+    },
+    {
+      "id": "normal.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "normal.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_hostile", true]
+      },
+      "save_as": "normal_info",
+      "next": "normal.info.seq"
+    },
+    {
+      "id": "normal.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "VUX_INFO",
+          [
+            ["GENERAL_INFO_HOSTILE_1"],
+            ["GENERAL_INFO_HOSTILE_2"],
+            ["GENERAL_INFO_HOSTILE_3"],
+            ["GENERAL_INFO_HOSTILE_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "normal.info.seq.speech"
+    },
+    {
+      "id": "normal.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "why_so_mean.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["URQUAN_SLAVES"]}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "why_so_mean",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "why_so_mean",
+      "next": "why_so_mean.speech"
+    },
+    {
+      "id": "deeper_reason.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OLD_INSULT"]}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "deeper_reason",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "VUX_STACK_1", 2]
+      },
+      "save_as": "deeper_reason",
+      "next": "deeper_reason.speech"
+    },
+    {
+      "id": "if_we_apologize.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PROBABLY_NOT"]}],
+      "next": "normal.menu"
+    },
+    {
+      "id": "if_we_apologize",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "VUX_STACK_1", 3]
+      },
+      "save_as": "if_we_apologize",
+      "next": "if_we_apologize.speech"
+    },
+    {
+      "id": "try_any_way.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOPE"]}],
+      "next": "end"
+    },
+    {
+      "id": "try_any_way.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "try_any_way_effect1",
+      "next": "try_any_way.speech"
+    },
+    {
+      "id": "try_any_way",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "VUX_STACK_1", 4]
+      },
+      "save_as": "try_any_way",
+      "next": "try_any_way.effect1"
+    },
+    {
+      "id": "apology.1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.1.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_1_effect1",
+      "next": "apology.1.speech"
+    },
+    {
+      "id": "apology.1",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_1",
+      "next": "apology.1.effect1"
+    },
+    {
+      "id": "apology.2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.2.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_2_effect1",
+      "next": "apology.2.speech"
+    },
+    {
+      "id": "apology.2",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_2",
+      "next": "apology.2.effect1"
+    },
+    {
+      "id": "apology.3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_3"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.3.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_3_effect1",
+      "next": "apology.3.speech"
+    },
+    {
+      "id": "apology.3",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_3",
+      "next": "apology.3.effect1"
+    },
+    {
+      "id": "apology.4.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_4"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.4.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_4_effect1",
+      "next": "apology.4.speech"
+    },
+    {
+      "id": "apology.4",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_4",
+      "next": "apology.4.effect1"
+    },
+    {
+      "id": "apology.5.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_5"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.5.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_5_effect1",
+      "next": "apology.5.speech"
+    },
+    {
+      "id": "apology.5",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_5",
+      "next": "apology.5.effect1"
+    },
+    {
+      "id": "apology.6.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_6"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.6.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_6_effect1",
+      "next": "apology.6.speech"
+    },
+    {
+      "id": "apology.6",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_6",
+      "next": "apology.6.effect1"
+    },
+    {
+      "id": "apology.7.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_7"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.7.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_7_effect1",
+      "next": "apology.7.speech"
+    },
+    {
+      "id": "apology.7",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_7",
+      "next": "apology.7.effect1"
+    },
+    {
+      "id": "apology.8.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_8"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.8.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_8_effect1",
+      "next": "apology.8.speech"
+    },
+    {
+      "id": "apology.8",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_8",
+      "next": "apology.8.effect1"
+    },
+    {
+      "id": "apology.9.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ACCEPTED_9"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.9.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_9_effect1",
+      "next": "apology.9.speech"
+    },
+    {
+      "id": "apology.9",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_9",
+      "next": "apology.9.effect1"
+    },
+    {
+      "id": "apology.10.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUTH"]}],
+      "next": "end"
+    },
+    {
+      "id": "apology.10.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "apology_10_effect1",
+      "next": "apology.10.speech"
+    },
+    {
+      "id": "apology.10",
+      "kind": "action",
+      "action": {
+        "verb": "state.add",
+        "args": ["story", "VUX_STACK_1", 1]
+      },
+      "save_as": "apology_10",
+      "next": "apology.10.effect1"
+    },
+    {
+      "id": "kill.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_FIGHT"]}],
+      "next": "end"
+    },
+    {
+      "id": "kill.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "kill_effect1",
+      "next": "kill.speech"
+    },
+    {
+      "id": "kill",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "VUX_STACK_2", {"min": [{"add": [{"get": ["story", "VUX_STACK_2", 0]}, 1]}, 3]}]
+      },
+      "save_as": "kill",
+      "next": "kill.effect1"
+    },
+    {
+      "id": "friends",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "VUX_STACK_3",
+          [["NEVER_UGLY_HUMANS_1"], ["NEVER_UGLY_HUMANS_2"], ["NEVER_UGLY_HUMANS_3"], ["NEVER_UGLY_HUMANS_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "friends.outcome"
+    },
+    {
+      "id": "friends.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "friends_outcome",
+      "next": "friends.speech"
+    },
+    {
+      "id": "friends.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "bye.normal",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "VUX_STACK_4",
+          [
+            ["GOODBYE_AND_DIE_HOSTILE_SPACE_1"],
+            ["GOODBYE_AND_DIE_HOSTILE_SPACE_2"],
+            ["GOODBYE_AND_DIE_HOSTILE_SPACE_3"],
+            ["GOODBYE_AND_DIE_HOSTILE_SPACE_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "bye.normal.outcome"
+    },
+    {
+      "id": "bye.normal.outcome",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "bye_normal_outcome",
+      "next": "bye.normal.speech"
+    },
+    {
+      "id": "bye.normal.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "end"
+    },
+    {
+      "id": "normal.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "why_so_mean",
+          "text": "why_so_mean",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 0]},
+          "next": "why_so_mean"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "deeper_reason",
+          "text": "deeper_reason",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 1]},
+          "next": "deeper_reason"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "if_we_apologize",
+          "text": "if_we_apologize",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 2]},
+          "next": "if_we_apologize"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "try_any_way",
+          "text": "try_any_way",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 3]},
+          "next": "try_any_way"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "apology_1",
+          "text": "apology_1",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 4]},
+          "next": "apology.1"
         },
         {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "apology_2",
+          "text": "apology_2",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 5]},
+          "next": "apology.2"
         },
         {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "apology_3",
+          "text": "apology_3",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 6]},
+          "next": "apology.3"
         },
         {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["vux", 7]
+          "id": "apology_4",
+          "text": "apology_4",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 7]},
+          "next": "apology.4"
+        },
+        {
+          "id": "apology_5",
+          "text": "apology_5",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 8]},
+          "next": "apology.5"
+        },
+        {
+          "id": "apology_6",
+          "text": "apology_6",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 9]},
+          "next": "apology.6"
+        },
+        {
+          "id": "apology_7",
+          "text": "apology_7",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 10]},
+          "next": "apology.7"
+        },
+        {
+          "id": "apology_8",
+          "text": "apology_8",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 11]},
+          "next": "apology.8"
+        },
+        {
+          "id": "apology_9",
+          "text": "apology_9",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 12]},
+          "next": "apology.9"
+        },
+        {
+          "id": "apology_10",
+          "text": "apology_10",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_1", 0]}, 13]},
+          "next": "apology.10"
+        },
+        {
+          "id": "kill_you_squids_1",
+          "text": "kill_you_squids_1",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_2", 0]}, 0]},
+          "next": "kill"
+        },
+        {
+          "id": "kill_you_squids_2",
+          "text": "kill_you_squids_2",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_2", 0]}, 1]},
+          "next": "kill"
+        },
+        {
+          "id": "kill_you_squids_3",
+          "text": "kill_you_squids_3",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_2", 0]}, 2]},
+          "next": "kill"
+        },
+        {
+          "id": "kill_you_squids_4",
+          "text": "kill_you_squids_4",
+          "when": {"eq": [{"get": ["story", "VUX_STACK_2", 0]}, 3]},
+          "next": "kill"
+        },
+        {
+          "id": "whats_up_hostile",
+          "text": "whats_up_hostile",
+          "when": {"not": {"get": ["local", "whats_up_hostile", false]}},
+          "next": "normal.info"
+        },
+        {
+          "id": "cant_we_be_friends_1",
+          "text": "cant_we_be_friends_1",
+          "when": {
+            "all": [{"gt": [{"get": ["story", "VUX_STACK_1", 0]}, 13]}, {"eq": [{"get": ["story", "VUX_STACK_3", 0]}, 0]}]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "friends"
+        },
+        {
+          "id": "cant_we_be_friends_2",
+          "text": "cant_we_be_friends_2",
+          "when": {
+            "all": [{"gt": [{"get": ["story", "VUX_STACK_1", 0]}, 13]}, {"eq": [{"get": ["story", "VUX_STACK_3", 0]}, 1]}]
+          },
+          "next": "friends"
+        },
+        {
+          "id": "cant_we_be_friends_3",
+          "text": "cant_we_be_friends_3",
+          "when": {
+            "all": [{"gt": [{"get": ["story", "VUX_STACK_1", 0]}, 13]}, {"eq": [{"get": ["story", "VUX_STACK_3", 0]}, 2]}]
+          },
+          "next": "friends"
+        },
+        {
+          "id": "cant_we_be_friends_4",
+          "text": "cant_we_be_friends_4",
+          "when": {
+            "all": [{"gt": [{"get": ["story", "VUX_STACK_1", 0]}, 13]}, {"eq": [{"get": ["story", "VUX_STACK_3", 0]}, 3]}]
+          },
+          "next": "friends"
+        },
+        {
+          "id": "bye_hostile_space",
+          "text": "bye_hostile_space",
+          "when": true,
+          "next": "bye.normal"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "zex.route",
+      "kind": "decision",
+      "branches": [{"when": {"ge": [{"get": ["story", "ZEX_STACK_3", 0]}, 2]}, "next": "zex.fight.greet"}],
+      "otherwise": "zex.greet"
+    },
+    {
+      "id": "zex.fight.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ZEX_VISITS", [["FIGHT_OR_TRADE_1"], ["FIGHT_OR_TRADE_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "zex.fight.greet.speech"
+    },
+    {
+      "id": "zex.fight.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "zex.0"
+    },
+    {
+      "id": "zex.greet",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "ZEX_VISITS", [["ZEX_HELLO_1"], ["ZEX_HELLO_2"], ["ZEX_HELLO_3"], ["ZEX_HELLO_4"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "zex.greet.speech"
+    },
+    {
+      "id": "zex.greet.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "zex.0"
+    },
+    {
+      "id": "zex.bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ZEX"]}],
+      "next": "end"
+    },
+    {
+      "id": "zex.bye",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "zex_bye",
+      "next": "zex.bye.speech"
+    },
+    {
+      "id": "zex.kill.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FIGHT_AGAIN"]}],
+      "next": "end"
+    },
+    {
+      "id": "zex.kill",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "zex_kill",
+      "next": "zex.kill.speech"
+    },
+    {
+      "id": "zex.regardless.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THEN_FIGHT"]}],
+      "next": "end"
+    },
+    {
+      "id": "zex.regardless.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "zex_regardless_effect2",
+      "next": "zex.regardless.speech"
+    },
+    {
+      "id": "zex.regardless.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_VISITS", 0]
+      },
+      "save_as": "zex_regardless_effect1",
+      "next": "zex.regardless.effect2"
+    },
+    {
+      "id": "zex.regardless",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_3", 2]
+      },
+      "save_as": "zex_regardless",
+      "next": "zex.regardless.effect1"
+    },
+    {
+      "id": "what_you_do_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MY_MENAGERIE"]}],
+      "next": "zex.0"
+    },
+    {
+      "id": "what_you_do_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_1", 1]
+      },
+      "save_as": "what_you_do_here",
+      "next": "what_you_do_here.speech"
+    },
+    {
+      "id": "what_about_menagerie.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEED_NEW_CREATURE"]}],
+      "next": "zex.0"
+    },
+    {
+      "id": "what_about_menagerie",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_1", 2]
+      },
+      "save_as": "what_about_menagerie",
+      "next": "what_about_menagerie.speech"
+    },
+    {
+      "id": "what_about_creature.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_CREATURE"]}],
+      "next": "zex.0"
+    },
+    {
+      "id": "what_about_creature.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_creature", true]
+      },
+      "save_as": "what_about_creature_effect2",
+      "next": "what_about_creature.speech"
+    },
+    {
+      "id": "what_about_creature.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_ZEX_WANTS_MONSTER", 1]
+      },
+      "save_as": "what_about_creature_effect1",
+      "next": "what_about_creature.effect2"
+    },
+    {
+      "id": "what_about_creature",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_1", 3]
+      },
+      "save_as": "what_about_creature",
+      "next": "what_about_creature.effect1"
+    },
+    {
+      "id": "about_creature_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CREATURE_AGAIN"]}],
+      "next": "zex.0"
+    },
+    {
+      "id": "about_creature_again",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "about_creature_again", true]
+      },
+      "save_as": "about_creature_again",
+      "next": "about_creature_again.speech"
+    },
+    {
+      "id": "why_dont_you_attack.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LIKE_YOU"]}],
+      "next": "zex.1"
+    },
+    {
+      "id": "why_dont_you_attack",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_2", 1]
+      },
+      "save_as": "why_dont_you_attack",
+      "next": "why_dont_you_attack.speech"
+    },
+    {
+      "id": "why_like_me.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LIKE_BECAUSE"]}],
+      "next": "zex.1"
+    },
+    {
+      "id": "why_like_me",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_2", 2]
+      },
+      "save_as": "why_like_me",
+      "next": "why_like_me.speech"
+    },
+    {
+      "id": "are_you_a_pervert.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CALL_ME_WHAT_YOU_WISH"]}],
+      "next": "zex.0"
+    },
+    {
+      "id": "are_you_a_pervert",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_2", 3]
+      },
+      "save_as": "are_you_a_pervert",
+      "next": "are_you_a_pervert.speech"
+    },
+    {
+      "id": "take_by_force.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PRECURSOR_DEVICE"]}],
+      "next": "zex.2"
+    },
+    {
+      "id": "take_by_force",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_3", 1]
+      },
+      "save_as": "take_by_force",
+      "next": "take_by_force.speech"
+    },
+    {
+      "id": "you_lied.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YUP_LIED"]}],
+      "next": "zex.2"
+    },
+    {
+      "id": "you_lied",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_STACK_3", 3]
+      },
+      "save_as": "you_lied",
+      "next": "you_lied.speech"
+    },
+    {
+      "id": "zex.0",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "i_have_beast",
+          "text": "i_have_beast",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+              {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "beast"
+        },
+        {
+          "id": "what_you_do_here",
+          "text": "what_you_do_here",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 0]}
+            ]
+          },
+          "next": "what_you_do_here"
+        },
+        {
+          "id": "what_about_menagerie",
+          "text": "what_about_menagerie",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 1]}
+            ]
+          },
+          "next": "what_about_menagerie"
+        },
+        {
+          "id": "what_about_creature",
+          "text": "what_about_creature",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 2]}
+            ]
+          },
+          "next": "what_about_creature"
+        },
+        {
+          "id": "about_creature_again",
+          "text": "about_creature_again",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 3]},
+              {"not": {"get": ["local", "about_creature_again", false]}}
+            ]
+          },
+          "next": "about_creature_again"
+        },
+        {
+          "id": "why_dont_you_attack",
+          "text": "why_dont_you_attack",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 0]},
+          "next": "why_dont_you_attack"
+        },
+        {
+          "id": "why_like_me",
+          "text": "why_like_me",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 1]},
+          "next": "why_like_me"
+        },
+        {
+          "id": "are_you_a_pervert",
+          "text": "are_you_a_pervert",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 2]},
+          "next": "are_you_a_pervert"
+        },
+        {
+          "id": "take_by_force",
+          "text": "take_by_force",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 0]},
+          "next": "take_by_force"
+        },
+        {
+          "id": "regardless",
+          "text": "regardless",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 1]},
+          "next": "zex.regardless"
+        },
+        {
+          "id": "you_lied",
+          "text": "you_lied",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 2]},
+          "next": "you_lied"
+        },
+        {
+          "id": "kill_you",
+          "text": "kill_you",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 3]},
+          "next": "zex.kill"
+        },
+        {
+          "id": "bye_zex",
+          "text": "bye_zex",
+          "when": true,
+          "next": "zex.bye"
+        }
+      ]
+    },
+    {
+      "id": "zex.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_dont_you_attack",
+          "text": "why_dont_you_attack",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 0]},
+          "next": "why_dont_you_attack"
+        },
+        {
+          "id": "why_like_me",
+          "text": "why_like_me",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 1]},
+          "next": "why_like_me"
+        },
+        {
+          "id": "are_you_a_pervert",
+          "text": "are_you_a_pervert",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 2]},
+          "next": "are_you_a_pervert"
+        },
+        {
+          "id": "i_have_beast",
+          "text": "i_have_beast",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+              {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "beast"
+        },
+        {
+          "id": "what_you_do_here",
+          "text": "what_you_do_here",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 0]}
+            ]
+          },
+          "next": "what_you_do_here"
+        },
+        {
+          "id": "what_about_menagerie",
+          "text": "what_about_menagerie",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 1]}
+            ]
+          },
+          "next": "what_about_menagerie"
+        },
+        {
+          "id": "what_about_creature",
+          "text": "what_about_creature",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 2]}
+            ]
+          },
+          "next": "what_about_creature"
+        },
+        {
+          "id": "about_creature_again",
+          "text": "about_creature_again",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 3]},
+              {"not": {"get": ["local", "about_creature_again", false]}}
+            ]
+          },
+          "next": "about_creature_again"
+        },
+        {
+          "id": "take_by_force",
+          "text": "take_by_force",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 0]},
+          "next": "take_by_force"
+        },
+        {
+          "id": "regardless",
+          "text": "regardless",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 1]},
+          "next": "zex.regardless"
+        },
+        {
+          "id": "you_lied",
+          "text": "you_lied",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 2]},
+          "next": "you_lied"
+        },
+        {
+          "id": "kill_you",
+          "text": "kill_you",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 3]},
+          "next": "zex.kill"
+        },
+        {
+          "id": "bye_zex",
+          "text": "bye_zex",
+          "when": true,
+          "next": "zex.bye"
+        }
+      ]
+    },
+    {
+      "id": "zex.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "take_by_force",
+          "text": "take_by_force",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 0]},
+          "next": "take_by_force"
+        },
+        {
+          "id": "regardless",
+          "text": "regardless",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 1]},
+          "next": "zex.regardless"
+        },
+        {
+          "id": "you_lied",
+          "text": "you_lied",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 2]},
+          "next": "you_lied"
+        },
+        {
+          "id": "kill_you",
+          "text": "kill_you",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_3", 0]}, 3]},
+          "next": "zex.kill"
+        },
+        {
+          "id": "i_have_beast",
+          "text": "i_have_beast",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+              {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+            ]
+          },
+          "next": "beast"
+        },
+        {
+          "id": "what_you_do_here",
+          "text": "what_you_do_here",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 0]}
+            ]
+          },
+          "next": "what_you_do_here"
+        },
+        {
+          "id": "what_about_menagerie",
+          "text": "what_about_menagerie",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 1]}
+            ]
+          },
+          "next": "what_about_menagerie"
+        },
+        {
+          "id": "what_about_creature",
+          "text": "what_about_creature",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 2]}
+            ]
+          },
+          "next": "what_about_creature"
+        },
+        {
+          "id": "about_creature_again",
+          "text": "about_creature_again",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"ne": [{"get": ["story", "KNOW_ZEX_WANTS_MONSTER", 0]}, 0]},
+                    {"ne": [{"get": ["story", "VUX_BEAST_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "ZEX_STACK_1", 0]}, 3]},
+              {"not": {"get": ["local", "about_creature_again", false]}}
+            ]
+          },
+          "next": "about_creature_again"
+        },
+        {
+          "id": "why_dont_you_attack",
+          "text": "why_dont_you_attack",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 0]},
+          "next": "why_dont_you_attack"
+        },
+        {
+          "id": "why_like_me",
+          "text": "why_like_me",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 1]},
+          "next": "why_like_me"
+        },
+        {
+          "id": "are_you_a_pervert",
+          "text": "are_you_a_pervert",
+          "when": {"eq": [{"get": ["story", "ZEX_STACK_2", 0]}, 2]},
+          "next": "are_you_a_pervert"
+        },
+        {
+          "id": "bye_zex",
+          "text": "bye_zex",
+          "when": true,
+          "next": "zex.bye"
+        }
+      ]
+    },
+    {
+      "id": "beast",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVE_BEAST"]}],
+      "next": "trust.menu"
+    },
+    {
+      "id": "why_trust_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUST_1"]}],
+      "next": "trust.menu"
+    },
+    {
+      "id": "why_trust_1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_trust_1", true]
+      },
+      "save_as": "why_trust_1",
+      "next": "why_trust_1.speech"
+    },
+    {
+      "id": "why_trust_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUST_2"]}],
+      "next": "trust.menu"
+    },
+    {
+      "id": "why_trust_2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_trust_2", true]
+      },
+      "save_as": "why_trust_2",
+      "next": "why_trust_2.speech"
+    },
+    {
+      "id": "why_trust_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRUST_3"]}],
+      "next": "trust.menu"
+    },
+    {
+      "id": "why_trust_3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_trust_3", true]
+      },
+      "save_as": "why_trust_3",
+      "next": "why_trust_3.speech"
+    },
+    {
+      "id": "trust.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_trust_1",
+          "text": "why_trust_1",
+          "when": {"all": [{"not": {"get": ["local", "why_trust_1", false]}}]},
+          "next": "why_trust_1"
+        },
+        {
+          "id": "why_trust_2",
+          "text": "why_trust_2",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "why_trust_2", false]}},
+              {"not": {"not": {"get": ["local", "why_trust_1", false]}}}
+            ]
+          },
+          "next": "why_trust_2"
+        },
+        {
+          "id": "why_trust_3",
+          "text": "why_trust_3",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "why_trust_3", false]}},
+              {"not": {"not": {"get": ["local", "why_trust_1", false]}}},
+              {"not": {"not": {"get": ["local", "why_trust_2", false]}}}
+            ]
+          },
+          "next": "why_trust_3"
+        },
+        {
+          "id": "ok_take_beast",
+          "text": "ok_take_beast",
+          "when": true,
+          "next": "beast.release"
+        }
+      ]
+    },
+    {
+      "id": "beast.release",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "beast_release",
+      "next": "beast.escape"
+    },
+    {
+      "id": "beast.escape",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FOOL_AIEE0", {"phrase": "FOOL_AIEE1", "on_start": "vux.beast_escape"}]}],
+      "next": "beast.gone"
+    },
+    {
+      "id": "beast.gone",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "VUX_BEAST_ON_SHIP", 0]
+      },
+      "save_as": "beast_gone",
+      "next": "zex.dead"
+    },
+    {
+      "id": "zex.dead",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "ZEX_IS_DEAD", 1]
+      },
+      "save_as": "zex_dead",
+      "next": "beast.peace"
+    },
+    {
+      "id": "beast.peace",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "beast_peace",
       "next": "end"
     },
     {

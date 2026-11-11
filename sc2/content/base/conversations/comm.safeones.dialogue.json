@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 194,
   "id": "spahome",
   "resource": "comm.safeones.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resources/lifecycle remain. Password/council, creature quest, party, alliance and shielding-event branches use graph/state operations and registered color cues."
   },
   "phrases": [
     {
@@ -1027,121 +1027,2331 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.we_attack_again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_FIGHT_AGAIN"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_attack_again",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["spahome", null]
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_we_attack_again",
+      "next": "exit.we_attack_again.speech"
     },
     {
-      "id": "route",
+      "id": "exit.surrender_or_die.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEFEND_OURSELVES"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.surrender_or_die",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_surrender_or_die",
+      "next": "exit.surrender_or_die.speech"
+    },
+    {
+      "id": "exit.we_are_vindicator0.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_PASSWORD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.we_are_vindicator0",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_we_are_vindicator0",
+      "next": "exit.we_are_vindicator0.speech"
+    },
+    {
+      "id": "exit.screw_password.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_PASSWORD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.screw_password",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_screw_password",
+      "next": "exit.screw_password.speech"
+    },
+    {
+      "id": "exit.gort_merenga.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WRONG_PASSWORD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.gort_merenga",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_gort_merenga",
+      "next": "exit.gort_merenga.speech"
+    },
+    {
+      "id": "exit.guph_florp.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WRONG_PASSWORD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.guph_florp",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_guph_florp",
+      "next": "exit.guph_florp.speech"
+    },
+    {
+      "id": "exit.wagngl_fthagn.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WRONG_PASSWORD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.wagngl_fthagn",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_wagngl_fthagn",
+      "next": "exit.wagngl_fthagn.speech"
+    },
+    {
+      "id": "exit.pleeese.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WRONG_PASSWORD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.pleeese",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "exit_pleeese",
+      "next": "exit.pleeese.speech"
+    },
+    {
+      "id": "exit.bye_no_ally_offer.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_NO_ALLY_OFFER"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_no_ally_offer",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_no_ally_offer",
+      "next": "exit.bye_no_ally_offer.speech"
+    },
+    {
+      "id": "exit.bye_angry_spathi.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ANGRY_SPATHI"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_angry_spathi",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_angry_spathi",
+      "next": "exit.bye_angry_spathi.speech"
+    },
+    {
+      "id": "exit.bye_ally.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_ALLY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_ally",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_ally",
+      "next": "exit.bye_ally.speech"
+    },
+    {
+      "id": "exit.too_dangerous.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_AGREE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.too_dangerous",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_too_dangerous",
+      "next": "exit.too_dangerous.speech"
+    },
+    {
+      "id": "exit.think_more.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["COWARD"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.think_more",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_think_more",
+      "next": "exit.think_more.speech"
+    },
+    {
+      "id": "exit.bye_before_party.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_BEFORE_PARTY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_before_party",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_before_party",
+      "next": "exit.bye_before_party.speech"
+    },
+    {
+      "id": "exit.bye_from_party_1.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FROM_PARTY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_from_party_1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_from_party_1",
+      "next": "exit.bye_from_party_1.speech"
+    },
+    {
+      "id": "exit.bye_from_party_2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FROM_PARTY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_from_party_2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_from_party_2",
+      "next": "exit.bye_from_party_2.speech"
+    },
+    {
+      "id": "exit.bye_from_party_3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FROM_PARTY"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_from_party_3",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_from_party_3",
+      "next": "exit.bye_from_party_3.speech"
+    },
+    {
+      "id": "exit.already_got_them.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["EARLY_BIRD_CHECK"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.already_got_them.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_already_got_them_effect4",
+      "next": "exit.already_got_them.speech"
+    },
+    {
+      "id": "exit.already_got_them.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_MANNER", 3]
+      },
+      "save_as": "exit_already_got_them_effect3",
+      "next": "exit.already_got_them.effect4"
+    },
+    {
+      "id": "exit.already_got_them.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_PARTY", 1]
+      },
+      "save_as": "exit_already_got_them_effect2",
+      "next": "exit.already_got_them.effect3"
+    },
+    {
+      "id": "exit.already_got_them.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_VISITS", 0]
+      },
+      "save_as": "exit_already_got_them_effect1",
+      "next": "exit.already_got_them.effect2"
+    },
+    {
+      "id": "exit.already_got_them",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 0]
+      },
+      "save_as": "exit_already_got_them",
+      "next": "exit.already_got_them.effect1"
+    },
+    {
+      "id": "exit.i_accept.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["AWAIT_RETURN"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.i_accept.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_i_accept_effect3",
+      "next": "exit.i_accept.speech"
+    },
+    {
+      "id": "exit.i_accept.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_VISITS", 0]
+      },
+      "save_as": "exit_i_accept_effect2",
+      "next": "exit.i_accept.effect3"
+    },
+    {
+      "id": "exit.i_accept.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_MANNER", 3]
+      },
+      "save_as": "exit_i_accept_effect1",
+      "next": "exit.i_accept.effect2"
+    },
+    {
+      "id": "exit.i_accept",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_QUEST", 1]
+      },
+      "save_as": "exit_i_accept",
+      "next": "exit.i_accept.effect1"
+    },
+    {
+      "id": "exit.do_as_we_say.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DEPART_FOR_EARTH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.do_as_we_say.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_do_as_we_say_effect4",
+      "next": "exit.do_as_we_say.speech"
+    },
+    {
+      "id": "exit.do_as_we_say.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_VISITS", 0]
+      },
+      "save_as": "exit_do_as_we_say_effect3",
+      "next": "exit.do_as_we_say.effect4"
+    },
+    {
+      "id": "exit.do_as_we_say.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 0]
+      },
+      "save_as": "exit_do_as_we_say_effect2",
+      "next": "exit.do_as_we_say.effect3"
+    },
+    {
+      "id": "exit.do_as_we_say.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "calendar.schedule",
+        "args": ["SPATHI_SHIELD_EVENT", 6, 0, 0]
+      },
+      "save_as": "exit_do_as_we_say_effect1",
+      "next": "exit.do_as_we_say.effect2"
+    },
+    {
+      "id": "exit.do_as_we_say",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["spathi", "allied"]
+      },
+      "save_as": "exit_do_as_we_say",
+      "next": "exit.do_as_we_say.effect1"
+    },
+    {
+      "id": "killed.1",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}, "next": "killed.1.true"}],
+      "otherwise": "killed.1.lie"
     },
     {
-      "id": "menu",
+      "id": "killed.1.true.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_CHECK_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "killed.1.true.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "killed_1_true_effect4",
+      "next": "killed.1.true.speech"
+    },
+    {
+      "id": "killed.1.true.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_MANNER", 3]
+      },
+      "save_as": "killed_1_true_effect3",
+      "next": "killed.1.true.effect4"
+    },
+    {
+      "id": "killed.1.true.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_PARTY", 1]
+      },
+      "save_as": "killed_1_true_effect2",
+      "next": "killed.1.true.effect3"
+    },
+    {
+      "id": "killed.1.true.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_VISITS", 0]
+      },
+      "save_as": "killed_1_true_effect1",
+      "next": "killed.1.true.effect2"
+    },
+    {
+      "id": "killed.1.true",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 0]
+      },
+      "save_as": "killed_1_true",
+      "next": "killed.1.true.effect1"
+    },
+    {
+      "id": "killed.1.lie.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_CHECK_1"]}],
+      "next": "end"
+    },
+    {
+      "id": "killed.1.lie.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "killed_1_lie_effect1",
+      "next": "killed.1.lie.speech"
+    },
+    {
+      "id": "killed.1.lie",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "LIED_ABOUT_CREATURES", 1]
+      },
+      "save_as": "killed_1_lie",
+      "next": "killed.1.lie.effect1"
+    },
+    {
+      "id": "killed.2",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}, "next": "killed.2.true"}],
+      "otherwise": "killed.2.lie"
+    },
+    {
+      "id": "killed.2.true.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_CHECK_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "killed.2.true.effect4",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "killed_2_true_effect4",
+      "next": "killed.2.true.speech"
+    },
+    {
+      "id": "killed.2.true.effect3",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_MANNER", 3]
+      },
+      "save_as": "killed_2_true_effect3",
+      "next": "killed.2.true.effect4"
+    },
+    {
+      "id": "killed.2.true.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_PARTY", 1]
+      },
+      "save_as": "killed_2_true_effect2",
+      "next": "killed.2.true.effect3"
+    },
+    {
+      "id": "killed.2.true.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_VISITS", 0]
+      },
+      "save_as": "killed_2_true_effect1",
+      "next": "killed.2.true.effect2"
+    },
+    {
+      "id": "killed.2.true",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 0]
+      },
+      "save_as": "killed_2_true",
+      "next": "killed.2.true.effect1"
+    },
+    {
+      "id": "killed.2.lie.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WILL_CHECK_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "killed.2.lie.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "killed_2_lie_effect1",
+      "next": "killed.2.lie.speech"
+    },
+    {
+      "id": "killed.2.lie",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "LIED_ABOUT_CREATURES", 2]
+      },
+      "save_as": "killed_2_lie",
+      "next": "killed.2.lie.effect1"
+    },
+    {
+      "id": "info",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_ABOUT"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "info.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_hierarchy", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_history", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_alliance", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_other", false]}}},
+              {"not": {"not": {"get": ["local", "what_about_precursors", false]}}}
+            ]
+          },
+          "next": "info.done"
+        }
+      ],
+      "otherwise": "info.menu"
+    },
+    {
+      "id": "info.done",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "like_some_info", true]
+      },
+      "save_as": "info_done",
+      "next": "info.menu"
+    },
+    {
+      "id": "what_about_hierarchy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HIERARCHY"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_hierarchy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_hierarchy", true]
+      },
+      "save_as": "what_about_hierarchy",
+      "next": "what_about_hierarchy.speech"
+    },
+    {
+      "id": "what_about_history.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HISTORY"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_history",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_history", true]
+      },
+      "save_as": "what_about_history",
+      "next": "what_about_history.speech"
+    },
+    {
+      "id": "what_about_alliance.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ALLIANCE"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_alliance",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_alliance", true]
+      },
+      "save_as": "what_about_alliance",
+      "next": "what_about_alliance.speech"
+    },
+    {
+      "id": "what_about_other.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_OTHER"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_other",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_other", true]
+      },
+      "save_as": "what_about_other",
+      "next": "what_about_other.speech"
+    },
+    {
+      "id": "what_about_precursors.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_PRECURSORS"]}],
+      "next": "info.route"
+    },
+    {
+      "id": "what_about_precursors",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_precursors", true]
+      },
+      "save_as": "what_about_precursors",
+      "next": "what_about_precursors.speech"
+    },
+    {
+      "id": "info.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_hierarchy",
+          "text": "what_about_hierarchy",
+          "when": {"not": {"get": ["local", "what_about_hierarchy", false]}},
+          "next": "what_about_hierarchy"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"not": {"get": ["local", "what_about_history", false]}},
+          "next": "what_about_history"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_alliance",
+          "text": "what_about_alliance",
+          "when": {"not": {"get": ["local", "what_about_alliance", false]}},
+          "next": "what_about_alliance"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_other",
+          "text": "what_about_other",
+          "when": {"not": {"get": ["local", "what_about_other", false]}},
+          "next": "what_about_other"
         },
         {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_about_precursors",
+          "text": "what_about_precursors",
+          "when": {"not": {"get": ["local", "what_about_precursors", false]}},
+          "next": "what_about_precursors"
         },
         {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["spahome", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "enough_info",
+          "text": "enough_info",
+          "when": true,
+          "next": "info.back"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "info.back",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_ENOUGH_INFO"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "ally.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up", true]
+      },
+      "save_as": "ally_info",
+      "next": "ally.info.knowledge"
+    },
+    {
+      "id": "ally.info.knowledge",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "SPATHI_INFO", 0]}, 2]}, "next": "ally.info.urquan"}],
+      "otherwise": "ally.info.seq"
+    },
+    {
+      "id": "ally.info.urquan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_URQUAN_STORY", 1]
+      },
+      "save_as": "ally_info_urquan",
+      "next": "ally.info.kohrah"
+    },
+    {
+      "id": "ally.info.kohrah",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_KOHR_AH_STORY", 1]
+      },
+      "save_as": "ally_info_kohrah",
+      "next": "ally.info.seq"
+    },
+    {
+      "id": "ally.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "SPATHI_INFO",
+          [["GENERAL_INFO_1"], ["GENERAL_INFO_2"], ["GENERAL_INFO_3"], ["GENERAL_INFO_4"], ["GENERAL_INFO_5"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "ally.info.seq.speech"
+    },
+    {
+      "id": "ally.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "fishy.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOTHING_FISHY"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "fishy",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_INFO", 5]
+      },
+      "save_as": "fishy",
+      "next": "fishy.speech"
+    },
+    {
+      "id": "resources_please.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SORRY_NO_RESOURCES"]}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "resources_please",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "resources_please", true]
+      },
+      "save_as": "resources_please",
+      "next": "resources_please.speech"
+    },
+    {
+      "id": "ally.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "something_fishy",
+          "text": "something_fishy",
+          "when": {"eq": [{"get": ["story", "SPATHI_INFO", 0]}, 4]},
+          "next": "fishy"
+        },
+        {
+          "id": "whats_up",
+          "text": "whats_up",
+          "when": {"not": {"get": ["local", "whats_up", false]}},
+          "next": "ally.info"
+        },
+        {
+          "id": "resources_please",
+          "text": "resources_please",
+          "when": {"not": {"get": ["local", "resources_please", false]}},
+          "next": "resources_please"
+        },
+        {
+          "id": "like_some_info",
+          "text": "like_some_info",
+          "when": {"not": {"get": ["local", "like_some_info", false]}},
+          "next": "info"
+        },
+        {
+          "id": "bye_ally",
+          "text": "bye_ally",
+          "when": true,
+          "next": "exit.bye_ally"
+        }
+      ]
+    },
+    {
+      "id": "little_mistake.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BIG_MISTAKE"]}],
+      "next": "quest.menu"
+    },
+    {
+      "id": "little_mistake",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "little_mistake", true]
+      },
+      "save_as": "little_mistake",
+      "next": "little_mistake.speech"
+    },
+    {
+      "id": "talk_test.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TEST_AGAIN"]}],
+      "next": "quest.menu"
+    },
+    {
+      "id": "talk_test",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "talk_test", true]
+      },
+      "save_as": "talk_test",
+      "next": "talk_test.speech"
+    },
+    {
+      "id": "zapped_a_few.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_FORTUNATE"]}],
+      "next": "quest.menu"
+    },
+    {
+      "id": "zapped_a_few",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "zapped_a_few", true]
+      },
+      "save_as": "zapped_a_few",
+      "next": "zapped_a_few.speech"
+    },
+    {
+      "id": "quest.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "killed_them_all_1",
+          "text": "killed_them_all_1",
+          "when": {"not": {"ne": [{"get": ["story", "LIED_ABOUT_CREATURES", 0]}, 0]}},
+          "next": "killed.1"
+        },
+        {
+          "id": "little_mistake",
+          "text": "little_mistake",
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "LIED_ABOUT_CREATURES", 0]}, 0]},
+              {"not": {"get": ["local", "little_mistake", false]}}
+            ]
+          },
+          "next": "little_mistake"
+        },
+        {
+          "id": "killed_them_all_2",
+          "text": "killed_them_all_2",
+          "when": {"ne": [{"get": ["story", "LIED_ABOUT_CREATURES", 0]}, 0]},
+          "next": "killed.2"
+        },
+        {
+          "id": "talk_test",
+          "text": "talk_test",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}},
+              {"not": {"get": ["local", "talk_test", false]}}
+            ]
+          },
+          "next": "talk_test"
+        },
+        {
+          "id": "zapped_a_few",
+          "text": "zapped_a_few",
+          "when": {
+            "all": [
+              {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}},
+              {"ne": [{"get": ["story", "SPATHI_CREATURES_EXAMINED", 0]}, 0]},
+              {"not": {"get": ["local", "zapped_a_few", false]}}
+            ]
+          },
+          "next": "zapped_a_few"
+        },
+        {
+          "id": "bye_before_party",
+          "text": "bye_before_party",
+          "when": {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}},
+          "next": "exit.bye_before_party"
+        }
+      ]
+    },
+    {
+      "id": "how_prove",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BETTER_IDEA"]}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "what_test.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WIPE_EVIL"]}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "what_test.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_SPATHI_QUEST", 1]
+      },
+      "save_as": "what_test_effect1",
+      "next": "what_test.speech"
+    },
+    {
+      "id": "what_test",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_test", true]
+      },
+      "save_as": "what_test",
+      "next": "what_test.effect1"
+    },
+    {
+      "id": "tell_evil.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BEFORE_ACCEPT"]}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "tell_evil.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "prove_strength", true]
+      },
+      "save_as": "tell_evil_effect2",
+      "next": "tell_evil.speech"
+    },
+    {
+      "id": "tell_evil.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_evil", true]
+      },
+      "save_as": "tell_evil_effect1",
+      "next": "tell_evil.effect2"
+    },
+    {
+      "id": "tell_evil",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_SPATHI_EVIL", 1]
+      },
+      "save_as": "tell_evil",
+      "next": "tell_evil.effect1"
+    },
+    {
+      "id": "prove_strength.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOUR_BEHAVIOR"]}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "prove_strength",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "prove_strength", true]
+      },
+      "save_as": "prove_strength",
+      "next": "prove_strength.speech"
+    },
+    {
+      "id": "why_dont_you_do_it.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_WONT_BECAUSE"]}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "why_dont_you_do_it",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_dont_you_do_it", true]
+      },
+      "save_as": "why_dont_you_do_it",
+      "next": "why_dont_you_do_it.speech"
+    },
+    {
+      "id": "learn.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_test",
+          "text": "what_test",
+          "when": {"not": {"get": ["local", "what_test", false]}},
+          "next": "what_test"
+        },
+        {
+          "id": "already_got_them",
+          "text": "already_got_them",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_test", false]}}},
+              {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}
+            ]
+          },
+          "next": "exit.already_got_them"
+        },
+        {
+          "id": "too_dangerous",
+          "text": "too_dangerous",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_test", false]}}},
+              {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}}
+            ]
+          },
+          "next": "exit.too_dangerous"
+        },
+        {
+          "id": "tell_evil",
+          "text": "tell_evil",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_test", false]}}},
+              {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}},
+              {"not": {"get": ["local", "tell_evil", false]}}
+            ]
+          },
+          "next": "tell_evil"
+        },
+        {
+          "id": "think_more",
+          "text": "think_more",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_test", false]}}},
+              {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}},
+              {"not": {"not": {"get": ["local", "tell_evil", false]}}}
+            ]
+          },
+          "next": "exit.think_more"
+        },
+        {
+          "id": "i_accept",
+          "text": "i_accept",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_test", false]}}},
+              {"not": {"ne": [{"get": ["story", "SPATHI_CREATURES_ELIMINATED", 0]}, 0]}},
+              {"not": {"not": {"get": ["local", "tell_evil", false]}}}
+            ]
+          },
+          "next": "exit.i_accept"
+        },
+        {
+          "id": "prove_strength",
+          "text": "prove_strength",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "prove_strength", false]}},
+              {"not": {"ne": [{"get": ["story", "KNOW_SPATHI_QUEST", 0]}, 0]}}
+            ]
+          },
+          "next": "prove_strength"
+        },
+        {
+          "id": "why_dont_you_do_it",
+          "text": "why_dont_you_do_it",
+          "when": {"not": {"get": ["local", "why_dont_you_do_it", false]}},
+          "next": "why_dont_you_do_it"
+        }
+      ]
+    },
+    {
+      "id": "learn.greeting",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "KNOW_SPATHI_EVIL", 0]}, 0]}, "next": "learn.known"}],
+      "otherwise": "learn.unknown"
+    },
+    {
+      "id": "learn.known.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["QUEST_AGAIN"], "presentation": {"before": "spahome.council_map"}}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "learn.known.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "tell_evil", true]
+      },
+      "save_as": "learn_known_effect1",
+      "next": "learn.known.speech"
+    },
+    {
+      "id": "learn.known",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_test", true]
+      },
+      "save_as": "learn_known",
+      "next": "learn.known.effect1"
+    },
+    {
+      "id": "learn.unknown.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["QUEST_AGAIN"], "presentation": {"before": "spahome.council_map"}}],
+      "next": "learn.menu"
+    },
+    {
+      "id": "learn.unknown",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_test", true]
+      },
+      "save_as": "learn_unknown",
+      "next": "learn.unknown.speech"
+    },
+    {
+      "id": "misunderstanding.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["JUST_MISUNDERSTANDING"], "presentation": {"before": "spahome.council_fade"}}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "misunderstanding.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_VISITS", 0]
+      },
+      "save_as": "misunderstanding_effect1",
+      "next": "misunderstanding.speech"
+    },
+    {
+      "id": "misunderstanding",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_MANNER", 3]
+      },
+      "save_as": "misunderstanding",
+      "next": "misunderstanding.effect1"
+    },
+    {
+      "id": "offer",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OF_COURSE"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "hand_in_friendship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TOO_AFRAID"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "hand_in_friendship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hand_in_friendship", true]
+      },
+      "save_as": "hand_in_friendship",
+      "next": "hand_in_friendship.speech"
+    },
+    {
+      "id": "stronger.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOURE_NOT"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "stronger",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "stronger", true]
+      },
+      "save_as": "stronger",
+      "next": "stronger.speech"
+    },
+    {
+      "id": "yes_we_are.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_YOURE_NOT"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "yes_we_are",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "yes_we_are", true]
+      },
+      "save_as": "yes_we_are",
+      "next": "yes_we_are.speech"
+    },
+    {
+      "id": "share_info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_INFO"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "share_info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "share_info", true]
+      },
+      "save_as": "share_info",
+      "next": "share_info.speech"
+    },
+    {
+      "id": "give_us_resources.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_RESOURCES"]}],
+      "next": "offer.menu"
+    },
+    {
+      "id": "give_us_resources",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "give_us_resources", true]
+      },
+      "save_as": "give_us_resources",
+      "next": "give_us_resources.speech"
+    },
+    {
+      "id": "offer.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "hand_in_friendship",
+          "text": "hand_in_friendship",
+          "when": {"all": [{"not": {"get": ["local", "hand_in_friendship", false]}}]},
+          "next": "hand_in_friendship"
+        },
+        {
+          "id": "stronger",
+          "text": "stronger",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "stronger", false]}},
+              {"not": {"not": {"get": ["local", "hand_in_friendship", false]}}}
+            ]
+          },
+          "next": "stronger"
+        },
+        {
+          "id": "yes_we_are",
+          "text": "yes_we_are",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "yes_we_are", false]}},
+              {"not": {"not": {"get": ["local", "hand_in_friendship", false]}}},
+              {"not": {"not": {"get": ["local", "stronger", false]}}}
+            ]
+          },
+          "next": "yes_we_are"
+        },
+        {
+          "id": "how_prove",
+          "text": "how_prove",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "hand_in_friendship", false]}}},
+              {"not": {"not": {"get": ["local", "stronger", false]}}},
+              {"not": {"not": {"get": ["local", "yes_we_are", false]}}}
+            ]
+          },
+          "next": "how_prove"
+        },
+        {
+          "id": "share_info",
+          "text": "share_info",
+          "when": {"not": {"get": ["local", "share_info", false]}},
+          "next": "share_info"
+        },
+        {
+          "id": "give_us_resources",
+          "text": "give_us_resources",
+          "when": {"not": {"get": ["local", "give_us_resources", false]}},
+          "next": "give_us_resources"
+        }
+      ]
+    },
+    {
+      "id": "angry.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MEAN_GUYS_RETURN"]}],
+      "responses": [
+        {
+          "id": "we_apologize",
+          "text": "we_apologize",
+          "when": true,
+          "next": "angry.apology"
+        },
+        {
+          "id": "we_attack_again",
+          "text": "we_attack_again",
+          "when": true,
+          "next": "exit.we_attack_again"
+        },
+        {
+          "id": "bye_angry_spathi",
+          "text": "bye_angry_spathi",
+          "when": true,
+          "next": "exit.bye_angry_spathi"
+        }
+      ]
+    },
+    {
+      "id": "angry.apology",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_BELIEVE"]}],
+      "responses": [
+        {
+          "id": "misunderstanding",
+          "text": "misunderstanding",
+          "when": true,
+          "next": "misunderstanding"
+        },
+        {
+          "id": "we_attack_again",
+          "text": "we_attack_again",
+          "when": true,
+          "next": "exit.we_attack_again"
+        },
+        {
+          "id": "bye_angry_spathi",
+          "text": "bye_angry_spathi",
+          "when": true,
+          "next": "exit.bye_angry_spathi"
+        }
+      ]
+    },
+    {
+      "id": "deals_a_deal.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WAIT_A_WHILE"]}],
+      "next": "party.menu"
+    },
+    {
+      "id": "deals_a_deal",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "deals_a_deal", true]
+      },
+      "save_as": "deals_a_deal",
+      "next": "deals_a_deal.speech"
+    },
+    {
+      "id": "how_long.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TEN_YEARS"]}],
+      "next": "party.menu"
+    },
+    {
+      "id": "how_long",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "how_long", true]
+      },
+      "save_as": "how_long",
+      "next": "how_long.speech"
+    },
+    {
+      "id": "reneging.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ADULT_VIEW"]}],
+      "next": "party.menu"
+    },
+    {
+      "id": "reneging",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "reneging", true]
+      },
+      "save_as": "reneging",
+      "next": "reneging.speech"
+    },
+    {
+      "id": "return_beasts.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_RELATIONSHIP"]}],
+      "next": "party.menu"
+    },
+    {
+      "id": "return_beasts",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "return_beasts", true]
+      },
+      "save_as": "return_beasts",
+      "next": "return_beasts.speech"
+    },
+    {
+      "id": "minds_and_might.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HUH"]}],
+      "next": "party.menu"
+    },
+    {
+      "id": "minds_and_might",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "minds_and_might", true]
+      },
+      "save_as": "minds_and_might",
+      "next": "minds_and_might.speech"
+    },
+    {
+      "id": "fellowship.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT"]}],
+      "next": "party.menu"
+    },
+    {
+      "id": "fellowship",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "fellowship", true]
+      },
+      "save_as": "fellowship",
+      "next": "fellowship.speech"
+    },
+    {
+      "id": "party.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "deals_a_deal",
+          "text": "deals_a_deal",
+          "when": {"all": [{"not": {"get": ["local", "deals_a_deal", false]}}]},
+          "next": "deals_a_deal"
+        },
+        {
+          "id": "how_long",
+          "text": "how_long",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "how_long", false]}},
+              {"not": {"not": {"get": ["local", "deals_a_deal", false]}}}
+            ]
+          },
+          "next": "how_long"
+        },
+        {
+          "id": "reneging",
+          "text": "reneging",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "reneging", false]}},
+              {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+              {"not": {"not": {"get": ["local", "how_long", false]}}}
+            ]
+          },
+          "next": "reneging"
+        },
+        {
+          "id": "return_beasts",
+          "text": "return_beasts",
+          "when": {
+            "all": [
+              {"not": {"get": ["local", "return_beasts", false]}},
+              {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+              {"not": {"not": {"get": ["local", "how_long", false]}}},
+              {"not": {"not": {"get": ["local", "reneging", false]}}}
+            ]
+          },
+          "next": "return_beasts"
+        },
+        {
+          "id": "minds_and_might",
+          "text": "minds_and_might",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+                  {"not": {"not": {"get": ["local", "how_long", false]}}},
+                  {"not": {"not": {"get": ["local", "reneging", false]}}},
+                  {"not": {"not": {"get": ["local", "return_beasts", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "minds_and_might", false]}}
+            ]
+          },
+          "next": "minds_and_might"
+        },
+        {
+          "id": "fellowship",
+          "text": "fellowship",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+                  {"not": {"not": {"get": ["local", "how_long", false]}}},
+                  {"not": {"not": {"get": ["local", "reneging", false]}}},
+                  {"not": {"not": {"get": ["local", "return_beasts", false]}}}
+                ]
+              },
+              {"not": {"get": ["local", "fellowship", false]}}
+            ]
+          },
+          "next": "fellowship"
+        },
+        {
+          "id": "do_as_we_say",
+          "text": "do_as_we_say",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+              {"not": {"not": {"get": ["local", "how_long", false]}}},
+              {"not": {"not": {"get": ["local", "reneging", false]}}},
+              {"not": {"not": {"get": ["local", "return_beasts", false]}}}
+            ]
+          },
+          "next": "exit.do_as_we_say"
+        },
+        {
+          "id": "bye_from_party_1",
+          "text": "bye_from_party_1",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+                    {"not": {"not": {"get": ["local", "how_long", false]}}},
+                    {"not": {"not": {"get": ["local", "reneging", false]}}},
+                    {"not": {"not": {"get": ["local", "return_beasts", false]}}}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 1]}
+            ]
+          },
+          "next": "exit.bye_from_party_1"
+        },
+        {
+          "id": "bye_from_party_2",
+          "text": "bye_from_party_2",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+                    {"not": {"not": {"get": ["local", "how_long", false]}}},
+                    {"not": {"not": {"get": ["local", "reneging", false]}}},
+                    {"not": {"not": {"get": ["local", "return_beasts", false]}}}
+                  ]
+                }
+              },
+              {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 2]}
+            ]
+          },
+          "next": "exit.bye_from_party_2"
+        },
+        {
+          "id": "bye_from_party_3",
+          "text": "bye_from_party_3",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "all": [
+                    {"not": {"not": {"get": ["local", "deals_a_deal", false]}}},
+                    {"not": {"not": {"get": ["local", "how_long", false]}}},
+                    {"not": {"not": {"get": ["local", "reneging", false]}}},
+                    {"not": {"not": {"get": ["local", "return_beasts", false]}}}
+                  ]
+                }
+              },
+              {
+                "all": [
+                  {"not": {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 1]}},
+                  {"not": {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 2]}}
+                ]
+              }
+            ]
+          },
+          "next": "exit.bye_from_party_3"
+        }
+      ]
+    },
+    {
+      "id": "good_password.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YES_GOOD_PASSWORD"], "presentation": {"before": "spahome.council_fade"}}],
+      "next": "council.menu"
+    },
+    {
+      "id": "good_password.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 0]
+      },
+      "save_as": "good_password_effect1",
+      "next": "good_password.speech"
+    },
+    {
+      "id": "good_password",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_SPATHI_PASSWORD", 1]
+      },
+      "save_as": "good_password",
+      "next": "good_password.effect1"
+    },
+    {
+      "id": "council.peace.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KILLED_SPATHI"]}],
+      "next": "council.menu"
+    },
+    {
+      "id": "council.peace",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "we_come_in_peace", true]
+      },
+      "save_as": "council_peace",
+      "next": "council.peace.speech"
+    },
+    {
+      "id": "spathi_on_pluto.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHERE_SPATHI"]}],
+      "next": "council.menu"
+    },
+    {
+      "id": "spathi_on_pluto",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "spathi_on_pluto", true]
+      },
+      "save_as": "spathi_on_pluto",
+      "next": "spathi_on_pluto.speech"
+    },
+    {
+      "id": "hostage.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GUN_TO_HEAD"]}],
+      "next": "council.menu"
+    },
+    {
+      "id": "hostage.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "FOUND_PLUTO_SPATHI", 3]
+      },
+      "save_as": "hostage_effect1",
+      "next": "hostage.speech"
+    },
+    {
+      "id": "hostage",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "hostage", true]
+      },
+      "save_as": "hostage",
+      "next": "hostage.effect1"
+    },
+    {
+      "id": "killed_fwiffo.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["POOR_FWIFFO"]}],
+      "next": "council.menu"
+    },
+    {
+      "id": "killed_fwiffo.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "FOUND_PLUTO_SPATHI", 3]
+      },
+      "save_as": "killed_fwiffo_effect1",
+      "next": "killed_fwiffo.speech"
+    },
+    {
+      "id": "killed_fwiffo",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "killed_fwiffo", true]
+      },
+      "save_as": "killed_fwiffo",
+      "next": "killed_fwiffo.effect1"
+    },
+    {
+      "id": "fwiffo_fine.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_LIKELY"]}],
+      "next": "council.menu"
+    },
+    {
+      "id": "fwiffo_fine",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "fwiffo_fine", true]
+      },
+      "save_as": "fwiffo_fine",
+      "next": "fwiffo_fine.speech"
+    },
+    {
+      "id": "surrender.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SURRENDER"]}],
+      "next": "council.menu"
+    },
+    {
+      "id": "surrender",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "surrender", true]
+      },
+      "save_as": "surrender",
+      "next": "surrender.speech"
+    },
+    {
+      "id": "council.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_come_in_peace",
+          "text": "we_come_in_peace",
+          "when": {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 0]},
+          "next": "offer"
+        },
+        {
+          "id": "we_come_in_peace_angry",
+          "text": "we_come_in_peace",
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 0]}},
+              {"not": {"get": ["local", "we_come_in_peace", false]}}
+            ]
+          },
+          "next": "council.peace"
+        },
+        {
+          "id": "misunderstanding",
+          "text": "misunderstanding",
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 0]}},
+              {"not": {"not": {"get": ["local", "we_come_in_peace", false]}}}
+            ]
+          },
+          "next": "misunderstanding"
+        },
+        {
+          "id": "spathi_on_pluto",
+          "text": "spathi_on_pluto",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                  {"lt": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 3]}
+                ]
+              },
+              {"not": {"get": ["local", "spathi_on_pluto", false]}}
+            ]
+          },
+          "next": "spathi_on_pluto"
+        },
+        {
+          "id": "hostage",
+          "text": "hostage",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                  {"lt": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 3]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "spathi_on_pluto", false]}}},
+              {"query": "fleet.contains", "args": ["spathi"]},
+              {"not": {"get": ["local", "hostage", false]}}
+            ]
+          },
+          "next": "hostage"
+        },
+        {
+          "id": "killed_fwiffo",
+          "text": "killed_fwiffo",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                  {"lt": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 3]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "spathi_on_pluto", false]}}},
+              {"not": {"query": "fleet.contains", "args": ["spathi"]}},
+              {"not": {"get": ["local", "killed_fwiffo", false]}}
+            ]
+          },
+          "next": "killed_fwiffo"
+        },
+        {
+          "id": "fwiffo_fine",
+          "text": "fwiffo_fine",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                  {"lt": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 3]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "spathi_on_pluto", false]}}},
+              {"not": {"query": "fleet.contains", "args": ["spathi"]}},
+              {"not": {"get": ["local", "killed_fwiffo", false]}},
+              {"not": {"get": ["local", "fwiffo_fine", false]}}
+            ]
+          },
+          "next": "fwiffo_fine"
+        },
+        {
+          "id": "surrender",
+          "text": "surrender",
+          "when": {"not": {"get": ["local", "surrender", false]}},
+          "next": "surrender"
+        },
+        {
+          "id": "surrender_or_die",
+          "text": "surrender_or_die",
+          "when": {"not": {"not": {"get": ["local", "surrender", false]}}},
+          "next": "exit.surrender_or_die"
+        },
+        {
+          "id": "bye_no_ally_offer",
+          "text": "bye_no_ally_offer",
+          "when": true,
+          "next": "exit.bye_no_ally_offer"
+        }
+      ]
+    },
+    {
+      "id": "what_do_i_get.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_GET_TO_LIVE"]}],
+      "next": "password.menu"
+    },
+    {
+      "id": "what_do_i_get",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_do_i_get", true]
+      },
+      "save_as": "what_do_i_get",
+      "next": "what_do_i_get.speech"
+    },
+    {
+      "id": "password.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "good_password",
+          "text": "good_password",
+          "when": {
+            "any": [
+              {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+              {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+            ]
+          },
+          "next": "good_password"
+        },
+        {
+          "id": "what_do_i_get",
+          "text": "what_do_i_get",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                  {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+                ]
+              },
+              {"not": {"get": ["local", "what_do_i_get", false]}}
+            ]
+          },
+          "next": "what_do_i_get"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": {
+            "not": {
+              "any": [
+                {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+              ]
+            }
+          },
+          "next": "exit.we_are_vindicator0"
+        },
+        {
+          "id": "gort_merenga",
+          "text": "gort_merenga",
+          "when": {
+            "not": {
+              "any": [
+                {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+              ]
+            }
+          },
+          "next": "exit.gort_merenga"
+        },
+        {
+          "id": "guph_florp",
+          "text": "guph_florp",
+          "when": {
+            "not": {
+              "any": [
+                {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+              ]
+            }
+          },
+          "next": "exit.guph_florp"
+        },
+        {
+          "id": "wagngl_fthagn",
+          "text": "wagngl_fthagn",
+          "when": {
+            "not": {
+              "any": [
+                {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+              ]
+            }
+          },
+          "next": "exit.wagngl_fthagn"
+        },
+        {
+          "id": "pleeese",
+          "text": "pleeese",
+          "when": {
+            "not": {
+              "any": [
+                {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+              ]
+            }
+          },
+          "next": "exit.pleeese"
+        },
+        {
+          "id": "screw_password",
+          "text": "screw_password",
+          "when": {
+            "not": {
+              "any": [
+                {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]}
+              ]
+            }
+          },
+          "next": "exit.screw_password"
+        }
+      ]
+    },
+    {
+      "id": "password",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 1]}, "next": "password.again"}],
+      "otherwise": "password.first"
+    },
+    {
+      "id": "password.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_IS_PASSWORD"]}],
+      "next": "password.menu"
+    },
+    {
+      "id": "password.first",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 1]
+      },
+      "save_as": "password_first",
+      "next": "password.first.speech"
+    },
+    {
+      "id": "password.again.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_IS_PASSWORD_AGAIN"]}],
+      "next": "password.menu"
+    },
+    {
+      "id": "password.again",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_HOME_VISITS", 1]
+      },
+      "save_as": "password_again",
+      "next": "password.again.speech"
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 2]},
+          "next": "hate"
+        },
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "SPATHI_MANNER", 0]}, 1]},
+              {
+                "all": [
+                  {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]},
+                  {
+                    "any": [
+                      {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                      {"not": {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 7]}}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "next": "angry.greeting"
+        },
+        {
+          "when": {"eq": [{"query": "galaxy.relationship", "args": ["spathi"]}, "allied"]},
+          "next": "ally.greeting"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "SPATHI_PARTY", 0]}, 0]},
+          "next": "party.greeting"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "SPATHI_QUEST", 0]}, 0]},
+          "next": "quest.route"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "KNOW_SPATHI_QUEST", 0]}, 0]},
+          "next": "learn.greeting"
+        },
+        {
+          "when": {
+            "all": [
+              {"ne": [{"get": ["story", "KNOW_SPATHI_PASSWORD", 0]}, 0]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "FOUND_PLUTO_SPATHI", 0]}, 0]},
+                  {"not": {"eq": [{"get": ["story", "SPATHI_HOME_VISITS", 0]}, 7]}}
+                ]
+              }
+            ]
+          },
+          "next": "council.greeting"
+        }
+      ],
+      "otherwise": "password"
+    },
+    {
+      "id": "hate.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_YOU_FOREVER"]}],
       "next": "end"
+    },
+    {
+      "id": "hate",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "hate",
+      "next": "hate.speech"
+    },
+    {
+      "id": "ally.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SPATHI_HOME_VISITS", [["HELLO_ALLIES_1"], ["HELLO_ALLIES_2"], ["HELLO_ALLIES_3"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "ally.greeting.speech"
+    },
+    {
+      "id": "ally.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}, "presentation": {"before": "spahome.council_map"}}],
+      "next": "ally.menu"
+    },
+    {
+      "id": "party.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SPATHI_HOME_VISITS", [["MUST_PARTY_1"], ["MUST_PARTY_2"], ["MUST_PARTY_3"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "party.greeting.speech"
+    },
+    {
+      "id": "party.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}, "presentation": {"before": "spahome.council_map"}}],
+      "next": "party.menu"
+    },
+    {
+      "id": "quest.route",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ge": [{"get": ["story", "LIED_ABOUT_CREATURES", 0]}, 2]},
+          "next": "quest.lie"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "LIED_ABOUT_CREATURES", 0]}, 0]},
+          "next": "quest.warning"
+        }
+      ],
+      "otherwise": "quest.greeting"
+    },
+    {
+      "id": "quest.lie.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_LIED_2"]}],
+      "next": "end"
+    },
+    {
+      "id": "quest.lie.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "save_as": "quest_lie_effect1",
+      "next": "quest.lie.speech"
+    },
+    {
+      "id": "quest.lie",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SPATHI_MANNER", 2]
+      },
+      "save_as": "quest_lie",
+      "next": "quest.lie.effect1"
+    },
+    {
+      "id": "quest.warning",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_LIED_1"], "presentation": {"before": "spahome.council_map"}}],
+      "next": "quest.menu"
+    },
+    {
+      "id": "quest.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOW_GO_EFFORTS"], "presentation": {"before": "spahome.council_map"}}],
+      "next": "quest.menu"
+    },
+    {
+      "id": "council.greeting",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HELLO_AGAIN"], "presentation": {"before": "spahome.council_map"}}],
+      "next": "council.menu"
     },
     {
       "id": "end",

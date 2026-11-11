@@ -6,15 +6,12 @@
 
 Script: [rebel.c](../../../../sc2/src/uqm/comm/rebel/rebel.c#L1). Phrase bank: [yehatrebels.txt](../../../../sc2/content/base/comm/yehatrebels/yehatrebels.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 34 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 34 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_rebel_yehat_comm</code> | No enclosing branch condition; [219](../../../../sc2/src/uqm/comm/rebel/rebel.c#L219) |
-| <code>post_encounter_func</code> | [<code>post_yehat_enc</code>](#node-post_yehat_enc) | <code>init_rebel_yehat_comm</code> | No enclosing branch condition; [220](../../../../sc2/src/uqm/comm/rebel/rebel.c#L220) |
-| <code>uninit_encounter_func</code> | [<code>uninit_yehat</code>](#node-uninit_yehat) | <code>init_rebel_yehat_comm</code> | No enclosing branch condition; [221](../../../../sc2/src/uqm/comm/rebel/rebel.c#L221) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_yehat"]
-    n2["post_yehat_enc"]
-    n3["init_rebel_yehat_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_rebel_yehat_comm"]
 ```
 
 ## Condition catalog
@@ -46,69 +37,11 @@ Presentation descriptor <code>yehat_desc</code>: [source](../../../../sc2/src/uq
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/rebel/rebel.c#L198).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_yehat"></a>
-
-### uninit_yehat
-
-<code>static COUNT uninit_yehat(void)</code> — [source](../../../../sc2/src/uqm/comm/rebel/rebel.c#L203).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [205](../../../../sc2/src/uqm/comm/rebel/rebel.c#L205) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
-<a id="node-post_yehat_enc"></a>
-
-### post_yehat_enc
-
-<code>static void post_yehat_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/rebel/rebel.c#L209).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_rebel_yehat_comm"></a>
 
 ### init_rebel_yehat_comm
 
-<code>LOCDATA *init_rebel_yehat_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/rebel/rebel.c#L215).
+<code>LOCDATA *init_rebel_yehat_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/rebel/rebel.c#L198).
 
 #### Actions, queries, local updates, and control flow
 
@@ -116,17 +49,14 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>yehat_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [219](../../../../sc2/src/uqm/comm/rebel/rebel.c#L219) |
-| update | <code>yehat_desc.post_encounter_func = post_yehat_enc</code> | No enclosing branch condition | [220](../../../../sc2/src/uqm/comm/rebel/rebel.c#L220) |
-| update | <code>yehat_desc.uninit_encounter_func = uninit_yehat</code> | No enclosing branch condition | [221](../../../../sc2/src/uqm/comm/rebel/rebel.c#L221) |
-| update | <code>yehat_desc.AlienTextBaseline.x = (SIS_SCREEN_WIDTH * 2) / 3</code> | No enclosing branch condition | [223](../../../../sc2/src/uqm/comm/rebel/rebel.c#L223) |
-| update | <code>yehat_desc.AlienTextBaseline.y = 60</code> | No enclosing branch condition | [224](../../../../sc2/src/uqm/comm/rebel/rebel.c#L224) |
-| update | <code>yehat_desc.AlienTextWidth = ((SIS_TEXT_WIDTH - 16) * 2) / 3</code> | No enclosing branch condition | [225](../../../../sc2/src/uqm/comm/rebel/rebel.c#L225) |
-| update | <code>yehat_desc.AlienAltSongRes = REBEL_MUSIC</code> | No enclosing branch condition | [228](../../../../sc2/src/uqm/comm/rebel/rebel.c#L228) |
-| update | <code>yehat_desc.AlienSongFlags &#124;= LDASF_USE_ALTERNATE</code> | No enclosing branch condition | [229](../../../../sc2/src/uqm/comm/rebel/rebel.c#L229) |
-| call | <code>setSegue(Segue_peace)</code> | No enclosing branch condition | [231](../../../../sc2/src/uqm/comm/rebel/rebel.c#L231) |
-| update | <code>retval = &amp;yehat_desc</code> | No enclosing branch condition | [232](../../../../sc2/src/uqm/comm/rebel/rebel.c#L232) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [234](../../../../sc2/src/uqm/comm/rebel/rebel.c#L234) |
+| update | <code>yehat_desc.AlienTextBaseline.x = (SIS_SCREEN_WIDTH * 2) / 3</code> | No enclosing branch condition | [202](../../../../sc2/src/uqm/comm/rebel/rebel.c#L202) |
+| update | <code>yehat_desc.AlienTextBaseline.y = 60</code> | No enclosing branch condition | [203](../../../../sc2/src/uqm/comm/rebel/rebel.c#L203) |
+| update | <code>yehat_desc.AlienTextWidth = ((SIS_TEXT_WIDTH - 16) * 2) / 3</code> | No enclosing branch condition | [204](../../../../sc2/src/uqm/comm/rebel/rebel.c#L204) |
+| update | <code>yehat_desc.AlienAltSongRes = REBEL_MUSIC</code> | No enclosing branch condition | [207](../../../../sc2/src/uqm/comm/rebel/rebel.c#L207) |
+| update | <code>yehat_desc.AlienSongFlags &#124;= LDASF_USE_ALTERNATE</code> | No enclosing branch condition | [208](../../../../sc2/src/uqm/comm/rebel/rebel.c#L208) |
+| call | <code>setSegue(Segue_peace)</code> | No enclosing branch condition | [210](../../../../sc2/src/uqm/comm/rebel/rebel.c#L210) |
+| update | <code>retval = &amp;yehat_desc</code> | No enclosing branch condition | [211](../../../../sc2/src/uqm/comm/rebel/rebel.c#L211) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [213](../../../../sc2/src/uqm/comm/rebel/rebel.c#L213) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -134,10 +64,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	yehat_desc.init_encounter_func = Intro;
-	yehat_desc.post_encounter_func = post_yehat_enc;
-	yehat_desc.uninit_encounter_func = uninit_yehat;
 
 	yehat_desc.AlienTextBaseline.x = SIS_SCREEN_WIDTH * 2 / 3;
 	yehat_desc.AlienTextBaseline.y = 60;

@@ -6,15 +6,13 @@
 
 Script: [arilouc.c](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L1). Phrase bank: [arilou.txt](../../../../sc2/content/base/comm/arilou/arilou.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 97 phrase records.
+2 handler/helper nodes; 0 response registration sites; 0 direct local calls; 97 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_arilou_comm</code> | No enclosing branch condition; [274](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L274) |
-| <code>post_encounter_func</code> | [<code>post_arilou_enc</code>](#node-post_arilou_enc) | <code>init_arilou_comm</code> | No enclosing branch condition; [275](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L275) |
-| <code>uninit_encounter_func</code> | [<code>uninit_arilou</code>](#node-uninit_arilou) | <code>init_arilou_comm</code> | No enclosing branch condition; [276](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L276) |
+| <code>post_encounter_func</code> | [<code>post_arilou_enc</code>](#node-post_arilou_enc) | <code>init_arilou_comm</code> | No enclosing branch condition; [266](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L266) |
 
 ## Handler graph
 
@@ -22,13 +20,9 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_arilou"]
-    n2["post_arilou_enc"]
-    n3["init_arilou_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["post_arilou_enc"]
+    n1["init_arilou_comm"]
+    n1 -. "post_encounter_func" .-> n0
 ```
 
 ## Condition catalog
@@ -56,51 +50,11 @@ Presentation descriptor <code>arilou_desc</code>: [source](../../../../sc2/src/u
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L231).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_arilou"></a>
-
-### uninit_arilou
-
-<code>static COUNT uninit_arilou(void)</code> — [source](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L234).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [236](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L236) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
 <a id="node-post_arilou_enc"></a>
 
 ### post_arilou_enc
 
-<code>static void post_arilou_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L240).
+<code>static void post_arilou_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L232).
 
 #### Actions, queries, local updates, and control flow
 
@@ -108,19 +62,19 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| call | <code>getSegue()</code> | No enclosing branch condition | [244](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L244) |
-| update | <code>Manner = GET_GAME_STATE(ARILOU_MANNER)</code> | [C1](#condition-c1) | [245](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L245) |
-| call | <code>GET_GAME_STATE(ARILOU_MANNER)</code> | [C1](#condition-c1) | [245](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L245) |
-| call | <code>SET_GAME_STATE(ARILOU_MANNER, 1)</code> | [C2](#condition-c2) | [247](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L247) |
-| call | <code>SET_GAME_STATE(ARILOU_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [250](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L250) |
-| call | <code>SET_GAME_STATE(ARILOU_HOME_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [251](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L251) |
-| call | <code>GET_GAME_STATE(ARILOU_SPACE_SIDE)</code> | No enclosing branch condition | [255](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L255) |
-| call | <code>GET_GAME_STATE(ARILOU_HOME_VISITS)</code> | [C4](#condition-c4) | [256](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L256) |
-| call | <code>SET_GAME_STATE(UMGAH_ZOMBIE_BLOBBIES, 1)</code> | [C5](#condition-c5) | [258](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L258) |
-| call | <code>SET_GAME_STATE(UMGAH_VISITS, 0)</code> | [C5](#condition-c5) | [259](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L259) |
-| call | <code>SET_GAME_STATE(UMGAH_HOME_VISITS, 0)</code> | [C5](#condition-c5) | [260](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L260) |
-| call | <code>GET_GAME_STATE(ARILOU_MANNER)</code> | [C5](#condition-c5) | [262](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L262) |
-| call | <code>SET_GAME_STATE(ARILOU_MANNER, 3)</code> | [C5](#condition-c5) ∧ [C6](#condition-c6) | [264](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L264) |
+| call | <code>getSegue()</code> | No enclosing branch condition | [236](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L236) |
+| update | <code>Manner = GET_GAME_STATE(ARILOU_MANNER)</code> | [C1](#condition-c1) | [237](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L237) |
+| call | <code>GET_GAME_STATE(ARILOU_MANNER)</code> | [C1](#condition-c1) | [237](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L237) |
+| call | <code>SET_GAME_STATE(ARILOU_MANNER, 1)</code> | [C2](#condition-c2) | [239](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L239) |
+| call | <code>SET_GAME_STATE(ARILOU_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [242](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L242) |
+| call | <code>SET_GAME_STATE(ARILOU_HOME_VISITS, 0)</code> | [C2](#condition-c2) ∧ [C3](#condition-c3) | [243](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L243) |
+| call | <code>GET_GAME_STATE(ARILOU_SPACE_SIDE)</code> | No enclosing branch condition | [247](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L247) |
+| call | <code>GET_GAME_STATE(ARILOU_HOME_VISITS)</code> | [C4](#condition-c4) | [248](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L248) |
+| call | <code>SET_GAME_STATE(UMGAH_ZOMBIE_BLOBBIES, 1)</code> | [C5](#condition-c5) | [250](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L250) |
+| call | <code>SET_GAME_STATE(UMGAH_VISITS, 0)</code> | [C5](#condition-c5) | [251](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L251) |
+| call | <code>SET_GAME_STATE(UMGAH_HOME_VISITS, 0)</code> | [C5](#condition-c5) | [252](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L252) |
+| call | <code>GET_GAME_STATE(ARILOU_MANNER)</code> | [C5](#condition-c5) | [254](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L254) |
+| call | <code>SET_GAME_STATE(ARILOU_MANNER, 3)</code> | [C5](#condition-c5) ∧ [C6](#condition-c6) | [256](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L256) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -161,7 +115,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 ### init_arilou_comm
 
-<code>LOCDATA *init_arilou_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L270).
+<code>LOCDATA *init_arilou_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L262).
 
 #### Actions, queries, local updates, and control flow
 
@@ -169,20 +123,18 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>arilou_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [274](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L274) |
-| update | <code>arilou_desc.post_encounter_func = post_arilou_enc</code> | No enclosing branch condition | [275](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L275) |
-| update | <code>arilou_desc.uninit_encounter_func = uninit_arilou</code> | No enclosing branch condition | [276](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L276) |
-| update | <code>arilou_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [278](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L278) |
-| update | <code>arilou_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [279](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L279) |
-| update | <code>arilou_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [280](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L280) |
-| call | <code>GET_GAME_STATE(ARILOU_SPACE_SIDE)</code> | No enclosing branch condition | [282](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L282) |
-| call | <code>GET_GAME_STATE(ARILOU_MANNER)</code> | [C7](#condition-c7) | [283](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L283) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C8](#condition-c8) | [284](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L284) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C8](#condition-c8) | [284](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L284) |
-| call | <code>setSegue(Segue_peace)</code> | [C9](#condition-c9) | [286](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L286) |
-| call | <code>setSegue(Segue_hostile)</code> | [C10](#condition-c10) | [290](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L290) |
-| update | <code>retval = &amp;arilou_desc</code> | No enclosing branch condition | [292](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L292) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [294](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L294) |
+| update | <code>arilou_desc.post_encounter_func = post_arilou_enc</code> | No enclosing branch condition | [266](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L266) |
+| update | <code>arilou_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [268](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L268) |
+| update | <code>arilou_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [269](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L269) |
+| update | <code>arilou_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [270](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L270) |
+| call | <code>GET_GAME_STATE(ARILOU_SPACE_SIDE)</code> | No enclosing branch condition | [272](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L272) |
+| call | <code>GET_GAME_STATE(ARILOU_MANNER)</code> | [C7](#condition-c7) | [273](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L273) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C8](#condition-c8) | [274](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L274) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C8](#condition-c8) | [274](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L274) |
+| call | <code>setSegue(Segue_peace)</code> | [C9](#condition-c9) | [276](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L276) |
+| call | <code>setSegue(Segue_hostile)</code> | [C10](#condition-c10) | [280](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L280) |
+| update | <code>retval = &amp;arilou_desc</code> | No enclosing branch condition | [282](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L282) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [284](../../../../sc2/src/uqm/comm/arilou/arilouc.c#L284) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -191,9 +143,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 {
 	LOCDATA *retval;
 
-	arilou_desc.init_encounter_func = Intro;
 	arilou_desc.post_encounter_func = post_arilou_enc;
-	arilou_desc.uninit_encounter_func = uninit_arilou;
 
 	arilou_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	arilou_desc.AlienTextBaseline.y = 0;

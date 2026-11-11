@@ -100,34 +100,34 @@ conditions, greeting selection, and post-encounter changes are in the catalog.
 
 | Conversation | Handler/helper nodes | Response sites | Direct local calls | Phrase records | Live graph |
 | --- | ---: | ---: | ---: | ---: | --- |
-| [Arilou](catalog/arilou.md) | 4 | 0 | 0 | 97 | [graph-owned story: 129 nodes](../../../sc2/content/base/conversations/comm.arilou.dialogue.json) |
-| [Kohr-Ah](catalog/blackur.md) | 4 | 0 | 0 | 76 | [graph-owned story: 106 nodes](../../../sc2/content/base/conversations/comm.kohrah.dialogue.json) |
-| [Chmmr](catalog/chmmr.md) | 11 | 31 | 7 | 78 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.chmmr.dialogue.json) |
-| [Commander Hayes: first contact](catalog/comandr.md) | 12 | 52 | 7 | 99 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.commander.dialogue.json) |
+| [Arilou](catalog/arilou.md) | 2 | 0 | 0 | 97 | [graph-owned story: 129 nodes](../../../sc2/content/base/conversations/comm.arilou.dialogue.json) |
+| [Kohr-Ah](catalog/blackur.md) | 1 | 0 | 0 | 76 | [graph-owned story: 106 nodes](../../../sc2/content/base/conversations/comm.kohrah.dialogue.json) |
+| [Chmmr](catalog/chmmr.md) | 2 | 0 | 0 | 78 | [graph-owned story: 89 nodes](../../../sc2/content/base/conversations/comm.chmmr.dialogue.json) |
+| [Commander Hayes: first contact](catalog/comandr.md) | 1 | 0 | 0 | 99 | [graph-owned story: 127 nodes](../../../sc2/content/base/conversations/comm.commander.dialogue.json) |
 | [Druuge](catalog/druuge.md) | 13 | 29 | 5 | 105 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.druuge.dialogue.json) |
-| [Ilwrath](catalog/ilwrath.md) | 4 | 0 | 0 | 108 | [graph-owned story: 115 nodes](../../../sc2/content/base/conversations/comm.ilwrath.dialogue.json) |
+| [Ilwrath](catalog/ilwrath.md) | 1 | 0 | 0 | 108 | [graph-owned story: 115 nodes](../../../sc2/content/base/conversations/comm.ilwrath.dialogue.json) |
 | [Melnorme](catalog/melnorm.md) | 36 | 61 | 46 | 282 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.melnorme.dialogue.json) |
-| [Mycon](catalog/mycon.md) | 4 | 0 | 0 | 109 | [graph-owned story: 240 nodes](../../../sc2/content/base/conversations/comm.mycon.dialogue.json) |
-| [Orz](catalog/orz.md) | 11 | 37 | 7 | 116 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.orz.dialogue.json) |
-| [Pkunk](catalog/pkunk.md) | 4 | 0 | 0 | 182 | [graph-owned story: 192 nodes](../../../sc2/content/base/conversations/comm.pkunk.dialogue.json) |
-| [Yehat rebels](catalog/rebel.md) | 4 | 0 | 0 | 34 | [graph-owned story: 51 nodes](../../../sc2/content/base/conversations/comm.yehat.rebel.dialogue.json) |
-| [Shofixti](catalog/shofixt.md) | 4 | 0 | 0 | 95 | [graph-owned story: 83 nodes](../../../sc2/content/base/conversations/comm.shofixti.dialogue.json) |
-| [Slylandro homeworld](catalog/slyhome.md) | 4 | 0 | 0 | 116 | [graph-owned story: 135 nodes](../../../sc2/content/base/conversations/comm.slylandro.dialogue.json) |
-| [Slylandro probe](catalog/slyland.md) | 6 | 0 | 2 | 86 | [graph-owned story: 108 nodes](../../../sc2/content/base/conversations/comm.probe.dialogue.json) |
-| [Spathi Safe Ones](catalog/spahome.md) | 14 | 64 | 7 | 145 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.safeones.dialogue.json) |
-| [Spathi / Fwiffo](catalog/spathi.md) | 4 | 0 | 0 | 134 | [graph-owned story: 141 nodes](../../../sc2/content/base/conversations/comm.spathi.dialogue.json) |
+| [Mycon](catalog/mycon.md) | 1 | 0 | 0 | 109 | [graph-owned story: 240 nodes](../../../sc2/content/base/conversations/comm.mycon.dialogue.json) |
+| [Orz](catalog/orz.md) | 2 | 0 | 0 | 116 | [graph-owned story: 143 nodes](../../../sc2/content/base/conversations/comm.orz.dialogue.json) |
+| [Pkunk](catalog/pkunk.md) | 2 | 0 | 0 | 182 | [graph-owned story: 192 nodes](../../../sc2/content/base/conversations/comm.pkunk.dialogue.json) |
+| [Yehat rebels](catalog/rebel.md) | 1 | 0 | 0 | 34 | [graph-owned story: 51 nodes](../../../sc2/content/base/conversations/comm.yehat.rebel.dialogue.json) |
+| [Shofixti](catalog/shofixt.md) | 1 | 0 | 0 | 95 | [graph-owned story: 83 nodes](../../../sc2/content/base/conversations/comm.shofixti.dialogue.json) |
+| [Slylandro homeworld](catalog/slyhome.md) | 1 | 0 | 0 | 116 | [graph-owned story: 135 nodes](../../../sc2/content/base/conversations/comm.slylandro.dialogue.json) |
+| [Slylandro probe](catalog/slyland.md) | 3 | 0 | 2 | 86 | [graph-owned story: 108 nodes](../../../sc2/content/base/conversations/comm.probe.dialogue.json) |
+| [Spathi Safe Ones](catalog/spahome.md) | 2 | 0 | 0 | 145 | [graph-owned story: 194 nodes](../../../sc2/content/base/conversations/comm.safeones.dialogue.json) |
+| [Spathi / Fwiffo](catalog/spathi.md) | 2 | 0 | 0 | 134 | [graph-owned story: 141 nodes](../../../sc2/content/base/conversations/comm.spathi.dialogue.json) |
 | [Commander Hayes: starbase](catalog/starbas.md) | 21 | 57 | 13 | 300 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.starbase.dialogue.json) |
-| [Supox](catalog/supox.md) | 4 | 0 | 0 | 97 | [graph-owned story: 107 nodes](../../../sc2/content/base/conversations/comm.supox.dialogue.json) |
-| [Syreen](catalog/syreen.md) | 14 | 40 | 6 | 131 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.syreen.dialogue.json) |
-| [Talking Pet](catalog/talkpet.md) | 13 | 33 | 6 | 113 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.talkingpet.dialogue.json) |
-| [Thraddash](catalog/thradd.md) | 16 | 38 | 9 | 154 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.thraddash.dialogue.json) |
-| [Umgah](catalog/umgah.md) | 4 | 0 | 0 | 87 | [graph-owned story: 111 nodes](../../../sc2/content/base/conversations/comm.umgah.dialogue.json) |
-| [Ur-Quan](catalog/urquan.md) | 4 | 0 | 0 | 76 | [graph-owned story: 106 nodes](../../../sc2/content/base/conversations/comm.urquan.dialogue.json) |
-| [Utwig](catalog/utwig.md) | 4 | 0 | 0 | 117 | [graph-owned story: 189 nodes](../../../sc2/content/base/conversations/comm.utwig.dialogue.json) |
-| [VUX / ZEX](catalog/vux.md) | 7 | 31 | 2 | 102 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.vux.dialogue.json) |
-| [Yehat royalists](catalog/yehat.md) | 4 | 0 | 0 | 75 | [graph-owned story: 89 nodes](../../../sc2/content/base/conversations/comm.yehat.dialogue.json) |
-| [Zoq-Fot-Pik](catalog/zoqfot.md) | 13 | 28 | 48 | 337 | [native handler bridge: 21 nodes](../../../sc2/content/base/conversations/comm.zoqfotpik.dialogue.json) |
-| **Total** | 243 | 501 | 165 | 3451 | |
+| [Supox](catalog/supox.md) | 1 | 0 | 0 | 97 | [graph-owned story: 107 nodes](../../../sc2/content/base/conversations/comm.supox.dialogue.json) |
+| [Syreen](catalog/syreen.md) | 1 | 0 | 0 | 131 | [graph-owned story: 137 nodes](../../../sc2/content/base/conversations/comm.syreen.dialogue.json) |
+| [Talking Pet](catalog/talkpet.md) | 1 | 0 | 0 | 113 | [graph-owned story: 171 nodes](../../../sc2/content/base/conversations/comm.talkingpet.dialogue.json) |
+| [Thraddash](catalog/thradd.md) | 1 | 0 | 0 | 154 | [graph-owned story: 170 nodes](../../../sc2/content/base/conversations/comm.thraddash.dialogue.json) |
+| [Umgah](catalog/umgah.md) | 2 | 0 | 0 | 87 | [graph-owned story: 111 nodes](../../../sc2/content/base/conversations/comm.umgah.dialogue.json) |
+| [Ur-Quan](catalog/urquan.md) | 2 | 0 | 0 | 76 | [graph-owned story: 106 nodes](../../../sc2/content/base/conversations/comm.urquan.dialogue.json) |
+| [Utwig](catalog/utwig.md) | 1 | 0 | 0 | 117 | [graph-owned story: 189 nodes](../../../sc2/content/base/conversations/comm.utwig.dialogue.json) |
+| [VUX / ZEX](catalog/vux.md) | 1 | 0 | 0 | 102 | [graph-owned story: 109 nodes](../../../sc2/content/base/conversations/comm.vux.dialogue.json) |
+| [Yehat royalists](catalog/yehat.md) | 1 | 0 | 0 | 75 | [graph-owned story: 89 nodes](../../../sc2/content/base/conversations/comm.yehat.dialogue.json) |
+| [Zoq-Fot-Pik](catalog/zoqfot.md) | 1 | 0 | 0 | 337 | [graph-owned story: 132 nodes](../../../sc2/content/base/conversations/comm.zoqfotpik.dialogue.json) |
+| **Total** | 104 | 147 | 66 | 3451 | |
 <!-- catalog:end -->
 
 ## Regeneration and limits

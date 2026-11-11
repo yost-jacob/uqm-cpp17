@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 137,
   "id": "syreen",
   "resource": "comm.syreen.dialogue",
   "entry": "intro",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resources/lifecycle and two bounded color cues remain. Evidence/shuttle/vault/ambush branches, alliance and post-speech intimacy flags use graph/state operations."
   },
   "phrases": [
     {
@@ -929,121 +929,1990 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "exit.bye.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye",
       "kind": "action",
       "action": {
-        "verb": "handlers.legacy_turn",
-        "args": ["syreen", null]
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "save_as": "exit_bye",
+      "next": "exit.bye.speech"
     },
     {
-      "id": "route",
-      "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "id": "exit.bye_before_vault.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_BEFORE_VAULT"]}],
+      "next": "end"
     },
     {
-      "id": "menu",
+      "id": "exit.bye_before_vault",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_before_vault",
+      "next": "exit.bye_before_vault.speech"
+    },
+    {
+      "id": "exit.bye_after_vault.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AFTER_VAULT"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_after_vault",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_after_vault",
+      "next": "exit.bye_after_vault.speech"
+    },
+    {
+      "id": "exit.bye_before_ambush.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_BEFORE_AMBUSH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_before_ambush",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_before_ambush",
+      "next": "exit.bye_before_ambush.speech"
+    },
+    {
+      "id": "exit.bye_after_ambush.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AFTER_AMBUSH"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.bye_after_ambush",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_bye_after_ambush",
+      "next": "exit.bye_after_ambush.speech"
+    },
+    {
+      "id": "exit.im_on_my_way.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_LUCK"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.im_on_my_way",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_im_on_my_way",
+      "next": "exit.im_on_my_way.speech"
+    },
+    {
+      "id": "exit.doing_this_for_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_LUCK"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.doing_this_for_you",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_doing_this_for_you",
+      "next": "exit.doing_this_for_you.speech"
+    },
+    {
+      "id": "exit.if_i_die.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOOD_LUCK"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.if_i_die",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_if_i_die",
+      "next": "exit.if_i_die.speech"
+    },
+    {
+      "id": "exit.hands_off",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_hands_off",
+      "next": "exit.hands_off.speech"
+    },
+    {
+      "id": "exit.hands_off.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_WONT_USE_HANDS", "LATER", {"phrase": "SEX_GOODBYE", "on_start": "syreen.lights_on"}]}],
+      "next": "intimacy.had"
+    },
+    {
+      "id": "exit.not_much_more_to_say",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "exit_not_much_more_to_say",
+      "next": "exit.not_much_more_to_say.speech"
+    },
+    {
+      "id": "exit.not_much_more_to_say.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THEN_STOP_TALKING", "LATER", {"phrase": "SEX_GOODBYE", "on_start": "syreen.lights_on"}]}],
+      "next": "intimacy.had"
+    },
+    {
+      "id": "intimacy.had",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HAD_SEX", 1]
+      },
+      "save_as": "intimacy_had",
+      "next": "intimacy.clear"
+    },
+    {
+      "id": "intimacy.clear",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HAVING_SEX", 0]
+      },
+      "save_as": "intimacy_clear",
+      "next": "end"
+    },
+    {
+      "id": "in_the_spirit",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_SPIRIT"]}],
+      "next": "intimacy.menu"
+    },
+    {
+      "id": "what_in_mind",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SOMETHING_LIKE_THIS"]}],
+      "next": "intimacy.menu"
+    },
+    {
+      "id": "disease",
+      "kind": "dialogue",
+      "variants": [{"speech": ["JUST_RELAX"]}],
+      "next": "intimacy.menu"
+    },
+    {
+      "id": "what_happens_if_i_touch_this.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THIS_HAPPENS"]}],
+      "next": "intimacy.menu"
+    },
+    {
+      "id": "what_happens_if_i_touch_this",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_happens_if_i_touch_this", true]
+      },
+      "save_as": "what_happens_if_i_touch_this",
+      "next": "what_happens_if_i_touch_this.speech"
+    },
+    {
+      "id": "are_you_sure_this_is_ok.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YES_SURE"]}],
+      "next": "intimacy.menu"
+    },
+    {
+      "id": "are_you_sure_this_is_ok",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "are_you_sure_this_is_ok", true]
+      },
+      "save_as": "are_you_sure_this_is_ok",
+      "next": "are_you_sure_this_is_ok.speech"
+    },
+    {
+      "id": "boy_they_never_taught.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["THEN_LET_ME_TEACH"]}],
+      "next": "intimacy.menu"
+    },
+    {
+      "id": "boy_they_never_taught",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "boy_they_never_taught", true]
+      },
+      "save_as": "boy_they_never_taught",
+      "next": "boy_they_never_taught.speech"
+    },
+    {
+      "id": "intimacy.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "what_happens_if_i_touch_this",
+          "text": "what_happens_if_i_touch_this",
+          "when": {"not": {"get": ["local", "what_happens_if_i_touch_this", false]}},
+          "next": "what_happens_if_i_touch_this"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "are_you_sure_this_is_ok",
+          "text": "are_you_sure_this_is_ok",
+          "when": {"not": {"get": ["local", "are_you_sure_this_is_ok", false]}},
+          "next": "are_you_sure_this_is_ok"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "boy_they_never_taught",
+          "text": "boy_they_never_taught",
+          "when": {"not": {"get": ["local", "boy_they_never_taught", false]}},
+          "next": "boy_they_never_taught"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 3]
+          "id": "not_much_more_to_say",
+          "text": "not_much_more_to_say",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_happens_if_i_touch_this", false]}}},
+              {"not": {"not": {"get": ["local", "are_you_sure_this_is_ok", false]}}},
+              {"not": {"not": {"get": ["local", "boy_they_never_taught", false]}}}
+            ]
           },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "verb": "handlers.legacy_turn",
-            "args": ["syreen", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "next": "exit.not_much_more_to_say"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "whats_my_reward",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HERES_REWARD", {"phrase": "MORE_COMFORTABLE", "on_start": "syreen.lights_off"}]}],
+      "next": "foreplay.flag"
+    },
+    {
+      "id": "what_about_us",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_US", {"phrase": "MORE_COMFORTABLE", "on_start": "syreen.lights_off"}]}],
+      "next": "foreplay.flag"
+    },
+    {
+      "id": "foreplay.flag",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "PLAYER_HAVING_SEX", 1]
+      },
+      "save_as": "foreplay_flag",
+      "next": "foreplay.menu"
+    },
+    {
+      "id": "why_lights_off.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LIGHTS_OFF_BECAUSE"]}],
+      "next": "foreplay.menu"
+    },
+    {
+      "id": "why_lights_off",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "why_lights_off", true]
+      },
+      "save_as": "why_lights_off",
+      "next": "why_lights_off.speech"
+    },
+    {
+      "id": "evil_monster.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_EVIL_MONSTER"]}],
+      "next": "foreplay.menu"
+    },
+    {
+      "id": "evil_monster",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "evil_monster", true]
+      },
+      "save_as": "evil_monster",
+      "next": "evil_monster.speech"
+    },
+    {
+      "id": "foreplay.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_lights_off",
+          "text": "why_lights_off",
+          "when": {"not": {"get": ["local", "why_lights_off", false]}},
+          "next": "why_lights_off"
+        },
+        {
+          "id": "evil_monster",
+          "text": "evil_monster",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "why_lights_off", false]}}},
+              {"not": {"get": ["local", "evil_monster", false]}}
+            ]
+          },
+          "next": "evil_monster"
+        },
+        {
+          "id": "disease",
+          "text": "disease",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "why_lights_off", false]}}},
+              {"not": {"not": {"get": ["local", "evil_monster", false]}}}
+            ]
+          },
+          "next": "disease"
+        },
+        {
+          "id": "in_the_spirit",
+          "text": "in_the_spirit",
+          "when": true,
+          "next": "in_the_spirit"
+        },
+        {
+          "id": "what_in_mind",
+          "text": "what_in_mind",
+          "when": true,
+          "next": "what_in_mind"
+        },
+        {
+          "id": "hands_off",
+          "text": "hands_off",
+          "when": true,
+          "next": "exit.hands_off"
+        }
+      ]
+    },
+    {
+      "id": "after.info",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_up_after_ambush", true]
+      },
+      "save_as": "after_info",
+      "next": "after.info.seq"
+    },
+    {
+      "id": "after.info.seq",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "SYREEN_INFO",
+          [
+            ["GENERAL_INFO_AFTER_AMBUSH_1"],
+            ["GENERAL_INFO_AFTER_AMBUSH_2"],
+            ["GENERAL_INFO_AFTER_AMBUSH_3"],
+            ["GENERAL_INFO_AFTER_AMBUSH_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "after.info.seq.speech"
+    },
+    {
+      "id": "after.info.seq.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_about_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_ME"]}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_about_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_about_you", true]
+      },
+      "save_as": "what_about_you",
+      "next": "what_about_you.speech"
+    },
+    {
+      "id": "what_now_after_ambush.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DO_THIS_AFTER_AMBUSH"]}],
+      "next": "after.menu"
+    },
+    {
+      "id": "what_now_after_ambush",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_now_after_ambush", true]
+      },
+      "save_as": "what_now_after_ambush",
+      "next": "what_now_after_ambush.speech"
+    },
+    {
+      "id": "after.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_you",
+          "text": "what_about_you",
+          "when": {"not": {"get": ["local", "what_about_you", false]}},
+          "next": "what_about_you"
+        },
+        {
+          "id": "what_about_us",
+          "text": "what_about_us",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "what_about_you", false]}}},
+              {"not": {"ne": [{"get": ["story", "PLAYER_HAD_SEX", 0]}, 0]}}
+            ]
+          },
+          "next": "what_about_us"
+        },
+        {
+          "id": "what_now_after_ambush",
+          "text": "what_now_after_ambush",
+          "when": {"not": {"get": ["local", "what_now_after_ambush", false]}},
+          "next": "what_now_after_ambush"
+        },
+        {
+          "id": "whats_up_after_ambush",
+          "text": "whats_up_after_ambush",
+          "when": {"not": {"get": ["local", "whats_up_after_ambush", false]}},
+          "next": "after.info"
+        },
+        {
+          "id": "bye_after_ambush",
+          "text": "bye_after_ambush",
+          "when": true,
+          "next": "exit.bye_after_ambush"
+        }
+      ]
+    },
+    {
+      "id": "repeat_plan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_REPEAT_PLAN"]}],
+      "next": "ambush.menu"
+    },
+    {
+      "id": "repeat_plan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "repeat_plan", true]
+      },
+      "save_as": "repeat_plan",
+      "next": "repeat_plan.speech"
+    },
+    {
+      "id": "ambush.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "repeat_plan",
+          "text": "repeat_plan",
+          "when": {"not": {"get": ["local", "repeat_plan", false]}},
+          "next": "repeat_plan"
+        },
+        {
+          "id": "bye_before_ambush",
+          "text": "bye_before_ambush",
+          "when": true,
+          "next": "exit.bye_before_ambush"
+        }
+      ]
+    },
+    {
+      "id": "vault_hint.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_HINT"]}],
+      "next": "vault.menu"
+    },
+    {
+      "id": "vault_hint",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "vault_hint", true]
+      },
+      "save_as": "vault_hint",
+      "next": "vault_hint.speech"
+    },
+    {
+      "id": "vault.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "vault_hint",
+          "text": "vault_hint",
+          "when": {"not": {"get": ["local", "vault_hint", false]}},
+          "next": "vault_hint"
+        },
+        {
+          "id": "bye_before_vault",
+          "text": "bye_before_vault",
+          "when": true,
+          "next": "exit.bye_before_vault"
+        }
+      ]
+    },
+    {
+      "id": "where_is_it.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_KNOW_WHERE", "GIVE_SHUTTLE"]}],
+      "next": "shuttle.menu"
+    },
+    {
+      "id": "where_is_it.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "where_is_it", true]
+      },
+      "save_as": "where_is_it_effect2",
+      "next": "where_is_it.speech"
+    },
+    {
+      "id": "where_is_it.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_SHUTTLE_ON_SHIP", 1]
+      },
+      "save_as": "where_is_it_effect1",
+      "next": "where_is_it.effect2"
+    },
+    {
+      "id": "where_is_it",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_SHUTTLE", 1]
+      },
+      "save_as": "where_is_it",
+      "next": "where_is_it.effect1"
+    },
+    {
+      "id": "been_there.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GREAT", "GIVE_SHUTTLE"]}],
+      "next": "shuttle.menu"
+    },
+    {
+      "id": "been_there.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "been_there", true]
+      },
+      "save_as": "been_there_effect2",
+      "next": "been_there.speech"
+    },
+    {
+      "id": "been_there.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_SHUTTLE_ON_SHIP", 1]
+      },
+      "save_as": "been_there_effect1",
+      "next": "been_there.effect2"
+    },
+    {
+      "id": "been_there",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_SHUTTLE", 1]
+      },
+      "save_as": "been_there",
+      "next": "been_there.effect1"
+    },
+    {
+      "id": "whats_next_step.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OPEN_VAULT"]}],
+      "next": "shuttle.menu"
+    },
+    {
+      "id": "whats_next_step",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "whats_next_step", true]
+      },
+      "save_as": "whats_next_step",
+      "next": "whats_next_step.speech"
+    },
+    {
+      "id": "what_do_i_get_for_this.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GRATITUDE"]}],
+      "next": "shuttle.menu"
+    },
+    {
+      "id": "what_do_i_get_for_this",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "what_do_i_get_for_this", true]
+      },
+      "save_as": "what_do_i_get_for_this",
+      "next": "what_do_i_get_for_this.speech"
+    },
+    {
+      "id": "not_sure.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["PLEASE"]}],
+      "next": "shuttle.menu"
+    },
+    {
+      "id": "not_sure",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "not_sure", true]
+      },
+      "save_as": "not_sure",
+      "next": "not_sure.speech"
+    },
+    {
+      "id": "shuttle.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_next_step",
+          "text": "whats_next_step",
+          "when": {"not": {"get": ["local", "whats_next_step", false]}},
+          "next": "whats_next_step"
+        },
+        {
+          "id": "where_is_it",
+          "text": "where_is_it",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "whats_next_step", false]}}},
+              {"not": {"ne": [{"get": ["story", "KNOW_SYREEN_VAULT", 0]}, 0]}},
+              {"not": {"get": ["local", "where_is_it", false]}}
+            ]
+          },
+          "next": "where_is_it"
+        },
+        {
+          "id": "been_there",
+          "text": "been_there",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "whats_next_step", false]}}},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_VAULT", 0]}, 0]},
+              {"not": {"get": ["local", "been_there", false]}}
+            ]
+          },
+          "next": "been_there"
+        },
+        {
+          "id": "im_on_my_way",
+          "text": "im_on_my_way",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "whats_next_step", false]}}},
+              {
+                "any": [
+                  {"not": {"not": {"get": ["local", "where_is_it", false]}}},
+                  {"not": {"not": {"get": ["local", "been_there", false]}}}
+                ]
+              }
+            ]
+          },
+          "next": "exit.im_on_my_way"
+        },
+        {
+          "id": "doing_this_for_you",
+          "text": "doing_this_for_you",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "whats_next_step", false]}}},
+              {
+                "any": [
+                  {"not": {"not": {"get": ["local", "where_is_it", false]}}},
+                  {"not": {"not": {"get": ["local", "been_there", false]}}}
+                ]
+              }
+            ]
+          },
+          "next": "exit.doing_this_for_you"
+        },
+        {
+          "id": "if_i_die",
+          "text": "if_i_die",
+          "when": {
+            "all": [
+              {"not": {"not": {"get": ["local", "whats_next_step", false]}}},
+              {
+                "any": [
+                  {"not": {"not": {"get": ["local", "where_is_it", false]}}},
+                  {"not": {"not": {"get": ["local", "been_there", false]}}}
+                ]
+              }
+            ]
+          },
+          "next": "exit.if_i_die"
+        },
+        {
+          "id": "what_do_i_get_for_this",
+          "text": "what_do_i_get_for_this",
+          "when": {"not": {"get": ["local", "what_do_i_get_for_this", false]}},
+          "next": "what_do_i_get_for_this"
+        },
+        {
+          "id": "not_sure",
+          "text": "not_sure",
+          "when": {"not": {"get": ["local", "not_sure", false]}},
+          "next": "not_sure"
+        }
+      ]
+    },
+    {
+      "id": "we_here_to_help",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_NEED_HELP"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "we_need_help",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CANT_GIVE_HELP"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "deep.children.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_ABOUT_DEEP_CHILDREN"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "deep.children",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "know_about_deep_children", true]
+      },
+      "save_as": "deep_children",
+      "next": "deep.children.speech"
+    },
+    {
+      "id": "mycons_involved.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_PROOF"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "mycons_involved",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_ABOUT_SHATTERED", 3]
+      },
+      "save_as": "mycons_involved",
+      "next": "mycons_involved.speech"
+    },
+    {
+      "id": "have_proof.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SEE_PROOF"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "have_proof",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "have_proof", true]
+      },
+      "save_as": "have_proof",
+      "next": "have_proof.speech"
+    },
+    {
+      "id": "have_no_proof.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEED_PROOF"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "have_no_proof",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_WANT_PROOF", 1]
+      },
+      "save_as": "have_no_proof",
+      "next": "have_no_proof.speech"
+    },
+    {
+      "id": "proof.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HORRIBLE_TRUTH"]}],
+      "next": "shuttle.menu"
+    },
+    {
+      "id": "proof.effect2",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "proof_effect2",
+      "next": "proof.speech"
+    },
+    {
+      "id": "proof.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_KNOW_ABOUT_MYCON", 1]
+      },
+      "save_as": "proof_effect1",
+      "next": "proof.effect2"
+    },
+    {
+      "id": "proof",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_HOME_VISITS", 0]
+      },
+      "save_as": "proof",
+      "next": "proof.effect1"
+    },
+    {
+      "id": "what_doing_here.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUR_NEW_WORLD"]}],
+      "next": "normal.1"
+    },
+    {
+      "id": "what_doing_here",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK0", 1]
+      },
+      "save_as": "what_doing_here",
+      "next": "what_doing_here.speech"
+    },
+    {
+      "id": "what_about_war.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_WAR"]}],
+      "next": "normal.1"
+    },
+    {
+      "id": "what_about_war",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK0", 2]
+      },
+      "save_as": "what_about_war",
+      "next": "what_about_war.speech"
+    },
+    {
+      "id": "help_us.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WONT_HELP"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "help_us",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK0", 3]
+      },
+      "save_as": "help_us",
+      "next": "help_us.speech"
+    },
+    {
+      "id": "what_about_history.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BEFORE_WAR"]}],
+      "next": "normal.2"
+    },
+    {
+      "id": "what_about_history",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK1", 1]
+      },
+      "save_as": "what_about_history",
+      "next": "what_about_history.speech"
+    },
+    {
+      "id": "what_about_homeworld.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ABOUT_HOMEWORLD"]}],
+      "next": "normal.2"
+    },
+    {
+      "id": "what_about_homeworld",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK1", 2]
+      },
+      "save_as": "what_about_homeworld",
+      "next": "what_about_homeworld.speech"
+    },
+    {
+      "id": "what_happened.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DONT_KNOW_HOW"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "what_happened.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 1]
+      },
+      "save_as": "what_happened_effect1",
+      "next": "what_happened.speech"
+    },
+    {
+      "id": "what_happened",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK1", 3]
+      },
+      "save_as": "what_happened",
+      "next": "what_happened.effect1"
+    },
+    {
+      "id": "what_about_outfit.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOPE_YOU_LIKE_IT"]}],
+      "next": "normal.3"
+    },
+    {
+      "id": "what_about_outfit",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK2", 1]
+      },
+      "save_as": "what_about_outfit",
+      "next": "what_about_outfit.speech"
+    },
+    {
+      "id": "where_mates.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MATES_KILLED"]}],
+      "next": "normal.3"
+    },
+    {
+      "id": "where_mates",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK2", 2]
+      },
+      "save_as": "where_mates",
+      "next": "where_mates.speech"
+    },
+    {
+      "id": "get_lonely.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAKE_OUT_ALL_RIGHT"]}],
+      "next": "normal.0"
+    },
+    {
+      "id": "get_lonely",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_STACK2", 3]
+      },
+      "save_as": "get_lonely",
+      "next": "get_lonely.speech"
+    },
+    {
+      "id": "normal.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "know_about_deep_children",
+          "text": "know_about_deep_children",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"get": ["local", "know_about_deep_children", false]}}
+            ]
+          },
+          "next": "deep.children"
+        },
+        {
+          "id": "mycons_involved",
+          "text": "mycons_involved",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "know_about_deep_children", false]}}}
+            ]
+          },
+          "next": "mycons_involved"
+        },
+        {
+          "id": "have_proof",
+          "text": "have_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"get": ["local", "have_proof", false]}}
+            ]
+          },
+          "next": "have_proof"
+        },
+        {
+          "id": "look_at_egg_sacks",
+          "text": "look_at_egg_sacks",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "have_proof", false]}}}
+            ]
+          },
+          "next": "proof"
+        },
+        {
+          "id": "have_no_proof",
+          "text": "have_no_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "not": {
+                  "any": [
+                    {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"not": {"ne": [{"get": ["story", "SYREEN_WANT_PROOF", 0]}, 0]}}
+            ]
+          },
+          "next": "have_no_proof"
+        },
+        {
+          "id": "what_doing_here",
+          "text": "what_doing_here",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 0]},
+          "next": "what_doing_here"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 1]},
+          "next": "what_about_war"
+        },
+        {
+          "id": "help_us",
+          "text": "help_us",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 2]},
+          "next": "help_us"
+        },
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 0]},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_homeworld",
+          "text": "what_about_homeworld",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 1]},
+          "next": "what_about_homeworld"
+        },
+        {
+          "id": "what_happened",
+          "text": "what_happened",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 2]},
+          "next": "what_happened"
+        },
+        {
+          "id": "what_about_outfit",
+          "text": "what_about_outfit",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 0]},
+          "next": "what_about_outfit"
+        },
+        {
+          "id": "where_mates",
+          "text": "where_mates",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 1]},
+          "next": "where_mates"
+        },
+        {
+          "id": "get_lonely",
+          "text": "get_lonely",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 2]},
+          "next": "get_lonely"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "exit.bye"
+        }
+      ]
+    },
+    {
+      "id": "normal.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_doing_here",
+          "text": "what_doing_here",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 0]},
+          "next": "what_doing_here"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 1]},
+          "next": "what_about_war"
+        },
+        {
+          "id": "help_us",
+          "text": "help_us",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 2]},
+          "next": "help_us"
+        },
+        {
+          "id": "know_about_deep_children",
+          "text": "know_about_deep_children",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"get": ["local", "know_about_deep_children", false]}}
+            ]
+          },
+          "next": "deep.children"
+        },
+        {
+          "id": "mycons_involved",
+          "text": "mycons_involved",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "know_about_deep_children", false]}}}
+            ]
+          },
+          "next": "mycons_involved"
+        },
+        {
+          "id": "have_proof",
+          "text": "have_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"get": ["local", "have_proof", false]}}
+            ]
+          },
+          "next": "have_proof"
+        },
+        {
+          "id": "look_at_egg_sacks",
+          "text": "look_at_egg_sacks",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "have_proof", false]}}}
+            ]
+          },
+          "next": "proof"
+        },
+        {
+          "id": "have_no_proof",
+          "text": "have_no_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "not": {
+                  "any": [
+                    {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"not": {"ne": [{"get": ["story", "SYREEN_WANT_PROOF", 0]}, 0]}}
+            ]
+          },
+          "next": "have_no_proof"
+        },
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 0]},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_homeworld",
+          "text": "what_about_homeworld",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 1]},
+          "next": "what_about_homeworld"
+        },
+        {
+          "id": "what_happened",
+          "text": "what_happened",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 2]},
+          "next": "what_happened"
+        },
+        {
+          "id": "what_about_outfit",
+          "text": "what_about_outfit",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 0]},
+          "next": "what_about_outfit"
+        },
+        {
+          "id": "where_mates",
+          "text": "where_mates",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 1]},
+          "next": "where_mates"
+        },
+        {
+          "id": "get_lonely",
+          "text": "get_lonely",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 2]},
+          "next": "get_lonely"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "exit.bye"
+        }
+      ]
+    },
+    {
+      "id": "normal.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 0]},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_homeworld",
+          "text": "what_about_homeworld",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 1]},
+          "next": "what_about_homeworld"
+        },
+        {
+          "id": "what_happened",
+          "text": "what_happened",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 2]},
+          "next": "what_happened"
+        },
+        {
+          "id": "know_about_deep_children",
+          "text": "know_about_deep_children",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"get": ["local", "know_about_deep_children", false]}}
+            ]
+          },
+          "next": "deep.children"
+        },
+        {
+          "id": "mycons_involved",
+          "text": "mycons_involved",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "know_about_deep_children", false]}}}
+            ]
+          },
+          "next": "mycons_involved"
+        },
+        {
+          "id": "have_proof",
+          "text": "have_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"get": ["local", "have_proof", false]}}
+            ]
+          },
+          "next": "have_proof"
+        },
+        {
+          "id": "look_at_egg_sacks",
+          "text": "look_at_egg_sacks",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "have_proof", false]}}}
+            ]
+          },
+          "next": "proof"
+        },
+        {
+          "id": "have_no_proof",
+          "text": "have_no_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "not": {
+                  "any": [
+                    {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"not": {"ne": [{"get": ["story", "SYREEN_WANT_PROOF", 0]}, 0]}}
+            ]
+          },
+          "next": "have_no_proof"
+        },
+        {
+          "id": "what_doing_here",
+          "text": "what_doing_here",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 0]},
+          "next": "what_doing_here"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 1]},
+          "next": "what_about_war"
+        },
+        {
+          "id": "help_us",
+          "text": "help_us",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 2]},
+          "next": "help_us"
+        },
+        {
+          "id": "what_about_outfit",
+          "text": "what_about_outfit",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 0]},
+          "next": "what_about_outfit"
+        },
+        {
+          "id": "where_mates",
+          "text": "where_mates",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 1]},
+          "next": "where_mates"
+        },
+        {
+          "id": "get_lonely",
+          "text": "get_lonely",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 2]},
+          "next": "get_lonely"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "exit.bye"
+        }
+      ]
+    },
+    {
+      "id": "normal.3",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_outfit",
+          "text": "what_about_outfit",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 0]},
+          "next": "what_about_outfit"
+        },
+        {
+          "id": "where_mates",
+          "text": "where_mates",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 1]},
+          "next": "where_mates"
+        },
+        {
+          "id": "get_lonely",
+          "text": "get_lonely",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK2", 0]}, 2]},
+          "next": "get_lonely"
+        },
+        {
+          "id": "know_about_deep_children",
+          "text": "know_about_deep_children",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"get": ["local", "know_about_deep_children", false]}}
+            ]
+          },
+          "next": "deep.children"
+        },
+        {
+          "id": "mycons_involved",
+          "text": "mycons_involved",
+          "when": {
+            "all": [
+              {"eq": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]},
+              {"ne": [{"get": ["story", "KNOW_SYREEN_WORLD_SHATTERED", 0]}, 0]},
+              {"not": {"not": {"get": ["local", "know_about_deep_children", false]}}}
+            ]
+          },
+          "next": "mycons_involved"
+        },
+        {
+          "id": "have_proof",
+          "text": "have_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"get": ["local", "have_proof", false]}}
+            ]
+          },
+          "next": "have_proof"
+        },
+        {
+          "id": "look_at_egg_sacks",
+          "text": "look_at_egg_sacks",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "any": [
+                  {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                  {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                ]
+              },
+              {"not": {"not": {"get": ["local", "have_proof", false]}}}
+            ]
+          },
+          "next": "proof"
+        },
+        {
+          "id": "have_no_proof",
+          "text": "have_no_proof",
+          "when": {
+            "all": [
+              {"ge": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 3]},
+              {
+                "not": {
+                  "any": [
+                    {"ne": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]},
+                    {"ne": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}
+                  ]
+                }
+              },
+              {"not": {"ne": [{"get": ["story", "SYREEN_WANT_PROOF", 0]}, 0]}}
+            ]
+          },
+          "next": "have_no_proof"
+        },
+        {
+          "id": "what_doing_here",
+          "text": "what_doing_here",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 0]},
+          "next": "what_doing_here"
+        },
+        {
+          "id": "what_about_war",
+          "text": "what_about_war",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 1]},
+          "next": "what_about_war"
+        },
+        {
+          "id": "help_us",
+          "text": "help_us",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK0", 0]}, 2]},
+          "next": "help_us"
+        },
+        {
+          "id": "what_about_history",
+          "text": "what_about_history",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 0]},
+          "next": "what_about_history"
+        },
+        {
+          "id": "what_about_homeworld",
+          "text": "what_about_homeworld",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 1]},
+          "next": "what_about_homeworld"
+        },
+        {
+          "id": "what_happened",
+          "text": "what_happened",
+          "when": {"eq": [{"get": ["story", "SYREEN_STACK1", 0]}, 2]},
+          "next": "what_happened"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "exit.bye"
+        }
+      ]
+    },
+    {
+      "id": "we_are_vice_squad",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_VICE", "HOW_CAN_YOU_BE_HERE"]}],
+      "next": "initial.menu"
+    },
+    {
+      "id": "we_are_the_one_for_you_baby",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAYBE_CAPTAIN", "HOW_CAN_YOU_BE_HERE"]}],
+      "next": "initial.menu"
+    },
+    {
+      "id": "we_are_impressed",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SO_AM_I_CAPTAIN", "HOW_CAN_YOU_BE_HERE"]}],
+      "next": "initial.menu"
+    },
+    {
+      "id": "introduce",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"not": {"get": ["encounter", "using_speech", true]}},
+          "speech": [
+            "WELCOME_VINDICATOR0",
+            {"insert": {"get": ["player", "captain_name", ""]}},
+            "WELCOME_VINDICATOR1",
+            {"insert": {"get": ["player", "ship_name", ""]}},
+            "WELCOME_VINDICATOR2",
+            "HOW_CAN_YOU_BE_HERE"
+          ]
+        },
+        {
+          "speech": ["WELCOME_VINDICATOR0", "HOW_CAN_YOU_BE_HERE"]
+        }
+      ],
+      "next": "initial.menu"
+    },
+    {
+      "id": "i_need_you.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_NEED"]}],
+      "next": "initial.menu"
+    },
+    {
+      "id": "i_need_you.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "i_need_touch_o_vision", true]
+      },
+      "save_as": "i_need_you_effect1",
+      "next": "i_need_you.speech"
+    },
+    {
+      "id": "i_need_you",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "i_need_you", true]
+      },
+      "save_as": "i_need_you",
+      "next": "i_need_you.effect1"
+    },
+    {
+      "id": "i_need_touch_o_vision.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TOUCH_O_VISION"]}],
+      "next": "initial.menu"
+    },
+    {
+      "id": "i_need_touch_o_vision.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "i_need_touch_o_vision", true]
+      },
+      "save_as": "i_need_touch_o_vision_effect1",
+      "next": "i_need_touch_o_vision.speech"
+    },
+    {
+      "id": "i_need_touch_o_vision",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["local", "i_need_you", true]
+      },
+      "save_as": "i_need_touch_o_vision",
+      "next": "i_need_touch_o_vision.effect1"
+    },
+    {
+      "id": "initial.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_here_to_help",
+          "text": "we_here_to_help",
+          "when": true,
+          "next": "we_here_to_help"
+        },
+        {
+          "id": "we_need_help",
+          "text": "we_need_help",
+          "when": true,
+          "next": "we_need_help"
+        },
+        {
+          "id": "i_need_you",
+          "text": "i_need_you",
+          "when": {"not": {"get": ["local", "i_need_you", false]}},
+          "next": "i_need_you"
+        },
+        {
+          "id": "i_need_touch_o_vision",
+          "text": "i_need_touch_o_vision",
+          "when": {"not": {"get": ["local", "i_need_touch_o_vision", false]}},
+          "next": "i_need_touch_o_vision"
+        }
+      ]
+    },
+    {
+      "id": "initial.choose",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_are_vice_squad",
+          "text": "we_are_vice_squad",
+          "when": true,
+          "next": "we_are_vice_squad"
+        },
+        {
+          "id": "we_are_the_one_for_you_baby",
+          "text": "we_are_the_one_for_you_baby",
+          "when": true,
+          "next": "we_are_the_one_for_you_baby"
+        },
+        {
+          "id": "we_are_vindicator0",
+          "text": {
+            "compose": [
+              "we_are_vindicator0",
+              {"insert": {"get": ["player", "captain_name", ""]}},
+              "we_are_vindicator1",
+              {"insert": {"get": ["player", "ship_name", ""]}},
+              "we_are_vindicator2"
+            ]
+          },
+          "when": true,
+          "next": "introduce"
+        },
+        {
+          "id": "we_are_impressed",
+          "text": "we_are_impressed",
+          "when": true,
+          "next": "we_are_impressed"
+        }
+      ]
+    },
+    {
+      "id": "plan.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_FOUND_VAULT"]}],
+      "next": "plan.menu"
+    },
+    {
+      "id": "plan.effect1",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_HOME_VISITS", 0]
+      },
+      "save_as": "plan_effect1",
+      "next": "plan.speech"
+    },
+    {
+      "id": "plan",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "MYCON_AMBUSH", 1]
+      },
+      "save_as": "plan",
+      "next": "plan.effect1"
+    },
+    {
+      "id": "plan.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_my_reward",
+          "text": "whats_my_reward",
+          "when": true,
+          "next": "whats_my_reward"
+        },
+        {
+          "id": "bye_after_vault",
+          "text": "bye_after_vault",
+          "when": true,
+          "next": "exit.bye_after_vault"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "MYCON_KNOW_AMBUSH", 0]}, 0]},
+          "next": "after.route"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "MYCON_AMBUSH", 0]}, 0]},
+          "next": "ambush.greeting"
+        },
+        {
+          "when": {"not": {"ne": [{"get": ["story", "SYREEN_KNOW_ABOUT_MYCON", 0]}, 0]}},
+          "next": "before.greeting"
+        },
+        {
+          "when": {"ne": [{"get": ["story", "SHIP_VAULT_UNLOCKED", 0]}, 0]},
+          "next": "plan"
+        }
+      ],
+      "otherwise": "vault.greeting"
+    },
+    {
+      "id": "outtakes.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
       "next": "end"
+    },
+    {
+      "id": "outtakes",
+      "kind": "action",
+      "action": {
+        "verb": "encounter.set_outcome",
+        "args": ["peace"]
+      },
+      "save_as": "outtakes",
+      "next": "outtakes.speech"
+    },
+    {
+      "id": "after.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "SYREEN_HOME_VISITS", 0]}, 0]}, "next": "after.ally"}],
+      "otherwise": "after.greeting"
+    },
+    {
+      "id": "after.ally",
+      "kind": "action",
+      "action": {
+        "verb": "galaxy.set_relationship",
+        "args": ["syreen", "allied"]
+      },
+      "save_as": "after_ally",
+      "next": "after.greeting"
+    },
+    {
+      "id": "after.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "SYREEN_HOME_VISITS",
+          [["HELLO_AFTER_AMBUSH_1"], ["HELLO_AFTER_AMBUSH_2"], ["HELLO_AFTER_AMBUSH_3"], ["HELLO_AFTER_AMBUSH_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "after.greeting.speech"
+    },
+    {
+      "id": "after.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "after.menu"
+    },
+    {
+      "id": "ambush.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["READY_FOR_AMBUSH"]}],
+      "next": "ambush.menu"
+    },
+    {
+      "id": "ambush.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "state.set",
+        "args": ["story", "SYREEN_HOME_VISITS", 0]
+      },
+      "save_as": "ambush_greeting",
+      "next": "ambush.greeting.speech"
+    },
+    {
+      "id": "before.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": [
+          "story",
+          "SYREEN_HOME_VISITS",
+          [["HELLO_BEFORE_AMBUSH_1"], ["HELLO_BEFORE_AMBUSH_2"], ["HELLO_BEFORE_AMBUSH_3"], ["HELLO_BEFORE_AMBUSH_4"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "greeting",
+      "next": "before.greeting.speech"
+    },
+    {
+      "id": "before.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "before.route"
+    },
+    {
+      "id": "before.route",
+      "kind": "decision",
+      "branches": [{"when": {"gt": [{"get": ["story", "SYREEN_HOME_VISITS", 0]}, 1]}, "next": "normal.0"}],
+      "otherwise": "initial.choose"
+    },
+    {
+      "id": "vault.greeting",
+      "kind": "action",
+      "action": {
+        "verb": "sequence.next",
+        "args": ["story", "SYREEN_HOME_VISITS", [["FOUND_VAULT_YET_1"], ["FOUND_VAULT_YET_2"]], "repeat_last"]
+      },
+      "save_as": "greeting",
+      "next": "vault.greeting.speech"
+    },
+    {
+      "id": "vault.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "greeting.speech", 0]}}],
+      "next": "vault.menu"
     },
     {
       "id": "end",

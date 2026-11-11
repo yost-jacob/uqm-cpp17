@@ -228,14 +228,6 @@ static LOCDATA arilou_desc =
 };
 
 // Resource/lifecycle compatibility. Dialogue and portal exchange live in JSON.
-static void Intro (void) {}
-
-static COUNT
-uninit_arilou (void)
-{
-	return (0);
-}
-
 static void
 post_arilou_enc (void)
 {
@@ -271,9 +263,7 @@ init_arilou_comm (void)
 {
 	LOCDATA *retval;
 
-	arilou_desc.init_encounter_func = Intro;
 	arilou_desc.post_encounter_func = post_arilou_enc;
-	arilou_desc.uninit_encounter_func = uninit_arilou;
 
 	arilou_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	arilou_desc.AlienTextBaseline.y = 0;

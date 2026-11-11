@@ -6,15 +6,12 @@
 
 Script: [shofixt.c](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L1). Phrase bank: [shofixti.txt](../../../../sc2/content/base/comm/shofixti/shofixti.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 95 phrase records.
+1 handler/helper nodes; 0 response registration sites; 0 direct local calls; 95 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_shofixti_comm</code> | No enclosing branch condition; [183](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L183) |
-| <code>post_encounter_func</code> | [<code>post_shofixti_enc</code>](#node-post_shofixti_enc) | <code>init_shofixti_comm</code> | No enclosing branch condition; [184](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L184) |
-| <code>uninit_encounter_func</code> | [<code>uninit_shofixti</code>](#node-uninit_shofixti) | <code>init_shofixti_comm</code> | No enclosing branch condition; [185](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L185) |
 
 ## Handler graph
 
@@ -22,13 +19,7 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_shofixti"]
-    n2["post_shofixti_enc"]
-    n3["init_shofixti_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["init_shofixti_comm"]
 ```
 
 ## Condition catalog
@@ -46,69 +37,11 @@ Presentation descriptor <code>shofixti_desc</code>: [source](../../../../sc2/src
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L162).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-}
-```
-
-</details>
-
-<a id="node-uninit_shofixti"></a>
-
-### uninit_shofixti
-
-<code>static COUNT uninit_shofixti(void)</code> — [source](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L167).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [169](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L169) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return(0);
-}
-```
-
-</details>
-
-<a id="node-post_shofixti_enc"></a>
-
-### post_shofixti_enc
-
-<code>static void post_shofixti_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L173).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	// nothing defined so far
-}
-```
-
-</details>
-
 <a id="node-init_shofixti_comm"></a>
 
 ### init_shofixti_comm
 
-<code>LOCDATA *init_shofixti_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L179).
+<code>LOCDATA *init_shofixti_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L162).
 
 #### Actions, queries, local updates, and control flow
 
@@ -116,15 +49,12 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>shofixti_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [183](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L183) |
-| update | <code>shofixti_desc.post_encounter_func = post_shofixti_enc</code> | No enclosing branch condition | [184](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L184) |
-| update | <code>shofixti_desc.uninit_encounter_func = uninit_shofixti</code> | No enclosing branch condition | [185](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L185) |
-| update | <code>shofixti_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [187](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L187) |
-| update | <code>shofixti_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [188](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L188) |
-| update | <code>shofixti_desc.AlienTextWidth = SIS_TEXT_WIDTH</code> | No enclosing branch condition | [189](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L189) |
-| call | <code>setSegue(Segue_peace)</code> | No enclosing branch condition | [191](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L191) |
-| update | <code>retval = &amp;shofixti_desc</code> | No enclosing branch condition | [193](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L193) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [195](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L195) |
+| update | <code>shofixti_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [166](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L166) |
+| update | <code>shofixti_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [167](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L167) |
+| update | <code>shofixti_desc.AlienTextWidth = SIS_TEXT_WIDTH</code> | No enclosing branch condition | [168](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L168) |
+| call | <code>setSegue(Segue_peace)</code> | No enclosing branch condition | [170](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L170) |
+| update | <code>retval = &amp;shofixti_desc</code> | No enclosing branch condition | [172](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L172) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [174](../../../../sc2/src/uqm/comm/shofixt/shofixt.c#L174) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -132,10 +62,6 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 ```c
 {
 	LOCDATA *retval;
-
-	shofixti_desc.init_encounter_func = Intro;
-	shofixti_desc.post_encounter_func = post_shofixti_enc;
-	shofixti_desc.uninit_encounter_func = uninit_shofixti;
 
 	shofixti_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	shofixti_desc.AlienTextBaseline.y = 0;

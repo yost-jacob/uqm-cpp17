@@ -6,15 +6,13 @@
 
 Script: [umgahc.c](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L1). Phrase bank: [umgah.txt](../../../../sc2/content/base/comm/umgah/umgah.txt#L1).
 
-4 handler/helper nodes; 0 response registration sites; 0 direct local calls; 87 phrase records.
+2 handler/helper nodes; 0 response registration sites; 0 direct local calls; 87 phrase records.
 
 ## Initialization and lifecycle
 
 | Phase | Callback | Bound by | Conditions / source |
 | --- | --- | --- | --- |
-| <code>init_encounter_func</code> | [<code>Intro</code>](#node-intro) | <code>init_umgah_comm</code> | No enclosing branch condition; [221](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L221) |
-| <code>post_encounter_func</code> | [<code>post_umgah_enc</code>](#node-post_umgah_enc) | <code>init_umgah_comm</code> | No enclosing branch condition; [222](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L222) |
-| <code>uninit_encounter_func</code> | [<code>uninit_umgah</code>](#node-uninit_umgah) | <code>init_umgah_comm</code> | No enclosing branch condition; [223](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L223) |
+| <code>post_encounter_func</code> | [<code>post_umgah_enc</code>](#node-post_umgah_enc) | <code>init_umgah_comm</code> | No enclosing branch condition; [213](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L213) |
 
 ## Handler graph
 
@@ -22,13 +20,9 @@ Solid arrows are selectable responses; dashed arrows are direct C calls. Conditi
 
 ```mermaid
 flowchart LR
-    n0["Intro"]
-    n1["uninit_umgah"]
-    n2["post_umgah_enc"]
-    n3["init_umgah_comm"]
-    n3 -. "init_encounter_func" .-> n0
-    n3 -. "post_encounter_func" .-> n2
-    n3 -. "uninit_encounter_func" .-> n1
+    n0["post_umgah_enc"]
+    n1["init_umgah_comm"]
+    n1 -. "post_encounter_func" .-> n0
 ```
 
 ## Condition catalog
@@ -51,51 +45,11 @@ Presentation descriptor <code>umgah_desc</code>: [source](../../../../sc2/src/uq
 
 ## Node catalog
 
-<a id="node-intro"></a>
-
-### Intro
-
-<code>static void Intro(void)</code> — [source](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L199).
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{}
-```
-
-</details>
-
-<a id="node-uninit_umgah"></a>
-
-### uninit_umgah
-
-<code>static COUNT uninit_umgah(void)</code> — [source](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L202).
-
-#### Actions, queries, local updates, and control flow
-
-Calls are listed without assuming they are pure or mutating. Local updates are retained because they determine dynamic menus and counter-selected speech.
-
-| Kind | Operation | Enclosing conditions | Source |
-| --- | --- | --- | --- |
-| flow | <code>return 0;</code> | No enclosing branch condition | [204](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L204) |
-
-<details>
-<summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
-
-```c
-{
-	return (0);
-}
-```
-
-</details>
-
 <a id="node-post_umgah_enc"></a>
 
 ### post_umgah_enc
 
-<code>static void post_umgah_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L208).
+<code>static void post_umgah_enc(void)</code> — [source](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L200).
 
 #### Actions, queries, local updates, and control flow
 
@@ -103,8 +57,8 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| call | <code>GET_GAME_STATE(UMGAH_ZOMBIE_BLOBBIES)</code> | No enclosing branch condition | [210](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L210) |
-| call | <code>SET_GAME_STATE(MET_NORMAL_UMGAH, 1)</code> | [C1](#condition-c1) | [212](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L212) |
+| call | <code>GET_GAME_STATE(UMGAH_ZOMBIE_BLOBBIES)</code> | No enclosing branch condition | [202](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L202) |
+| call | <code>SET_GAME_STATE(MET_NORMAL_UMGAH, 1)</code> | [C1](#condition-c1) | [204](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L204) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -124,7 +78,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 ### init_umgah_comm
 
-<code>LOCDATA *init_umgah_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L217).
+<code>LOCDATA *init_umgah_comm(void)</code> — [source](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L209).
 
 #### Actions, queries, local updates, and control flow
 
@@ -132,20 +86,18 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 
 | Kind | Operation | Enclosing conditions | Source |
 | --- | --- | --- | --- |
-| update | <code>umgah_desc.init_encounter_func = Intro</code> | No enclosing branch condition | [221](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L221) |
-| update | <code>umgah_desc.post_encounter_func = post_umgah_enc</code> | No enclosing branch condition | [222](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L222) |
-| update | <code>umgah_desc.uninit_encounter_func = uninit_umgah</code> | No enclosing branch condition | [223](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L223) |
-| update | <code>umgah_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [225](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L225) |
-| update | <code>umgah_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [226](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L226) |
-| update | <code>umgah_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [227](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L227) |
-| call | <code>GET_GAME_STATE(TALKING_PET)</code> | No enclosing branch condition | [229](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L229) |
-| call | <code>GET_GAME_STATE(UMGAH_HOSTILE)</code> | [C2](#condition-c2) | [229](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L229) |
-| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C3](#condition-c3) | [230](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L230) |
-| call | <code>GLOBAL(CurrentActivity)</code> | [C3](#condition-c3) | [230](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L230) |
-| call | <code>setSegue(Segue_peace)</code> | [C4](#condition-c4) | [232](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L232) |
-| call | <code>setSegue(Segue_hostile)</code> | [C5](#condition-c5) | [236](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L236) |
-| update | <code>retval = &amp;umgah_desc</code> | No enclosing branch condition | [238](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L238) |
-| flow | <code>return retval;</code> | No enclosing branch condition | [240](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L240) |
+| update | <code>umgah_desc.post_encounter_func = post_umgah_enc</code> | No enclosing branch condition | [213](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L213) |
+| update | <code>umgah_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH &gt;&gt; 1)</code> | No enclosing branch condition | [215](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L215) |
+| update | <code>umgah_desc.AlienTextBaseline.y = 0</code> | No enclosing branch condition | [216](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L216) |
+| update | <code>umgah_desc.AlienTextWidth = SIS_TEXT_WIDTH - 16</code> | No enclosing branch condition | [217](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L217) |
+| call | <code>GET_GAME_STATE(TALKING_PET)</code> | No enclosing branch condition | [219](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L219) |
+| call | <code>GET_GAME_STATE(UMGAH_HOSTILE)</code> | [C2](#condition-c2) | [219](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L219) |
+| call | <code>LOBYTE(GLOBAL(CurrentActivity))</code> | [C3](#condition-c3) | [220](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L220) |
+| call | <code>GLOBAL(CurrentActivity)</code> | [C3](#condition-c3) | [220](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L220) |
+| call | <code>setSegue(Segue_peace)</code> | [C4](#condition-c4) | [222](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L222) |
+| call | <code>setSegue(Segue_hostile)</code> | [C5](#condition-c5) | [226](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L226) |
+| update | <code>retval = &amp;umgah_desc</code> | No enclosing branch condition | [228](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L228) |
+| flow | <code>return retval;</code> | No enclosing branch condition | [230](../../../../sc2/src/uqm/comm/umgah/umgahc.c#L230) |
 
 <details>
 <summary>Exact decision body (local calculations, early returns, fallthrough and ordering)</summary>
@@ -154,9 +106,7 @@ Calls are listed without assuming they are pure or mutating. Local updates are r
 {
 	LOCDATA *retval;
 
-	umgah_desc.init_encounter_func = Intro;
 	umgah_desc.post_encounter_func = post_umgah_enc;
-	umgah_desc.uninit_encounter_func = uninit_umgah;
 
 	umgah_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	umgah_desc.AlienTextBaseline.y = 0;
