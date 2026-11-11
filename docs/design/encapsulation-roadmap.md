@@ -97,7 +97,8 @@ Battle entry paths; HyperSpace uses Battle for navigation rather than combat.
 The dependency order and first architecture checkpoint are maintained in
 [compatibility removal plan](compatibility-removal-plan.md). The first increment
 moves runtime ship roster ownership into each engine, with an explicit encounter/
-combat handoff. RNG ownership and seed delivery are the next decision before
+combat handoff. Each engine also owns a standard random stream with session-supplied
+seeds and an explicit battle-seed option. This resolves RNG ownership before
 extracting the battle driver.
 
 ## Next steps on this path

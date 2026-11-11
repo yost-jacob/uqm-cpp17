@@ -121,3 +121,28 @@ BOOST_AUTO_TEST_CASE(modes_own_distinct_engines_and_dispatch_binds_each_one)
     BOOST_TEST(second->engine().size() == 0u);
     BOOST_TEST(&simulationEngine() == previous);
 }
+
+BOOST_AUTO_TEST_CASE(session_seeds_are_replayable_and_do_not_consume_active_mode_randomness)
+{
+    auto makeState = [] { return std::make_shared<GameState>(UserProfile{SinglePlayerId, "RNG test"}); };
+    GameSession first(makeState(), SinglePlayerId, 123), second(makeState(), SinglePlayerId, 123);
+    struct Mode final : GameMode {
+        explicit Mode(GameSession &session) : GameMode(session) {}
+        ModeResult run() override { return ModeCompleted{}; }
+    };
+    Mode parent(first);
+    SimulationBinding active(parent.engine());
+    const auto before = TFB_GetRandomSeed();
+    Mode child(first), replayParent(second), replayChild(second);
+    BOOST_TEST(parent.engine().random().state() == replayParent.engine().random().state());
+    BOOST_TEST(child.engine().random().state() == replayChild.engine().random().state());
+    BOOST_TEST(child.engine().random().state() != before);
+    BOOST_TEST(TFB_GetRandomSeed() == before);
+    {
+        SimulationBinding nested(child.engine());
+        BOOST_TEST(TFB_Random() == replayChild.engine().random()());
+    }
+    BOOST_TEST(TFB_GetRandomSeed() == before);
+    parent.engine().reset();
+    BOOST_TEST(TFB_GetRandomSeed() == before);
+}

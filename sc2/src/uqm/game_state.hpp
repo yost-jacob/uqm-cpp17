@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <random>
 #include <string>
 #include "world_state.hpp"
 #include "world_types.hpp"
@@ -311,7 +312,11 @@ class NavigationBinding;
 class GameSession {
 public:
     // Reject null state (invalid_argument) and unknown player (out_of_range).
-    GameSession(std::shared_ptr<GameState> state, PlayerId player);
+    // Default entropy is sampled once per session. An explicit seed reproduces
+    // its mode-seed sequence. This transient source is not legacy save data.
+    GameSession(std::shared_ptr<GameState> state, PlayerId player,
+                std::uint32_t seed = std::random_device{}());
+    std::uint32_t nextModeSeed() noexcept { return static_cast<std::uint32_t>(modeSeeds_()); }
     ~GameSession();
     GameSession(const GameSession &) = delete;
     GameSession &operator=(const GameSession &) = delete;
@@ -342,6 +347,7 @@ public:
 private:
     std::shared_ptr<GameState> state_;
     PlayerId player_;
+    std::minstd_rand0 modeSeeds_;
     std::unique_ptr<GameMode> currentMode_;
     MenuResult pendingExit_;
     bool running_ = false;

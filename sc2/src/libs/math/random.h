@@ -54,10 +54,14 @@ DWORD RandomContext_SeedRandom(RandomContext *context, DWORD seed);
 /* Read a required initialized context without advancing it. */
 DWORD RandomContext_GetSeed(const RandomContext *context);
 
-/* As above for the shared global stream, initially seeded with RandomDefaultSeed.
- * TFB_SeedRandom returns the previous state; callers serialize both operations. */
+/* General gameplay uses std::minstd_rand0 in the currently bound mode, or a
+ * startup/Super Melee fallback when no mode is active. Seed normalization is
+ * modulo 2147483647, with zero becoming one; it differs from RandomContext.
+ * SeedRandom returns the old state for restoration; GetRandomSeed only reads.
+ * Callers serialize operations on a stream; the C binding is thread-local. */
 DWORD TFB_SeedRandom(DWORD seed);
 DWORD TFB_Random(void);
+DWORD TFB_GetRandomSeed(void);
 
 #ifdef __cplusplus
 }

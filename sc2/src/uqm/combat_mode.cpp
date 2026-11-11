@@ -6,8 +6,8 @@ namespace uqm {
 namespace {
 class CampaignCombatMode final : public GameMode {
 public:
-    explicit CampaignCombatMode(GameSession &session)
-        : GameMode(session.stateOwner(), session.playerId()), session_(session),
+    CampaignCombatMode(GameSession &session, std::uint32_t seed)
+        : GameMode(session.stateOwner(), session.playerId(), seed), session_(session),
           story_(session.player().story()), source_(simulationEngine().shipRoster()) {}
     ModeResult run() override {
         runCampaignCombat(story_);
@@ -26,6 +26,9 @@ private:
 };
 }
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session) {
-    return std::make_unique<CampaignCombatMode>(session);
+    return createCampaignCombatMode(session, session.nextModeSeed());
+}
+std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, std::uint32_t seed) {
+    return std::make_unique<CampaignCombatMode>(session, seed);
 }
 }

@@ -3,6 +3,7 @@
 #include "element.h"
 #include "entity_handle.hpp"
 #include "runtime_ship_roster.hpp"
+#include "libs/math/random.hpp"
 #include <cstdint>
 #include <array>
 namespace uqm {
@@ -12,7 +13,8 @@ namespace detail { struct SimulationAccess; }
 class SimulationEngine {
 public:
     SimulationEngine() = default;
-    explicit SimulationEngine(COUNT capacity) { initialize(capacity); }
+    explicit SimulationEngine(COUNT capacity, std::uint32_t seed = RandomDefaultSeed)
+        : random_(seed) { initialize(capacity); }
     ~SimulationEngine();
     SimulationEngine(const SimulationEngine &) = delete;
     SimulationEngine &operator=(const SimulationEngine &) = delete;
@@ -24,6 +26,8 @@ public:
     COUNT size() const noexcept;
     RuntimeShipRoster &shipRoster() noexcept { return ships_; }
     const RuntimeShipRoster &shipRoster() const noexcept { return ships_; }
+    RandomStream &random() noexcept { return random_; }
+    const RandomStream &random() const noexcept { return random_; }
     std::uint64_t ticks() const noexcept { return ticks_; }
     // Exactly one existing simulation pass. The legacy scene adapter must have
     // prepared its collision sprites/status context. This does not draw a frame.
@@ -41,6 +45,7 @@ public:
     std::optional<std::reference_wrapper<const ELEMENT>> resolve(combat::EntityHandle handle) const noexcept;
 private:
     friend struct detail::SimulationAccess;
+    RandomStream random_;
     RuntimeShipRoster ships_;
     QUEUE entities_{};
     // Compatibility projection data stays with its queue: ELEMENT::PrimIndex
@@ -61,6 +66,7 @@ public:
     SimulationBinding(const SimulationBinding &) = delete;
     SimulationBinding &operator=(const SimulationBinding &) = delete;
 private:
+    RandomBinding randomBinding_;
     SimulationEngine *previous_;
     SimulationEngine *selected_;
     bool discard_ = false;

@@ -398,12 +398,9 @@ Battle (BattleFrameCallback *callback, void *context)
 	SIZE num_ships;
 
 
-#if !(DEMO_MODE || CREATE_JOURNAL)
-	if (LOBYTE (GLOBAL (CurrentActivity)) != SUPER_MELEE) {
-		// In Supermelee, the RNG is already initialised.
-		TFB_SeedRandom (GetTimeCounter ());
-	}
-#else /* DEMO_MODE */
+/* Native modes receive a seed at construction. Super Melee uses its
+ * negotiated seed. The driver must never reseed either from the clock. */
+#if DEMO_MODE || CREATE_JOURNAL
 	if (BattleSeed == 0)
 		BattleSeed = TFB_Random ();
 	TFB_SeedRandom (BattleSeed);

@@ -89,7 +89,9 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
                 auto handle = AllocLink(&queue);
                 participant = static_cast<STARSHIP *>(handle); *participant = {};
                 participant->crew_level = 13; PutQueue(&queue, handle);
-                const auto exit = session.swapGameMode(uqm::createCampaignCombatMode(session));
+                const auto before = TFB_GetRandomSeed();
+                const auto exit = session.swapGameMode(uqm::createCampaignCombatMode(session, 876));
+                BOOST_TEST(TFB_GetRandomSeed() == before);
                 BOOST_TEST(PlayerInput[0] == &originalInput);
                 BOOST_TEST(PlayerControl[0] == (HUMAN_CONTROL | GOOD_RATING));
                 BOOST_TEST(GameSounds == reinterpret_cast<SOUND>(&originalInput));
@@ -110,6 +112,9 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
         session.player().story().set(uqm::StoryFlag::BattleSegue, false);
         combatDriver = [&] {
             BOOST_TEST(session.player().story().read(uqm::StoryFlag::BattleSegue));
+            BOOST_TEST(TFB_GetRandomSeed() == 876u);
+            std::minstd_rand0 battleRandom(876);
+            BOOST_TEST(TFB_Random() == battleRandom());
             BOOST_REQUIRE(participant);
             BOOST_TEST(encounterRoster->size(uqm::RosterSide::First) == 0u);
             auto &queue = uqm::detail::RuntimeRosterAccess::queues(uqm::simulationEngine().shipRoster())[0];

@@ -17,14 +17,19 @@
  */
 
 #include <cassert>
-#include "random.h"
+#include "random.hpp"
 
 namespace {
 constexpr DWORD Multiplier = 16807;
 constexpr DWORD Modulus = 2147483647;
 constexpr DWORD Quotient = Modulus / Multiplier;
 constexpr DWORD Remainder = Modulus % Multiplier;
-RandomContext globalContext{RandomDefaultSeed};
+thread_local uqm::RandomStream *boundStream = nullptr;
+uqm::RandomStream &currentStream() {
+    if (boundStream) return *boundStream;
+    static thread_local uqm::RandomStream fallback;
+    return fallback;
+}
 }
 
 DWORD RandomContext_Random(RandomContext *context) {
@@ -55,7 +60,11 @@ DWORD RandomContext_GetSeed(const RandomContext *context) {
     return context->seed;
 }
 
-DWORD TFB_Random(void) { return RandomContext_Random(&globalContext); }
+uqm::RandomBinding::RandomBinding(RandomStream &stream) noexcept : previous_(boundStream) { boundStream = &stream; }
+uqm::RandomBinding::~RandomBinding() { boundStream = previous_; }
+
+DWORD TFB_Random(void) { return currentStream()(); }
+DWORD TFB_GetRandomSeed(void) { return currentStream().state(); }
 DWORD TFB_SeedRandom(const DWORD seed) {
-    return RandomContext_SeedRandom(&globalContext, seed);
+    return currentStream().reseed(seed);
 }
