@@ -17,9 +17,15 @@ uqm::ConversationRuntime::ConversationRuntime(GameSession &session, const LOCDAT
     if (data_.NumAnimations > MAX_ANIMATIONS)
         throw std::out_of_range("conversation animation capacity exceeded");
     resources_.script.owner = this;
+    if (data_.ConversationPhrasesRes && std::string_view(data_.ConversationPhrasesRes) == "comm.melnorme.dialogue")
+        previousStatusMode_ = static_cast<int>(SetStatusMessageMode(SMM_CREDITS));
 }
 uqm::ConversationRuntime::~ConversationRuntime() {
     stopPlayback();
+    if (previousStatusMode_) {
+        SetStatusMessageMode(static_cast<StatMsgMode>(*previousStatusMode_));
+        DrawStatusMessage(nullptr);
+    }
     if (started_) {
         if (fontBound_) {
             SetContext(SpaceContext);
@@ -49,6 +55,14 @@ void uqm::ConversationRuntime::finishScript() {
     if (scriptFinished_)
         return;
     scriptFinished_ = true;
+    if (!exiting() && !(GLOBAL(CurrentActivity) & CHECK_LOAD)) {
+        bool salvage = false;
+        if (graph_) {
+            const auto found = graph_->memory().local.find("attempted_salvage");
+            salvage = found != graph_->memory().local.end() && found->second == true;
+        }
+        if (data_.ConversationPhrasesRes) completeConversationPolicy(story_, data_.ConversationPhrasesRes, getSegue() == Segue_hostile, salvage);
+    }
     if (data_.post_encounter_func && !exiting() && !(GLOBAL(CurrentActivity) & CHECK_LOAD))
         data_.post_encounter_func();
     if (data_.uninit_encounter_func)

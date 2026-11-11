@@ -5,6 +5,9 @@
 #include <vector>
 namespace uqm {
 class StoryState;
+// Explicit normal-completion policy, including attack without dialogue. Never
+// called on load/shutdown cancellation; salvage is local to the completed visit.
+void completeConversationPolicy(StoryState &, std::string_view resource, bool hostile, bool salvage);
 struct MyconRamblePolicy {
     std::vector<std::string> phrases;
     std::size_t revealAt = 0;

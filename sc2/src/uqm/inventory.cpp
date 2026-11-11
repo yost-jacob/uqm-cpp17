@@ -31,6 +31,7 @@ struct Key { Kind kind; std::size_t index = 0; };
 Key key(std::string_view name) {
     if (name == "crew") return {Kind::Crew};
     if (name == "fuel") return {Kind::Fuel};
+    if (name == "fuel_hundredths") return {Kind::Fuel, 1};
     if (name == "ru") return {Kind::Ru};
     if (name == "credits") return {Kind::Credits};
     if (name == "biomass") return {Kind::Biomass};
@@ -91,12 +92,12 @@ std::int64_t Inventory::quantity(std::string_view name) const {
     const auto &sis = detail::SISAccess::record(fleet_.sis()->get());
     if (asset.kind == Kind::Crew && !fleet_.sis()->get().alive()) return 0;
     const auto amount = read(sis, {}, 0, asset);
-    return asset.kind == Kind::Fuel ? amount / FUEL_TANK_SCALE : amount;
+    return asset.kind == Kind::Fuel && asset.index == 0 ? amount / FUEL_TANK_SCALE : amount;
 }
 std::int64_t Inventory::capacity(std::string_view name) const {
     const auto asset = key(name);
     const auto maximum = capacityLimit(detail::SISAccess::record(fleet_.sis()->get()), asset);
-    return asset.kind == Kind::Fuel ? maximum / FUEL_TANK_SCALE : maximum;
+    return asset.kind == Kind::Fuel && asset.index == 0 ? maximum / FUEL_TANK_SCALE : maximum;
 }
 InventoryResult Inventory::transact(const InventoryTransaction &request) {
     struct Transfer { Key asset; std::int64_t amount; std::string name; };
@@ -106,9 +107,9 @@ InventoryResult Inventory::transact(const InventoryTransaction &request) {
         for (const auto &[name, amount] : package) {
             const auto asset = key(name);
             if (amount <= 0) throw std::invalid_argument("inventory quantities must be positive integers");
-            if (asset.kind == Kind::Fuel && amount > std::numeric_limits<std::int64_t>::max() / FUEL_TANK_SCALE)
+            if (asset.kind == Kind::Fuel && asset.index == 0 && amount > std::numeric_limits<std::int64_t>::max() / FUEL_TANK_SCALE)
                 throw std::out_of_range("inventory fuel quantity overflow");
-            out.push_back({asset, asset.kind == Kind::Fuel ? amount * FUEL_TANK_SCALE : amount, name});
+            out.push_back({asset, asset.kind == Kind::Fuel && asset.index == 0 ? amount * FUEL_TANK_SCALE : amount, name});
         }
     };
     prepare(request.give, give); prepare(request.receive, receive);

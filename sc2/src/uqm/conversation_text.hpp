@@ -1,6 +1,6 @@
 #ifndef UQM_CONVERSATION_TEXT_HPP
 #define UQM_CONVERSATION_TEXT_HPP
-#include "dialogue/legacy_turn.hpp"
+#include "dialogue/live_definition.hpp"
 #include "libs/strlib.h"
 namespace uqm {
 // Validate the complete mapping before importing edits. Table stays owned by the

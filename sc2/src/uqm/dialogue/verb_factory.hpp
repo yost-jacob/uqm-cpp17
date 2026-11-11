@@ -29,9 +29,6 @@ class QueryFactory {
     // Query handlers borrow const state. Action handlers borrow mutable state and
     // return data/outcomes rather than controlling playback or graph traversal.
     struct Handlers {
-        static Result legacyTurn(State &state, const std::string &script, const Json &selection) {
-            return state.legacyTurn(script, selection);
-        }
         static bool reportAvailable(const State &state, const std::string &report) {
             return state.reportAvailable(report);
         }

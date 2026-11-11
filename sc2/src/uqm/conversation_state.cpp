@@ -9,14 +9,17 @@
 #include "planets/elemdata.h"
 #include "ship_tuning.hpp"
 #include "sis_state.hpp"
+#include "sis_legacy.hpp"
 #include <algorithm>
 #include <limits>
 namespace uqm {
-CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, CampaignClock &clock, std::string script,
-                                             Callback turn, Report report, dialogue::Json context)
-    : LegacyTurnState(std::move(script), std::move(turn)), player_(player), story_(player.story()), clock_(clock),
-      report_(std::move(report)), context_(std::move(context)) {}
+CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, CampaignClock &clock, Report report, dialogue::Json context)
+    : player_(player), story_(player.story()), clock_(clock),
+      report_(std::move(report)), context_(std::move(context)),
+      commerce_(player, clock, context_.value("markets", dialogue::Json::object())),
+      reports_(player, clock, context_.value("phrases", dialogue::Json::array()), context_.value("using_speech", false)) {}
 dialogue::Json CampaignDialogueState::read(const std::string &scope, const std::string &key) const {
+    if (scope == "player" && key == "unreported_rainbows") return commerce_.unreportedRainbows();
     if (scope == "player")
         return context_.at("player").at(key);
     if (scope == "encounter")
@@ -73,6 +76,7 @@ bool CampaignDialogueState::hasItem(const std::string &item) const {
     return player_.inventory().quantity(item.rfind("items.", 0) == 0 ? item : "items." + item) != 0;
 }
 dialogue::Integer CampaignDialogueState::balance(const std::string &account) const {
+    if (account == "melnorme_credit") return player_.inventory().quantity("credits");
     if (account != "credits" && account != "ru") throw std::invalid_argument("unknown inventory account: " + account);
     return player_.inventory().quantity(account);
 }
@@ -135,9 +139,51 @@ dialogue::Result CampaignDialogueState::prepareReport(const std::string &report,
                                                       const dialogue::Json &parameters) {
     if (!parameters.is_object())
         throw std::invalid_argument("report parameters must be an object");
+    if (report.rfind("hayes.", 0) == 0) {
+        auto result = reports_.prepare(report, parameters);
+        if (report == "hayes.commit" && result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+        return result;
+    }
+    if (report.rfind("melnorme.", 0) == 0 || report.rfind("druuge.", 0) == 0)
+        return commerce_.report(report, parameters);
     return report_(report, parameters);
 }
 
+bool CampaignDialogueState::capability(const std::string &name) const {
+    if (name != "can_defend") throw std::invalid_argument("unknown capability: " + name);
+    if (player_.fleet().size()) return true;
+    for (const auto module : detail::SISAccess::record(player_.sis()).ModuleSlots)
+        if (module >= GUN_WEAPON && module <= CANNON_WEAPON) return true;
+    return false;
+}
+bool CampaignDialogueState::reportAvailable(const std::string &name) const { return reports_.available(name); }
+bool CampaignDialogueState::marketAvailable(const std::string &market, const std::string &category) const { return commerce_.marketAvailable(market, category); }
+dialogue::Integer CampaignDialogueState::salvageValue() const { return commerce_.salvageValue(); }
+dialogue::Result CampaignDialogueState::purchase(const std::string &market, const std::string &item, const dialogue::Json &quantity) {
+    auto result = commerce_.purchase(market, item, quantity);
+    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    return result;
+}
+dialogue::Result CampaignDialogueState::sell(const std::string &market, const std::string &item, const dialogue::Json &quantity) {
+    auto result = market == "starbase" && item == "minerals" ? reports_.sellMinerals() : commerce_.sell(market, item, quantity);
+    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    return result;
+}
+dialogue::Result CampaignDialogueState::prepareRescue(const std::string &name) {
+    auto result = commerce_.prepareRescue(name);
+    if (result.code == "free") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    return result;
+}
+dialogue::Result CampaignDialogueState::acceptRescue(const std::string &token) {
+    auto result = commerce_.acceptRescue(token);
+    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    return result;
+}
+dialogue::Result CampaignDialogueState::stripShip(const std::string &name) {
+    auto result = commerce_.stripShip(name);
+    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    return result;
+}
 } // namespace uqm
 namespace uqm {
 namespace {
@@ -183,6 +229,7 @@ dialogue::Integer CampaignDialogueState::fuelCapacity() const {
     return player_.inventory().capacity("fuel");
 }
 dialogue::Integer CampaignDialogueState::quantity(const std::string &item) const {
+    if (item == "minerals") return detail::SISAccess::record(player_.sis()).TotalElementMass;
     return player_.inventory().quantity(item == "radioactive" ? "minerals.radioactive" : item);
 }
 dialogue::Integer CampaignDialogueState::availableSlots(const std::string &type) const {

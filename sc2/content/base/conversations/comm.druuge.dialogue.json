@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 113,
   "id": "druuge",
   "resource": "comm.druuge.dialogue",
-  "entry": "intro",
+  "entry": "entry",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource descriptors, presentation cues, and bounded commerce/report operations. Story branches and responses are graph-owned."
   },
   "phrases": [
     {
@@ -747,126 +747,1240 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "end",
+      "kind": "end",
+      "outcome": "native_segue"
+    },
+    {
+      "id": "peace",
       "kind": "action",
       "action": {
-        "action": "handlers.legacy_turn",
-        "args": ["druuge", null]
+        "action": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "next": "end",
+      "save_as": "peace"
     },
     {
-      "id": "route",
+      "id": "hostile",
+      "kind": "action",
+      "action": {
+        "action": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "next": "end",
+      "save_as": "hostile"
+    },
+    {
+      "id": "entry",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [
+        {
+          "when": {"get": ["encounter", "won_last_battle", false]},
+          "next": "outtakes"
+        },
+        {
+          "when": {"not": {"eq": [{"get": ["story", "DRUUGE_MANNER", 0]}, 0]}},
+          "next": "hostile.entry"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "home.entry"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "bomb.entry"
+        },
+        {
+          "when": {"not": {"eq": [{"get": ["story", "ATTACKED_DRUUGE", 0]}, 0]}},
+          "next": "hostile.space"
+        },
+        {
+          "when": {"not": {"query": "ship.capability", "args": ["can_defend"]}},
+          "next": "salvage"
+        }
+      ],
+      "otherwise": "space.entry"
     },
     {
-      "id": "menu",
+      "id": "outtakes",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OUT_TAKES"]}],
+      "next": "peace"
+    },
+    {
+      "id": "hostile.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "hostile.home"
+        }
+      ],
+      "otherwise": "hostile.space"
+    },
+    {
+      "id": "hostile.home",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": ["story", "DRUUGE_HOME_VISITS", [["HSTL_TRADE_WORLD_HELLO_1"], ["HSTL_TRADE_WORLD_HELLO_2"]], "repeat_last"]
+      },
+      "next": "hostile.home.speech",
+      "save_as": "hostile_home"
+    },
+    {
+      "id": "hostile.home.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "hostile_home.speech", 0]}}],
+      "next": "hostile"
+    },
+    {
+      "id": "hostile.space",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": ["story", "DRUUGE_VISITS", [["HOSTILE_SPACE_HELLO_1"], ["HOSTILE_SPACE_HELLO_2"]], "repeat_last"]
+      },
+      "next": "hostile.space.speech",
+      "save_as": "hostile_space"
+    },
+    {
+      "id": "hostile.space.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "hostile_space.speech", 0]}}],
+      "next": "hostile"
+    },
+    {
+      "id": "salvage",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "attempted_salvage", true]
+      },
+      "next": "salvage.greeting",
+      "save_as": "salvage"
+    },
+    {
+      "id": "salvage.greeting",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": ["story", "DRUUGE_SALVAGE", [["SALVAGE_YOUR_SHIP_1"], ["SALVAGE_YOUR_SHIP_2"]], "repeat_last"]
+      },
+      "next": "salvage.greeting.speech",
+      "save_as": "salvage_greeting"
+    },
+    {
+      "id": "salvage.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "salvage_greeting.speech", 0]}}],
+      "next": "hostile"
+    },
+    {
+      "id": "space.entry",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": ["story", "DRUUGE_VISITS", [["INIT_SPACE_HELLO"], ["SUBSEQUENT_SPACE_HELLO"]], "repeat_last"]
+      },
+      "next": "space.entry.speech",
+      "save_as": "space_entry"
+    },
+    {
+      "id": "space.entry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "space_entry.speech", 0]}}],
+      "next": "space.menu"
+    },
+    {
+      "id": "space.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "whats_up_in_space",
+          "text": "whats_up_in_space",
+          "when": {"get": ["local", "space_info", true]},
+          "next": "space.info"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["druuge", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye"
         }
       ]
     },
     {
-      "id": "farewell",
-      "kind": "dialogue",
-      "variants": [{"speech": []}],
-      "next": "end"
+      "id": "space.info",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "DRUUGE_SPACE_INFO",
+          [
+            ["GENERAL_INFO_IN_SPACE_1"],
+            ["GENERAL_INFO_IN_SPACE_2"],
+            ["GENERAL_INFO_IN_SPACE_3"],
+            ["GENERAL_INFO_IN_SPACE_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "next": "space.info.speech",
+      "save_as": "space_info"
     },
     {
-      "id": "end",
-      "kind": "end",
-      "outcome": "native_segue"
+      "id": "space.info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "space_info.speech", 0]}}],
+      "next": "space.disable"
+    },
+    {
+      "id": "space.disable",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "space_info", false]
+      },
+      "next": "space.menu",
+      "save_as": "space_disable"
+    },
+    {
+      "id": "bomb.entry",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"eq": [{"get": ["story", "BOMB_VISITS", 0]}, 0]}}, "next": "bomb.return"}],
+      "otherwise": "bomb.first"
+    },
+    {
+      "id": "bomb.return",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SUBSEQ_BOMB_WORLD_HELLO"]}],
+      "next": "bomb.menu"
+    },
+    {
+      "id": "bomb.first",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "BOMB_VISITS", 1]
+      },
+      "next": "bomb.first.speech",
+      "save_as": "bomb_first"
+    },
+    {
+      "id": "bomb.first.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INIT_BOMB_WORLD_HELLO"]}],
+      "next": "bomb.menu"
+    },
+    {
+      "id": "bomb.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_at_bomb_planet",
+          "text": "whats_up_at_bomb_planet",
+          "when": {"eq": [{"get": ["story", "BOMB_VISITS", 0]}, 1]},
+          "next": "bomb.info"
+        },
+        {
+          "id": "we_get_bomb",
+          "text": "we_get_bomb",
+          "when": {"eq": [{"get": ["story", "BOMB_VISITS", 0]}, 2]},
+          "next": "bomb.no"
+        },
+        {
+          "id": "then_we_take_bomb",
+          "text": "then_we_take_bomb",
+          "when": {"ge": [{"get": ["story", "BOMB_VISITS", 0]}, 3]},
+          "next": "bomb.fight"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye"
+        }
+      ]
+    },
+    {
+      "id": "bomb.info",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "BOMB_VISITS", 2]
+      },
+      "next": "bomb.info.speech",
+      "save_as": "bomb_info"
+    },
+    {
+      "id": "bomb.info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GEN_INFO_AT_BOMB_PLANET"]}],
+      "next": "bomb.menu"
+    },
+    {
+      "id": "bomb.no",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "BOMB_VISITS", 3]
+      },
+      "next": "bomb.no.speech",
+      "save_as": "bomb_no"
+    },
+    {
+      "id": "bomb.no.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_GET_BOMB"]}],
+      "next": "bomb.menu"
+    },
+    {
+      "id": "bomb.fight",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FIGHT_FOR_BOMB"]}],
+      "next": "hostile"
+    },
+    {
+      "id": "home.entry",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "DRUUGE_HOME_VISITS",
+          [
+            ["INITIAL_TRADE_WORLD_HELLO"],
+            ["SSQ_TRADE_WORLD_HELLO_1"],
+            ["SSQ_TRADE_WORLD_HELLO_2"],
+            ["SSQ_TRADE_WORLD_HELLO_3"],
+            ["SSQ_TRADE_WORLD_HELLO_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "next": "home.entry.speech",
+      "save_as": "home_entry"
+    },
+    {
+      "id": "home.entry.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "home_entry.speech", 0]}}],
+      "next": "home.disclaimer"
+    },
+    {
+      "id": "home.disclaimer",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "ATTACKED_DRUUGE", 0]}, 0]}},
+              {"not": {"not": {"eq": [{"get": ["story", "DRUUGE_DISCLAIMER", 0]}, 0]}}}
+            ]
+          },
+          "next": "home.disclaimer.set"
+        }
+      ],
+      "otherwise": "scan.maidens"
+    },
+    {
+      "id": "home.disclaimer.set",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "DRUUGE_DISCLAIMER", 1]
+      },
+      "next": "scan.maidens",
+      "save_as": "home_disclaimer_set"
+    },
+    {
+      "id": "scan.maidens",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "MAIDENS_ON_SHIP", 0]}, 0]}},
+              {"not": {"not": {"eq": [{"get": ["story", "SCANNED_MAIDENS", 0]}, 0]}}}
+            ]
+          },
+          "next": "scan.maidens.set"
+        }
+      ],
+      "otherwise": "scan.fragments"
+    },
+    {
+      "id": "scan.maidens.set",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "SCANNED_MAIDENS", 1]
+      },
+      "next": "scan.maidens.speech",
+      "save_as": "scan_maidens_set"
+    },
+    {
+      "id": "scan.maidens.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SCAN_MAIDENS"]}],
+      "next": "scan.fragments"
+    },
+    {
+      "id": "scan.fragments",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"eq": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]}},
+                  {"not": {"eq": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]}},
+                  {"not": {"eq": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}}
+                ]
+              },
+              {"not": {"not": {"eq": [{"get": ["story", "SCANNED_FRAGMENTS", 0]}, 0]}}}
+            ]
+          },
+          "next": "scan.fragments.set"
+        }
+      ],
+      "otherwise": "scan.caster"
+    },
+    {
+      "id": "scan.fragments.set",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "SCANNED_FRAGMENTS", 1]
+      },
+      "next": "scan.fragments.speech",
+      "save_as": "scan_fragments_set"
+    },
+    {
+      "id": "scan.fragments.speech",
+      "kind": "decision",
+      "branches": [{"when": {"lt": [{"get": ["story", "FRAGMENTS_BOUGHT", 0]}, 2]}, "next": "scan.fragments.want"}],
+      "otherwise": "scan.fragments.enough"
+    },
+    {
+      "id": "scan.fragments.want",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SCAN_FRAGMENTS"]}],
+      "next": "scan.caster"
+    },
+    {
+      "id": "scan.fragments.enough",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ENOUGH_FRAGMENTS"]}],
+      "next": "scan.caster"
+    },
+    {
+      "id": "scan.caster",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "BURV_BROADCASTERS_ON_SHIP", 0]}, 0]}},
+              {"not": {"not": {"eq": [{"get": ["story", "SCANNED_CASTER", 0]}, 0]}}}
+            ]
+          },
+          "next": "scan.caster.set"
+        }
+      ],
+      "otherwise": "scan.spawner"
+    },
+    {
+      "id": "scan.caster.set",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "SCANNED_CASTER", 1]
+      },
+      "next": "scan.caster.speech",
+      "save_as": "scan_caster_set"
+    },
+    {
+      "id": "scan.caster.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SCAN_DRUUGE_CASTER"]}],
+      "next": "scan.spawner"
+    },
+    {
+      "id": "scan.spawner",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"not": {"eq": [{"get": ["story", "PORTAL_SPAWNER_ON_SHIP", 0]}, 0]}},
+              {"not": {"not": {"eq": [{"get": ["story", "SCANNED_SPAWNER", 0]}, 0]}}}
+            ]
+          },
+          "next": "scan.spawner.set"
+        }
+      ],
+      "otherwise": "home.menu"
+    },
+    {
+      "id": "scan.spawner.set",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "SCANNED_SPAWNER", 1]
+      },
+      "next": "scan.spawner.speech",
+      "save_as": "scan_spawner_set"
+    },
+    {
+      "id": "scan.spawner.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SCAN_ARILOU_SPAWNER"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "home.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "whats_up_at_trade_world",
+          "text": "whats_up_at_trade_world",
+          "when": {"get": ["local", "home_info", true]},
+          "next": "home.info"
+        },
+        {
+          "id": "want_to_sell",
+          "text": "want_to_sell",
+          "when": true,
+          "next": "sell.entry"
+        },
+        {
+          "id": "want_to_buy",
+          "text": "want_to_buy",
+          "when": true,
+          "next": "buy.route"
+        },
+        {
+          "id": "bye",
+          "text": "bye",
+          "when": true,
+          "next": "bye"
+        }
+      ]
+    },
+    {
+      "id": "home.info",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "DRUUGE_HOME_INFO",
+          [
+            ["GEN_INFO_AT_TRADE_WORLD_1"],
+            ["GEN_INFO_AT_TRADE_WORLD_2"],
+            ["GEN_INFO_AT_TRADE_WORLD_3"],
+            ["GEN_INFO_AT_TRADE_WORLD_4"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "next": "home.info.speech",
+      "save_as": "home_info"
+    },
+    {
+      "id": "home.info.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "home_info.speech", 0]}}],
+      "next": "home.discovery"
+    },
+    {
+      "id": "home.discovery",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "all": [
+              {"eq": [{"get": ["result", "home_info.index", 0]}, 2]},
+              {"lt": [{"get": ["story", "KNOW_ABOUT_SHATTERED", 0]}, 2]}
+            ]
+          },
+          "next": "home.discover"
+        }
+      ],
+      "otherwise": "home.disable"
+    },
+    {
+      "id": "home.discover",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "KNOW_ABOUT_SHATTERED", 2]
+      },
+      "next": "home.disable",
+      "save_as": "home_discover"
+    },
+    {
+      "id": "home.disable",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "home_info", false]
+      },
+      "next": "home.menu",
+      "save_as": "home_disable"
+    },
+    {
+      "id": "bye",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 128]}, 0]},
+          "next": "bye.slavery"
+        },
+        {
+          "when": {"ne": [{"bit_and": [{"get": ["story", "GLOBAL_FLAGS_AND_DATA", 0]}, 64]}, 0]},
+          "next": "bye.bomb"
+        }
+      ],
+      "otherwise": "bye.space"
+    },
+    {
+      "id": "bye.slavery",
+      "kind": "action",
+      "action": {
+        "action": "handlers.prepare_report",
+        "args": ["druuge.slavery", {"literal": {}}]
+      },
+      "next": "bye.home",
+      "save_as": "bye_slavery"
+    },
+    {
+      "id": "bye.home",
+      "kind": "dialogue",
+      "variants": [
+        {
+          "when": {"eq": [{"get": ["story", "DRUUGE_HOME_VISITS", 0]}, 1]},
+          "speech": ["BYE_FROM_TRADE_WORLD_1"]
+        },
+        {
+          "speech": ["BYE_FROM_TRADE_WORLD_2"]
+        }
+      ],
+      "next": "peace"
+    },
+    {
+      "id": "bye.bomb",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FROM_BOMB_PLANET"]}],
+      "next": "peace"
+    },
+    {
+      "id": "bye.space",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_FROM_SPACE"]}],
+      "next": "peace"
+    },
+    {
+      "id": "buy.route",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["story", "KNOW_DRUUGE_SLAVERS", 0]}, 3]}, "next": "buy.entry"}],
+      "otherwise": "explain.entry"
+    },
+    {
+      "id": "explain.entry",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_SELL_FOR_CREW"]}],
+      "next": "explain.menu"
+    },
+    {
+      "id": "explain.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "isnt_this_slave_trading",
+          "text": "isnt_this_slave_trading",
+          "when": {"eq": [{"get": ["story", "KNOW_DRUUGE_SLAVERS", 0]}, 0]},
+          "next": "explain.slaves"
+        },
+        {
+          "id": "what_do_with_crew",
+          "text": "what_do_with_crew",
+          "when": {"eq": [{"get": ["story", "KNOW_DRUUGE_SLAVERS", 0]}, 1]},
+          "next": "explain.crew"
+        },
+        {
+          "id": "i_will_never_trade_crew",
+          "text": "i_will_never_trade_crew",
+          "when": true,
+          "next": "explain.no"
+        },
+        {
+          "id": "im_ready_to_buy",
+          "text": "im_ready_to_buy",
+          "when": true,
+          "next": "buy.entry"
+        }
+      ]
+    },
+    {
+      "id": "explain.slaves",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "KNOW_DRUUGE_SLAVERS", 1]
+      },
+      "next": "explain.slaves.speech",
+      "save_as": "explain_slaves"
+    },
+    {
+      "id": "explain.slaves.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_SLAVE_TRADE"]}],
+      "next": "explain.menu"
+    },
+    {
+      "id": "explain.crew",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "KNOW_DRUUGE_SLAVERS", 2]
+      },
+      "next": "explain.crew.speech",
+      "save_as": "explain_crew"
+    },
+    {
+      "id": "explain.crew.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_FUN"]}],
+      "next": "explain.menu"
+    },
+    {
+      "id": "explain.no",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOUR_LOSS"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "buy.entry",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "KNOW_DRUUGE_SLAVERS", 3]
+      },
+      "next": "buy.ready",
+      "save_as": "buy_entry"
+    },
+    {
+      "id": "buy.ready",
+      "kind": "dialogue",
+      "variants": [{"speech": ["READY_TO_SELL"]}],
+      "next": "buy.sphere"
+    },
+    {
+      "id": "buy.sphere",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"not": {"eq": [{"get": ["story", "ROSY_SPHERE", 0]}, 0]}}}, "next": "buy.sphere.speech"}],
+      "otherwise": "buy.art2"
+    },
+    {
+      "id": "buy.sphere.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_SPHERE"]}],
+      "next": "buy.art2"
+    },
+    {
+      "id": "buy.art2",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"not": {"eq": [{"get": ["story", "ARTIFACT_2_ON_SHIP", 0]}, 0]}}}, "next": "buy.art2.speech"}],
+      "otherwise": "buy.art3"
+    },
+    {
+      "id": "buy.art2.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_ART_1"]}],
+      "next": "buy.art3"
+    },
+    {
+      "id": "buy.art3",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"not": {"eq": [{"get": ["story", "ARTIFACT_3_ON_SHIP", 0]}, 0]}}}, "next": "buy.art3.speech"}],
+      "otherwise": "buy.ships"
+    },
+    {
+      "id": "buy.art3.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAVE_ART_2"]}],
+      "next": "buy.ships"
+    },
+    {
+      "id": "buy.ships",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SHIPS_AND_FUEL"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "buy.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "buy_druuge_ship",
+          "text": "buy_druuge_ship",
+          "when": true,
+          "next": "purchase.ship"
+        },
+        {
+          "id": "buy_rosy_sphere",
+          "text": "buy_rosy_sphere",
+          "when": {"not": {"not": {"eq": [{"get": ["story", "ROSY_SPHERE", 0]}, 0]}}},
+          "next": "purchase.rosy_sphere"
+        },
+        {
+          "id": "buy_art_1",
+          "text": "buy_art_1",
+          "when": {"not": {"not": {"eq": [{"get": ["story", "ARTIFACT_2_ON_SHIP", 0]}, 0]}}},
+          "next": "purchase.artifact_2"
+        },
+        {
+          "id": "buy_art_2",
+          "text": "buy_art_2",
+          "when": {"not": {"not": {"eq": [{"get": ["story", "ARTIFACT_3_ON_SHIP", 0]}, 0]}}},
+          "next": "purchase.artifact_3"
+        },
+        {
+          "id": "buy_fuel",
+          "text": "buy_fuel",
+          "when": true,
+          "next": "purchase.fuel"
+        },
+        {
+          "id": "done_buying",
+          "text": "done_buying",
+          "when": true,
+          "next": "buy.done"
+        }
+      ]
+    },
+    {
+      "id": "purchase.ship",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["druuge", "ship", 1]
+      },
+      "next": "purchase.ship.check",
+      "save_as": "purchase"
+    },
+    {
+      "id": "purchase.ship.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "ok"]},
+          "next": "purchased.ship"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "no_credit"]},
+          "next": "buy.no_credit"
+        }
+      ],
+      "otherwise": "buy.no_room"
+    },
+    {
+      "id": "purchased.ship",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BOUGHT_SHIP"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "purchase.rosy_sphere",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["druuge", "rosy_sphere", 1]
+      },
+      "next": "purchase.rosy_sphere.check",
+      "save_as": "purchase"
+    },
+    {
+      "id": "purchase.rosy_sphere.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "ok"]},
+          "next": "purchased.rosy_sphere"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "no_credit"]},
+          "next": "buy.no_credit"
+        }
+      ],
+      "otherwise": "buy.no_room"
+    },
+    {
+      "id": "purchased.rosy_sphere",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BOUGHT_SPHERE"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "purchase.artifact_2",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["druuge", "artifact_2", 1]
+      },
+      "next": "purchase.artifact_2.check",
+      "save_as": "purchase"
+    },
+    {
+      "id": "purchase.artifact_2.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "ok"]},
+          "next": "purchased.artifact_2"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "no_credit"]},
+          "next": "buy.no_credit"
+        }
+      ],
+      "otherwise": "buy.no_room"
+    },
+    {
+      "id": "purchased.artifact_2",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BOUGHT_ART_1"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "purchase.artifact_3",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["druuge", "artifact_3", 1]
+      },
+      "next": "purchase.artifact_3.check",
+      "save_as": "purchase"
+    },
+    {
+      "id": "purchase.artifact_3.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "ok"]},
+          "next": "purchased.artifact_3"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "no_credit"]},
+          "next": "buy.no_credit"
+        }
+      ],
+      "otherwise": "buy.no_room"
+    },
+    {
+      "id": "purchased.artifact_3",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BOUGHT_ART_2"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "purchase.fuel",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["druuge", "fuel", 1]
+      },
+      "next": "purchase.fuel.check",
+      "save_as": "purchase"
+    },
+    {
+      "id": "purchase.fuel.check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "ok"]},
+          "next": "purchased.fuel"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "purchase.code", 0]}, "no_credit"]},
+          "next": "buy.no_credit"
+        }
+      ],
+      "otherwise": "buy.no_room"
+    },
+    {
+      "id": "purchased.fuel",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BOUGHT_FUEL"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "buy.no_credit",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ENOUGH_CREW"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "buy.no_room",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ENOUGH_ROOM"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "buy.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DONE_BUYING"]}],
+      "next": "home.menu"
+    },
+    {
+      "id": "sell.entry",
+      "kind": "dialogue",
+      "variants": [{"speech": ["READY_TO_BUY"]}],
+      "next": "sell.menu"
+    },
+    {
+      "id": "sell.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "sell_maidens",
+          "text": "sell_maidens",
+          "when": {"not": {"eq": [{"get": ["story", "MAIDENS_ON_SHIP", 0]}, 0]}},
+          "next": "sell.maidens"
+        },
+        {
+          "id": "sell_fragments",
+          "text": "sell_fragments",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {"not": {"eq": [{"get": ["story", "EGG_CASE0_ON_SHIP", 0]}, 0]}},
+                  {"not": {"eq": [{"get": ["story", "EGG_CASE1_ON_SHIP", 0]}, 0]}},
+                  {"not": {"eq": [{"get": ["story", "EGG_CASE2_ON_SHIP", 0]}, 0]}}
+                ]
+              },
+              {"lt": [{"get": ["story", "FRAGMENTS_BOUGHT", 0]}, 2]}
+            ]
+          },
+          "next": "sell.fragments"
+        },
+        {
+          "id": "sell_caster",
+          "text": "sell_caster",
+          "when": {"not": {"eq": [{"get": ["story", "BURV_BROADCASTERS_ON_SHIP", 0]}, 0]}},
+          "next": "sell.caster"
+        },
+        {
+          "id": "sell_spawner",
+          "text": "sell_spawner",
+          "when": {"not": {"eq": [{"get": ["story", "PORTAL_SPAWNER_ON_SHIP", 0]}, 0]}},
+          "next": "sell.spawner"
+        },
+        {
+          "id": "done_selling",
+          "text": "done_selling",
+          "when": true,
+          "next": "sell.done"
+        }
+      ]
+    },
+    {
+      "id": "sell.maidens",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "sale_item", "maidens"]
+      },
+      "next": "sell.offer.check",
+      "save_as": "sell_maidens"
+    },
+    {
+      "id": "sell.fragments",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "sale_item", "fragments"]
+      },
+      "next": "sell.offer.check",
+      "save_as": "sell_fragments"
+    },
+    {
+      "id": "sell.caster",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "sale_item", "caster"]
+      },
+      "next": "sell.offer.check",
+      "save_as": "sell_caster"
+    },
+    {
+      "id": "sell.spawner",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "sale_item", "spawner"]
+      },
+      "next": "sell.offer.check",
+      "save_as": "sell_spawner"
+    },
+    {
+      "id": "sell.offer.check",
+      "kind": "decision",
+      "branches": [{"when": {"not": {"not": {"eq": [{"get": ["story", "ROSY_SPHERE", 0]}, 0]}}}, "next": "sell.offer"}],
+      "otherwise": "sell.regular"
+    },
+    {
+      "id": "sell.offer",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRADE_FOR_SPHERE"]}],
+      "next": "sell.offer.menu"
+    },
+    {
+      "id": "sell.offer.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "no_way",
+          "text": "no_way",
+          "when": true,
+          "next": "sell.no"
+        },
+        {
+          "id": "way",
+          "text": "way",
+          "when": true,
+          "next": "sell.yes"
+        },
+        {
+          "id": "whats_the_sphere_again",
+          "text": "whats_the_sphere_again",
+          "when": {"get": ["local", "sphere_question", true]},
+          "next": "sell.sphere"
+        }
+      ]
+    },
+    {
+      "id": "sell.sphere",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "sphere_question", false]
+      },
+      "next": "sell.sphere.speech",
+      "save_as": "sell_sphere"
+    },
+    {
+      "id": "sell.sphere.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SPHERE_IS"]}],
+      "next": "sell.offer.menu"
+    },
+    {
+      "id": "sell.no",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_REGULAR_DEAL"]}],
+      "next": "sell.regular"
+    },
+    {
+      "id": "sell.yes",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_HERES_SPHERE"]}],
+      "next": "sell.exchange.sphere"
+    },
+    {
+      "id": "sell.regular",
+      "kind": "action",
+      "action": {
+        "action": "trade.sell",
+        "args": ["druuge", {"get": ["local", "sale_item", 0]}, "regular"]
+      },
+      "next": "sell.outcome",
+      "save_as": "sale"
+    },
+    {
+      "id": "sell.exchange.sphere",
+      "kind": "action",
+      "action": {
+        "action": "trade.sell",
+        "args": ["druuge", {"get": ["local", "sale_item", 0]}, "sphere"]
+      },
+      "next": "sell.outcome",
+      "save_as": "sale"
+    },
+    {
+      "id": "sell.outcome",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["result", "sale.code", 0]}, "ok"]}, "next": "sell.result"}],
+      "otherwise": "sell.failed"
+    },
+    {
+      "id": "sell.result",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "sale.speech", 0]}}],
+      "next": "sell.menu"
+    },
+    {
+      "id": "sell.failed",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_ENOUGH_ROOM"]}],
+      "next": "sell.menu"
+    },
+    {
+      "id": "sell.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DONE_SELLING"]}],
+      "next": "home.menu"
     }
-  ]
+  ],
+  "locals": {"trade_enabled": true, "sphere_question": true, "space_info": true, "home_info": true, "attempted_salvage": false},
+  "markets": {
+    "druuge": {
+      "ship": {"crew": 100},
+      "rosy_sphere": {"crew": 100},
+      "artifact_2": {"crew": 100},
+      "artifact_3": {"crew": 100},
+      "fuel": {"crew": 10, "amount": 10},
+      "sales": {
+        "maidens": {
+          "asset": "items.maidens",
+          "ships": 6,
+          "fill_fuel": false,
+          "speech": "BOUGHT_MAIDENS"
+        },
+        "fragments": {
+          "asset": "items.egg_case_0",
+          "ships": 1,
+          "fill_fuel": false,
+          "speech": "BOUGHT_FRAGMENTS"
+        },
+        "caster": {
+          "asset": "items.burvix_broadcaster",
+          "ships": 0,
+          "fill_fuel": true,
+          "speech": "BOUGHT_CASTER"
+        },
+        "spawner": {
+          "asset": "items.portal_spawner",
+          "ships": 3,
+          "fill_fuel": true,
+          "speech": "BOUGHT_SPAWNER"
+        }
+      }
+    }
+  }
 }

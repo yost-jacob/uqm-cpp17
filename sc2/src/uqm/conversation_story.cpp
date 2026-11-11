@@ -3,6 +3,16 @@
 #include "globdata.h"
 #include <algorithm>
 namespace uqm {
+void completeConversationPolicy(StoryState &story, std::string_view resource, bool hostile, bool salvage) {
+    if (resource == "comm.druuge.dialogue" && hostile && !salvage && !story.readNamed("DRUUGE_MANNER") && !story.readNamed("ATTACKED_DRUUGE")) {
+        story.setNamed("ATTACKED_DRUUGE", 1);
+        story.setNamed("DRUUGE_VISITS", 0);
+    }
+    if (resource == "comm.starbase.dialogue") {
+        story.setNamed("MOONBASE_ON_SHIP", 0);
+        if (story.readNamed("CHMMR_BOMB_STATE") == 2) story.setNamed("CHMMR_BOMB_STATE", 3);
+    }
+}
 void validateMyconRamblePolicy(const MyconRamblePolicy &policy) {
     constexpr unsigned capacity = 1u << (END_MYCON_RAMBLE - MYCON_RAMBLE + 1);
     constexpr unsigned knowledgeMaximum =

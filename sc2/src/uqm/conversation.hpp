@@ -3,7 +3,7 @@
 #include "conversation_animation.hpp"
 #include "conversation_resources.hpp"
 #include "conversation_story.hpp"
-#include "dialogue/legacy_turn.hpp"
+#include "dialogue/live_definition.hpp"
 #include "game_mode.hpp"
 #include "sounds.h"
 #include "libs/sound/trackplayer.h"
@@ -122,7 +122,6 @@ private:
     void queueGraphSpeech();
     COUNT graphPhrase(const std::string &name) const;
     void loadGraph(); // Validate the live JSON before invoking any story callbacks.
-    dialogue::Result runNativeTurn(std::optional<std::size_t> selection);
     bool finishGraphSpeech(); // Playback completion, independent of replay controls.
     void finishScript();
     void stopPlayback();
@@ -148,9 +147,10 @@ private:
     std::deque<std::string> graphSpeechInsertions_; // Stable through retained replay tracks.
     std::vector<std::string> graphResponseIds_, graphResponseText_;
     std::unordered_map<std::string, COUNT> graphPhrases_;
-    bool nativeGraph_ = true, myconMadeChoice_ = false;
+    std::optional<int> previousStatusMode_;
+    bool myconMadeChoice_ = false;
     std::optional<MyconRamblePolicy> myconRamble_;
-    std::unique_ptr<dialogue::LegacyTurnState> graphState_;
+    std::unique_ptr<dialogue::State> graphState_;
     std::unique_ptr<dialogue::Conversation> graph_; // Destroy before borrowed state/resources.
     std::optional<ConversationBinding> binding_; // Unbind before owned script storage dies.
 };

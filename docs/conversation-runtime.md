@@ -1,151 +1,82 @@
-# Live conversation graph integration
+# Live conversation graphs
 
-Both CMake/Ninja and the legacy build compile the shared C++17 engine in
-`sc2/src/uqm/dialogue`. `ConversationRuntime` owns its state adapter and graph.
-Its resources, script binding, renderer and queued speech remain alive for the
-whole visit. Attack-without-dialogue still skips the intro, then runs the native
-post/uninit policy. The dispatcher still owns encounter/conversation handoff.
+The game and legacy build share the C++17 engine in `sc2/src/uqm/dialogue`.
+`ConversationRuntime` owns its state adapter, graph, resources, response strings,
+queued speech and animation state for one visit. ConversationMode uses the normal
+child-mode lifecycle; gameplay effects are explicit actions, not destructors.
 
-## What runs from JSON
+## Live content
 
-`sc2/content/base/conversations/comm.*.dialogue.json` contains 27 live graph
-definitions and all 3,451 phrase records. The descriptor's existing resource key
-selects the file. Names and indexed phrases are validated against its native
-string table, preserving compiled enums. `node_count` includes compact expansion.
-The loader resolves and binds the graph before running story code.
+All 27 `sc2/content/base/conversations/comm.*.dialogue.json` definitions are
+**graph-owned**, including Druuge, Melnorme and operational starbase. Their 3,451
+phrase records preserve existing indexed enums, voice clips and subtitle metadata.
+The three final native story/menu bodies and the `handlers.legacy_turn` bridge
+are removed. Resource descriptors, bounded specialized operations and presentation
+cues remain native. No JSON instruction executes arbitrary C or controls playback
+through a whole-turn callback.
 
-The three remaining compatibility envelopes use an action for intro, a silent
-menu/farewell decision, and compact responses with single-execution actions. The eight response slots preserve
-native registration order and constructed strings. `handlers.legacy_turn` invokes
-only the callback currently offered in that slot; mismatched script IDs, invalid
-slots, missing handlers and bad data throw. A failed operation cannot be retried
-through the same graph. The final node completes after queued farewell speech;
-native `getSegue` still determines combat/victory/defeat. Replay does not rerun
-story actions. Load/quit exits retain the existing uninit rules.
+Graphs contain dialogue, decision, action and terminal nodes. Conditions bind const
+state access. Explicit action results select graph edges; replay/redraw never
+reexecutes actions. Cursors follow links resolved during loading. Visit-local topic
+flags permit loops and repeated questions without an additional script runtime.
+Unknown operations/data fail rather than silently succeeding.
 
-## Editing text
+The presenter queues phrase IDs, composed text/name insertions and number speech.
+Responses use graph edge identity and owned text, including constructed answers;
+there is no native response-slot bridge. End-node labels describe graph outcomes;
+actual encounter outcome changes are explicit `encounter.set_outcome` actions.
 
-Edit a phrase's `text`, leaving `id`, `index` and `original_text_hash` alone. Only
-changed text replaces the runtime entry. An unchanged base-language snapshot does
-not overwrite translated addons or alter legacy whitespace. Names, clips and
-voice timestamps stay attached to their original entries. Edited text may no
-longer match recorded speech; mute speech or provide a matching addon as desired.
-The hash is a baseline fingerprint for detecting edits, not a security checksum.
+## Text editing and validation
 
-The legacy `.txt`/resource tables still supply names and optional clip/timestamp
-metadata. This pass intentionally does not delete them. Mod distributions must
-ship the matching JSON files alongside that content.
+Edit a phrase's `text`, retaining its `id`, `index` and `original_text_hash`.
+Changed text replaces the loaded entry. Unchanged base-language snapshots leave
+translated addons and original whitespace intact. Names, clips and timestamps
+remain attached to their entries; edited dialogue may require changed recordings
+or muted speech. The hash detects edits, not malicious tampering.
 
-`python3 tools/conversation_runtime_data.py` regenerates pristine snapshots from
-the source scripts and phrase tables, overwriting local text edits. `--check`
-compares shipped snapshots to their sources. These tools are developer-only;
-pycparser is not a runtime or build dependency.
+The descriptor resource key selects the JSON file. Metadata, graph links, actions
+and static presentation cues validate before story execution. The old text/resource
+tables remain the source of localization and clip metadata; there is no duplicated
+mutable runtime string store.
 
-## Remaining work
+`python3 tools/conversation_runtime_data.py --check` verifies all snapshots.
+Without `--check` it refreshes indexed phrase metadata while preserving authored
+graph topology/actions, overwriting local text edits. Missing graphs are errors;
+it no longer generates native-handler envelopes. Developer-only source indexing
+uses pycparser; the game/build has no Python/parser dependency.
 
-The probe, Kohr-Ah, Ur-Quan, Arilou, Ilwrath, Mycon, Umgah, Supox, Yehat rebels,
-Shofixti, Yehat, Pkunk, Slylandro homeworld, Spathi, Utwig, VUX, Talking Pet, Orz,
-Syreen, Spathi council, Chmmr, Zoq-Fot-Pik, Thraddash and initial Commander Hayes
-scripts now use general state actions, conditions and dialogue nodes. Their old C callback bodies were removed. Probe coordinate
-number-speech, Ur-Quan hypnosis fade and native resource/lifecycle configuration
-remain explicit special cases. The other three C story bodies have **not** been
-converted to general state actions and conditions. Calling them through an explicit handler is a compatibility boundary,
-not a claim that the old logic was deleted. Hayes/Melnorme's hand-authored design
-graphs have known behavior/timing differences and unimplemented native contracts;
-those drafts are not enabled in the game.
+## State and specialized operations
 
-To migrate a script completely, replace its native-turn nodes with general
-state/condition/action nodes, implement its bounded specialized operations, and
-feed its speech/presentation cues through the live presenter. Retain the source
-response order, visit-local topic pruning, state mutation timing, dynamic number
-speech and voice callbacks. Delete each obsolete native body only after that
-replacement is connected and checked. General `State` methods deliberately throw
-until a concrete adapter implements them; they never report fake success.
+`CampaignDialogueState` borrows PlayerEntity/StoryState, Inventory and CampaignClock.
+Named story fields use checked accessors over the existing save layout, alongside
+native typed access. Inventory owns Fleet and SIS; scalar/item transactions and
+narrative batches stay separate. Unknown fields and invalid ranges throw.
+See [package actions](design/conversation/package-actions.md).
 
-Tests cover every live graph and response slot, intro/farewell timing, constructed
-text, stale callbacks, partial failures, phrase metadata and translation-safe text
-imports. Builds/tests are not a substitute for playing all story branches.
+Merchant offers, precise fuel, rescue plans and report acknowledgements are
+implemented behind bounded operations. See [commerce and reports](conversation-commerce.md)
+for ownership, failure, timing and compatibility contracts. All ordinary dialogue
+branches/menus remain JSON. The combined Hayes/Melnorme design examples remain
+reference experiments rather than the production content files.
 
-## General state and presentation path
+Mycon cyclic ramble, probe coordinate speech, Ur-Quan hypnosis and Chmmr refit retain
+explicit bounded native policies. The initial Commander and operational starbase
+have distinct phrase banks. Their resource/lifecycle configuration is not treated
+as another story engine.
 
-The live adapter borrows the session's `StoryState`. JSON names use checked
-`readNamed`/`setNamed` accessors over the existing save layout; typed C++ callers
-retain their enum overloads. The name index covers 447 fields and is generated by
-`tools/story_field_names.py` (or verified with `--check`). Unknown names and values
-outside the packed field range throw without changing a field. Queries use a const
-reference; actions use a mutable reference. No new save format is introduced.
+## Media and cancellation
 
-Encounter context is snapshotted at entry (outtakes, colony/probe/Sa-Matra group).
-Pure graph dialogue resolves phrase names to native entries, queues their recorded
-speech and keeps response strings alive in the runtime. Empty menu nodes do not
-restart retained replay tracks. Selected response IDs follow graph connections;
-there is no C callback pointer for these graph-owned menus. Special native speech
-keeps number formatting/clip stitching in the existing media layer.
+Standalone phrases may specify a registered `on_start` cue. Variants may specify
+ordered `presentation.before`/`after` cues. Cues change presentation, never story
+flags, RNG or graph routing. After cues run once at the playback boundary; replay
+can repeat a phrase-start cue. Unknown cues/phases and cues inside spliced
+compositions are rejected. Split segments where separate timing is needed.
 
-The migrated JSON files are the source of truth; no parallel Python or C script
-reconstructs their story logic. The text metadata generator preserves these graphs
-and refreshes phrase snapshots/counts only. Tests cover visit-local pruning, the
-missing third Kohr-Ah pleading clip, surrender defeat, probe destruction and
-hypnosis outcomes.
+This covers race speaker changes, palette transitions, Talking Pet strobe, VUX
+beast escape and the starbase scientist segment. General animation composition is
+still issue #31; device/render/audio/input service extraction is issue #15.
 
-Arilou also preserves homeworld topic prioritization and the delayed Umgah event.
-Its repeated angry-homeworld leave answer keeps a readable label instead of the
-legacy blank label; selection and consequences remain the same. This deliberate
-cosmetic difference is recorded in that definition.
-
-The shared live state adapter now covers fleet presence/count/capacity, escort
-creation, alliances, map reveals, biomass changes and registered calendar events.
-Date-sensitive dialogue receives a read-only encounter-date snapshot. Mycon's
-coupled cyclic ramble bookkeeping remains a bounded `handlers.prepare_report`
-operation whose phrase cycle and discovery threshold are defined in JSON.
-Yehat farewell randomness executes once on selection; replay cannot reroll it.
-Yehat rebel gifts and cavalry are delivered only after their speech completes.
-Shofixti's two visually identical legacy insults have separate graph response IDs,
-so both retain their original effects without ambiguous cursor traversal.
-
-## Timed media cues
-
-A standalone speech phrase can specify `on_start`, for example
-`{"phrase":"FOOL_AIEE1","on_start":"vux.beast_escape"}`. The native player invokes
-that registered callback at phrase start, including replay. A variant can also
-specify `presentation: {"before":"cue.name", "after":"cue.name"}`. A phase also accepts an ordered array of cue names. Before cues
-run when the new entry is queued; after cues run once when that entry finishes,
-before its graph successor. Redrawing and replay completion do not reapply after
-cues. These callbacks change presentation only: they never write story fields,
-consume RNG or select graph edges. All cue names are validated against the native
-resource before any story actions run. Unknown names or phases throw. Cues in
-spliced compositions are rejected; split those into standalone speech phrases.
-
-VUX uses a phrase-start color transition. The Talking Pet uses an after-playback
-strobe. Their former C story functions are deleted; only bounded media callbacks
-and resource/lifecycle configuration remain native.
-
-The three remaining native story bodies are Druuge, Melnorme, and the operational
-starbase. Their graphs and editable text are live, but they still explicitly use
-`handlers.legacy_turn`. Completing them requires the [transaction/report boundary](design/conversation/transactions.md),
-including atomic payment/capacity checks and report queries that do not mutate
-story flags. This checkpoint does not claim those three callbacks were rewritten.
-
-Chmmr's special bomb refit remains a bounded native inventory/transport operation
-behind `ship.configure("chmmr_bomb_refit", {})`. The graph owns its story flags and
-alliance; that operation retains the established SIS module layout, resource
-policy and Earth/starbase transport behavior. The shared adapter now supports
-live fuel/capacity, lander and radioactive-cargo queries, checked gauge adjustments,
-and explicit named-captain recruitment for Fwiffo. Fuel actions use displayed
-units; the native adapter converts to legacy hundredths with a range check.
-
-Media adapters are consolidated in `conversation_cues.cpp`. Zoq-Fot-Pik selects
-speakers from the active descriptor's talk profile; there is no global LastAlien
-variable. The queued callbacks and all before/after cue names are validated for
-the selected resource before story execution.
-
-Converted scripts no longer need empty native intro/post/uninit callbacks. The
-runtime accepts absent hooks and retains only real native post-encounter policy;
-resource destruction remains RAII-owned. A native-turn graph with no native intro
-handler throws rather than calling a null pointer. This removes 65 empty native
-callbacks and their assignments.
-
-A one-time audit against the design-branch source baseline found all 739 distinct
-statically registered response labels represented in the 24 migrated graphs.
-This complements the branch tests; it does not cover every computed response,
-condition combination or interactive media behavior.
+Load/quit requests unwind modes before campaign replacement. Normal completion
+policy is explicit and skipped for departing sessions; resources/bindings use RAII.
+Fatal C/service adapters remain issue #23. This migration does not make sessions
+concurrent, headless or transactionally recoverable after arbitrary exceptions.

@@ -80,11 +80,11 @@ It is data for the following dialogue node, not an instruction to run a handler.
 | `hayes.flagship_analysis` | Count equipment, crew, fuel, storage, allied races and escort strength, then return AnalyzeCondition's explanation/advice. Capability thresholds should be named data rather than hidden magic numbers in a JSON expression. |
 | `melnorme.technology_pitch` | Return the first unowned technology's sale line from the checked-in market catalog. No purchase or grant. Selection/order remains consistent with the subsequent `next_technology` purchase. |
 
-The first five reports still need implementations. They are explicit seams in a
-theoretical engine, not a claim that the existing C logic has been converted.
+The live adapter now implements these report policies with explicit post-playback
+acknowledgement. The combined design examples still describe a reference engine;
+production graphs are separate files.
 Their complete original condition/action catalog remains in
-[Hayes starbase](../catalog/starbas.md). Melnorme commerce/rescue implementations
-likewise remain future native work; [its catalog](../catalog/melnorm.md) is the
+[Hayes starbase](../catalog/starbas.md). Live Melnorme commerce/rescue operations are implemented; [its catalog](../catalog/melnorm.md) is the
 behavior reference.
 
 Hayes's Arilou bulletin gift is especially important: replay must not recruit
@@ -145,3 +145,12 @@ extracted from existing defaults; it is not a tested replacement compositor.
 The save format is unchanged. The live game now shares the core engine; see
 [live migration status](../../../conversation-runtime.md). The Hayes/Melnorme files remain design
 review and executable orchestration experiments, not a ready-to-enable content port.
+
+
+## Production completion
+
+All 27 live scripts are graph-owned, including the final three commerce/report
+scripts. See [commerce and report contracts](../../../conversation-commerce.md)
+for the actual APIs, precise fuel, report tokens, compatibility and presentation
+differences. This document describes the older reference examples; they are not
+the live content definitions. The whole-turn compatibility action has been removed.

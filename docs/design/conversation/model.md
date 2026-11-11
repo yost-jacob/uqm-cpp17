@@ -41,7 +41,7 @@ Conditions are read-only and may be reevaluated. Actions can return failure,
 partial-success or quote data; decision nodes inspect that saved result without
 executing the operation a second time.
 
-There are [21 consolidated domain queries and 27 actions](engine/verbs.md), plus
+There are [21 consolidated domain queries and 26 actions](engine/verbs.md), plus
 typed state reads, comparisons, boolean composition and bounded integer arithmetic.
 The [legacy mapping](engine/legacy-verbs.json) classifies every active call site
 across all 27 scripts. Routing becomes edges; packed encodings become native
@@ -108,11 +108,12 @@ was heard.” Persistent cross-visit history is not implemented by this design.
 - [Native contracts](engine/native-contracts.md): required query/action behavior,
   complex report/trade/rescue seams, units, action results, and draft differences.
 
-The shared runtime is tested with state adapters and live graph fixtures. Probe,
-Kohr-Ah, Ur-Quan and Arilou are graph-owned; 23 scripts still use explicit native-turn
-handlers. The Hayes/Melnorme proposals still need their commerce/report bindings
-and timing audit before replacing those native handlers. See
-[live migration status](../../conversation-runtime.md).
+The shared runtime is tested with native state adapters and live graph fixtures.
+All 27 production conversations are graph-owned, including the final commerce
+and starbase scripts. The Hayes/Melnorme examples above remain design/reference
+files; production definitions and implemented operation/timing contracts are
+covered by [live status](../../conversation-runtime.md) and
+[commerce/report contracts](../../conversation-commerce.md).
 
 The authored JSON can keep a response, its condition, its action and its result
 routes together. The loader expands this compact interaction into the same silent

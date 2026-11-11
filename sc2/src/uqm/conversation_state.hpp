@@ -1,16 +1,18 @@
 #ifndef UQM_CONVERSATION_STATE_HPP
 #define UQM_CONVERSATION_STATE_HPP
-#include "dialogue/legacy_turn.hpp"
+#include "dialogue/live_definition.hpp"
+#include "conversation_commerce.hpp"
+#include "conversation_reports.hpp"
 namespace uqm {
 class PlayerEntity;
 class StoryState;
 class CampaignClock;
 // Borrow the active session's player for one visit. Story reads are const;
 // native fleet/event adapters still require that campaign's C binding to be active.
-class CampaignDialogueState final : public dialogue::LegacyTurnState {
+class CampaignDialogueState final : public dialogue::State {
   public:
     using Report = std::function<dialogue::Result(const std::string &, const dialogue::Json &)>;
-    CampaignDialogueState(PlayerEntity &, CampaignClock &, std::string, Callback, Report, dialogue::Json);
+    CampaignDialogueState(PlayerEntity &, CampaignClock &, Report, dialogue::Json);
     dialogue::Json read(const std::string &, const std::string &) const override;
     dialogue::Result set(const std::string &, const std::string &, const dialogue::Json &) override;
     dialogue::Integer storyMaximum(const std::string &) const override;
@@ -41,6 +43,15 @@ class CampaignDialogueState final : public dialogue::LegacyTurnState {
     dialogue::Result setRelationship(const std::string &, const std::string &) override;
     dialogue::Result revealRace(const std::string &) override;
     dialogue::Result configureShip(const std::string &, const dialogue::Json &) override;
+    bool capability(const std::string &) const override;
+    bool reportAvailable(const std::string &) const override;
+    bool marketAvailable(const std::string &, const std::string &) const override;
+    dialogue::Integer salvageValue() const override;
+    dialogue::Result purchase(const std::string &, const std::string &, const dialogue::Json &) override;
+    dialogue::Result sell(const std::string &, const std::string &, const dialogue::Json &) override;
+    dialogue::Result prepareRescue(const std::string &) override;
+    dialogue::Result acceptRescue(const std::string &) override;
+    dialogue::Result stripShip(const std::string &) override;
     dialogue::Result adjustShip(const std::string &, dialogue::Integer) override;
 
   private:
@@ -49,6 +60,8 @@ class CampaignDialogueState final : public dialogue::LegacyTurnState {
     CampaignClock &clock_;
     Report report_;
     const dialogue::Json context_;
+    ConversationCommerce commerce_;
+    StarbaseReports reports_;
 };
 } // namespace uqm
 #endif

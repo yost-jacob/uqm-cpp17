@@ -21,8 +21,8 @@ and constructs the callable; invocation resolves every value before mutation.
 The live inventory currently registers `crew`, `fuel`, `ru`, `credits`, `biomass`,
 `landers`, eight `minerals.*` categories, and twenty unique `items.*` entries. Fuel
 amounts are whole displayed units; native hundredths are preserved, never rounded
-away. Exact delivery fails if only a fractional requested unit fits. Merchant fill
-quotes need a precise-unit extension before the Melnorme migration.
+away. Exact delivery fails if only a fractional requested unit fits. Use `fuel_hundredths` for explicit fine-unit requests. The live Melnorme
+fill operation charges ceiling displayed units and delivers the exact tank space.
 
 Mineral categories are `common`, `corrosive`, `base_metal`, `noble`, `rare_earth`,
 `precious`, `radioactive`, and `exotic`. For example `minerals.radioactive`.
@@ -68,13 +68,16 @@ story update are separate commits. A one-time reward spanning both domains needs
 a helper that defines the intended retry/availability policy; ordinary graph
 sequencing is not a cross-domain transaction manager.
 
-## Remaining migration
+## Commerce integration and remaining cleanup
 
-The fleet now belongs to Inventory, but ship packages/factory staging are still
-pending. Unknown ship/package keys fail binding. The remaining Druuge, Melnorme and
-operational starbase native handlers stay in place until their real operations
-are implemented. Merchant quotes, partial fuel, rescue plans, report preparation
-and acknowledgement, and migration of old item/currency flag operations remain
-explicit work. The first live package use is Hayes's bounded replacement-lander
-operation and its following story assignment; the rest of that aid sequence keeps
-its existing clamping and dialogue timing.
+All 27 live conversations are graph-owned. Druuge, Melnorme and operational
+starbase use bounded native commerce/report operations; their whole-turn C
+bridges are deleted. Paid vessel purchases reserve native Fleet entries before
+charging, while free barter gifts explicitly permit partial fleet delivery.
+Rescue and report plans are per visit, with explicit acceptance/acknowledgement.
+See [commerce contracts](../../conversation-commerce.md).
+
+Generic ship bags remain unsupported by `transact`; unknown keys fail binding.
+Wider state callers and packed inventory-field cleanup remain #19/#21. A normal
+inventory action plus a subsequent story batch remains two commits, not a new
+cross-domain transaction guarantee.

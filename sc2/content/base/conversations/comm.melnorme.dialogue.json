@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "node_count": 21,
+  "node_count": 202,
   "id": "melnorm",
   "resource": "comm.melnorme.dialogue",
-  "entry": "intro",
+  "entry": "entry",
   "_migration": {
-    "status": "native_handlers",
-    "remaining": "Story conditions/actions and speech callbacks remain in the native script. The graph owns turn routing; native presentation consumes the queued tracks. Response slots preserve source registration order and constructed text."
+    "status": "graph_with_native_media",
+    "remaining": "Native resource descriptors, presentation cues, and bounded commerce/report operations. Story branches and responses are graph-owned."
   },
   "phrases": [
     {
@@ -1986,126 +1986,2590 @@
   ],
   "nodes": [
     {
-      "id": "intro",
+      "id": "end",
       "kind": "action",
       "action": {
-        "action": "handlers.legacy_turn",
-        "args": ["melnorm", null]
+        "action": "encounter.set_outcome",
+        "args": ["peace"]
       },
-      "save_as": "turn",
-      "next": "route"
+      "next": "end.terminal",
+      "save_as": "end"
     },
     {
-      "id": "route",
+      "id": "combat",
+      "kind": "action",
+      "action": {
+        "action": "encounter.set_outcome",
+        "args": ["hostile"]
+      },
+      "next": "combat.terminal",
+      "save_as": "combat"
+    },
+    {
+      "id": "entry",
       "kind": "decision",
-      "branches": [{"when": {"get": ["result", "turn.has_responses"]}, "next": "menu"}],
-      "otherwise": "farewell"
+      "branches": [{"when": {"not": {"ne": [{"get": ["story", "MET_MELNORME", false]}, 0]}}, "next": "first.mark"}],
+      "otherwise": "anger"
     },
     {
-      "id": "menu",
+      "id": "first.mark",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MET_MELNORME", true]
+      },
+      "save_as": "first_mark",
+      "next": "first.greeting"
+    },
+    {
+      "id": "anger",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["story", "MELNORME_ANGER", 0]}, 1]},
+          "next": "miffed.greeting"
+        },
+        {
+          "when": {"eq": [{"get": ["story", "MELNORME_ANGER", 0]}, 2]},
+          "next": "pissed.greeting"
+        },
+        {
+          "when": {"ge": [{"get": ["story", "MELNORME_ANGER", 0]}, 3]},
+          "next": "hate.greeting"
+        },
+        {
+          "when": {"lt": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 6]},
+          "next": "first.greeting"
+        }
+      ],
+      "otherwise": "business.greeting"
+    },
+    {
+      "id": "first.greeting",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_BUSINESS_COUNT",
+          [["HELLO_NOW_DOWN_TO_BUSINESS_1"], ["HELLO_NOW_DOWN_TO_BUSINESS_2"], ["HELLO_NOW_DOWN_TO_BUSINESS_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "first_greeting",
+      "next": "first.greeting.speech"
+    },
+    {
+      "id": "first.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "first_greeting.speech"]}}],
+      "next": "first.menu"
+    },
+    {
+      "id": "first.we_are_from_alliance0.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK0", 1]
+      },
+      "save_as": "first_we_are_from_alliance0_effects",
+      "next": "first.we_are_from_alliance0"
+    },
+    {
+      "id": "first.we_are_from_alliance0",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KNOW_OF_YOU"]}],
+      "next": "first.we_are_from_alliance0.priority"
+    },
+    {
+      "id": "first.how_know.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK0", 2]
+      },
+      "save_as": "first_how_know_effects",
+      "next": "first.how_know"
+    },
+    {
+      "id": "first.how_know",
+      "kind": "dialogue",
+      "variants": [{"speech": ["KNOW_BECAUSE"]}],
+      "next": "first.how_know.priority"
+    },
+    {
+      "id": "first.what_about_yourselves.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK1", 1]
+      },
+      "save_as": "first_what_about_yourselves_effects",
+      "next": "first.what_about_yourselves"
+    },
+    {
+      "id": "first.what_about_yourselves",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_TALK_ABOUT_OURSELVES"]}],
+      "next": "first.what_about_yourselves.priority"
+    },
+    {
+      "id": "first.what_factors.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK1", 2]
+      },
+      "save_as": "first_what_factors_effects",
+      "next": "first.what_factors"
+    },
+    {
+      "id": "first.what_factors",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FACTORS_ARE"]}],
+      "next": "first.what_factors.priority"
+    },
+    {
+      "id": "first.what_about_universe.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK2", 1]
+      },
+      "save_as": "first_what_about_universe_effects",
+      "next": "first.what_about_universe"
+    },
+    {
+      "id": "first.what_about_universe",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_FREE_LUNCH"]}],
+      "next": "first.what_about_universe.priority"
+    },
+    {
+      "id": "first.giving_is_good_1.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK2", 2]
+      },
+      "save_as": "first_giving_is_good_1_effects",
+      "next": "first.giving_is_good_1"
+    },
+    {
+      "id": "first.giving_is_good_1",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVING_IS_BAD_1"]}],
+      "next": "first.giving_is_good_1.priority"
+    },
+    {
+      "id": "first.giving_is_good_2.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK2", 3]
+      },
+      "save_as": "first_giving_is_good_2_effects",
+      "next": "first.giving_is_good_2"
+    },
+    {
+      "id": "first.giving_is_good_2",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GIVING_IS_BAD_2"]}],
+      "next": "first.giving_is_good_2.priority"
+    },
+    {
+      "id": "first.menu",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["local", "first.last_stack", 0]}, 1]},
+          "next": "first.menu.1"
+        },
+        {
+          "when": {"eq": [{"get": ["local", "first.last_stack", 0]}, 2]},
+          "next": "first.menu.2"
+        }
+      ],
+      "otherwise": "first.menu.0"
+    },
+    {
+      "id": "exit.no_trade_now",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_NO_TRADE_NOW_BYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "business.start",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK2", 5]
+      },
+      "save_as": "business_start",
+      "next": "business.greeting"
+    },
+    {
+      "id": "business.greeting",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_YACK_STACK2",
+          [
+            ["HELLO_AND_DOWN_TO_BUSINESS_1"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_2"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_3"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_4"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_5"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_6"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_7"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_8"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_9"],
+            ["HELLO_AND_DOWN_TO_BUSINESS_10"]
+          ],
+          "repeat_last",
+          5
+        ]
+      },
+      "save_as": "business_greeting",
+      "next": "business.greeting.speech"
+    },
+    {
+      "id": "business.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "business_greeting.speech"]}}],
+      "next": "business.eligibility"
+    },
+    {
+      "id": "business.eligibility",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {"gt": [{"query": "inventory.quantity", "args": ["fuel_hundredths"]}, 0]},
+              {"gt": [{"query": "inventory.quantity", "args": ["biomass"]}, 0]},
+              {"gt": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+              {"gt": [{"get": ["player", "unreported_rainbows", 0]}, 0]}
+            ]
+          },
+          "next": "business.trading_intro_check"
+        }
+      ],
+      "otherwise": "rescue.entry"
+    },
+    {
+      "id": "business.trading_intro_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"not": {"ne": [{"get": ["story", "TRADED_WITH_MELNORME", false]}, 0]}},
+          "next": "business.trading_intro.effects"
+        }
+      ],
+      "otherwise": "business.ask"
+    },
+    {
+      "id": "business.trading_intro.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "TRADED_WITH_MELNORME", true]
+      },
+      "save_as": "business_trading_intro_effects",
+      "next": "business.trading_intro"
+    },
+    {
+      "id": "business.trading_intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TRADING_INFO"]}],
+      "next": "business.ask"
+    },
+    {
+      "id": "business.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BUY_OR_SELL"], "presentation": {"before": "melnorme.purple"}}],
+      "next": "business.menu"
+    },
+    {
+      "id": "business.menu",
       "kind": "dialogue",
       "variants": [{"speech": []}],
       "responses": [
         {
-          "id": "slot_0",
-          "text": {"get": ["result", "turn.text_0"]},
-          "when": {"get": ["result", "turn.slot_0"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 0]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "why_turned_purple",
+          "text": "why_turned_purple",
+          "when": {"not": {"ne": [{"get": ["story", "WHY_MELNORME_PURPLE", false]}, 0]}},
+          "next": "business.purple.effects"
         },
         {
-          "id": "slot_1",
-          "text": {"get": ["result", "turn.text_1"]},
-          "when": {"get": ["result", "turn.slot_1"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 1]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "buy",
+          "text": "buy",
+          "when": {"not": {"get": ["local", "asked_to_buy", false]}},
+          "next": "buy.entry"
         },
         {
-          "id": "slot_2",
-          "text": {"get": ["result", "turn.text_2"]},
-          "when": {"get": ["result", "turn.slot_2"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 2]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "sell",
+          "text": "sell",
+          "when": {"get": ["local", "sell_enabled", true]},
+          "next": "sell.entry"
         },
         {
-          "id": "slot_3",
-          "text": {"get": ["result", "turn.text_3"]},
-          "when": {"get": ["result", "turn.slot_3"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 3]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_4",
-          "text": {"get": ["result", "turn.text_4"]},
-          "when": {"get": ["result", "turn.slot_4"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 4]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_5",
-          "text": {"get": ["result", "turn.text_5"]},
-          "when": {"get": ["result", "turn.slot_5"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 5]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_6",
-          "text": {"get": ["result", "turn.text_6"]},
-          "when": {"get": ["result", "turn.slot_6"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 6]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
-        },
-        {
-          "id": "slot_7",
-          "text": {"get": ["result", "turn.text_7"]},
-          "when": {"get": ["result", "turn.slot_7"]},
-          "action": {
-            "action": "handlers.legacy_turn",
-            "args": ["melnorm", 7]
-          },
-          "save_as": "turn",
-          "then": {"ok": "route"}
+          "id": "goodbye",
+          "text": "goodbye",
+          "when": true,
+          "next": "exit.goodbye"
         }
       ]
     },
     {
-      "id": "farewell",
+      "id": "business.purple.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "WHY_MELNORME_PURPLE", true]
+      },
+      "save_as": "business_purple_effects",
+      "next": "business.purple"
+    },
+    {
+      "id": "business.purple",
       "kind": "dialogue",
-      "variants": [{"speech": []}],
+      "variants": [{"speech": ["TURNED_PURPLE_BECAUSE"]}],
+      "next": "business.menu"
+    },
+    {
+      "id": "exit.goodbye",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FRIENDLY_GOODBYE"]}],
       "next": "end"
     },
     {
-      "id": "end",
+      "id": "buy.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "buy.ask"
+    },
+    {
+      "id": "buy.no_credit.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "asked_to_buy", true]
+      },
+      "save_as": "buy_no_credit_effects",
+      "next": "buy.no_credit"
+    },
+    {
+      "id": "buy.no_credit",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEED_CREDIT"]}],
+      "next": "business.menu"
+    },
+    {
+      "id": "buy.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_TO_BUY"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "buy.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "buy_fuel",
+          "text": "buy_fuel",
+          "when": {
+            "lt": [
+              {"query": "inventory.quantity", "args": ["fuel_hundredths"]},
+              {"multiply": [{"query": "ship.fuel_capacity", "args": []}, 100]}
+            ]
+          },
+          "next": "buy.menu.buy_fuel.credit_check"
+        },
+        {
+          "id": "buy_technology",
+          "text": "buy_technology",
+          "when": {"query": "market.available", "args": ["melnorme", "technology"]},
+          "next": "buy.menu.buy_technology.credit_check"
+        },
+        {
+          "id": "buy_info",
+          "text": "buy_info",
+          "when": {"query": "market.available", "args": ["melnorme", "information"]},
+          "next": "buy.menu.buy_info.credit_check"
+        },
+        {
+          "id": "done_buying",
+          "text": "done_buying",
+          "when": true,
+          "next": "buy.done"
+        },
+        {
+          "id": "be_leaving_now",
+          "text": "be_leaving_now",
+          "when": true,
+          "next": "exit.goodbye"
+        }
+      ]
+    },
+    {
+      "id": "buy.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DONE_BUYING"]}],
+      "next": "business.menu"
+    },
+    {
+      "id": "fuel.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MELNORME_FUEL_PROCEDURE", false]}, 0]}},
+          "next": "fuel.intro.effects"
+        }
+      ],
+      "otherwise": "fuel.ask"
+    },
+    {
+      "id": "fuel.intro.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_FUEL_PROCEDURE", true]
+      },
+      "save_as": "fuel_intro_effects",
+      "next": "fuel.intro"
+    },
+    {
+      "id": "fuel.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BUY_FUEL_INTRO"]}],
+      "next": "fuel.ask"
+    },
+    {
+      "id": "fuel.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HOW_MUCH_FUEL"]}],
+      "responses": [
+        {
+          "id": "buy_1_fuel",
+          "text": "buy_1_fuel",
+          "when": true,
+          "next": "fuel.ask.buy_1_fuel.credit_check"
+        },
+        {
+          "id": "buy_5_fuel",
+          "text": "buy_5_fuel",
+          "when": true,
+          "next": "fuel.ask.buy_5_fuel.credit_check"
+        },
+        {
+          "id": "buy_10_fuel",
+          "text": "buy_10_fuel",
+          "when": true,
+          "next": "fuel.ask.buy_10_fuel.credit_check"
+        },
+        {
+          "id": "buy_25_fuel",
+          "text": "buy_25_fuel",
+          "when": true,
+          "next": "fuel.ask.buy_25_fuel.credit_check"
+        },
+        {
+          "id": "fill_me_up",
+          "text": "fill_me_up",
+          "when": true,
+          "next": "fuel.ask.fill_me_up.credit_check"
+        },
+        {
+          "id": "done_buying_fuel",
+          "text": "done_buying_fuel",
+          "when": true,
+          "next": "fuel.ask.done_buying_fuel.credit_check"
+        }
+      ]
+    },
+    {
+      "id": "fuel.success",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOT_FUEL"]}],
+      "next": "fuel.capacity_check"
+    },
+    {
+      "id": "fuel.capacity_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "ge": [
+              {"query": "inventory.quantity", "args": ["fuel_hundredths"]},
+              {"multiply": [{"query": "ship.fuel_capacity", "args": []}, 100]}
+            ]
+          },
+          "next": "buy.menu"
+        }
+      ],
+      "otherwise": "fuel.ask"
+    },
+    {
+      "id": "fuel.no_room",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_ROOM_FOR_FUEL"]}],
+      "next": "fuel.ask"
+    },
+    {
+      "id": "fuel.no_credit",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEED_MORE_CREDIT0", {"number": {"get": ["result", "fuel_purchase.missing"]}}, "NEED_MORE_CREDIT1"]}],
+      "next": "fuel.ask"
+    },
+    {
+      "id": "fuel.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DONE_BUYING_FUEL"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "tech.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MELNORME_TECH_PROCEDURE", false]}, 0]}},
+          "next": "tech.intro.effects"
+        }
+      ],
+      "otherwise": "tech.pitch"
+    },
+    {
+      "id": "tech.intro.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_TECH_PROCEDURE", true]
+      },
+      "save_as": "tech_intro_effects",
+      "next": "tech.intro"
+    },
+    {
+      "id": "tech.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BUY_NEW_TECH_INTRO"]}],
+      "next": "tech.pitch"
+    },
+    {
+      "id": "tech.pitch.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "tech_pitch.speech"]}}],
+      "next": "tech.menu"
+    },
+    {
+      "id": "tech.pitch.check",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["result", "tech_pitch.code"]}, "ok"]}, "next": "tech.pitch.speech"}],
+      "otherwise": "error"
+    },
+    {
+      "id": "tech.pitch",
+      "kind": "action",
+      "action": {
+        "action": "handlers.prepare_report",
+        "args": ["melnorme.technology_pitch", {"literal": {}}]
+      },
+      "save_as": "tech_pitch",
+      "next": "tech.pitch.check"
+    },
+    {
+      "id": "tech.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "buy_new_tech",
+          "text": "buy_new_tech",
+          "when": {"query": "market.available", "args": ["melnorme", "technology"]},
+          "next": "tech.menu.buy_new_tech.credit_check"
+        },
+        {
+          "id": "no_buy_new_tech",
+          "text": "no_buy_new_tech",
+          "when": true,
+          "next": "tech.menu.no_buy_new_tech.credit_check"
+        }
+      ]
+    },
+    {
+      "id": "tech.success",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "tech_purchase.speech"]}}],
+      "next": "tech.remaining"
+    },
+    {
+      "id": "tech.remaining",
+      "kind": "decision",
+      "branches": [{"when": {"query": "market.available", "args": ["melnorme", "technology"]}, "next": "tech.pitch"}],
+      "otherwise": "tech.none"
+    },
+    {
+      "id": "tech.none",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEW_TECH_ALL_GONE"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "tech.no_credit",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEED_MORE_CREDIT0", {"number": {"get": ["result", "tech_purchase.missing"]}}, "NEED_MORE_CREDIT1"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "tech.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_NO_BUY_NEW_TECH"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "info.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"not": {"ne": [{"get": ["story", "MELNORME_INFO_PROCEDURE", false]}, 0]}},
+          "next": "info.intro.effects"
+        }
+      ],
+      "otherwise": "info.ask"
+    },
+    {
+      "id": "info.intro.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_INFO_PROCEDURE", true]
+      },
+      "save_as": "info_intro_effects",
+      "next": "info.intro"
+    },
+    {
+      "id": "info.intro",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BUY_INFO_INTRO"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "info.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_BUY_INFO"]}],
+      "next": "info.menu"
+    },
+    {
+      "id": "info.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "buy_current_events",
+          "text": "buy_current_events",
+          "when": {"query": "market.available", "args": ["melnorme", "events"]},
+          "next": "info.menu.buy_current_events.credit_check"
+        },
+        {
+          "id": "buy_alien_races",
+          "text": "buy_alien_races",
+          "when": {"query": "market.available", "args": ["melnorme", "alien_races"]},
+          "next": "info.menu.buy_alien_races.credit_check"
+        },
+        {
+          "id": "buy_history",
+          "text": "buy_history",
+          "when": {"query": "market.available", "args": ["melnorme", "history"]},
+          "next": "info.menu.buy_history.credit_check"
+        },
+        {
+          "id": "done_buying_info",
+          "text": "done_buying_info",
+          "when": true,
+          "next": "info.menu.done_buying_info.credit_check"
+        }
+      ]
+    },
+    {
+      "id": "info.success",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "info_purchase.speech"]}}],
+      "next": "info.remaining"
+    },
+    {
+      "id": "info.remaining",
+      "kind": "decision",
+      "branches": [{"when": {"query": "market.available", "args": ["melnorme", "information"]}, "next": "info.menu"}],
+      "otherwise": "info.none"
+    },
+    {
+      "id": "info.none",
+      "kind": "dialogue",
+      "variants": [{"speech": ["INFO_ALL_GONE"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "info.no_credit",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NEED_MORE_CREDIT0", {"number": {"get": ["result", "info_purchase.missing"]}}, "NEED_MORE_CREDIT1"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "info.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DONE_BUYING_INFO"]}],
+      "next": "buy.menu"
+    },
+    {
+      "id": "sell.entry",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {"gt": [{"query": "inventory.quantity", "args": ["biomass"]}, 0]},
+              {"gt": [{"get": ["player", "unreported_rainbows", 0]}, 0]}
+            ]
+          },
+          "next": "sell.ask"
+        }
+      ],
+      "otherwise": "sell.none"
+    },
+    {
+      "id": "sell.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WHAT_TO_SELL"]}],
+      "next": "sell.menu"
+    },
+    {
+      "id": "sell.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "sell_life_data",
+          "text": "sell_life_data",
+          "when": {"gt": [{"query": "inventory.quantity", "args": ["biomass"]}, 0]},
+          "next": "sell.biomass"
+        },
+        {
+          "id": "sell_rainbow_locations",
+          "text": "sell_rainbow_locations",
+          "when": {"gt": [{"get": ["player", "unreported_rainbows", 0]}, 0]},
+          "next": "sell.rainbows"
+        },
+        {
+          "id": "done_selling",
+          "text": "done_selling",
+          "when": true,
+          "next": "sell.done"
+        }
+      ]
+    },
+    {
+      "id": "sell.biomass",
+      "kind": "action",
+      "action": {
+        "action": "trade.sell",
+        "args": ["melnorme", "biomass", "all"]
+      },
+      "save_as": "sale",
+      "next": "sell.outcome"
+    },
+    {
+      "id": "sell.rainbows",
+      "kind": "action",
+      "action": {
+        "action": "trade.sell",
+        "args": ["melnorme", "rainbows", "all"]
+      },
+      "save_as": "sale",
+      "next": "sell.outcome"
+    },
+    {
+      "id": "sell.outcome",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "sale.code"]}, "ok"]},
+          "next": "sell.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "sale.code", 0]}, "no_room"]},
+          "next": "business.menu"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "sale.code", 0]}, "unavailable"]},
+          "next": "sell.disable"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "sell.success",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "sale.speech"]}}],
+      "next": "sell.reset"
+    },
+    {
+      "id": "sell.reset",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "asked_to_buy", false]
+      },
+      "save_as": "sell_reset",
+      "next": "sell.remaining"
+    },
+    {
+      "id": "sell.remaining",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {
+            "any": [
+              {"gt": [{"query": "inventory.quantity", "args": ["biomass"]}, 0]},
+              {"gt": [{"get": ["player", "unreported_rainbows", 0]}, 0]}
+            ]
+          },
+          "next": "sell.ask"
+        }
+      ],
+      "otherwise": "sell.disable"
+    },
+    {
+      "id": "sell.none",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOTHING_TO_SELL"]}],
+      "next": "sell.disable"
+    },
+    {
+      "id": "sell.disable",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "sell_enabled", false]
+      },
+      "save_as": "sell_disable",
+      "next": "business.menu"
+    },
+    {
+      "id": "sell.done",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_DONE_SELLING"]}],
+      "next": "business.menu"
+    },
+    {
+      "id": "rescue.entry",
+      "kind": "decision",
+      "branches": [{"when": {"ne": [{"get": ["story", "MELNORME_RESCUE_REFUSED", false]}, 0]}, "next": "rescue.changed"}],
+      "otherwise": "rescue.explain"
+    },
+    {
+      "id": "rescue.changed",
+      "kind": "dialogue",
+      "variants": [{"speech": ["CHANGED_MIND"]}],
+      "responses": [
+        {
+          "id": "yes_changed_mind",
+          "text": "yes_changed_mind",
+          "when": true,
+          "next": "handlers.prepare_rescue"
+        },
+        {
+          "id": "no_changed_mind",
+          "text": "no_changed_mind",
+          "when": true,
+          "next": "rescue.no_changed"
+        }
+      ]
+    },
+    {
+      "id": "rescue.explain",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_RESCUE_COUNT",
+          [
+            ["RESCUE_EXPLANATION"],
+            ["RESCUE_AGAIN_1"],
+            ["RESCUE_AGAIN_2"],
+            ["RESCUE_AGAIN_3"],
+            ["RESCUE_AGAIN_4"],
+            ["RESCUE_AGAIN_5"]
+          ],
+          "repeat_last"
+        ]
+      },
+      "save_as": "rescue_explain",
+      "next": "rescue.explain.speech"
+    },
+    {
+      "id": "rescue.explain.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "rescue_explain.speech"]}}],
+      "next": "rescue.ask"
+    },
+    {
+      "id": "rescue.ask",
+      "kind": "dialogue",
+      "variants": [{"speech": ["SHOULD_WE_HELP_YOU"]}],
+      "responses": [
+        {
+          "id": "yes_help",
+          "text": "yes_help",
+          "when": true,
+          "next": "handlers.prepare_rescue"
+        },
+        {
+          "id": "no_help",
+          "text": "no_help",
+          "when": true,
+          "next": "rescue.no_help.effects"
+        }
+      ]
+    },
+    {
+      "id": "handlers.prepare_rescue",
+      "kind": "action",
+      "action": {
+        "action": "handlers.prepare_rescue",
+        "args": ["melnorme"]
+      },
+      "save_as": "rescue_quote",
+      "next": "rescue.quote_check"
+    },
+    {
+      "id": "rescue.quote_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "rescue_quote.code"]}, "offer"]},
+          "next": "rescue.offer"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "rescue_quote.code"]}, "free"]},
+          "next": "rescue.free"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "rescue.offer",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "rescue_quote.speech"]}}],
+      "responses": [
+        {
+          "id": "take_it",
+          "text": "take_it",
+          "when": true,
+          "next": "handlers.accept_rescue"
+        },
+        {
+          "id": "leave_it",
+          "text": "leave_it",
+          "when": true,
+          "next": "rescue.leave.effects"
+        }
+      ]
+    },
+    {
+      "id": "handlers.accept_rescue",
+      "kind": "action",
+      "action": {
+        "action": "handlers.accept_rescue",
+        "args": [{"get": ["result", "rescue_quote.token"]}]
+      },
+      "save_as": "rescue_accept",
+      "next": "handlers.accept_rescue_check"
+    },
+    {
+      "id": "handlers.accept_rescue_check",
+      "kind": "decision",
+      "branches": [{"when": {"eq": [{"get": ["result", "rescue_accept.code"]}, "ok"]}, "next": "rescue.thanks"}],
+      "otherwise": "error"
+    },
+    {
+      "id": "rescue.free",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "rescue_quote.speech"]}}],
+      "next": "end"
+    },
+    {
+      "id": "rescue.thanks",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HAPPY_TO_HAVE_RESCUED"]}],
+      "next": "end"
+    },
+    {
+      "id": "rescue.leave.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_RESCUE_REFUSED", true]
+      },
+      "save_as": "rescue_leave_effects",
+      "next": "rescue.leave"
+    },
+    {
+      "id": "rescue.leave",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MAYBE_SEE_YOU_LATER"]}],
+      "next": "end"
+    },
+    {
+      "id": "rescue.no_help.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_RESCUE_REFUSED", true]
+      },
+      "save_as": "rescue_no_help_effects",
+      "next": "rescue.no_help"
+    },
+    {
+      "id": "rescue.no_help",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_GOODLUCK"]}],
+      "next": "end"
+    },
+    {
+      "id": "rescue.no_changed",
+      "kind": "dialogue",
+      "variants": [{"speech": ["GOODBYE_AND_GOODLUCK_AGAIN"]}],
+      "next": "end"
+    },
+    {
+      "id": "bluster.start.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK2", 4]
+      },
+      "save_as": "bluster_start_effects",
+      "next": "bluster.start"
+    },
+    {
+      "id": "bluster.start",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WERE_NOT_AFRAID"], "presentation": {"before": "melnorme.blue"}}],
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.why.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "WHY_MELNORME_BLUE", true]
+      },
+      "save_as": "bluster_why_effects",
+      "next": "bluster.why"
+    },
+    {
+      "id": "bluster.why",
+      "kind": "dialogue",
+      "variants": [{"speech": ["BLUE_IS_MAD"]}],
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.we_strong_1.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "bluster.strength", 1]
+      },
+      "save_as": "bluster_we_strong_1_effects",
+      "next": "bluster.we_strong_1"
+    },
+    {
+      "id": "bluster.we_strong_1",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_NOT_STRONG_1"]}],
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.we_strong_2.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "bluster.strength", 2]
+      },
+      "save_as": "bluster_we_strong_2_effects",
+      "next": "bluster.we_strong_2"
+    },
+    {
+      "id": "bluster.we_strong_2",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_NOT_STRONG_2"]}],
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.we_strong_3.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "bluster.strength", 3]
+      },
+      "save_as": "bluster_we_strong_3_effects",
+      "next": "bluster.we_strong_3"
+    },
+    {
+      "id": "bluster.we_strong_3",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_NOT_STRONG_3"]}],
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "why_blue_light",
+          "text": "why_blue_light",
+          "when": {"not": {"ne": [{"get": ["story", "WHY_MELNORME_BLUE", false]}, 0]}},
+          "next": "bluster.why.effects"
+        },
+        {
+          "id": "we_strong_1",
+          "text": "we_strong_1",
+          "when": {"eq": [{"get": ["local", "bluster.strength", 0]}, 0]},
+          "next": "bluster.we_strong_1.effects"
+        },
+        {
+          "id": "we_strong_2",
+          "text": "we_strong_2",
+          "when": {"eq": [{"get": ["local", "bluster.strength", 0]}, 1]},
+          "next": "bluster.we_strong_2.effects"
+        },
+        {
+          "id": "we_strong_3",
+          "text": "we_strong_3",
+          "when": {"eq": [{"get": ["local", "bluster.strength", 0]}, 2]},
+          "next": "bluster.we_strong_3.effects"
+        },
+        {
+          "id": "just_testing",
+          "text": "just_testing",
+          "when": {"eq": [{"get": ["local", "bluster.testing", 0]}, 0]},
+          "next": "bluster.testing.effects"
+        },
+        {
+          "id": "yes_really_testing",
+          "text": "yes_really_testing",
+          "when": {"eq": [{"get": ["local", "bluster.testing", 0]}, 1]},
+          "next": "bluster.accept_testing"
+        },
+        {
+          "id": "youre_on",
+          "text": "youre_on",
+          "when": true,
+          "next": "exit.youre_on.effects"
+        }
+      ]
+    },
+    {
+      "id": "bluster.testing.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "bluster.testing", 1]
+      },
+      "save_as": "bluster_testing_effects",
+      "next": "bluster.testing"
+    },
+    {
+      "id": "bluster.testing",
+      "kind": "dialogue",
+      "variants": [{"speech": ["REALLY_TESTING"]}],
+      "next": "bluster.menu"
+    },
+    {
+      "id": "bluster.accept_testing",
+      "kind": "dialogue",
+      "variants": [{"speech": ["TEST_RESULTS"], "presentation": {"before": "melnorme.yellow"}}],
+      "next": "bluster.accept_testing.priority"
+    },
+    {
+      "id": "miffed.greeting",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_MIFFED_COUNT",
+          [["HELLO_SLIGHTLY_ANGRY_1"], ["HELLO_SLIGHTLY_ANGRY_2"], ["HELLO_SLIGHTLY_ANGRY_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "miffed_greeting",
+      "next": "miffed.greeting.speech"
+    },
+    {
+      "id": "miffed.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "miffed_greeting.speech"]}, "presentation": {"before": "melnorme.blue"}}],
+      "next": "miffed.menu"
+    },
+    {
+      "id": "pissed.greeting",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_PISSED_COUNT",
+          [["HELLO_PISSED_OFF_1"], ["HELLO_PISSED_OFF_2"], ["HELLO_PISSED_OFF_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "pissed_greeting",
+      "next": "pissed.greeting.speech"
+    },
+    {
+      "id": "pissed.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "pissed_greeting.speech"]}, "presentation": {"before": "melnorme.blue"}}],
+      "next": "pissed.menu"
+    },
+    {
+      "id": "hate.greeting",
+      "kind": "action",
+      "action": {
+        "action": "sequence.next",
+        "args": [
+          "story",
+          "MELNORME_HATE_COUNT",
+          [["HELLO_HATE_YOU_1"], ["HELLO_HATE_YOU_2"], ["HELLO_HATE_YOU_3"]],
+          "repeat_last"
+        ]
+      },
+      "save_as": "hate_greeting",
+      "next": "hate.greeting.speech"
+    },
+    {
+      "id": "hate.greeting.speech",
+      "kind": "dialogue",
+      "variants": [{"speech": {"get": ["result", "hate_greeting.speech"]}, "presentation": {"before": "melnorme.blue"}}],
+      "next": "hate.menu"
+    },
+    {
+      "id": "miffed.explore_relationship.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK3", 1]
+      },
+      "save_as": "miffed_explore_relationship_effects",
+      "next": "miffed.explore_relationship"
+    },
+    {
+      "id": "miffed.explore_relationship",
+      "kind": "dialogue",
+      "variants": [{"speech": ["EXAMPLE_OF_RELATIONSHIP"]}],
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.excuse_1.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK3", 2]
+      },
+      "save_as": "miffed_excuse_1_effects",
+      "next": "miffed.excuse_1"
+    },
+    {
+      "id": "miffed.excuse_1",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_EXCUSE_1"]}],
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.excuse_2.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK3", 3]
+      },
+      "save_as": "miffed_excuse_2_effects",
+      "next": "miffed.excuse_2"
+    },
+    {
+      "id": "miffed.excuse_2",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_EXCUSE_2"]}],
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.excuse_3.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK3", 4]
+      },
+      "save_as": "miffed_excuse_3_effects",
+      "next": "miffed.excuse_3"
+    },
+    {
+      "id": "miffed.excuse_3",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NO_EXCUSE_3"]}],
+      "next": "miffed.menu"
+    },
+    {
+      "id": "miffed.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "explore_relationship",
+          "text": "explore_relationship",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK3", 0]}, 0]},
+          "next": "miffed.explore_relationship.effects"
+        },
+        {
+          "id": "excuse_1",
+          "text": "excuse_1",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK3", 0]}, 1]},
+          "next": "miffed.excuse_1.effects"
+        },
+        {
+          "id": "excuse_2",
+          "text": "excuse_2",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK3", 0]}, 2]},
+          "next": "miffed.excuse_2.effects"
+        },
+        {
+          "id": "excuse_3",
+          "text": "excuse_3",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK3", 0]}, 3]},
+          "next": "miffed.excuse_3.effects"
+        },
+        {
+          "id": "we_apologize",
+          "text": "we_apologize",
+          "when": true,
+          "next": "miffed.apologize.effects"
+        },
+        {
+          "id": "so_we_can_attack",
+          "text": "so_we_can_attack",
+          "when": true,
+          "next": "exit.so_we_can_attack.effects"
+        },
+        {
+          "id": "bye_melnorme_slightly_angry",
+          "text": "bye_melnorme_slightly_angry",
+          "when": true,
+          "next": "exit.miffed"
+        }
+      ]
+    },
+    {
+      "id": "miffed.apologize.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_ANGER", 0]
+      },
+      "save_as": "miffed_apologize_effects",
+      "next": "miffed.apologize"
+    },
+    {
+      "id": "miffed.apologize",
+      "kind": "dialogue",
+      "variants": [{"speech": ["APOLOGY_ACCEPTED"], "presentation": {"before": "melnorme.yellow"}}],
+      "next": "miffed.apologize.priority"
+    },
+    {
+      "id": "pissed.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "beg_forgiveness",
+          "text": "beg_forgiveness",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK4", 0]}, 0]},
+          "next": "pissed.beg.effects"
+        },
+        {
+          "id": "you_are_so_right",
+          "text": "you_are_so_right",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK4", 0]}, 1]},
+          "next": "pissed.agree.effects"
+        },
+        {
+          "id": "ok_strip_me",
+          "text": "ok_strip_me",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK4", 0]}, 2]},
+          "next": "pissed.strip"
+        },
+        {
+          "id": "fight_some_more",
+          "text": "fight_some_more",
+          "when": true,
+          "next": "exit.fight_some_more.effects"
+        },
+        {
+          "id": "bye_melnorme_pissed_off",
+          "text": "bye_melnorme_pissed_off",
+          "when": true,
+          "next": "exit.pissed"
+        }
+      ]
+    },
+    {
+      "id": "pissed.beg.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK4", 1]
+      },
+      "save_as": "pissed_beg_effects",
+      "next": "pissed.beg"
+    },
+    {
+      "id": "pissed.beg",
+      "kind": "dialogue",
+      "variants": [{"speech": ["LOTS_TO_MAKE_UP_FOR"]}],
+      "next": "pissed.menu"
+    },
+    {
+      "id": "pissed.agree.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_YACK_STACK4", 2]
+      },
+      "save_as": "pissed_agree_effects",
+      "next": "pissed.agree"
+    },
+    {
+      "id": "pissed.agree",
+      "kind": "dialogue",
+      "variants": [{"speech": ["ONE_LAST_CHANCE"]}],
+      "next": "pissed.menu"
+    },
+    {
+      "id": "pissed.strip",
+      "kind": "action",
+      "action": {
+        "action": "handlers.strip_ship",
+        "args": ["melnorme.penance"]
+      },
+      "save_as": "penance",
+      "next": "pissed.strip_check"
+    },
+    {
+      "id": "pissed.strip_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "penance.code"]}, "not_worth_stripping"]},
+          "next": "pissed.not_worth"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "penance.code"]}, "ok"]},
+          "next": "pissed.forgiven.effects"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "pissed.not_worth",
+      "kind": "dialogue",
+      "variants": [{"speech": ["NOT_WORTH_STRIPPING"]}],
+      "next": "end"
+    },
+    {
+      "id": "pissed.forgiven.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_ANGER", 0]
+      },
+      "save_as": "pissed_forgiven_effects",
+      "next": "pissed.forgiven"
+    },
+    {
+      "id": "pissed.forgiven",
+      "kind": "dialogue",
+      "variants": [{"speech": ["FAIR_JUSTICE"]}],
+      "next": "end"
+    },
+    {
+      "id": "hate.menu",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "well_if_thats_the_way_you_feel",
+          "text": "well_if_thats_the_way_you_feel",
+          "when": true,
+          "next": "exit.fight_again"
+        },
+        {
+          "id": "you_hate_us_so_we_go_away",
+          "text": "you_hate_us_so_we_go_away",
+          "when": true,
+          "next": "exit.hate"
+        }
+      ]
+    },
+    {
+      "id": "exit.youre_on.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_ANGER", 1]
+      },
+      "save_as": "exit_youre_on_effects",
+      "next": "exit.youre_on"
+    },
+    {
+      "id": "exit.youre_on",
+      "kind": "dialogue",
+      "variants": [{"speech": ["YOU_GIVE_US_NO_CHOICE"]}],
+      "next": "combat"
+    },
+    {
+      "id": "exit.so_we_can_attack.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_ANGER", 2]
+      },
+      "save_as": "exit_so_we_can_attack_effects",
+      "next": "exit.so_we_can_attack"
+    },
+    {
+      "id": "exit.so_we_can_attack",
+      "kind": "dialogue",
+      "variants": [{"speech": ["DECEITFUL_HUMAN"]}],
+      "next": "combat"
+    },
+    {
+      "id": "exit.fight_some_more.effects",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["story", "MELNORME_ANGER", 3]
+      },
+      "save_as": "exit_fight_some_more_effects",
+      "next": "exit.fight_some_more"
+    },
+    {
+      "id": "exit.fight_some_more",
+      "kind": "dialogue",
+      "variants": [{"speech": ["OK_FIGHT_SOME_MORE"]}],
+      "next": "combat"
+    },
+    {
+      "id": "exit.miffed",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MELNORME_SLIGHTLY_ANGRY_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.pissed",
+      "kind": "dialogue",
+      "variants": [{"speech": ["MELNORME_PISSED_OFF_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "exit.fight_again",
+      "kind": "dialogue",
+      "variants": [{"speech": ["WE_FIGHT_AGAIN"]}],
+      "next": "combat"
+    },
+    {
+      "id": "exit.hate",
+      "kind": "dialogue",
+      "variants": [{"speech": ["HATE_YOU_GOODBYE"]}],
+      "next": "end"
+    },
+    {
+      "id": "error",
+      "kind": "action",
+      "action": {
+        "action": "encounter.set_outcome",
+        "args": ["design_error"]
+      },
+      "next": "error.terminal",
+      "save_as": "error"
+    },
+    {
+      "id": "first.menu.0",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "we_are_from_alliance0",
+          "text": {
+            "compose": [{"phrase": "we_are_from_alliance0"}, {"insert": {"get": ["player", "alliance_name", "Alliance"]}}]
+          },
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK0", 0]}, 0]},
+          "next": "first.we_are_from_alliance0.effects"
+        },
+        {
+          "id": "how_know",
+          "text": "how_know",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK0", 0]}, 1]},
+          "next": "first.how_know.effects"
+        },
+        {
+          "id": "what_about_yourselves",
+          "text": "what_about_yourselves",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 0]},
+          "next": "first.what_about_yourselves.effects"
+        },
+        {
+          "id": "what_factors",
+          "text": "what_factors",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 1]},
+          "next": "first.what_factors.effects"
+        },
+        {
+          "id": "get_on_with_business",
+          "text": "get_on_with_business",
+          "when": {"ge": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 1]},
+          "next": "business.start"
+        },
+        {
+          "id": "what_about_universe",
+          "text": "what_about_universe",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 0]},
+          "next": "first.what_about_universe.effects"
+        },
+        {
+          "id": "giving_is_good_1",
+          "text": "giving_is_good_1",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 1]},
+          "next": "first.giving_is_good_1.effects"
+        },
+        {
+          "id": "giving_is_good_2",
+          "text": "giving_is_good_2",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 2]},
+          "next": "first.giving_is_good_2.effects"
+        },
+        {
+          "id": "trade_is_for_the_weak",
+          "text": "trade_is_for_the_weak",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 3]},
+          "next": "bluster.start.effects"
+        },
+        {
+          "id": "no_trade_now",
+          "text": "no_trade_now",
+          "when": true,
+          "next": "exit.no_trade_now"
+        }
+      ]
+    },
+    {
+      "id": "first.menu.1",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_yourselves",
+          "text": "what_about_yourselves",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 0]},
+          "next": "first.what_about_yourselves.effects"
+        },
+        {
+          "id": "what_factors",
+          "text": "what_factors",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 1]},
+          "next": "first.what_factors.effects"
+        },
+        {
+          "id": "get_on_with_business",
+          "text": "get_on_with_business",
+          "when": {"ge": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 1]},
+          "next": "business.start"
+        },
+        {
+          "id": "we_are_from_alliance0",
+          "text": {
+            "compose": [{"phrase": "we_are_from_alliance0"}, {"insert": {"get": ["player", "alliance_name", "Alliance"]}}]
+          },
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK0", 0]}, 0]},
+          "next": "first.we_are_from_alliance0.effects"
+        },
+        {
+          "id": "how_know",
+          "text": "how_know",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK0", 0]}, 1]},
+          "next": "first.how_know.effects"
+        },
+        {
+          "id": "what_about_universe",
+          "text": "what_about_universe",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 0]},
+          "next": "first.what_about_universe.effects"
+        },
+        {
+          "id": "giving_is_good_1",
+          "text": "giving_is_good_1",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 1]},
+          "next": "first.giving_is_good_1.effects"
+        },
+        {
+          "id": "giving_is_good_2",
+          "text": "giving_is_good_2",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 2]},
+          "next": "first.giving_is_good_2.effects"
+        },
+        {
+          "id": "trade_is_for_the_weak",
+          "text": "trade_is_for_the_weak",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 3]},
+          "next": "bluster.start.effects"
+        },
+        {
+          "id": "no_trade_now",
+          "text": "no_trade_now",
+          "when": true,
+          "next": "exit.no_trade_now"
+        }
+      ]
+    },
+    {
+      "id": "first.menu.2",
+      "kind": "dialogue",
+      "variants": [{"speech": []}],
+      "responses": [
+        {
+          "id": "what_about_universe",
+          "text": "what_about_universe",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 0]},
+          "next": "first.what_about_universe.effects"
+        },
+        {
+          "id": "giving_is_good_1",
+          "text": "giving_is_good_1",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 1]},
+          "next": "first.giving_is_good_1.effects"
+        },
+        {
+          "id": "giving_is_good_2",
+          "text": "giving_is_good_2",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 2]},
+          "next": "first.giving_is_good_2.effects"
+        },
+        {
+          "id": "trade_is_for_the_weak",
+          "text": "trade_is_for_the_weak",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK2", 0]}, 3]},
+          "next": "bluster.start.effects"
+        },
+        {
+          "id": "what_about_yourselves",
+          "text": "what_about_yourselves",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 0]},
+          "next": "first.what_about_yourselves.effects"
+        },
+        {
+          "id": "what_factors",
+          "text": "what_factors",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 1]},
+          "next": "first.what_factors.effects"
+        },
+        {
+          "id": "get_on_with_business",
+          "text": "get_on_with_business",
+          "when": {"ge": [{"get": ["story", "MELNORME_YACK_STACK1", 0]}, 1]},
+          "next": "business.start"
+        },
+        {
+          "id": "we_are_from_alliance0",
+          "text": {
+            "compose": [{"phrase": "we_are_from_alliance0"}, {"insert": {"get": ["player", "alliance_name", "Alliance"]}}]
+          },
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK0", 0]}, 0]},
+          "next": "first.we_are_from_alliance0.effects"
+        },
+        {
+          "id": "how_know",
+          "text": "how_know",
+          "when": {"eq": [{"get": ["story", "MELNORME_YACK_STACK0", 0]}, 1]},
+          "next": "first.how_know.effects"
+        },
+        {
+          "id": "no_trade_now",
+          "text": "no_trade_now",
+          "when": true,
+          "next": "exit.no_trade_now"
+        }
+      ]
+    },
+    {
+      "id": "first.we_are_from_alliance0.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 0]
+      },
+      "next": "first.menu",
+      "save_as": "first_we_are_from_alliance0_priority"
+    },
+    {
+      "id": "first.how_know.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 0]
+      },
+      "next": "first.menu",
+      "save_as": "first_how_know_priority"
+    },
+    {
+      "id": "first.what_about_yourselves.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 1]
+      },
+      "next": "first.menu",
+      "save_as": "first_what_about_yourselves_priority"
+    },
+    {
+      "id": "first.what_factors.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 1]
+      },
+      "next": "first.menu",
+      "save_as": "first_what_factors_priority"
+    },
+    {
+      "id": "first.what_about_universe.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 2]
+      },
+      "next": "first.menu",
+      "save_as": "first_what_about_universe_priority"
+    },
+    {
+      "id": "first.giving_is_good_1.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 2]
+      },
+      "next": "first.menu",
+      "save_as": "first_giving_is_good_1_priority"
+    },
+    {
+      "id": "first.giving_is_good_2.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 2]
+      },
+      "next": "first.menu",
+      "save_as": "first_giving_is_good_2_priority"
+    },
+    {
+      "id": "end.terminal",
       "kind": "end",
       "outcome": "native_segue"
+    },
+    {
+      "id": "combat.terminal",
+      "kind": "end",
+      "outcome": "native_segue"
+    },
+    {
+      "id": "error.terminal",
+      "kind": "end",
+      "outcome": "native_segue"
+    },
+    {
+      "id": "buy.menu.buy_fuel.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.entry"
+    },
+    {
+      "id": "buy.menu.buy_technology.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "tech.entry"
+    },
+    {
+      "id": "buy.menu.buy_info.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "info.entry"
+    },
+    {
+      "id": "fuel.ask.buy_1_fuel.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "fuel", 1]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.ask.buy_1_fuel.credit_check.purchase.result"
+    },
+    {
+      "id": "fuel.ask.buy_1_fuel.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "ok"]},
+          "next": "fuel.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_room"]},
+          "next": "fuel.no_room"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_credit"]},
+          "next": "fuel.no_credit"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "fuel.ask.buy_1_fuel.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.ask.buy_1_fuel.credit_check.purchase"
+    },
+    {
+      "id": "fuel.ask.buy_5_fuel.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "fuel", 5]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.ask.buy_5_fuel.credit_check.purchase.result"
+    },
+    {
+      "id": "fuel.ask.buy_5_fuel.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "ok"]},
+          "next": "fuel.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_room"]},
+          "next": "fuel.no_room"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_credit"]},
+          "next": "fuel.no_credit"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "fuel.ask.buy_5_fuel.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.ask.buy_5_fuel.credit_check.purchase"
+    },
+    {
+      "id": "fuel.ask.buy_10_fuel.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "fuel", 10]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.ask.buy_10_fuel.credit_check.purchase.result"
+    },
+    {
+      "id": "fuel.ask.buy_10_fuel.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "ok"]},
+          "next": "fuel.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_room"]},
+          "next": "fuel.no_room"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_credit"]},
+          "next": "fuel.no_credit"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "fuel.ask.buy_10_fuel.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.ask.buy_10_fuel.credit_check.purchase"
+    },
+    {
+      "id": "fuel.ask.buy_25_fuel.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "fuel", 25]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.ask.buy_25_fuel.credit_check.purchase.result"
+    },
+    {
+      "id": "fuel.ask.buy_25_fuel.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "ok"]},
+          "next": "fuel.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_room"]},
+          "next": "fuel.no_room"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_credit"]},
+          "next": "fuel.no_credit"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "fuel.ask.buy_25_fuel.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.ask.buy_25_fuel.credit_check.purchase"
+    },
+    {
+      "id": "fuel.ask.fill_me_up.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "fuel", "fill"]
+      },
+      "save_as": "fuel_purchase",
+      "next": "fuel.ask.fill_me_up.credit_check.purchase.result"
+    },
+    {
+      "id": "fuel.ask.fill_me_up.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "ok"]},
+          "next": "fuel.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_room"]},
+          "next": "fuel.no_room"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "fuel_purchase.code", 0]}, "no_credit"]},
+          "next": "fuel.no_credit"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "fuel.ask.fill_me_up.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.ask.fill_me_up.credit_check.purchase"
+    },
+    {
+      "id": "fuel.ask.done_buying_fuel.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "fuel.done"
+    },
+    {
+      "id": "tech.menu.buy_new_tech.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "next_technology", 1]
+      },
+      "save_as": "tech_purchase",
+      "next": "tech.menu.buy_new_tech.credit_check.purchase.result"
+    },
+    {
+      "id": "tech.menu.buy_new_tech.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "tech_purchase.code", 0]}, "ok"]},
+          "next": "tech.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "tech_purchase.code", 0]}, "no_credit"]},
+          "next": "tech.no_credit"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "tech_purchase.code", 0]}, "unavailable"]},
+          "next": "tech.none"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "tech.menu.buy_new_tech.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "tech.menu.buy_new_tech.credit_check.purchase"
+    },
+    {
+      "id": "tech.menu.no_buy_new_tech.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "tech.done"
+    },
+    {
+      "id": "info.menu.buy_current_events.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "events", 1]
+      },
+      "save_as": "info_purchase",
+      "next": "info.menu.buy_current_events.credit_check.purchase.result"
+    },
+    {
+      "id": "info.menu.buy_current_events.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "ok"]},
+          "next": "info.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "no_credit"]},
+          "next": "info.no_credit"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "unavailable"]},
+          "next": "info.none"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "info.menu.buy_current_events.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "info.menu.buy_current_events.credit_check.purchase"
+    },
+    {
+      "id": "info.menu.buy_alien_races.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "alien_races", 1]
+      },
+      "save_as": "info_purchase",
+      "next": "info.menu.buy_alien_races.credit_check.purchase.result"
+    },
+    {
+      "id": "info.menu.buy_alien_races.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "ok"]},
+          "next": "info.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "no_credit"]},
+          "next": "info.no_credit"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "unavailable"]},
+          "next": "info.none"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "info.menu.buy_alien_races.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "info.menu.buy_alien_races.credit_check.purchase"
+    },
+    {
+      "id": "info.menu.buy_history.credit_check.purchase",
+      "kind": "action",
+      "action": {
+        "action": "trade.purchase",
+        "args": ["melnorme", "history", 1]
+      },
+      "save_as": "info_purchase",
+      "next": "info.menu.buy_history.credit_check.purchase.result"
+    },
+    {
+      "id": "info.menu.buy_history.credit_check.purchase.result",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "ok"]},
+          "next": "info.success"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "no_credit"]},
+          "next": "info.no_credit"
+        },
+        {
+          "when": {"eq": [{"get": ["result", "info_purchase.code", 0]}, "unavailable"]},
+          "next": "info.none"
+        }
+      ],
+      "otherwise": "error"
+    },
+    {
+      "id": "info.menu.buy_history.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "info.menu.buy_history.credit_check.purchase"
+    },
+    {
+      "id": "info.menu.done_buying_info.credit_check",
+      "kind": "decision",
+      "branches": [
+        {
+          "when": {"eq": [{"query": "currency.balance", "args": ["melnorme_credit"]}, 0]},
+          "next": "buy.no_credit.effects"
+        }
+      ],
+      "otherwise": "info.done"
+    },
+    {
+      "id": "bluster.accept_testing.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 0]
+      },
+      "next": "first.menu",
+      "save_as": "bluster_accept_testing_priority"
+    },
+    {
+      "id": "miffed.apologize.priority",
+      "kind": "action",
+      "action": {
+        "action": "state.set",
+        "args": ["local", "first.last_stack", 0]
+      },
+      "next": "first.menu",
+      "save_as": "miffed_apologize_priority"
     }
-  ]
+  ],
+  "locals": {"asked_to_buy": false, "sell_enabled": true, "bluster.strength": 0, "bluster.testing": 0},
+  "markets": {
+    "melnorme": {
+      "currency": "melnorme_credit",
+      "fuel": {
+        "unit_price": 1,
+        "unit": "displayed_fuel",
+        "storage_units_per_unit": 100,
+        "quantities": [1, 5, 10, 25, "fill"],
+        "fill_rounding": "ceil",
+        "capacity_comparison": "legacy_whole_units"
+      },
+      "sales": {"biomass": {"credits_per_unit": 2}, "rainbows": {"credits_per_new_location": 500}},
+      "technology": [
+        {
+          "id": "TECH_MODULE_BLASTER",
+          "price": 150,
+          "pitch": ["NEW_TECH_1"],
+          "sold": ["OK_BUY_NEW_TECH_1"],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "BLASTER_WEAPON",
+            "build_cost_ru": 4000
+          }
+        },
+        {
+          "id": "TECH_LANDER_SPEED",
+          "price": 150,
+          "pitch": ["NEW_TECH_2"],
+          "sold": ["OK_BUY_NEW_TECH_2"],
+          "grant": {
+            "kind": "state",
+            "key": "IMPROVED_LANDER_SPEED",
+            "value": 1
+          }
+        },
+        {
+          "id": "TECH_MODULE_ANTIMISSILE",
+          "price": 150,
+          "pitch": ["NEW_TECH_3"],
+          "sold": ["OK_BUY_NEW_TECH_3"],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "ANTIMISSILE_DEFENSE",
+            "build_cost_ru": 4000
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_BIO",
+          "price": 150,
+          "pitch": ["NEW_TECH_4"],
+          "sold": ["OK_BUY_NEW_TECH_4"],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "BIOLOGICAL_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_LANDER_CARGO",
+          "price": 150,
+          "pitch": ["NEW_TECH_5"],
+          "sold": ["OK_BUY_NEW_TECH_5"],
+          "grant": {
+            "kind": "state",
+            "key": "IMPROVED_LANDER_CARGO",
+            "value": 1
+          }
+        },
+        {
+          "id": "TECH_MODULE_BIGFUELTANK",
+          "price": 150,
+          "pitch": ["NEW_TECH_6"],
+          "sold": ["OK_BUY_NEW_TECH_6"],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "HIGHEFF_FUELSYS",
+            "build_cost_ru": 1000
+          }
+        },
+        {
+          "id": "TECH_LANDER_RAPIDFIRE",
+          "price": 150,
+          "pitch": ["NEW_TECH_7"],
+          "sold": ["OK_BUY_NEW_TECH_7"],
+          "grant": {
+            "kind": "state",
+            "key": "IMPROVED_LANDER_SHOT",
+            "value": 1
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_QUAKE",
+          "price": 150,
+          "pitch": ["NEW_TECH_8"],
+          "sold": ["OK_BUY_NEW_TECH_8"],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "EARTHQUAKE_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_MODULE_TRACKING",
+          "price": 150,
+          "pitch": ["NEW_TECH_9"],
+          "sold": ["OK_BUY_NEW_TECH_9"],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "TRACKING_SYSTEM",
+            "build_cost_ru": 5000
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_LIGHTNING",
+          "price": 150,
+          "pitch": ["NEW_TECH_10"],
+          "sold": ["OK_BUY_NEW_TECH_10"],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "LIGHTNING_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_LANDER_SHIELD_HEAT",
+          "price": 150,
+          "pitch": ["NEW_TECH_11"],
+          "sold": ["OK_BUY_NEW_TECH_11"],
+          "grant": {
+            "kind": "lander_shield",
+            "hazard": "LAVASPOT_DISASTER"
+          }
+        },
+        {
+          "id": "TECH_MODULE_CANNON",
+          "price": 150,
+          "pitch": ["NEW_TECH_12"],
+          "sold": ["OK_BUY_NEW_TECH_12"],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "CANNON_WEAPON",
+            "build_cost_ru": 6000
+          }
+        },
+        {
+          "id": "TECH_MODULE_FURNACE",
+          "price": 150,
+          "pitch": ["NEW_TECH_13"],
+          "sold": ["OK_BUY_NEW_TECH_13"],
+          "grant": {
+            "kind": "module_unlock",
+            "module": "SHIVA_FURNACE",
+            "build_cost_ru": 4000
+          }
+        }
+      ],
+      "information": {
+        "price": 75,
+        "categories": {
+          "events": {
+            "cursor": "MELNORME_EVENTS_INFO_STACK",
+            "speech": [
+              ["OK_BUY_EVENT_1"],
+              ["OK_BUY_EVENT_2"],
+              ["OK_BUY_EVENT_3"],
+              ["OK_BUY_EVENT_4"],
+              ["OK_BUY_EVENT_5"],
+              ["OK_BUY_EVENT_6"],
+              ["OK_BUY_EVENT_7"],
+              ["OK_BUY_EVENT_8"]
+            ]
+          },
+          "alien_races": {
+            "cursor": "MELNORME_ALIEN_INFO_STACK",
+            "speech": [
+              ["OK_BUY_ALIEN_RACE_1"],
+              ["OK_BUY_ALIEN_RACE_2"],
+              ["OK_BUY_ALIEN_RACE_3"],
+              ["OK_BUY_ALIEN_RACE_4"],
+              ["OK_BUY_ALIEN_RACE_5"],
+              ["OK_BUY_ALIEN_RACE_6"],
+              ["OK_BUY_ALIEN_RACE_7"],
+              ["OK_BUY_ALIEN_RACE_8"],
+              ["OK_BUY_ALIEN_RACE_9"],
+              ["OK_BUY_ALIEN_RACE_10"],
+              ["OK_BUY_ALIEN_RACE_11"],
+              ["OK_BUY_ALIEN_RACE_12"],
+              ["OK_BUY_ALIEN_RACE_13"],
+              ["OK_BUY_ALIEN_RACE_14"],
+              ["OK_BUY_ALIEN_RACE_15"],
+              ["OK_BUY_ALIEN_RACE_16"]
+            ],
+            "story_policy": "melnorme.alien_knowledge"
+          },
+          "history": {
+            "cursor": "MELNORME_HISTORY_INFO_STACK",
+            "speech": [
+              ["OK_BUY_HISTORY_1"],
+              ["OK_BUY_HISTORY_2"],
+              ["OK_BUY_HISTORY_3"],
+              ["OK_BUY_HISTORY_4"],
+              ["OK_BUY_HISTORY_5"],
+              ["OK_BUY_HISTORY_6"],
+              ["OK_BUY_HISTORY_7"],
+              ["OK_BUY_HISTORY_8"],
+              ["OK_BUY_HISTORY_9"]
+            ]
+          }
+        }
+      },
+      "rescue": {
+        "destination": "sol",
+        "extra_fuel_units": 2,
+        "seed_policy": "legacy_location_and_equipment",
+        "quote_lifetime": "conversation",
+        "accept_once": true
+      },
+      "penance": {
+        "minimum_value": 80,
+        "valuation_units": "legacy_module_cost_units",
+        "strip_policy": "preserve_required_crew_pods; clamp_fuel_to_reserve"
+      }
+    }
+  },
+  "alliance_name_base": "name_1"
 }
