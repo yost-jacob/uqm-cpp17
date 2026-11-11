@@ -27,14 +27,12 @@
 #include "uqm/colors.h"
 #include "uqm/globdata.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("human");
-    return value;
+    return uqm::combat::shipTuning("human");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -42,8 +40,8 @@ constexpr auto HumanOffset = 42;
 constexpr auto NukeOffset = 8;
 constexpr auto LaserRange = (UWORD)100;
 
-static const RACE_DESC &humanDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC humanDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | SEEKING_WEAPON | POINT_DEFENSE,
             tuning().ship.meleeCost, /* Super Melee cost */

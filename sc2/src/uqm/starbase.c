@@ -438,7 +438,7 @@ VisitStarBase (void)
 	if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
 	{	// We were just transported by Chmmr to the Starbase
 		// Force a reload of the SolarSys
-		CurStarDescPtr = NULL;
+		SetCurrentStar(NULL);
 		// This marks that we are in Starbase.
 		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (BYTE)~0);
 	}
@@ -543,7 +543,7 @@ InstallBombAtEarth (void)
 	SET_GAME_STATE (CHMMR_BOMB_STATE, 3); /* bomb processed */
 	GLOBAL (CurrentActivity) = CHECK_LOAD; /* fake a load game */
 	NextActivity = MAKE_WORD (IN_INTERPLANETARY, 0) | START_INTERPLANETARY;
-	CurStarDescPtr = 0; /* force SolarSys reload */
+	SetCurrentStar(0); /* force SolarSys reload */
 }
 
 // XXX: Doesn't really belong in this file.

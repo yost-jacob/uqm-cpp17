@@ -9,7 +9,7 @@ int discovery_state_c_round_trip(void)
 {
     SOLARSYS_STATE solar = {0};
     SOLARSYS_STATE *old_system = pSolarSysState;
-    STAR_DESC *old_star = CurStarDescPtr;
+    STAR_DESC *old_star = GetCurrentStar();
     COUNT star, i;
     DWORD energy_offset;
     DWORD mask = 0;
@@ -19,7 +19,7 @@ int discovery_state_c_round_trip(void)
     for (star = 0; star < NUM_SOLAR_SYSTEMS; ++star)
         if (GetStar(star)->Index == ANDROSYNTH_DEFINED) break;
     if (star == NUM_SOLAR_SYSTEMS) return 0;
-    CurStarDescPtr = GetStar(star);
+    SetCurrentStar(GetStar(star));
     pSolarSysState = &solar;
     solar.SunDesc[0].NumPlanets = 2;
     solar.PlanetDesc[0].NumPlanets = 2;
@@ -36,8 +36,8 @@ int discovery_state_c_round_trip(void)
     swrite_32(file, UINT32_C(0x00050003));
     CloseStateFile(file);
     file = NULL;
-    CreateSystemWorlds (&solar, CurStarDescPtr);
-    BuildSystemWorlds (&solar, CurStarDescPtr);
+    CreateSystemWorlds (&solar, GetCurrentStar());
+    BuildSystemWorlds (&solar, GetCurrentStar());
     SelectSystemWorld (&solar, &solar.PlanetDesc[1]);
     ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
     BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);
@@ -84,6 +84,6 @@ done:
     DestroySystemWorlds (&solar);
     UninitPlanetInfo();
     pSolarSysState = old_system;
-    CurStarDescPtr = old_star;
+    SetCurrentStar(old_star);
     return ok;
 }

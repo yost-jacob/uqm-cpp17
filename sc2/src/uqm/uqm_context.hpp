@@ -20,7 +20,6 @@ public:
 private:
     ConfigurationOwner configuration_; // Outlives every backend cleanup in this context.
     bool kernel_ = false;
-    bool master_ = false;
     bool game_ = false;
 };
 class Game {

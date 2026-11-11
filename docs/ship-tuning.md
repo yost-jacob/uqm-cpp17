@@ -83,9 +83,12 @@ Fleet costs also move from initializer literals into JSON. Stock numeric values
 were compared against all 689 captured numeric definitions across the 28 ships;
 all match. The shared color conversion is constexpr in C++ and remains inline C.
 
-Ship definitions are initialized lazily after catalog loading. Active definitions
-and references remain immutable for the process lifetime. No per-frame JSON parsing
-or string lookup is required; ship/profile references are cached on first use.
+Campaign and arcade sessions load their own immutable ship catalog when they
+are constructed. Title/intro sessions load none. Ship/profile borrows expire with
+the owning session; ship implementations no longer retain process-static tuning
+references or derived descriptors. Each ship copies its descriptor from current
+session tuning. Runtime lookups select the active session; JSON is never parsed
+per frame. Editing the file takes effect in the next gameplay session.
 
 ## Projectile flight (schema 2)
 

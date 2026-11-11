@@ -22,7 +22,10 @@ class Fleet;
 class SIS;
 // Transient per-player navigation memory, retained across encounter mode swaps.
 // Portal coordinates were process statics and are not part of the legacy save.
-struct NavigationState { std::int16_t portalX = 0, portalY = 0; };
+struct NavigationState {
+    std::int16_t portalX = 0, portalY = 0;
+    std::optional<StarId> currentStar; // Persistent selection, never a catalog pointer.
+};
 struct UserProfile { PlayerId id; std::string displayName; };
 
 enum class StoryFlag {

@@ -486,9 +486,9 @@ uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 		GLOBAL (autopilot.y) = ~0;
 
 		ElementToUniverse (ElementPtr, &pt);
-		CurStarDescPtr = FindStar (NULL, &pt, 5, 5);
-		if (CurStarDescPtr->star_pt.x == ARILOU_HOME_X
-				&& CurStarDescPtr->star_pt.y == ARILOU_HOME_Y)
+		SetCurrentStar(FindStar (NULL, &pt, 5, 5));
+		if (GetCurrentStar()->star_pt.x == ARILOU_HOME_X
+				&& GetCurrentStar()->star_pt.y == ARILOU_HOME_Y)
 		{
 			// Meet the Arilou.
 			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
@@ -500,7 +500,7 @@ uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 			COUNT index;
 			const POINT portal_pt[] = QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
 
-			index = GetStarIndex(CurStarDescPtr) - QUASISPACE_FIRST;
+			index = GetStarIndex(GetCurrentStar()) - QUASISPACE_FIRST;
 			player_.setMapPosition(UNIVERSE_TO_LOGX (portal_pt[index].x), UNIVERSE_TO_LOGY (portal_pt[index].y));
 
 			story_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
@@ -699,12 +699,12 @@ uqm::HyperSpaceNavigation::hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 
 		GetElementStarShip (ElementPtr1, &StarShipPtr);
 		GetCurrentVelocityComponents (&ElementPtr1->velocity, &dx, &dy);
-		if (SDPtr == CurStarDescPtr
+		if (SDPtr == GetCurrentStar()
 				|| (ElementPtr1->state_flags & APPEARING)
 				|| !(dx || dy || (StarShipPtr->cur_status_flags
 				& (LEFT | RIGHT | THRUST | WEAPON | SPECIAL))))
 		{
-			CurStarDescPtr = SDPtr;
+			SetCurrentStar(SDPtr);
 			ElementPtr0->state_flags |= DEFY_PHYSICS | COLLISION;
 		}
 		else if ((GLOBAL (CurrentActivity) & IN_BATTLE)
@@ -713,7 +713,7 @@ uqm::HyperSpaceNavigation::hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 				|| (GLOBAL (autopilot.x) == SDPtr->star_pt.x
 				&& GLOBAL (autopilot.y) == SDPtr->star_pt.y)))
 		{
-			CurStarDescPtr = SDPtr;
+			SetCurrentStar(SDPtr);
 			ElementPtr0->state_flags |= COLLISION;
 
 			init_transition (ElementPtr0, ElementPtr1,
@@ -729,7 +729,7 @@ uqm::HyperSpaceNavigation::hyper_death(ELEMENT *ElementPtr)
 {
 	if (!(ElementPtr->state_flags & DEFY_PHYSICS)
 			&& (GLOBAL (CurrentActivity) & IN_BATTLE))
-		CurStarDescPtr = 0;
+		SetCurrentStar(0);
 }
 
 void
@@ -1565,7 +1565,7 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 
 			SetUpElement (HyperSpaceElementPtr);
 
-			if (SDPtr == CurStarDescPtr
+			if (SDPtr == GetCurrentStar()
 					&& story_.read(uqm::StoryCounter::PortalCounter) == 0)
 				HyperSpaceElementPtr->death_func = ::hyper_death;
 			else

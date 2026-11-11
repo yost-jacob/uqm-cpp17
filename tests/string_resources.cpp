@@ -14,6 +14,11 @@
 #include "libs/log.h"
 #include "options.h"
 #include "uqm/starmap.h"
+#include "uqm/game_state.hpp"
+#include "uqm/arcade_session.hpp"
+#include "uqm/uqm_context.hpp"
+#include <nlohmann/json.hpp>
+#include <type_traits>
 
 // In-memory VFS boundary for the real loaders, allocator and table destructor.
 // Tests control file bytes and count live handles without starting the game.
@@ -342,9 +347,9 @@ BOOST_FIXTURE_TEST_CASE(star_map_content_loader_closes_files_and_exposes_c_names
     BOOST_REQUIRE(LoadStarMap() == TRUE);
     BOOST_TEST(liveStreams == 0);
     BOOST_TEST(star_map_c_contract() == 1);
-    CurStarDescPtr = GetStar(0);
+    SetCurrentStar(GetStar(0));
     FreeStarMap();
-    BOOST_TEST(CurStarDescPtr == nullptr);
+    BOOST_TEST(GetCurrentStar() == nullptr);
 }
 
 extern "C" int discovery_state_c_round_trip(void);
@@ -371,4 +376,97 @@ BOOST_FIXTURE_TEST_CASE(system_behavior_bridge_uses_its_attached_campaign, Resou
     BOOST_REQUIRE(chmmr);
     BOOST_TEST(system_behavior_bridge_contract(chmmr) == 1);
     FreeStarMap();
+}
+
+
+namespace {
+std::string definitionFixture(const char *path) {
+    std::ifstream input(path);
+    if (!input) throw std::runtime_error("missing definition fixture");
+    return {std::istreambuf_iterator<char>(input), {}};
+}
+void stockDefinitions() {
+    files["base/ships.json"] = definitionFixture(UQM_TEST_SHIPS_PATH);
+    files["base/starmap.json"] = definitionFixture(UQM_TEST_STARMAP_PATH);
+}
+}
+static_assert(std::is_same_v<decltype(std::declval<uqm::Session &>().definitions()), const uqm::GameDefinitions &>);
+static_assert(std::is_same_v<decltype(std::declval<const uqm::GameDefinitions &>().ships()), const uqm::combat::ShipTuningCatalog &>);
+
+BOOST_FIXTURE_TEST_CASE(gameplay_sessions_load_only_their_own_definitions, ResourceFixture) {
+    stockDefinitions();
+    uqm::UQM_Context context;
+    uqm::SessionDispatcher host{context};
+    uqm::GameSession campaign{host, uqm::GameSession::Entry::NewGame};
+    BOOST_TEST(campaign.definitions().hasStars());
+    BOOST_TEST(campaign.definitions().ships().at("arilou").ship.maxCrew == 6u);
+    files.erase("base/starmap.json"); // Arcade creation must not open this file.
+    uqm::ArcadeSession arcade{host};
+    BOOST_TEST(!arcade.definitions().hasStars());
+    BOOST_CHECK_THROW(arcade.definitions().stars(), std::logic_error);
+    BOOST_TEST(arcade.definitions().ships().at("arilou").ship.maxCrew == 6u);
+    BOOST_TEST(&campaign.definitions().ships() != &arcade.definitions().ships());
+    BOOST_TEST(liveStreams == 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(frontend_sessions_do_not_require_gameplay_definition_files, ResourceFixture) {
+    struct Frontend final : uqm::Session {
+        explicit Frontend(uqm::SessionDispatcher &host) : Session(host, RuntimeKind::Frontend, 1) {}
+        uqm::SessionResult run() override { return uqm::DispatchCompleted{}; }
+    };
+    uqm::UQM_Context context;
+    uqm::SessionDispatcher host{context};
+    Frontend title{host};
+    BOOST_CHECK_THROW(title.definitions(), std::logic_error);
+    BOOST_TEST(liveStreams == 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(failed_session_definition_loading_does_not_replace_an_existing_catalog, ResourceFixture) {
+    stockDefinitions();
+    uqm::UQM_Context context;
+    uqm::SessionDispatcher host{context};
+    uqm::GameSession original{host, uqm::GameSession::Entry::NewGame};
+    files["base/starmap.json"] = "{broken}";
+    BOOST_CHECK_THROW((uqm::GameSession{host, uqm::GameSession::Entry::NewGame}), std::exception);
+    BOOST_TEST(original.definitions().hasStars());
+    BOOST_TEST(original.definitions().ships().at("arilou").ship.maxCrew == 6u);
+    BOOST_TEST(liveStreams == 0);
+    files.erase("base/ships.json");
+    BOOST_CHECK_THROW((uqm::ArcadeSession{host}), std::runtime_error);
+    BOOST_TEST(liveStreams == 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(c_adapters_follow_session_catalogs_and_player_star_identity, ResourceFixture) {
+    stockDefinitions();
+    struct Probe final : uqm::GameSession {
+        uqm::SessionDispatcher &host;
+        bool second;
+        Probe(uqm::SessionDispatcher &host, bool second) : GameSession(host, Entry::NewGame), host(host), second(second) {}
+        uqm::SessionResult run() override {
+            BOOST_TEST(GetCurrentStar() == nullptr);
+            BOOST_TEST(!player().navigationState().currentStar.has_value());
+            BOOST_TEST(uqm::combat::shipTuning("arilou").ship.maxCrew == (second ? 17u : 6u));
+            SetCurrentStar(GetStar(0));
+            BOOST_REQUIRE(player().navigationState().currentStar.has_value());
+            BOOST_TEST(player().navigationState().currentStar->value == 0u);
+            BOOST_TEST(GetCurrentStar() == GetStar(0));
+            BOOST_TEST(definitions().stars().at(StarId{0}).position().x == GetCurrentStar()->star_pt.x);
+            if (!second) {
+                auto document = nlohmann::json::parse(files.at("base/ships.json"));
+                document["ships"]["arilou"]["max_crew"] = 17;
+                files["base/ships.json"] = document.dump();
+                auto next = std::make_unique<Probe>(host, true);
+                BOOST_TEST(uqm::combat::shipTuning("arilou").ship.maxCrew == 6u);
+                return next;
+            }
+            SetCurrentStar(nullptr);
+            BOOST_TEST(!player().navigationState().currentStar.has_value());
+            return uqm::DispatchCompleted{};
+        }
+    };
+    uqm::UQM_Context context;
+    uqm::SessionDispatcher host{context};
+    const auto exit = host.run(std::make_unique<Probe>(host, false));
+    BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::ApplicationExitKind::Shutdown));
+    BOOST_TEST(liveStreams == 0);
 }

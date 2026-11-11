@@ -1,5 +1,6 @@
 #include "session.hpp"
 #include "fleet_legacy.hpp"
+#include "game_state.hpp"
 #include <stdexcept>
 namespace uqm {
 struct Session::FrontendStorage {
@@ -9,6 +10,7 @@ struct Session::FrontendStorage {
     PLAYER_TRAVEL_POSITION travel{};
 };
 Session::Session(RuntimeKind kind, std::uint32_t seed) : random_(seed) {
+    if (kind != RuntimeKind::Frontend) definitions_ = std::make_unique<GameDefinitions>();
     if (kind == RuntimeKind::Frontend) {
         frontend_ = std::make_unique<FrontendStorage>();
     }
@@ -17,6 +19,10 @@ Session::Session(SessionDispatcher &host, RuntimeKind kind, std::uint32_t seed) 
     bindDispatcher(host);
 }
 Session::~Session() = default;
+const GameDefinitions &Session::definitions() const {
+    if (!definitions_) throw std::logic_error("frontend session has no game definitions");
+    return *definitions_;
+}
 void Session::bindDispatcher(SessionDispatcher &host) noexcept { host_ = &host; }
 SessionDispatcher &Session::sessionDispatcher() const {
     if (!host_) throw std::logic_error("standalone session has no application dispatcher");
@@ -30,6 +36,8 @@ detail::LegacyRuntimeView Session::legacyRuntime() noexcept {
 detail::LegacyRuntimeView Session::bindingView() noexcept {
     auto view = legacyRuntime();
     view.activities = &activities_;
+    view.definitions = definitions_.get();
+    view.currentStar = view.campaign ? &view.campaign->player().navigationState().currentStar : &selectedStar_;
     return view;
 }
 SessionActivation::SessionActivation(Session &session) noexcept

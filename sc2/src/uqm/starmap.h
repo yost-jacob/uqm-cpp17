@@ -24,9 +24,13 @@
 extern "C" {
 #endif
 
-extern STAR_DESC *CurStarDescPtr;
-/* Load once from contentDir/base/starmap.json before any game session. Failure
- * logs a diagnostic and returns FALSE. Names/descriptors live until shutdown. */
+/* Current selection is a player-owned optional StarId. These C adapters borrow
+ * a descriptor from the active session; NULL clears the selection. */
+STAR_DESC *GetCurrentStar(void);
+void SetCurrentStar(STAR_DESC *star);
+/* Compatibility loader for the selected standalone session. Production sessions
+ * load during construction. Never replace a catalog with live borrowers.
+ * Names/descriptors expire with their owning session. Failure returns FALSE. */
 BOOLEAN LoadStarMap(void);
 void FreeStarMap(void);
 /* Borrow a read-only C compatibility descriptor by stable index (including

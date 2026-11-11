@@ -26,10 +26,9 @@
 #include "uqm/combat_entity_legacy.hpp"
 #include "uqm/animation_effect.hpp"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("mycon");
-    return value;
+    return uqm::combat::shipTuning("mycon");
 }
 
 static const uqm::combat::ProjectileStats &plasmaStats() {
@@ -44,8 +43,8 @@ constexpr auto NumGloballs = 8;
 
 constexpr auto RegenerationAmount = 4;
 
-static const RACE_DESC &myconDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC myconDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | SEEKING_WEAPON,
             tuning().ship.meleeCost, /* Super Melee cost */

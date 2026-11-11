@@ -25,19 +25,16 @@
 
 #include "uqm/globdata.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("blackurq");
-    return value;
+    return uqm::combat::shipTuning("blackurq");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 static const uqm::combat::ProjectileStats &gasStats() {
-    static const auto &value = tuning().projectile("gas");
-    return value;
+    return tuning().projectile("gas");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -59,8 +56,8 @@ constexpr auto LastSpinIndex = 1;
 // Discs remain controlled while fire is held; their lifetime is extended by behavior.
 // ActivateRange is the stationary-disc homing threshold, independent of screen width.
 
-static const RACE_DESC &black_urquanDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC black_urquanDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE,
             tuning().ship.meleeCost, /* Super Melee cost */

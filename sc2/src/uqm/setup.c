@@ -16,9 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "ship_tuning_c.h"
 #include "setup.h"
-#include "starmap.h"
 
 #include "controls.h"
 #include "options.h"
@@ -139,8 +137,6 @@ LoadKernel (int argc, char *argv[])
 
 	/* Now load the rest of the addons, in order. */
 	prepareAddons (optAddons);
-	if (!LoadShipTuning() || !LoadStarMap())
-		return FALSE;
 
 	{
 		COLORMAP ColorMapTab;

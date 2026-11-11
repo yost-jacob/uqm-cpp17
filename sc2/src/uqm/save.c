@@ -728,8 +728,8 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 	POINT pt;
 	STAR_DESC SD;
 	char file[PATH_MAX];
-	if (CurStarDescPtr)
-		SD = *CurStarDescPtr;
+	if (GetCurrentStar())
+		SD = *GetCurrentStar();
 	else
 		memset (&SD, 0, sizeof (SD));
 

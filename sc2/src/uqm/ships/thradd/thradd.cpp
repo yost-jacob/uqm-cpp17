@@ -25,19 +25,16 @@
 
 #include "uqm/globdata.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("thradd");
-    return value;
+    return uqm::combat::shipTuning("thradd");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 static const uqm::combat::ProjectileStats &napalmStats() {
-    static const auto &value = tuning().projectile("napalm");
-    return value;
+    return tuning().projectile("napalm");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -52,8 +49,8 @@ constexpr auto StationarySpeed = WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (4));
 
 // NapalmDecayRate is the number of ticks between afterburner decay animation frames.
 
-static const RACE_DESC &thraddashDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC thraddashDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE,
             tuning().ship.meleeCost, /* Super Melee cost */

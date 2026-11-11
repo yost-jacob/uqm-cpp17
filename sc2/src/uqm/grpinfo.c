@@ -262,7 +262,7 @@ BuildGroups (void)
 		HomeWorld[SUPOX_SHIP] = 0;
 	}
 
-	universe = CurStarDescPtr->star_pt;
+	universe = GetCurrentStar()->star_pt;
 	for (hFleet = GetHeadLink (&GLOBAL (avail_race_q)), Index = 0;
 			hFleet; hFleet = hNextFleet, ++Index)
 	{
@@ -280,7 +280,7 @@ BuildGroups (void)
 			BYTE race_enc;
 
 			race_enc = HomeWorld[Index];
-			if (race_enc && CurStarDescPtr->Index == race_enc)
+			if (race_enc && GetCurrentStar()->Index == race_enc)
 			{	// In general, there are always ships at the Homeworld for
 				// the races specified in HomeWorld[] array.
 				BestIndex = Index;
@@ -356,7 +356,7 @@ FoundHome:
 			num_groups = MAX_BATTLE_GROUPS;
 		else if (num_groups < 5
 				&& (Index = HomeWorld[BestIndex])
-				&& CurStarDescPtr->Index == Index)
+				&& GetCurrentStar()->Index == Index)
 			num_groups = 5;
 		do
 		{
@@ -539,7 +539,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		ReinitQueue (&GLOBAL (ip_group_q));
 #ifdef DEBUG_GROUPS
 		log_add (log_Debug, "%u == %u", GH.star_index,
-				(COUNT)(GetStarIndex(CurStarDescPtr)));
+				(COUNT)(GetStarIndex(GetCurrentStar())));
 #endif /* DEBUG_GROUPS */
 
 		/* Check if the requested groups are valid for this star system
@@ -548,12 +548,12 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		month_index = GH.month_index;
 		year_index = GH.year_index;
 		if (offset == GROUPS_RANDOM
-				&& (GH.star_index != (COUNT)(GetStarIndex(CurStarDescPtr))
+				&& (GH.star_index != (COUNT)(GetStarIndex(GetCurrentStar()))
 				|| !ValidateEvent (ABSOLUTE_EVENT, &month_index, &day_index,
 					&year_index)))
 		{
 #ifdef DEBUG_GROUPS
-			if (GH.star_index == GetStarIndex(CurStarDescPtr))
+			if (GH.star_index == GetStarIndex(GetCurrentStar()))
 				log_add (log_Debug, "GetGroupInfo: battle groups out of "
 						"date %u/%u/%u!", month_index, day_index,
 						year_index);
@@ -848,7 +848,7 @@ PutGroupInfo (DWORD offset, BYTE which_group)
 		GH.month_index = (BYTE)month_index;
 		GH.year_index = year_index;
 	}
-	GH.star_index = GetStarIndex(CurStarDescPtr);
+	GH.star_index = GetStarIndex(GetCurrentStar());
 
 #ifdef DEBUG_GROUPS
 	log_add (log_Debug, "PutGroupInfo(%lu): %u out of %u -- %u/%u/%u",

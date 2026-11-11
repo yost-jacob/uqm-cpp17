@@ -493,8 +493,8 @@ doInstantMove (void)
 	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
 	{
 		// If there's a solar system at the destination, enter it.
-		CurStarDescPtr = FindStar (0, &(GLOBAL (autopilot)), 0, 0);
-		if (CurStarDescPtr)
+		SetCurrentStar(FindStar (0, &(GLOBAL (autopilot)), 0, 0));
+		if (GetCurrentStar())
 		{
 			// Leave HyperSpace/QuasiSpace if we're there:
 			SET_GAME_STATE (USED_BROADCASTER, 0);
@@ -582,7 +582,7 @@ forAllPlanets (STAR_DESC *star, SOLARSYS_STATE *system, void (*callback) (
 {
 	COUNT i;
 
-	assert(CurStarDescPtr == star);
+	assert(GetCurrentStar() == star);
 	assert(pSolarSysState == system);
 
 	for (i = 0; i < system->SunDesc[0].NumPlanets; i++)
@@ -637,8 +637,8 @@ starRecurse (STAR_DESC *star, void *arg)
 
 	SOLARSYS_STATE SolarSysState;
 	SOLARSYS_STATE *oldPSolarSysState = pSolarSysState;
-	STAR_DESC *oldStarDescPtr = CurStarDescPtr;
-	CurStarDescPtr = star;
+	STAR_DESC *oldStarDescPtr = GetCurrentStar();
+	SetCurrentStar(star);
 
 	RandomContext_SeedRandom (&SysGenRNG, GetRandomSeedForStar (star));
 
@@ -677,7 +677,7 @@ starRecurse (STAR_DESC *star, void *arg)
 	
     DestroySystemWorlds (&SolarSysState);
 	pSolarSysState = oldPSolarSysState;
-	CurStarDescPtr = oldStarDescPtr;
+	SetCurrentStar(oldStarDescPtr);
 }
 
 static void
@@ -686,7 +686,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 {
 	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
 	
-	assert(CurStarDescPtr == star);
+	assert(GetCurrentStar() == star);
 	assert(pSolarSysState == system);
 
 	planet->pPrevDesc = &system->SunDesc[0];
@@ -737,7 +737,7 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 {
 	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
 	
-	assert(CurStarDescPtr == star);
+	assert(GetCurrentStar() == star);
 	assert(pSolarSysState == system);
 	
 	moon->pPrevDesc = planet;

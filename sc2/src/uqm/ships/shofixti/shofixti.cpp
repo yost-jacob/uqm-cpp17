@@ -27,14 +27,12 @@
 #include "uqm/tactrans.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("shofixti");
-    return value;
+    return uqm::combat::shipTuning("shofixti");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -46,8 +44,8 @@ constexpr auto NumLimpets = 3;
 constexpr auto DestructSwitch = ((NUM_EXPLOSION_FRAMES * 3) - 3);
 constexpr auto MinThrustIncrement = DISPLAY_TO_WORLD (1);
 
-static const RACE_DESC &shofixtiDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC shofixtiDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE,
             tuning().ship.meleeCost, /* Super Melee cost */

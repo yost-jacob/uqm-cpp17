@@ -300,6 +300,7 @@ GameSession::GameSession(SessionDispatcher &host, Entry entry, std::uint32_t see
     : GameSession(std::make_shared<GameState>(UserProfile{SinglePlayerId, "Player"}), SinglePlayerId, seed) {
     bindDispatcher(host);
     entry_ = entry;
+    loadDefinitions(true);
 }
 detail::LegacyRuntimeView GameSession::legacyRuntime() noexcept {
     auto &user = player();

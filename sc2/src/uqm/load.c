@@ -766,7 +766,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 
 	ClearRuntimeShipRoster (0);
 	ClearRuntimeShipRoster (1);
-	CurStarDescPtr = FindStar (NULL, &SD.star_pt, 0, 0);
+	SetCurrentStar(FindStar (NULL, &SD.star_pt, 0, 0));
 	if (!(NextActivity & START_ENCOUNTER)
 			&& LOBYTE (NextActivity) == IN_INTERPLANETARY)
 		NextActivity |= START_INTERPLANETARY;

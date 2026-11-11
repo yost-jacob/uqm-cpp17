@@ -1,8 +1,9 @@
 # Editing the star catalogue
 
-`sc2/content/base/starmap.json` is the runtime star catalogue. Edit it and restart
-the game; no executable rebuild is needed. It is loaded through the game's
-content filesystem, so `--contentdir` and mounted addon overrides still apply.
+`sc2/content/base/starmap.json` is the runtime star catalogue. Edits are loaded
+when a new campaign session is created; no executable rebuild is needed. It is
+loaded through the game's content filesystem, so `--contentdir` and mounted addon
+overrides still apply.
 
 The original star catalogue is copyright Paul Reiche and Fred Ford, 1992–2002,
 and remains covered by the project's GPL-2.0-or-later license.
@@ -96,7 +97,9 @@ means no match. IDs in search results remain ordinary values after the map is
 destroyed. Star/name references require the owner to remain alive. The map
 cannot be copied or moved and never resizes its published storage.
 
-`star_map_c.cpp` owns the compatibility buffer of 520 plain `STAR_DESC` records.
+The campaign session's `GameDefinitions` owns the native map and compatibility
+buffer of 520 plain `STAR_DESC` records. Arcade and frontend sessions do not load
+a starmap. `star_map_c.cpp` borrows the active session's definitions.
 Only this adapter packs enum fields, inserts the two sentinels, maps C pointers
 and legacy indices, translates negative bounds/boolean space selection and
 copies strings into caller-owned buffers. It translates the C "last result"
@@ -108,3 +111,9 @@ remain unchanged. Names are borrowed through `.c_str()` only at this boundary.
 Searching scans the small native catalogue in ID order, avoiding another sorted
 index and permitting coordinate edits without changing persistent identities.
 The existing C `FindStar` wrapper selects the space from campaign state.
+
+The current star is a player-owned `std::optional<StarId>` in navigation state.
+C callers use `GetCurrentStar()` / `SetCurrentStar()` to translate that identity
+at the boundary. No process-wide current-star pointer remains. Save/load still
+uses the existing descriptor projection and restores the selection by identity.
+See [session definitions](session-definitions.md) for loading/lifetime contracts.

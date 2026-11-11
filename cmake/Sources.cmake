@@ -245,9 +245,9 @@ set(UQM_SOURCES
     sc2/src/uqm/game_state.cpp
     sc2/src/uqm/asset_cache.cpp sc2/src/uqm/game_assets.cpp
     sc2/src/uqm/ship_tuning.cpp
-    sc2/src/uqm/ship_tuning_c.cpp
     sc2/src/uqm/ship_factory.cpp
     sc2/src/uqm/ship_behavior.cpp
+    sc2/src/uqm/game_definitions.cpp
     sc2/src/uqm/session.cpp
     sc2/src/uqm/application_sessions.cpp
     sc2/src/uqm/game_mode.cpp

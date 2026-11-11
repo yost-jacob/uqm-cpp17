@@ -33,6 +33,18 @@ public:
     ~SplashBinding() { splashContext = previous_; }
 private: UQM_Context *previous_;
 };
+// Construct only after the session activation binds its catalog. Resources
+// are released before the session's definitions and before returning to title.
+class MasterShipResources {
+public:
+    MasterShipResources() {
+        try { LoadMasterShipList(TaskSwitch); }
+        catch (...) { FreeMasterShipList(); throw; }
+    }
+    ~MasterShipResources() { FreeMasterShipList(); }
+    MasterShipResources(const MasterShipResources &) = delete;
+    MasterShipResources &operator=(const MasterShipResources &) = delete;
+};
 class CutsceneMode final : public GameMode {
 public:
     enum class Scene { Startup, Attract, Credits, Introduction, Ending };
@@ -97,6 +109,7 @@ SessionResult TitleMenuSession::run() {
 }
 }
 SessionResult GameSession::run() {
+    MasterShipResources ships;
     LastActivity = entry_ == Entry::NewGame ? CHECK_LOAD | CHECK_RESTART : CHECK_LOAD;
     GLOBAL(CurrentActivity) = IN_INTERPLANETARY;
     if (entry_ == Entry::NewGame) {
@@ -118,6 +131,7 @@ SessionResult GameSession::run() {
     return std::make_unique<TitleMenuSession>(sessionDispatcher());
 }
 SessionResult ArcadeSession::run() {
+    MasterShipResources ships;
     const auto exit = runArcade();
     if (exit.kind == SessionExitKind::Failed) return ApplicationExit::failed(exit.error);
     if (exit.kind == SessionExitKind::Shutdown || QuitPosted) return ApplicationExit::completed();
@@ -129,8 +143,6 @@ void UQM_Context::initialize() {
     kernel_ = true;
 }
 void UQM_Context::prepareKernel(DWORD deadline) {
-    LoadMasterShipList(TaskSwitch);
-    master_ = true;
     TaskSwitch();
     InitGameKernel();
     game_ = true;
@@ -141,7 +153,6 @@ void UQM_Context::prepareKernel(DWORD deadline) {
 }
 UQM_Context::~UQM_Context() {
     if (game_) UninitGameKernel();
-    if (master_) FreeMasterShipList();
     if (kernel_) FreeKernel();
 }
 int Game::run(UQM_Context &context) {

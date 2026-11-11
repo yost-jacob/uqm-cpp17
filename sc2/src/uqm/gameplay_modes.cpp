@@ -66,7 +66,7 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
             && (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
                 || session.player().crew() == static_cast<COUNT>(~0u))) {
         if (session.player().story().read(StoryFlag::KohrAhKilledAll)) {
-            EncounterRuntime encounter{session, CurStarDescPtr, engine};
+            EncounterRuntime encounter{session, GetCurrentStar(), engine};
             encounter.communicate(BLACKURQ_CONVERSATION);
         }
         else if (GLOBAL(CurrentActivity) & CHECK_RESTART) GLOBAL(CurrentActivity) &= ~CHECK_RESTART;
@@ -112,7 +112,7 @@ enum class EncounterKind { Communication, Starbase, InstallBomb };
 class EncounterMode final : public GameMode {
 public:
     EncounterMode(GameSession &session, EncounterKind kind)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), kind_(kind), encounter_(session, CurStarDescPtr, engine()) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), kind_(kind), encounter_(session, GetCurrentStar(), engine()) {}
     ModeResult run() override {
         if (kind_ == EncounterKind::InstallBomb) InstallBombAtEarth();
         else {
