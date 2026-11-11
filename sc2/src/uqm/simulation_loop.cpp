@@ -81,7 +81,7 @@ DoRunAway (STARSHIP *StarShipPtr)
 			&& ElementPtr->mass_points != MAX_SHIP_MASS * 10
 			&& !(ElementPtr->state_flags & APPEARING))
 	{
-		battle_counter[0]--;
+		uqm::simulationEngine().shipRoster().retire(uqm::RosterSide::First);
 
 		ElementPtr->turn_wait = 3;
 		ElementPtr->thrust_wait = 4;

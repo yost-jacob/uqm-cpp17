@@ -639,8 +639,8 @@ PreProcessQueue (SIZE *pscroll_x, SIZE *pscroll_y)
 #ifdef KDEBUG
 	log_add (log_Debug, "PreProcess:");
 #endif
-	sides_active = (battle_counter[0] ? 1 : 0)
-			+ (battle_counter[1] ? 1 : 0);
+	sides_active = (uqm::simulationEngine().shipRoster().remaining(uqm::RosterSide::First) ? 1 : 0)
+			+ (uqm::simulationEngine().shipRoster().remaining(uqm::RosterSide::Second) ? 1 : 0);
 
 	if (optMeleeScale == TFB_SCALE_STEP)
 		min_reduction = max_reduction = MAX_VIS_REDUCTION + 1;

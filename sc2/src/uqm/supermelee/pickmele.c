@@ -737,7 +737,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 		playerI = GetPlayerOrder (i);
 		gmstate.player[playerI].selecting =
 				(playerMask & (1 << playerI)) != 0;
-		gmstate.player[playerI].ships_left = battle_counter[playerI];
+		gmstate.player[playerI].ships_left = GetBattleCounters()[playerI];
 
 		// We determine in advance which ship would be chosen if the player
 		// wants a random ship, to keep it simple to keep network parties

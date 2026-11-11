@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(scripted_instant_victory_skips_selection_and_frames_but_com
     const std::vector<int> expected{1, 8, 9};
     BOOST_TEST(events == expected, boost::test_tools::per_element());
     BOOST_TEST(instantVictory == FALSE);
-    BOOST_TEST(battle_counter[0] == 1u); BOOST_TEST(battle_counter[1] == 0u);
+    BOOST_TEST(GetBattleCounters()[0] == 1u); BOOST_TEST(GetBattleCounters()[1] == 0u);
     GLOBAL(CurrentActivity) = activity; instantVictory = instant;
 }
 BOOST_AUTO_TEST_CASE(navigation_runs_its_typed_hook_without_combat_result_ui)

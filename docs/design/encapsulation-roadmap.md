@@ -93,6 +93,9 @@ Campaign and Super Melee now share CombatMode and its native CombatDriver.
 HyperSpace uses a separate navigation entry into the shared SimulationLoop,
 retaining its navigation hook without combat fleet/result orchestration.
 See [battle driver](battle-driver.md) for the remaining backend boundaries.
+Runtime rosters now own availability/outcome counts and native next-ship policy
+uses explicit player/RNG borrows; [ship selection](ship-selection.md) describes
+the remaining C drawing/input boundaries.
 
 ## Compatibility removal sequence
 

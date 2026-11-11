@@ -1,4 +1,5 @@
 #include "uqm/runtime_ship_roster_legacy.hpp"
+#include "uqm/battle.h"
 #include "uqm/simulation_engine.hpp"
 #include "uqm/ship_behavior.hpp"
 #include <boost/test/unit_test.hpp>
@@ -68,4 +69,35 @@ BOOST_AUTO_TEST_CASE(roster_teardown_releases_behavior_without_committing_comple
         add(roster, RosterSide::Second).RaceDescPtr = &behavior.release()->legacyData();
     }
     BOOST_TEST(destroyed == 2u); BOOST_TEST(completed == 0u);
+}
+
+BOOST_AUTO_TEST_CASE(roster_availability_is_mode_local_and_returns_with_battle_outcomes)
+{
+    SimulationEngine encounter(2), combat(2), unrelated(2);
+    auto &roster = encounter.shipRoster();
+    add(roster, RosterSide::First); add(roster, RosterSide::First);
+    add(roster, RosterSide::Second); roster.beginBattle();
+    {
+        SimulationBinding active(encounter);
+        BOOST_TEST(GetBattleCounters()[0] == 2u);
+        {
+            SimulationBinding other(unrelated);
+            BOOST_TEST(GetBattleCounters()[0] == 0u);
+            GetBattleCounters()[0] = 4; // Exercise the real C buffer projection.
+        }
+        BOOST_TEST(GetBattleCounters()[0] == 2u);
+    }
+    {
+        RuntimeRosterTransfer transfer(roster, combat.shipRoster());
+        BOOST_TEST(roster.remaining(RosterSide::First) == 0u);
+        combat.shipRoster().retire(RosterSide::Second);
+        combat.reset();
+        BOOST_TEST(combat.shipRoster().remaining(RosterSide::First) == 2u);
+        combat.shipRoster().clear(); // Last-battle outcome survives resource cleanup.
+    }
+    BOOST_TEST(roster.size(RosterSide::First) == 0u);
+    BOOST_TEST(roster.remaining(RosterSide::First) == 2u);
+    BOOST_TEST(roster.remaining(RosterSide::Second) == 0u);
+    BOOST_TEST(unrelated.shipRoster().remaining(RosterSide::First) == 4u);
+    roster.beginBattle(); BOOST_TEST(roster.remaining(RosterSide::First) == 0u);
 }

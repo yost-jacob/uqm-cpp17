@@ -17,6 +17,9 @@
  */
 
 #include "ship.h"
+#include "ship_selection.hpp"
+#include "encount.h"
+#include "game_state.hpp"
 #include "simulation_engine.hpp"
 #include "ship_behavior.hpp"
 #include "animation_effect.hpp"
@@ -499,7 +502,20 @@ GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
 {
 	HSTARSHIP hBattleShip;
 
-	hBattleShip = GetEncounterStarShip (LastStarShipPtr, which_side);
+    if (which_side >= NUM_SIDES) return FALSE;
+    auto &engine = uqm::simulationEngine();
+    auto &roster = engine.shipRoster();
+    const auto side = static_cast<uqm::RosterSide>(which_side);
+    if (LastStarShipPtr && !roster.contains(side, *LastStarShipPtr)) return FALSE;
+    const uqm::Participant previous = LastStarShipPtr
+        ? uqm::Participant{std::ref(*LastStarShipPtr)} : std::nullopt;
+    uqm::Participant selected;
+    if (inHQSpace()) selected = uqm::selectNavigationShip(roster);
+    else if (LOBYTE(GLOBAL(CurrentActivity)) == SUPER_MELEE) selected = uqm::selectArcadeShip(roster, side);
+    else if (side == uqm::RosterSide::First)
+        selected = uqm::selectCampaignPlayerShip(roster, uqm::gameSession().player(), previous);
+    else selected = uqm::selectCampaignOpponentShip(roster, previous, FleetIsInfinite(which_side), engine.random());
+    hBattleShip = selected ? &selected->get() : nullptr;
 	if (hBattleShip)
 	{
 		STARSHIP *StarShipPtr;

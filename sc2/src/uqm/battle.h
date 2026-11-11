@@ -31,7 +31,8 @@ typedef DWORD BattleFrameCounter;
 extern "C" {
 #endif
 
-extern BYTE battle_counter[NUM_SIDES];
+// Compatibility borrow of the selected roster's availability/result counters.
+BYTE *GetBattleCounters(void);
 extern BOOLEAN instantVictory;
 #if defined (NETPLAY)
 extern BattleFrameCounter battleFrameCount;

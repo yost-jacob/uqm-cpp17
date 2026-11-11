@@ -61,9 +61,10 @@ Removed infrastructure:
 - the frame-rate macro: C++ has constexpr and C callers have an enum constant.
 
 BattleSong remains a small C compatibility request to the selected scene's owned
-soundtrack. Availability counters, instantVictory and the netplay frame counter
-remain compatibility globals because retirement, selection and encounter aftermath
-still access them. Rendering/audio/input, ship-selection UI and existing C entity
+soundtrack. Availability/result counters now belong to RuntimeShipRoster and transfer back
+with participants; C callbacks borrow the selected roster through GetBattleCounters.
+Native [ship selection](ship-selection.md) owns next-vessel policy. instantVictory
+and the netplay frame counter remain compatibility globals. Rendering/audio/input, ship-selection UI and existing C entity
 callbacks remain backend services. Separate driver objects do not yet imply
 concurrent or device-free battles.
 

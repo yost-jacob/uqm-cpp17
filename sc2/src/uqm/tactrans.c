@@ -523,7 +523,7 @@ new_ship (ELEMENT *DeadShipPtr)
 			if (RestartMusic)
 				BattleSong (TRUE);
 		}
-		else if (battle_counter[0] == 0 || battle_counter[1] == 0)
+		else if (GetBattleCounters()[0] == 0 || GetBattleCounters()[1] == 0)
 		{
 			// One player is out of ships. The battle is over.
 			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
@@ -692,7 +692,7 @@ RecordShipDeath (ELEMENT *deadShip)
 		// When a ship tries to run away, it is (dis)counted in DoRunAway(),
 		// so when it dies while running away, we will not count it again
 		assert (deadStarShip->playerNr >= 0);
-		battle_counter[deadStarShip->playerNr]--;
+		GetBattleCounters()[deadStarShip->playerNr]--;
 	}
 
 	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
