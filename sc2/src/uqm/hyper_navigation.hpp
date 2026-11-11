@@ -53,6 +53,7 @@ private:
     friend class NavigationBinding;
     PlayerEntity &player_;
     StoryState &story_;
+    bool starsBound_ = false; // Resource swap lease; release is idempotent, including cancellation.
     BYTE fuel_ticks = 1;
     COUNT hyper_dx = 0, hyper_dy = 0, hyper_extra = 0;
 };

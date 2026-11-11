@@ -1,7 +1,7 @@
 #include "combat_mode.hpp"
 #include "game_state.hpp"
 #include "globdata.h"
-#include "battle.h"
+#include "battle_driver.hpp"
 #include "libs/inplib.h"
 #include <stdexcept>
 namespace uqm {
@@ -12,12 +12,12 @@ class CombatMode final : public GameMode {
 public:
     CombatMode(ModeDispatcher &host, RuntimeShipRoster &source, std::uint32_t seed,
                std::unique_ptr<CombatPreparation> preparation)
-        : GameMode(host, seed), source_(source), preparation_(std::move(preparation)) {
+        : GameMode(host, seed), driver_(engine()), source_(source), preparation_(std::move(preparation)) {
         if (!preparation_) throw std::invalid_argument("combat requires preparation");
     }
     ModeResult run() override {
         if (ready_) {
-            Battle(nullptr, nullptr);
+            driver_.run();
             preparation_->complete(); // Publish gameplay results explicitly.
         }
         preparation_.reset(); // Restore caller services before choosing its result.
@@ -32,6 +32,7 @@ protected:
         ready_ = preparation_->prepare();
     }
 private:
+    CombatDriver driver_;
     RuntimeShipRoster &source_;
     std::optional<RuntimeRosterTransfer> participants_;
     std::unique_ptr<CombatPreparation> preparation_;

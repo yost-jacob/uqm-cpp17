@@ -36,7 +36,7 @@ CombatPreparation supplies session-specific setup and scoped service ownership.
 Campaign preparation borrows StoryState and configures story/SIS flags, sounds and
 optional cyborg input. Arcade preparation borrows the parent's setup, builds the
 participant roster and owns match input/arena resources. Both feed the same
-CombatMode, which transfers participants, invokes Battle once, explicitly applies
+CombatMode, which transfers participants, invokes CombatDriver once, explicitly applies
 normal completion and releases preparation before deciding its result. Failure
 or a skipped match never calls the completion hook. Child destruction returns
 participants before parent resume. Arcades use the negotiated/local battle seed
@@ -61,8 +61,9 @@ Generic dispatch validates the host identity of initial, successor and child
 modes. Passing a mode from another dispatcher cannot execute it. Both sessions
 retain the existing nested-exception abort/TODO policy.
 
-Remaining compatibility machinery includes the C title loop, Battle driver,
+Remaining compatibility machinery includes the C title loop,
 team/setup records, global PlayerControl/PlayerInput and SDL rendering/audio/input
 services. Startup/title still uses the fallback engine; dispatched campaign and
 arcade modes own their engines. This does not yet allow concurrent simulations
-or device-free battles.
+or device-free battles. The native [battle driver](battle-driver.md) now owns
+combat orchestration and shares frame processing with navigation.

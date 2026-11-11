@@ -18,6 +18,7 @@
 
 #include "options.h"
 #include "libs/compiler.h"
+#include "libs/timelib.h"
 
 #if defined (NETPLAY)
 typedef DWORD BattleFrameCounter;
@@ -30,18 +31,6 @@ typedef DWORD BattleFrameCounter;
 extern "C" {
 #endif
 
-// The callback function is called on every battle frame
-// just before the display queue is drawn
-typedef void (BattleFrameCallback) (void *context);
-
-typedef struct battlestate_struct {
-	BOOLEAN (*InputFunc) (struct battlestate_struct *pInputState);
-	BOOLEAN first_time;
-	DWORD NextTime;
-	BattleFrameCallback *frame_cb;
-    void *frame_context;
-} BATTLE_STATE;
-
 extern BYTE battle_counter[NUM_SIDES];
 extern BOOLEAN instantVictory;
 #if defined (NETPLAY)
@@ -53,12 +42,15 @@ COUNT GetPlayerOrder (COUNT i);
 #	define GetPlayerOrder(i) (i)
 #endif
 
-BOOLEAN Battle (BattleFrameCallback *, void *context);
+#ifdef __cplusplus
+inline constexpr auto BATTLE_FRAME_RATE = ONE_SECOND / 24;
+#else
+enum { BATTLE_FRAME_RATE = ONE_SECOND / 24 };
+#endif
 
-#define BATTLE_FRAME_RATE (ONE_SECOND / 24)
-
+// Borrow the selected native scene's soundtrack. Call only during its visit;
+// ownership and release belong to BattleScene, not this C request.
 extern void BattleSong (BOOLEAN DoPlay);
-extern void FreeBattleSong (void);
 
 #if defined(__cplusplus)
 }

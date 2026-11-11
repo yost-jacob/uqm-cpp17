@@ -130,14 +130,14 @@ NetMelee_getMeleeState(NetConnection *conn) {
 	}
 }
 
-struct battlestate_struct *
-NetMelee_getBattleState(NetConnection *conn) {
+bool
+NetMelee_isBattleActive(NetConnection *conn) {
 	if (NetConnection_getState(conn) > NetState_connecting) {
 		BattleStateData *battleStateData =
 				(BattleStateData *) NetConnection_getStateData(conn);
-		return battleStateData->battleState;
+		return battleStateData->battleActive;
 	} else {
-		return NULL;
+		return false;
 	}
 }
 
@@ -288,7 +288,7 @@ initBattleStateDataConnections(void) {
 }
 
 void
-setBattleStateConnections(struct battlestate_struct *bs) {
+setBattleActiveConnections(bool active) {
 	COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
@@ -300,7 +300,7 @@ setBattleStateConnections(struct battlestate_struct *bs) {
 
 		battleStateData =
 				(BattleStateData *) NetConnection_getStateData(conn);
-		battleStateData->battleState = bs;
+		battleStateData->battleActive = active;
 	}
 }
 

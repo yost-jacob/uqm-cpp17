@@ -2165,11 +2165,11 @@ confirmationCancelled (MELEE_STATE *pMS, COUNT side)
 
 static void
 connectionFeedback (NetConnection *conn, const char *str, bool forcePopup) {
-	struct battlestate_struct *bs = NetMelee_getBattleState (conn);
+	const bool battleActive = NetMelee_isBattleActive(conn);
 
-	if (bs == NULL && !forcePopup)
+	if (!battleActive && !forcePopup)
 	{
-		// bs == NULL means the game has not started yet.
+		// An inactive battle uses setup feedback instead of a modal popup.
 		DrawMeleeStatusMessage (str);
 	}
 	else

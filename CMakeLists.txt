@@ -81,7 +81,7 @@ if(BUILD_TESTING)
         tests/encounter_context.cpp sc2/src/uqm/encounter_context.cpp
         tests/device_inventory.cpp sc2/src/uqm/device_inventory.cpp
         tests/conversation_mode.cpp sc2/src/uqm/conversation_mode.cpp
-        tests/combat_mode.cpp sc2/src/uqm/combat_mode.cpp sc2/src/uqm/campaign_combat.cpp
+        tests/combat_mode.cpp tests/battle_driver.cpp sc2/src/uqm/battle_driver.cpp sc2/src/uqm/combat_mode.cpp sc2/src/uqm/campaign_combat.cpp
         sc2/src/uqm/conversation_context.cpp sc2/src/uqm/conversation_resources.cpp sc2/src/uqm/conversation_lifetime.cpp
         tests/rendering_handoff.cpp sc2/src/uqm/exploration_rendering.cpp sc2/src/uqm/mode_rendering.cpp
         tests/navigation_context.cpp sc2/src/uqm/navigation_context.cpp

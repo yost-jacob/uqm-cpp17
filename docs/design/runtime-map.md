@@ -1,8 +1,8 @@
 # Runtime architecture and migration map
 
-This maps the live implementation on `feature/solar-system-locations`, starting
-at the campaign mode dispatcher. It is a subsystem map, not a complete call graph.
-Super Melee also enters combat outside this campaign dispatcher.
+This maps the live implementation starting at the session-owned dispatcher.
+It is a subsystem map, not a complete call graph. Campaign and arcade sessions
+own separate instances of ModeDispatcher and share CombatMode/CombatDriver.
 
 Colors describe the implementation boundary, not gameplay quality:
 
@@ -19,7 +19,7 @@ state or supporting services; solid arrows indicate the main execution path.
 
 ```mermaid
 flowchart TD
-    D["GameSession::run<br/>owns currentMode; consumes ModeResult"]:::native
+    D["ModeDispatcher<br/>session-owned current mode; consumes ModeResult"]:::native
     M["Concrete GameMode::run implementations<br/>native lifetime; legacy activity flags"]:::mixed
     D --> M
     M --> H["HyperSpaceMode"]:::mixed
@@ -27,7 +27,11 @@ flowchart TD
     M --> E["EncounterMode"]:::mixed
     M --> O["LoadMenuMode"]:::mixed
 
-    H --> B["Battle loop<br/>battle.c / process.c<br/>also used for HyperSpace movement"]:::legacy
+    H --> B["Shared SimulationLoop<br/>input / engine step / presentation / timing"]:::mixed
+    D --> FS["Arcade FleetSelectionMode"]:::mixed
+    FS --> CM["Shared CombatMode / CombatDriver"]:::native
+    E --> CM
+    CM --> B
     H --> HP["HyperSpaceNavigation<br/>owned visit; explicit player/campaign"]:::mixed
     S --> EX["SolarSystemExploration<br/>owned descriptor; scan / resume hooks"]:::mixed
     EX --> LM["LanderMode child<br/>RAII visit, bindings and effects"]:::mixed
@@ -38,7 +42,7 @@ flowchart TD
     BASE --> ER
     H --> DEV["DeviceMenu / inventoryDevices<br/>explicit campaign; optional system"]:::mixed
     EX --> DEV
-    EC --> B
+    EC --> CM
 
     B --> SE["ship.cpp / cyborg.cpp<br/>native dispatch; procedural execution / prediction"]:::mixed
     SE --> SH["Ship base + 28 concrete classes<br/>owned descriptor / private values"]:::native

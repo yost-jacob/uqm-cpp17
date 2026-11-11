@@ -4,6 +4,7 @@
 #include "uqm/game_state.hpp"
 #include "uqm/globdata.h"
 #include "uqm/battle.h"
+#include "uqm/simulation_loop.hpp"
 #include "uqm/battlecontrols.h"
 #include "uqm/intel.h"
 #include "uqm/setup.h"
@@ -55,18 +56,16 @@ SOUND GameSounds = nullptr;
 bool SetPlayerInput(COUNT player) { PlayerInput[player] = &temporaryInput; return true; }
 void ClearPlayerInput(COUNT player) { ++inputsCleared; PlayerInput[player] = nullptr; }
 void WaitForSoundEnd(COUNT) {}
-BOOLEAN Battle(BattleFrameCallback *callback, void *context) {
-    BOOST_TEST(callback == nullptr);
-    BOOST_TEST(context == nullptr);
-    if (GLOBAL(glob_flags) & CYBORG_ENABLED) {
+}
+void uqm::SimulationLoop::run() {
+    if (beforeSimulation_) beforeSimulation_();
+    if (combatDriver && (GLOBAL(glob_flags) & CYBORG_ENABLED)) {
         BOOST_TEST(PlayerInput[0] == &temporaryInput);
         BOOST_TEST(PlayerControl[0] == (CYBORG_CONTROL | AWESOME_RATING));
-    } else {
+    } else if (combatDriver) {
         BOOST_TEST(PlayerInput[0] == &originalInput);
     }
     if (combatDriver) combatDriver();
-    return TRUE;
-}
 }
 
 BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_resume_and_aftermath, CombatFixture)
