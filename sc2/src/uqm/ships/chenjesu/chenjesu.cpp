@@ -28,18 +28,15 @@
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("chenjesu");
-    return value;
+    return uqm::combat::shipTuning("chenjesu");
 }
 static const uqm::combat::ProjectileStats &fragmentStats() {
-    static const auto &value = tuning().projectile("fragment");
-    return value;
+    return tuning().projectile("fragment");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -58,8 +55,8 @@ constexpr auto DoggyMass = 4;
 
 // The crystal extends its lifetime while fire is held. fragmentRange is an AI hint.
 
-static const RACE_DESC &chenjesuDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC chenjesuDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | SEEKING_SPECIAL | SEEKING_WEAPON,
             tuning().ship.meleeCost, /* Super Melee cost */

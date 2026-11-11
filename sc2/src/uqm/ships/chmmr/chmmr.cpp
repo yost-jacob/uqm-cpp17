@@ -29,10 +29,9 @@
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("chmmr");
-    return value;
+    return uqm::combat::shipTuning("chmmr");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -47,8 +46,8 @@ constexpr auto SatelliteMass = 10;
 constexpr auto DefenseRange = (UWORD)64;
 constexpr auto DefenseWait = 2;
 
-static const RACE_DESC &chmmrDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC chmmrDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | IMMEDIATE_WEAPON | SEEKING_SPECIAL | POINT_DEFENSE,
             tuning().ship.meleeCost, /* Super Melee cost */

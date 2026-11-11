@@ -26,10 +26,9 @@
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("slylandr");
-    return value;
+    return uqm::combat::shipTuning("slylandr");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -39,8 +38,8 @@ constexpr auto HarvestRange = (208 * 3 / 8);
 // LaserLength counts the full lightning path; its effective straight-line range is shorter.
 // HarvestRange preserves the original fixed world distance rather than depending on resolution.
 
-static const RACE_DESC &slylandroDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC slylandroDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             SEEKING_WEAPON | CREW_IMMUNE,
             tuning().ship.meleeCost, /* Super Melee cost */

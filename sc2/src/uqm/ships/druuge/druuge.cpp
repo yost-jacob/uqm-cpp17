@@ -23,14 +23,12 @@
 #include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("druuge");
-    return value;
+    return uqm::combat::shipTuning("druuge");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -40,8 +38,8 @@ static auto missileRange() { return (missileStats().speed * missileStats().lifet
 constexpr auto RecoilVelocity = WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (6));
 constexpr auto MaxRecoilVelocity = (RecoilVelocity * 4);
 
-static const RACE_DESC &druugeDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC druugeDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE,
             tuning().ship.meleeCost, /* Super Melee cost */

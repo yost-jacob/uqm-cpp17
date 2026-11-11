@@ -43,8 +43,8 @@ public:
 private:
     std::map<std::string, ShipTuning, std::less<>> ships_;
 };
-// Process-lifetime catalog, loaded through content/addon I/O before ship creation.
-// No hot reload: native definitions cache references to immutable tuning.
+// Legacy gameplay-thread lookup through the active session's immutable catalog.
+// Borrow expires with that session. Native code may use session.definitions().ships().
 const ShipTuning &shipTuning(std::string_view id);
 // Bound an AI range hint to the legacy unsigned field. Physical projectile
 // lifetime/speed remain unchanged; large modded ranges do not wrap the hint.

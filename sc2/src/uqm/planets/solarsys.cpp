@@ -1538,21 +1538,21 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 	auto &system = runtime.engine;
     auto &location = std::get<uqm::SolarSystemLocation>(runtime.session->player().location());
 	
-	if (CurStarDescPtr == 0)
+	if (GetCurrentStar() == 0)
 	{
 		POINT universe;
 
 		universe.x = LOGX_TO_UNIVERSE (location.position.x);
 		universe.y = LOGY_TO_UNIVERSE (location.position.y);
-		CurStarDescPtr = FindStar (0, &universe, 1, 1);
-		if (!CurStarDescPtr)
+		SetCurrentStar(FindStar (0, &universe, 1, 1));
+		if (!GetCurrentStar())
 		{
 			log_add (log_Fatal, "ExploreSolarSys(): do not know where you are!");
 			explode ();
 		}
 	}
-	location.position.x = UNIVERSE_TO_LOGX (CurStarDescPtr->star_pt.x);
-	location.position.y = UNIVERSE_TO_LOGY (CurStarDescPtr->star_pt.y);
+	location.position.x = UNIVERSE_TO_LOGX (GetCurrentStar()->star_pt.x);
+	location.position.y = UNIVERSE_TO_LOGY (GetCurrentStar()->star_pt.y);
 
     struct Binding {
         SOLARSYS_STATE *previous = pSolarSysState;
@@ -1562,7 +1562,7 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
     pSolarSysState = &system;
 
 	system.worlds = &runtime;
-	PrepareSystemWorlds (&system, CurStarDescPtr);
+	PrepareSystemWorlds (&system, GetCurrentStar());
     location.system = runtime.system->star();
 
 	InitSolarSys(system);
@@ -1842,7 +1842,7 @@ DoIpFlight (SOLARSYS_STATE *pSS)
 
 // Legacy C UI adapter. Native scan code supplies its exploration directly.
 UNICODE *GetNamedPlanetaryBody(void) {
-    if (!pSolarSysState || !CurStarDescPtr) return nullptr;
+    if (!pSolarSysState || !GetCurrentStar()) return nullptr;
     return const_cast<UNICODE *>(uqm::namedPlanetaryBody(*pSolarSysState));
 }
 

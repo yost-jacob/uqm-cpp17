@@ -48,9 +48,10 @@ story helper. Do not turn every price read into an interpretation of story flags
 
 This pass packages the existing campaign price/value tables and consolidates the
 three copies of ship prices. It is not a universal catalog of every game constant.
-Merchant-specific trade recipes/technology descriptions, ship tuning, starmap
-content, presentation descriptors and application configuration retain their
-existing owners. Base economic defaults remain constexpr definitions here;
+Merchant-specific trade recipes/technology descriptions, presentation descriptors
+and application configuration retain their existing owners. Ship tuning and
+starmap content are now grouped in session-owned `GameDefinitions`; see
+[session definitions](session-definitions.md). Base economic defaults remain constexpr definitions here;
 loading them from a data file can replace the baseline without changing callers.
 
 Zero module price still doubles as the existing unavailable marker. Splitting

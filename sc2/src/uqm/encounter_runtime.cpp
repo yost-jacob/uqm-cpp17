@@ -342,6 +342,6 @@ COUNT runLegacyEncounter(uqm::GameSession &session, const STAR_DESC *star, CONVE
 }
 COUNT InitCommunication(CONVERSATION conversation) {
     auto &session = uqm::gameSession();
-    uqm::EncounterRuntime encounter{session, CurStarDescPtr, uqm::simulationEngine()};
+    uqm::EncounterRuntime encounter{session, GetCurrentStar(), uqm::simulationEngine()};
     return encounter.communicate(conversation);
 }

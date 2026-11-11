@@ -246,7 +246,7 @@ InitGameStructures (void)
 
 	GetPlayerTravelPosition()->position.x = UNIVERSE_TO_LOGX (SOL_X);
 	GetPlayerTravelPosition()->position.y = UNIVERSE_TO_LOGY (SOL_Y);
-	CurStarDescPtr = 0;
+	SetCurrentStar(0);
 	GLOBAL (autopilot.x) = ~0;
 	GLOBAL (autopilot.y) = ~0;
 

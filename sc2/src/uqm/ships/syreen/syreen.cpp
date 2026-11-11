@@ -25,14 +25,12 @@
 
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("syreen");
-    return value;
+    return uqm::combat::shipTuning("syreen");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -42,8 +40,8 @@ constexpr auto MissileOffset = 3;
 constexpr auto AbandonerRange = 208;
 constexpr auto MaxAbandoners = 8;
 
-static const RACE_DESC &syreenDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC syreenDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE,
             tuning().ship.meleeCost, /* Super Melee cost */

@@ -162,7 +162,7 @@ DrawAutoPilot (POINT *pDstPt)
 	POINT pt;
 
 	if (!inHQSpace ())
-		pt = CurStarDescPtr->star_pt;
+		pt = GetCurrentStar()->star_pt;
 	else
 	{
 		pt.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
@@ -347,7 +347,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 		Color OldColor;
 
 		if (!inHQSpace ())
-			r.corner = CurStarDescPtr->star_pt;
+			r.corner = GetCurrentStar()->star_pt;
 		else
 		{
 			r.corner.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
@@ -774,7 +774,7 @@ UpdateFuelRequirement (void)
 	POINT pt;
 
 	if (!inHQSpace ())
-		pt = CurStarDescPtr->star_pt;
+		pt = GetCurrentStar()->star_pt;
 	else
 	{
 		pt.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
@@ -1223,7 +1223,7 @@ DoMoveCursor (MENU_STATE *pMS)
 		pMS->InputFunc = DoMoveCursor;
 
 		if (!inHQSpace ())
-			universe = CurStarDescPtr->star_pt;
+			universe = GetCurrentStar()->star_pt;
 		else
 		{
 			universe.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);
@@ -1579,7 +1579,7 @@ StarMap (void)
 	StarMapFrame = SetAbsFrameIndex (MiscDataFrame, 48);
 
 	if (!inHQSpace ())
-		universe = CurStarDescPtr->star_pt;
+		universe = GetCurrentStar()->star_pt;
 	else
 	{
 		universe.x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x);

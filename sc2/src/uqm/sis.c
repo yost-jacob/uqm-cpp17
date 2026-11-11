@@ -210,7 +210,7 @@ DrawSISMessageEx (const UNICODE *pStr, SIZE CurPos, SIZE ExPos, COUNT flags)
 				break;
 			case IN_LAST_BATTLE:
 			case IN_INTERPLANETARY:
-				GetClusterName (CurStarDescPtr, buf, sizeof(buf));
+				GetClusterName (GetCurrentStar(), buf, sizeof(buf));
 				pStr = buf;
 				break;
 			case IN_HYPERSPACE:

@@ -12,7 +12,7 @@ struct ArcadeSession::Storage {
 };
 ArcadeSession::ArcadeSession(std::uint32_t seed)
     : Session(RuntimeKind::Arcade, seed), storage_(std::make_unique<Storage>()) {}
-ArcadeSession::ArcadeSession(SessionDispatcher &host, std::uint32_t seed) : ArcadeSession(seed) { bindDispatcher(host); }
+ArcadeSession::ArcadeSession(SessionDispatcher &host, std::uint32_t seed) : ArcadeSession(seed) { bindDispatcher(host); loadDefinitions(false); }
 detail::LegacyRuntimeView ArcadeSession::legacyRuntime() noexcept {
     return {storage_->data, detail::FleetAccess::queue(storage_->compatibilityFleet),
         storage_->compatibilitySIS, assets(), &storage_->travel};

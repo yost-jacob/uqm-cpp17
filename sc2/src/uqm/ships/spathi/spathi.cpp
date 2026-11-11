@@ -23,18 +23,15 @@
 #include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("spathi");
-    return value;
+    return uqm::combat::shipTuning("spathi");
 }
 static const uqm::combat::ProjectileStats &discriminatorStats() {
-    static const auto &value = tuning().projectile("discriminator");
-    return value;
+    return tuning().projectile("discriminator");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -46,8 +43,8 @@ constexpr auto DiscriminatorOffset = 4;
 
 // missileRange is an AI hint derived from the configured projectile.
 
-static const RACE_DESC &spathiDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC spathiDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | FIRES_AFT | SEEKING_SPECIAL | DONT_CHASE,
             tuning().ship.meleeCost, /* Super Melee cost */

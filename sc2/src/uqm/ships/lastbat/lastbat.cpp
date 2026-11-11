@@ -30,18 +30,15 @@
 #include "libs/mathlib.h"
 #include "libs/timelib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("lastbat");
-    return value;
+    return uqm::combat::shipTuning("lastbat");
 }
 static const uqm::combat::ProjectileStats &cometStats() {
-    static const auto &value = tuning().projectile("comet");
-    return value;
+    return tuning().projectile("comet");
 }
 static const uqm::combat::ProjectileStats &sentinelStats() {
-    static const auto &value = tuning().projectile("sentinel");
-    return value;
+    return tuning().projectile("sentinel");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -62,8 +59,8 @@ constexpr auto MaxGenerators = 8;
 
 // The boss initializes energy costs for compatibility; its special routines do not use them.
 
-static const RACE_DESC &samatraDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC samatraDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             /* FIRES_FORE | */ IMMEDIATE_WEAPON | CREW_IMMUNE,
             tuning().ship.meleeCost, /* Super Melee cost */

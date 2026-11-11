@@ -3,7 +3,8 @@
 #include "globdata.h"
 #include "session_activity.h"
 #include <memory>
-namespace uqm { class GameMode; class ArcadeSession; class AssetCache; class GameSession; }
+#include "star_map.hpp"
+namespace uqm { class GameMode; class ArcadeSession; class AssetCache; class GameSession; class GameDefinitions; }
 namespace uqm::detail {
 // Internal, non-owning C projections selected on the gameplay thread. The
 // session and every referenced buffer outlive this scoped binding. Frontend /
@@ -15,6 +16,8 @@ struct LegacyRuntimeView {
     AssetCache &assets;
     PLAYER_TRAVEL_POSITION *travel; // Frontend/arcade only; campaign resolves its live variant.
     GameSession *campaign = nullptr;
+    GameDefinitions *definitions = nullptr;
+    std::optional<StarId> *currentStar = nullptr;
     UQM_SESSION_ACTIVITY *activities = nullptr;
 };
 class LegacyRuntimeBinding {

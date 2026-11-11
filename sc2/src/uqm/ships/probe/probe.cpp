@@ -22,14 +22,13 @@
 #include "uqm/ship_tuning.hpp"
 #include "resinst.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("probe");
-    return value;
+    return uqm::combat::shipTuning("probe");
 }
 
-static const RACE_DESC &probeDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC probeDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             0,
             tuning().ship.meleeCost, /* Super Melee cost */

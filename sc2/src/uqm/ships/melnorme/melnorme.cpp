@@ -29,19 +29,16 @@
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("melnorme");
-    return value;
+    return uqm::combat::shipTuning("melnorme");
 }
 static const uqm::combat::ProjectileStats &cmissileStats() {
-    static const auto &value = tuning().projectile("cmissile");
-    return value;
+    return tuning().projectile("cmissile");
 }
 
 static const uqm::combat::ProjectileStats &chargeStats() {
-    static const auto &value = tuning().projectile("charge");
-    return value;
+    return tuning().projectile("charge");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -58,8 +55,8 @@ enum class MelnormeWeaponMode { Primary, TestPrimary, Confusion };
 void selectMelnormeWeapon(RACE_DESC &, MelnormeWeaponMode) noexcept;
 }
 
-static const RACE_DESC &melnormeDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC melnormeDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE,
             tuning().ship.meleeCost, /* Super Melee cost */

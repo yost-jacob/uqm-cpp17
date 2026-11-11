@@ -25,10 +25,9 @@
 
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("arilou");
-    return value;
+    return uqm::combat::shipTuning("arilou");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -36,8 +35,8 @@ constexpr auto ArilouOffset = 9;
 constexpr auto LaserRange = DISPLAY_TO_WORLD (100 + ArilouOffset);
 constexpr auto HyperLife = 5;
 
-static const RACE_DESC &arilouDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC arilouDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             /* FIRES_FORE | */ IMMEDIATE_WEAPON,
             tuning().ship.meleeCost, /* Super Melee cost */

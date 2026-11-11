@@ -25,7 +25,6 @@
 #include "planets/lander.h"
 #include "starcon.h"
 #include "setup.h"
-#include "starmap.h"
 #include "planets/solarsys.h"
 #include "sounds.h"
 #include "libs/sndlib.h"
@@ -37,7 +36,6 @@ FreeKernel (void)
 {
 	UninitPlayerInput ();
 
-	FreeStarMap();
 	UninitResourceSystem ();
 
 	DestroyDrawable (ReleaseDrawable (Screen));

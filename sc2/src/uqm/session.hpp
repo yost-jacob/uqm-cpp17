@@ -1,6 +1,7 @@
 #ifndef UQM_SESSION_HPP_
 #define UQM_SESSION_HPP_
 #include "asset_cache.hpp"
+#include "game_definitions.hpp"
 #include "game_mode.hpp"
 #include "legacy_runtime.hpp"
 #include "session_activity.h"
@@ -40,6 +41,8 @@ public:
     Session &operator=(const Session &) = delete;
     virtual SessionResult run() = 0;
     SessionExit run(std::unique_ptr<GameMode> initial) { return dispatcher_.run(std::move(initial)); }
+    // Immutable catalogs; absent for title/intro sessions. Borrows expire with this session.
+    const GameDefinitions &definitions() const;
     AssetCache &assets() noexcept { return assets_; }
     std::uint32_t nextModeSeed() noexcept { return random_(); }
     ModeDispatcher &dispatcher() noexcept { return dispatcher_; }
@@ -51,6 +54,7 @@ protected:
     enum class RuntimeKind { Frontend, Campaign, Arcade };
     explicit Session(RuntimeKind kind, std::uint32_t seed);
     Session(SessionDispatcher &host, RuntimeKind kind, std::uint32_t seed);
+    void loadDefinitions(bool includeStars);
     void bindDispatcher(SessionDispatcher &host) noexcept;
     SessionDispatcher &sessionDispatcher() const;
     UQM_Context &context() const;
@@ -63,6 +67,8 @@ private:
     // Internally synchronized by RAII lock guards. First member: all derived
     // state, modes and other asset holders finish before this cache is destroyed.
     AssetCache assets_;
+    std::unique_ptr<GameDefinitions> definitions_;
+    std::optional<StarId> selectedStar_;
     RandomStream random_;
     ModeDispatcher dispatcher_;
     UQM_SESSION_ACTIVITY activities_{};
@@ -70,6 +76,7 @@ private:
     std::unique_ptr<FrontendStorage> frontend_;
     std::unique_ptr<Session> parent_;
     SessionDispatcherCore *host_ = nullptr; // Unbound only for standalone compatibility/tests.
+    friend struct detail::DefinitionsAccess;
     friend class SessionActivation;
     template<class, class> friend class Dispatcher;
 

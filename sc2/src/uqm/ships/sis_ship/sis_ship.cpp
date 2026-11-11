@@ -36,14 +36,12 @@
 #include "libs/mathlib.h"
 
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("sis_ship");
-    return value;
+    return uqm::combat::shipTuning("sis_ship");
 }
 static const uqm::combat::ProjectileStats &blasterStats() {
-    static const auto &value = tuning().projectile("blaster");
-    return value;
+    return tuning().projectile("blaster");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -62,8 +60,8 @@ constexpr auto MenuDelay = 10;
 // base blaster damage/hit points and extend lifetime. Point defense adds energy cost.
 // Mount geometry and projectile factories are configured in sis_weapons.cpp.
 
-static const RACE_DESC &sisDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC sisDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             0,
             tuning().ship.meleeCost, /* Super Melee cost */

@@ -26,14 +26,12 @@
 
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("androsyn");
-    return value;
+    return uqm::combat::shipTuning("androsyn");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -46,8 +44,8 @@ constexpr auto BlazerTurnWait = 1;
 constexpr auto BlazerDamage = 3;
 constexpr auto BlazerMass = 1;
 
-static const RACE_DESC &androsynthDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC androsynthDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | SEEKING_WEAPON,
             tuning().ship.meleeCost, /* Super Melee cost */

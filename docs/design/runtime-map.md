@@ -162,7 +162,7 @@ and all-special-system migration, scoped owner and remaining C engine boundary.
 - [Encounter orchestration](../../sc2/src/uqm/encounter_runtime.hpp), [device menu](../../sc2/src/uqm/device_menu.hpp), [device inventory and save adapter](../../sc2/src/uqm/device_inventory.cpp).
 - [World adapter](../../sc2/src/uqm/world_c.cpp), [behavior selection](../../sc2/src/uqm/system_behavior_factory.cpp), [menu adapter](../../sc2/src/uqm/game_menu.cpp).
 - [Ship execution](../../sc2/src/uqm/ship.cpp), [cyborg prediction](../../sc2/src/uqm/cyborg.cpp), [native ship](../../sc2/src/uqm/ship_behavior.hpp), [asset boundary](../../sc2/src/uqm/loadship.cpp).
-- [Star catalogue adapter](../../sc2/src/uqm/star_map_c.cpp), [ship tuning loader](../../sc2/src/uqm/ship_tuning_c.cpp).
+- [Star catalogue adapter](../../sc2/src/uqm/star_map_c.cpp), [session definitions](../../sc2/src/uqm/game_definitions.cpp).
 
 The session uses [synchronous nested modes](nested-modes.md) for orbital
 system conversations. See the [current ownership and callback boundaries](runtime-encapsulation.md)

@@ -28,14 +28,12 @@
 #include "uqm/tactrans.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("pkunk");
-    return value;
+    return uqm::combat::shipTuning("pkunk");
 }
 static const uqm::combat::ProjectileStats &missileStats() {
-    static const auto &value = tuning().projectile("missile");
-    return value;
+    return tuning().projectile("missile");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -46,8 +44,8 @@ constexpr auto StartPhoenixColor = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x15, 0x00), 0
 constexpr auto TransitionLife = 1;
 constexpr auto TransitionSpeed = DISPLAY_TO_WORLD (20);
 
-static const RACE_DESC &pkunkDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC pkunkDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | FIRES_LEFT | FIRES_RIGHT,
             tuning().ship.meleeCost, /* Super Melee cost */

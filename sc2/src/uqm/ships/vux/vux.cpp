@@ -27,14 +27,12 @@
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
 
-// Balance values are immutable, loaded from base/ships.json at startup.
+// Balance values are immutable, loaded from base/ships.json for the active session.
 static const uqm::combat::ShipTuning &tuning() {
-    static const auto &value = uqm::combat::shipTuning("vux");
-    return value;
+    return uqm::combat::shipTuning("vux");
 }
 static const uqm::combat::ProjectileStats &limpetStats() {
-    static const auto &value = tuning().projectile("limpet");
-    return value;
+    return tuning().projectile("limpet");
 }
 
 // Fixed geometry, frame layout, capacities, and derived calculations.
@@ -50,8 +48,8 @@ constexpr auto MaxyEntryDist = DISPLAY_TO_WORLD ((LaserBase + VuxOffset + WarpOf
 // WarpOffset extends the entry distance beyond the laser range. Entry distances remain
 // relative to the laser geometry, not the display resolution.
 
-static const RACE_DESC &vuxDefinition() {
-    static const RACE_DESC definition = {
+static RACE_DESC vuxDefinition() {
+    const RACE_DESC definition = {
         { /* SHIP_INFO */
             FIRES_FORE | SEEKING_SPECIAL | IMMEDIATE_WEAPON,
             tuning().ship.meleeCost, /* Super Melee cost */

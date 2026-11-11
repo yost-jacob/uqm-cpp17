@@ -494,7 +494,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 
 	pPD = pBaseDesc;
 	StarSize = system->SunDesc[0].data_index;
-	StarColor = STAR_COLOR (CurStarDescPtr->Type);
+	StarColor = STAR_COLOR (GetCurrentStar()->Type);
 
 	if (NumPlanets == (BYTE)~0)
 	{
@@ -511,10 +511,10 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 	}
 
 #ifdef DEBUG_ORBITS
-	GetClusterName (CurStarDescPtr, buf, sizeof(buf));
+	GetClusterName (GetCurrentStar(), buf, sizeof(buf));
 	log_add (log_Debug, "cluster name = %s  color = %c type = %c", buf,
-			scolor[STAR_COLOR (CurStarDescPtr->Type)],
-			stype[STAR_TYPE (CurStarDescPtr->Type)]);
+			scolor[STAR_COLOR (GetCurrentStar()->Type)],
+			stype[STAR_TYPE (GetCurrentStar()->Type)]);
 #endif /* DEBUG_ORBITS */
 	GeneratingMoons = (BOOLEAN) (pBaseDesc == system->MoonDesc);
 	if (GeneratingMoons)

@@ -125,7 +125,7 @@ if(BUILD_TESTING)
         sc2/src/uqm/trans.cpp sc2/src/uqm/displist.cpp sc2/src/uqm/star_map.cpp
         sc2/src/uqm/star_map_c.cpp sc2/src/uqm/game_state.cpp sc2/src/uqm/arcade_session.cpp tests/arcade_session.cpp
         sc2/src/game_configuration.cpp
-        sc2/src/uqm/session.cpp tests/sessions.cpp
+        sc2/src/uqm/session.cpp sc2/src/uqm/game_definitions.cpp tests/sessions.cpp
         sc2/src/uqm/game_mode.cpp
         sc2/src/uqm/discovery_state.cpp sc2/src/uqm/discovery_state_c.cpp
         sc2/src/uqm/world_state.cpp
