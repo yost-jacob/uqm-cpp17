@@ -31,22 +31,20 @@ namespace uqm {
 namespace {
 std::unique_ptr<GameMode> selectMode(GameSession &session);
 
-// Legacy clock/resources remain C-owned internally. This scope ends only after
+// Legacy input/resources remain C-owned internally. This scope ends only after
 // every mode and nested menu has returned; no load runs with these frames alive.
 class CampaignRuntime {
 public:
-    void initialize() {
+    void initialize(GameSession &session) {
+        session.clock().reset();
         input_ = true;
         if (!SetPlayerInputAll()) throw std::runtime_error("could not initialize player input");
         if (!InitGameStructures()) throw std::runtime_error("could not initialize campaign structures");
         structures_ = true;
-        if (!InitGameClock()) throw std::runtime_error("could not initialize campaign clock");
-        clock_ = true;
         AddInitialGameEvents();
     }
     ~CampaignRuntime() {
         StopSound();
-        if (clock_) UninitGameClock();
         if (structures_) UninitGameStructures();
         if (input_) ClearPlayerInputAll();
     }
@@ -54,7 +52,7 @@ public:
     CampaignRuntime(const CampaignRuntime &) = delete;
     CampaignRuntime &operator=(const CampaignRuntime &) = delete;
 private:
-    bool input_ = false, structures_ = false, clock_ = false;
+    bool input_ = false, structures_ = false;
 };
 ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
     SetFlashRect(nullptr);
@@ -77,12 +75,12 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
 class HyperSpaceMode final : public GameMode {
 public:
     HyperSpaceMode(GameSession &session)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine()) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine(), session.clock()) {}
     ModeResult run() override {
         session_.player().enterNavigation(session_.player().story().read(StoryCounter::ArilouSpaceSide) > 1);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
-        SetGameClockRate(HYPERSPACE_CLOCK_RATE);
+        session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
         navigation_.run(session_);
         return finishMode(session_, engine());
     }
@@ -97,7 +95,7 @@ public:
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
         DrawAutoPilotMessage(TRUE);
-        SetGameClockRate(INTERPLANETARY_CLOCK_RATE);
+        session_.clock().setRate(INTERPLANETARY_CLOCK_RATE);
         exploration_.run();
         return finishMode(session_, engine());
     }
@@ -186,7 +184,7 @@ SessionExit GameSession::runCampaign(std::optional<unsigned> slot) {
     try {
         if (this != &gameSession()) throw std::logic_error("legacy campaign requires the active process session");
         CampaignRuntime runtime;
-        runtime.initialize();
+        runtime.initialize(*this);
         if (slot) {
             if (*slot > std::numeric_limits<COUNT>::max()) throw std::out_of_range("save slot exceeds legacy range");
             // The former mode/menu stack and runtime were destroyed by the

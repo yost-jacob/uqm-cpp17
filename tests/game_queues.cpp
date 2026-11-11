@@ -6,7 +6,6 @@
 #include "uqm/races.h"
 #include "uqm/grpinfo.h"
 #include "uqm/encount.h"
-#include "uqm/clock.h"
 #include "uqm/master.h"
 #include "uqm/globdata.h"
 
@@ -46,9 +45,8 @@ BOOST_AUTO_TEST_CASE(game_queue_typed_storage_capacity_alignment_and_stability) 
             {QUEUE_STARSHIP, sizeof(STARSHIP), alignof(STARSHIP)},
             {QUEUE_SHIP_FRAGMENT, sizeof(SHIP_FRAGMENT), alignof(SHIP_FRAGMENT)},
             {QUEUE_FLEET_INFO, sizeof(FLEET_INFO), alignof(FLEET_INFO)},
-            {QUEUE_IP_GROUP, sizeof(IP_GROUP), alignof(IP_GROUP)},
             {QUEUE_ENCOUNTER, sizeof(ENCOUNTER), alignof(ENCOUNTER)},
-            {QUEUE_EVENT, sizeof(EVENT), alignof(EVENT)},
+            {QUEUE_IP_GROUP, sizeof(IP_GROUP), alignof(IP_GROUP)},
             {QUEUE_MASTER_SHIP, sizeof(MASTER_SHIP_INFO), alignof(MASTER_SHIP_INFO)}}) {
         OwnedQueue owned(type.kind, 3);
         auto &queue = owned.value;
@@ -86,7 +84,7 @@ BOOST_AUTO_TEST_CASE(game_queue_encounter_limit_and_zero_capacity) {
     BOOST_TEST(AllocLink(&encounters.value) == nullptr);
     FreeLink(&encounters.value, first);
     BOOST_TEST(AllocLink(&encounters.value) == first);
-    OwnedQueue empty(QUEUE_EVENT, 0);
+    OwnedQueue empty(QUEUE_IP_GROUP, 0);
     BOOST_TEST(AllocLink(&empty.value) == nullptr);
     ReinitQueue(&empty.value);
     BOOST_TEST(CountLinks(&empty.value) == 0u);
@@ -94,7 +92,7 @@ BOOST_AUTO_TEST_CASE(game_queue_encounter_limit_and_zero_capacity) {
 }
 
 BOOST_AUTO_TEST_CASE(game_queue_insertion_removal_and_lifo_slot_reuse) {
-    OwnedQueue owned(QUEUE_EVENT, 3);
+    OwnedQueue owned(QUEUE_IP_GROUP, 3);
     auto &q = owned.value;
     const auto a = AllocLink(&q), b = AllocLink(&q), c = AllocLink(&q);
     PutQueue(&q, a);
@@ -120,10 +118,10 @@ BOOST_AUTO_TEST_CASE(game_queue_insertion_removal_and_lifo_slot_reuse) {
 }
 
 BOOST_AUTO_TEST_CASE(game_queue_reinit_returns_linked_and_reserved_slots_without_clearing_payload) {
-    OwnedQueue owned(QUEUE_EVENT, 3);
+    OwnedQueue owned(QUEUE_IP_GROUP, 3);
     auto &q = owned.value;
     const auto a = AllocLink(&q), b = AllocLink(&q), c = AllocLink(&q);
-    static_cast<EVENT *>(a)->day_index = 27;
+    static_cast<IP_GROUP *>(a)->race_id = 27;
     PutQueue(&q, b);
     PutQueue(&q, a);
     ReinitQueue(&q);
@@ -131,7 +129,7 @@ BOOST_AUTO_TEST_CASE(game_queue_reinit_returns_linked_and_reserved_slots_without
     BOOST_TEST(AllocLink(&q) == a);
     BOOST_TEST(AllocLink(&q) == b);
     BOOST_TEST(AllocLink(&q) == c);
-    BOOST_TEST(static_cast<EVENT *>(a)->day_index == 27u);
+    BOOST_TEST(static_cast<IP_GROUP *>(a)->race_id == 27u);
     BOOST_TEST(AllocLink(&q) == nullptr);
 }
 
@@ -156,7 +154,7 @@ BOOST_AUTO_TEST_CASE(game_queue_preview_swap_preserves_original_owner_and_handle
 }
 
 BOOST_AUTO_TEST_CASE(game_queue_visitation_can_remove_current_and_c_api_works) {
-    OwnedQueue owned(QUEUE_EVENT, 3);
+    OwnedQueue owned(QUEUE_IP_GROUP, 3);
     std::vector<HLINK> expected;
     for (int i = 0; i < 3; ++i) {
         const auto link = AllocLink(&owned.value);

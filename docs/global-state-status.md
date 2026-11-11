@@ -7,7 +7,7 @@ legacy global-looking accesses already select session-owned storage.
 | Data | Current ownership/access | Remaining cleanup |
 | --- | --- | --- |
 | Story flags/counters | Player-owned `StoryState`; legacy macro access remains | Pass explicit references through remaining callers |
-| Calendar and scheduled story events | Legacy campaign payload | Campaign clock/scheduler interface |
+| Calendar and scheduled story events | **Moved:** session-owned `CampaignClock`, vector scheduler and clock-owned synchronization | C scheduling adapters and legacy story-event policy remain |
 | Race knowledge, alliances, fleet strength/influence | Mixed in `avail_race_q` | Separate personal knowledge from galaxy fleet state |
 | NPC encounter ships | Legacy `npc_built_ship_q` | Encounter-owned fleet |
 | Solar-system ship groups | Legacy `ip_group_q` | Solar-system simulation ownership |
@@ -26,3 +26,6 @@ Mutable economic tables already have `GameSession::gameData()` / player ownershi
 Merchant recipes and other compiled game/presentation definitions have not all
 been consolidated into catalogs. See [game data](game-data.md) and
 [session definitions](session-definitions.md).
+
+See [campaign clock](campaign-clock.md) for timing/save contracts and
+[positioned NPC fleets](design/npc-fleets.md) for the next queue ownership boundary.

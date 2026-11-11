@@ -5,6 +5,7 @@
 #include "menustat.h"
 #include "player_location.h"
 namespace uqm {
+class CampaignClock;
 class StoryState;
 class PlayerEntity;
 class GameSession;
@@ -14,7 +15,7 @@ class SimulationEngine;
 class HyperSpaceNavigation {
 public:
     // Both borrows outlive this navigation visit and its C callbacks.
-    HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine) noexcept;
+    HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock) noexcept;
     void run(GameSession &session);
     void frame();
     HyperSpaceNavigation(const HyperSpaceNavigation &) = delete;
@@ -57,6 +58,7 @@ private:
     // The realm selected by this mode must match the player variant.
     PLAYER_TRAVEL_POSITION &travel();
     PlayerEntity &player_;
+    CampaignClock &clock_;
     SimulationEngine &engine_;
     StoryState &story_;
     bool starsBound_ = false; // Resource swap lease; release is idempotent, including cancellation.

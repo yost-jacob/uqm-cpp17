@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/threadlib.h"
 #include "gameopt.h"
 #include "game_session_c.h"
 
@@ -367,8 +368,8 @@ DrawSaveNameString (UNICODE *Str, COUNT CursorPos, COUNT state, COUNT gameIndex)
 	FONT Font;
 	UNICODE fullStr[256], dateStr[80];
 
-	DateToString (dateStr, sizeof dateStr, GLOBAL(GameClock.month_index),
-			GLOBAL(GameClock.day_index), GLOBAL(GameClock.year_index));
+	DateToString (dateStr, sizeof dateStr, GetCampaignClockState().month_index,
+			GetCampaignClockState().day_index, GetCampaignClockState().year_index);
 	strncat (dateStr, ": ", sizeof(dateStr) - strlen(dateStr) -1);
 	snprintf (fullStr, sizeof fullStr, "%s%s", dateStr, Str);
 

@@ -11,9 +11,9 @@
 #include <algorithm>
 #include <limits>
 namespace uqm {
-CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, std::string script,
+CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, CampaignClock &clock, std::string script,
                                              Callback turn, Report report, dialogue::Json context)
-    : LegacyTurnState(std::move(script), std::move(turn)), player_(player), story_(player.story()),
+    : LegacyTurnState(std::move(script), std::move(turn)), player_(player), story_(player.story()), clock_(clock),
       report_(std::move(report)), context_(std::move(context)) {}
 dialogue::Json CampaignDialogueState::read(const std::string &scope, const std::string &key) const {
     if (scope == "player")
@@ -88,7 +88,9 @@ dialogue::Result CampaignDialogueState::scheduleEvent(const std::string &event,
     for (auto value : {months, days, years})
         if (value < 0 || value > std::numeric_limits<COUNT>::max())
             throw std::out_of_range("calendar offset out of range");
-    AddEvent(RELATIVE_EVENT, months, days, years, selector);
+    if (!clock_.schedule(CalendarOffset{static_cast<unsigned>(years), static_cast<unsigned>(months),
+                                       static_cast<unsigned>(days)}, static_cast<CampaignEvent>(selector)))
+        throw std::runtime_error("campaign event queue is full");
     return {};
 }
 dialogue::Result CampaignDialogueState::prepareReport(const std::string &report,

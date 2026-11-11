@@ -2,8 +2,8 @@
 #include "game_state.hpp"
 #include <stdexcept>
 namespace uqm {
-HyperSpaceNavigation::HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine) noexcept
-    : player_(player), engine_(engine), story_(player.story()) {}
+HyperSpaceNavigation::HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock) noexcept
+    : player_(player), clock_(clock), engine_(engine), story_(player.story()) {}
 PLAYER_TRAVEL_POSITION &HyperSpaceNavigation::travel() {
     if (story_.read(StoryCounter::ArilouSpaceSide) > 1)
         return std::get<QuasiSpaceLocation>(player_.location());
@@ -11,8 +11,8 @@ PLAYER_TRAVEL_POSITION &HyperSpaceNavigation::travel() {
 }
 NavigationBinding::NavigationBinding(GameSession &session, HyperSpaceNavigation &navigation)
     : session_(session), previous_(session.navigation_) {
-    if (&session.player() != &navigation.player_)
-        throw std::invalid_argument("navigation belongs to another player");
+    if (&session.player() != &navigation.player_ || &session.clock() != &navigation.clock_)
+        throw std::invalid_argument("navigation belongs to another player or campaign clock");
     session.navigation_ = &navigation;
 }
 NavigationBinding::~NavigationBinding() { session_.navigation_ = previous_; }

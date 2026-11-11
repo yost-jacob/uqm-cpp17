@@ -17,6 +17,7 @@
  */
 
 
+#include "libs/threadlib.h"
 #include "../system_runtime.hpp"
 #include "../world_legacy.hpp"
 #include <stdexcept>

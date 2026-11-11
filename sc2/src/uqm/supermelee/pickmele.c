@@ -17,6 +17,8 @@
  */
 
 #define PICKMELE_INTERNAL
+#include "libs/tasklib.h"
+#include "libs/threadlib.h"
 #include "pickmele.h"
 
 #include "../battlecontrols.h"

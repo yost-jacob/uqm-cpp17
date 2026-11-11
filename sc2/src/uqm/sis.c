@@ -413,9 +413,9 @@ DrawStatusMessage (const UNICODE *pStr)
 		else
 		{	// Just a date
 			DateToString (buf, sizeof buf,
-					GLOBAL (GameClock.month_index),
-					GLOBAL (GameClock.day_index),
-					GLOBAL (GameClock.year_index));
+					GetCampaignClockState().month_index,
+					GetCampaignClockState().day_index,
+					GetCampaignClockState().year_index);
 		}
 		pStr = buf;
 	}

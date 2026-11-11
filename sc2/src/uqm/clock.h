@@ -19,88 +19,40 @@
 #ifndef UQM_CLOCK_H_
 #define UQM_CLOCK_H_
 
-#include "libs/tasklib.h"
-#include "displist.h"
+#include "libs/compiler.h"
+#include <stddef.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 
-#define START_YEAR 2155
-
-#define UPDATE_DAY (1 << 0)
-#define UPDATE_MONTH (1 << 1)
-#define UPDATE_YEAR (1 << 2)
-
-typedef struct
-{
-	BYTE day_index, month_index;
-	COUNT year_index;
-	SIZE tick_count, day_in_ticks;
-
-	QUEUE event_q;
-			/* Queue element is EVENT */
+/* Save projections only; the live clock and scheduler belong to GameSession. */
+enum { START_YEAR = 2155, HYPERSPACE_CLOCK_RATE = 5, INTERPLANETARY_CLOCK_RATE = 30 };
+typedef struct {
+    BYTE day_index, month_index;
+    COUNT year_index;
+    SIZE tick_count, day_in_ticks;
 } CLOCK_STATE;
-
-typedef HLINK HEVENT;
-
-typedef struct event
-{
-	// LINK elements; must be first
-	HEVENT pred, succ;
-
-	BYTE day_index, month_index;
-	COUNT year_index;
-	BYTE func_index;
+typedef struct event {
+    BYTE day_index, month_index;
+    COUNT year_index;
+    BYTE func_index;
 } EVENT;
+typedef enum { ABSOLUTE_EVENT = 0, RELATIVE_EVENT } EVENT_TYPE;
 
-typedef enum
-{
-	ABSOLUTE_EVENT = 0,
-	RELATIVE_EVENT
-} EVENT_TYPE;
-
-#define AllocEvent() AllocLink (&GLOBAL (GameClock.event_q))
-#define PutEvent(h) PutQueue (&GLOBAL (GameClock.event_q), (h))
-#define InsertEvent(h,i) InsertQueue (&GLOBAL (GameClock.event_q), (h), (i))
-#define GetHeadEvent() GetHeadLink (&GLOBAL (GameClock.event_q))
-#define GetTailEvent() GetTailLink (&GLOBAL (GameClock.event_q))
-#define LockEvent(h,ppe) (*(ppe) = (EVENT*)LockLink (&GLOBAL (GameClock.event_q), h))
-#define UnlockEvent(h) UnlockLink (&GLOBAL (GameClock.event_q), (h))
-#define RemoveEvent(h) RemoveQueue (&GLOBAL (GameClock.event_q), (h))
-#define FreeEvent(h) FreeLink (&GLOBAL (GameClock.event_q), (h))
-#define GetPredEvent(l) _GetPredLink (l)
-#define GetSuccEvent(l) _GetSuccLink (l)
-
-// Rates are in seconds per game day
-#define HYPERSPACE_CLOCK_RATE 5
-// XXX: the IP rate is based on 24 ticks/second (see SetGameClockRate),
-//   however, IP runs at 30 fps right now. So in reality, the IP clock
-//   rate is closer to 23 seconds per game day. The clock is faster, but
-//   the flagship also moves faster.
-#define INTERPLANETARY_CLOCK_RATE 30
-
-extern BOOLEAN InitGameClock (void);
-extern BOOLEAN UninitGameClock (void);
-
-extern void SetGameClockRate (COUNT seconds_per_day);
-extern BOOLEAN ValidateEvent (EVENT_TYPE type, COUNT *pmonth_index,
-		COUNT *pday_index, COUNT *pyear_index);
-extern HEVENT AddEvent (EVENT_TYPE type, COUNT month_index, COUNT
-		day_index, COUNT year_index, BYTE func_index);
-extern void EventHandler (BYTE selector);
-extern void GameClockTick (void);
-extern void MoveGameClockDays (COUNT days);
-
-// The lock/unlock/running functions are for debugging use only
-// Locking will block the GameClockTick() function and thus
-// the thread moving the clock.
-extern void LockGameClock (void);
-extern void UnlockGameClock (void);
-// A weak indicator of the clock moving. Suitable for debugging,
-// but not much else
-extern BOOLEAN GameClockRunning (void);
+/* C adapters select the active campaign. Snapshots own their scalar values.
+ * Scheduler iteration is for the gameplay thread, without intervening dispatch. */
+CLOCK_STATE GetCampaignClockState(void);
+size_t CampaignEventCount(void);
+BOOLEAN ReadCampaignEvent(size_t index, EVENT *event);
+void ClearCampaignEvents(void);
+BOOLEAN RestoreCampaignEvent(const EVENT *event);
+void ExportCampaignClock(void);
+BOOLEAN ImportCampaignClock(void);
+BOOLEAN ValidateEvent(EVENT_TYPE type, COUNT *month, COUNT *day, COUNT *year);
+BOOLEAN AddEvent(EVENT_TYPE type, COUNT month, COUNT day, COUNT year, BYTE selector);
+void MoveGameClockDays(COUNT days);
 
 #if defined(__cplusplus)
 }

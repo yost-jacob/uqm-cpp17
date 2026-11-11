@@ -17,6 +17,7 @@
 #ifndef UQM_COMM_H_
 #define UQM_COMM_H_
 
+#include "libs/timelib.h"
 #include "globdata.h"
 #include "units.h"
 #include "libs/compiler.h"

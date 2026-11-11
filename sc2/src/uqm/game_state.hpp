@@ -2,6 +2,7 @@
 #define UQM_GAME_STATE_HPP_
 
 #include "game_data.hpp"
+#include "campaign_clock.hpp"
 #include <string_view>
 #include <array>
 #include <cstdint>
@@ -342,6 +343,8 @@ public:
     // Production lifecycle/legacy adapters; load only at an unwound boundary.
     SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
+    CampaignClock &clock() noexcept { return clock_; }
+    const CampaignClock &clock() const noexcept { return clock_; }
     HyperSpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
     PlayerId playerId() const noexcept;
     GameData &gameData() { return player().gameData(); }
@@ -354,6 +357,7 @@ public:
 protected:
     detail::LegacyRuntimeView legacyRuntime() noexcept override;
 private:
+    CampaignClock clock_;
     Entry entry_ = Entry::NewGame;
     std::shared_ptr<GameState> state_;
     PlayerId player_;

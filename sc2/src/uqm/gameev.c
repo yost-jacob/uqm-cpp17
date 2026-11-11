@@ -241,8 +241,8 @@ arilou_exit_event (void)
 {
 	COUNT month_index, year_index;
 
-	year_index = GLOBAL (GameClock.year_index);
-	if ((month_index = GLOBAL (GameClock.month_index) % 12) == 0)
+	year_index = GetCampaignClockState().year_index;
+	if ((month_index = GetCampaignClockState().month_index % 12) == 0)
 		++year_index;
 	++month_index;
 
