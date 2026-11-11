@@ -203,6 +203,8 @@ set(UQM_SOURCES
     sc2/src/uqm/cyborg.cpp
     sc2/src/uqm/demo.c
     sc2/src/uqm/displist.cpp
+    sc2/src/uqm/combat_mode.cpp
+    sc2/src/uqm/campaign_combat.cpp
     sc2/src/uqm/encount.cpp
     sc2/src/uqm/encounter_runtime.cpp
     sc2/src/uqm/encounter_context.cpp

@@ -203,13 +203,14 @@ constexpr unsigned counterMaximum(StoryCounter counter) noexcept {
 }
 namespace detail { struct PlayerStorage; struct LegacyStateAccess; }
 
-// Personal story interface, owned by value within PlayerEntity. During the
-// migration it views the existing packed bytes; there is no parallel bitset.
+// Personal story flags, counters and discovery progress, owned by value within
+// PlayerEntity. Fleet and navigation are separate responsibilities. During migration
+// this views the existing packed bytes; there is no parallel bitset.
 // All operations run on the simulation thread. Unknown enums throw invalid_argument.
-class CampaignState {
+class StoryState {
 public:
-    CampaignState(const CampaignState &) = delete;
-    CampaignState &operator=(const CampaignState &) = delete;
+    StoryState(const StoryState &) = delete;
+    StoryState &operator=(const StoryState &) = delete;
     bool read(StoryFlag flag) const;
     unsigned read(StoryCounter counter) const;
     void set(StoryFlag flag);
@@ -242,7 +243,7 @@ public:
     }
 private:
     friend class PlayerEntity;
-    explicit CampaignState(detail::PlayerStorage &storage) noexcept;
+    explicit StoryState(detail::PlayerStorage &storage) noexcept;
     detail::PlayerStorage &storage_;
     DiscoverySnapshot discoveries_;
     std::map<WorldId, LegacyDiscoveryLocation> legacyDiscoveries_;
@@ -272,14 +273,15 @@ public:
     // Storage quantities only; gameplay callers must enforce capacity/cost rules.
     void setFuel(std::uint32_t fuel) noexcept;
     void setCrew(std::uint16_t crew) noexcept;
-    CampaignState &campaign() noexcept;
-    const CampaignState &campaign() const noexcept;
+    // Borrow personal story progress; valid for this player's lifetime.
+    StoryState &story() noexcept;
+    const StoryState &story() const noexcept;
 private:
     friend struct detail::LegacyStateAccess;
     NavigationState navigation_;
     UserProfile profile_;
     std::unique_ptr<detail::PlayerStorage> storage_;
-    CampaignState campaign_;
+    StoryState story_;
 };
 
 // Storage-independent lookup boundary. Initially owns one player, not a list.

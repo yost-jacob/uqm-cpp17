@@ -176,6 +176,7 @@ while (--ac > 0)
 //	OpenJournal ();
 	while (StartGame ())
 	{
+		// C adapter implemented in sc2/src/uqm/gameplay_modes.cpp.
 		UQM_SESSION_EXIT result = RunGameSession (-1);
 		while (result.kind == UQM_SESSION_LOAD)
 			result = RunGameSession ((int)result.slot);

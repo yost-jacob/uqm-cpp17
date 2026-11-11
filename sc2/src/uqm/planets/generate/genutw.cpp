@@ -62,7 +62,7 @@ UtwigSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
 	if (star().Index == BOMB_DEFINED
-			&& !campaign_.read(StoryFlag::UtwigBomb))
+			&& !story_.read(StoryFlag::UtwigBomb))
 	{
 		ReinitQueue (&GLOBAL (ip_group_q));
 		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
@@ -108,10 +108,10 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 			|| (star().Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1)
-			&& !campaign_.read(StoryFlag::UtwigBomb)))
+			&& !story_.read(StoryFlag::UtwigBomb)))
 	{
 		if ((star().Index == UTWIG_DEFINED
-				|| !campaign_.read(StoryFlag::UtwigHaveUltron))
+				|| !story_.read(StoryFlag::UtwigHaveUltron))
 				&& StartSphereTracking (UTWIG_SHIP))
 		{
 			NotifyOthers (UTWIG_SHIP, IPNL_ALL_CLEAR);
@@ -123,11 +123,11 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			if (star().Index == UTWIG_DEFINED)
 			{
-				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+				story_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
-				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+				story_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			communicate(UTWIG_CONVERSATION);
 
@@ -140,7 +140,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		}
 
 		if (star().Index == BOMB_DEFINED
-				&& !campaign_.read(StoryFlag::BombUnprotected)
+				&& !story_.read(StoryFlag::BombUnprotected)
 				&& StartSphereTracking (DRUUGE_SHIP))
 		{
 			COUNT i;
@@ -153,7 +153,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 						&GLOBAL (npc_built_ship_q), 0);
 			}
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+			story_.set(StoryCounter::EncounterContext, 1 << 6);
 			communicate(DRUUGE_CONVERSATION);
 
 			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
@@ -172,7 +172,7 @@ UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					return true;
 
 				RepairSISBorder ();
-				campaign_.set(StoryFlag::BombUnprotected, (1) != 0);
+				story_.set(StoryFlag::BombUnprotected, (1) != 0);
 			}
 		}
 
@@ -222,7 +222,7 @@ UtwigSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::UtwigBomb))
+		if (story_.read(StoryFlag::UtwigBomb))
 		{	// already picked up
 			return 0;
 		}
@@ -249,16 +249,16 @@ UtwigSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	if (star().Index == BOMB_DEFINED
 			&& matchWorld (solarSys, world, 5, 1))
 	{
-		assert (!campaign_.read(StoryFlag::UtwigBomb) && whichNode == 0);
+		assert (!story_.read(StoryFlag::UtwigBomb) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::UtwigBomb, (1) != 0);
-		campaign_.set(StoryFlag::UtwigBombOnShip, (1) != 0);
-		campaign_.set(StoryFlag::DruugeManner, (1) != 0);
-		campaign_.set(StoryCounter::DruugeVisits, 0);
-		campaign_.set(StoryCounter::DruugeHomeVisits, 0);
+		story_.set(StoryFlag::UtwigBomb, (1) != 0);
+		story_.set(StoryFlag::UtwigBombOnShip, (1) != 0);
+		story_.set(StoryFlag::DruugeManner, (1) != 0);
+		story_.set(StoryCounter::DruugeVisits, 0);
+		story_.set(StoryCounter::DruugeHomeVisits, 0);
 
 		return true; // picked up
 	}
@@ -267,7 +267,7 @@ UtwigSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createUtwigSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<UtwigSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createUtwigSystemBehavior(StoryState &story) {
+    return std::make_unique<UtwigSystemBehavior>(story);
 }
 } // namespace uqm

@@ -46,16 +46,16 @@ bool
 ZoqFotPikScoutSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	if (!campaign_.read(StoryFlag::MetZoqfot))
+	if (!story_.read(StoryFlag::MetZoqfot))
 	{
-		GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::ZoqfotGrpoffs0);
+		GLOBAL (BattleGroupRef) = story_.read(StoryCounter::ZoqfotGrpoffs0);
 		if (GLOBAL (BattleGroupRef) == 0)
 		{
 			CloneShipFragment (ZOQFOTPIK_SHIP,
 					&GLOBAL (npc_built_ship_q), 0);
 			GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			campaign_.set(StoryCounter::ZoqfotGrpoffs0, GLOBAL (BattleGroupRef));
+			story_.set(StoryCounter::ZoqfotGrpoffs0, GLOBAL (BattleGroupRef));
 		}
 	}
 
@@ -95,7 +95,7 @@ ZoqFotPikScoutSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 }
 
 
-std::unique_ptr<SystemBehavior> createZoqFotPikScoutSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<ZoqFotPikScoutSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createZoqFotPikScoutSystemBehavior(StoryState &story) {
+    return std::make_unique<ZoqFotPikScoutSystemBehavior>(story);
 }
 } // namespace uqm

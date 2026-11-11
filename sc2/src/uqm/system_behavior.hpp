@@ -4,14 +4,14 @@
 #include "comm.h"
 #include <memory>
 namespace uqm {
-class CampaignState;
+class StoryState;
 class GameSession;
-// One behavior per explored system. campaign must outlive this object. Hook
+// One behavior per explored system. story state must outlive this object. Hook
 // descriptors belong to the active C engine frame and are never retained.
 // Return meanings/order match the original generation hooks; node info may be null for counts.
 class SystemBehavior {
 public:
-    explicit SystemBehavior(CampaignState &campaign) noexcept : campaign_(campaign) {}
+    explicit SystemBehavior(StoryState &story) noexcept : story_(story) {}
     virtual ~SystemBehavior() = default;
     // Attach immutable catalogue context before hooks. It outlives exploration.
     void attachStar(const STAR_DESC &star);
@@ -26,7 +26,7 @@ public:
     virtual bool generatePlanets(SOLARSYS_STATE &system);
     virtual bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &world);
     virtual bool generateName(const SOLARSYS_STATE &system, const PLANET_DESC &world);
-    // Entering orbit may invoke story UI/encounters; campaign is checked now.
+    // Entering orbit may invoke story UI/encounters; story state is checked now.
     virtual bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &world);
     // Keep legacy node-index/count conventions. info is nullable for count queries.
     virtual COUNT generateMinerals(const SOLARSYS_STATE &system, const PLANET_DESC &world, COUNT node, NODE_INFO *info);
@@ -39,13 +39,13 @@ public:
 protected:
     const STAR_DESC &star() const;
     COUNT communicate(CONVERSATION conversation);
-    CampaignState &campaign_;
+    StoryState &story_;
 private:
     const STAR_DESC *star_ = nullptr;
     GameSession *session_ = nullptr;
 };
 // Catalogue special-system ID selects rules; story state is checked by hooks.
-std::unique_ptr<SystemBehavior> createSystemBehavior(BYTE specialSystem, CampaignState &campaign);
-std::unique_ptr<SystemBehavior> createChmmrSystemBehavior(CampaignState &campaign);
+std::unique_ptr<SystemBehavior> createSystemBehavior(BYTE specialSystem, StoryState &story);
+std::unique_ptr<SystemBehavior> createChmmrSystemBehavior(StoryState &story);
 } // namespace uqm
 #endif

@@ -98,8 +98,8 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 	{
 		if (StartSphereTracking (THRADDASH_SHIP)
 				&& (star().Index == THRADD_DEFINED
-				|| (!campaign_.read(StoryFlag::HelixUnprotected)
-				&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3)))
+				|| (!story_.read(StoryFlag::HelixUnprotected)
+				&& (BYTE)(story_.read(StoryCounter::ThraddMission) - 1) >= 3)))
 		{
 			NotifyOthers (THRADDASH_SHIP, IPNL_ALL_CLEAR);
 			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
@@ -110,11 +110,11 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			if (star().Index == THRADD_DEFINED)
 			{
-				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+				story_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
-				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+				story_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			communicate(THRADD_CONVERSATION);
 
@@ -125,15 +125,15 @@ ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 			encounter.restore();
 
 			if (star().Index == THRADD_DEFINED
-					|| (!campaign_.read(StoryFlag::HelixUnprotected)
-					&& (BYTE)(campaign_.read(StoryCounter::ThraddMission) - 1) >= 3))
+					|| (!story_.read(StoryFlag::HelixUnprotected)
+					&& (BYTE)(story_.read(StoryCounter::ThraddMission) - 1) >= 3))
 				return true;
 
 			RepairSISBorder ();
 		}
 
 		if (star().Index == AQUA_HELIX_DEFINED
-				&& !campaign_.read(StoryFlag::AquaHelix))
+				&& !story_.read(StoryFlag::AquaHelix))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
@@ -171,7 +171,7 @@ ThraddashSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLAN
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::AquaHelix))
+		if (story_.read(StoryFlag::AquaHelix))
 		{	// already picked up
 			return 0;
 		}
@@ -198,15 +198,15 @@ ThraddashSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 	if (star().Index == AQUA_HELIX_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!campaign_.read(StoryFlag::AquaHelix) && whichNode == 0);
+		assert (!story_.read(StoryFlag::AquaHelix) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryCounter::HelixVisits, 0);
-		campaign_.set(StoryFlag::AquaHelix, (1) != 0);
-		campaign_.set(StoryFlag::AquaHelixOnShip, (1) != 0);
-		campaign_.set(StoryFlag::HelixUnprotected, (1) != 0);
+		story_.set(StoryCounter::HelixVisits, 0);
+		story_.set(StoryFlag::AquaHelix, (1) != 0);
+		story_.set(StoryFlag::AquaHelixOnShip, (1) != 0);
+		story_.set(StoryFlag::HelixUnprotected, (1) != 0);
 
 		return true; // picked up
 	}
@@ -215,7 +215,7 @@ ThraddashSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body,
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<ThraddashSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createThraddashSystemBehavior(StoryState &story) {
+    return std::make_unique<ThraddashSystemBehavior>(story);
 }
 } // namespace uqm

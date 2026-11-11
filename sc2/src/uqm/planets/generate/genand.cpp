@@ -81,7 +81,7 @@ AndrosynthSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &b
     auto *world = &body;
 	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
 	{
-        COUNT visits = campaign_.discovery(solarSys->worlds->system->world(1).id()).visitedSites.count();
+        COUNT visits = story_.discovery(solarSys->worlds->system->world(1).id()).visitedSites.count();
 
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =
@@ -157,7 +157,7 @@ AndrosynthSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLA
 	return 0;
 }
 
-std::unique_ptr<SystemBehavior> createAndrosynthSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<AndrosynthSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createAndrosynthSystemBehavior(StoryState &story) {
+    return std::make_unique<AndrosynthSystemBehavior>(story);
 }
 } // namespace uqm

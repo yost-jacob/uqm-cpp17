@@ -61,7 +61,7 @@ bool
 SaMatraSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	if (!campaign_.read(StoryFlag::UrquanMessedUp))
+	if (!story_.read(StoryFlag::UrquanMessedUp))
 	{
 		BuildUrquanGuard (solarSys);
 	}
@@ -97,7 +97,7 @@ SaMatraSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
 		hNextGroup = _GetSuccLink (GroupPtr);
 
-		if (campaign_.read(StoryFlag::UrquanMessedUp))
+		if (story_.read(StoryFlag::UrquanMessedUp))
 		{
 			GroupPtr->task &= REFORM_GROUP;
 			GroupPtr->task |= FLEE | IGNORE_FLAGSHIP;
@@ -178,9 +178,9 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 	{
 		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
-		if (!campaign_.read(StoryFlag::UrquanMessedUp))
+		if (!story_.read(StoryFlag::UrquanMessedUp))
 		{
-			CloneShipFragment (!campaign_.read(StoryFlag::KohrAhFrenzy) ?
+			CloneShipFragment (!story_.read(StoryFlag::KohrAhFrenzy) ?
 					URQUAN_SHIP : BLACK_URQUAN_SHIP,
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 		}
@@ -199,8 +199,8 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 		}
 
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-		campaign_.set(StoryCounter::EncounterContext, 1 << 7);
-		campaign_.set(StoryFlag::UrquanProtectingSamatra, (1) != 0);
+		story_.set(StoryCounter::EncounterContext, 1 << 7);
+		story_.set(StoryFlag::UrquanProtectingSamatra, (1) != 0);
 		communicate(URQUAN_CONVERSATION);
 
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -213,14 +213,14 @@ SaMatraSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 			encounter.restore();
 			if (UrquanSurvivors)
 			{
-				campaign_.set(StoryFlag::UrquanProtectingSamatra, (0) != 0);
+				story_.set(StoryFlag::UrquanProtectingSamatra, (0) != 0);
 			}
 			else
 			{
 				EncounterGroup = 0;
 				EncounterRace = -1;
 				GLOBAL (CurrentActivity) = IN_LAST_BATTLE | START_ENCOUNTER;
-				if (campaign_.read(StoryFlag::YehatCivilWar)
+				if (story_.read(StoryFlag::YehatCivilWar)
 						&& StartSphereTracking (YEHAT_SHIP)
 						&& EscortFeasibilityStudy (YEHAT_REBEL_SHIP))
 					communicate(YEHAT_REBEL_CONVERSATION);
@@ -241,9 +241,9 @@ SaMatraSystemBehavior::BuildUrquanGuard(SOLARSYS_STATE *solarSys)
 	POINT org;
 	HIPGROUP hGroup, hNextGroup;
 
-	GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::SamatraGrpoffs0);
+	GLOBAL (BattleGroupRef) = story_.read(StoryCounter::SamatraGrpoffs0);
 
-	if (!campaign_.read(StoryFlag::KohrAhFrenzy))
+	if (!story_.read(StoryFlag::KohrAhFrenzy))
 	{
 		ship1 = URQUAN_SHIP;
 		ship2 = BLACK_URQUAN_SHIP;
@@ -262,7 +262,7 @@ SaMatraSystemBehavior::BuildUrquanGuard(SOLARSYS_STATE *solarSys)
 	if (GLOBAL (BattleGroupRef) == 0)
 	{
 		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
-		campaign_.set(StoryCounter::SamatraGrpoffs0, GLOBAL (BattleGroupRef));
+		story_.set(StoryCounter::SamatraGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
 #define NUM_URQUAN_GUARDS0 12
@@ -329,7 +329,7 @@ SaMatraSystemBehavior::BuildUrquanGuard(SOLARSYS_STATE *solarSys)
 }
 
 
-std::unique_ptr<SystemBehavior> createSaMatraSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<SaMatraSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createSaMatraSystemBehavior(StoryState &story) {
+    return std::make_unique<SaMatraSystemBehavior>(story);
 }
 } // namespace uqm

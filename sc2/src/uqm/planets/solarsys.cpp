@@ -434,7 +434,7 @@ LoadSolarSys(SOLARSYS_STATE &system)
 		GenerateMoons (&system, system.pOrbitalDesc);
 		system.pBaseDesc = system.MoonDesc;
 
-		uqm::systemCampaign(system).clear(uqm::StoryFlag::PlanetaryLanding);
+		uqm::systemStory(system).clear(uqm::StoryFlag::PlanetaryLanding);
 	}
 
 	initSolarSysSISCharacteristics ();
@@ -1272,7 +1272,7 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 	LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
 			START_ENCOUNTER)) || GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
-			|| uqm::systemCampaign(system).read(uqm::StoryCounter::BombProgress) == 2)
+			|| uqm::systemStory(system).read(uqm::StoryCounter::BombProgress) == 2)
 		return;
 
 	// Implement a to-do in generate.h for a better test
@@ -1413,7 +1413,7 @@ endInterPlanetary(SOLARSYS_STATE &system)
 		// These are game state changing ops and so cannot be
 		// called once another game has been loaded!
 		uqm::systemBehavior(system).uninitNpcs(system);
-		uqm::systemCampaign(system).clear(uqm::StoryFlag::UsedBroadcaster);
+		uqm::systemStory(system).clear(uqm::StoryFlag::UsedBroadcaster);
 	}
 }
 
@@ -1912,7 +1912,7 @@ DoSolarSysMenu (MENU_STATE *pMS)
 	switch (pMS->CurState)
 	{
 		case EQUIP_DEVICE:
-			select = uqm::DeviceMenu{uqm::systemCampaign(system), system}.run();
+			select = uqm::DeviceMenu{uqm::systemStory(system), system}.run();
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 			{	// Invoked Talking Pet or a Caster for Ilwrath
 				// Going into conversation

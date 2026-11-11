@@ -5,7 +5,7 @@ Historical notes below predate these changes.
 
 Current C++17 implementation: SolarSystem owns a SystemBehavior selected by
 system_behavior_factory.cpp. All special systems override native hooks and
-borrow CampaignState&. One GenerateFunctions table remains only as a bridge
+borrow StoryState&. One GenerateFunctions table remains only as a bridge
 for the C exploration loop. See docs/design/solar-system/system-behavior.md.
 The historical description below predates this migration.
 

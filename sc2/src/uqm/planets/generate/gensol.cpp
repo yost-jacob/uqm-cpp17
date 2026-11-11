@@ -73,13 +73,13 @@ bool
 SolSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::UrquanProbeGrpoffs0);
+	GLOBAL (BattleGroupRef) = story_.read(StoryCounter::UrquanProbeGrpoffs0);
 	if (GLOBAL (BattleGroupRef) == 0)
 	{
 		CloneShipFragment (URQUAN_DRONE_SHIP, &GLOBAL (npc_built_ship_q), 0);
 		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		campaign_.set(StoryCounter::UrquanProbeGrpoffs0, GLOBAL (BattleGroupRef));
+		story_.set(StoryCounter::UrquanProbeGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
 	if (!init_probe ())
@@ -92,7 +92,7 @@ bool
 SolSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	if (campaign_.read(StoryCounter::BombProgress) != 3)
+	if (story_.read(StoryCounter::BombProgress) != 3)
 	{
 		GenerateDefault_reinitNpcs (solarSys);
 		check_probe ();
@@ -255,7 +255,7 @@ SolSystemBehavior::generateName(const SOLARSYS_STATE &system, const PLANET_DESC 
 	COUNT planetNr = planetIndex (solarSys, world);
 	utf8StringCopy (GLOBAL_SIS (PlanetName), sizeof (GLOBAL_SIS (PlanetName)),
 			GAME_STRING (PLANET_NUMBER_BASE + planetNr));
-	campaign_.set(StoryCounter::BattlePlanet, solarSys->PlanetDesc[planetNr].data_index);
+	story_.set(StoryCounter::BattlePlanet, solarSys->PlanetDesc[planetNr].data_index);
 
 	return true;
 }
@@ -277,7 +277,7 @@ SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 		EncounterGroup = 0;
 		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-		campaign_.set(StoryCounter::EncounterContext, (BYTE)~0);
+		story_.set(StoryCounter::EncounterContext, (BYTE)~0);
 		return true;
 	}
 
@@ -389,7 +389,7 @@ SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 						EARTH_RADIUS * 2999L / 100;
 				break;
 			case 8: /* PLUTO */
-				if (!campaign_.read(StoryCounter::FoundPlutoSpathi))
+				if (!story_.read(StoryCounter::FoundPlutoSpathi))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
@@ -436,7 +436,7 @@ SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
 						rand_val;
 
-				if (!campaign_.read(StoryFlag::MoonbaseDestroyed))
+				if (!story_.read(StoryFlag::MoonbaseDestroyed))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
@@ -534,7 +534,7 @@ SolSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 		/* Pluto */
 		// This check is needed because the retrieval bit is not set for
 		// this node to keep it on the surface while the lander is taking off
-		if (campaign_.read(StoryCounter::FoundPlutoSpathi))
+		if (story_.read(StoryCounter::FoundPlutoSpathi))
 		{	// already picked up
 			return 0;
 		}
@@ -553,7 +553,7 @@ SolSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 		/* Earth Moon */
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::MoonbaseDestroyed))
+		if (story_.read(StoryFlag::MoonbaseDestroyed))
 		{	// already picked up
 			return 0;
 		}
@@ -578,14 +578,14 @@ SolSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
     auto *world = &body;
 	if (matchWorld (solarSys, world, 8, MATCH_PLANET))
 	{	// Pluto
-		assert (!campaign_.read(StoryCounter::FoundPlutoSpathi) && whichNode == 0);
+		assert (!story_.read(StoryCounter::FoundPlutoSpathi) && whichNode == 0);
 
 		// Ran into Fwiffo on Pluto
 		#define FWIFFO_FRAGS  8
 		if (!KillLanderCrewSeq (FWIFFO_FRAGS, ONE_SECOND / 20))
 			return false; // lander probably died
 
-		campaign_.set(StoryCounter::FoundPlutoSpathi, 1);
+		story_.set(StoryCounter::FoundPlutoSpathi, 1);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
@@ -598,13 +598,13 @@ SolSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 
 	if (matchWorld (solarSys, world, 2, 1))
 	{	// Earth Moon
-		assert (!campaign_.read(StoryFlag::MoonbaseDestroyed) && whichNode == 0);
+		assert (!story_.read(StoryFlag::MoonbaseDestroyed) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::MoonbaseDestroyed, (1) != 0);
-		campaign_.set(StoryFlag::MoonbaseOnShip, (1) != 0);
+		story_.set(StoryFlag::MoonbaseDestroyed, (1) != 0);
+		story_.set(StoryFlag::MoonbaseOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -634,7 +634,7 @@ SolSystemBehavior::init_probe(void)
 {
 	HIPGROUP hGroup;
 
-	if (!campaign_.read(StoryFlag::ProbeMessageDelivered)
+	if (!story_.read(StoryFlag::ProbeMessageDelivered)
 			&& GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP)
 			&& (hGroup = GetHeadLink (&GLOBAL (ip_group_q))))
 	{
@@ -683,7 +683,7 @@ SolSystemBehavior::check_probe(void)
 }
 
 
-std::unique_ptr<SystemBehavior> createSolSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<SolSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createSolSystemBehavior(StoryState &story) {
+    return std::make_unique<SolSystemBehavior>(story);
 }
 } // namespace uqm

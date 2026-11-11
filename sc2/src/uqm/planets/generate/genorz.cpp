@@ -88,12 +88,12 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 			|| (star().Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2)
-			&& !campaign_.read(StoryFlag::TaaloProtector)))
+			&& !story_.read(StoryFlag::TaaloProtector)))
 	{
 		COUNT i;
 
 		if ((star().Index == ORZ_DEFINED
-				|| !campaign_.read(StoryFlag::TaaloUnprotected))
+				|| !story_.read(StoryFlag::TaaloUnprotected))
 				&& StartSphereTracking (ORZ_SHIP))
 		{
 			NotifyOthers (ORZ_SHIP, IPNL_ALL_CLEAR);
@@ -103,7 +103,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			{
 				CloneShipFragment (ORZ_SHIP,
 						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-				campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+				story_.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
@@ -112,7 +112,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					CloneShipFragment (ORZ_SHIP,
 							&GLOBAL (npc_built_ship_q), 0);
 				}
-				campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+				story_.set(StoryCounter::EncounterContext, 1 << 6);
 			}
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			communicate(ORZ_CONVERSATION);
@@ -125,7 +125,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 				OrzSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q))
 						&& (star().Index == ORZ_DEFINED
-						|| !campaign_.read(StoryFlag::TaaloUnprotected));
+						|| !story_.read(StoryFlag::TaaloUnprotected));
 
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
 				encounter.restore();
@@ -137,7 +137,7 @@ OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			}
 		}
 
-		campaign_.set(StoryFlag::TaaloUnprotected, (1) != 0);
+		story_.set(StoryFlag::TaaloUnprotected, (1) != 0);
 		if (star().Index == TAALO_PROTECTOR_DEFINED)
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
@@ -173,7 +173,7 @@ OrzSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::TaaloProtector))
+		if (story_.read(StoryFlag::TaaloProtector))
 		{	// already picked up
 			return 0;
 		}
@@ -198,13 +198,13 @@ OrzSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 	if (star().Index == TAALO_PROTECTOR_DEFINED
 			&& matchWorld (solarSys, world, 1, 2))
 	{
-		assert (!campaign_.read(StoryFlag::TaaloProtector) && whichNode == 0);
+		assert (!story_.read(StoryFlag::TaaloProtector) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::TaaloProtector, (1) != 0);
-		campaign_.set(StoryFlag::TaaloProtectorOnShip, (1) != 0);
+		story_.set(StoryFlag::TaaloProtector, (1) != 0);
+		story_.set(StoryFlag::TaaloProtectorOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -221,7 +221,7 @@ OrzSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createOrzSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<OrzSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createOrzSystemBehavior(StoryState &story) {
+    return std::make_unique<OrzSystemBehavior>(story);
 }
 } // namespace uqm

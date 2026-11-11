@@ -52,14 +52,14 @@ ColonySystemBehavior::initNpcs(SOLARSYS_STATE &system)
     auto *solarSys = &system;
 	HIPGROUP hGroup;
 
-	GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::ColonyGrpoffs0);
+	GLOBAL (BattleGroupRef) = story_.read(StoryCounter::ColonyGrpoffs0);
 	if (GLOBAL (BattleGroupRef) == 0)
 	{
 		CloneShipFragment (URQUAN_SHIP,
 				&GLOBAL (npc_built_ship_q), 0);
 		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		campaign_.set(StoryCounter::ColonyGrpoffs0, GLOBAL (BattleGroupRef));
+		story_.set(StoryCounter::ColonyGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
 	GenerateDefault_initNpcs (solarSys);
@@ -127,7 +127,7 @@ ColonySystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 }
 
 
-std::unique_ptr<SystemBehavior> createColonySystemBehavior(CampaignState &campaign) {
-    return std::make_unique<ColonySystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createColonySystemBehavior(StoryState &story) {
+    return std::make_unique<ColonySystemBehavior>(story);
 }
 } // namespace uqm

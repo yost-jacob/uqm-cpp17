@@ -50,7 +50,7 @@ flowchart TD
     GEN --> CHILD["SystemEncounterMode<br/>swapGameMode retains exploration parent"]:::native
     CHILD --> ER
     GEN --> WA
-    GEN --> SB["SolarSystem-owned behavior<br/>borrowed CampaignState reference"]:::native
+    GEN --> SB["SolarSystem-owned behavior<br/>borrowed StoryState reference"]:::native
     WA --> WO["SolarSystem / World / EnergyBehavior<br/>runtime ownership and selected energy rules"]:::native
 
     O --> MN["Native MenuResult + C menu bridge<br/>game_menu.cpp / game_session_c.h"]:::adapter
@@ -84,9 +84,9 @@ loading. The decoder itself remains nontransactional.
 ```mermaid
 flowchart LR
     SESSION["GameSession"]:::native -->|shared_ptr| STATE["GameState"]:::native
-    STATE -->|owns| PLAYER["PlayerEntity<br/>identity / campaign interface"]:::native
+    STATE -->|owns| PLAYER["PlayerEntity<br/>identity / story interface"]:::native
     STATE -->|shared_ptr| WS["WorldState<br/>physical world progress"]:::native
-    PLAYER --> CAM["CampaignState<br/>typed story access / personal discoveries"]:::mixed
+    PLAYER --> CAM["StoryState<br/>typed story access / personal discoveries"]:::mixed
     PLAYER --> PAYLOAD["PlayerStorage<br/>authoritative legacy payload"]:::legacy
     CAM -. story bytes still live here .-> PAYLOAD
     C["Legacy gameplay callers"]:::legacy --> BRIDGE["GetLegacyGlobData / GLOBAL macros<br/>borrowed payload access"]:::adapter
@@ -137,7 +137,7 @@ transfer contracts; it is not redundant simply because its implementation is C++
 | Area | Current boundary | What deeper encapsulation would involve |
 | --- | --- | --- |
 | Mode selection | Native dispatcher; mixed mode bodies | Move remaining C activity/transition flags into explicit results; production modes already receive their session. |
-| Solar-system generation | Scoped native ownership; all special-system behavior classes borrow campaign state | Replace remaining global runtime/queue access and C engine entry points. |
+| Solar-system generation | Scoped native ownership; all special-system behavior classes borrow story state | Replace remaining global runtime/queue access and C engine entry points. |
 | Navigation | Owned native HyperSpace state; menu userdata; explicit campaign device actions | Move remaining selected-star, graphics and C input dependencies behind explicit interfaces. |
 | Encounters and communication | Native encounter runtime, conversation children and owned dialogue/animation state; C alien scripts | Migrate script story access and global media services; preserve root encounter/starbase handoffs. |
 | Combat | Native ships and callers over a legacy element engine | Encapsulate battle/element lifetime, collisions and projectile behaviors; preserve retirement and reincarnation ordering. |

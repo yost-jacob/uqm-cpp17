@@ -100,13 +100,13 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				&& StartSphereTracking (MYCON_SHIP))
 		{
 			if (star().Index == MYCON_DEFINED
-					|| !campaign_.read(StoryFlag::SunDeviceUnguarded))
+					|| !story_.read(StoryFlag::SunDeviceUnguarded))
 			{
 				NotifyOthers (MYCON_SHIP, IPNL_ALL_CLEAR);
 				uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
 
 				if (star().Index == MYCON_DEFINED
-						|| !campaign_.read(StoryFlag::MyconFellForAmbush))
+						|| !story_.read(StoryFlag::MyconFellForAmbush))
 				{
 					CloneShipFragment (MYCON_SHIP,
 							&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
@@ -123,11 +123,11 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 				if (star().Index == MYCON_DEFINED)
 				{
-					campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+					story_.set(StoryCounter::EncounterContext, 1 << 7);
 				}
 				else
 				{
-					campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+					story_.set(StoryCounter::EncounterContext, 1 << 6);
 				}
 				communicate(MYCON_CONVERSATION);
 
@@ -146,7 +146,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					if (MyconSurvivors)
 						return true;
 
-					campaign_.set(StoryFlag::SunDeviceUnguarded, (1) != 0);
+					story_.set(StoryFlag::SunDeviceUnguarded, (1) != 0);
 					RepairSISBorder ();
 				}
 			}
@@ -155,7 +155,7 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		switch (star().Index)
 		{
 			case SUN_DEVICE_DEFINED:
-				if (!campaign_.read(StoryFlag::SunDevice))
+				if (!story_.read(StoryFlag::SunDevice))
 				{
 					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
@@ -169,8 +169,8 @@ MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			case EGG_CASE0_DEFINED:
 			case EGG_CASE1_DEFINED:
 			case EGG_CASE2_DEFINED:
-				if (campaign_.read(StoryCounter::KnowAboutShattered) == 0)
-					campaign_.set(StoryCounter::KnowAboutShattered, 1);
+				if (story_.read(StoryCounter::KnowAboutShattered) == 0)
+					story_.set(StoryCounter::KnowAboutShattered, 1);
 
 				if (!isNodeRetrieved (&solarSys->SysInfo.PlanetInfo,
 						ENERGY_SCAN, 0))
@@ -201,7 +201,7 @@ MyconSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::SunDevice))
+		if (story_.read(StoryFlag::SunDevice))
 		{	// already picked up
 			return 0;
 		}
@@ -237,7 +237,7 @@ MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	if (star().Index == SUN_DEVICE_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!campaign_.read(StoryFlag::SunDevice) && whichNode == 0);
+		assert (!story_.read(StoryFlag::SunDevice) && whichNode == 0);
 
         ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 0, -1, whichNode,
                 isNodeRetrieved (&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, whichNode) ? TRUE : FALSE);
@@ -247,9 +247,9 @@ MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::SunDevice, (1) != 0);
-		campaign_.set(StoryFlag::SunDeviceOnShip, (1) != 0);
-		campaign_.set(StoryCounter::MyconVisits, 0);
+		story_.set(StoryFlag::SunDevice, (1) != 0);
+		story_.set(StoryFlag::SunDeviceOnShip, (1) != 0);
+		story_.set(StoryCounter::MyconVisits, 0);
 
         return result.removeNode; // Physical retrieval is committed by the lander.
 	}
@@ -272,13 +272,13 @@ MyconSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 		switch (star().Index)
 		{
 			case EGG_CASE0_DEFINED:
-				campaign_.set(StoryFlag::EggCase0OnShip, (1) != 0);
+				story_.set(StoryFlag::EggCase0OnShip, (1) != 0);
 				break;
 			case EGG_CASE1_DEFINED:
-				campaign_.set(StoryFlag::EggCase1OnShip, (1) != 0);
+				story_.set(StoryFlag::EggCase1OnShip, (1) != 0);
 				break;
 			case EGG_CASE2_DEFINED:
-				campaign_.set(StoryFlag::EggCase2OnShip, (1) != 0);
+				story_.set(StoryFlag::EggCase2OnShip, (1) != 0);
 				break;
 		}
 
@@ -303,7 +303,7 @@ MyconSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DES
 }
 
 
-std::unique_ptr<SystemBehavior> createMyconSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<MyconSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createMyconSystemBehavior(StoryState &story) {
+    return std::make_unique<MyconSystemBehavior>(story);
 }
 } // namespace uqm

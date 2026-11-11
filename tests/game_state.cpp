@@ -20,7 +20,7 @@ int game_state_c_packed_words(void);
 using namespace uqm;
 static_assert(std::is_same_v<decltype(std::declval<const GameState &>().player(SinglePlayerId)), const PlayerEntity &>);
 static_assert(std::is_same_v<decltype(std::declval<const GameSession &>().player()), const PlayerEntity &>);
-static_assert(std::is_same_v<decltype(std::declval<const PlayerEntity &>().campaign()), const CampaignState &>);
+static_assert(std::is_same_v<decltype(std::declval<const PlayerEntity &>().story()), const StoryState &>);
 static_assert(!std::is_copy_constructible_v<PlayerEntity>);
 static_assert(!std::is_move_constructible_v<PlayerEntity>);
 
@@ -45,9 +45,9 @@ BOOST_AUTO_TEST_CASE(sessions_retain_state_and_share_the_same_player)
         GameSession first{state, PlayerId{17}}, second{state, PlayerId{17}};
         state.reset();
         first.player().setFuel(654321);
-        first.player().campaign().set<StoryCounter::BombProgress, 3>();
+        first.player().story().set<StoryCounter::BombProgress, 3>();
         BOOST_TEST(second.player().ship().fuel == 654321u);
-        BOOST_TEST(second.player().campaign().read(StoryCounter::BombProgress) == 3u);
+        BOOST_TEST(second.player().story().read(StoryCounter::BombProgress) == 3u);
         BOOST_TEST(!lifetime.expired());
     }
     BOOST_TEST(lifetime.expired());
@@ -57,9 +57,9 @@ BOOST_AUTO_TEST_CASE(independent_players_have_independent_personal_state)
 {
     GameState alice{UserProfile{PlayerId{1}, "Alice"}};
     GameState bob{UserProfile{PlayerId{2}, "Bob"}};
-    alice.player(PlayerId{1}).campaign().set(StoryFlag::SunDeviceOnShip);
+    alice.player(PlayerId{1}).story().set(StoryFlag::SunDeviceOnShip);
     alice.player(PlayerId{1}).setCrew(50);
-    BOOST_TEST(!bob.player(PlayerId{2}).campaign().read(StoryFlag::SunDeviceOnShip));
+    BOOST_TEST(!bob.player(PlayerId{2}).story().read(StoryFlag::SunDeviceOnShip));
     BOOST_TEST(bob.player(PlayerId{2}).ship().crew == 0u);
 }
 
@@ -86,16 +86,16 @@ BOOST_AUTO_TEST_CASE(c_and_cpp_observe_one_authoritative_ship_and_campaign)
     BOOST_TEST(ship.shipName == "Vindicator");
     BOOST_TEST(ship.commanderName == "Captain");
     BOOST_TEST(ship.planetName == "Earth");
-    auto &campaign = player.campaign();
-    BOOST_TEST(campaign.read(StoryFlag::StarbaseAccessGranted));
-    BOOST_TEST(campaign.read(StoryFlag::SunDeviceOnShip));
-    BOOST_TEST(campaign.read(StoryCounter::BombProgress) == 2u);
-    BOOST_TEST(campaign.read(StoryCounter::ShofixtiVisits) == 5u);
+    auto &story = player.story();
+    BOOST_TEST(story.read(StoryFlag::StarbaseAccessGranted));
+    BOOST_TEST(story.read(StoryFlag::SunDeviceOnShip));
+    BOOST_TEST(story.read(StoryCounter::BombProgress) == 2u);
+    BOOST_TEST(story.read(StoryCounter::ShofixtiVisits) == 5u);
     player.setFuel(999);
     player.setCrew(65535); // Preserve the legacy death sentinel.
-    campaign.clear(StoryFlag::StarbaseAccessGranted);
-    campaign.set<StoryCounter::BombProgress, 3>();
-    campaign.set(StoryCounter::ShofixtiVisits, 7);
+    story.clear(StoryFlag::StarbaseAccessGranted);
+    story.set<StoryCounter::BombProgress, 3>();
+    story.set(StoryCounter::ShofixtiVisits, 7);
     BOOST_TEST(game_state_c_observes_native_updates() == 1);
     BOOST_TEST(ship.fuel == 123456u); // Detached copies are not live state.
 }
@@ -116,19 +116,19 @@ BOOST_AUTO_TEST_CASE(location_uses_the_existing_coordinate_frames)
 BOOST_AUTO_TEST_CASE(rejected_counters_leave_state_and_neighbors_unchanged)
 {
     game_state_c_seed();
-    auto &campaign = gameSession().player().campaign();
-    BOOST_CHECK_THROW(campaign.set(StoryCounter::BombProgress, 4), std::out_of_range);
-    BOOST_CHECK_THROW(campaign.set(StoryCounter::ShofixtiVisits, 8), std::out_of_range);
-    BOOST_CHECK_THROW(campaign.set(static_cast<StoryCounter>(999), 1), std::invalid_argument);
-    BOOST_CHECK_THROW(campaign.read(static_cast<StoryCounter>(999)), std::invalid_argument);
-    BOOST_CHECK_THROW(campaign.set(static_cast<StoryFlag>(999)), std::invalid_argument);
-    BOOST_CHECK_THROW(campaign.clear(static_cast<StoryFlag>(999)), std::invalid_argument);
-    BOOST_CHECK_THROW(campaign.read(static_cast<StoryFlag>(999)), std::invalid_argument);
-    BOOST_TEST(campaign.read(StoryCounter::BombProgress) == 2u);
-    BOOST_TEST(campaign.read(StoryCounter::ShofixtiVisits) == 5u);
+    auto &story = gameSession().player().story();
+    BOOST_CHECK_THROW(story.set(StoryCounter::BombProgress, 4), std::out_of_range);
+    BOOST_CHECK_THROW(story.set(StoryCounter::ShofixtiVisits, 8), std::out_of_range);
+    BOOST_CHECK_THROW(story.set(static_cast<StoryCounter>(999), 1), std::invalid_argument);
+    BOOST_CHECK_THROW(story.read(static_cast<StoryCounter>(999)), std::invalid_argument);
+    BOOST_CHECK_THROW(story.set(static_cast<StoryFlag>(999)), std::invalid_argument);
+    BOOST_CHECK_THROW(story.clear(static_cast<StoryFlag>(999)), std::invalid_argument);
+    BOOST_CHECK_THROW(story.read(static_cast<StoryFlag>(999)), std::invalid_argument);
+    BOOST_TEST(story.read(StoryCounter::BombProgress) == 2u);
+    BOOST_TEST(story.read(StoryCounter::ShofixtiVisits) == 5u);
     for (unsigned value = 0; value <= 7; ++value) {
-        campaign.set(StoryCounter::ShofixtiVisits, value);
-        BOOST_TEST(campaign.read(StoryCounter::ShofixtiVisits) == value);
+        story.set(StoryCounter::ShofixtiVisits, value);
+        BOOST_TEST(story.read(StoryCounter::ShofixtiVisits) == value);
         BOOST_TEST(game_state_c_counter_neighbors_intact() == 1);
     }
 }
@@ -138,16 +138,16 @@ BOOST_AUTO_TEST_CASE(legacy_reset_and_restore_preserve_borrowed_storage_addresse
     game_state_c_seed();
     auto *const address = game_state_c_address();
     auto &player = gameSession().player();
-    auto &campaign = player.campaign();
+    auto &story = player.story();
     game_state_c_save();
     game_state_c_reset();
     BOOST_TEST(player.ship().crew == 0u);
-    BOOST_TEST(campaign.read(StoryCounter::BombProgress) == 0u);
+    BOOST_TEST(story.read(StoryCounter::BombProgress) == 0u);
     game_state_c_restore();
     BOOST_TEST(game_state_c_address() == address);
     BOOST_TEST(&gameSession().player() == &player);
     BOOST_TEST(player.ship().crew == 42u);
-    BOOST_TEST(campaign.read(StoryCounter::BombProgress) == 2u);
+    BOOST_TEST(story.read(StoryCounter::BombProgress) == 2u);
 }
 
 BOOST_AUTO_TEST_CASE(names_are_bounded_even_without_legacy_null_termination)
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(legacy_unaligned_32bit_fields_survive_copy)
 
 BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
 {
-    auto &campaign = gameSession().player().campaign();
+    auto &story = gameSession().player().story();
     struct Restore {
         std::array<BYTE, sizeof GLOBAL(GameState)> bytes{};
         Restore() { std::copy(std::begin(GLOBAL(GameState)), std::end(GLOBAL(GameState)), bytes.begin()); }
@@ -249,9 +249,9 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
         {StoryFlag::ZexIsDead, ZEX_IS_DEAD, END_ZEX_IS_DEAD},
     };
     for (const auto &flag : flags) {
-        campaign.set(flag.id, true);
+        story.set(flag.id, true);
         BOOST_TEST(getGameState(GLOBAL(GameState), flag.start, flag.end) == 1u);
-        campaign.set(flag.id, false);
+        story.set(flag.id, false);
         BOOST_TEST(getGameState(GLOBAL(GameState), flag.start, flag.end) == 0u);
     }
     struct Counter { StoryCounter id; int start, bits; };
@@ -299,11 +299,11 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
         const unsigned value = counter.bits == 32 ? UINT32_C(0xfedcba98) : counterMaximum(counter.id);
         const auto before = counter.start ? getGameState(GLOBAL(GameState), counter.start - 1, counter.start - 1) : 0;
         const auto after = counter.start + counter.bits < NUM_GAME_STATE_BITS ? getGameState(GLOBAL(GameState), counter.start + counter.bits, counter.start + counter.bits) : 0;
-        campaign.set(counter.id, value);
+        story.set(counter.id, value);
         const unsigned encoded = counter.bits == 32 ? getGameState32(GLOBAL(GameState), counter.start)
                 : getGameState(GLOBAL(GameState), counter.start, counter.start + counter.bits - 1);
         BOOST_TEST(encoded == value);
-        BOOST_TEST(campaign.read(counter.id) == value);
+        BOOST_TEST(story.read(counter.id) == value);
         if (counter.start) BOOST_TEST(getGameState(GLOBAL(GameState), counter.start - 1, counter.start - 1) == before);
         if (counter.start + counter.bits < NUM_GAME_STATE_BITS) BOOST_TEST(getGameState(GLOBAL(GameState), counter.start + counter.bits, counter.start + counter.bits) == after);
     }

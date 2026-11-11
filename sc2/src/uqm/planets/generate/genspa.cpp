@@ -77,7 +77,7 @@ SpathiSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	pMinPlanet->location.x = COSINE (angle, pMinPlanet->radius);
 	pMinPlanet->location.y = SINE (angle, pMinPlanet->radius);
 	pMinPlanet->data_index = WATER_WORLD;
-	if (campaign_.read(StoryFlag::SpathiShieldedSelves))
+	if (story_.read(StoryFlag::SpathiShieldedSelves))
 		pMinPlanet->data_index |= PLANET_SHIELDED;
 	pMinPlanet->NumPlanets = 1;
 
@@ -123,7 +123,7 @@ SpathiSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 	if (matchWorld (solarSys, world, 0, 0))
 	{
 		/* Spathiwa's moon */
-		if (!campaign_.read(StoryFlag::SpathiShieldedSelves)
+		if (!story_.read(StoryFlag::SpathiShieldedSelves)
 				&& StartSphereTracking (SPATHI_SHIP))
 		{
 			NotifyOthers (SPATHI_SHIP, IPNL_ALL_CLEAR);
@@ -132,7 +132,7 @@ SpathiSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			CloneShipFragment (SPATHI_SHIP, &GLOBAL (npc_built_ship_q),
 					INFINITE_FLEET);
 
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 			communicate(SPATHI_CONVERSATION);
 
@@ -159,14 +159,14 @@ SpathiSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		solarSys->SysInfo.PlanetInfo.Weather = 0;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
-		if (!campaign_.read(StoryFlag::UmgahBroadcasters))
+		if (!story_.read(StoryFlag::UmgahBroadcasters))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (UMGAH_BCS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					CaptureStringTable (LoadStringTable (UMGAH_BCS_STRTAB));
-			if (!campaign_.read(StoryFlag::SpathiShieldedSelves))
+			if (!story_.read(StoryFlag::SpathiShieldedSelves))
 			{	// The first report talks extensively about Spathi
 				// slave-shielding selves. If they never did so, the report
 				// makes no sense, so use an alternate.
@@ -215,7 +215,7 @@ SpathiSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::UmgahBroadcasters))
+		if (story_.read(StoryFlag::UmgahBroadcasters))
 		{	// already picked up
 			return 0;
 		}
@@ -233,13 +233,13 @@ SpathiSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, CO
     auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
-		assert (!campaign_.read(StoryFlag::UmgahBroadcasters) && whichNode == 0);
+		assert (!story_.read(StoryFlag::UmgahBroadcasters) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::UmgahBroadcasters, (1) != 0);
-		campaign_.set(StoryFlag::UmgahBroadcastersOnShip, (1) != 0);
+		story_.set(StoryFlag::UmgahBroadcasters, (1) != 0);
+		story_.set(StoryFlag::UmgahBroadcastersOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -270,14 +270,14 @@ SpathiSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUN
     auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!campaign_.read(StoryFlag::SpathiCreaturesEliminated) &&
-				!campaign_.read(StoryFlag::SpathiShieldedSelves));
+		assert (!story_.read(StoryFlag::SpathiCreaturesEliminated) &&
+				!story_.read(StoryFlag::SpathiShieldedSelves));
 
-		campaign_.set(StoryFlag::SpathiCreaturesExamined, (1) != 0);
+		story_.set(StoryFlag::SpathiCreaturesExamined, (1) != 0);
 		if (countNodesRetrieved (&solarSys->SysInfo.PlanetInfo, BIOLOGICAL_SCAN)
 				+ 1 == NUM_EVIL_ONES)
 		{	// last creature picked up
-			campaign_.set(StoryFlag::SpathiCreaturesEliminated, (1) != 0);
+			story_.set(StoryFlag::SpathiCreaturesEliminated, (1) != 0);
 		}
 
 		return true; // picked up
@@ -286,7 +286,7 @@ SpathiSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUN
 	return GenerateDefault_pickupLife (solarSys, world, whichNode);
 }
 
-std::unique_ptr<SystemBehavior> createSpathiSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<SpathiSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createSpathiSystemBehavior(StoryState &story) {
+    return std::make_unique<SpathiSystemBehavior>(story);
 }
 } // namespace uqm

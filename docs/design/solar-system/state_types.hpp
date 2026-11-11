@@ -27,7 +27,7 @@ struct WorldIdHash { std::size_t operator()(const WorldId &id) const noexcept; }
 enum class NodeKind { Mineral, Biological, Energy };
 struct NodeId { NodeKind kind; std::size_t index; }; // index 0..31.
 // Physical depletion only, NOT all legacy scan bits: personal reports belong
-// to CampaignSnapshot::discoveries. See discovery-state.md for the split.
+// to StorySnapshot::discoveries. See discovery-state.md for the split.
 struct WorldProgress {
     std::bitset<32> minerals, biologicals, energy;
 };

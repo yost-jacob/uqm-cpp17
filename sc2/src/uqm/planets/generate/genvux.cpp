@@ -125,7 +125,7 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 	if ((matchWorld (solarSys, world, 0, MATCH_PLANET)
 			&& (star().Index == VUX_DEFINED
 			|| (star().Index == MAIDENS_DEFINED
-			&& !campaign_.read(StoryFlag::ZexIsDead))))
+			&& !story_.read(StoryFlag::ZexIsDead))))
 			&& StartSphereTracking (VUX_SHIP))
 	{
 		NotifyOthers (VUX_SHIP, IPNL_ALL_CLEAR);
@@ -135,11 +135,11 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 		if (star().Index == VUX_DEFINED)
 		{
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 		}
 		else
 		{
-			campaign_.set(StoryCounter::EncounterContext, 1 << 6);
+			story_.set(StoryCounter::EncounterContext, 1 << 6);
 		}
 
 		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
@@ -153,7 +153,7 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 			encounter.restore();
 
 			if (star().Index == VUX_DEFINED
-					|| !campaign_.read(StoryFlag::ZexIsDead))
+					|| !story_.read(StoryFlag::ZexIsDead))
 				return true;
 
 			RepairSISBorder ();
@@ -164,7 +164,7 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 	{
 		if (star().Index == MAIDENS_DEFINED)
 		{
-			if (!campaign_.read(StoryFlag::ShofixtiMaidens))
+			if (!story_.read(StoryFlag::ShofixtiMaidens))
 			{
 				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 				solarSys->PlanetSideFrame[1] = CaptureDrawable (
@@ -176,7 +176,7 @@ VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 		}
 		else if (star().Index == VUX_BEAST_DEFINED)
 		{
-			if (!campaign_.read(StoryFlag::VuxBeast))
+			if (!story_.read(StoryFlag::VuxBeast))
 			{
 				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 				solarSys->PlanetSideFrame[1] = 0;
@@ -216,7 +216,7 @@ VuxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DES
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (campaign_.read(StoryFlag::ShofixtiMaidens))
+		if (story_.read(StoryFlag::ShofixtiMaidens))
 		{	// already picked up
 			return 0;
 		}
@@ -247,13 +247,13 @@ VuxSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT
 	if (star().Index == MAIDENS_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		assert (!campaign_.read(StoryFlag::ShofixtiMaidens) && whichNode == 0);
+		assert (!story_.read(StoryFlag::ShofixtiMaidens) && whichNode == 0);
 
 		GenerateDefault_landerReport (solarSys);
 		SetLanderTakeoff ();
 
-		campaign_.set(StoryFlag::ShofixtiMaidens, (1) != 0);
-		campaign_.set(StoryFlag::MaidensOnShip, (1) != 0);
+		story_.set(StoryFlag::ShofixtiMaidens, (1) != 0);
+		story_.set(StoryFlag::MaidensOnShip, (1) != 0);
 
 		return true; // picked up
 	}
@@ -315,13 +315,13 @@ VuxSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT w
 	{
 		if (whichNode == 0)
 		{	// Picked up Zex' Beauty
-			assert (!campaign_.read(StoryFlag::VuxBeast));
+			assert (!story_.read(StoryFlag::VuxBeast));
 
 			GenerateDefault_landerReport (solarSys);
 			SetLanderTakeoff ();
 
-			campaign_.set(StoryFlag::VuxBeast, (1) != 0);
-			campaign_.set(StoryFlag::VuxBeastOnShip, (1) != 0);
+			story_.set(StoryFlag::VuxBeast, (1) != 0);
+			story_.set(StoryFlag::VuxBeastOnShip, (1) != 0);
 		}
 
 		return true; // picked up
@@ -330,7 +330,7 @@ VuxSystemBehavior::pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT w
 	return GenerateDefault_pickupLife (solarSys, world, whichNode);
 }
 
-std::unique_ptr<SystemBehavior> createVuxSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<VuxSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createVuxSystemBehavior(StoryState &story) {
+    return std::make_unique<VuxSystemBehavior>(story);
 }
 } // namespace uqm

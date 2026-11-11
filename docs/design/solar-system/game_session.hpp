@@ -23,8 +23,8 @@ public:
     PlayerId player() const;
     PlayerEntity &playerEntity(); // Checked lookup through state_, not cached.
     const PlayerEntity &playerEntity() const;
-    CampaignState &campaign();
-    const CampaignState &campaign() const;
+    StoryState &story();
+    const StoryState &story() const;
     WorldState &worldState();
     const WorldState &worldState() const;
     void enterSystem(const StarDesc &star, RandomStream &random);

@@ -4,7 +4,7 @@
 #include "encount.h"
 #include "menustat.h"
 namespace uqm {
-class CampaignState;
+class StoryState;
 class PlayerEntity;
 class GameSession;
 // One navigation visit, owned by HyperSpaceMode. C element/input callbacks borrow
@@ -52,7 +52,7 @@ public:
 private:
     friend class NavigationBinding;
     PlayerEntity &player_;
-    CampaignState &campaign_;
+    StoryState &story_;
     BYTE fuel_ticks = 1;
     COUNT hyper_dx = 0, hyper_dy = 0, hyper_extra = 0;
 };

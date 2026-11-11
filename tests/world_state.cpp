@@ -28,11 +28,11 @@ BOOST_AUTO_TEST_CASE(players_share_world_buffers_while_ships_and_typed_flags_sta
     candidate.scriptedGroups = {6};
     first.world().restore(candidate);
     first.player().setCrew(42);
-    first.player().campaign().set(uqm::StoryFlag::SunDeviceOnShip);
+    first.player().story().set(uqm::StoryFlag::SunDeviceOnShip);
     BOOST_TEST(&first.world() == &second.world());
     BOOST_TEST(second.world().snapshot().planetScans == candidate.planetScans, boost::test_tools::per_element());
     BOOST_TEST(second.player().ship().crew == 0u);
-    BOOST_TEST(!second.player().campaign().read(uqm::StoryFlag::SunDeviceOnShip));
+    BOOST_TEST(!second.player().story().read(uqm::StoryFlag::SunDeviceOnShip));
     const auto detached = second.world().snapshot();
     candidate.planetScans.clear();
     first.world().restore(candidate);

@@ -182,13 +182,13 @@ std::string name(const char (&text)[N]) {
 }
 }
 
-CampaignState::CampaignState(detail::PlayerStorage &storage) noexcept : storage_(storage) {}
-bool CampaignState::read(StoryFlag flag) const { return uqm::read(storage_, field(flag)) != 0; }
-unsigned CampaignState::read(StoryCounter counter) const { return uqm::read(storage_, field(counter)); }
-void CampaignState::set(StoryFlag flag) { write(storage_, field(flag), 1); }
-void CampaignState::set(StoryFlag flag, bool value) { write(storage_, field(flag), value ? 1 : 0); }
-void CampaignState::clear(StoryFlag flag) { write(storage_, field(flag), 0); }
-void CampaignState::set(StoryCounter counter, unsigned value) {
+StoryState::StoryState(detail::PlayerStorage &storage) noexcept : storage_(storage) {}
+bool StoryState::read(StoryFlag flag) const { return uqm::read(storage_, field(flag)) != 0; }
+unsigned StoryState::read(StoryCounter counter) const { return uqm::read(storage_, field(counter)); }
+void StoryState::set(StoryFlag flag) { write(storage_, field(flag), 1); }
+void StoryState::set(StoryFlag flag, bool value) { write(storage_, field(flag), value ? 1 : 0); }
+void StoryState::clear(StoryFlag flag) { write(storage_, field(flag), 0); }
+void StoryState::set(StoryCounter counter, unsigned value) {
     const auto bits = field(counter); // Reject invalid enums before any mutation.
     if (value > counterMaximum(counter))
         throw std::out_of_range("story counter value out of range");
@@ -197,7 +197,7 @@ void CampaignState::set(StoryCounter counter, unsigned value) {
 
 PlayerEntity::PlayerEntity(UserProfile profile)
     : profile_(std::move(profile)), storage_(std::make_unique<detail::PlayerStorage>()),
-      campaign_(*storage_) {}
+      story_(*storage_) {}
 PlayerEntity::~PlayerEntity() = default;
 PlayerId PlayerEntity::id() const noexcept { return profile_.id; }
 NavigationState &PlayerEntity::navigationState() noexcept { return navigation_; }
@@ -239,8 +239,8 @@ PlayerLocation PlayerEntity::location() const noexcept {
 }
 void PlayerEntity::setFuel(std::uint32_t fuel) noexcept { storage_->legacy.SIS_state.FuelOnBoard = fuel; }
 void PlayerEntity::setCrew(std::uint16_t crew) noexcept { storage_->legacy.SIS_state.CrewEnlisted = crew; }
-CampaignState &PlayerEntity::campaign() noexcept { return campaign_; }
-const CampaignState &PlayerEntity::campaign() const noexcept { return campaign_; }
+StoryState &PlayerEntity::story() noexcept { return story_; }
+const StoryState &PlayerEntity::story() const noexcept { return story_; }
 
 GameState::GameState(UserProfile profile)
     : GameState(std::move(profile), std::make_shared<WorldState>()) {}

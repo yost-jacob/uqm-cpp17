@@ -87,7 +87,7 @@ YehatSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 					INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			communicate(YEHAT_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -139,7 +139,7 @@ YehatSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createYehatSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<YehatSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createYehatSystemBehavior(StoryState &story) {
+    return std::make_unique<YehatSystemBehavior>(story);
 }
 } // namespace uqm

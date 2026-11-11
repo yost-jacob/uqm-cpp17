@@ -68,7 +68,7 @@ SlylandroSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &bo
 }
 
 
-std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<SlylandroSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(StoryState &story) {
+    return std::make_unique<SlylandroSystemBehavior>(story);
 }
 } // namespace uqm

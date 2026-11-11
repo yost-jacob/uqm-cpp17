@@ -55,12 +55,12 @@ bool
 ShofixtiSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
-	if (!campaign_.read(StoryFlag::ShofixtiRecruited)
-			&& (!campaign_.read(StoryFlag::ShofixtiKia)
-			|| (!campaign_.read(StoryFlag::ShofixtiBroKia)
-			&& campaign_.read(StoryFlag::MaidensOnShip))))
+	if (!story_.read(StoryFlag::ShofixtiRecruited)
+			&& (!story_.read(StoryFlag::ShofixtiKia)
+			|| (!story_.read(StoryFlag::ShofixtiBroKia)
+			&& story_.read(StoryFlag::MaidensOnShip))))
 	{
-		GLOBAL (BattleGroupRef) = campaign_.read(StoryCounter::ShofixtiGrpoffs0);
+		GLOBAL (BattleGroupRef) = story_.read(StoryCounter::ShofixtiGrpoffs0);
 		if (GLOBAL (BattleGroupRef) == 0
 				|| !GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
 		{
@@ -78,14 +78,14 @@ ShofixtiSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 				/* Name Tanaka or Katana (+1) */
 				FragPtr->captains_name_index =
 						NAME_OFFSET + NUM_CAPTAINS_NAMES +
-						(campaign_.read(StoryFlag::ShofixtiKia) & 1);
+						(story_.read(StoryFlag::ShofixtiKia) & 1);
 				UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
 			}
 
 			GLOBAL (BattleGroupRef) = PutGroupInfo (
 					GLOBAL (BattleGroupRef), 1);
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			campaign_.set(StoryCounter::ShofixtiGrpoffs0, GLOBAL (BattleGroupRef));
+			story_.set(StoryCounter::ShofixtiGrpoffs0, GLOBAL (BattleGroupRef));
 		}
 	}
 
@@ -113,17 +113,17 @@ ShofixtiSystemBehavior::uninitNpcs(SOLARSYS_STATE &system)
 {
     auto *solarSys = &system;
 	if (GLOBAL (BattleGroupRef)
-			&& !campaign_.read(StoryFlag::ShofixtiRecruited)
+			&& !story_.read(StoryFlag::ShofixtiRecruited)
 			&& GetHeadLink (&GLOBAL (ip_group_q)) == 0)
 	{
-		if (!campaign_.read(StoryFlag::ShofixtiKia))
+		if (!story_.read(StoryFlag::ShofixtiKia))
 		{
-			campaign_.set(StoryFlag::ShofixtiKia, (1) != 0);
-			campaign_.set(StoryCounter::ShofixtiVisits, 0);
+			story_.set(StoryFlag::ShofixtiKia, (1) != 0);
+			story_.set(StoryCounter::ShofixtiVisits, 0);
 		}
-		else if (campaign_.read(StoryFlag::MaidensOnShip))
+		else if (story_.read(StoryFlag::MaidensOnShip))
 		{
-			campaign_.set(StoryFlag::ShofixtiBroKia, (1) != 0);
+			story_.set(StoryFlag::ShofixtiBroKia, (1) != 0);
 		}
 	}
 
@@ -174,7 +174,7 @@ ShofixtiSystemBehavior::check_old_shofixti(void)
 	// during a collision with the flagship.
 	if (GroupPtr->race_id == SHOFIXTI_SHIP
 			&& (GroupPtr->task & REFORM_GROUP)
-			&& campaign_.read(StoryFlag::ShofixtiRecruited))
+			&& story_.read(StoryFlag::ShofixtiRecruited))
 	{
 		GroupPtr->task = FLEE | IGNORE_FLAGSHIP | REFORM_GROUP;
 		GroupPtr->dest_loc = 0;
@@ -183,7 +183,7 @@ ShofixtiSystemBehavior::check_old_shofixti(void)
 }
 
 
-std::unique_ptr<SystemBehavior> createShofixtiSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<ShofixtiSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createShofixtiSystemBehavior(StoryState &story) {
+    return std::make_unique<ShofixtiSystemBehavior>(story);
 }
 } // namespace uqm

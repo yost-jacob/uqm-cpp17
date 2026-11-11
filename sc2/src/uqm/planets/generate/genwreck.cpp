@@ -58,7 +58,7 @@ WreckSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 				CaptureDrawable (LoadGraphic (WRECK_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (WRECK_STRTAB));
-		if (campaign_.read(StoryFlag::PortalKey))
+		if (story_.read(StoryFlag::PortalKey))
 		{	// Already picked it up, skip the first report
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
 					SetAbsStringTableIndex (
@@ -94,12 +94,12 @@ WreckSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 
 		GenerateDefault_landerReportCycle (solarSys);
 
-		if (!campaign_.read(StoryFlag::PortalKey))
+		if (!story_.read(StoryFlag::PortalKey))
 		{
 			SetLanderTakeoff ();
 
-			campaign_.set(StoryFlag::PortalKey, (1) != 0);
-			campaign_.set(StoryFlag::PortalKeyOnShip, (1) != 0);
+			story_.set(StoryFlag::PortalKey, (1) != 0);
+			story_.set(StoryFlag::PortalKeyOnShip, (1) != 0);
 		}
 
 		// The Wreck cannot be "picked up". It is always on the surface.
@@ -110,7 +110,7 @@ WreckSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COU
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createWreckSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<WreckSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createWreckSystemBehavior(StoryState &story) {
+    return std::make_unique<WreckSystemBehavior>(story);
 }
 } // namespace uqm

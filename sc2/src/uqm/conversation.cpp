@@ -1145,8 +1145,8 @@ uqm::ConversationRuntime::run()
 			DrawSISFrame ();
 			// TODO: find a better way to do this, perhaps set the titles
 			// forward from callers.
-			if (campaign_.read(StoryCounter::EncounterContext) == (BYTE)~0
-					&& campaign_.read(StoryFlag::StarbaseAccessGranted))
+			if (story_.read(StoryCounter::EncounterContext) == (BYTE)~0
+					&& story_.read(StoryFlag::StarbaseAccessGranted))
 			{	// Talking to allied Starbase
 				DrawSISMessage (GAME_STRING (STARBASE_STRING_BASE + 1));
 						// "Starbase Commander"

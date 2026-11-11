@@ -88,7 +88,7 @@ IlwrathSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body
 					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
 
 			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			campaign_.set(StoryCounter::EncounterContext, 1 << 7);
+			story_.set(StoryCounter::EncounterContext, 1 << 7);
 			communicate(ILWRATH_CONVERSATION);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -149,7 +149,7 @@ IlwrathSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, C
 	return false;
 }
 
-std::unique_ptr<SystemBehavior> createIlwrathSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<IlwrathSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createIlwrathSystemBehavior(StoryState &story) {
+    return std::make_unique<IlwrathSystemBehavior>(story);
 }
 } // namespace uqm

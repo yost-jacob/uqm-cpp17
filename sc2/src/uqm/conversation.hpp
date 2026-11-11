@@ -7,7 +7,7 @@
 #include "libs/sound/trackplayer.h"
 #include <optional>
 namespace uqm {
-class CampaignState;
+class StoryState;
 class GameSession;
 class ConversationRuntime;
 inline constexpr unsigned MaxResponses = 8;
@@ -74,7 +74,7 @@ typedef struct last_replay_state
 } LAST_REPLAY_STATE;
 
 
-// One synchronous dialogue visit. campaign/session outlive the mode; script
+// One synchronous dialogue visit. story state/session outlive the mode; script
 // configuration is copied by value and loaded assets belong solely to this owner.
 class ConversationRuntime {
 public:
@@ -119,7 +119,7 @@ private:
     void finishScript();
     void stopPlayback();
     GameSession &session_;
-    CampaignState &campaign_;
+    StoryState &story_;
     ConversationResources resources_;
     LOCDATA &data_;
     ConversationAnimations animations_;

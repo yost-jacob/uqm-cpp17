@@ -79,7 +79,7 @@ TrapSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
 }
 
 
-std::unique_ptr<SystemBehavior> createTrapSystemBehavior(CampaignState &campaign) {
-    return std::make_unique<TrapSystemBehavior>(campaign);
+std::unique_ptr<SystemBehavior> createTrapSystemBehavior(StoryState &story) {
+    return std::make_unique<TrapSystemBehavior>(story);
 }
 } // namespace uqm

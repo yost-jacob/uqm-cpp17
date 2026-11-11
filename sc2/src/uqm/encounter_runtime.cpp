@@ -18,6 +18,7 @@
 
 #include "encounter_runtime.hpp"
 #include "conversation.hpp"
+#include "combat_mode.hpp"
 #include "game_state.hpp"
 #include "globdata.h"
 #include "build.h"
@@ -45,8 +46,8 @@ COUNT
 uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 {
     auto &session = session_ ? *session_ : gameSession();
-    if (&session.player().campaign() != &campaign_)
-        throw std::logic_error("conversation requires its campaign's active session");
+    if (&session.player().story() != &story_)
+        throw std::logic_error("conversation requires its story state's active session");
     if (!session.isRunning()) return runLegacyEncounter(session, star_, which_comm);
 	COUNT status;
 	LOCDATA *LocDataPtr;
@@ -109,7 +110,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 
 		if (which_comm == ORZ_CONVERSATION
 				|| (which_comm == TALKING_PET_CONVERSATION
-				&& (!campaign_.read(uqm::StoryFlag::TalkingPetOnShip)
+				&& (!story_.read(uqm::StoryFlag::TalkingPetOnShip)
 				|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE))
 				|| (which_comm != CHMMR_CONVERSATION
 				&& which_comm != SYREEN_CONVERSATION
@@ -121,7 +122,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 			status != YEHAT_REBEL_SHIP ? which_comm :
 			YEHAT_REBEL_CONVERSATION);
 
-	if (campaign_.read(uqm::StoryFlag::BattleSegue) == 0)
+	if (story_.read(uqm::StoryFlag::BattleSegue) == 0)
 	{
 		// Not offered the chance to attack.
 		status = HAIL;
@@ -129,13 +130,13 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 	else if ((status = selectAction()) == HAIL && LocDataPtr)
 	{
 		// The player chose to talk.
-		campaign_.set(uqm::StoryFlag::BattleSegue, 0);
+		story_.set(uqm::StoryFlag::BattleSegue, 0);
 	}
 	else
 	{
 		// The player chose to attack.
 		status = ATTACK;
-		campaign_.set(uqm::StoryFlag::BattleSegue, 1);
+		story_.set(uqm::StoryFlag::BattleSegue, 1);
 	}
 
     if (LocDataPtr) {
@@ -160,18 +161,19 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
 
 		// Clear the location flags
-		campaign_.set(uqm::StoryCounter::EncounterContext, 0);
-		status = (campaign_.read(uqm::StoryFlag::BattleSegue)
+		story_.set(uqm::StoryCounter::EncounterContext, 0);
+		status = (story_.read(uqm::StoryFlag::BattleSegue)
 				&& GetHeadLink (&GLOBAL (npc_built_ship_q)));
 		if (status)
 		{
 			// Start combat
 			buildBattle(RPG_PLAYER_NUM);
-			battle();
+            if (auto exit = session.swapGameMode(createCampaignCombatMode(session)))
+                GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
 		}
 		else
 		{
-			campaign_.set(uqm::StoryFlag::BattleSegue, 0);
+			story_.set(uqm::StoryFlag::BattleSegue, 0);
 		}
 	}
 
@@ -209,9 +211,9 @@ uqm::EncounterRuntime::run()
 	{
 		BYTE ec;
 
-		ec = campaign_.read(uqm::StoryCounter::EscapeCounter);
+		ec = story_.read(uqm::StoryCounter::EscapeCounter);
 
-		communicate(conversationForRestoredEncounter(campaign_));
+		communicate(conversationForRestoredEncounter(story_));
 		if (GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
 		{
 			NextActivity = GLOBAL (CurrentActivity) & ~START_ENCOUNTER;
@@ -220,13 +222,13 @@ uqm::EncounterRuntime::run()
 			GLOBAL (CurrentActivity) |= CHECK_LOAD; /* fake a load game */
 		}
 
-		campaign_.set(uqm::StoryCounter::EscapeCounter, ec);
+		story_.set(uqm::StoryCounter::EscapeCounter, ec);
 		return;
 	}
 	else if (inHQSpace ())
 	{
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		if (campaign_.read(uqm::StoryCounter::ArilouSpaceSide) >= 2)
+		if (story_.read(uqm::StoryCounter::ArilouSpaceSide) >= 2)
 		{
 			communicate(ARILOU_CONVERSATION);
 			return;

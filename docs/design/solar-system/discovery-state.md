@@ -2,7 +2,7 @@
 
 The first production discovery split is implemented in
 [`world_types.hpp`](../../../sc2/src/uqm/world_types.hpp), the player's
-CampaignState, and the legacy planet-info adapter. Androsynth visits are personal
+StoryState, and the legacy planet-info adapter. Androsynth visits are personal
 records keyed by stable WorldId; the site remains physically present. A visit is
 recorded on acceptance before report UI, preserving existing behavior.
 
@@ -53,7 +53,7 @@ categories.
 |---|---|---|
 | Stable site definition | World definition | Ruin identity, physical position, discovery kind |
 | Physical depletion/change | Shared WorldState | Mineral removed, animal captured, unique object removed, shield disabled |
-| Knowledge and narrative progress | PlayerEntity's CampaignState | Ruins visited, reports read, subject learned, personal quest stage |
+| Knowledge and narrative progress | PlayerEntity's StoryState | Ruins visited, reports read, subject learned, personal quest stage |
 | Possession | PlayerEntity ship/campaign | Artifact currently carried, minerals in cargo |
 | Active interaction | GameSession/runtime | Report currently displayed, conversation, temporary stun |
 
@@ -67,17 +67,17 @@ players can still learn about its removal without receiving another copy.
 classDiagram
     WorldDefinition *-- DiscoverySite : stable identities and locations
     WorldState *-- WorldProgress : physical removal only
-    PlayerEntity *-- CampaignState
-    CampaignState *-- DiscoveryProgress : keyed by WorldId
+    PlayerEntity *-- StoryState
+    StoryState *-- DiscoveryProgress : keyed by WorldId
     DiscoveryProgress *-- VisitedSites : per-player site bits
     GameSession --> PlayerEntity : interacting player
     GameSession --> WorldState : shared physical facts
     WorldBehavior --> GameSession : resolve current eligibility
-    StateActions --> CampaignState : personal visit or reward
+    StateActions --> StoryState : personal visit or reward
     StateActions --> WorldState : shared mutation when required
 ```
 
-The target CampaignSnapshot now includes a per-world DiscoveryProgress map.
+The target StorySnapshot now includes a per-world DiscoveryProgress map.
 Its visited-site mask is separate from WorldProgress. A report sequence can
 initially be derived from the number of distinct sites that player has visited,
 matching the existing Androsynth behavior. Do not store a second independently
@@ -137,7 +137,7 @@ Legacy saves combine these concerns. Import/export must be an explicit adapter:
 ```text
 Legacy single-player save + generated layout
     ├─ physical retrieval bits → WorldState progress
-    ├─ personal site/report bits → active player's CampaignState discoveries
+    ├─ personal site/report bits → active player's StoryState discoveries
     └─ ship possession and personal story fields → PlayerEntity
 ```
 
