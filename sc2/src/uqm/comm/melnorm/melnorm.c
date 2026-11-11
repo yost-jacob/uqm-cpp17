@@ -587,7 +587,7 @@ StripShip (COUNT fuel_required)
 			);
 	if (fuel_required == 0)
 	{
-		GlobData.SIS_state = SIS_copy;
+		(*GetPlayerSISState()) = SIS_copy;
 		DeltaSISGauges (UNDEFINED_DELTA, rescue_fuel, UNDEFINED_DELTA);
 	}
 	else if (fuel_required == (COUNT)~0)
@@ -631,7 +631,7 @@ StripShip (COUNT fuel_required)
 		// exactly, is on our ship.
 		RandomContext_SeedRandom (&rc, getStripRandomSeed ());
 
-		SIS_copy = GlobData.SIS_state;
+		SIS_copy = (*GetPlayerSISState());
 		for (i = PLANET_LANDER; i < BOMB_MODULE_0; ++i)
 			module_count[i] = 0;
 

@@ -28,6 +28,7 @@
 #include <vector>
 #include "displist.h"
 #include "fleet_legacy.hpp"
+#include "projectile_legacy.hpp"
 #include "element.h"
 #include "races.h"
 #include "grpinfo.h"
@@ -43,6 +44,7 @@ struct QueueStorage {
             std::vector<IP_GROUP>, std::vector<ENCOUNTER>,
             std::vector<EVENT>, std::vector<MASTER_SHIP_INFO>> objects;
     std::vector<HLINK> free;
+    std::vector<std::unique_ptr<uqm::combat::Projectile>> projectiles;
     uintptr_t begin = 0;
     size_t capacity = 0;
 };
@@ -77,6 +79,7 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
         case QUEUE_MASTER_SHIP: pool->objects.emplace<std::vector<MASTER_SHIP_INFO>>(capacity); break;
         default: std::terminate();
     }
+    if (kind == QUEUE_ELEMENT) pool->projectiles.resize(capacity);
     pool->capacity = capacity;
     pool->free.reserve(capacity);
     std::visit([&](auto &objects) {
@@ -108,6 +111,7 @@ void ReinitQueue(QUEUE *queue) {
     assert(queue && queue->storage);
     queue->head = queue->tail = nullptr;
     auto &pool = *queue->storage;
+    for (auto &projectile : pool.projectiles) projectile.reset();
     pool.free.clear();
     std::visit([&](auto &objects) {
         for (auto it = objects.rbegin(); it != objects.rend(); ++it)
@@ -129,6 +133,8 @@ void FreeLink(QUEUE *queue, HLINK link) {
     assert(link && contains(queue, link));
     auto &pool = *queue->storage;
     assert(pool.free.size() < pool.capacity);
+    if (!pool.projectiles.empty())
+        pool.projectiles[(reinterpret_cast<uintptr_t>(link) - pool.begin) / queue->object_size].reset();
     pool.free.push_back(link); // Capacity was reserved in InitQueue.
 }
 LINK *LockLink(const QUEUE *queue, HLINK link) {
@@ -168,3 +174,16 @@ void ForAllLinks(QUEUE *queue, void (*callback)(LINK *, void *), void *arg) try 
         link = next;
     }
 } catch (...) { std::terminate(); }
+
+namespace uqm::detail {
+void bindProjectile(QUEUE &queue, HLINK link, std::unique_ptr<combat::Projectile> projectile) {
+    assert(contains(&queue, link) && !queue.storage->projectiles.empty());
+    auto &owner = queue.storage->projectiles[(reinterpret_cast<uintptr_t>(link) - queue.storage->begin) / queue.object_size];
+    assert(!owner);
+    owner = std::move(projectile);
+}
+combat::Projectile *borrowProjectile(const QUEUE &queue, HLINK link) noexcept {
+    if (!contains(&queue, link) || queue.storage->projectiles.empty()) return nullptr;
+    return queue.storage->projectiles[(reinterpret_cast<uintptr_t>(link) - queue.storage->begin) / queue.object_size].get();
+}
+}

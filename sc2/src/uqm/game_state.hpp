@@ -8,27 +8,17 @@
 #include "world_state.hpp"
 #include "world_types.hpp"
 #include "game_mode.hpp"
+#include "ship_state.hpp"
 
 
 namespace uqm {
 class Fleet;
+class SIS;
 // Transient per-player navigation memory, retained across encounter mode swaps.
 // Portal coordinates were process statics and are not part of the legacy save.
 struct NavigationState { std::int16_t portalX = 0, portalY = 0; };
 struct UserProfile { PlayerId id; std::string displayName; };
 
-// Copied values, never another mutable ship store. Fuel uses the existing game
-// units (100 units per tank unit); crew excludes the captain, 65535 means dead.
-struct ShipState {
-    std::uint32_t resourceUnits, fuel;
-    std::uint16_t crew, mineralMass, biologicalMass;
-    std::array<std::uint16_t, 8> minerals;
-    std::array<std::uint8_t, 16> modules;
-    std::array<std::uint8_t, 11> drives;
-    std::array<std::uint8_t, 8> jets;
-    std::uint8_t landers;
-    std::string shipName, commanderName, planetName;
-};
 // Coordinates retain legacy units. logX/Y locate the flagship in HyperSpace;
 // interplanetaryX/Y use the current system frame. Planet/orbit retain legacy
 // sentinel values; this value alone does not establish the current game mode.
@@ -276,6 +266,8 @@ public:
     void setFuel(std::uint32_t fuel) noexcept;
     void setCrew(std::uint16_t crew) noexcept;
     // Borrow owned escorts; valid for this player's lifetime.
+    SIS &sis() noexcept;
+    const SIS &sis() const noexcept;
     Fleet &fleet() noexcept;
     const Fleet &fleet() const noexcept;
     // Borrow personal story progress; valid for this player's lifetime.

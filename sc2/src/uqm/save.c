@@ -434,7 +434,7 @@ SaveStarDesc (const STAR_DESC *SDPtr, uio_Stream *fh)
 static void
 PrepareSummary (SUMMARY_DESC *SummPtr, const char *name)
 {
-	SummPtr->SS = GlobData.SIS_state;
+	SummPtr->SS = (*GetPlayerSISState());
 
 	SummPtr->Activity = LOBYTE (GLOBAL (CurrentActivity));
 	switch (SummPtr->Activity)

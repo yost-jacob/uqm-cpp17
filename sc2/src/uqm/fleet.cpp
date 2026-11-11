@@ -12,7 +12,18 @@ void Ship::updateCrew(COUNT crew) {
     if (!alive() && crew) throw std::logic_error("cannot update a destroyed vessel to alive");
     data_.crew_level = crew;
 }
-Fleet::Fleet(COUNT capacity) : capacity_(capacity) { InitQueue(&queue_, capacity, QUEUE_SHIP_FRAGMENT); }
+Fleet::Fleet(COUNT capacity, SISPresence sis) : capacity_(capacity) {
+    InitQueue(&queue_, capacity, QUEUE_SHIP_FRAGMENT);
+    if (sis == SISPresence::Present) sis_.emplace();
+}
+std::optional<std::reference_wrapper<SIS>> Fleet::sis() noexcept {
+    if (!sis_) return std::nullopt;
+    return std::ref(*sis_);
+}
+std::optional<std::reference_wrapper<const SIS>> Fleet::sis() const noexcept {
+    if (!sis_) return std::nullopt;
+    return std::cref(*sis_);
+}
 Fleet::~Fleet() { UninitQueue(&queue_); }
 std::optional<ShipId> Fleet::create(const ShipSpec &spec) {
     if (spec.species <= NO_ID || spec.species >= NUM_SPECIES_ID || spec.race >= NUM_AVAILABLE_RACES

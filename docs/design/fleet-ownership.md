@@ -11,7 +11,7 @@ flowchart TD
     State[GameState] --> Player[PlayerEntity]
     Player --> Story[StoryState: flags, counters, discovery progress]
     Player --> Fleet[Fleet: owns escort storage]
-    Player --> Flagship[Existing flagship equipment, cargo and crew storage]
+    Fleet --> Flagship[Optional SIS: equipment, cargo and crew]
     Fleet --> Ship[Ship: persistent identity and vessel properties]
     Ship --> Buffer[Private SHIP_FRAGMENT compatibility record]
     C[Legacy recruitment, shipyard, save/load and UI] -. borrowed queue .-> Fleet
@@ -42,10 +42,11 @@ flowchart TD
   Resources referenced by the record belong to existing race/asset owners;
   freeing a fleet does not free those borrowed assets.
 
-The campaign still has twelve escort slots. The flagship's equipment, cargo and
-crew remain in their existing authoritative player storage; this increment does
-not create a duplicate flagship record. It also does not convert Super Melee
-setup into a campaign fleet.
+The campaign still has twelve escort slots. Fleet now owns an optional SIS
+separately from escorts; PlayerEntity's fleet always contains one. Its equipment,
+cargo and crew have a single authoritative record. Enemy fleets can omit it.
+See [SIS and projectiles](sis-projectiles.md). Super Melee setup retains its
+existing backend.
 
 ## Compatibility and lifetime
 
@@ -103,5 +104,5 @@ Existing queue tests still check alignment, fixed capacity, physical slot stride
 LIFO reuse and link order. Build and runtime results are recorded in the PR.
 
 Remaining work includes defaults/resource construction through native APIs,
-flagship vessel integration, explicit callback contexts, enemy fleet ownership,
+additional native state operations, explicit callback contexts, enemy fleet ownership,
 and Super Melee's shared fleet interface. See #17, #19, #21 and #22.

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "story_state.hpp"
-namespace uqm { class Fleet; }
+namespace uqm { class Fleet; class SIS; }
 #include "world_state.hpp"
 
 namespace uqm::design {
@@ -30,6 +30,8 @@ public:
     UserProfile profile() const;
     PlayerPresence presence() const; // Public projection, excluding private data.
     FlagshipState ship() const;
+    uqm::SIS &sis() noexcept;
+    const uqm::SIS &sis() const noexcept;
     uqm::Fleet &fleet() noexcept;
     const uqm::Fleet &fleet() const noexcept;
     StoryState &story() noexcept;
@@ -43,7 +45,6 @@ private:
     UserProfile user_;
     std::optional<UniverseId> universe_;
     PlayerLocation location_;
-    FlagshipState ship_;
     StoryState story_;
     std::unique_ptr<uqm::Fleet> fleet_;
 };

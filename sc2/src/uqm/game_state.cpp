@@ -1,12 +1,10 @@
 #include "game_state.hpp"
 #include "globdata.h"
 #include "fleet_legacy.hpp"
+#include "sis_legacy.hpp"
 
-#include <algorithm>
 #include <cstdlib>
-#include <iterator>
 #include <stdexcept>
-#include <type_traits>
 #include <utility>
 
 namespace uqm {
@@ -175,12 +173,7 @@ void write(detail::PlayerStorage &storage, Field field, unsigned value) {
 #endif
             );
 }
-// Legacy names can be restored from a corrupt save without a terminator. Bound
-// reads to the array; never construct a string by scanning past its end.
-template<std::size_t N>
-std::string name(const char (&text)[N]) {
-    return {text, std::find(text, text + N, '\0')};
-}
+
 }
 
 StoryState::StoryState(detail::PlayerStorage &storage) noexcept : storage_(storage) {}
@@ -198,48 +191,28 @@ void StoryState::set(StoryCounter counter, unsigned value) {
 
 PlayerEntity::PlayerEntity(UserProfile profile)
     : profile_(std::move(profile)), storage_(std::make_unique<detail::PlayerStorage>()),
-      story_(*storage_), fleet_(std::make_unique<Fleet>(MAX_BUILT_SHIPS)) {}
+      story_(*storage_), fleet_(std::make_unique<Fleet>(MAX_BUILT_SHIPS, SISPresence::Present)) {}
 PlayerEntity::~PlayerEntity() = default;
 PlayerId PlayerEntity::id() const noexcept { return profile_.id; }
 NavigationState &PlayerEntity::navigationState() noexcept { return navigation_; }
 const NavigationState &PlayerEntity::navigationState() const noexcept { return navigation_; }
 const UserProfile &PlayerEntity::profile() const noexcept { return profile_; }
-std::uint32_t PlayerEntity::fuel() const noexcept { return storage_->legacy.SIS_state.FuelOnBoard; }
-std::uint16_t PlayerEntity::crew() const noexcept { return storage_->legacy.SIS_state.CrewEnlisted; }
+std::uint32_t PlayerEntity::fuel() const noexcept { return sis().fuel(); }
+std::uint16_t PlayerEntity::crew() const noexcept { return sis().crew(); }
 void PlayerEntity::setHyperSpacePosition(std::int32_t x, std::int32_t y) noexcept {
-    storage_->legacy.SIS_state.log_x = x;
-    storage_->legacy.SIS_state.log_y = y;
+    sis().setPosition(x, y);
 }
-ShipState PlayerEntity::ship() const {
-    const auto &sis = storage_->legacy.SIS_state;
-    ShipState result{};
-    result.resourceUnits = sis.ResUnits;
-    result.fuel = sis.FuelOnBoard;
-    result.crew = sis.CrewEnlisted;
-    result.mineralMass = sis.TotalElementMass;
-    result.biologicalMass = sis.TotalBioMass;
-    static_assert(std::extent_v<decltype(sis.ElementAmounts)> == std::tuple_size<decltype(result.minerals)>::value);
-    static_assert(std::extent_v<decltype(sis.ModuleSlots)> == std::tuple_size<decltype(result.modules)>::value);
-    static_assert(std::extent_v<decltype(sis.DriveSlots)> == std::tuple_size<decltype(result.drives)>::value);
-    static_assert(std::extent_v<decltype(sis.JetSlots)> == std::tuple_size<decltype(result.jets)>::value);
-    std::copy(std::begin(sis.ElementAmounts), std::end(sis.ElementAmounts), result.minerals.begin());
-    std::copy(std::begin(sis.ModuleSlots), std::end(sis.ModuleSlots), result.modules.begin());
-    std::copy(std::begin(sis.DriveSlots), std::end(sis.DriveSlots), result.drives.begin());
-    std::copy(std::begin(sis.JetSlots), std::end(sis.JetSlots), result.jets.begin());
-    result.landers = sis.NumLanders;
-    result.shipName = name(sis.ShipName);
-    result.commanderName = name(sis.CommanderName);
-    result.planetName = name(sis.PlanetName);
-    return result;
-}
+ShipState PlayerEntity::ship() const { return sis().snapshot(); }
 PlayerLocation PlayerEntity::location() const noexcept {
-    const auto &sis = storage_->legacy.SIS_state;
+    const auto &state = sis();
     const auto &game = storage_->legacy.Game_state;
-    return {sis.log_x, sis.log_y, game.ip_location.x, game.ip_location.y,
+    return {state.x(), state.y(), game.ip_location.x, game.ip_location.y,
             game.ShipFacing, game.ip_planet, game.in_orbit};
 }
-void PlayerEntity::setFuel(std::uint32_t fuel) noexcept { storage_->legacy.SIS_state.FuelOnBoard = fuel; }
-void PlayerEntity::setCrew(std::uint16_t crew) noexcept { storage_->legacy.SIS_state.CrewEnlisted = crew; }
+void PlayerEntity::setFuel(std::uint32_t fuel) noexcept { sis().setFuel(fuel); }
+void PlayerEntity::setCrew(std::uint16_t crew) noexcept { sis().setCrew(crew); }
+SIS &PlayerEntity::sis() noexcept { return fleet_->sis()->get(); }
+const SIS &PlayerEntity::sis() const noexcept { return std::as_const(*fleet_).sis()->get(); }
 Fleet &PlayerEntity::fleet() noexcept { return *fleet_; }
 const Fleet &PlayerEntity::fleet() const noexcept { return *fleet_; }
 StoryState &PlayerEntity::story() noexcept { return story_; }
@@ -298,5 +271,10 @@ extern "C" GLOBDATA *GetLegacyGlobData(void) {
 
 extern "C" QUEUE *GetPlayerFleetQueue(void) {
     try { return &uqm::detail::FleetAccess::queue(uqm::gameSession().player().fleet()); }
+    catch (...) { std::abort(); }
+}
+
+extern "C" SIS_STATE *GetPlayerSISState(void) {
+    try { return &uqm::detail::SISAccess::record(uqm::gameSession().player().sis()); }
     catch (...) { std::abort(); }
 }

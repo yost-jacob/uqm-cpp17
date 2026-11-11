@@ -205,6 +205,10 @@ set(UQM_SOURCES
     sc2/src/uqm/displist.cpp
     sc2/src/uqm/combat_mode.cpp
     sc2/src/uqm/campaign_combat.cpp
+    sc2/src/uqm/projectile.cpp
+    sc2/src/uqm/projectile_legacy.cpp
+    sc2/src/uqm/sis_weapons.cpp
+    sc2/src/uqm/sis_state.cpp
     sc2/src/uqm/fleet.cpp
     sc2/src/uqm/fleet_legacy.cpp
     sc2/src/uqm/encount.cpp
