@@ -129,7 +129,7 @@ RenderTopography (FRAME DstFrame, SBYTE *pTopoData, int w, int h)
 		SetPrimNextLink (&pBatch[-1], END_OF_LIST);
 
 		PlanDataPtr = &PlanData[
-				pSolarSysState->pOrbitalDesc->data_index & ~PLANET_SHIELDED
+				GetSystemSelectedDescriptor(pSolarSysState)->data_index & ~PLANET_SHIELDED
 				];
 		AlgoType = PLANALGO (PlanDataPtr->Type);
 		base = PlanDataPtr->base_elevation;
@@ -770,7 +770,7 @@ RenderPlanetSphere (FRAME MaskFrame, int offset, BOOLEAN doThrob)
 		
 			// Apply the lighting model.  This also bounds the sphere
 			// to make it circular.
-			if (pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
+			if (GetSystemSelectedDescriptor(pSolarSysState)->data_index & PLANET_SHIELDED)
 			{
 				int r;
 				
@@ -1925,14 +1925,14 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 		memset (Orbit->lpTopoData, 0, MAP_WIDTH * MAP_HEIGHT);
 	}
 			
-	if (pSolarSysState->pOrbitalDesc->pPrevDesc ==
+	if (GetSystemSelectedDescriptor(pSolarSysState)->pPrevDesc ==
 			&pSolarSysState->SunDesc[0])
 	{	// this is a planet -- get its location
-		loc = pSolarSysState->pOrbitalDesc->location;
+		loc = GetSystemSelectedDescriptor(pSolarSysState)->location;
 	}
 	else
 	{	// this is a moon -- get its planet's location
-		loc = pSolarSysState->pOrbitalDesc->pPrevDesc->location;
+		loc = GetSystemSelectedDescriptor(pSolarSysState)->pPrevDesc->location;
 	}
 	
 	// Rotating planet sphere initialization

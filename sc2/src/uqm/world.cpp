@@ -109,7 +109,31 @@ void SolarSystem::replacePlanets(std::vector<WorldDefinition> definitions) {
     }
     layout_ = std::move(layout);
     worlds_ = std::move(worlds);
+    enterOuterSystem();
 }
+void SolarSystem::enterOuterSystem() noexcept { innerPlanet_.reset(); selectedWorld_.reset(); }
+void SolarSystem::enterInnerSystem(const WorldId &planet) {
+    if (planet.moon) throw std::invalid_argument("inner-system parent must be a planet");
+    at(planet);
+    innerPlanet_ = planet;
+    selectedWorld_ = planet;
+}
+void SolarSystem::selectWorld(const WorldId &world) {
+    at(world);
+    if (innerPlanet_ && world.planet != innerPlanet_->planet)
+        throw std::invalid_argument("selected world is outside the inner-system view");
+    selectedWorld_ = world;
+}
+void SolarSystem::clearSelection() noexcept { selectedWorld_.reset(); }
+bool SolarSystem::inInnerSystem() const noexcept { return innerPlanet_.has_value(); }
+bool SolarSystem::hasSelectedWorld() const noexcept { return selectedWorld_.has_value(); }
+World &SolarSystem::innerPlanet() { return at(innerPlanet_.value()); }
+const World &SolarSystem::innerPlanet() const { return at(innerPlanet_.value()); }
+World &SolarSystem::selectedWorld() { return at(selectedWorld_.value()); }
+const World &SolarSystem::selectedWorld() const { return at(selectedWorld_.value()); }
+std::size_t SolarSystem::visibleWorldCount() const { return inInnerSystem() ? innerPlanet().childCount() : worldCount(); }
+World &SolarSystem::visibleWorld(std::size_t index) { return inInnerSystem() ? innerPlanet().child(index) : world(index); }
+const World &SolarSystem::visibleWorld(std::size_t index) const { return inInnerSystem() ? innerPlanet().child(index) : world(index); }
 StarId SolarSystem::star() const noexcept { return star_; }
 UniverseId SolarSystem::universe() const noexcept { return state_->id(); }
 std::size_t SolarSystem::worldCount() const noexcept { return worlds_.size(); }

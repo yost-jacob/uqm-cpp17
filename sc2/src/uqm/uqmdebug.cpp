@@ -18,6 +18,7 @@
 
 
 #include "system_runtime.hpp"
+#include "world_legacy.hpp"
 #include "planet_render_legacy.hpp"
 #include "system_behavior.hpp"
 #include "uqmdebug.h"
@@ -692,7 +693,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 
 	if (universeRecurseArg->planetFuncPre != NULL)
 	{
-		system->pOrbitalDesc = planet;
+		SelectSystemWorld(system, planet);
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
@@ -717,7 +718,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	
 	if (universeRecurseArg->planetFuncPost != NULL)
 	{
-		system->pOrbitalDesc = planet;
+		SelectSystemWorld(system, planet);
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
@@ -743,7 +744,7 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 
 	if (universeRecurseArg->moonFunc != NULL)
 	{
-		system->pOrbitalDesc = moon;
+		SelectSystemWorld(system, moon);
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc).child(moon - system->MoonDesc)};
 		if (moon->data_index != HIERARCHY_STARBASE && moon->data_index != SA_MATRA)
@@ -1074,7 +1075,7 @@ calculateBioValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 	COUNT numBio;
 	COUNT i;
 
-	assert (system->pOrbitalDesc == world);
+	assert (&uqm::detail::selectedDescriptor(*system) == world);
 	
 	numBio = callGenerateForScanType (system, world, GENERATE_ALL,
 			BIOLOGICAL_SCAN, NULL);
@@ -1097,7 +1098,7 @@ generateBioIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
 	COUNT numBio;
 	COUNT i;
 
-	assert (system->pOrbitalDesc == world);
+	assert (&uqm::detail::selectedDescriptor(*system) == world);
 	
 	numBio = callGenerateForScanType (system, world, GENERATE_ALL,
 			BIOLOGICAL_SCAN, NULL);
@@ -1120,7 +1121,7 @@ calculateMineralValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 	COUNT numDeposits;
 	COUNT i;
 
-	assert (system->pOrbitalDesc == world);
+	assert (&uqm::detail::selectedDescriptor(*system) == world);
 	
 	numDeposits = callGenerateForScanType (system, world, GENERATE_ALL,
 			MINERAL_SCAN, NULL);
@@ -1143,7 +1144,7 @@ generateMineralIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
 	COUNT numDeposits;
 	COUNT i;
 
-	assert (system->pOrbitalDesc == world);
+	assert (&uqm::detail::selectedDescriptor(*system) == world);
 	
 	numDeposits = callGenerateForScanType (system, world, GENERATE_ALL,
 			MINERAL_SCAN, NULL);

@@ -11,7 +11,7 @@ uqm_CFILES="battlecontrols.c border.c build.c cleanup.c clock.c
 		shipstat.c shipyard.c sis.c sounds.c starbase.c starcon.c
 		starmap.c status.c tactrans.c util.c
 		velocity.c "
-uqm_HFILES="asset_cache.hpp game_assets.hpp battlecontrols.h battle.h build.h clock.h cnctdlg.h
+uqm_HFILES="world_legacy.hpp asset_cache.hpp game_assets.hpp battlecontrols.h battle.h build.h clock.h cnctdlg.h
 		collide.h colors.h commanim.h commglue.h comm.h conversation.hpp conversation_context.hpp conversation_resources.hpp conversation_animation.hpp mode_rendering.hpp cons_res.h controls.h
 		credits.h demo.h displist.h element.h encount.h fleet.hpp sis_state.hpp sis_legacy.hpp projectile.hpp projectile_legacy.hpp sis_weapons.hpp ship_state.hpp fleet_legacy.hpp combat_mode.hpp encounter_runtime.hpp device_menu.hpp
 		flash.h fmv.h gameev.h gameopt.h gamestr.h gendef.h globdata.h

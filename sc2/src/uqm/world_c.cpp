@@ -1,4 +1,5 @@
 #include "world.hpp"
+#include "world_legacy.hpp"
 #include "system_runtime.hpp"
 #include "system_behavior.hpp"
 #include "game_state.hpp"
@@ -31,14 +32,6 @@ uqm::WorldDefinition definition(uqm::WorldId id, uqm::WorldKind kind, const PLAN
             && (world.data_index & PLANET_SHIELDED) != 0;
     return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets};
 }
-uqm::WorldId orbitalId(SOLARSYS_STATE &system, uqm::SolarSystem &native) {
-    const auto planet = system.pBaseDesc->pPrevDesc - system.PlanetDesc;
-    if (planet < 0 || static_cast<std::size_t>(planet) >= native.worldCount())
-        throw std::out_of_range("invalid orbital planet");
-    const auto moon = system.pOrbitalDesc->pPrevDesc == system.SunDesc
-            ? -1 : static_cast<int>(system.pOrbitalDesc - system.MoonDesc);
-    return id(native, static_cast<COUNT>(planet), moon);
-}
 uqm::LegacyDiscoveryLocation discoveryLocation(uqm::SolarSystem &system, const uqm::WorldId &world) {
     std::uint32_t record = 0, records = 0;
     for (std::size_t i = 0; i < system.layout().size(); ++i) {
@@ -64,11 +57,11 @@ void importSystemDiscoveries(uqm::SolarSystem &system, const STAR_DESC &star, UQ
 namespace uqm {
 World &orbitalWorld(SOLARSYS_STATE &system) {
     auto &native = runtime(system);
-    return native.at(orbitalId(system, native));
+    return native.selectedWorld();
 }
 void loadPlanetProgress(SOLARSYS_STATE &system) {
     auto &native = runtime(system);
-    const auto world = orbitalId(system, native);
+    const auto world = native.selectedWorld().id();
     importSystemDiscoveries(native, systemStar(system), *system.worlds);
     const auto progress = native.progress(world);
     auto &masks = system.SysInfo.PlanetInfo.ScanRetrieveMask;
@@ -81,11 +74,49 @@ void publishPlanetProgress(SOLARSYS_STATE &system) {
     const auto &masks = system.SysInfo.PlanetInfo.ScanRetrieveMask;
     const WorldProgress progress{std::bitset<32>{masks[MINERAL_SCAN]},
             std::bitset<32>{masks[BIOLOGICAL_SCAN]}, std::bitset<32>{masks[ENERGY_SCAN]}};
-    native.mergeProgress(orbitalId(system, native), progress);
+    native.mergeProgress(native.selectedWorld().id(), progress);
 }
 } // namespace uqm
 
+namespace uqm::detail {
+const PLANET_DESC &worldDescriptor(const SOLARSYS_STATE &system, const World &world) {
+    const auto &id = world.id();
+    return id.moon ? system.MoonDesc[*id.moon] : system.PlanetDesc[id.planet];
+}
+PLANET_DESC &worldDescriptor(SOLARSYS_STATE &system, const World &world) {
+    const auto &id = world.id();
+    return id.moon ? system.MoonDesc[*id.moon] : system.PlanetDesc[id.planet];
+}
+PLANET_DESC &selectedDescriptor(SOLARSYS_STATE &system) { return worldDescriptor(system, runtime(system).selectedWorld()); }
+const PLANET_DESC &selectedDescriptor(const SOLARSYS_STATE &system) { return worldDescriptor(system, runtime(system).selectedWorld()); }
+World &worldFromDescriptor(SOLARSYS_STATE &system, const PLANET_DESC &descriptor) {
+    auto &native = runtime(system);
+    for (std::size_t i = 0; i < native.worldCount(); ++i)
+        if (&descriptor == &system.PlanetDesc[i]) return native.world(i);
+    for (std::size_t i = 0; i < MAX_MOONS; ++i) {
+        if (&descriptor != &system.MoonDesc[i]) continue;
+        for (std::size_t parent = 0; parent < native.worldCount(); ++parent)
+            if (descriptor.pPrevDesc == &system.PlanetDesc[parent])
+                return native.world(parent).child(i);
+    }
+    throw std::invalid_argument("body descriptor does not belong to the generated system");
+}
+}
+
 extern "C" {
+PLANET_DESC *GetSystemSelectedDescriptor(SOLARSYS_STATE *system) {
+    try {
+        auto &native = runtime(*system);
+        return native.hasSelectedWorld() ? &uqm::detail::worldDescriptor(*system, native.selectedWorld()) : nullptr;
+    } catch (...) { std::abort(); }
+}
+void SelectSystemWorld(SOLARSYS_STATE *system, const PLANET_DESC *descriptor) {
+    try {
+        auto &native = runtime(*system);
+        if (descriptor) native.selectWorld(uqm::detail::worldFromDescriptor(*system, *descriptor).id());
+        else native.clearSelection();
+    } catch (...) { std::abort(); }
+}
 void InitPlanetInfo(void) {
     try {
         uqm::gameSession().world().initializePlanetProgress();
@@ -143,8 +174,8 @@ void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
 void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
     try {
         auto &native = runtime(*system);
-        const auto slot = planet - system->PlanetDesc;
-        if (slot < 0 || static_cast<std::size_t>(slot) >= native.worldCount() || planet->NumPlanets > MAX_MOONS)
+        const auto slot = uqm::detail::worldFromDescriptor(*system, *planet).id().planet;
+        if (static_cast<std::size_t>(slot) >= native.worldCount() || planet->NumPlanets > MAX_MOONS)
             throw std::out_of_range("invalid moon parent");
         std::vector<std::unique_ptr<uqm::World>> moons;
         for (COUNT i = 0; i < planet->NumPlanets; ++i)

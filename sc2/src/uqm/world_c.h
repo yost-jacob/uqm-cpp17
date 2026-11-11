@@ -16,6 +16,10 @@ void CreateSystemWorlds(struct solarsys_state *system, const struct star_desc *s
 void BuildSystemWorlds(struct solarsys_state *system, const struct star_desc *star);
 void BuildMoonWorlds(struct solarsys_state *system, const struct planet_desc *planet);
 void DestroySystemWorlds(struct solarsys_state *system);
+/* Prepared native system required. These are borrowed C views; no selected
+ * descriptor pointers are stored. NULL selection clears focus, not the view. */
+struct planet_desc *GetSystemSelectedDescriptor(struct solarsys_state *system);
+void SelectSystemWorld(struct solarsys_state *system, const struct planet_desc *world);
 /* Slots are zero-based; moon == -1 selects the planet. Unknown IDs are fatal
  * adapter errors. Configure only after the relevant descriptors are generated. */
 void ConfigurePersonalEnergyBehavior(struct solarsys_state *system,

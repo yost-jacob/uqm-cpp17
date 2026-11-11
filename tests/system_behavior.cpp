@@ -3,6 +3,7 @@
 #include "uqm/orbital_encounter.hpp"
 #include "uqm/system_builders.hpp"
 #include "uqm/system_runtime.hpp"
+#include "uqm/world_legacy.hpp"
 #include "uqm/gendef.h"
 #include "uqm/globdata.h"
 #include "uqm/build.h"
@@ -641,8 +642,16 @@ BOOST_AUTO_TEST_CASE(system_coordinates_depend_on_the_supplied_system_not_a_sele
     SOLARSYS_STATE first{}, second{};
     first.SunDesc[0].radius = DISPLAY_FACTOR >> 1;
     second.SunDesc[0].radius = 2 * first.SunDesc[0].radius;
-    first.pBaseDesc = first.PlanetDesc;
-    second.pBaseDesc = second.MoonDesc;
+    uqm::GameState state{{uqm::SinglePlayerId, "Coordinates"}};
+    uqm::SimulationEngine engine;
+    UQM_SYSTEM_RUNTIME firstRuntime{state.player(uqm::SinglePlayerId).story(), engine, state.worldOwner(), nullptr};
+    UQM_SYSTEM_RUNTIME secondRuntime{state.player(uqm::SinglePlayerId).story(), engine, state.worldOwner(), nullptr};
+    first.worlds = &firstRuntime;
+    second.worlds = &secondRuntime;
+    const uqm::WorldDefinition definition{{state.world().id(), StarId{0}, 0, {}}, uqm::WorldKind::Planet, 0, false, "Planet"};
+    firstRuntime.system = std::make_unique<uqm::SolarSystem>(StarId{0}, state.worldOwner(), std::vector<uqm::WorldDefinition>{definition});
+    secondRuntime.system = std::make_unique<uqm::SolarSystem>(StarId{0}, state.worldOwner(), std::vector<uqm::WorldDefinition>{definition});
+    secondRuntime.system->enterInnerSystem(definition.id);
     const auto center = uqm::locationToDisplay({0, 0}, first.SunDesc[0].radius);
     BOOST_TEST(!uqm::inInnerSystem(first));
     BOOST_TEST(uqm::inInnerSystem(second));
@@ -692,4 +701,104 @@ BOOST_AUTO_TEST_CASE(system_draw_order_includes_the_sun_without_crossing_descrip
     view.orderBodies(system);
     BOOST_REQUIRE(view.bodyOrder.size() == 1u);
     BOOST_TEST(&view.bodyOrder.front().get() == &system.SunDesc[0]);
+}
+
+BOOST_AUTO_TEST_CASE(native_body_selection_tracks_the_world_tree_and_rejects_wrong_views)
+{
+    using namespace uqm;
+    auto state = std::make_shared<WorldState>();
+    const WorldId planet{state->id(), StarId{3}, 0, {}}, other{state->id(), StarId{3}, 1, {}};
+    WorldId moon = planet; moon.moon = 0;
+    const std::vector<WorldDefinition> definitions{
+        {planet, WorldKind::Planet, 1, false, "Planet", 1},
+        {other, WorldKind::Planet, 2, false, "Other"}};
+    SolarSystem system{StarId{3}, state, definitions};
+    std::vector<std::unique_ptr<World>> children;
+    children.push_back(std::make_unique<World>(WorldDefinition{moon, WorldKind::Moon, 3, false, "Moon"}, state));
+    system.world(0).replaceChildren(std::move(children));
+    BOOST_TEST(system.visibleWorldCount() == 2u);
+    BOOST_TEST(!system.hasSelectedWorld());
+    BOOST_CHECK_THROW(system.selectedWorld(), std::bad_optional_access);
+    system.enterInnerSystem(planet);
+    BOOST_TEST(system.inInnerSystem());
+    BOOST_TEST(system.visibleWorldCount() == 1u);
+    BOOST_CHECK(system.innerPlanet().id() == planet);
+    system.selectWorld(moon);
+    BOOST_TEST(&system.selectedWorld() == &system.visibleWorld(0));
+    BOOST_CHECK_THROW(system.selectWorld(other), std::invalid_argument);
+    BOOST_CHECK_THROW(system.enterInnerSystem(moon), std::invalid_argument);
+    auto foreign = planet; foreign.system = StarId{4};
+    BOOST_CHECK_THROW(system.selectWorld(foreign), std::out_of_range);
+    BOOST_CHECK(system.selectedWorld().id() == moon);
+    system.clearSelection();
+    BOOST_TEST(system.inInnerSystem());
+    BOOST_TEST(!system.hasSelectedWorld());
+    system.enterOuterSystem();
+    BOOST_TEST(!system.inInnerSystem());
+    BOOST_TEST(system.visibleWorldCount() == 2u);
+}
+
+BOOST_AUTO_TEST_CASE(body_selection_survives_refresh_and_resolves_replaced_moons_by_identity)
+{
+    using namespace uqm;
+    auto state = std::make_shared<WorldState>();
+    const WorldId planet{state->id(), StarId{3}, 0, {}};
+    WorldId moon = planet; moon.moon = 0;
+    std::vector<WorldDefinition> definitions{{planet, WorldKind::Planet, 1, false, "Planet", 1}};
+    SolarSystem system{StarId{3}, state, definitions};
+    auto replaceMoon = [&](unsigned seed) {
+        std::vector<std::unique_ptr<World>> children;
+        children.push_back(std::make_unique<World>(WorldDefinition{moon, WorldKind::Moon, seed, false, "Moon"}, state));
+        system.world(0).replaceChildren(std::move(children));
+    };
+    replaceMoon(3);
+    system.enterInnerSystem(planet);
+    system.selectWorld(moon);
+    system.refreshPlanets(definitions);
+    BOOST_CHECK(system.selectedWorld().id() == moon);
+    replaceMoon(4);
+    BOOST_TEST(system.selectedWorld().definition().seed == 4u);
+    auto invalid = definitions;
+    invalid[0].id.planet = 9;
+    BOOST_CHECK_THROW(system.replacePlanets(invalid), std::invalid_argument);
+    BOOST_CHECK(system.selectedWorld().id() == moon);
+    definitions[0].seed = 42;
+    system.refreshPlanets(definitions);
+    BOOST_TEST(!system.hasSelectedWorld());
+    BOOST_TEST(!system.inInnerSystem());
+}
+
+BOOST_AUTO_TEST_CASE(legacy_selected_body_views_resolve_native_ids_without_retaining_buffer_addresses)
+{
+    using namespace uqm;
+    GameState state{{SinglePlayerId, "Selection"}};
+    SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME context{state.player(SinglePlayerId).story(), simulation, state.worldOwner(), nullptr};
+    const WorldId planet{state.world().id(), StarId{3}, 0, {}};
+    WorldId moon = planet; moon.moon = 0;
+    context.system = std::make_unique<SolarSystem>(StarId{3}, state.worldOwner(),
+        std::vector<WorldDefinition>{{planet, WorldKind::Planet, 1, false, "Planet", 1}});
+    std::vector<std::unique_ptr<World>> children;
+    children.push_back(std::make_unique<World>(WorldDefinition{moon, WorldKind::Moon, 2, false, "Moon"}, state.worldOwner()));
+    context.system->world(0).replaceChildren(std::move(children));
+    SOLARSYS_STATE buffer{};
+    buffer.worlds = &context;
+    buffer.MoonDesc[0].pPrevDesc = &buffer.PlanetDesc[0];
+    BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == nullptr);
+    SelectSystemWorld(&buffer, &buffer.PlanetDesc[0]);
+    BOOST_CHECK(context.system->selectedWorld().id() == planet);
+    context.system->enterInnerSystem(planet);
+    SelectSystemWorld(&buffer, &buffer.MoonDesc[0]);
+    BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == &buffer.MoonDesc[0]);
+    BOOST_CHECK(orbitalWorld(buffer).id() == moon);
+    SOLARSYS_STATE replacement{};
+    replacement.worlds = &context;
+    replacement.MoonDesc[0].pPrevDesc = &replacement.PlanetDesc[0];
+    BOOST_TEST(GetSystemSelectedDescriptor(&replacement) == &replacement.MoonDesc[0]);
+    PLANET_DESC foreign{};
+    BOOST_CHECK_THROW(detail::worldFromDescriptor(buffer, foreign), std::invalid_argument);
+    BOOST_CHECK(context.system->selectedWorld().id() == moon);
+    SelectSystemWorld(&buffer, nullptr);
+    BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == nullptr);
+    BOOST_TEST(context.system->inInnerSystem());
 }

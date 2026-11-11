@@ -17,6 +17,7 @@
  */
 
 #include "../system_runtime.hpp"
+#include "../world_legacy.hpp"
 #include "../game_mode.hpp"
 #include "libs/inplib.h"
 #include <optional>
@@ -837,7 +838,7 @@ CheckObjectCollision (COUNT index)
 
 				which_node = HIBYTE (ElementPtr->scan_node) - 1;
 				if (callPickupForScanType (&planetSideDesc->system,
-						planetSideDesc->system.pOrbitalDesc, which_node, scan))
+						&uqm::detail::selectedDescriptor(planetSideDesc->system), which_node, scan))
 				{	// Node retrieved, remove from the surface
 					setNodeRetrieved (&planetSideDesc->system.SysInfo.PlanetInfo,
 							scan, which_node);
