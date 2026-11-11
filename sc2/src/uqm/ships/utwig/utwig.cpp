@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -165,13 +166,13 @@ initialize_lance (ELEMENT *ShipPtr, HELEMENT WeaponArray[])
 		sin0 = sin1cos0 + cos1sin0;
 		MissileBlock.cx = ShipPtr->next.location.x + cos0;
 		MissileBlock.cy = ShipPtr->next.location.y + sin0;
-		WeaponArray[(i << 1)] = initialize_missile (&MissileBlock);
+		WeaponArray[(i << 1)] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
 		cos0 = -cos1cos0 - sin1sin0;
 		sin0 = -sin1cos0 + cos1sin0;
 		MissileBlock.cx = ShipPtr->next.location.x + cos0;
 		MissileBlock.cy = ShipPtr->next.location.y + sin0;
-		WeaponArray[(i << 1) + 1] = initialize_missile (&MissileBlock);
+		WeaponArray[(i << 1) + 1] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 	}
 
 	return (6);

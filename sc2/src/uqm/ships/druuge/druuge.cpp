@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
@@ -168,7 +169,7 @@ initialize_cannon (ELEMENT *ShipPtr, HELEMENT CannonArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	CannonArray[0] = initialize_missile (&MissileBlock);
+	CannonArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
 	if (CannonArray[0])
 	{

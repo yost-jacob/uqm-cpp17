@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/colors.h"
@@ -112,9 +113,15 @@ static const RACE_DESC &ilwrathDefinition() {
     return definition;
 }
 
-static void
-flame_preprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class IlwrathFlame final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else
@@ -125,16 +132,22 @@ flame_preprocess (ELEMENT *ElementPtr)
 
 		ElementPtr->turn_wait = ElementPtr->next_turn;
 	}
+    }
+};
 }
 
-static void
-flame_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void IlwrathFlame::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 	ElementPtr0->state_flags &= ~DISAPPEARING;
 	ElementPtr0->state_flags |= NONSOLID;
 }
+
 
 static void
 ilwrath_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
@@ -195,9 +208,9 @@ initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
 	MissileBlock.hit_points = missileStats().hitPoints;
 	MissileBlock.damage = missileStats().damage;
 	MissileBlock.life = missileStats().lifetime;
-	MissileBlock.preprocess_func = flame_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MissileOffset;
-	FlameArray[0] = initialize_missile (&MissileBlock);
+	FlameArray[0] = uqm::combat::publishMissile<IlwrathFlame>(MissileBlock);
 
 	if (FlameArray[0])
 	{
@@ -210,7 +223,6 @@ initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
 		FlamePtr->current.location.x -= VELOCITY_TO_WORLD (dx);
 		FlamePtr->current.location.y -= VELOCITY_TO_WORLD (dy);
 
-		FlamePtr->collision_func = flame_collision;
 		FlamePtr->turn_wait = 0;
 		UnlockElement (FlameArray[0]);
 	}

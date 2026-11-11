@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -125,9 +126,35 @@ static const RACE_DESC &chenjesuDefinition() {
     return definition;
 }
 
-static void
-crystal_postprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class ChenjesuCrystal final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void postprocess(ELEMENT &element) override;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
+	STARSHIP *StarShipPtr;
+
+	GetElementStarShip (ElementPtr, &StarShipPtr);
+	if (StarShipPtr->cur_status_flags & WEAPON)
+		++ElementPtr->life_span; /* keep it going while key pressed */
+	else
+	{
+		ElementPtr->life_span = 1;
+
+		uqm::detail::enableProjectilePostprocess(*ElementPtr);
+	}
+    }
+};
+}
+
+
+void ChenjesuCrystal::postprocess(ELEMENT &element) {
+    auto *ElementPtr = &element;
+
 	STARSHIP *StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
@@ -153,7 +180,7 @@ crystal_postprocess (ELEMENT *ElementPtr)
 	{
 		HELEMENT hFragment;
 
-		hFragment = initialize_missile (&MissileBlock);
+		hFragment = uqm::combat::publishMissile(MissileBlock, fragmentStats().flight);
 		if (hFragment)
 		{
 			ELEMENT *FragPtr;
@@ -171,22 +198,6 @@ crystal_postprocess (ELEMENT *ElementPtr)
 }
 
 static void
-crystal_preprocess (ELEMENT *ElementPtr)
-{
-	STARSHIP *StarShipPtr;
-
-	GetElementStarShip (ElementPtr, &StarShipPtr);
-	if (StarShipPtr->cur_status_flags & WEAPON)
-		++ElementPtr->life_span; /* keep it going while key pressed */
-	else
-	{
-		ElementPtr->life_span = 1;
-
-		ElementPtr->postprocess_func = crystal_postprocess;
-	}
-}
-
-static void
 animate (ELEMENT *ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
@@ -201,10 +212,12 @@ animate (ELEMENT *ElementPtr)
 	}
 }
 
-static void
-crystal_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void ChenjesuCrystal::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	HELEMENT hBlastElement;
 
 	hBlastElement =
@@ -230,6 +243,7 @@ crystal_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		UnlockElement (hBlastElement);
 	}
 }
+
 
 static void
 doggy_preprocess (ELEMENT *ElementPtr)
@@ -437,6 +451,7 @@ chenjesu_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			if (!(CrystalPtr->state_flags & NONSOLID)
 					&& CrystalPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.weapon
 					&& CrystalPtr->preprocess_func
+                    && dynamic_cast<ChenjesuCrystal *>(uqm::detail::borrowProjectile(disp_q, CrystalPtr))
 					&& CrystalPtr->life_span > 0
 					&& elementsOfSamePlayer (CrystalPtr, ShipPtr))
 			{
@@ -509,18 +524,10 @@ initialize_crystal (ELEMENT *ShipPtr, HELEMENT CrystalArray[])
 	MissileBlock.hit_points = missileStats().hitPoints;
 	MissileBlock.damage = missileStats().damage;
 	MissileBlock.life = missileStats().lifetime;
-	MissileBlock.preprocess_func = crystal_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MissileOffset;
-	CrystalArray[0] = initialize_missile (&MissileBlock);
+	CrystalArray[0] = uqm::combat::publishMissile<ChenjesuCrystal>(MissileBlock);
 
-	if (CrystalArray[0])
-	{
-		ELEMENT *CrystalPtr;
-
-		LockElement (CrystalArray[0], &CrystalPtr);
-		CrystalPtr->collision_func = crystal_collision;
-		UnlockElement (CrystalArray[0]);
-	}
 
 	return (1);
 }

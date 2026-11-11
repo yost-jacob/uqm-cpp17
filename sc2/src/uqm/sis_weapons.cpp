@@ -24,10 +24,11 @@ SISWeapons configureSISWeapons(const SISLoadout &loadout, ProjectileStats blaste
                 || lifetime > std::numeric_limits<COUNT>::max())
             throw std::out_of_range("SIS weapon exceeds projectile capacity");
         definition.stats = {blaster.speed, static_cast<std::int16_t>(blaster.hitPoints * tier),
-            static_cast<std::int16_t>(blaster.damage * tier), static_cast<std::uint16_t>(lifetime)};
+            static_cast<std::int16_t>(blaster.damage * tier), static_cast<std::uint16_t>(lifetime), blaster.flight};
         definition.frameIndex = tier == 1 ? 0 : tier == 2 ? 9 : 16;
         definition.blastOffset = BlastOffset;
-        definition.steeringPeriodTicks = static_cast<std::uint16_t>(steeringPeriod);
+        definition.stats.flight.steeringPeriod = static_cast<std::uint16_t>(steeringPeriod);
+        definition.stats.flight.initialDelay = steeringPeriod ? steeringPeriod - 1 : 0;
         result.weaponEnergyCost += tier * 2;
         switch (position) {
             case 0:

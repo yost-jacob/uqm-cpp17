@@ -96,9 +96,10 @@ object owns flight behavior, not a second physics state. Destruction is cleanup,
 not a request to detonate or spawn effects. Sprites remain borrowed under the
 existing ship/engine asset lifetime rules.
 
-This production increment migrates SIS blasters. Other races' projectile
-callbacks, SIS point defense and the full native Battle wireframe are not migrated
-by this change; there is no new parallel battle simulation.
+The initial increment migrated SIS blasters. The [roster migration](projectile-roster.md)
+extends native projectile ownership to the other missile builders. SIS point
+defense and the full native Battle wireframe remain separate work; there is no
+new parallel battle simulation.
 
 ## Verification
 

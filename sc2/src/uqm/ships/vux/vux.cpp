@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -118,30 +119,25 @@ static const RACE_DESC &vuxDefinition() {
     return definition;
 }
 
-static void
-limpet_preprocess (ELEMENT *ElementPtr)
-{
-	COUNT facing, orig_facing;
-	SIZE delta_facing;
-
-	facing = orig_facing = NORMALIZE_FACING (ANGLE_TO_FACING (
-			GetVelocityTravelAngle (&ElementPtr->velocity)
-			));
-	if ((delta_facing = TrackShip (ElementPtr, &facing)) > 0)
-	{
-		facing = orig_facing + delta_facing;
-		SetVelocityVector (&ElementPtr->velocity, limpetStats().speed, facing);
-	}
-	ElementPtr->next.image.frame =
-			 IncFrameIndex (ElementPtr->next.image.frame);
-
-	ElementPtr->state_flags |= CHANGING;
+namespace {
+class VuxLimpet final : public uqm::combat::ConfiguredProjectile {
+public:
+    using ConfiguredProjectile::ConfiguredProjectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        ConfiguredProjectile::update(element);
+        element.next.image.frame = IncFrameIndex(element.next.image.frame);
+        element.state_flags |= CHANGING;
+    }
+};
 }
 
-static void
-limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void VuxLimpet::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{
 		STAMP s;
@@ -190,6 +186,7 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
+
 static void
 spawn_limpets (ELEMENT *ElementPtr)
 {
@@ -208,18 +205,18 @@ spawn_limpets (ELEMENT *ElementPtr)
 	MissileBlock.hit_points = limpetStats().hitPoints;
 	MissileBlock.damage = limpetStats().damage;
 	MissileBlock.life = limpetStats().lifetime;
-	MissileBlock.preprocess_func = limpet_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = 0;
 
 	MissileBlock.cx = ElementPtr->next.location.x;
 	MissileBlock.cy = ElementPtr->next.location.y;
-	Limpet = initialize_missile (&MissileBlock);
+	Limpet = uqm::combat::publishMissile<VuxLimpet>(MissileBlock, limpetStats().flight);
 	if (Limpet)
 	{
 		ELEMENT *LimpetPtr;
 
 		LockElement (Limpet, &LimpetPtr);
-		LimpetPtr->collision_func = limpet_collision;
+
 		SetElementStarShip (LimpetPtr, StarShipPtr);
 		UnlockElement (Limpet);
 

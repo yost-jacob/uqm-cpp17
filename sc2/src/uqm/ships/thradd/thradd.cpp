@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -34,15 +35,17 @@ static const uqm::combat::ProjectileStats &missileStats() {
     return value;
 }
 
+static const uqm::combat::ProjectileStats &napalmStats() {
+    static const auto &value = tuning().projectile("napalm");
+    return value;
+}
+
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto MissileOffset = 3;
 constexpr auto ThraddashOffset = 9;
 constexpr auto SpecialThrustIncrement = 12;
 constexpr auto SpecialMaxThrust = 72;
-constexpr auto NapalmLife = 48;
 constexpr auto NapalmOffset = 0;
-constexpr auto NapalmHits = 1;
-constexpr auto NapalmDamage = 2;
 constexpr auto NapalmDecayRate = 5;
 constexpr auto NumNapalmFades = 6;
 constexpr auto StationarySpeed = WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (4));
@@ -208,9 +211,14 @@ thraddash_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 }
 
-static void
-flame_napalm_preprocess (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class ThraddashNapalm final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	ZeroVelocityComponents (&ElementPtr->velocity);
 
 	if (ElementPtr->state_flags & NONSOLID)
@@ -246,7 +254,10 @@ flame_napalm_preprocess (ELEMENT *ElementPtr)
 		ElementPtr->turn_wait = NapalmDecayRate;
 		ElementPtr->state_flags |= CHANGING;
 	}
+    }
+};
 }
+
 
 static COUNT
 initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
@@ -268,7 +279,7 @@ initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	HornArray[0] = initialize_missile (&MissileBlock);
+	HornArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
 	return (1);
 }
@@ -330,14 +341,14 @@ thraddash_preprocess (ELEMENT *ElementPtr)
 			MissileBlock.sender = ElementPtr->playerNr;
 			MissileBlock.flags = IGNORE_SIMILAR;
 			MissileBlock.pixoffs = 0;
-			MissileBlock.speed = 0;
-			MissileBlock.hit_points = NapalmHits;
-			MissileBlock.damage = NapalmDamage;
-			MissileBlock.life = NapalmLife;
-			MissileBlock.preprocess_func = flame_napalm_preprocess;
+			MissileBlock.speed = napalmStats().speed;
+			MissileBlock.hit_points = napalmStats().hitPoints;
+			MissileBlock.damage = napalmStats().damage;
+			MissileBlock.life = napalmStats().lifetime;
+			MissileBlock.preprocess_func = nullptr;
 			MissileBlock.blast_offs = NapalmOffset;
 
-			hTrailElement = initialize_missile (&MissileBlock);
+			hTrailElement = uqm::combat::publishMissile<ThraddashNapalm>(MissileBlock);
 			if (hTrailElement)
 			{
 				ELEMENT *TrailElementPtr;

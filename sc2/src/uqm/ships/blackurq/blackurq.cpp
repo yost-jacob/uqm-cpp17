@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
 
 #include "uqm/globdata.h"
@@ -34,6 +35,11 @@ static const uqm::combat::ProjectileStats &missileStats() {
     return value;
 }
 
+static const uqm::combat::ProjectileStats &gasStats() {
+    static const auto &value = tuning().projectile("gas");
+    return value;
+}
+
 // Fixed geometry, frame layout, capacities, and derived calculations.
 constexpr auto MissileOffset = 9;
 constexpr auto KohrAhOffset = 28;
@@ -45,10 +51,7 @@ static auto fragmentSpeed() { return missileStats().speed; }
 constexpr auto FragmentLife = 10;
 static auto fragmentRange() { return (FragmentLife * fragmentSpeed()); }
 constexpr auto GasOffset = 2;
-constexpr auto GasSpeed = 16;
 constexpr auto GasRate = 2;
-constexpr auto GasHits = 100;
-constexpr auto GasDamage = 3;
 constexpr auto GasAltDamage = 50;
 constexpr auto NumGasClouds = 16;
 constexpr auto LastSpinIndex = 1;
@@ -126,9 +129,32 @@ static const RACE_DESC &black_urquanDefinition() {
     return definition;
 }
 
-static void
-spin_preprocess (ELEMENT *ElementPtr)
-{
+namespace {
+class KohrAhSaw final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    bool hasPostprocess() const noexcept override { return true; }
+    void postprocess(ELEMENT &element) override;
+    // Relocation copies only native phase; the caller copies engine kinematics.
+    std::unique_ptr<KohrAhSaw> clone() const {
+        auto result = std::make_unique<KohrAhSaw>(definition(), launch());
+        result->phase_ = phase_;
+        return result;
+    }
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        switch (phase_) {
+            case Phase::Held: held(&element); break;
+            case Phase::Braking: brake(&element); break;
+            case Phase::Tracking: track(&element); break;
+            case Phase::Splinter: splinter(&element); break;
+        }
+    }
+private:
+    enum class Phase { Held, Braking, Tracking, Splinter };
+    Phase phase_ = Phase::Held;
+    void spin(ELEMENT *ElementPtr) {
+
 	ELEMENT *ShipPtr;
 	STARSHIP *StarShipPtr;
 
@@ -161,11 +187,9 @@ spin_preprocess (ELEMENT *ElementPtr)
 		}
 	}
 	UnlockElement (StarShipPtr->hShip);
-}
+    }
+    void track(ELEMENT *ElementPtr) {
 
-static void
-buzztrack_preprocess (ELEMENT *ElementPtr)
-{
 	if (ElementPtr->thrust_wait)
 		--ElementPtr->thrust_wait;
 	else
@@ -217,12 +241,10 @@ buzztrack_preprocess (ELEMENT *ElementPtr)
 		}
 	}
 
-	spin_preprocess (ElementPtr);
-}
+	spin(ElementPtr);
+    }
+    void brake(ELEMENT *ElementPtr) {
 
-static void
-decelerate_preprocess (ELEMENT *ElementPtr)
-{
 	SIZE dx, dy;
 
 	GetCurrentVelocityComponents (&ElementPtr->velocity, &dx, &dy);
@@ -231,24 +253,39 @@ decelerate_preprocess (ELEMENT *ElementPtr)
 	SetVelocityComponents (&ElementPtr->velocity, dx, dy);
 	if (dx == 0 && dy == 0)
 	{
-		ElementPtr->preprocess_func = buzztrack_preprocess;
+		phase_ = Phase::Tracking;
 	}
 
-	spin_preprocess (ElementPtr);
-}
+	spin(ElementPtr);
+    }
+    void splinter(ELEMENT *ElementPtr) {
 
-static void
-splinter_preprocess (ELEMENT *ElementPtr)
-{
 	ElementPtr->next.image.frame =
 			IncFrameIndex (ElementPtr->current.image.frame);
 	ElementPtr->state_flags |= CHANGING;
+    }
+    void held(ELEMENT *ElementPtr) {
+
+	STARSHIP *StarShipPtr;
+
+	GetElementStarShip (ElementPtr, &StarShipPtr);
+	if (!(StarShipPtr->cur_status_flags & WEAPON))
+	{
+		ElementPtr->life_span >>= 1;
+		phase_ = Phase::Braking;
+	}
+
+	spin(ElementPtr);
+    }
+};
 }
 
-static void
-buzzsaw_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+void KohrAhSaw::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 
 	if (ElementPtr0->state_flags & DISAPPEARING)
@@ -259,28 +296,12 @@ buzzsaw_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ElementPtr0->next.image.frame =
 				SetAbsFrameIndex (ElementPtr0->current.image.frame, 2);
 
-		ElementPtr0->preprocess_func = splinter_preprocess;
+		phase_ = Phase::Splinter;
 	}
 }
 
-static void
-buzzsaw_preprocess (ELEMENT *ElementPtr)
-{
-	STARSHIP *StarShipPtr;
-
-	GetElementStarShip (ElementPtr, &StarShipPtr);
-	if (!(StarShipPtr->cur_status_flags & WEAPON))
-	{
-		ElementPtr->life_span >>= 1;
-		ElementPtr->preprocess_func = decelerate_preprocess;
-	}
-
-	spin_preprocess (ElementPtr);
-}
-
-static void
-buzzsaw_postprocess (ELEMENT *ElementPtr)
-{
+void KohrAhSaw::postprocess(ELEMENT &element) {
+    auto *ElementPtr = &element;
 	HELEMENT hElement;
 
 	ElementPtr->postprocess_func = 0;
@@ -294,6 +315,12 @@ buzzsaw_postprocess (ELEMENT *ElementPtr)
 		LockElement (hElement, &ListElementPtr);
 		primIndex = ListElementPtr->PrimIndex;
 		*ListElementPtr = *ElementPtr;
+        // The engine moves a newly fired saw beside its source in the queue.
+        // ELEMENT copies do not copy pool ownership; copy the native phase too.
+        if (const auto *saw = dynamic_cast<const KohrAhSaw *>(
+                uqm::detail::borrowProjectile(disp_q, ElementPtr)))
+            uqm::detail::bindProjectile(disp_q, hElement,
+                saw->clone());
 		ListElementPtr->PrimIndex = primIndex;
 		(GLOBAL (DisplayArray))[primIndex] =
 				(GLOBAL (DisplayArray))[ElementPtr->PrimIndex];
@@ -333,9 +360,9 @@ initialize_buzzsaw (ELEMENT *ShipPtr, HELEMENT SawArray[])
 	MissileBlock.hit_points = missileStats().hitPoints;
 	MissileBlock.damage = missileStats().damage;
 	MissileBlock.life = missileStats().lifetime;
-	MissileBlock.preprocess_func = buzzsaw_preprocess;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MissileOffset;
-	SawArray[0] = initialize_missile (&MissileBlock);
+	SawArray[0] = uqm::combat::publishMissile<KohrAhSaw>(MissileBlock);
 
 	if (SawArray[0])
 	{
@@ -344,8 +371,7 @@ initialize_buzzsaw (ELEMENT *ShipPtr, HELEMENT SawArray[])
 		LockElement (SawArray[0], &SawPtr);
 		SawPtr->turn_wait = SawRate;
 		SawPtr->thrust_wait = 0;
-		SawPtr->postprocess_func = buzzsaw_postprocess;
-		SawPtr->collision_func = buzzsaw_collision;
+
 		UnlockElement (SawArray[0]);
 	}
 
@@ -432,9 +458,14 @@ black_urquan_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 }
 
-static void
-gas_cloud_preprocess (ELEMENT *ElementPtr)
-{
+namespace {
+class KohrAhGas final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	if (ElementPtr->turn_wait)
 		--ElementPtr->turn_wait;
 	else
@@ -445,19 +476,25 @@ gas_cloud_preprocess (ELEMENT *ElementPtr)
 
 		ElementPtr->turn_wait = GasRate;
 	}
+    }
+};
 }
 
-static void
-gas_cloud_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void KohrAhGas::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
+
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
-		ElementPtr0->mass_points = GasDamage;
+		ElementPtr0->mass_points = gasStats().damage;
 	else
 		ElementPtr0->mass_points = GasAltDamage;
 
 	weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
+
 
 static void
 spawn_gas_cloud (ELEMENT *ElementPtr)
@@ -474,12 +511,12 @@ spawn_gas_cloud (ELEMENT *ElementPtr)
 	MissileBlock.sender = ElementPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
 	MissileBlock.pixoffs = 20;
-	MissileBlock.speed = GasSpeed;
-	MissileBlock.hit_points = GasHits;
-	MissileBlock.damage = GasDamage;
+	MissileBlock.speed = gasStats().speed;
+	MissileBlock.hit_points = gasStats().hitPoints;
+	MissileBlock.damage = gasStats().damage;
 	MissileBlock.life =
-			GetFrameCount (MissileBlock.farray[0]) * (GasRate + 1) - 1;
-	MissileBlock.preprocess_func = gas_cloud_preprocess;
+			gasStats().lifetime;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = GasOffset;
 
 	GetCurrentVelocityComponents (&ElementPtr->velocity, &dx, &dy);
@@ -490,7 +527,7 @@ spawn_gas_cloud (ELEMENT *ElementPtr)
 	{
 		HELEMENT hGasCloud;
 
-		hGasCloud = initialize_missile (&MissileBlock);
+		hGasCloud = uqm::combat::publishMissile<KohrAhGas>(MissileBlock);
 		if (hGasCloud)
 		{
 			ELEMENT *GasCloudPtr;
@@ -499,7 +536,7 @@ spawn_gas_cloud (ELEMENT *ElementPtr)
 			SetElementStarShip (GasCloudPtr, StarShipPtr);
 			GasCloudPtr->hTarget = 0;
 			GasCloudPtr->turn_wait = GasRate - 1;
-			GasCloudPtr->collision_func = gas_cloud_collision;
+
 			DeltaVelocityComponents (&GasCloudPtr->velocity, dx, dy);
 			UnlockElement (hGasCloud);
 			PutElement (hGasCloud);

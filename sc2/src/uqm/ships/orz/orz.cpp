@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include "orz.h"
 #include "resinst.h"
 
@@ -166,7 +167,7 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	MissileArray[0] = initialize_missile (&MissileBlock);
+	MissileArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
 
 	if (MissileArray[0])
 	{

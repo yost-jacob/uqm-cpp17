@@ -20,6 +20,7 @@
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
+#include "uqm/projectile_legacy.hpp"
 #include <optional>
 #include "resinst.h"
 
@@ -138,9 +139,14 @@ GetCustomShipData (RACE_DESC *pRaceDesc)
 // Updates the concrete ship's optional value; no separate heap allocation.
 static void SetCustomShipData(RACE_DESC *descriptor, const CustomShipData_t *data);
 
-static void
-animate (ELEMENT *ElementPtr)
-{
+// Per-shot behavior; engine kinematics and collision state remain borrowed.
+namespace {
+class PkunkShot final : public uqm::combat::Projectile {
+public:
+    using Projectile::Projectile;
+    void update(ELEMENT &element) override {
+        auto *ElementPtr = &element;
+
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else
@@ -151,7 +157,10 @@ animate (ELEMENT *ElementPtr)
 
 		ElementPtr->turn_wait = ElementPtr->next_turn;
 	}
+    }
+};
 }
+
 
 static COUNT
 initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
@@ -184,7 +193,7 @@ initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 			MissileBlock.face += ANGLE_TO_FACING (QUADRANT);
 		MissileBlock.face = NORMALIZE_FACING (MissileBlock.face);
 
-		if ((MissileArray[i] = initialize_missile (&MissileBlock)))
+		if ((MissileArray[i] = uqm::combat::publishMissile<PkunkShot>(MissileBlock)))
 		{
 			SIZE dx, dy;
 			ELEMENT *MissilePtr;
@@ -195,7 +204,6 @@ initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 			MissilePtr->current.location.x -= VELOCITY_TO_WORLD (dx);
 			MissilePtr->current.location.y -= VELOCITY_TO_WORLD (dy);
 
-			MissilePtr->preprocess_func = animate;
 			UnlockElement (MissileArray[i]);
 		}
 	}

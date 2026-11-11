@@ -12,10 +12,12 @@ using namespace uqm::combat;
 namespace {
 unsigned trackingCalls = 0, visualCalls = 0;
 bool targetPresent = true;
+SIZE targetDelta = 1;
 ProjectileDefinition projectileDefinition(unsigned period = 2) {
     ProjectileDefinition result{};
     result.stats = {20, 1, 1, 32};
-    result.steeringPeriodTicks = period;
+    result.stats.flight.steeringPeriod = period;
+    result.stats.flight.initialDelay = period ? period - 1 : 0;
     return result;
 }
 void visual(ELEMENT *) { ++visualCalls; }
@@ -35,11 +37,14 @@ struct CountingProjectile final : Projectile {
 // steering timers, velocity math, publishing adapter and pool ownership run.
 extern "C" {
 QUEUE disp_q{};
+HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { return nullptr; }
+COUNT GetFrameIndex(FRAME frame) { return static_cast<COUNT>(reinterpret_cast<std::uintptr_t>(frame)); }
+FRAME SetAbsFrameIndex(FRAME, COUNT index) { return reinterpret_cast<FRAME>(std::uintptr_t(index)); }
 SIZE TrackShip(ELEMENT *, COUNT *facing) {
     ++trackingCalls;
     if (!targetPresent) return -1;
     *facing = NORMALIZE_FACING(*facing + 1);
-    return 1;
+    return targetDelta;
 }
 HELEMENT initialize_missile(MISSILE_BLOCK *block) {
     const auto link = AllocLink(&disp_q);
@@ -96,7 +101,7 @@ BOOST_AUTO_TEST_CASE(sis_factory_derives_paired_mounts_damage_and_tracking_from_
         const auto launch = mount.launch({1000, 1000}, 0);
         BOOST_TEST(launch.facing == directions[i]);
         BOOST_TEST(mount.factory().definition().stats.damage == damage[i]);
-        BOOST_TEST(mount.factory().definition().steeringPeriodTicks == 2u);
+        BOOST_TEST(mount.factory().definition().stats.flight.steeringPeriod == 2u);
     }
     BOOST_TEST(weapons.mounts[3].factory().definition().stats.lifetime == 48u);
     BOOST_TEST(weapons.firingFlags == (FIRES_FORE | FIRES_AFT | FIRES_LEFT | FIRES_RIGHT));
@@ -210,4 +215,76 @@ BOOST_AUTO_TEST_CASE(sis_combat_crew_distinguishes_captain_only_survival_from_de
     BOOST_TEST(sis.crew() == static_cast<COUNT>(~0u));
     sis.recordCombatCrew(18);
     BOOST_TEST(sis.crew() == 17u);
+}
+
+BOOST_AUTO_TEST_CASE(configured_projectile_accelerates_to_cap_and_updates_directional_sprite)
+{
+    auto definition = projectileDefinition(4);
+    definition.stats.flight.acceleration = 4;
+    definition.stats.flight.maxSpeed = 80;
+    definition.stats.flight.directionalSprite = true;
+    WeaponMount mount{definition, 0, 0};
+    auto shot = mount.factory().create(mount.launch({0, 0}, 0));
+    ELEMENT element{};
+    element.velocity = shot->launch().velocity;
+    trackingCalls = 0; targetPresent = true;
+    for (unsigned age = 0; age < 24; ++age) {
+        element.life_span = definition.stats.lifetime - age;
+        shot->update(element);
+        VELOCITY_DESC expected{};
+        SetVelocityVector(&expected, std::min(80, 20 + int(age) * 4), GetFrameIndex(element.next.image.frame));
+        SIZE dx, dy, expectedX, expectedY;
+        GetCurrentVelocityComponents(&element.velocity, &dx, &dy);
+        GetCurrentVelocityComponents(&expected, &expectedX, &expectedY);
+        BOOST_TEST(dx == expectedX);
+        BOOST_TEST(dy == expectedY);
+    }
+    BOOST_TEST(trackingCalls == 6u);
+    BOOST_TEST(GetFrameIndex(element.next.image.frame) == 6u);
+    BOOST_TEST((element.state_flags & CHANGING) != 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(projectile_virtual_postprocess_and_collision_use_the_owned_instance, Pool)
+{
+    struct Hooks final : Projectile {
+        unsigned &posts, &collisions;
+        Hooks(unsigned &p, unsigned &c) : Projectile(projectileDefinition(), {}), posts(p), collisions(c) {}
+        void update(ELEMENT &) override {}
+        bool hasPostprocess() const noexcept override { return true; }
+        void postprocess(ELEMENT &element) override { ++posts; element.life_span = 7; }
+        void collide(ELEMENT &self, POINT &, ELEMENT &, POINT &) override { ++collisions; self.hit_points = 3; }
+    };
+    unsigned posts = 0, collisions = 0;
+    FRAME sprites[3]{};
+    auto handle = publishProjectile(std::make_unique<Hooks>(posts, collisions), sprites, 0, nullptr, nullptr);
+    BOOST_REQUIRE(handle);
+    auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_REQUIRE(element.postprocess_func);
+    BOOST_REQUIRE(element.collision_func);
+    element.postprocess_func(&element);
+    ELEMENT target{}; POINT point{};
+    element.collision_func(&element, &point, &target, &point);
+    BOOST_TEST(posts == 1u);
+    BOOST_TEST(collisions == 1u);
+    BOOST_TEST(element.life_span == 7u);
+    BOOST_TEST(element.hit_points == 3u);
+}
+
+BOOST_AUTO_TEST_CASE(configured_projectile_distinguishes_direct_and_gradual_guidance)
+{
+    targetPresent = true; targetDelta = 5;
+    for (const bool snap : {false, true}) {
+        auto definition = projectileDefinition(1);
+        definition.stats.flight.snapToTarget = snap;
+        WeaponMount mount{definition, 0, 0};
+        auto shot = mount.factory().create(mount.launch({0, 0}, 0));
+        ELEMENT element{}; element.velocity = shot->launch().velocity;
+        shot->update(element);
+        BOOST_TEST(GetVelocityTravelAngle(&element.velocity) == FACING_TO_ANGLE(snap ? 5 : 1));
+        targetPresent = false;
+        shot->update(element);
+        BOOST_TEST(GetVelocityTravelAngle(&element.velocity) == FACING_TO_ANGLE(snap ? 5 : 1));
+        targetPresent = true;
+    }
+    targetDelta = 1;
 }
