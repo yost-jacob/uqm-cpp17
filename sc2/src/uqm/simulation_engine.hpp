@@ -24,6 +24,15 @@ public:
     void swapScene(SimulationEngine &other) noexcept;
     void reset(); // Invalidates every entity handle; no gameplay death events.
     COUNT size() const noexcept;
+    // Reserve an unlinked, zero-initialized element and its display primitive.
+    // The engine owns the slot; nullopt means pool exhaustion. The borrow ends
+    // at release/reset/shutdown. Caller must enqueue it or release it unused.
+    std::optional<std::reference_wrapper<ELEMENT>> allocateElement();
+    // element must be this engine's reserved, unlinked live allocation. Releases
+    // native behavior/assets without death hooks or gameplay result publication.
+    void releaseElement(ELEMENT &element) noexcept;
+    // Append this engine's reserved, unlinked allocation to simulation order.
+    void enqueue(ELEMENT &element) noexcept;
     RuntimeShipRoster &shipRoster() noexcept { return ships_; }
     const RuntimeShipRoster &shipRoster() const noexcept { return ships_; }
     RandomStream &random() noexcept { return random_; }

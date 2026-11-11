@@ -74,46 +74,6 @@ CALC_ZOOM_STUFF (COUNT* idx, COUNT* sc)
 }
 #endif
 
-HELEMENT
-AllocElement (void)
-{
-	HELEMENT hElement;
-
-	hElement = AllocLink (&disp_q);
-	if (hElement)
-	{
-		ELEMENT *ElementPtr;
-
-		LockElement (hElement, &ElementPtr);
-		memset (ElementPtr, 0, sizeof (*ElementPtr));
-		ElementPtr->PrimIndex = AllocDisplayPrim ();
-		if (ElementPtr->PrimIndex == END_OF_LIST)
-		{
-			log_add (log_Error, "AllocElement: Out of display prims!");
-			explode ();
-		}
-		SetPrimType (&DisplayArray[ElementPtr->PrimIndex], NO_PRIM);
-		UnlockElement (hElement);
-	}
-
-	return (hElement);
-}
-
-void
-FreeElement (HELEMENT hElement)
-{
-	if (hElement)
-	{
-		ELEMENT *ElementPtr;
-
-		LockElement (hElement, &ElementPtr);
-		FreeDisplayPrim (ElementPtr->PrimIndex);
-		UnlockElement (hElement);
-
-		FreeLink (&disp_q, hElement);
-	}
-}
-
 void
 SetUpElement (ELEMENT *ElementPtr)
 {
@@ -986,8 +946,6 @@ PostProcessQueue (VIEW_STATE view_state, SIZE scroll_x,
 void
 InitDisplayList (void)
 {
-	COUNT i;
-
 	if (optMeleeScale == TFB_SCALE_STEP)
 	{
 		zoom_out = MAX_VIS_REDUCTION + 1;
@@ -1000,12 +958,6 @@ InitDisplayList (void)
 	}
 
 	uqm::simulationEngine().reset();
-
-	for (i = 0; i < MAX_DISPLAY_PRIMS; ++i)
-		SetPrimLinks (&DisplayArray[i], END_OF_LIST, i + 1);
-	SetPrimLinks (&DisplayArray[i - 1], END_OF_LIST, END_OF_LIST);
-	DisplayFreeList = 0;
-	DisplayLinks = MakeLinks (END_OF_LIST, END_OF_LIST);
 }
 
 void uqm::SimulationEngine::step() {

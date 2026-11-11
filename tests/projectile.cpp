@@ -24,9 +24,8 @@ ProjectileDefinition projectileDefinition(unsigned period = 2) {
 }
 void visual(ELEMENT *) { ++visualCalls; }
 struct Pool {
-    QUEUE saved{};
-    Pool() { SwapQueues(&saved, &disp_q); InitQueue(&disp_q, 2, QUEUE_ELEMENT); }
-    ~Pool() { UninitQueue(&disp_q); SwapQueues(&saved, &disp_q); }
+    uqm::SimulationEngine engine{2};
+    uqm::SimulationBinding binding{engine};
 };
 struct CountingProjectile final : Projectile {
     unsigned &destroyed;
@@ -35,8 +34,8 @@ struct CountingProjectile final : Projectile {
     void update(ELEMENT &) override {}
 };
 }
-// Simulate target selection and graphics allocation only. Real factories,
-// steering timers, velocity math, publishing adapter and pool ownership run.
+// Simulate target selection and frame handles only. Real engine allocation,
+// primitive reservation, factories, flight and pool ownership run.
 extern "C" {
 
 HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { ++defaultCollisionCalls; return nullptr; }
@@ -51,13 +50,7 @@ SIZE TrackShip(ELEMENT *, COUNT *facing) {
     *facing = NORMALIZE_FACING(*facing + 1);
     return targetDelta;
 }
-HELEMENT AllocElement() {
-    const auto link = AllocLink(&disp_q);
-    if (!link) return nullptr;
-    auto &element = *reinterpret_cast<ELEMENT *>(link);
-    element = {};
-    return link;
-}
+
 }
 BOOST_AUTO_TEST_CASE(optional_sis_belongs_to_fleet_without_consuming_an_escort_slot)
 {

@@ -2,6 +2,9 @@
 #define UQM_COMBAT_PLANET_HPP_
 #include "combat_entity.hpp"
 #include "gravity_field.hpp"
+#include <functional>
+#include <optional>
+namespace uqm { class SimulationEngine; }
 namespace uqm::combat {
 struct PlanetProperties {
     GravityField gravity{};
@@ -19,7 +22,8 @@ private:
 };
 // Creates and enqueues a pool-owned planet using the loaded combat planet art.
 // Art supplies its pixel collision mask; spriteIndex selects a valid frame.
-// Returns a borrowed engine handle, or null on pool exhaustion.
-HELEMENT spawnPlanet(PlanetProperties properties = {});
+// engine and loaded art must outlive the planet. Returns a borrow until
+// release/reset/shutdown, or nullopt on pool exhaustion.
+std::optional<std::reference_wrapper<ELEMENT>> spawnPlanet(SimulationEngine &engine, PlanetProperties properties = {});
 }
 #endif

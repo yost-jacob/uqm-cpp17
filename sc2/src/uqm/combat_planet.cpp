@@ -1,54 +1,41 @@
 #include "combat_planet.hpp"
 #include "combat_entity_legacy.hpp"
+#include "simulation_engine.hpp"
 #include "races.h"
 #include "ship.h"
 #include "globdata.h"
 #include "collide.h"
 #include "units.h"
 #include "libs/mathlib.h"
+#include <utility>
 extern "C" FRAME planet[];
 namespace uqm::combat {
 void Planet::postprocess(ELEMENT &self) { CalculateGravity(&self); }
 void Planet::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     collision(&self, &point, &other, &otherPoint);
 }
-HELEMENT spawnPlanet(PlanetProperties properties) {
-	HELEMENT hPlanetElement;
-
-	hPlanetElement = AllocElement ();
-	if (hPlanetElement)
-	{
-		ELEMENT *PlanetElementPtr;
-
-
-		LockElement (hPlanetElement, &PlanetElementPtr);
-		PlanetElementPtr->playerNr = NEUTRAL_PLAYER_NUM;
-		PlanetElementPtr->hit_points = 200;
-		PlanetElementPtr->state_flags = APPEARING;
-		PlanetElementPtr->life_span = NORMAL_LIFE + 1;
-		SetPrimType (&DisplayArray[PlanetElementPtr->PrimIndex], STAMP_PRIM);
-		PlanetElementPtr->current.image.farray = planet;
-		PlanetElementPtr->current.image.frame =
-				SetAbsFrameIndex(PlanetElementPtr->current.image.farray[0], properties.spriteIndex);
-		uqm::detail::attachEntity(*PlanetElementPtr, std::make_unique<Planet>(properties),
-            uqm::detail::EntityHooks::Postprocess | uqm::detail::EntityHooks::Collision);
-		ZeroVelocityComponents (&PlanetElementPtr->velocity);
-		do
-		{
-			PlanetElementPtr->current.location.x =
-					WRAP_X (DISPLAY_ALIGN_X (TFB_Random ()));
-			PlanetElementPtr->current.location.y =
-					WRAP_Y (DISPLAY_ALIGN_Y (TFB_Random ()));
-		} while (CalculateGravity (PlanetElementPtr)
-				|| TimeSpaceMatterConflict (PlanetElementPtr));
-		PlanetElementPtr->mass_points = PlanetElementPtr->hit_points;
-		UnlockElement (hPlanetElement);
-
-		PutElement (hPlanetElement);
-	}
-
-    return hPlanetElement;
+std::optional<std::reference_wrapper<ELEMENT>> spawnPlanet(SimulationEngine &engine, PlanetProperties properties) {
+    SimulationBinding selected{engine};
+    auto behavior = std::make_unique<Planet>(properties);
+    const auto allocation = engine.allocateElement();
+    if (!allocation) return std::nullopt;
+    auto &element = allocation->get();
+    element.playerNr = NEUTRAL_PLAYER_NUM;
+    element.hit_points = 200;
+    element.state_flags = APPEARING;
+    element.life_span = NORMAL_LIFE + 1;
+    SetPrimType(&DisplayArray[element.PrimIndex], STAMP_PRIM);
+    element.current.image.farray = planet;
+    element.current.image.frame = SetAbsFrameIndex(planet[0], properties.spriteIndex);
+    detail::attachEntity(element, std::move(behavior),
+        detail::EntityHooks::Postprocess | detail::EntityHooks::Collision);
+    ZeroVelocityComponents(&element.velocity);
+    do {
+        element.current.location.x = WRAP_X(DISPLAY_ALIGN_X(engine.random()()));
+        element.current.location.y = WRAP_Y(DISPLAY_ALIGN_Y(engine.random()()));
+    } while (engine.gravity(element) || TimeSpaceMatterConflict(&element));
+    element.mass_points = element.hit_points;
+    engine.enqueue(element);
+    return allocation;
 }
 }
-// C campaign/battle setup boundary; native code can supply explicit properties.
-void spawn_planet(void) { uqm::combat::spawnPlanet(); }

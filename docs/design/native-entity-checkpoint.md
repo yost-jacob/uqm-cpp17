@@ -41,3 +41,7 @@ No new relationship hierarchy, event bus, generic ECS, or dispatcher templates
 are introduced by this increment. Conversation/menu redesign and the outer
 session/title dispatcher remain separate design work. This document records the
 boundary reached and the decisions required before deleting the next payloads.
+
+Tracked in [issue #48](https://github.com/yost-jacob/uqm-cpp17/issues/48). Independent
+ownership/bookkeeping cleanup continues without replacing these relationship
+fields or requiring the new model first.

@@ -191,10 +191,18 @@ extern COUNT DisplayFreeList;
 extern PRIM_LINKS DisplayLinks;
 extern PRIMITIVE *DisplayArray;
 
-#define AllocDisplayPrim() DisplayFreeList; \
-								DisplayFreeList = GetSuccLink (GetPrimLinks (&DisplayArray[DisplayFreeList]))
-#define FreeDisplayPrim(p) SetPrimLinks (&DisplayArray[p], END_OF_LIST, DisplayFreeList); \
-								DisplayFreeList = (p)
+// Selected-engine projection boundary. Allocation returns END_OF_LIST when
+// exhausted. Free requires a reserved index; the argument is evaluated once.
+static inline COUNT AllocDisplayPrim(void) {
+    const COUNT index = DisplayFreeList;
+    if (index != END_OF_LIST)
+        DisplayFreeList = GetSuccLink(GetPrimLinks(&DisplayArray[index]));
+    return index;
+}
+static inline void FreeDisplayPrim(COUNT index) {
+    SetPrimLinks(&DisplayArray[index], END_OF_LIST, DisplayFreeList);
+    DisplayFreeList = index;
+}
 
 #ifdef __cplusplus
 struct STARSHIP;
@@ -237,7 +245,6 @@ extern void FreeElement (HELEMENT hElement);
 extern void RemoveElement (HLINK hLink);
 
 // XXX: The following functions should not really be here
-extern void spawn_planet (void);
 extern void spawn_asteroid (ELEMENT *ElementPtr);
 extern void do_damage (ELEMENT *ElementPtr, SIZE damage);
 extern void crew_preprocess (ELEMENT *ElementPtr);
