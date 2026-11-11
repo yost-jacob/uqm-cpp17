@@ -115,7 +115,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 				|| (which_comm != CHMMR_CONVERSATION
 				&& which_comm != SYREEN_CONVERSATION
 				))//&& CheckAlliance (status) == BAD_GUY))
-			buildBattle(NPC_PLAYER_NUM);
+			buildBattle(RosterSide::Second);
 	}
 
 	LocDataPtr = init_race (
@@ -167,8 +167,8 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 		if (status)
 		{
 			// Start combat
-			buildBattle(RPG_PLAYER_NUM);
-            if (auto exit = session.swapGameMode(createCampaignCombatMode(session)))
+			buildBattle(RosterSide::First);
+            if (auto exit = session.swapGameMode(createCampaignCombatMode(session, engine_.shipRoster())))
                 GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
 		}
 		else
@@ -321,7 +321,7 @@ public:
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
           conversation_(conversation), result_(result), star_(star) {}
     uqm::ModeResult run() override {
-        uqm::EncounterRuntime encounter{session_, star_};
+        uqm::EncounterRuntime encounter{session_, star_, engine()};
         result_ = encounter.communicate(conversation_);
         if (auto exit = session_.menuExit()) return *exit;
         return uqm::ModeCompleted{};
@@ -342,6 +342,6 @@ COUNT runLegacyEncounter(uqm::GameSession &session, const STAR_DESC *star, CONVE
 }
 COUNT InitCommunication(CONVERSATION conversation) {
     auto &session = uqm::gameSession();
-    uqm::EncounterRuntime encounter{session, CurStarDescPtr};
+    uqm::EncounterRuntime encounter{session, CurStarDescPtr, uqm::simulationEngine()};
     return encounter.communicate(conversation);
 }

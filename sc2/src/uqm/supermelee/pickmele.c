@@ -564,57 +564,21 @@ FillPickMeleeFrame (MeleeSetup *setup)
 		SetContextForeGroundColor (PICKSHIP_TEAM_START_VALUE_COLOR);
 		font_DrawText (&t);
 
-		assert (CountLinks (&race_q[side]) == 0);
-
-		for (index = 0; index < MELEE_FLEET_SIZE; index++)
-		{
-			MeleeShip StarShip;
-
-			StarShip = MeleeSetup_getShip (setup, sideI, index);
-			if (StarShip == MELEE_NONE)
-				continue;
-
-			{
-				BYTE row, col;
-				BYTE ship_cost;
-				HMASTERSHIP hMasterShip;
-				HSTARSHIP hBuiltShip;
-				MASTER_SHIP_INFO *MasterPtr;
-				STARSHIP *BuiltShipPtr;
-				BYTE captains_name_index;
-
-				hMasterShip = GetStarShipFromIndex (&master_q, StarShip);
-				MasterPtr = LockMasterShip (&master_q, hMasterShip);
-
-				captains_name_index = NameCaptain (&race_q[side],
-						MasterPtr->SpeciesID);
-				hBuiltShip = Build (&race_q[side], MasterPtr->SpeciesID);
-
-				// Draw the icon.
-				row = PickMelee_GetShipRow (index);
-				col = PickMelee_GetShipColumn (index);
-				s.origin.x = 4 + ((ICON_WIDTH + 2) * col);
-				s.origin.y = 10 + ((ICON_HEIGHT + 2) * row);
-				s.frame = MasterPtr->ShipInfo.icons;
-				DrawStamp (&s);
-
-				ship_cost = MasterPtr->ShipInfo.ship_cost;
-				UnlockMasterShip (&master_q, hMasterShip);
-
-				BuiltShipPtr = LockStarShip (&race_q[side], hBuiltShip);
-				BuiltShipPtr->index = index;
-				BuiltShipPtr->ship_cost = ship_cost;
-				BuiltShipPtr->playerNr = side;
-				BuiltShipPtr->captains_name_index = captains_name_index;
-				// The next ones are not used in Melee
-				BuiltShipPtr->crew_level = 0;
-				BuiltShipPtr->max_crew = 0;
-				BuiltShipPtr->race_strings = 0;
-				BuiltShipPtr->icons = 0;
-				BuiltShipPtr->RaceDescPtr = 0;
-				UnlockStarShip (&race_q[side], hBuiltShip);
-			}
-		}
+        for (index = 0; index < MELEE_FLEET_SIZE; ++index)
+        {
+            MeleeShip ship = MeleeSetup_getShip (setup, sideI, index);
+            HMASTERSHIP handle;
+            MASTER_SHIP_INFO *master;
+            if (ship == MELEE_NONE)
+                continue;
+            handle = GetStarShipFromIndex (&master_q, ship);
+            master = LockMasterShip (&master_q, handle);
+            s.origin.x = 4 + ((ICON_WIDTH + 2) * PickMelee_GetShipColumn (index));
+            s.origin.y = 10 + ((ICON_HEIGHT + 2) * PickMelee_GetShipRow (index));
+            s.frame = master->ShipInfo.icons;
+            DrawStamp (&s);
+            UnlockMasterShip (&master_q, handle);
+        }
 	}
 
 	SetContext (OldContext);

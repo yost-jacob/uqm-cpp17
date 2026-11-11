@@ -224,11 +224,6 @@ struct race_desc
 			/* Also used in full-game to detect if a STARSHIP is an escort
 			 * or the flagship (captains_name_index == 0) */
 
-typedef struct
-{
-	SHIP_BASE_COMMON;
-} SHIP_BASE;
-
 struct STARSHIP
 {
 	SHIP_BASE_COMMON;

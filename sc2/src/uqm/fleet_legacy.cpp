@@ -3,23 +3,17 @@
 #include "encount.h"
 #include <algorithm>
 
-// Allocate/initialize a temporary combat participant or persistent vessel in
-// the supplied owning pool. Preserve the ID assigned to a reserved Ship slot.
-HLINK Build(QUEUE *queue, SPECIES_ID species) {
-    assert(GetLinkSize(queue) == sizeof(STARSHIP) || GetLinkSize(queue) == sizeof(SHIP_FRAGMENT));
+// C recruitment/NPC boundary. The supplied queue must own SHIP_FRAGMENT slots.
+// Preserve the stable vessel ID assigned by its native Ship pool allocator.
+HSHIPFRAG CreateFleetFragment(QUEUE *queue, SPECIES_ID species) {
+    assert(GetLinkSize(queue) == sizeof(SHIP_FRAGMENT));
     const auto link = AllocLink(queue);
     if (!link) return nullptr;
-    if (GetLinkSize(queue) == sizeof(SHIP_FRAGMENT)) {
-        auto &record = *LockShipFrag(queue, link);
-        const auto id = record.ship_id;
-        record = {};
-        record.ship_id = id;
-        record.SpeciesID = species;
-    } else {
-        auto &record = *LockStarShip(queue, link);
-        record = {};
-        record.SpeciesID = species;
-    }
+    auto &record = *LockShipFrag(queue, link);
+    const auto id = record.ship_id;
+    record = {};
+    record.ship_id = id;
+    record.SpeciesID = species;
     PutQueue(queue, link);
     return link;
 }

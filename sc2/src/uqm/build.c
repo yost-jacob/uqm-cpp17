@@ -407,8 +407,7 @@ NameCaptain (QUEUE *pQueue, SPECIES_ID SpeciesID)
 	BYTE name_index;
 	HLINK hStarShip;
 
-	assert (GetLinkSize (pQueue) == sizeof (STARSHIP) ||
-			GetLinkSize (pQueue) == sizeof (SHIP_FRAGMENT));
+	assert (GetLinkSize (pQueue) == sizeof (SHIP_FRAGMENT));
 
 	do
 	{
@@ -418,10 +417,10 @@ NameCaptain (QUEUE *pQueue, SPECIES_ID SpeciesID)
 		for (hStarShip = GetHeadLink (pQueue); hStarShip;
 				hStarShip = hNextShip)
 		{
-			SHIP_BASE *ShipPtr;
+			SHIP_FRAGMENT *ShipPtr;
 			BYTE test_name_index = -1;
 
-			ShipPtr = (SHIP_BASE *) LockLink (pQueue, hStarShip);
+			ShipPtr = LockShipFrag (pQueue, hStarShip);
 			hNextShip = _GetSuccLink (ShipPtr);
 			if (ShipPtr->SpeciesID == SpeciesID)
 				test_name_index = ShipPtr->captains_name_index;
@@ -457,7 +456,7 @@ CloneShipFragment (COUNT shipIndex, QUEUE *pDstQueue, COUNT crew_level)
 	else
 		captains_name_index = NameCaptain (pDstQueue,
 				TemplatePtr->SpeciesID);
-	hBuiltShip = Build (pDstQueue, TemplatePtr->SpeciesID);
+	hBuiltShip = CreateFleetFragment (pDstQueue, TemplatePtr->SpeciesID);
 	if (hBuiltShip)
 	{
 		SHIP_FRAGMENT *ShipFragPtr;

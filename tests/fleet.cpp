@@ -110,13 +110,13 @@ BOOST_AUTO_TEST_CASE(c_build_preserves_native_identity_and_pool_reuse_never_reus
 {
     Fleet fleet{1};
     auto &queue = uqm::detail::FleetAccess::queue(fleet);
-    const auto first = Build(&queue, SPATHI_ID);
+    const auto first = CreateFleetFragment(&queue, SPATHI_ID);
     BOOST_REQUIRE(first);
     const auto id = LockShipFrag(&queue, first)->ship_id;
     BOOST_TEST(id != 0u);
-    BOOST_TEST(Build(&queue, SPATHI_ID) == nullptr);
+    BOOST_TEST(CreateFleetFragment(&queue, SPATHI_ID) == nullptr);
     ReinitQueue(&queue); // Save/load starts another roster in the same pool.
-    const auto second = Build(&queue, EARTHLING_ID);
+    const auto second = CreateFleetFragment(&queue, EARTHLING_ID);
     BOOST_TEST(second == first);
     BOOST_TEST(LockShipFrag(&queue, second)->ship_id != id);
     BOOST_TEST(!fleet.find({id}));
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(npc_results_use_identity_and_preserve_infinite_fleet_sentin
         ~Restore() { UninitQueue(&GLOBAL(npc_built_ship_q)); SwapQueues(&saved, &GLOBAL(npc_built_ship_q)); }
     } restore{saved};
     InitQueue(&GLOBAL(npc_built_ship_q), 2, QUEUE_SHIP_FRAGMENT);
-    const auto link = Build(&GLOBAL(npc_built_ship_q), SPATHI_ID);
+    const auto link = CreateFleetFragment(&GLOBAL(npc_built_ship_q), SPATHI_ID);
     auto *record = LockShipFrag(&GLOBAL(npc_built_ship_q), link);
     record->crew_level = INFINITE_FLEET;
     record->max_crew = 30;

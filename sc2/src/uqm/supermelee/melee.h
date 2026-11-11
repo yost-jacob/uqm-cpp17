@@ -29,10 +29,12 @@
 		// for NetplayAbortReason and NetplayResetReason.
 
 #ifdef __cplusplus
-namespace uqm { class ArcadeSession; }
+namespace uqm { class ArcadeSession; class SimulationEngine; }
 using ArcadeSessionHandle = uqm::ArcadeSession;
+using SimulationEngineHandle = uqm::SimulationEngine;
 #else
 typedef struct ArcadeSessionHandle ArcadeSessionHandle;
+typedef struct SimulationEngineHandle SimulationEngineHandle;
 #endif
 
 #if defined(__cplusplus)
@@ -79,6 +81,7 @@ struct melee_state
 
     // Borrowed native session context for C menu callbacks; never serialized.
     ArcadeSessionHandle *session;
+    SimulationEngineHandle *engine; // Borrowed setup-mode engine; never serialized.
 	BOOLEAN Initialized;
 	BOOLEAN meleeStarted;
 	MELEE_OPTIONS MeleeOption;

@@ -29,7 +29,7 @@ public:
 protected:
     void initialize() override {
         participants_.emplace(source_, engine().shipRoster());
-        ready_ = preparation_->prepare();
+        ready_ = preparation_->prepare(engine());
     }
 private:
     CombatDriver driver_;
@@ -43,11 +43,11 @@ std::unique_ptr<GameMode> createCombatMode(ModeDispatcher &host, RuntimeShipRost
         std::uint32_t seed, std::unique_ptr<CombatPreparation> preparation) {
     return std::make_unique<CombatMode>(host, source, seed, std::move(preparation));
 }
-std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session) {
-    return createCampaignCombatMode(session, session.nextModeSeed());
+std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, RuntimeShipRoster &source) {
+    return createCampaignCombatMode(session, source, session.nextModeSeed());
 }
-std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, std::uint32_t seed) {
-    return createCombatMode(session.dispatcher(), simulationEngine().shipRoster(), seed,
+std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, RuntimeShipRoster &source, std::uint32_t seed) {
+    return createCombatMode(session.dispatcher(), source, seed,
                             createCampaignCombatPreparation(session.player().story()));
 }
 }

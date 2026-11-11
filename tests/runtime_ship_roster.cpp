@@ -101,3 +101,60 @@ BOOST_AUTO_TEST_CASE(roster_availability_is_mode_local_and_returns_with_battle_o
     BOOST_TEST(unrelated.shipRoster().remaining(RosterSide::First) == 4u);
     roster.beginBattle(); BOOST_TEST(roster.remaining(RosterSide::First) == 0u);
 }
+
+BOOST_AUTO_TEST_CASE(native_participant_creation_initializes_recycled_slots_and_preserves_outcome)
+{
+    RuntimeShipRoster roster;
+    roster.setRemaining(RosterSide::First, 3);
+    auto first = roster.append(RosterSide::First, EARTHLING_ID);
+    BOOST_REQUIRE(first);
+    BOOST_TEST(first->get().playerNr == 0u);
+    BOOST_TEST(first->get().SpeciesID == EARTHLING_ID);
+    BOOST_TEST(first->get().crew_level == 0u);
+    BOOST_TEST(first->get().fleet_ship_id == 0u);
+    BOOST_TEST(first->get().RaceDescPtr == nullptr);
+    first->get().crew_level = 9;
+    first->get().captains_name_index = 12;
+    roster.clear(RosterSide::First);
+    auto recycled = roster.append(RosterSide::First, SPATHI_ID);
+    BOOST_REQUIRE(recycled);
+    BOOST_TEST(recycled->get().SpeciesID == SPATHI_ID);
+    BOOST_TEST(recycled->get().crew_level == 0u);
+    BOOST_TEST(recycled->get().captains_name_index == 0u);
+    BOOST_TEST(roster.remaining(RosterSide::First) == 3u);
+    for (unsigned i = 1; i < MAX_SHIPS_PER_SIDE; ++i)
+        BOOST_REQUIRE(roster.append(RosterSide::First, EARTHLING_ID));
+    BOOST_TEST(!roster.append(RosterSide::First, EARTHLING_ID));
+    BOOST_TEST(roster.contains(RosterSide::First, recycled->get()));
+    BOOST_TEST(roster.size(RosterSide::First) == MAX_SHIPS_PER_SIDE);
+    auto opponent = roster.append(RosterSide::Second, SPATHI_ID);
+    BOOST_REQUIRE(opponent);
+    BOOST_TEST(opponent->get().playerNr == 1u);
+}
+
+BOOST_AUTO_TEST_CASE(native_captain_selection_uses_explicit_stream_and_side_species_scope)
+{
+    RuntimeShipRoster roster;
+    uqm::RandomStream random(4321), expected(4321), unrelated(99);
+    uqm::RandomBinding parentStream{unrelated};
+    const auto first = roster.chooseCaptain(RosterSide::First, EARTHLING_ID, random);
+    BOOST_TEST(first == (expected() & 15u) + 5u);
+    BOOST_TEST(random.state() == expected.state());
+    // Opposite side and other species do not reserve names for this species.
+    roster.append(RosterSide::Second, EARTHLING_ID)->get().captains_name_index = first;
+    roster.append(RosterSide::First, SPATHI_ID)->get().captains_name_index = first;
+    random.reseed(4321);
+    BOOST_TEST(roster.chooseCaptain(RosterSide::First, EARTHLING_ID, random) == first);
+    roster.clear();
+    std::array<bool, 16> used{};
+    random.reseed(4321);
+    for (unsigned i = 0; i < MAX_SHIPS_PER_SIDE; ++i) {
+        const auto name = roster.chooseCaptain(RosterSide::First, EARTHLING_ID, random);
+        BOOST_REQUIRE(name >= 5u);
+        BOOST_REQUIRE(name < 21u);
+        BOOST_TEST(!used[name - 5]);
+        used[name - 5] = true;
+        roster.append(RosterSide::First, EARTHLING_ID)->get().captains_name_index = name;
+    }
+    BOOST_TEST(unrelated.state() == 99u);
+}

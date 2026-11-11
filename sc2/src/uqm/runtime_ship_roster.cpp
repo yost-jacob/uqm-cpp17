@@ -1,5 +1,7 @@
 #include "runtime_ship_roster.hpp"
 #include "init.h"
+#include "build.h"
+#include "libs/math/random.hpp"
 #include "ship_assets_legacy.hpp"
 #include <cassert>
 #include <stdexcept>
@@ -20,6 +22,33 @@ RuntimeShipRoster::~RuntimeShipRoster() {
     for (auto &queue : queues_) UninitQueue(&queue);
 }
 COUNT RuntimeShipRoster::size(RosterSide side) const noexcept { return CountLinks(&queues_[index(side)]); }
+Participant RuntimeShipRoster::append(RosterSide side, SPECIES_ID species) noexcept {
+    auto &queue = queues_[index(side)];
+    const auto handle = AllocLink(&queue);
+    if (!handle) return std::nullopt;
+    auto &ship = *LockStarShip(&queue, handle);
+    ship = {};
+    ship.SpeciesID = species;
+    ship.playerNr = static_cast<COUNT>(side);
+    PutQueue(&queue, handle);
+    return std::ref(ship);
+}
+BYTE RuntimeShipRoster::chooseCaptain(RosterSide side, SPECIES_ID species, RandomStream &random) const {
+    std::array<bool, NUM_CAPTAINS_NAMES> used{};
+    const auto &queue = queues_[index(side)];
+    for (auto handle = GetHeadLink(&queue); handle; handle = _GetSuccLink(handle)) {
+        const auto &ship = *LockStarShip(&queue, handle);
+        if (ship.SpeciesID == species && ship.captains_name_index >= NAME_OFFSET
+                && ship.captains_name_index < NAME_OFFSET + used.size())
+            used[ship.captains_name_index - NAME_OFFSET] = true;
+    }
+    // A side has at most 14 ships and the resource provides 16 names.
+    static_assert(MAX_SHIPS_PER_SIDE < NUM_CAPTAINS_NAMES);
+    for (;;) {
+        const auto candidate = random() & (NUM_CAPTAINS_NAMES - 1);
+        if (!used[candidate]) return static_cast<BYTE>(candidate + NAME_OFFSET);
+    }
+}
 Participant RuntimeShipRoster::first(RosterSide side) noexcept {
     auto &queue = queues_[index(side)];
     auto handle = GetHeadLink(&queue);

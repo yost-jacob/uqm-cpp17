@@ -90,7 +90,7 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
                 participant = static_cast<STARSHIP *>(handle); *participant = {};
                 participant->crew_level = 13; PutQueue(&queue, handle);
                 const auto before = TFB_GetRandomSeed();
-                const auto exit = session.swapGameMode(uqm::createCampaignCombatMode(session, 876));
+                const auto exit = session.swapGameMode(uqm::createCampaignCombatMode(session, engine().shipRoster(), 876));
                 BOOST_TEST(TFB_GetRandomSeed() == before);
                 BOOST_TEST(PlayerInput[0] == &originalInput);
                 BOOST_TEST(PlayerControl[0] == (HUMAN_CONTROL | GOOD_RATING));
@@ -135,8 +135,9 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
 BOOST_FIXTURE_TEST_CASE(campaign_combat_backend_unwind_restores_temporary_input_and_activity, CombatFixture)
 {
     uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+    uqm::RuntimeShipRoster source;
     combatDriver = [] { throw std::runtime_error("combat backend failure"); };
-    const auto exit = session.run(uqm::createCampaignCombatMode(session));
+    const auto exit = session.run(uqm::createCampaignCombatMode(session, source));
     BOOST_REQUIRE(exit.error);
     BOOST_CHECK_THROW(std::rethrow_exception(exit.error), std::runtime_error);
     BOOST_TEST(PlayerInput[0] == &originalInput);
@@ -150,8 +151,9 @@ BOOST_FIXTURE_TEST_CASE(campaign_human_combat_keeps_input_and_preserves_legacy_d
 {
     GLOBAL(glob_flags) = 0;
     uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+    uqm::RuntimeShipRoster source;
     combatDriver = [] { GLOBAL(CurrentActivity) |= CHECK_ABORT; };
-    session.run(uqm::createCampaignCombatMode(session));
+    session.run(uqm::createCampaignCombatMode(session, source));
     BOOST_TEST(GLOBAL_SIS(CrewEnlisted) == static_cast<COUNT>(~0u));
     BOOST_TEST(PlayerInput[0] == &originalInput);
     BOOST_TEST(nth_frame == 37u);
@@ -170,7 +172,7 @@ BOOST_FIXTURE_TEST_CASE(arcade_dispatcher_runs_shared_combat_and_returns_prepare
             Preparation(bool ready, STARSHIP &ship, std::vector<int> &events)
                 : ready_(ready), ship_(ship), events_(events) {}
             ~Preparation() override { events_.push_back(4); }
-            bool prepare() override { events_.push_back(1); return ready_; }
+            bool prepare(uqm::SimulationEngine &) override { events_.push_back(1); return ready_; }
             void complete() override { events_.push_back(3); ship_.crew_level = 7; }
         private:
             bool ready_; STARSHIP &ship_; std::vector<int> &events_;

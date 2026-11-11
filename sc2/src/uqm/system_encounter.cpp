@@ -11,7 +11,7 @@ class SystemEncounterMode final : public GameMode {
 public:
     SystemEncounterMode(GameSession &session, const STAR_DESC *star, CONVERSATION conversation, COUNT &result)
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
-          conversation_(conversation), result_(result), encounter_(session, star) {}
+          conversation_(conversation), result_(result), encounter_(session, star, engine()) {}
     ModeResult run() override {
         result_ = encounter_.communicate(conversation_);
         if (auto exit = session_.menuExit()) return *exit;
@@ -33,7 +33,7 @@ void SystemBehavior::attachSession(GameSession &session) {
 }
 COUNT SystemBehavior::communicate(CONVERSATION conversation) {
     if (!session_) { // Native debug/test entry still uses the supplied story state.
-        EncounterRuntime encounter{story_, star_};
+        EncounterRuntime encounter{story_, star_, simulationEngine()};
         return encounter.communicate(conversation);
     }
     COUNT result = 0;

@@ -38,7 +38,7 @@ namespace {
 class CampaignCombatPreparation final : public CombatPreparation {
 public:
     explicit CampaignCombatPreparation(StoryState &story) : story_(story) {}
-    bool prepare() override;
+    bool prepare(SimulationEngine &) override;
     void complete() override {
         if (GLOBAL(CurrentActivity) & CHECK_ABORT)
             GLOBAL_SIS(CrewEnlisted) = static_cast<COUNT>(~0u);
@@ -69,7 +69,7 @@ private:
     StoryState &story_;
     std::optional<BattleCleanup> bindings_;
 };
-bool CampaignCombatPreparation::prepare() {
+bool CampaignCombatPreparation::prepare(SimulationEngine &) {
     auto &cleanup = bindings_.emplace();
     story_.set(StoryFlag::BattleSegue, true);
     GLOBAL(CurrentActivity) = MAKE_WORD(
