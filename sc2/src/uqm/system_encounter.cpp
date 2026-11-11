@@ -10,7 +10,7 @@ namespace {
 class SystemEncounterMode final : public GameMode {
 public:
     SystemEncounterMode(GameSession &session, const STAR_DESC *star, CONVERSATION conversation, COUNT &result)
-        : GameMode(session), session_(session),
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
           conversation_(conversation), result_(result), encounter_(session, star) {}
     ModeResult run() override {
         result_ = encounter_.communicate(conversation_);

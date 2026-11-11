@@ -493,7 +493,7 @@ BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_reques
             bool &resumed;
             unsigned &destroyed;
             Parent(uqm::GameSession &s, TestSystemRule &r, bool &after, unsigned &deaths)
-                : GameMode(s.stateOwner(), s.playerId()), session(s), rule(r), resumed(after), destroyed(deaths) {}
+                : GameMode(s.dispatcher(), s.nextModeSeed()), session(s), rule(r), resumed(after), destroyed(deaths) {}
             ~Parent() override { ++destroyed; }
             uqm::ModeResult run() override {
                 BOOST_TEST(rule.encounter() == 0u);

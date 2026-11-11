@@ -77,7 +77,7 @@ ModeResult finishMode(GameSession &session) {
 class HyperSpaceMode final : public GameMode {
 public:
     HyperSpaceMode(GameSession &session)
-        : GameMode(session), session_(session), navigation_(session.player()) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player()) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
@@ -92,7 +92,7 @@ private:
 class SolarSystemMode final : public GameMode {
 public:
     SolarSystemMode(GameSession &session)
-        : GameMode(session), session_(session), exploration_(session) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), exploration_(session) {}
     ModeResult run() override {
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
         DrawAutoPilotMessage(TRUE);
@@ -111,7 +111,7 @@ enum class EncounterKind { Communication, Starbase, InstallBomb };
 class EncounterMode final : public GameMode {
 public:
     EncounterMode(GameSession &session, EncounterKind kind)
-        : GameMode(session), session_(session), kind_(kind), encounter_(session, CurStarDescPtr) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), kind_(kind), encounter_(session, CurStarDescPtr) {}
     ModeResult run() override {
         if (kind_ == EncounterKind::InstallBomb) InstallBombAtEarth();
         else {
@@ -134,7 +134,7 @@ private:
 class LoadMenuMode final : public GameMode {
 public:
     explicit LoadMenuMode(GameSession &session)
-        : GameMode(session), session_(session) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session) {}
     ModeResult run() override {
         if (auto exit = runGameOptionsMenu(session_)) return *exit;
         return SessionExit::title();
@@ -146,7 +146,7 @@ private:
 class DebugMode final : public GameMode {
 public:
     explicit DebugMode(GameSession &session)
-        : GameMode(session), session_(session) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session) {}
     ModeResult run() override {
         auto hook = debugHook;
         debugHook = nullptr;

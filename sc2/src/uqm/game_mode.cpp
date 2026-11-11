@@ -1,24 +1,16 @@
 #include "simulation_engine.hpp"
 #include "game_mode.hpp"
-#include "game_state.hpp"
 #include <stdexcept>
 #include <cstdlib>
 #include <cstdio>
 #include <utility>
 
 namespace uqm {
-GameMode::GameMode(GameSession &session)
-    : GameMode(session.stateOwner(), session.playerId(), session.nextModeSeed()) {}
-GameMode::GameMode(std::shared_ptr<GameState> state, PlayerId player, std::uint32_t seed)
-    : engine_(MAX_DISPLAY_ELEMENTS, seed), state_(std::move(state)), player_(player) {
-    if (!state_) throw std::invalid_argument("mode requires game state");
-    state_->player(player);
-}
-const std::shared_ptr<GameState> &GameMode::stateOwner() const noexcept { return state_; }
-PlayerId GameMode::playerId() const noexcept { return player_; }
-MenuResult GameSession::swapGameMode(std::unique_ptr<GameMode> child) {
+GameMode::GameMode(ModeDispatcher &host, std::uint32_t seed)
+    : engine_(MAX_DISPLAY_ELEMENTS, seed), host_(host) {}
+MenuResult ModeDispatcher::swapGameMode(std::unique_ptr<GameMode> child) {
     if (!running_ || !currentMode_ || !child || child->parentMode_
-            || child->state_.get() != state_.get() || child->player_ != player_)
+            || &child->host_ != this)
         throw std::invalid_argument("nested mode requires the active session and a fresh matching child");
     try {
         auto suspension = currentMode_->suspend();
@@ -58,16 +50,14 @@ int exitPriority(SessionExitKind kind) {
     throw std::invalid_argument("unknown session exit kind");
 }
 }
-void GameSession::requestMenuExit(SessionExit exit) {
+void ModeDispatcher::requestMenuExit(SessionExit exit) {
     const auto priority = exitPriority(exit.kind);
     if ((exit.kind == SessionExitKind::LoadGame) != exit.loadSlot.has_value())
         throw std::invalid_argument("only load requests must carry a save slot");
     if (!pendingExit_ || priority > exitPriority(pendingExit_->kind))
         pendingExit_ = std::move(exit);
 }
-void GameSession::requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
-MenuResult GameSession::menuExit() const { return pendingExit_; }
-SessionExit GameSession::run(std::unique_ptr<GameMode> initialMode) {
+SessionExit ModeDispatcher::run(std::unique_ptr<GameMode> initialMode) {
     if (running_) {
         try { throw std::logic_error("session dispatcher is already running"); }
         catch (...) { return SessionExit::failed(std::current_exception()); }
@@ -78,6 +68,7 @@ SessionExit GameSession::run(std::unique_ptr<GameMode> initialMode) {
     SessionExit exit = SessionExit::title();
     try {
         if (!currentMode_) throw std::logic_error("session has no initial mode");
+        if (&currentMode_->host_ != this) throw std::invalid_argument("initial mode belongs to another dispatcher");
         for (;;) {
             SimulationBinding simulation{currentMode_->engine()};
             currentMode_->initialize();
@@ -91,6 +82,7 @@ SessionExit GameSession::run(std::unique_ptr<GameMode> initialMode) {
             if (std::holds_alternative<ModeCompleted>(result)) break;
             auto &next = std::get<std::unique_ptr<GameMode>>(result);
             if (!next) throw std::logic_error("mode returned a null successor");
+            if (&next->host_ != this) throw std::invalid_argument("successor belongs to another dispatcher");
             simulation.discardOnExit();
             currentMode_ = std::move(next);
         }

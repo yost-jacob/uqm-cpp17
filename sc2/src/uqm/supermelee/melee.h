@@ -28,6 +28,13 @@
 #include "netplay/packet.h"
 		// for NetplayAbortReason and NetplayResetReason.
 
+#ifdef __cplusplus
+namespace uqm { class ArcadeSession; }
+using ArcadeSessionHandle = uqm::ArcadeSession;
+#else
+typedef struct ArcadeSessionHandle ArcadeSessionHandle;
+#endif
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -70,6 +77,8 @@ struct melee_state
 {
 	BOOLEAN (*InputFunc) (struct melee_state *pInputState);
 
+    // Borrowed native session context for C menu callbacks; never serialized.
+    ArcadeSessionHandle *session;
 	BOOLEAN Initialized;
 	BOOLEAN meleeStarted;
 	MELEE_OPTIONS MeleeOption;

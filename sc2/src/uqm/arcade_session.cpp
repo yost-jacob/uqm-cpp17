@@ -3,7 +3,6 @@
 #include "fleet_legacy.hpp"
 #include "game_state.hpp"
 #include "game_session_c.h"
-#include "libs/inplib.h"
 #include "libs/log.h"
 #include <stdexcept>
 namespace uqm {
@@ -13,32 +12,24 @@ struct ArcadeSession::Storage {
     SIS_STATE compatibilitySIS{};
 };
 ArcadeSession::ArcadeSession(std::uint32_t seed)
-    : storage_(std::make_unique<Storage>()), engine_(MAX_DISPLAY_ELEMENTS, seed) {}
+    : storage_(std::make_unique<Storage>()), modeSeeds_(seed) {}
 ArcadeSession::~ArcadeSession() = default;
 SessionExit ArcadeSession::run() {
     // Global device/frontend services are still single-runtime. Reject nesting
     // before binding any buffer, including another instance of ArcadeSession.
-    if (running_ || gameSession().isRunning() || detail::standaloneRuntime()) {
+    if (dispatcher_.isRunning() || gameSession().isRunning() || detail::standaloneRuntime()) {
         try { throw std::logic_error("arcade session requires an unwound title boundary"); }
         catch (...) { return SessionExit::failed(std::current_exception()); }
     }
-    running_ = true;
-    struct RunningScope { bool &value; ~RunningScope() { value = false; } } running{running_};
     try {
-        if (!engine_.initialized()) engine_.initialize();
         storage_->data.Game_state.glob_flags = GLOBAL(glob_flags);
         detail::LegacyRuntimeView view{storage_->data,
             detail::FleetAccess::queue(storage_->compatibilityFleet), storage_->compatibilitySIS};
         detail::LegacyRuntimeBinding legacy{view};
-        SimulationBinding simulation{engine_};
-        struct SceneCleanup {
-            SimulationEngine &engine;
-            ~SceneCleanup() { engine.shutdown(); }
-        } scene{engine_}; // Destroy participants while their state is still selected.
-        detail::runArcadeFrontend();
-        // CHECK_ABORT also means leaving the melee menu; only an application
-        // quit request closes the process. Ordinary arcade exit returns to title.
-        return QuitPosted ? SessionExit::shutdown() : SessionExit::title();
+        auto exit = dispatcher_.run(detail::createArcadeFleetSelectionMode(*this));
+        if (exit.kind == SessionExitKind::LoadGame)
+            throw std::logic_error("arcade sessions cannot load a campaign");
+        return exit;
     } catch (...) { return SessionExit::failed(std::current_exception()); }
 }
 }

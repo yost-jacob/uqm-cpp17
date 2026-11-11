@@ -252,7 +252,6 @@ GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player, std:
     state_->player(player_); // Validate binding now, not at the first interaction.
 }
 GameSession::~GameSession() = default;
-std::shared_ptr<GameState> GameSession::stateOwner() noexcept { return state_; }
 PlayerId GameSession::playerId() const noexcept { return player_; }
 PlayerEntity &GameSession::player() { return state_->player(player_); }
 const PlayerEntity &GameSession::player() const { return std::as_const(*state_).player(player_); }

@@ -1,4 +1,5 @@
 #include "uqm/combat_mode.hpp"
+#include "uqm/arcade_session.hpp"
 #include "uqm/runtime_ship_roster_legacy.hpp"
 #include "uqm/game_state.hpp"
 #include "uqm/globdata.h"
@@ -81,7 +82,7 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
             STARSHIP *&participant;
             uqm::RuntimeShipRoster *&encounterRoster;
             Encounter(uqm::GameSession &s, std::vector<int> &e, STARSHIP *&p, uqm::RuntimeShipRoster *&roster)
-                : GameMode(s.stateOwner(), s.playerId()), session(s), events(e), participant(p), encounterRoster(roster) {}
+                : GameMode(s.dispatcher(), s.nextModeSeed()), session(s), events(e), participant(p), encounterRoster(roster) {}
             uqm::ModeResult run() override {
                 events.push_back(1);
                 encounterRoster = &engine().shipRoster();
@@ -134,9 +135,11 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
 
 BOOST_FIXTURE_TEST_CASE(campaign_combat_backend_unwind_restores_temporary_input_and_activity, CombatFixture)
 {
-    uqm::GameState state{{uqm::SinglePlayerId, "Pilot"}};
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
     combatDriver = [] { throw std::runtime_error("combat backend failure"); };
-    BOOST_CHECK_THROW(uqm::runCampaignCombat(state.player(uqm::SinglePlayerId).story()), std::runtime_error);
+    const auto exit = session.run(uqm::createCampaignCombatMode(session));
+    BOOST_REQUIRE(exit.error);
+    BOOST_CHECK_THROW(std::rethrow_exception(exit.error), std::runtime_error);
     BOOST_TEST(PlayerInput[0] == &originalInput);
     BOOST_TEST(PlayerControl[0] == (HUMAN_CONTROL | GOOD_RATING));
     BOOST_TEST(nth_frame == 37u);
@@ -147,12 +150,67 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_backend_unwind_restores_temporary_input_
 BOOST_FIXTURE_TEST_CASE(campaign_human_combat_keeps_input_and_preserves_legacy_defeat_policy, CombatFixture)
 {
     GLOBAL(glob_flags) = 0;
-    uqm::GameState state{{uqm::SinglePlayerId, "Pilot"}};
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
     combatDriver = [] { GLOBAL(CurrentActivity) |= CHECK_ABORT; };
-    uqm::runCampaignCombat(state.player(uqm::SinglePlayerId).story());
+    session.run(uqm::createCampaignCombatMode(session));
     BOOST_TEST(GLOBAL_SIS(CrewEnlisted) == static_cast<COUNT>(~0u));
     BOOST_TEST(PlayerInput[0] == &originalInput);
     BOOST_TEST(nth_frame == 37u);
     BOOST_TEST(GLOBAL(CurrentActivity) == IN_INTERPLANETARY);
     BOOST_TEST(inputsCleared == 0u);
+}
+
+BOOST_FIXTURE_TEST_CASE(arcade_dispatcher_runs_shared_combat_and_returns_prepared_participants, CombatFixture)
+{
+    GLOBAL(glob_flags) = 0;
+    for (const bool ready : {true, false}) {
+        uqm::ArcadeSession arcade(51);
+        std::vector<int> events;
+        class Preparation final : public uqm::CombatPreparation {
+        public:
+            Preparation(bool ready, STARSHIP &ship, std::vector<int> &events)
+                : ready_(ready), ship_(ship), events_(events) {}
+            ~Preparation() override { events_.push_back(4); }
+            bool prepare() override { events_.push_back(1); return ready_; }
+            void complete() override { events_.push_back(3); ship_.crew_level = 7; }
+        private:
+            bool ready_; STARSHIP &ship_; std::vector<int> &events_;
+        };
+        struct Selection final : uqm::GameMode {
+            uqm::ArcadeSession &session;
+            std::vector<int> &events;
+            bool ready;
+            Selection(uqm::ArcadeSession &owner, std::vector<int> &log, bool play)
+                : GameMode(owner.dispatcher(), 23), session(owner), events(log), ready(play) {}
+            uqm::ModeResult run() override {
+                auto &queue = uqm::detail::RuntimeRosterAccess::queues(engine().shipRoster())[0];
+                auto handle = AllocLink(&queue);
+                auto *ship = static_cast<STARSHIP *>(handle); *ship = {}; ship->crew_level = 13;
+                PutQueue(&queue, handle);
+                auto *sourceEngine = &engine();
+                combatDriver = [&] {
+                    events.push_back(2);
+                    BOOST_TEST(&uqm::simulationEngine() != sourceEngine);
+                    auto &participants = uqm::detail::RuntimeRosterAccess::queues(uqm::simulationEngine().shipRoster())[0];
+                    BOOST_TEST(GetHeadLink(&participants) == ship);
+                    BOOST_TEST(TFB_GetRandomSeed() == 79u);
+                    TFB_Random();
+                };
+                const auto before = TFB_GetRandomSeed();
+                auto exit = session.swapGameMode(uqm::createCombatMode(session.dispatcher(),
+                    engine().shipRoster(), 79, std::make_unique<Preparation>(ready, *ship, events)));
+                combatDriver = {};
+                BOOST_TEST(!exit);
+                BOOST_TEST(TFB_GetRandomSeed() == before);
+                BOOST_TEST(GetHeadLink(&queue) == ship);
+                BOOST_TEST(ship->crew_level == (ready ? 7u : 13u));
+                events.push_back(5);
+                return uqm::ModeCompleted{};
+            }
+        };
+        const auto exit = arcade.dispatcher().run(std::make_unique<Selection>(arcade, events, ready));
+        BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::SessionExitKind::ReturnToTitle));
+        const std::vector<int> expected = ready ? std::vector<int>{1, 2, 3, 4, 5} : std::vector<int>{1, 4, 5};
+        BOOST_TEST(events == expected, boost::test_tools::per_element());
+    }
 }

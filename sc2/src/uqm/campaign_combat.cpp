@@ -33,13 +33,19 @@
 
 extern "C" UWORD nth_frame;
 
-void
-uqm::runCampaignCombat(StoryState &story)
-{
-    // Own every temporary combat binding until Battle has returned. Resource
-    // teardown precedes restoring the caller's activity, including C++ unwinds.
+namespace uqm {
+namespace {
+class CampaignCombatPreparation final : public CombatPreparation {
+public:
+    explicit CampaignCombatPreparation(StoryState &story) : story_(story) {}
+    bool prepare() override;
+    void complete() override {
+        if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+            GLOBAL_SIS(CrewEnlisted) = static_cast<COUNT>(~0u);
+    }
+private:
     struct BattleCleanup {
-        ACTIVITY activity;
+        ACTIVITY activity = GLOBAL(CurrentActivity);
         SOUND savedSounds = GameSounds;
         UWORD savedFrame = nth_frame;
         BYTE savedControl = PlayerControl[0];
@@ -59,12 +65,16 @@ uqm::runCampaignCombat(StoryState &story)
             }
             GLOBAL(CurrentActivity) = activity;
         }
-    } cleanup{GLOBAL(CurrentActivity)};
-    story.set(StoryFlag::BattleSegue, true);
+    };
+    StoryState &story_;
+    std::optional<BattleCleanup> bindings_;
+};
+bool CampaignCombatPreparation::prepare() {
+    auto &cleanup = bindings_.emplace();
+    story_.set(StoryFlag::BattleSegue, true);
     GLOBAL(CurrentActivity) = MAKE_WORD(
         LOBYTE(cleanup.activity) == IN_LAST_BATTLE ? IN_LAST_BATTLE : IN_ENCOUNTER, 0);
     WaitForSoundEnd(TFBSOUND_WAIT_ALL);
-
     if (GLOBAL(glob_flags) & CYBORG_ENABLED) {
         auto speed = static_cast<BYTE>((GLOBAL(glob_flags) & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT);
         if (speed == 1) speed = 0; // Normal speed.
@@ -77,15 +87,15 @@ uqm::runCampaignCombat(StoryState &story)
         PlayerInput[0] = nullptr;
         if (!SetPlayerInput(0)) {
             log_add(log_Fatal, "Could not set cyborg player input.");
-            explode(); // Retain the legacy fatal initialization policy.
+            explode(); // Preserve the existing fatal initialization policy.
         }
     }
-
     GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
     cleanup.soundLoaded = true;
-    Battle(nullptr, nullptr);
-
-    // Keep the campaign's established defeat marker before restoring activity.
-    if (GLOBAL(CurrentActivity) & CHECK_ABORT)
-        GLOBAL_SIS(CrewEnlisted) = static_cast<COUNT>(~0u);
+    return true;
+}
+}
+std::unique_ptr<CombatPreparation> createCampaignCombatPreparation(StoryState &story) {
+    return std::make_unique<CampaignCombatPreparation>(story);
+}
 }
