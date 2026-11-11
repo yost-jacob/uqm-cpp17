@@ -734,7 +734,7 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 		memset (&SD, 0, sizeof (SD));
 
 	// XXX: Backup: SaveFlagshipState() overwrites ip_location
-	pt = GLOBAL (ip_location);
+	pt = GetPlayerTravelPosition()->flight.position;
 	SaveFlagshipState ();
 	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& !(GLOBAL (CurrentActivity)
@@ -748,15 +748,16 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 		io_ok = TRUE;
 		write_32 (out_fp, SAVEFILE_TAG);
 
+		ExportPlayerTravelPosition ();
 		PrepareSummary (SummPtr, name);
 		SaveSummary (SummPtr, out_fp);
 
 		SaveGameState (&GlobData.Game_state, out_fp);
 
 		// XXX: Restore
-		GLOBAL (ip_location) = pt;
+		GetPlayerTravelPosition()->flight.position = pt;
 		// Only relevant when loading a game and must be cleaned
-		GLOBAL (in_orbit) = 0;
+		GetPlayerTravelPosition()->flight.loadOrbit = 0;
 
 		SaveRaceQueue (out_fp, &GLOBAL (avail_race_q));
 		// START_INTERPLANETARY is only set when saving from Homeworld

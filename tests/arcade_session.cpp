@@ -46,6 +46,8 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
     auto *campaignData = GetLegacyGlobData();
     auto *campaignSIS = GetPlayerSISState();
     auto *campaignFleet = GetPlayerFleetQueue();
+    auto *campaignTravel = GetPlayerTravelPosition();
+    const auto campaignX = campaignTravel->position.x;
     auto *previousEngine = &uqm::simulationEngine();
     const auto previousRandom = TFB_GetRandomSeed();
     const auto expectedDiscoveries = story.discovery(world).visitedSites;
@@ -53,6 +55,9 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
         BOOST_TEST(GetLegacyGlobData() != campaignData);
         BOOST_TEST(GetPlayerSISState() != campaignSIS);
         BOOST_TEST(GetPlayerFleetQueue() != campaignFleet);
+        BOOST_TEST(GetPlayerTravelPosition() != campaignTravel);
+        GetPlayerTravelPosition()->position.x = 555;
+        ResetPlayerTravelPosition();
         BOOST_TEST(&uqm::simulationEngine() != previousEngine);
         BOOST_TEST(TFB_GetRandomSeed() == std::minstd_rand0(71)());
         TFB_Random();
@@ -67,6 +72,8 @@ BOOST_AUTO_TEST_CASE(arcade_uses_isolated_buffers_and_returns_to_title_without_m
     BOOST_TEST(GetLegacyGlobData() == campaignData);
     BOOST_TEST(GetPlayerSISState() == campaignSIS);
     BOOST_TEST(GetPlayerFleetQueue() == campaignFleet);
+    BOOST_TEST(GetPlayerTravelPosition() == campaignTravel);
+    BOOST_TEST(campaignTravel->position.x == campaignX);
     BOOST_TEST(&uqm::simulationEngine() == previousEngine);
     BOOST_TEST(TFB_GetRandomSeed() == previousRandom);
     BOOST_TEST(story.read(uqm::StoryFlag::StarbaseAccessGranted));

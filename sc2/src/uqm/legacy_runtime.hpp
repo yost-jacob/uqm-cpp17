@@ -7,7 +7,7 @@ namespace uqm::detail {
 // Internal C buffer projection for a standalone runtime. These buffers remain
 // owned by the session and must outlive the binding. Never attach during a
 // live campaign. Native campaign callers continue to use their typed state.
-struct LegacyRuntimeView { GLOBDATA &data; QUEUE &fleet; SIS_STATE &sis; };
+struct LegacyRuntimeView { GLOBDATA &data; QUEUE &fleet; SIS_STATE &sis; PLAYER_TRAVEL_POSITION travel{}; };
 class LegacyRuntimeBinding {
 public:
     explicit LegacyRuntimeBinding(LegacyRuntimeView &view) noexcept;

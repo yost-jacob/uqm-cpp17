@@ -671,6 +671,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	memset (&GLOBAL (GameState[0]), 0, sizeof (GLOBAL (GameState)));
 	Activity = GLOBAL (CurrentActivity);
 	LoadGameState (&GlobData.Game_state, fh);
+	ImportPlayerTravelPosition ();
 	NextActivity = GLOBAL (CurrentActivity);
 	GLOBAL (CurrentActivity) = Activity;
 

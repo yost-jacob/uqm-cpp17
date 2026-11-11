@@ -103,14 +103,14 @@ BOOST_AUTO_TEST_CASE(c_and_cpp_observe_one_authoritative_ship_and_campaign)
 BOOST_AUTO_TEST_CASE(location_uses_the_existing_coordinate_frames)
 {
     game_state_c_seed();
-    const auto position = gameSession().player().location();
-    BOOST_TEST(position.logX == -12345);
-    BOOST_TEST(position.logY == 67890);
-    BOOST_TEST(position.interplanetaryX == -321);
-    BOOST_TEST(position.interplanetaryY == 654);
-    BOOST_TEST(position.facing == 15u);
-    BOOST_TEST(position.planet == 3u);
-    BOOST_TEST(position.orbit == 1u);
+    const auto position = gameSession().player().travel();
+    BOOST_TEST(position.position.x == -12345);
+    BOOST_TEST(position.position.y == 67890);
+    BOOST_TEST(position.flight.position.x == -321);
+    BOOST_TEST(position.flight.position.y == 654);
+    BOOST_TEST(position.flight.facing == 15u);
+    BOOST_TEST(position.flight.planet == 3u);
+    BOOST_TEST(position.flight.loadOrbit == 1u);
 }
 
 BOOST_AUTO_TEST_CASE(rejected_counters_leave_state_and_neighbors_unchanged)
@@ -307,4 +307,71 @@ BOOST_AUTO_TEST_CASE(system_story_fields_keep_the_legacy_packed_encoding)
         if (counter.start) BOOST_TEST(getGameState(GLOBAL(GameState), counter.start - 1, counter.start - 1) == before);
         if (counter.start + counter.bits < NUM_GAME_STATE_BITS) BOOST_TEST(getGameState(GLOBAL(GameState), counter.start + counter.bits, counter.start + counter.bits) == after);
     }
+}
+
+BOOST_AUTO_TEST_CASE(location_alternatives_preserve_travel_without_sharing_players)
+{
+    PlayerEntity first{{PlayerId{101}, "First"}}, second{{PlayerId{102}, "Second"}};
+    first.setMapPosition(-12345, 67890);
+    std::get<HyperSpaceLocation>(first.location()).flight = {{-321, 654}, 15, 3, 1};
+    BOOST_CHECK_THROW(std::get<SolarSystemLocation>(first.location()), std::bad_variant_access);
+    first.enterNavigation(true);
+    BOOST_TEST(std::get<QuasiSpaceLocation>(first.location()).position.x == -12345);
+    auto &system = first.enterSolarSystem();
+    system.system = StarId{7};
+    BOOST_TEST(system.flight.position.y == 654);
+    BOOST_TEST(system.flight.facing == 15u);
+    BOOST_TEST(system.flight.planet == 3u);
+    BOOST_TEST(&first.enterSolarSystem() == &system); // Re-entry cannot invalidate child borrows.
+    BOOST_TEST(std::get<HyperSpaceLocation>(second.location()).position.x == 0);
+    BOOST_TEST(std::get<HyperSpaceLocation>(second.location()).flight.planet == 0u);
+    first.enterNavigation(false);
+    BOOST_TEST(std::get<HyperSpaceLocation>(first.location()).position.y == 67890);
+    BOOST_CHECK_THROW(std::get<SolarSystemLocation>(first.location()), std::bad_variant_access);
+}
+
+BOOST_AUTO_TEST_CASE(exploration_children_preserve_the_parent_positions)
+{
+    PlayerEntity player{{PlayerId{103}, "Explorer"}};
+    auto &location = player.enterSolarSystem();
+    location.flight.position = {12, 34};
+    const WorldId moon{SinglePlayerUniverse, StarId{7}, 2, 0};
+    BOOST_CHECK_THROW(location.land({1, 2}), std::bad_optional_access);
+    BOOST_TEST(!location.surface.has_value());
+    location.enterOrbit(moon);
+    location.land({45, 67});
+    auto &surface = location.surface.value();
+    surface.position.x += 10; // The lander borrows this same position.
+    BOOST_TEST(location.flight.position.x == 12);
+    BOOST_CHECK(location.orbit->world == moon);
+    location.leaveSurface();
+    BOOST_TEST(!location.surface.has_value());
+    BOOST_CHECK(location.orbit->world == moon);
+    location.leaveOrbit();
+    BOOST_TEST(!location.orbit.has_value());
+    BOOST_TEST(location.flight.position.y == 34);
+}
+
+BOOST_FIXTURE_TEST_CASE(location_save_projection_restores_markers_without_live_visit_state, LegacyPlayerFixture)
+{
+    auto &player = gameSession().player();
+    auto &system = player.enterSolarSystem();
+    system.position = {-12345, 67890};
+    system.flight = {{-321, 654}, 15, 3, 2};
+    system.enterOrbit({SinglePlayerUniverse, StarId{7}, 2, 0});
+    system.land({45, 67});
+    ExportPlayerTravelPosition();
+    BOOST_TEST(GetPlayerSISState()->log_x == -12345);
+    BOOST_TEST(GLOBAL(ip_location.y) == 654);
+    BOOST_TEST(GLOBAL(in_orbit) == 2u);
+    // Old-format buffers are explicit serialization projections, not live data.
+    GLOBAL(ip_location.y) = 777;
+    BOOST_TEST(system.flight.position.y == 654);
+    ImportPlayerTravelPosition();
+    BOOST_TEST(player.travel().position.x == -12345);
+    auto &restored = player.enterSolarSystem();
+    BOOST_TEST(restored.flight.position.y == 777);
+    BOOST_TEST(restored.flight.loadOrbit == 2u);
+    BOOST_TEST(!restored.orbit.has_value());
+    BOOST_TEST(!restored.surface.has_value());
 }

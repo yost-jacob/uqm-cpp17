@@ -79,6 +79,7 @@ public:
     HyperSpaceMode(GameSession &session)
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine()) {}
     ModeResult run() override {
+        session_.player().enterNavigation(session_.player().story().read(StoryCounter::ArilouSpaceSide) > 1);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         SetGameClockRate(HYPERSPACE_CLOCK_RATE);

@@ -155,15 +155,15 @@ ExitConversation (RESPONSE_REF R)
 #define STARBASE_INNER_Y (113)
 
 		/* transport player to Earth */
-		GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX (SOL_X);
-		GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY (SOL_Y);
-		GLOBAL (ShipFacing) = 1;
+		GetPlayerTravelPosition()->position.x = UNIVERSE_TO_LOGX (SOL_X);
+		GetPlayerTravelPosition()->position.y = UNIVERSE_TO_LOGY (SOL_Y);
+		GetPlayerTravelPosition()->flight.facing = 1;
 		/* At Earth or at Starbase */
-		GLOBAL (ip_planet) = EARTH_INDEX + 1;
-		GLOBAL (in_orbit) = 0;
+		GetPlayerTravelPosition()->flight.planet = EARTH_INDEX + 1;
+		GetPlayerTravelPosition()->flight.loadOrbit = 0;
 		/* XXX : this should be unhardcoded eventually */
-		GLOBAL (ip_location.x) = EARTH_OUTER_X;
-		GLOBAL (ip_location.y) = EARTH_OUTER_Y;
+		GetPlayerTravelPosition()->flight.position.x = EARTH_OUTER_X;
+		GetPlayerTravelPosition()->flight.position.y = EARTH_OUTER_Y;
 
 		if (GET_GAME_STATE (STARBASE_AVAILABLE))
 		{	/* Normal game mode - you are transported to Starbase */

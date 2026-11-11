@@ -565,8 +565,8 @@ getStripRandomSeed (void)
 	// vary the deal when stuck at the same general location again.
 	// It is still possible but unlikely for encounters to move the ship into
 	// another truncation sector so the player could choose from 2 deals.
-	x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)) / 100;
-	y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y)) / 100;
+	x = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x) / 100;
+	y = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y) / 100;
 	// prime numbers help randomness
 	return y * 1013 + x + GLOBAL_SIS (NumLanders)
 			+ GLOBAL_SIS (ModuleSlots[1]) + GLOBAL_SIS (ModuleSlots[4])
@@ -838,9 +838,9 @@ DoRescue (RESPONSE_REF R)
 	COUNT fuel_required;
 
 	(void) R;  // ignored
-	dx = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x))
+	dx = LOGX_TO_UNIVERSE (GetPlayerTravelPosition()->position.x)
 			- SOL_X;
-	dy = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y))
+	dy = LOGY_TO_UNIVERSE (GetPlayerTravelPosition()->position.y)
 			- SOL_Y;
 	fuel_required = square_root (
 			(DWORD)((long)dx * dx + (long)dy * dy)

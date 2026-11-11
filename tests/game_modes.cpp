@@ -302,3 +302,55 @@ BOOST_AUTO_TEST_CASE(dispatcher_runs_without_campaign_state_and_rejects_foreign_
     BOOST_TEST(counts.runs == 3u);
     BOOST_TEST(!foreign.isRunning());
 }
+
+BOOST_AUTO_TEST_CASE(child_combat_style_handoff_preserves_the_exploration_location_borrow)
+{
+    auto data = makeState();
+    uqm::GameSession session{data, uqm::SinglePlayerId};
+    auto &location = session.player().enterSolarSystem();
+    location.system = StarId{7};
+    location.flight.position = {123, 456};
+    location.enterOrbit({uqm::SinglePlayerUniverse, StarId{7}, 2, 0});
+    class Child final : public uqm::GameMode {
+    public:
+        explicit Child(uqm::ModeDispatcher &dispatcher) : GameMode(dispatcher) {}
+        uqm::ModeResult run() override { return uqm::ModeCompleted{}; }
+    };
+    class Parent final : public uqm::GameMode {
+    public:
+        explicit Parent(uqm::GameSession &session) : GameMode(session.dispatcher()), session_(session) {}
+        uqm::ModeResult run() override {
+            auto &before = std::get<uqm::SolarSystemLocation>(session_.player().location());
+            BOOST_TEST(!session_.swapGameMode(std::make_unique<Child>(dispatcher())).has_value());
+            BOOST_TEST(&before == &std::get<uqm::SolarSystemLocation>(session_.player().location()));
+            BOOST_TEST(before.flight.position.x == 123);
+            BOOST_TEST(before.flight.position.y == 456);
+            BOOST_REQUIRE(before.orbit);
+            BOOST_TEST(before.orbit->world.planet == 2u);
+            BOOST_TEST(before.orbit->world.moon.value() == 0u);
+            return uqm::ModeCompleted{};
+        }
+    private: uqm::GameSession &session_;
+    };
+    session.run(std::make_unique<Parent>(session));
+    BOOST_TEST(&location == &std::get<uqm::SolarSystemLocation>(session.player().location()));
+}
+
+BOOST_AUTO_TEST_CASE(dispatcher_reports_a_wrong_location_alternative_as_a_failure)
+{
+    auto data = makeState();
+    uqm::GameSession session{data, uqm::SinglePlayerId};
+    class WrongLocation final : public uqm::GameMode {
+    public:
+        explicit WrongLocation(uqm::GameSession &session) : GameMode(session.dispatcher()), session_(session) {}
+        uqm::ModeResult run() override {
+            std::get<uqm::SolarSystemLocation>(session_.player().location());
+            return uqm::ModeCompleted{};
+        }
+    private: uqm::GameSession &session_;
+    };
+    const auto exit = session.run(std::make_unique<WrongLocation>(session));
+    BOOST_TEST(static_cast<int>(exit.kind) == static_cast<int>(uqm::SessionExitKind::Failed));
+    BOOST_REQUIRE(exit.error);
+    BOOST_CHECK_THROW(std::rethrow_exception(exit.error), std::bad_variant_access);
+}

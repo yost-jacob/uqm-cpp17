@@ -29,9 +29,6 @@ public:
     void recordCombatCrew(COUNT includingCaptain) noexcept {
         data_.CrewEnlisted = includingCaptain ? includingCaptain - 1 : static_cast<COUNT>(~0u);
     }
-    void setPosition(SDWORD x, SDWORD y) noexcept { data_.log_x = x; data_.log_y = y; }
-    SDWORD x() const noexcept { return data_.log_x; }
-    SDWORD y() const noexcept { return data_.log_y; }
     SISLoadout loadout() const noexcept; // Detached configuration for a combat visit.
     ShipState snapshot() const; // Detached UI/save-facing quantities and names.
     void reset() noexcept { data_ = {}; } // Only with no active combat/visit borrows.

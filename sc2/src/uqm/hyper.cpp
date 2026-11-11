@@ -86,35 +86,34 @@ void
 uqm::HyperSpaceNavigation::MoveSIS(SIZE *pdx, SIZE *pdy)
 {
 	SIZE new_dx, new_dy;
-    auto position = player_.location();
+    auto &position = travel().position;
 
 	new_dx = *pdx;
-	position.logX -= new_dx;
-	if (position.logX < 0)
+	position.x -= new_dx;
+	if (position.x < 0)
 	{
-		new_dx += (SIZE)position.logX;
-		position.logX = 0;
+		new_dx += (SIZE)position.x;
+		position.x = 0;
 	}
-	else if (position.logX > MAX_X_LOGICAL)
+	else if (position.x > MAX_X_LOGICAL)
 	{
-		new_dx += (SIZE)(position.logX - MAX_X_LOGICAL);
-		position.logX = MAX_X_LOGICAL;
+		new_dx += (SIZE)(position.x - MAX_X_LOGICAL);
+		position.x = MAX_X_LOGICAL;
 	}
 
 	new_dy = *pdy;
-	position.logY -= new_dy;
-	if (position.logY < 0)
+	position.y -= new_dy;
+	if (position.y < 0)
 	{
-		new_dy += (SIZE)position.logY;
-		position.logY = 0;
+		new_dy += (SIZE)position.y;
+		position.y = 0;
 	}
-	else if (position.logY > MAX_Y_LOGICAL)
+	else if (position.y > MAX_Y_LOGICAL)
 	{
-		new_dy += (SIZE)(position.logY - MAX_Y_LOGICAL);
-		position.logY = MAX_Y_LOGICAL;
+		new_dy += (SIZE)(position.y - MAX_Y_LOGICAL);
+		position.y = MAX_Y_LOGICAL;
 	}
 
-    player_.setHyperSpacePosition(position.logX, position.logY);
 	if (new_dx != *pdx || new_dy != *pdy)
 	{
 		HELEMENT hElement, hNextElement;
@@ -192,8 +191,8 @@ uqm::HyperSpaceNavigation::check_hyperspace_encounter(void)
 		RACE_HYPERSPACE_PERCENT
 	};
 	
-	universe.x = LOGX_TO_UNIVERSE (player_.location().logX);
-	universe.y = LOGY_TO_UNIVERSE (player_.location().logY);
+	universe.x = LOGX_TO_UNIVERSE (travel().position.x);
+	universe.y = LOGY_TO_UNIVERSE (travel().position.y);
 	for (hStarShip = GetHeadLink (&GLOBAL (avail_race_q)), Type = 0;
 			hStarShip && (GLOBAL (CurrentActivity) & IN_BATTLE);
 			hStarShip = hNextShip, ++Type)
@@ -423,9 +422,9 @@ uqm::HyperSpaceNavigation::ElementToUniverse(ELEMENT *ElementPtr, POINT *pPt)
 {
 	SDWORD log_x, log_y;
 
-	log_x = player_.location().logX
+	log_x = travel().position.x
 			+ (ElementPtr->next.location.x - (LOG_SPACE_WIDTH >> 1));
-	log_y = player_.location().logY
+	log_y = travel().position.y
 			+ (ElementPtr->next.location.y - (LOG_SPACE_HEIGHT >> 1));
 	pPt->x = LOGX_TO_UNIVERSE (log_x);
 	pPt->y = LOGY_TO_UNIVERSE (log_y);
@@ -469,9 +468,9 @@ uqm::HyperSpaceNavigation::cleanup_hyperspace(void)
 void
 uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 {
-	GLOBAL (ip_planet) = 0;
-	GLOBAL (in_orbit) = 0;
-	GLOBAL (ShipFacing) = 0; /* Not reentering the system */
+	travel().flight.planet = 0;
+	travel().flight.loadOrbit = 0;
+	travel().flight.facing = 0; /* Not reentering the system */
 	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 	if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
@@ -502,11 +501,12 @@ uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 			const POINT portal_pt[] = QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
 
 			index = GetStarIndex(CurStarDescPtr) - QUASISPACE_FIRST;
-			player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (portal_pt[index].x), UNIVERSE_TO_LOGY (portal_pt[index].y));
+			player_.setMapPosition(UNIVERSE_TO_LOGX (portal_pt[index].x), UNIVERSE_TO_LOGY (portal_pt[index].y));
 
 			story_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 		}
 	}
+    if (story_.read(StoryCounter::ArilouSpaceSide) <= 1) player_.enterNavigation(false);
 }
 
 /* Enter QuasiSpace from HyperSpace by any portal, or HyperSpace from
@@ -515,14 +515,14 @@ uqm::HyperSpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 void
 uqm::HyperSpaceNavigation::ArilouSpaceTransition(void)
 {
-	GLOBAL (ShipFacing) = 0; /* Not reentering the system */
+	travel().flight.facing = 0; /* Not reentering the system */
 	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 	GLOBAL (autopilot.x) = ~0;
 	GLOBAL (autopilot.y) = ~0;
 	if (story_.read(uqm::StoryCounter::ArilouSpaceSide) <= 1)
 	{
 		// From HyperSpace to QuasiSpace.
-		player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (QUASI_SPACE_X), UNIVERSE_TO_LOGY (QUASI_SPACE_Y));
+		player_.setMapPosition(UNIVERSE_TO_LOGX (QUASI_SPACE_X), UNIVERSE_TO_LOGY (QUASI_SPACE_Y));
 		if (story_.read(uqm::StoryCounter::PortalCounter) == 0)
 		{
 			// Periodically appearing portal.
@@ -539,9 +539,10 @@ uqm::HyperSpaceNavigation::ArilouSpaceTransition(void)
 	{
 		// From QuasiSpace to HyperSpace through the periodically appearing
 		// portal.
-		player_.setHyperSpacePosition(UNIVERSE_TO_LOGX (ARILOU_SPACE_X), UNIVERSE_TO_LOGY (ARILOU_SPACE_Y));
+		player_.setMapPosition(UNIVERSE_TO_LOGX (ARILOU_SPACE_X), UNIVERSE_TO_LOGY (ARILOU_SPACE_Y));
 		story_.set(uqm::StoryCounter::ArilouSpaceSide, 0);
 	}
+    player_.enterNavigation(story_.read(StoryCounter::ArilouSpaceSide) > 1);
 }
 
 void
@@ -796,11 +797,11 @@ uqm::HyperSpaceNavigation::AllocHyperElement(const POINT *elem_pt)
 			long lx, ly;
 
 			lx = UNIVERSE_TO_LOGX (elem_pt->x)
-					+ (LOG_SPACE_WIDTH >> 1) - player_.location().logX;
+					+ (LOG_SPACE_WIDTH >> 1) - travel().position.x;
 			HyperSpaceElementPtr->current.location.x = WRAP_X (lx);
 
 			ly = UNIVERSE_TO_LOGY (elem_pt->y)
-					+ (LOG_SPACE_HEIGHT >> 1) - player_.location().logY;
+					+ (LOG_SPACE_HEIGHT >> 1) - travel().position.y;
 			HyperSpaceElementPtr->current.location.y = WRAP_Y (ly);
 		}
 
@@ -1292,10 +1293,10 @@ uqm::HyperSpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puni
 			&& ey - puniverse->y <= UNIT_SCREEN_HEIGHT)
 	{
 		ElementPtr->next.location.x =
-				(SIZE)(EncounterPtr->log_x - player_.location().logX)
+				(SIZE)(EncounterPtr->log_x - travel().position.x)
 				+ (LOG_SPACE_WIDTH >> 1);
 		ElementPtr->next.location.y =
-				(SIZE)(EncounterPtr->log_y - player_.location().logY)
+				(SIZE)(EncounterPtr->log_y - travel().position.y)
 				+ (LOG_SPACE_HEIGHT >> 1);
 		if ((ElementPtr->state_flags & NONSOLID)
 				&& EncounterPtr->transition_state == 0)
@@ -1375,8 +1376,8 @@ uqm::HyperSpaceNavigation::SeedUniverse(void)
 	HELEMENT hHyperSpaceElement;
 	ELEMENT *HyperSpaceElementPtr;
 
-	universe.x = LOGX_TO_UNIVERSE (player_.location().logX);
-	universe.y = LOGY_TO_UNIVERSE (player_.location().logY);
+	universe.x = LOGX_TO_UNIVERSE (travel().position.x);
+	universe.y = LOGY_TO_UNIVERSE (travel().position.y);
 
 	blip_frame = SetAbsFrameIndex (stars_in_space, 90);
 
@@ -1751,7 +1752,7 @@ SaveSisHyperState(void)
 	ELEMENT *ElementPtr;
 	STARSHIP *StarShipPtr;
 
-	// Update 'GLOBAL (ShipFacing)' to the direction the flagship is facing
+	// Update 'travel().flight.facing' to the direction the flagship is facing
 	hSisElement = getSisElement ();
 	if (!hSisElement)
 	{	// Happens when saving a game from Hyperspace encounter screen
@@ -1761,7 +1762,7 @@ SaveSisHyperState(void)
 	LockElement (hSisElement, &ElementPtr);
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	// XXX: Solar system reentry test depends on ShipFacing != 0
-	GLOBAL (ShipFacing) = StarShipPtr->ShipFacing + 1;
+	uqm::gameSession().player().travel().flight.facing = StarShipPtr->ShipFacing + 1;
 	UnlockElement (hSisElement);
 }
 

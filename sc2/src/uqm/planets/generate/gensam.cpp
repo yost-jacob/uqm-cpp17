@@ -20,6 +20,7 @@
 #include "../../orbital_encounter.hpp"
 #include "../../system_builders.hpp"
 #include "../../game_state.hpp"
+#include "../../system_runtime.hpp"
 #include "../planets.h"
 #include "../../build.h"
 #include "../../comm.h"
@@ -122,11 +123,12 @@ SaMatraSystemBehavior::reinitNpcs(SOLARSYS_STATE &system)
 		POINT org;
 
 		org = planetOuterLocation (4);
-		angle = ARCTAN (GLOBAL (ip_location.x) - org.x,
-				GLOBAL (ip_location.y) - org.y);
-		GLOBAL (ip_location.x) = org.x + COSINE (angle, 3000);
-		GLOBAL (ip_location.y) = org.y + SINE (angle, 3000);
-		XFormIPLoc (&GLOBAL (ip_location),
+        auto &position = uqm::systemLocation(system).flight.position;
+		angle = ARCTAN (position.x - org.x,
+				position.y - org.y);
+		position.x = org.x + COSINE (angle, 3000);
+		position.y = org.y + SINE (angle, 3000);
+		XFormIPLoc (&position,
 				&GLOBAL (ShipStamp.origin), TRUE);
 	}
 

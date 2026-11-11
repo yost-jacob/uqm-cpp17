@@ -159,7 +159,10 @@ extern PRIM_LINKS DisplayLinks;
 
 // Per-launch state, owned by LanderMode; C element callbacks only borrow it.
 struct LanderVisit {
-    explicit LanderVisit(SOLARSYS_STATE &owner) : system(owner), story(uqm::systemStory(owner)) {}
+    LanderVisit(SOLARSYS_STATE &owner, POINT landing)
+        : system(owner), story(uqm::systemStory(owner)), location(uqm::systemLocation(owner)),
+          curLanderLoc((location.land(landing), location.surface.value().position)) {}
+    ~LanderVisit() { location.leaveSurface(); }
     LanderVisit(const LanderVisit &) = delete;
     LanderVisit &operator=(const LanderVisit &) = delete;
     SOLARSYS_STATE &system;
@@ -173,7 +176,8 @@ struct LanderVisit {
     Color ColorCycle[NUM_TEXT_FRAMES >> 1]{};
     BYTE TectonicsChance{}, WeatherChance{}, FireChance{};
     BYTE lander_flags{};
-    POINT curLanderLoc{};
+    uqm::SolarSystemLocation &location;
+    POINT &curLanderLoc; // Borrows the player-owned surface position for this visit.
     int crew_left{};
     int shieldHit{};
     int damage_index{};
@@ -1924,7 +1928,7 @@ public:
 class LanderMode final : public GameMode {
 public:
     LanderMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &surfaceSource, POINT location)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), location_(location), visit_(system), surfaceSource_(surfaceSource) {
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), visit_(system, location), surfaceSource_(surfaceSource) {
         if (&session.player().story() != &visit_.story)
             throw std::invalid_argument("lander and session have different campaigns");
     }
@@ -1933,7 +1937,6 @@ protected:
     void initialize() override { scene_.emplace(surfaceSource_, engine()); }
 private:
     GameSession &session_;
-    POINT location_;
     LanderVisit visit_;
     SimulationEngine &surfaceSource_;
     std::optional<SimulationSceneTransfer> scene_;
@@ -1952,7 +1955,7 @@ uqm::LanderMode::run()
     SIZE index;
     LanderInputState landerInputState{};
     auto &PSD = visit_;
-    const POINT planetLoc = location_;
+    const POINT planetLoc = PSD.curLanderLoc;
     binding_.emplace(visit_);
     sounds_.emplace();
     effects_.emplace();

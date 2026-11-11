@@ -17,7 +17,7 @@ LegacyRuntimeBinding::~LegacyRuntimeBinding() { selectedRuntime = previous_; }
 LegacyRuntimeView *standaloneRuntime() noexcept { return selectedRuntime; }
 struct PlayerStorage { GLOBDATA legacy{}; };
 // Only the C boundary sees a mutable legacy aggregate. Native callers use the
-// player/campaign methods and detached ship/location values.
+// typed state/location references and detached ship snapshots.
 struct LegacyStateAccess {
     static GLOBDATA &data(PlayerEntity &player) noexcept {
         return player.storage_->legacy;
@@ -205,16 +205,30 @@ const NavigationState &PlayerEntity::navigationState() const noexcept { return n
 const UserProfile &PlayerEntity::profile() const noexcept { return profile_; }
 std::uint32_t PlayerEntity::fuel() const noexcept { return sis().fuel(); }
 std::uint16_t PlayerEntity::crew() const noexcept { return sis().crew(); }
-void PlayerEntity::setHyperSpacePosition(std::int32_t x, std::int32_t y) noexcept {
-    sis().setPosition(x, y);
+void PlayerEntity::setMapPosition(std::int32_t x, std::int32_t y) noexcept {
+    travel().position = {x, y};
 }
 ShipState PlayerEntity::ship() const { return sis().snapshot(); }
-PlayerLocation PlayerEntity::location() const noexcept {
-    const auto &state = sis();
-    const auto &game = storage_->legacy.Game_state;
-    return {state.x(), state.y(), game.ip_location.x, game.ip_location.y,
-            game.ShipFacing, game.ip_planet, game.in_orbit};
+PlayerLocation &PlayerEntity::location() noexcept { return location_; }
+const PlayerLocation &PlayerEntity::location() const noexcept { return location_; }
+PLAYER_TRAVEL_POSITION &PlayerEntity::travel() noexcept { return travelPosition(location_); }
+const PLAYER_TRAVEL_POSITION &PlayerEntity::travel() const noexcept { return travelPosition(location_); }
+void PlayerEntity::enterNavigation(bool quasispace) {
+    const auto saved = travel();
+    if (quasispace) {
+        if (!std::holds_alternative<QuasiSpaceLocation>(location_))
+            location_ = QuasiSpaceLocation{saved};
+    } else if (!std::holds_alternative<HyperSpaceLocation>(location_))
+        location_ = HyperSpaceLocation{saved};
 }
+SolarSystemLocation &PlayerEntity::enterSolarSystem() {
+    if (!std::holds_alternative<SolarSystemLocation>(location_)) {
+        const auto saved = travel();
+        location_ = SolarSystemLocation{saved, {}, {}, {}};
+    }
+    return std::get<SolarSystemLocation>(location_);
+}
+void PlayerEntity::resetLocation() noexcept { location_ = HyperSpaceLocation{}; }
 void PlayerEntity::setFuel(std::uint32_t fuel) noexcept { sis().setFuel(fuel); }
 void PlayerEntity::setCrew(std::uint16_t crew) noexcept { sis().setCrew(crew); }
 SIS &PlayerEntity::sis() noexcept { return fleet_->sis()->get(); }
@@ -285,4 +299,39 @@ extern "C" SIS_STATE *GetPlayerSISState(void) {
     if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->sis;
     try { return &uqm::detail::SISAccess::record(uqm::gameSession().player().sis()); }
     catch (...) { std::abort(); }
+}
+
+extern "C" PLAYER_TRAVEL_POSITION *GetPlayerTravelPosition(void) {
+    // Standalone arcade has no campaign location; only legacy reset/setup uses it.
+    if (auto *runtime = uqm::detail::standaloneRuntime()) return &runtime->travel;
+    try { return &uqm::gameSession().player().travel(); }
+    catch (...) { std::abort(); }
+}
+extern "C" void ExportPlayerTravelPosition(void) {
+    const auto &travel = *GetPlayerTravelPosition();
+    auto &game = GetLegacyGlobData()->Game_state;
+    auto &sis = *GetPlayerSISState();
+    sis.log_x = travel.position.x;
+    sis.log_y = travel.position.y;
+    game.ip_location = travel.flight.position;
+    game.ShipFacing = travel.flight.facing;
+    game.ip_planet = travel.flight.planet;
+    game.in_orbit = travel.flight.loadOrbit;
+}
+extern "C" void ImportPlayerTravelPosition(void) {
+    // Loading takes place after modes unwind. Its destination realm is selected
+    // by the dispatcher; no old orbit/surface references survive a restore.
+    ResetPlayerTravelPosition();
+    auto &travel = *GetPlayerTravelPosition();
+    const auto &game = GetLegacyGlobData()->Game_state;
+    const auto &sis = *GetPlayerSISState();
+    travel.position = {sis.log_x, sis.log_y};
+    travel.flight = {game.ip_location, game.ShipFacing, game.ip_planet, game.in_orbit};
+}
+extern "C" void ResetPlayerTravelPosition(void) {
+    if (auto *runtime = uqm::detail::standaloneRuntime()) runtime->travel = {};
+    else {
+        try { uqm::gameSession().player().resetLocation(); }
+        catch (...) { std::abort(); }
+    }
 }

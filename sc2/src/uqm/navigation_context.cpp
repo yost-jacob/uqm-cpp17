@@ -4,6 +4,11 @@
 namespace uqm {
 HyperSpaceNavigation::HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine) noexcept
     : player_(player), engine_(engine), story_(player.story()) {}
+PLAYER_TRAVEL_POSITION &HyperSpaceNavigation::travel() {
+    if (story_.read(StoryCounter::ArilouSpaceSide) > 1)
+        return std::get<QuasiSpaceLocation>(player_.location());
+    return std::get<HyperSpaceLocation>(player_.location());
+}
 NavigationBinding::NavigationBinding(GameSession &session, HyperSpaceNavigation &navigation)
     : session_(session), previous_(session.navigation_) {
     if (&session.player() != &navigation.player_)
