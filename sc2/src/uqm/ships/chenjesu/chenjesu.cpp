@@ -22,6 +22,8 @@
 #include "uqm/ship_tuning.hpp"
 #include "uqm/projectile_legacy.hpp"
 #include "resinst.h"
+#include "uqm/combat_entity_legacy.hpp"
+#include "uqm/animation_effect.hpp"
 
 #include "uqm/globdata.h"
 #include "libs/mathlib.h"
@@ -197,20 +199,7 @@ void ChenjesuCrystal::postprocess(ELEMENT &element) {
 			StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
 }
 
-static void
-animate (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
-		ElementPtr->state_flags |= CHANGING;
 
-		ElementPtr->turn_wait = ElementPtr->next_turn;
-	}
-}
 
 void ChenjesuCrystal::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     auto *ElementPtr0 = &self;
@@ -232,7 +221,7 @@ void ChenjesuCrystal::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT
 		BlastElementPtr->life_span = NumSparkles;
 		BlastElementPtr->turn_wait = BlastElementPtr->next_turn = 0;
 		{
-			BlastElementPtr->preprocess_func = animate;
+			uqm::combat::attachAnimation(*BlastElementPtr);
 		}
 
 		BlastElementPtr->current.image.farray = ElementPtr0->next.image.farray;
@@ -245,9 +234,20 @@ void ChenjesuCrystal::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT
 }
 
 
-static void
-doggy_preprocess (ELEMENT *ElementPtr)
-{
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class Dogi final : public uqm::combat::CombatEntity {
+public:
+    bool dying_ = false;
+    void update(ELEMENT &self) override;
+    void expire(ELEMENT &self) override;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+};
+}
+void Dogi::update(ELEMENT &self) {
+    auto *ElementPtr = &self;
+    if (dying_) { uqm::combat::advanceAnimation(self); return; }
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -296,11 +296,12 @@ doggy_preprocess (ELEMENT *ElementPtr)
 			SetVelocityVector (&ElementPtr->velocity,
 					DoggySpeed, facing);
 	}
+
 }
 
-static void
-doggy_death (ELEMENT *ElementPtr)
-{
+
+void Dogi::expire(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -312,19 +313,22 @@ doggy_death (ELEMENT *ElementPtr)
 	ElementPtr->state_flags |= NONSOLID | FINITE_LIFE;
 	ElementPtr->life_span = 6;
 	{
-		ElementPtr->preprocess_func = animate;
+		dying_ = true;
 	}
 	ElementPtr->death_func = NULL;
 	ElementPtr->collision_func = NULL;
 	ZeroVelocityComponents (&ElementPtr->velocity);
 
 	ElementPtr->turn_wait = ElementPtr->next_turn = 0;
+
 }
 
-static void
-doggy_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void Dogi::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
 	collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)
 			&& !elementsOfSamePlayer (ElementPtr0, ElementPtr1))
@@ -343,7 +347,9 @@ doggy_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 	if (ElementPtr0->thrust_wait <= COLLISION_THRUST_WAIT)
 		ElementPtr0->thrust_wait += COLLISION_THRUST_WAIT << 1;
+
 }
+
 
 static void
 spawn_doggy (ELEMENT *ElementPtr)
@@ -369,10 +375,10 @@ spawn_doggy (ELEMENT *ElementPtr)
 		SetPrimType (&(GLOBAL (DisplayArray))[DoggyElementPtr->PrimIndex],
 				STAMP_PRIM);
 		{
-			DoggyElementPtr->preprocess_func = doggy_preprocess;
+			uqm::detail::attachEntity(*DoggyElementPtr, std::make_unique<Dogi>(), uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision | uqm::detail::EntityHooks::Expiration);
 			DoggyElementPtr->postprocess_func = NULL;
-			DoggyElementPtr->collision_func = doggy_collision;
-			DoggyElementPtr->death_func = doggy_death;
+
+
 		}
 
 		GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -451,7 +457,7 @@ chenjesu_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			if (!(CrystalPtr->state_flags & NONSOLID)
 					&& CrystalPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.weapon
 					&& CrystalPtr->preprocess_func
-                    && dynamic_cast<ChenjesuCrystal *>(uqm::detail::borrowProjectile(disp_q, CrystalPtr))
+                    && dynamic_cast<ChenjesuCrystal *>(uqm::detail::borrowEntity(disp_q, CrystalPtr))
 					&& CrystalPtr->life_span > 0
 					&& elementsOfSamePlayer (CrystalPtr, ShipPtr))
 			{

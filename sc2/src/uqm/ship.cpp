@@ -18,6 +18,7 @@
 
 #include "ship.h"
 #include "ship_behavior.hpp"
+#include "animation_effect.hpp"
 
 #include "build.h"
 #include "collide.h"
@@ -37,20 +38,11 @@
 #include "libs/mathlib.h"
 
 
-void
-animation_preprocess (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
-		ElementPtr->state_flags |= CHANGING;
-
-		ElementPtr->turn_wait = ElementPtr->next_turn;
-	}
+void animation_preprocess(ELEMENT *element) {
+    uqm::combat::attachAnimation(*element);
+    uqm::combat::advanceAnimation(*element);
 }
+
 
 
 STATUS_FLAGS
@@ -99,7 +91,7 @@ inertial_thrust (ELEMENT *ElementPtr)
 		delta_y = cur_delta_y + SINE (CurrentAngle, thrust_increment);
 		desired_speed = VelocitySquared (delta_x, delta_y);
 		max_speed = VelocitySquared (WORLD_TO_VELOCITY (max_thrust), 0);
-		
+
 		if (desired_speed <= max_speed)
 		{	// normal acceleration
 			SetVelocityComponents (VelocityPtr, delta_x, delta_y);
@@ -191,7 +183,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			OldContext = SetContext (StatusContext);
 			DrawCaptainsWindow (StarShipPtr);
 			SetContext (OldContext);
-			uqm::combat::shipFor(*RDPtr).preprocess(*ElementPtr);
+			uqm::combat::shipFor(*RDPtr).update(*ElementPtr);
 
 			// XXX: Hack: Pkunk sets hTarget!=0 when it reincarnates. In that
 			//   case there is no ship_transition() but a Phoenix transition
@@ -230,7 +222,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 				(SBYTE)RDPtr->characteristics.energy_regeneration);
 
 	{
-		uqm::combat::shipFor(*RDPtr).preprocess(*ElementPtr);
+		uqm::combat::shipFor(*RDPtr).update(*ElementPtr);
 		cur_status_flags = StarShipPtr->cur_status_flags;
 	}
 
@@ -329,7 +321,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 					PutElement (w);
 				}
 			} while (--num_weapons);
-			
+
 			if (!played_sfx)
 				ProcessSound (RDPtr->ship_data.ship_sounds, ElementPtr);
 		}
@@ -538,7 +530,7 @@ GetInitialStarShips (void)
 	{
 		HSTARSHIP ships[NUM_PLAYERS];
 		COUNT i;
-		
+
 		if (!GetInitialMeleeStarShips (ships))
 			return FALSE;
 
@@ -560,7 +552,7 @@ GetInitialStarShips (void)
 	else
 	{
 		int i;
-		
+
 		for (i = NUM_PLAYERS; i > 0; --i)
 		{
 			if (!GetNextStarShip (NULL, i - 1))

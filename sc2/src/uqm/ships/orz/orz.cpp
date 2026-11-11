@@ -23,6 +23,8 @@
 #include "uqm/projectile_legacy.hpp"
 #include "orz.h"
 #include "resinst.h"
+#include "uqm/combat_entity_legacy.hpp"
+#include "uqm/animation_effect.hpp"
 
 #include "uqm/colors.h"
 #include "uqm/globdata.h"
@@ -121,13 +123,21 @@ static const RACE_DESC &orzDefinition() {
     return definition;
 }
 
-static void
-howitzer_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+namespace {
+class Howitzer final : public uqm::combat::ConfiguredProjectile {
+public:
+    using ConfiguredProjectile::ConfiguredProjectile;
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override {
+        auto *ElementPtr0 = &self; auto *pPt0 = &point;
+        auto *ElementPtr1 = &other; auto *pPt1 = &otherPoint;
+
 	if (!elementsOfSamePlayer (ElementPtr0, ElementPtr1))
 		weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
+
+    }
+};
 }
+
 
 static COUNT
 initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
@@ -167,16 +177,8 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.life = missileStats().lifetime;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MissileOffset;
-	MissileArray[0] = uqm::combat::publishMissile(MissileBlock, missileStats().flight);
+	MissileArray[0] = uqm::combat::publishMissile<Howitzer>(MissileBlock, missileStats().flight);
 
-	if (MissileArray[0])
-	{
-		ELEMENT *HowitzerPtr;
-
-		LockElement (MissileArray[0], &HowitzerPtr);
-		HowitzerPtr->collision_func = howitzer_collision;
-		UnlockElement (MissileArray[0]);
-	}
 
 	return (1);
 }
@@ -347,11 +349,22 @@ ion_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
-static void marine_preprocess (ELEMENT *ElementPtr);
 
-void
-intruder_preprocess (ELEMENT *ElementPtr)
-{
+
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class Marine final : public uqm::combat::CombatEntity {
+public:
+    bool boarded_ = false;
+    void update(ELEMENT &self) override { if (boarded_) boarding(self); else flying(self); }
+    void boarding(ELEMENT &self);
+    void flying(ELEMENT &self);
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override;
+};
+}
+void Marine::boarding(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	HELEMENT hElement, hNextElement;
 	ELEMENT *ShipPtr;
 	STARSHIP *StarShipPtr;
@@ -456,10 +469,19 @@ LeftShip:
 		ElementPtr->thrust_wait = 0;
 		ElementPtr->turn_wait =
 				MAKE_BYTE (0, NORMALIZE_FACING ((BYTE)TFB_Random ()));
-		ElementPtr->preprocess_func = marine_preprocess;
+		boarded_ = false;
 	}
+
 }
 
+
+namespace {
+class MarineIonTrail final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &) override {}
+    void expire(ELEMENT &self) override { ion_preprocess(&self); }
+};
+}
 // XXX: merge this with spawn_ion_trail from tactrans.c?
 static void
 spawn_marine_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
@@ -494,7 +516,7 @@ spawn_marine_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
 				(COORD)COSINE (angle, DISPLAY_TO_WORLD (2));
 		IonElementPtr->current.location.y +=
 				(COORD)SINE (angle, DISPLAY_TO_WORLD (2));
-		IonElementPtr->death_func = ion_preprocess;
+		uqm::detail::attachEntity(*IonElementPtr, std::make_unique<MarineIonTrail>(), uqm::detail::EntityHooks::Expiration);
 
 		SetElementStarShip (IonElementPtr, StarShipPtr);
 
@@ -512,9 +534,8 @@ spawn_marine_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
 	}
 }
 
-static void
-marine_preprocess (ELEMENT *ElementPtr)
-{
+void Marine::flying(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	ELEMENT *ShipPtr;
 	STARSHIP *StarShipPtr;
 
@@ -718,12 +739,15 @@ marine_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->thrust_wait = (BYTE)(thrust_status >> 6);
 		}
 	}
+
 }
 
-void
-marine_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
-{
+
+void Marine::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
+    auto *ElementPtr0 = &self;
+    auto *pPt0 = &point;
+    auto *ElementPtr1 = &other;
+    auto *pPt1 = &otherPoint;
 	if (ElementPtr0->life_span
 			&& !(ElementPtr0->state_flags & (NONSOLID | COLLISION))
 			&& !(ElementPtr1->state_flags & FINITE_LIFE))
@@ -784,7 +808,7 @@ marine_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 					SetPrimType (&(GLOBAL (DisplayArray))[
 							ElementPtr0->PrimIndex
 							], NO_PRIM);
-					ElementPtr0->preprocess_func = intruder_preprocess;
+					boarded_ = true;
 
 					s.origin.x = 16 + (ElementPtr0->turn_wait & 3) * 9;
 					s.origin.y = 14 + (ElementPtr0->turn_wait >> 2) * 11;
@@ -802,26 +826,23 @@ marine_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 	(void) pPt0;  /* Satisfying compiler (unused parameter) */
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
+
 }
 
-static void
-animate (ELEMENT *ElementPtr)
-{
-	if (ElementPtr->turn_wait > 0)
-		--ElementPtr->turn_wait;
-	else
-	{
-		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
-		ElementPtr->state_flags |= CHANGING;
 
-		ElementPtr->turn_wait = ElementPtr->next_turn;
-	}
+
+
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class Turret final : public uqm::combat::CombatEntity {
+public:
+    void update(ELEMENT &) override {}
+    void postprocess(ELEMENT &self) override;
+};
 }
-
-static void
-turret_postprocess (ELEMENT *ElementPtr)
-{
+void Turret::postprocess(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	if (ElementPtr->life_span == 0)
 	{
 		STARSHIP *StarShipPtr;
@@ -915,7 +936,7 @@ turret_postprocess (ELEMENT *ElementPtr)
 								StarShipPtr->RaceDescPtr->ship_data.special[0],
 								ANGLE_TO_FACING (FULL_CIRCLE));
 
-						TurretEffectPtr->preprocess_func = animate;
+						uqm::combat::attachAnimation(*TurretEffectPtr);
 
 						SetElementStarShip (TurretEffectPtr, StarShipPtr);
 
@@ -938,7 +959,7 @@ turret_postprocess (ELEMENT *ElementPtr)
 						GetPrimColor (&(GLOBAL (DisplayArray))[
 						ShipPtr->PrimIndex]));
 
-				TurretPtr->postprocess_func = ElementPtr->postprocess_func;
+				uqm::detail::attachEntity(*TurretPtr, std::make_unique<Turret>(), uqm::detail::EntityHooks::Postprocess);
 
 				SetElementStarShip (TurretPtr, StarShipPtr);
 
@@ -979,8 +1000,8 @@ turret_postprocess (ELEMENT *ElementPtr)
 				SpaceMarinePtr->turn_wait =
 						MAKE_BYTE (0, NORMALIZE_FACING (
 						ANGLE_TO_FACING (facing + HALF_CIRCLE)));
-				SpaceMarinePtr->preprocess_func = marine_preprocess;
-				SpaceMarinePtr->collision_func = marine_collision;
+				uqm::detail::attachEntity(*SpaceMarinePtr, std::make_unique<Marine>(), uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision);
+
 
 				SetElementStarShip (SpaceMarinePtr, StarShipPtr);
 
@@ -1002,7 +1023,9 @@ turret_postprocess (ELEMENT *ElementPtr)
 			UnlockElement (StarShipPtr->hShip);
 		}
 	}
+
 }
+
 
 static void
 orz_preprocess (ELEMENT *ElementPtr)
@@ -1046,7 +1069,7 @@ orz_preprocess (ELEMENT *ElementPtr)
 					StarShipPtr->RaceDescPtr->ship_data.special[0],
 					StarShipPtr->ShipFacing);
 
-			TurretPtr->postprocess_func = turret_postprocess;
+			uqm::detail::attachEntity(*TurretPtr, std::make_unique<Turret>(), uqm::detail::EntityHooks::Postprocess);
 
 			SetElementStarShip (TurretPtr, StarShipPtr);
 
@@ -1080,3 +1103,10 @@ uqm::combat::makeOrzShip()
 	return std::make_unique<OrzShip>(orzDefinition());
 }
 
+
+namespace uqm::combat {
+bool isBoardingMarine(const ELEMENT &element) noexcept {
+    const auto *marine = dynamic_cast<const Marine *>(uqm::detail::borrowEntity(disp_q, const_cast<ELEMENT *>(&element)));
+    return marine && marine->boarded_ && element.collision_func;
+}
+}

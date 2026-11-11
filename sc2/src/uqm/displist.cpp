@@ -28,7 +28,9 @@
 #include <vector>
 #include "displist.h"
 #include "fleet_legacy.hpp"
-#include "projectile_legacy.hpp"
+#include "combat_entity_legacy.hpp"
+#include "entity_handle.hpp"
+#include <atomic>
 #include "element.h"
 #include "races.h"
 #include "grpinfo.h"
@@ -44,12 +46,14 @@ struct QueueStorage {
             std::vector<IP_GROUP>, std::vector<ENCOUNTER>,
             std::vector<EVENT>, std::vector<MASTER_SHIP_INFO>> objects;
     std::vector<HLINK> free;
-    std::vector<std::unique_ptr<uqm::combat::Projectile>> projectiles;
+    std::vector<std::unique_ptr<uqm::combat::CombatEntity>> entities;
+    std::vector<std::uint64_t> generations;
     uintptr_t begin = 0;
     size_t capacity = 0;
 };
 
 namespace {
+std::atomic<std::uint64_t> nextEntityGeneration{1};
 // Access only the common two-handle prefix, avoiding C++ type-aliasing rules.
 void setPred(void *object, HLINK pred) { std::memcpy(object, &pred, sizeof pred); }
 void setSucc(void *object, HLINK succ) {
@@ -79,7 +83,10 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
         case QUEUE_MASTER_SHIP: pool->objects.emplace<std::vector<MASTER_SHIP_INFO>>(capacity); break;
         default: std::terminate();
     }
-    if (kind == QUEUE_ELEMENT) pool->projectiles.resize(capacity);
+    if (kind == QUEUE_ELEMENT) {
+        pool->entities.resize(capacity);
+        pool->generations.resize(capacity);
+    }
     pool->capacity = capacity;
     pool->free.reserve(capacity);
     std::visit([&](auto &objects) {
@@ -111,7 +118,8 @@ void ReinitQueue(QUEUE *queue) {
     assert(queue && queue->storage);
     queue->head = queue->tail = nullptr;
     auto &pool = *queue->storage;
-    for (auto &projectile : pool.projectiles) projectile.reset();
+    for (auto &entity : pool.entities) entity.reset();
+    std::fill(pool.generations.begin(), pool.generations.end(), 0);
     pool.free.clear();
     std::visit([&](auto &objects) {
         for (auto it = objects.rbegin(); it != objects.rend(); ++it)
@@ -125,6 +133,12 @@ HLINK AllocLink(QUEUE *queue) {
         return nullptr;
     const auto link = free.back();
     free.pop_back();
+    auto &pool = *queue->storage;
+    if (!pool.generations.empty()) {
+        const auto generation = nextEntityGeneration.fetch_add(1, std::memory_order_relaxed);
+        if (!generation) std::terminate();
+        pool.generations[(reinterpret_cast<uintptr_t>(link) - pool.begin) / queue->object_size] = generation;
+    }
     if (std::holds_alternative<std::vector<uqm::Ship>>(queue->storage->objects))
         uqm::detail::FleetAccess::activate(uqm::detail::FleetAccess::ship(*static_cast<SHIP_FRAGMENT *>(link)));
     return link;
@@ -133,8 +147,11 @@ void FreeLink(QUEUE *queue, HLINK link) {
     assert(link && contains(queue, link));
     auto &pool = *queue->storage;
     assert(pool.free.size() < pool.capacity);
-    if (!pool.projectiles.empty())
-        pool.projectiles[(reinterpret_cast<uintptr_t>(link) - pool.begin) / queue->object_size].reset();
+    if (!pool.entities.empty()) {
+        const auto index = (reinterpret_cast<uintptr_t>(link) - pool.begin) / queue->object_size;
+        pool.generations[index] = 0;
+        pool.entities[index].reset();
+    }
     pool.free.push_back(link); // Capacity was reserved in InitQueue.
 }
 LINK *LockLink(const QUEUE *queue, HLINK link) {
@@ -176,14 +193,31 @@ void ForAllLinks(QUEUE *queue, void (*callback)(LINK *, void *), void *arg) try 
 } catch (...) { std::terminate(); }
 
 namespace uqm::detail {
-void bindProjectile(QUEUE &queue, HLINK link, std::unique_ptr<combat::Projectile> projectile) {
-    assert(contains(&queue, link) && !queue.storage->projectiles.empty());
-    auto &owner = queue.storage->projectiles[(reinterpret_cast<uintptr_t>(link) - queue.storage->begin) / queue.object_size];
+void bindEntity(QUEUE &queue, HLINK link, std::unique_ptr<combat::CombatEntity> entity) {
+    assert(contains(&queue, link) && !queue.storage->entities.empty());
+    auto &owner = queue.storage->entities[(reinterpret_cast<uintptr_t>(link) - queue.storage->begin) / queue.object_size];
     assert(!owner);
-    owner = std::move(projectile);
+    owner = std::move(entity);
 }
-combat::Projectile *borrowProjectile(const QUEUE &queue, HLINK link) noexcept {
-    if (!contains(&queue, link) || queue.storage->projectiles.empty()) return nullptr;
-    return queue.storage->projectiles[(reinterpret_cast<uintptr_t>(link) - queue.storage->begin) / queue.object_size].get();
+combat::CombatEntity *borrowEntity(const QUEUE &queue, HLINK link) noexcept {
+    if (!contains(&queue, link) || queue.storage->entities.empty()) return nullptr;
+    return queue.storage->entities[(reinterpret_cast<uintptr_t>(link) - queue.storage->begin) / queue.object_size].get();
+}
+}
+
+namespace uqm::combat {
+EntityHandle EntityHandle::capture(const QUEUE &queue, const ELEMENT &element) noexcept {
+    EntityHandle result;
+    auto *slot = const_cast<ELEMENT *>(&element);
+    if (!contains(&queue, slot) || queue.storage->generations.empty()) return result;
+    result.slot_ = slot;
+    result.generation_ = queue.storage->generations[(reinterpret_cast<uintptr_t>(slot) - queue.storage->begin) / queue.object_size];
+    return result;
+}
+std::optional<std::reference_wrapper<ELEMENT>> EntityHandle::resolve(const QUEUE &queue) const noexcept {
+    if (!generation_ || !contains(&queue, slot_) || queue.storage->generations.empty()) return std::nullopt;
+    const auto generation = queue.storage->generations[(reinterpret_cast<uintptr_t>(slot_) - queue.storage->begin) / queue.object_size];
+    if (generation != generation_) return std::nullopt;
+    return std::ref(*slot_);
 }
 }

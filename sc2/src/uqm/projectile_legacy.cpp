@@ -1,38 +1,6 @@
 #include "projectile_legacy.hpp"
 #include "weapon.h"
 #include <utility>
-namespace uqm::detail {
-void ProjectileAccess::visual(combat::Projectile &projectile, ElementProcessFunc *callback) noexcept {
-    projectile.visualUpdate_ = callback;
-}
-void ProjectileAccess::advance(combat::Projectile &projectile, ELEMENT &element) {
-    if (projectile.visualUpdate_) projectile.visualUpdate_(&element);
-    projectile.update(element);
-}
-void ProjectileAccess::collision(combat::Projectile &projectile, ElementCollisionFunc *callback) noexcept {
-    projectile.legacyCollision_ = callback;
-}
-void ProjectileAccess::collide(combat::Projectile &projectile, ELEMENT &self, POINT &selfPoint, ELEMENT &other, POINT &otherPoint) {
-    if (projectile.legacyCollision_) projectile.legacyCollision_(&self, &selfPoint, &other, &otherPoint);
-    else projectile.collide(self, selfPoint, other, otherPoint);
-}
-}
-namespace {
-void updateProjectile(ELEMENT *element) {
-    if (auto *projectile = uqm::detail::borrowProjectile(disp_q, element))
-        uqm::detail::ProjectileAccess::advance(*projectile, *element);
-}
-void postprocessProjectile(ELEMENT *element) {
-    if (auto *projectile = uqm::detail::borrowProjectile(disp_q, element)) projectile->postprocess(*element);
-}
-void collideProjectile(ELEMENT *self, POINT *point, ELEMENT *other, POINT *otherPoint) {
-    if (auto *projectile = uqm::detail::borrowProjectile(disp_q, self))
-        uqm::detail::ProjectileAccess::collide(*projectile, *self, *point, *other, *otherPoint);
-}
-}
-void uqm::detail::enableProjectilePostprocess(ELEMENT &element) noexcept {
-    element.postprocess_func = postprocessProjectile;
-}
 void uqm::combat::Projectile::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     weapon_collision(&self, &point, &other, &otherPoint);
 }
@@ -53,7 +21,7 @@ HELEMENT uqm::combat::publishProjectile(std::unique_ptr<Projectile> projectile,
     block.blast_offs = definition.blastOffset;
     block.farray = sprites;
     block.face = launch.facing;
-    block.preprocess_func = updateProjectile;
+    block.preprocess_func = nullptr;
     // initialize_missile publishes the legacy graphics/collision representation.
     // Supply zero speed/offset, then apply the ship's explicit initial motion.
     const auto handle = initialize_missile(&block);
@@ -66,11 +34,11 @@ HELEMENT uqm::combat::publishProjectile(std::unique_ptr<Projectile> projectile,
     GetCurrentVelocityComponents(&velocity, &dx, &dy);
     element->current.location.x -= VELOCITY_TO_WORLD(dx);
     element->current.location.y -= VELOCITY_TO_WORLD(dy);
-    element->collision_func = collideProjectile;
+    uqm::detail::enableEntityHooks(*element, uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision);
     if (projectile->hasPostprocess()) uqm::detail::enableProjectilePostprocess(*element);
-    uqm::detail::ProjectileAccess::collision(*projectile, collision);
-    uqm::detail::ProjectileAccess::visual(*projectile, visualUpdate);
-    uqm::detail::bindProjectile(disp_q, handle, std::move(projectile));
+    uqm::detail::EntityAccess::collision(*projectile, collision);
+    uqm::detail::EntityAccess::visual(*projectile, visualUpdate);
+    uqm::detail::bindEntity(disp_q, handle, std::move(projectile));
     UnlockElement(handle);
     return handle;
 }

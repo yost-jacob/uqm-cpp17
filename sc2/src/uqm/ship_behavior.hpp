@@ -2,7 +2,7 @@
 #define UQM_SHIP_BEHAVIOR_HPP_
 
 #include "races.h"
-#include "element.h"
+#include "combat_entity.hpp"
 #include <array>
 
 namespace uqm::combat {
@@ -11,7 +11,7 @@ using WeaponSlots = std::array<HELEMENT, 6>;
 // Production migration boundary. Each concrete ship owns its mutable descriptor;
 // native execution/AI code dispatches directly; C element/asset code borrows it.
 // Native hooks take references; projectile callbacks remain in the element engine.
-class Ship {
+class Ship : public CombatEntity {
 public:
     explicit Ship(const RACE_DESC &definition) noexcept;
     virtual ~Ship() = default;
@@ -22,8 +22,8 @@ public:
     const RACE_DESC &legacyData() const noexcept { return data_; }
     // element is a live ship element belonging to this behavior. Hooks may mutate
     // it and the descriptor; finish() makes subsequent hooks inert.
-    void preprocess(ELEMENT &element) noexcept;
-    void postprocess(ELEMENT &element) noexcept;
+    void update(ELEMENT &element) noexcept override;
+    void postprocess(ELEMENT &element) noexcept override;
     // element is the live ship or an AI prediction copy with a valid STARSHIP
     // association. Clears all slots, then returns the number of candidate slots
     // (at most weapons.size()); individual handles may be null. The caller must

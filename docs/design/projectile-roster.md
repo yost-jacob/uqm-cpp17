@@ -33,8 +33,9 @@ allocation boundary. Laser beams use their existing separate engine path.
 ELEMENT remains authoritative for mutable position, damage, lifetime and collision
 state. Specialized classes still borrow those fields and existing ship input;
 this is an incremental migration, not a replacement physics engine. Fighters,
-marines, DOGIs, satellites, transformations, explosion effects and attached
-confusion effects remain their existing autonomous entity/effect implementations.
+marines, DOGIs, satellites, asteroids and effects subsequently gained the common
+[CombatEntity lifecycle](combat-entities.md). Transformations and engine resource
+services retain their existing implementations.
 
 Raw ELEMENT copies never copy native ownership. Kohr-Ah's queue relocation
 explicitly clones its saw phase into the destination owner. Chenjesu AI and

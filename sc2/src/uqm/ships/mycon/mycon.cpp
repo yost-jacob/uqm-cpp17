@@ -23,6 +23,8 @@
 #include "uqm/projectile_legacy.hpp"
 #include <algorithm>
 #include "resinst.h"
+#include "uqm/combat_entity_legacy.hpp"
+#include "uqm/animation_effect.hpp"
 
 // Balance values are immutable, loaded from base/ships.json at startup.
 static const uqm::combat::ShipTuning &tuning() {
@@ -132,9 +134,17 @@ public:
     }
 };
 
-static void
-plasma_blast_preprocess (ELEMENT *ElementPtr)
-{
+
+// Native autonomous unit; all engine records are borrowed for each hook.
+namespace {
+class PlasmaImpact final : public uqm::combat::CombatEntity {
+public:
+
+    void update(ELEMENT &self) override;
+};
+}
+void PlasmaImpact::update(ELEMENT &self) {
+    auto *ElementPtr = &self;
 	if (ElementPtr->life_span >= ElementPtr->thrust_wait)
 		ElementPtr->next.image.frame =
 				IncFrameIndex (ElementPtr->next.image.frame);
@@ -151,7 +161,9 @@ plasma_blast_preprocess (ELEMENT *ElementPtr)
 	}
 
 	ElementPtr->state_flags |= CHANGING;
+
 }
+
 
 void PlasmaProjectile::collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) {
     auto *ElementPtr0 = &self;
@@ -193,7 +205,7 @@ void PlasmaProjectile::collide(ELEMENT &self, POINT &point, ELEMENT &other, POIN
 		BlastElementPtr->thrust_wait = (BYTE)num_animations;
 		BlastElementPtr->life_span = (num_animations << 1) - 1;
 		{
-			BlastElementPtr->preprocess_func = plasma_blast_preprocess;
+			uqm::detail::attachEntity(*BlastElementPtr, std::make_unique<PlasmaImpact>(), uqm::detail::EntityHooks::Update);
 		}
 		BlastElementPtr->current.image.farray = ElementPtr0->next.image.farray;
 		BlastElementPtr->current.image.frame =

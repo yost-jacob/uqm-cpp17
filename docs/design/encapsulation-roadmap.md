@@ -52,8 +52,9 @@ incarnation derives weapon mounts/factories from its equipment; published native
 projectiles own their flight configuration and steering timers. The element pool
 owns them with unique_ptr and releases them on free/reset/teardown. The remaining
 missile builders now publish native flight/collision behaviors too, with shared
-JSON guidance settings. Laser beams, autonomous units, effects and the underlying
-collision/render backend remain legacy. See [SIS and projectile ownership](sis-projectiles.md)
+JSON guidance settings. Ships and projectiles share CombatEntity with autonomous
+units, effects, asteroids and the planet. The underlying collision/render backend
+and laser allocation remain compatibility services. See [combat entities](combat-entities.md). See [SIS and projectile ownership](sis-projectiles.md)
 and the [projectile roster migration](projectile-roster.md).
 
 ## State naming

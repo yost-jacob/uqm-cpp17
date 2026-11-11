@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(native_ship_dispatch_reaches_overrides_and_clears_unused_we
     WeaponSlots weapons;
     for (auto &weapon : weapons) weapon = descriptor;
     auto &ship = uqm::combat::shipFor(*descriptor);
-    ship.preprocess(element);
+    ship.update(element);
     ship.postprocess(element);
     const auto count = ship.initializeWeapon(element, weapons);
     BOOST_TEST(count == 1u);
@@ -77,11 +77,11 @@ BOOST_AUTO_TEST_CASE(ship_preprocessing_can_be_disabled_and_restored_without_rep
     TestShip ship(RACE_DESC{}, calls);
     ELEMENT element{};
     ship.enablePreprocessing(false);
-    ship.preprocess(element);
+    ship.update(element);
     BOOST_TEST(calls.before == 0u);
     BOOST_TEST(!ship.preprocessingEnabled());
     ship.enablePreprocessing(true);
-    ship.preprocess(element);
+    ship.update(element);
     BOOST_TEST(calls.before == 1u);
     ship.postprocess(element);
     BOOST_TEST(calls.after == 1u); // Disabling preprocessing does not replace postprocessing.
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(ship_completion_is_idempotent_and_blocks_further_gameplay_h
         ship.finish();
         ship.finish();
         BOOST_TEST(calls.finish == 1u);
-        ship.preprocess(element);
+        ship.update(element);
         ship.postprocess(element);
         BOOST_TEST(ship.initializeWeapon(element, weapons) == 0u);
         BOOST_TEST(calls.before == 0u);
