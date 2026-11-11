@@ -27,8 +27,10 @@ its existing MISSILE_BLOCK builder. `prepareMissile` converts this into detached
 native definition/launch values; `publishMissile<Flight>` constructs the behavior
 and transfers its unique ownership to the element pool. This keeps C layout and
 asset ownership unchanged while removing projectile function-pointer selection
-from ship builders. The low-level initialize_missile function remains the graphics
-allocation boundary. Laser beams use their existing separate engine path.
+from ship builders. The publisher now initializes the engine record directly
+from those typed values; initialize_missile and its duplicate C construction path
+are deleted. Beams use BeamLaunch and a pool-owned Beam behavior; LASER_BLOCK
+and initialize_laser are also deleted. See [the current ownership checkpoint](native-entity-checkpoint.md).
 
 ELEMENT remains authoritative for mutable position, damage, lifetime and collision
 state. Specialized classes still borrow those fields and existing ship input;

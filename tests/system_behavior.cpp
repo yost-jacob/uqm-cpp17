@@ -332,7 +332,8 @@ BOOST_AUTO_TEST_CASE(system_keeps_behavior_identity_when_generated_layout_is_att
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
     auto &story = state.player(uqm::SinglePlayerId).story();
-    UQM_SYSTEM_RUNTIME context{story, state.worldOwner(), nullptr};
+    uqm::SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME context{story, simulation, state.worldOwner(), nullptr};
     SOLARSYS_STATE system{};
     system.worlds = &context;
     // Exercise native ownership/layout independently of catalogue loading.
@@ -382,7 +383,8 @@ BOOST_AUTO_TEST_CASE(default_system_hooks_forward_all_thirteen_existing_contract
 extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
     uqm::GameState state{{uqm::SinglePlayerId, "Local campaign"}};
     auto &story = state.player(uqm::SinglePlayerId).story();
-    UQM_SYSTEM_RUNTIME context{story, state.worldOwner(), nullptr};
+    uqm::SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME context{story, simulation, state.worldOwner(), nullptr};
     SOLARSYS_STATE system{};
     system.worlds = &context;
     PrepareSystemWorlds(&system, star);
@@ -470,7 +472,33 @@ BOOST_AUTO_TEST_CASE(syreen_native_overrides_keep_shielded_planet_and_starbase_m
     BOOST_TEST(defaultCalls[4] == 1u);
 }
 
-namespace uqm { void runExploration(UQM_SYSTEM_RUNTIME &) {} }
+namespace { std::function<void(UQM_SYSTEM_RUNTIME &)> explorationHook; }
+namespace uqm { void runExploration(UQM_SYSTEM_RUNTIME &runtime) {
+    if (explorationHook) explorationHook(runtime);
+} }
+BOOST_AUTO_TEST_CASE(exploration_selects_its_explicit_engine_and_restores_the_callers_binding)
+{
+    auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
+    uqm::GameSession session{state, uqm::SinglePlayerId};
+    uqm::SimulationEngine source(3), unrelated(2);
+    uqm::SimulationBinding caller{unrelated};
+    uqm::SolarSystemExploration exploration{session, source};
+    struct Reset { ~Reset() { explorationHook = {}; } } reset;
+    unsigned visits = 0;
+    explorationHook = [&](UQM_SYSTEM_RUNTIME &runtime) {
+        ++visits;
+        BOOST_TEST(&runtime.simulation == &source);
+        BOOST_TEST(&uqm::simulationEngine() == &source);
+        BOOST_TEST(&runtime.story == &session.player().story());
+        BOOST_TEST(runtime.session == &session);
+        if (visits == 2) throw std::runtime_error("exploration cancelled");
+    };
+    exploration.run();
+    BOOST_TEST(&uqm::simulationEngine() == &unrelated);
+    BOOST_CHECK_THROW(exploration.run(), std::runtime_error);
+    BOOST_TEST(&uqm::simulationEngine() == &unrelated);
+    BOOST_TEST(visits == 2u);
+}
 
 namespace {
 class TestSystemRule final : public uqm::SystemBehavior {

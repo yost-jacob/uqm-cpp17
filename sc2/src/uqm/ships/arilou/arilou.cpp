@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -111,23 +112,23 @@ initialize_autoaim_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 	COUNT orig_facing;
 	SIZE delta_facing;
 	STARSHIP *StarShipPtr;
-	LASER_BLOCK LaserBlock;
+	uqm::combat::BeamLaunch beam{};
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
-	LaserBlock.face = orig_facing = StarShipPtr->ShipFacing;
-	if ((delta_facing = TrackShip (ShipPtr, &LaserBlock.face)) > 0)
-		LaserBlock.face = NORMALIZE_FACING (orig_facing + delta_facing);
+	beam.facing = orig_facing = StarShipPtr->ShipFacing;
+	if ((delta_facing = TrackShip (ShipPtr, &beam.facing)) > 0)
+		beam.facing = NORMALIZE_FACING (orig_facing + delta_facing);
 	ShipPtr->hTarget = 0;
 
-	LaserBlock.cx = ShipPtr->next.location.x;
-	LaserBlock.cy = ShipPtr->next.location.y;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.sender = ShipPtr->playerNr;
-	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = ArilouOffset;
-	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
-	LaserArray[0] = initialize_laser (&LaserBlock);
+	beam.origin.x = ShipPtr->next.location.x;
+	beam.origin.y = ShipPtr->next.location.y;
+	beam.displacement.x = COSINE (FACING_TO_ANGLE (beam.facing), LaserRange);
+	beam.displacement.y = SINE (FACING_TO_ANGLE (beam.facing), LaserRange);
+	beam.player = ShipPtr->playerNr;
+	beam.flags = IGNORE_SIMILAR;
+	beam.muzzleOffset = ArilouOffset;
+	beam.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
+	LaserArray[0] = uqm::combat::publishBeam(beam);
 
 	return (1);
 }

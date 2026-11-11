@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -121,9 +122,9 @@ static const RACE_DESC &chmmrDefinition() {
 
 // Native autonomous unit; all engine records are borrowed for each hook.
 namespace {
-class ChmmrBeam final : public uqm::combat::CombatEntity {
+class ChmmrBeam final : public uqm::combat::Beam {
 public:
-    void update(ELEMENT &) override {}
+    bool hasExpiration() const noexcept override { return true; }
     void expire(ELEMENT &self) override;
 };
 }
@@ -204,7 +205,7 @@ initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 {
 	RECT r;
 	STARSHIP *StarShipPtr;
-	LASER_BLOCK LaserBlock;
+	uqm::combat::BeamLaunch beam{};
 	static const Color cycle_array[] =
 	{
 		BUILD_COLOR (MAKE_RGB15_INIT (0x17, 0x00, 0x00), 0x2B),
@@ -214,21 +215,21 @@ initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 	};
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
-	LaserBlock.face = StarShipPtr->ShipFacing;
+	beam.facing = StarShipPtr->ShipFacing;
 	GetFrameRect (SetAbsFrameIndex (
-			StarShipPtr->RaceDescPtr->ship_data.weapon[0], LaserBlock.face
+			StarShipPtr->RaceDescPtr->ship_data.weapon[0], beam.facing
 			), &r);
-	LaserBlock.cx = DISPLAY_ALIGN (ShipPtr->next.location.x)
+	beam.origin.x = DISPLAY_ALIGN (ShipPtr->next.location.x)
 			+ DISPLAY_TO_WORLD (r.corner.x);
-	LaserBlock.cy = DISPLAY_ALIGN (ShipPtr->next.location.y)
+	beam.origin.y = DISPLAY_ALIGN (ShipPtr->next.location.y)
 			+ DISPLAY_TO_WORLD (r.corner.y);
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.sender = ShipPtr->playerNr;
-	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = 0;
-	LaserBlock.color = cycle_array[StarShipPtr->special_counter];
-	LaserArray[0] = initialize_laser (&LaserBlock);
+	beam.displacement.x = COSINE (FACING_TO_ANGLE (beam.facing), LaserRange);
+	beam.displacement.y = SINE (FACING_TO_ANGLE (beam.facing), LaserRange);
+	beam.player = ShipPtr->playerNr;
+	beam.flags = IGNORE_SIMILAR;
+	beam.muzzleOffset = 0;
+	beam.color = cycle_array[StarShipPtr->special_counter];
+	LaserArray[0] = uqm::combat::publishBeam(beam, std::make_unique<ChmmrBeam>());
 
 	if (LaserArray[0])
 	{
@@ -237,7 +238,6 @@ initialize_megawatt_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 		LockElement (LaserArray[0], &LaserPtr);
 
 		LaserPtr->mass_points = 2;
-		uqm::detail::attachEntity(*LaserPtr, std::make_unique<ChmmrBeam>(), uqm::detail::EntityHooks::Expiration);
 		LaserPtr->turn_wait = (BYTE)((StarShipPtr->special_counter + 1)
 				% NumCycles);
 
@@ -576,23 +576,23 @@ void PointDefense::expire(ELEMENT &self) {
 
 	if (hBestObject)
 	{
-		LASER_BLOCK LaserBlock;
+		uqm::combat::BeamLaunch beam{};
 		HELEMENT hPointDefense;
 
 		LockElement (hBestObject, &ObjectPtr);
 
-		LaserBlock.cx = SattPtr->next.location.x;
-		LaserBlock.cy = SattPtr->next.location.y;
-		LaserBlock.face = 0;
-		LaserBlock.ex = ObjectPtr->next.location.x
+		beam.origin.x = SattPtr->next.location.x;
+		beam.origin.y = SattPtr->next.location.y;
+		beam.facing = 0;
+		beam.displacement.x = ObjectPtr->next.location.x
 				- SattPtr->next.location.x;
-		LaserBlock.ey = ObjectPtr->next.location.y
+		beam.displacement.y = ObjectPtr->next.location.y
 				- SattPtr->next.location.y;
-		LaserBlock.sender = SattPtr->playerNr;
-		LaserBlock.flags = IGNORE_SIMILAR;
-		LaserBlock.pixoffs = 0;
-		LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x00, 0x01, 0x1F), 0x4D);
-		hPointDefense = initialize_laser (&LaserBlock);
+		beam.player = SattPtr->playerNr;
+		beam.flags = IGNORE_SIMILAR;
+		beam.muzzleOffset = 0;
+		beam.color = BUILD_COLOR (MAKE_RGB15 (0x00, 0x01, 0x1F), 0x4D);
+		hPointDefense = uqm::combat::publishBeam(beam);
 		if (hPointDefense)
 		{
 			ELEMENT *PDPtr;

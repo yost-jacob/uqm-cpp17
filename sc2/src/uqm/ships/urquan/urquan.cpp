@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -166,19 +167,19 @@ void Fighter::postprocess(ELEMENT &self) {
     auto *ElementPtr = &self;
 	HELEMENT Laser;
 	STARSHIP *StarShipPtr;
-	LASER_BLOCK LaserBlock;
+	uqm::combat::BeamLaunch beam{};
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
-	LaserBlock.cx = ElementPtr->next.location.x;
-	LaserBlock.cy = ElementPtr->next.location.y;
-	LaserBlock.face = ElementPtr->thrust_wait;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), FighterLaserRange);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), FighterLaserRange);
-	LaserBlock.sender = ElementPtr->playerNr;
-	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = FighterOffset;
-	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
-	Laser = initialize_laser (&LaserBlock);
+	beam.origin.x = ElementPtr->next.location.x;
+	beam.origin.y = ElementPtr->next.location.y;
+	beam.facing = ElementPtr->thrust_wait;
+	beam.displacement.x = COSINE (FACING_TO_ANGLE (beam.facing), FighterLaserRange);
+	beam.displacement.y = SINE (FACING_TO_ANGLE (beam.facing), FighterLaserRange);
+	beam.player = ElementPtr->playerNr;
+	beam.flags = IGNORE_SIMILAR;
+	beam.muzzleOffset = FighterOffset;
+	beam.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
+	Laser = uqm::combat::publishBeam(beam);
 	if (Laser)
 	{
 		ELEMENT *LaserPtr;

@@ -9,25 +9,22 @@ HELEMENT uqm::combat::publishProjectile(std::unique_ptr<Projectile> projectile,
     if (!projectile || !sprites) return nullptr;
     const auto &definition = projectile->definition();
     const auto &launch = projectile->launch();
-    MISSILE_BLOCK block{};
-    block.cx = launch.position.x;
-    block.cy = launch.position.y;
-    block.sender = player;
-    block.flags = definition.flags;
-    block.hit_points = definition.stats.hitPoints;
-    block.damage = definition.stats.damage;
-    block.life = definition.stats.lifetime;
-    block.index = definition.frameIndex;
-    block.blast_offs = definition.blastOffset;
-    block.farray = sprites;
-    block.face = launch.facing;
-    block.preprocess_func = nullptr;
-    // initialize_missile publishes the legacy graphics/collision representation.
-    // Supply zero speed/offset, then apply the ship's explicit initial motion.
-    const auto handle = initialize_missile(&block);
+    const auto handle = AllocElement();
     if (!handle) return nullptr;
     ELEMENT *element;
     LockElement(handle, &element);
+    // The native definition owns launch/flight policy. Only this publishing
+    // boundary writes the engine's packed physics and sprite representation.
+    element->hit_points = static_cast<BYTE>(definition.stats.hitPoints);
+    element->mass_points = static_cast<BYTE>(definition.stats.damage);
+    element->playerNr = player;
+    element->state_flags = APPEARING | FINITE_LIFE | definition.flags;
+    element->life_span = definition.stats.lifetime;
+    element->blast_offset = static_cast<BYTE>(definition.blastOffset);
+    SetPrimType(&DisplayArray[element->PrimIndex], STAMP_PRIM);
+    element->current.image.farray = sprites;
+    element->current.image.frame = SetAbsFrameIndex(sprites[0], definition.frameIndex);
+    element->current.location = launch.position;
     element->velocity = launch.velocity;
     SIZE dx, dy;
     auto velocity = launch.velocity;

@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -228,19 +229,19 @@ static COUNT
 initialize_horrific_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 {
 	STARSHIP *StarShipPtr;
-	LASER_BLOCK LaserBlock;
+	uqm::combat::BeamLaunch beam{};
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
-	LaserBlock.face = StarShipPtr->ShipFacing;
-	LaserBlock.cx = ShipPtr->next.location.x;
-	LaserBlock.cy = ShipPtr->next.location.y;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.sender = ShipPtr->playerNr;
-	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = VuxOffset;
-	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x0A), 0x0A);
-	LaserArray[0] = initialize_laser (&LaserBlock);
+	beam.facing = StarShipPtr->ShipFacing;
+	beam.origin.x = ShipPtr->next.location.x;
+	beam.origin.y = ShipPtr->next.location.y;
+	beam.displacement.x = COSINE (FACING_TO_ANGLE (beam.facing), LaserRange);
+	beam.displacement.y = SINE (FACING_TO_ANGLE (beam.facing), LaserRange);
+	beam.player = ShipPtr->playerNr;
+	beam.flags = IGNORE_SIMILAR;
+	beam.muzzleOffset = VuxOffset;
+	beam.color = BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x0A), 0x0A);
+	LaserArray[0] = uqm::combat::publishBeam(beam);
 
 	return (1);
 }

@@ -1,4 +1,6 @@
 #include "uqm/projectile.hpp"
+#include "uqm/beam.hpp"
+#include "uqm/init.h"
 #include "uqm/projectile_legacy.hpp"
 #include "uqm/sis_weapons.hpp"
 #include "uqm/sis_legacy.hpp"
@@ -10,7 +12,7 @@
 #include <stdexcept>
 using namespace uqm::combat;
 namespace {
-unsigned trackingCalls = 0, visualCalls = 0;
+unsigned trackingCalls = 0, visualCalls = 0, defaultCollisionCalls = 0;
 bool targetPresent = true;
 SIZE targetDelta = 1;
 ProjectileDefinition projectileDefinition(unsigned period = 2) {
@@ -37,7 +39,9 @@ struct CountingProjectile final : Projectile {
 // steering timers, velocity math, publishing adapter and pool ownership run.
 extern "C" {
 
-HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { return nullptr; }
+HELEMENT weapon_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { ++defaultCollisionCalls; return nullptr; }
+FRAME stars_in_space = nullptr;
+FRAME DecFrameIndex(FRAME frame) { return reinterpret_cast<FRAME>(reinterpret_cast<std::uintptr_t>(frame) - 1); }
 FRAME IncFrameIndex(FRAME frame) { return reinterpret_cast<FRAME>(reinterpret_cast<std::uintptr_t>(frame) + 1); }
 COUNT GetFrameIndex(FRAME frame) { return static_cast<COUNT>(reinterpret_cast<std::uintptr_t>(frame)); }
 FRAME SetAbsFrameIndex(FRAME, COUNT index) { return reinterpret_cast<FRAME>(std::uintptr_t(index)); }
@@ -47,16 +51,11 @@ SIZE TrackShip(ELEMENT *, COUNT *facing) {
     *facing = NORMALIZE_FACING(*facing + 1);
     return targetDelta;
 }
-HELEMENT initialize_missile(MISSILE_BLOCK *block) {
+HELEMENT AllocElement() {
     const auto link = AllocLink(&disp_q);
     if (!link) return nullptr;
     auto &element = *reinterpret_cast<ELEMENT *>(link);
     element = {};
-    element.current.location = {block->cx, block->cy};
-    element.mass_points = block->damage;
-    element.hit_points = block->hit_points;
-    element.life_span = block->life;
-    element.preprocess_func = block->preprocess_func;
     return link;
 }
 }
@@ -288,4 +287,132 @@ BOOST_AUTO_TEST_CASE(configured_projectile_distinguishes_direct_and_gradual_guid
         targetPresent = true;
     }
     targetDelta = 1;
+}
+
+BOOST_FIXTURE_TEST_CASE(projectile_publication_applies_typed_definition_and_initial_motion_directly, Pool)
+{
+    auto definition = projectileDefinition(0);
+    definition.frameIndex = 9;
+    definition.blastOffset = 7;
+    definition.stats.hitPoints = 3;
+    definition.stats.damage = 5;
+    definition.flags = IGNORE_SIMILAR | DEFY_PHYSICS;
+    ProjectileLaunch launch{};
+    launch.position = {1200, 900};
+    launch.facing = 3;
+    SetVelocityComponents(&launch.velocity, WORLD_TO_VELOCITY(7), WORLD_TO_VELOCITY(-4));
+    FRAME sprites[3]{};
+    const auto handle = publishProjectile(ProjectileFactory{definition}.create(launch), sprites, 1, nullptr, nullptr);
+    BOOST_REQUIRE(handle);
+    const auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_TEST(element.playerNr == 1);
+    BOOST_TEST(element.hit_points == 3u);
+    BOOST_TEST(element.mass_points == 5u);
+    BOOST_TEST(element.life_span == definition.stats.lifetime);
+    BOOST_TEST(element.blast_offset == 7u);
+    BOOST_TEST(element.state_flags == (APPEARING | FINITE_LIFE | definition.flags));
+    BOOST_TEST(element.current.image.farray == sprites);
+    BOOST_TEST(GetFrameIndex(element.current.image.frame) == 9u);
+    BOOST_TEST(GetPrimType(&DisplayArray[element.PrimIndex]) == STAMP_PRIM);
+    // The engine integrates once on the publication tick: back up by exactly
+    // one supplied velocity step so the shot first appears at its muzzle.
+    BOOST_TEST(element.current.location.x == 1193);
+    BOOST_TEST(element.current.location.y == 904);
+    auto velocity = element.velocity;
+    SIZE dx, dy;
+    GetCurrentVelocityComponents(&velocity, &dx, &dy);
+    BOOST_TEST(dx == WORLD_TO_VELOCITY(7));
+    BOOST_TEST(dy == WORLD_TO_VELOCITY(-4));
+    BOOST_TEST(element.pParent == nullptr);
+    BOOST_REQUIRE(uqm::detail::borrowEntity(disp_q, handle));
+}
+
+BOOST_FIXTURE_TEST_CASE(native_beam_preserves_segment_endpoint_muzzle_offset_and_default_collision, Pool)
+{
+    BeamLaunch launch{};
+    launch.origin = {1000, 800};
+    launch.displacement = {300, -120};
+    launch.muzzleOffset = 4;
+    launch.player = 1;
+    launch.flags = IGNORE_SIMILAR;
+    launch.color = BUILD_COLOR(MAKE_RGB15(10, 20, 30), 5);
+    const auto handle = publishBeam(launch);
+    BOOST_REQUIRE(handle);
+    auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_TEST(element.playerNr == 1);
+    BOOST_TEST(element.hit_points == 1u);
+    BOOST_TEST(element.mass_points == 1u);
+    BOOST_TEST(element.life_span == 1u);
+    BOOST_TEST(element.blast_offset == 1u);
+    BOOST_TEST(element.state_flags == (APPEARING | FINITE_LIFE | IGNORE_SIMILAR));
+    BOOST_TEST(element.current.location.x == 1000);
+    BOOST_TEST(element.current.location.y == 800 - DISPLAY_TO_WORLD(4));
+    auto velocity = element.velocity;
+    SIZE dx, dy;
+    GetCurrentVelocityComponents(&velocity, &dx, &dy);
+    BOOST_TEST(element.current.location.x + VELOCITY_TO_WORLD(dx) == 1300);
+    BOOST_TEST(element.current.location.y + VELOCITY_TO_WORLD(dy) == 680);
+    BOOST_TEST(GetPrimType(&DisplayArray[element.PrimIndex]) == LINE_PRIM);
+    BOOST_TEST(sameColor(GetPrimColor(&DisplayArray[element.PrimIndex]), launch.color));
+    BOOST_TEST(element.current.image.farray == &stars_in_space);
+    BOOST_TEST(element.preprocess_func == nullptr);
+    BOOST_REQUIRE(dynamic_cast<Beam *>(uqm::detail::borrowEntity(disp_q, handle)));
+    defaultCollisionCalls = 0;
+    ELEMENT target{}; POINT point{};
+    element.collision_func(&element, &point, &target, &point);
+    BOOST_TEST(defaultCollisionCalls == 1u);
+    FreeLink(&disp_q, handle);
+    BOOST_TEST(uqm::detail::borrowEntity(disp_q, handle) == nullptr);
+}
+
+BOOST_FIXTURE_TEST_CASE(native_beam_handles_zero_length_segments_and_pool_exhaustion, Pool)
+{
+    const auto first = publishBeam({}), second = publishBeam({});
+    BOOST_REQUIRE(first); BOOST_REQUIRE(second);
+    BOOST_TEST(publishBeam({}) == nullptr);
+    auto &element = *static_cast<ELEMENT *>(first);
+    auto velocity = element.velocity;
+    SIZE dx, dy;
+    GetCurrentVelocityComponents(&velocity, &dx, &dy);
+    BOOST_TEST(dx == 0); BOOST_TEST(dy == 0);
+    FreeLink(&disp_q, first);
+    const auto replacement = publishBeam({});
+    BOOST_TEST(replacement == first);
+    BOOST_REQUIRE(dynamic_cast<Beam *>(uqm::detail::borrowEntity(disp_q, replacement)));
+}
+
+BOOST_FIXTURE_TEST_CASE(specialized_beam_publishes_one_owner_with_expiration_and_default_collision, Pool)
+{
+    class Specialized final : public Beam {
+    public:
+        Specialized(unsigned &expired, unsigned &destroyed) : expired_(expired), destroyed_(destroyed) {}
+        ~Specialized() override { ++destroyed_; }
+        bool hasExpiration() const noexcept override { return true; }
+        void expire(ELEMENT &self) override { ++expired_; self.turn_wait = 7; }
+    private:
+        unsigned &expired_, &destroyed_;
+    };
+    unsigned expired = 0, destroyed = 0;
+    auto behavior = std::make_unique<Specialized>(expired, destroyed);
+    auto *identity = behavior.get();
+    const auto handle = publishBeam({}, std::move(behavior));
+    BOOST_REQUIRE(handle);
+    BOOST_TEST(uqm::detail::borrowEntity(disp_q, handle) == identity);
+    auto &element = *static_cast<ELEMENT *>(handle);
+    BOOST_REQUIRE(element.death_func);
+    element.death_func(&element);
+    BOOST_TEST(expired == 1u);
+    BOOST_TEST(element.turn_wait == 7u);
+    defaultCollisionCalls = 0;
+    ELEMENT target{}; POINT point{};
+    element.collision_func(&element, &point, &target, &point);
+    BOOST_TEST(defaultCollisionCalls == 1u);
+    BOOST_TEST(destroyed == 0u);
+    FreeLink(&disp_q, handle);
+    BOOST_TEST(destroyed == 1u);
+    const auto a = AllocLink(&disp_q), b = AllocLink(&disp_q);
+    BOOST_TEST(publishBeam({}, std::make_unique<Specialized>(expired, destroyed)) == nullptr);
+    BOOST_TEST(destroyed == 2u);
+    BOOST_TEST(expired == 1u); // Exhaustion destroys without publishing effects.
+    FreeLink(&disp_q, a); FreeLink(&disp_q, b);
 }

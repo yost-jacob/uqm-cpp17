@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
 #include "uqm/ship_builders.hpp"
@@ -403,7 +404,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 						LaserRange * LaserRange)
 				{
 					HELEMENT hPointDefense;
-					LASER_BLOCK LaserBlock;
+					uqm::combat::BeamLaunch beam{};
 
 					if (!PaidFor)
 					{
@@ -420,18 +421,18 @@ spawn_point_defense (ELEMENT *ElementPtr)
 						PaidFor = TRUE;
 					}
 
-					LaserBlock.cx = ShipPtr->next.location.x;
-					LaserBlock.cy = ShipPtr->next.location.y;
-					LaserBlock.face = 0;
-					LaserBlock.ex = ObjectPtr->next.location.x
+					beam.origin.x = ShipPtr->next.location.x;
+					beam.origin.y = ShipPtr->next.location.y;
+					beam.facing = 0;
+					beam.displacement.x = ObjectPtr->next.location.x
 							- ShipPtr->next.location.x;
-					LaserBlock.ey = ObjectPtr->next.location.y
+					beam.displacement.y = ObjectPtr->next.location.y
 							- ShipPtr->next.location.y;
-					LaserBlock.sender = ShipPtr->playerNr;
-					LaserBlock.flags = IGNORE_SIMILAR;
-					LaserBlock.pixoffs = 0;
-					LaserBlock.color = LaserColor;
-					hPointDefense = initialize_laser (&LaserBlock);
+					beam.player = ShipPtr->playerNr;
+					beam.flags = IGNORE_SIMILAR;
+					beam.muzzleOffset = 0;
+					beam.color = LaserColor;
+					hPointDefense = uqm::combat::publishBeam(beam);
 					if (hPointDefense)
 					{
 						ELEMENT *PDPtr;

@@ -154,3 +154,9 @@ Participant construction now follows explicit mode/engine/roster ownership.
 Super Melee drawing no longer constructs fleets; campaign and arcade native
 construction use roster-owned slots. See [the ownership path and migration
 method](native-ownership-path.md) for current boundaries and contracts.
+
+Exploration/navigation now borrow their mode engines explicitly, and lander scene
+handoff validates its exploration source. The legacy missile/laser initializers
+are removed; typed projectile and beam publication own their engine behaviors.
+The next payload/relationship design checkpoint is documented in
+[native entity relationships and state](native-entity-checkpoint.md).
