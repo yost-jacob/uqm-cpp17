@@ -29,7 +29,7 @@ const PlanetFrame *PlanData;
 
 static COUNT
 CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
-		NODE_INFO *info)
+		NODE_INFO *info, RandomContext *rng, EXTENT mapSize)
 {
 	BYTE j;
 	COUNT num_deposits;
@@ -42,7 +42,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 	{
 		BYTE num_possible;
 
-		num_possible = LOBYTE (RandomContext_Random (&SysGenRNG))
+		num_possible = LOBYTE (RandomContext_Random (rng))
 				% (DEPOSIT_QUANTITY (eptr->Density) + 1);
 		while (num_possible--)
 		{
@@ -51,7 +51,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 			COUNT deposit_quality_fine;
 			COUNT deposit_quality_gross;
 
-			deposit_quality_fine = (LOWORD (RandomContext_Random (&SysGenRNG)) % 100)
+			deposit_quality_fine = (LOWORD (RandomContext_Random (rng)) % 100)
 					+ (
 					DEPOSIT_QUALITY (eptr->Density)
 					+ SysInfoPtr->StarSize
@@ -63,7 +63,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 			else
 				deposit_quality_gross = 2;
 
-			GenerateRandomLocation (&info->loc_pt);
+			GenerateRandomLocation (&info->loc_pt, rng, mapSize);
 
 			info->density = MAKE_WORD (
 					deposit_quality_gross, deposit_quality_fine / 10 + 1);
@@ -88,22 +88,22 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 // Returns:
 //   for whichLife==~0 : the number of nodes generated
 //   for whichLife<32  : the index of the last node (no known usage exists)
-// Sets the SysGenRNG to the required state first.
+// Reseeds the explicitly supplied generation workspace first.
 COUNT
 GenerateMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT whichDeposit,
-		NODE_INFO *info)
+		NODE_INFO *info, RandomContext *rng, EXTENT mapSize)
 {
 	NODE_INFO temp_info;
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
-	RandomContext_SeedRandom (&SysGenRNG,
+	RandomContext_SeedRandom (rng,
 			SysInfoPtr->PlanetInfo.ScanSeed[MINERAL_SCAN]);
-	return CalcMineralDeposits (SysInfoPtr, whichDeposit, info);
+	return CalcMineralDeposits (SysInfoPtr, whichDeposit, info, rng, mapSize);
 }
 
 static COUNT
 CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
-		NODE_INFO *info)
+		NODE_INFO *info, RandomContext *rng, EXTENT mapSize)
 {
 	COUNT num_life_forms;
 
@@ -113,26 +113,26 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 #define MIN_LIFE_CHANCE 10
 		SIZE life_var;
 
-		life_var = RandomContext_Random (&SysGenRNG) & 1023;
+		life_var = RandomContext_Random (rng) & 1023;
 		if (life_var < SysInfoPtr->PlanetInfo.LifeChance
 				|| (SysInfoPtr->PlanetInfo.LifeChance < MIN_LIFE_CHANCE
 				&& life_var < MIN_LIFE_CHANCE))
 		{
 			BYTE num_types;
 
-			num_types = 1 + LOBYTE (RandomContext_Random (&SysGenRNG))
+			num_types = 1 + LOBYTE (RandomContext_Random (rng))
 					% MAX_LIFE_VARIATION;
 			do
 			{
 				BYTE index, num_creatures;
 				UWORD rand_val;
 
-				rand_val = RandomContext_Random (&SysGenRNG);
+				rand_val = RandomContext_Random (rng);
 				index = LOBYTE (rand_val) % NUM_CREATURE_TYPES;
 				num_creatures = 1 + HIBYTE (rand_val) % 10;
 				do
 				{
-					GenerateRandomLocation (&info->loc_pt);
+					GenerateRandomLocation (&info->loc_pt, rng, mapSize);
 					info->type = index;
 					info->density = 0;
 
@@ -159,27 +159,27 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 // Returns:
 //   for whichLife==~0 : the number of lifeforms generated
 //   for whichLife<32  : the index of the last lifeform (no known usage exists)
-// Sets the SysGenRNG to the required state first.
+// Reseeds the explicitly supplied generation workspace first.
 COUNT
 GenerateLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT whichLife,
-		NODE_INFO *info)
+		NODE_INFO *info, RandomContext *rng, EXTENT mapSize)
 {
 	NODE_INFO temp_info;
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
-	RandomContext_SeedRandom (&SysGenRNG,
+	RandomContext_SeedRandom (rng,
 			SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
-	return CalcLifeForms (SysInfoPtr, whichLife, info);
+	return CalcLifeForms (SysInfoPtr, whichLife, info, rng, mapSize);
 }
 
 // Returns:
 //   for whichLife==~0 : the number of lifeforms generated
 //   for whichLife<32  : the index of the last lifeform (no known usage exists)
-// Sets the SysGenRNG to the required state first.
+// Reseeds the explicitly supplied generation workspace first.
 // lifeTypes[] is terminated with -1
 COUNT
 GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const SBYTE *lifeTypes,
-		COUNT whichLife, NODE_INFO *info)
+		COUNT whichLife, NODE_INFO *info, RandomContext *rng, EXTENT mapSize)
 {
 	COUNT i;
 	NODE_INFO temp_info;
@@ -191,12 +191,12 @@ GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const SBYTE *lifeTypes,
 	// kept this way to preserve the universe. That is done by preserving
 	// the order and number of Random() calls.
 
-	RandomContext_SeedRandom (&SysGenRNG,
+	RandomContext_SeedRandom (rng,
 			SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
 
 	for (i = 0; lifeTypes[i] >= 0; ++i)
 	{
-		GenerateRandomLocation (&info->loc_pt);
+		GenerateRandomLocation (&info->loc_pt, rng, mapSize);
 		info->type = lifeTypes[i];
 		// density is irrelevant for bio nodes
 		info->density = 0;
@@ -209,22 +209,23 @@ GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const SBYTE *lifeTypes,
 }
 
 void
-GenerateRandomLocation (POINT *loc)
+GenerateRandomLocation (POINT *loc, RandomContext *rng, EXTENT mapSize)
 {
+    assert(mapSize.width > 16 && mapSize.height > 16);
 	UWORD rand_val;
 
-	rand_val = RandomContext_Random (&SysGenRNG);
-	loc->x = 8 + LOBYTE (rand_val) % (MAP_WIDTH - (8 << 1));
-	loc->y = 8 + HIBYTE (rand_val) % (MAP_HEIGHT - (8 << 1));
+	rand_val = RandomContext_Random (rng);
+	loc->x = 8 + LOBYTE (rand_val) % (mapSize.width - (8 << 1));
+	loc->y = 8 + HIBYTE (rand_val) % (mapSize.height - (8 << 1));
 }
 
 // Returns:
 //   for whichNode==~0 : the number of nodes generated
 //   for whichNode<32  : the index of the last node (no known usage exists)
-// Sets the SysGenRNG to the required state first.
+// Reseeds the explicitly supplied generation workspace first.
 COUNT
 GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, COUNT scan, COUNT numNodes,
-		COUNT type, COUNT whichNode, NODE_INFO *info)
+		COUNT type, COUNT whichNode, NODE_INFO *info, RandomContext *rng, EXTENT mapSize)
 {
 	COUNT i;
 	NODE_INFO temp_info;
@@ -232,12 +233,12 @@ GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, COUNT scan, COUNT numNodes,
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
 
-	RandomContext_SeedRandom (&SysGenRNG,
+	RandomContext_SeedRandom (rng,
 			SysInfoPtr->PlanetInfo.ScanSeed[scan]);
 
 	for (i = 0; i < numNodes; ++i)
 	{
-		GenerateRandomLocation (&info->loc_pt);
+		GenerateRandomLocation (&info->loc_pt, rng, mapSize);
 		// type is irrelevant for energy nodes
 		info->type = type;
 		// density is irrelevant for energy and bio nodes

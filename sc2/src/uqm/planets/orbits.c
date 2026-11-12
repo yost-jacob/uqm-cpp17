@@ -471,7 +471,7 @@ YellowDistribution (BYTE which_world)
 
 void
 FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
-		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined)
+		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined, RandomContext *rng, const STAR_DESC *star)
 { /* Generate Planets in orbit around star */
 	BYTE StarColor, PlanetCount, MaxPlanet;
 	BOOLEAN GeneratingMoons;
@@ -494,7 +494,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 
 	pPD = pBaseDesc;
 	StarSize = system->SunDesc[0].data_index;
-	StarColor = STAR_COLOR (GetCurrentStar()->Type);
+	StarColor = STAR_COLOR (star->Type);
 
 	if (NumPlanets == (BYTE)~0)
 	{
@@ -504,17 +504,17 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 		//   we spin in a loop until the result > 0.
 		//   Note that this behavior must be kept to preserve the universe.
 		do
-			NumPlanets = LOWORD (RandomContext_Random (&SysGenRNG))
+			NumPlanets = LOWORD (RandomContext_Random (rng))
 					% (MAX_GENERATED_PLANETS + 1);
 		while (NumPlanets == 0);
 		system->SunDesc[0].NumPlanets = NumPlanets;
 	}
 
 #ifdef DEBUG_ORBITS
-	GetClusterName (GetCurrentStar(), buf, sizeof(buf));
+	GetClusterName (star, buf, sizeof(buf));
 	log_add (log_Debug, "cluster name = %s  color = %c type = %c", buf,
-			scolor[STAR_COLOR (GetCurrentStar()->Type)],
-			stype[STAR_TYPE (GetCurrentStar()->Type)]);
+			scolor[STAR_COLOR (star->Type)],
+			stype[STAR_TYPE (star->Type)]);
 #endif /* DEBUG_ORBITS */
 	GeneratingMoons = (BOOLEAN) (pBaseDesc == system->MoonDesc);
 	if (GeneratingMoons)
@@ -532,7 +532,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 
 		do
 		{
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (rng);
 			if (TypesDefined)
 				rand_val = 0;
 			else
@@ -568,7 +568,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 		else
 			min_radius = Suns[StarSize].MinGasGDist;
 RelocatePlanet:
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (rng);
 		if (GeneratingMoons)
 		{
 			pPD->radius = MIN_MOON_RADIUS
@@ -596,7 +596,7 @@ RelocatePlanet:
 			}
 		}
 
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (rng);
 		angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 		pPD->location.x = COSINE (angle, pPD->radius);
 		pPD->location.y = SINE (angle, pPD->radius);

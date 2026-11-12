@@ -201,8 +201,7 @@ extern SOLARSYS_STATE *pSolarSysState;
 extern MUSIC_REF SpaceMusic;
 extern CONTEXT PlanetContext;
 
-// Random context used for all solar system, planets and surfaces generation
-extern RandomContext SysGenRNG;
+// Random contexts are explicitly owned by generation callers.
 
 bool playerInSolarSystem (void);
 bool playerInPlanetOrbit (void);
@@ -232,7 +231,7 @@ extern void DrawStarBackGround (void);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);
 extern void DrawFilledOval (RECT *pRect);
 extern void FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
-		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined);
+		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined, RandomContext *rng, const STAR_DESC *star);
 extern void InitLander (BYTE LanderFlags);
 
 extern void InitSphereRotation (int direction, BOOLEAN shielded);
@@ -250,9 +249,9 @@ extern void DrawScannedObjects (BOOLEAN Reversed);
 // Construct the selected World's owned surface; active orbit view required.
 extern void ConstructPlanetSurface (FRAME surfaceDefinition);
 extern void GeneratePlanetSurface (PLANET_DESC *pPlanetDesc,
-		FRAME SurfDefFrame);
+		FRAME SurfDefFrame, RandomContext *rng);
 extern void DeltaTopography (COUNT num_iterations, SBYTE *DepthArray,
-		RECT *pRect, SIZE depth_delta);
+		RECT *pRect, SIZE depth_delta, RandomContext *rng);
 
 extern void DrawPlanetSurfaceBorder (void);
 

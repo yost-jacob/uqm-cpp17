@@ -18,6 +18,9 @@
 #define UQM_PLANETS_GENERATE_GENALL_H_
 
 #include "gendefault.h"
+#ifdef __cplusplus
+#include "../../system_runtime.hpp"
+#endif
 #include "types.h"
 #include "libs/compiler.h"
 

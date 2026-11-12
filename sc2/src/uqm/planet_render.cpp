@@ -31,7 +31,7 @@ class PlanetRenderResources::Surface {
 public:
     Surface(SOLARSYS_STATE &system, PLANET_DESC &descriptor, FRAME definition)
         : data_(*system.graphics) {
-        try { GeneratePlanetSurface(&descriptor, definition); }
+        try { GeneratePlanetSurface(&descriptor, definition, &uqm::generationRandom(system)); }
         catch (...) { releaseSurface(data_); throw; }
     }
     ~Surface() { releaseSurface(data_); }
@@ -42,7 +42,7 @@ private:
 };
 PlanetRenderResources::PlanetRenderResources() = default;
 void PlanetRenderResources::createSurface(SOLARSYS_STATE &system, PLANET_DESC &descriptor, FRAME definition) {
-    if (system.graphics != &data_ || pSolarSysState != &system)
+    if (system.graphics != &data_)
         throw std::logic_error("surface generation requires this owner's active graphics borrow");
     if (surface_ || hasSurface()) throw std::logic_error("planet surface already constructed");
     surface_ = std::make_unique<Surface>(system, descriptor, definition);

@@ -37,7 +37,8 @@ extern "C" {
 
 extern MUSIC_REF LanderMusic;
 
-extern void DoDiscoveryReport (SOUND ReadOutSounds);
+// Report text and presentation handles are borrowed for this synchronous call.
+extern void ShowDiscoveryReport (SOUND ReadOutSounds, FONT font, FRAME fontEffect, STRING text);
 extern void SetPlanetMusic (BYTE planet_type);
 extern void LoadLanderData (void);
 extern void FreeLanderData (void);

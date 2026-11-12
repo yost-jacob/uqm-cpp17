@@ -65,7 +65,7 @@ ChmmrSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 		system.MoonDesc[0].data_index = HIERARCHY_STARBASE;
 		system.MoonDesc[0].radius = MIN_MOON_RADIUS;
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (&uqm::generationRandom(system));
 		angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 		system.MoonDesc[0].location.x =
 				COSINE (angle, system.MoonDesc[0].radius);

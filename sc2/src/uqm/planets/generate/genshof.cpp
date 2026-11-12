@@ -150,7 +150,7 @@ ShofixtiSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 			pCurDesc->data_index = METAL_WORLD;
 	}
 
-	FillOrbits (solarSys, NUM_PLANETS, solarSys->PlanetDesc, TRUE);
+	FillOrbits (solarSys, NUM_PLANETS, solarSys->PlanetDesc, TRUE, &uqm::generationRandom(system), &uqm::systemStar(system));
 
 	return true;
 }

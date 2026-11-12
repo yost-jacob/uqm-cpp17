@@ -1,6 +1,7 @@
 #include "uqm/state.h"
 #include "uqm/starmap.h"
 #include "uqm/gendef.h"
+extern void test_load_planet_progress(SOLARSYS_STATE *system);
 
 /* Real planet-info adapters need only these runtime descriptors, not rendering.
  * The fixture supplies a layout; it never substitutes persistence functions. */
@@ -48,7 +49,7 @@ int discovery_state_c_round_trip(void)
         if (!artifact.accepted || !artifact.removeNode || !artifact.hasReport
                 || artifact.report != 0 || collected.accepted) goto done;
     }
-    GetPlanetInfo();
+    test_load_planet_progress(&solar);
     if (PersonalDiscoveryCount(star, 1, -1) != 2
             || solar.SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN] != 3) goto done;
     file = OpenStateFile(STARINFO_FILE, "rb");
@@ -74,7 +75,7 @@ int discovery_state_c_round_trip(void)
     file = NULL;
     ReleasePlanetInfoSnapshot(snapshot);
     snapshot = NULL;
-    GetPlanetInfo();
+    test_load_planet_progress(&solar);
     if (PersonalDiscoveryCount(star, 1, -1) != 3
             || solar.SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN] != 3) goto done;
     ok = 1;

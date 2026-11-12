@@ -607,16 +607,18 @@ starRecurse (STAR_DESC *star, void *arg)
 	STAR_DESC *oldStarDescPtr = GetCurrentStar();
 	SetCurrentStar(star);
 
-	RandomContext_SeedRandom (&SysGenRNG, GetRandomSeedForStar (star));
+	RandomContext constructionRandom{RandomDefaultSeed};
+	RandomContext_SeedRandom (&constructionRandom, GetRandomSeedForStar (star));
 
 	memset (&SolarSysState, 0, sizeof (SolarSysState));
 	SolarSysState.SunDesc[0].pPrevDesc = 0;
-	SolarSysState.SunDesc[0].rand_seed = RandomContext_Random (&SysGenRNG);
+	SolarSysState.SunDesc[0].rand_seed = RandomContext_Random (&constructionRandom);
 	SolarSysState.SunDesc[0].data_index = STAR_TYPE (star->Type);
 	SolarSysState.SunDesc[0].location.x = 0;
 	SolarSysState.SunDesc[0].location.y = 0;
 	//SolarSysState.SunDesc[0].radius = MIN_ZOOM_RADIUS;
 	CreateSystemWorlds (&SolarSysState, star);
+    SolarSysState.worlds->generation = constructionRandom;
 
 	pSolarSysState = &SolarSysState;
 	uqm::systemBehavior(SolarSysState).generatePlanets(*(&SolarSysState));
@@ -663,7 +665,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		SelectSystemWorld(system, planet);
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
-		DoPlanetaryAnalysis (&system->SysInfo, planet);
+		uqm::analyzePlanet(*system, *planet, system->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 		// Event-specific analysis/scan seeds are also needed for debug reports.
 		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->planetFuncPre) (
@@ -672,7 +674,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 
 	if (universeRecurseArg->moonFunc != NULL)
 	{
-		RandomContext_SeedRandom (&SysGenRNG, planet->rand_seed);
+		RandomContext_SeedRandom (&uqm::generationRandom(*system), planet->rand_seed);
 		
 		uqm::systemBehavior(*system).generateMoons(*(system), *(planet));
         BuildMoonWorlds (system, planet);
@@ -686,7 +688,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		SelectSystemWorld(system, planet);
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
-		DoPlanetaryAnalysis (&system->SysInfo, planet);
+		uqm::analyzePlanet(*system, *planet, system->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 		// Event-specific analysis/scan seeds are also needed for debug reports.
 		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->planetFuncPost) (
@@ -712,7 +714,7 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
             system->worlds->system->world(planet - system->PlanetDesc).child(moon - system->MoonDesc)};
 		if (moon->data_index != HIERARCHY_STARBASE && moon->data_index != SA_MATRA)
 		{
-			DoPlanetaryAnalysis (&system->SysInfo, moon);
+			uqm::analyzePlanet(*system, *moon, system->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 		// Event-specific analysis/scan seeds are also needed for debug reports.
 		}
 		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);

@@ -222,7 +222,7 @@ InitPageCell:
 }
 
 void
-DoDiscoveryReport (SOUND ReadOutSounds)
+ShowDiscoveryReport (SOUND ReadOutSounds, FONT font, FRAME fontEffect, STRING text)
 {
 	CONTEXT OldContext;
 	CONTEXT context;
@@ -242,16 +242,16 @@ DoDiscoveryReport (SOUND ReadOutSounds)
 		FRAME OldFontEffect;
 
 		OldFont = SetContextFont (
-				pSolarSysState->SysInfo.PlanetInfo.LanderFont);
+				font);
 		if (optWhichFonts == OPT_PC)
 			OldFontEffect = SetContextFontEffect (
-					pSolarSysState->SysInfo.PlanetInfo.LanderFontEff);
+					fontEffect);
 		else
 			OldFontEffect = SetContextFontEffect (NULL);
 
 		MakeReport (ReadOutSounds,
-			(UNICODE *)GetStringAddress (pSolarSysState->SysInfo.PlanetInfo.DiscoveryString),
-			GetStringLength (pSolarSysState->SysInfo.PlanetInfo.DiscoveryString));
+			(UNICODE *)GetStringAddress (text),
+			GetStringLength (text));
 		
 		SetContextFontEffect (OldFontEffect);
 		SetContextFont (OldFont);

@@ -182,7 +182,7 @@ VuxSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 			18, 18, 18, 18, /* Penguin Cyclops */
 			-1 /* term */
 		};
-		return GeneratePresetLife (&solarSys->SysInfo, life, whichNode, info);
+		return GeneratePresetLife (&solarSys->SysInfo, life, whichNode, info, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	}
 
 	if (star().Index == VUX_BEAST_DEFINED
@@ -196,7 +196,7 @@ VuxSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 			8, 8, 8, 8, 8, /* Glowing Medusa */
 			-1 /* term */
 		};
-		return GeneratePresetLife (&solarSys->SysInfo, life, whichNode, info);
+		return GeneratePresetLife (&solarSys->SysInfo, life, whichNode, info, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	}
 
 	return GenerateDefault_generateLife (solarSys, world, whichNode, info);
