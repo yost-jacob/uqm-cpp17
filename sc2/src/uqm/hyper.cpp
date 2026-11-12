@@ -232,14 +232,10 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 {
 	BYTE nextType = 0;
 	POINT universe;
-	COUNT EncounterPercent[] =
-	{
-		RACE_HYPERSPACE_PERCENT
-	};
 	
 	universe.x = LOGX_TO_UNIVERSE (travel().position.x);
 	universe.y = LOGY_TO_UNIVERSE (travel().position.y);
-    for (auto *FleetPtr : detail::raceFleets(GLOBAL(avail_race_q))) {
+    for (const auto *FleetPtr : session_.raceFleets()) {
         if (!(GLOBAL(CurrentActivity) & IN_BATTLE)) break;
         const BYTE Type = nextType++;
         COUNT encounter_radius;
@@ -251,7 +247,7 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 			COUNT percent;
 
 			encounter_flags = 0;
-			percent = EncounterPercent[Type];
+			percent = session_.navigationRules().spawnPercent.at(Type);
 			
 			if (encounter_radius != INFINITE_RADIUS)
 			{
@@ -435,9 +431,10 @@ uqm::SpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 		GLOBAL (autopilot.y) = ~0;
 
 		ElementToUniverse (ElementPtr, &pt);
-		SetCurrentStar(FindStar (NULL, &pt, 5, 5));
-		if (GetCurrentStar()->star_pt.x == ARILOU_HOME_X
-				&& GetCurrentStar()->star_pt.y == ARILOU_HOME_Y)
+        const auto id = starsNear(pt, 5, 5).at(0);
+        selectedStar() = id;
+        const auto &position = catalogue().at(id).position();
+		if (position.x == ARILOU_HOME_X && position.y == ARILOU_HOME_Y)
 		{
 			// Meet the Arilou.
 			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
@@ -449,7 +446,7 @@ uqm::SpaceNavigation::InterplanetaryTransition(ELEMENT *ElementPtr)
 			COUNT index;
 			const POINT portal_pt[] = QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
 
-			index = GetStarIndex(GetCurrentStar()) - QUASISPACE_FIRST;
+			index = id.value - QUASISPACE_FIRST;
 			prepareRealmTransition(NavigationRealm::HyperSpace,
                     {UNIVERSE_TO_LOGX (portal_pt[index].x), UNIVERSE_TO_LOGY (portal_pt[index].y)});
 		}
@@ -627,30 +624,30 @@ uqm::SpaceNavigation::hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 	{
 		SIZE dx, dy;
 		POINT pt;
-		STAR_DESC *SDPtr;
 		STARSHIP *StarShipPtr;
 
 		ElementToUniverse (ElementPtr0, &pt);
 
-		SDPtr = FindStar (NULL, &pt, 5, 5);
+		const auto id = starsNear(pt, 5, 5).at(0);
+        const auto &position = catalogue().at(id).position();
 
 		GetElementStarShip (ElementPtr1, &StarShipPtr);
 		GetCurrentVelocityComponents (&ElementPtr1->velocity, &dx, &dy);
-		if (SDPtr == GetCurrentStar()
+		if (selectedStar() == id
 				|| (ElementPtr1->state_flags & APPEARING)
 				|| !(dx || dy || (StarShipPtr->cur_status_flags
 				& (LEFT | RIGHT | THRUST | WEAPON | SPECIAL))))
 		{
-			SetCurrentStar(SDPtr);
+			selectedStar() = id;
 			ElementPtr0->state_flags |= DEFY_PHYSICS | COLLISION;
 		}
 		else if ((GLOBAL (CurrentActivity) & IN_BATTLE)
 				&& (GLOBAL (autopilot.x) == ~0
 				|| GLOBAL (autopilot.y) == ~0
-				|| (GLOBAL (autopilot.x) == SDPtr->star_pt.x
-				&& GLOBAL (autopilot.y) == SDPtr->star_pt.y)))
+				|| (GLOBAL (autopilot.x) == position.x
+				&& GLOBAL (autopilot.y) == position.y)))
 		{
-			SetCurrentStar(SDPtr);
+			selectedStar() = id;
 			ElementPtr0->state_flags |= COLLISION;
 
 			init_transition (ElementPtr0, ElementPtr1,
@@ -666,7 +663,7 @@ uqm::SpaceNavigation::hyper_death(ELEMENT *ElementPtr)
 {
 	if (!(ElementPtr->state_flags & DEFY_PHYSICS)
 			&& (GLOBAL (CurrentActivity) & IN_BATTLE))
-		SetCurrentStar(0);
+		selectedStar().reset();
 }
 
 void
@@ -916,18 +913,15 @@ uqm::SpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *punive
 		COUNT i;
 		COUNT NumShips;
 		DWORD radius_squared;
-		BYTE EncounterMakeup[] =
-		{
-			RACE_ENCOUNTER_MAKEUP
-		};
 
 		NewEncounter = TRUE;
 
 		radius_squared = (DWORD)EncounterPtr->radius * EncounterPtr->radius;
 
 		Type = EncounterPtr->race_id;
-		NumShips = LONIBBLE (EncounterMakeup[Type]);
-		for (i = HINIBBLE (EncounterMakeup[Type]) - NumShips; i; --i)
+		const auto composition = session_.navigationRules().encounterSize.at(Type);
+		NumShips = composition.minimum;
+		for (i = composition.maximum - NumShips; i; --i)
 		{
 			if ((COUNT)engine_.random()() % 100 < 50)
 				++NumShips;
@@ -937,18 +931,14 @@ uqm::SpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *punive
 			NumShips = MAX_HYPER_SHIPS;
 
 		EncounterPtr->num_ships = NumShips;
+		const auto &definition = session_.raceFleets().at(Type);
 		for (i = 0; i < NumShips; ++i)
 		{
 			BRIEF_SHIP_INFO *BSIPtr = &EncounterPtr->ShipList[i];
-			HFLEETINFO hStarShip =
-					GetStarShipFromIndex (&GLOBAL (avail_race_q), Type);
-			FLEET_INFO *FleetPtr =
-					LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
 			BSIPtr->race_id = Type;
-			BSIPtr->crew_level = FleetPtr->crew_level;
-			BSIPtr->max_crew = FleetPtr->max_crew;
-			BSIPtr->max_energy = FleetPtr->max_energy;
-			UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
+			BSIPtr->crew_level = definition.crew_level;
+			BSIPtr->max_crew = definition.max_crew;
+			BSIPtr->max_energy = definition.max_energy;
 		}
 
 		do
@@ -1139,13 +1129,9 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 			if (delta_facing || (delta_x == 0 && delta_y == 0))
 			{
 				SIZE speed;
-				const SIZE RaceHyperSpeed[] =
-				{
-					RACE_HYPER_SPEED
-				};
 
-#define ENCOUNTER_TRACK_WAIT 3
-				speed = RaceHyperSpeed[EncounterPtr->race_id];
+                constexpr auto EncounterTrackWait = 3;
+				speed = session_.navigationRules().pursuitSpeed.at(EncounterPtr->race_id);
 				if (delta_facing < ANGLE_TO_FACING (HALF_CIRCLE))
 					--cur_facing;
 				else
@@ -1165,7 +1151,7 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 				GetNextVelocityComponents (&ElementPtr->velocity,
 						&delta_x, &delta_y, 1);
 
-				ElementPtr->thrust_wait = ENCOUNTER_TRACK_WAIT;
+				ElementPtr->thrust_wait = EncounterTrackWait;
 			}
 		}
 		EncounterPtr->log_x += delta_x;
@@ -1274,7 +1260,6 @@ uqm::SpaceNavigation::SeedUniverse(void)
 	POINT universe;
 	FRAME blip_frame;
 	STAMP s;
-	STAR_DESC *SDPtr;
 	HELEMENT hHyperSpaceElement;
 	ELEMENT *HyperSpaceElementPtr;
 
@@ -1304,14 +1289,14 @@ uqm::SpaceNavigation::SeedUniverse(void)
 		DrawHyperGrid (universe.x, universe.y, ox, oy);
 
 		{
-			SDPtr = 0;
-			while ((SDPtr = FindStar (SDPtr, &universe, XOFFS, YOFFS)))
+			for (const auto id : starsNear(universe, XOFFS, YOFFS))
 			{
+				const auto &star = catalogue().at(id);
 				BYTE star_type;
 
-				ex = SDPtr->star_pt.x;
-				ey = SDPtr->star_pt.y;
-				star_type = STAR_TYPE (SDPtr->Type);
+				ex = star.position().x;
+				ey = star.position().y;
+				star_type = static_cast<BYTE>(star.properties().type);
 				if (arilouSpaceSide >= 2 &&
 						ex == ARILOU_HOME_X && ey == ARILOU_HOME_Y)
 					star_type = SUPER_GIANT_STAR;
@@ -1435,39 +1420,37 @@ uqm::SpaceNavigation::SeedUniverse(void)
 	}
 
 	{
-		SDPtr = 0;
-		while ((SDPtr = FindStar (SDPtr, &universe, XOFFS, YOFFS)))
+		for (const auto id : starsNear(universe, XOFFS, YOFFS))
 		{
-			BYTE star_type;
-
-			ex = SDPtr->star_pt.x - universe.x;
+			const auto &star = catalogue().at(id);
+            const POINT position{static_cast<COORD>(star.position().x), static_cast<COORD>(star.position().y)};
+			ex = position.x - universe.x;
 			if (ex < 0)
 				ex = -ex;
-			ey = SDPtr->star_pt.y - universe.y;
+			ey = position.y - universe.y;
 			if (ey < 0)
 				ey = -ey;
 			if (ex > (XOFFS / NUM_RADAR_SCREENS)
 					|| ey > (YOFFS / NUM_RADAR_SCREENS))
 				continue;
 
-			hHyperSpaceElement = AllocHyperElement (&SDPtr->star_pt);
+			hHyperSpaceElement = AllocHyperElement (&position);
 			if (hHyperSpaceElement == 0)
 				continue;
 
-			star_type = SDPtr->Type;
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
 					presentation_->stars,
-					STAR_TYPE (star_type) * NUM_STAR_COLORS
-					+ STAR_COLOR (star_type));
+					static_cast<COUNT>(star.properties().type) * NUM_STAR_COLORS
+                    + static_cast<COUNT>(star.properties().color));
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
 			uqm::detail::attachEntity(*HyperSpaceElementPtr, std::make_unique<NavigationStar>(*this), EntityHooks::Collision);
 
 			SetUpElement (HyperSpaceElementPtr);
 
-			if (SDPtr == GetCurrentStar()
+			if (selectedStar() == id
 					&& story_.read(uqm::StoryCounter::PortalCounter) == 0)
 				uqm::detail::enableEntityHooks(*HyperSpaceElementPtr, EntityHooks::Expiration);
 			else
@@ -1682,11 +1665,9 @@ void MoveSIS(SIZE *pdx, SIZE *pdy) { flagshipNavigation().MoveSIS(pdx, pdy); }
 void check_hyperspace_encounter(void) { flagshipNavigation().check_hyperspace_encounter(); }
 
 namespace uqm {
-void SpaceNavigation::run(GameSession &session) {
-    if (&session.player() != &player_ || &session.clock() != &clock_ || &session.encounters() != &records_)
-        throw std::invalid_argument("navigation requires its owning player and campaign clock");
+void SpaceNavigation::run() {
     SimulationBinding simulation{engine_};
-    NavigationPresentation presentation{session.assets()};
+    NavigationPresentation presentation{session_.assets()};
     struct PresentationBorrow {
         NavigationPresentation *&slot;
         NavigationPresentation *previous;

@@ -2,8 +2,16 @@
 #include "game_state.hpp"
 #include <stdexcept>
 namespace uqm {
-SpaceNavigation::SpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock, NavigationRealm realm, CampaignEncounters &records) noexcept
-    : records_(records), realm_(realm), player_(player), clock_(clock), engine_(engine), story_(player.story()) {}
+SpaceNavigation::SpaceNavigation(GameSession &session, SimulationEngine &engine, NavigationRealm realm)
+    : session_(session), records_(session.encounters()), realm_(realm),
+      player_(session.player()), clock_(session.clock()), engine_(engine), story_(player_.story()) {}
+const StarMap &SpaceNavigation::catalogue() const { return session_.definitions().stars(); }
+std::optional<StarId> &SpaceNavigation::selectedStar() noexcept { return player_.navigationState().currentStar; }
+std::vector<StarId> SpaceNavigation::starsNear(const POINT &position, SIZE xbounds, SIZE ybounds) const {
+    return catalogue().find({isQuasiSpace() ? StarSpace::QuasiSpace : StarSpace::HyperSpace,
+        {position.x, position.y}, xbounds < 0 ? std::nullopt : std::optional<int>{xbounds},
+        ybounds < 0 ? std::nullopt : std::optional<int>{ybounds}});
+}
 PLAYER_TRAVEL_POSITION &SpaceNavigation::travel() {
     if (isQuasiSpace())
         return std::get<QuasiSpaceLocation>(player_.location());

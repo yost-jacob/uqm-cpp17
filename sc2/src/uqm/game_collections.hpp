@@ -23,6 +23,7 @@ const FleetShips<> &fleetShips(const QUEUE &queue);
 const BattleParticipants<> &battleParticipants(QUEUE &queue);
 const BattleParticipants<> &battleParticipants(const QUEUE &queue);
 const RaceFleets<> &raceFleets(QUEUE &queue);
+const RaceFleets<> &raceFleets(const QUEUE &queue);
 const SystemGroups<> &systemGroups(QUEUE &queue);
 }
 }

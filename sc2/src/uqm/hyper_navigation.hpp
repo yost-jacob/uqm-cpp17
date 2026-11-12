@@ -1,6 +1,7 @@
 #ifndef UQM_HYPER_NAVIGATION_HPP_
 #define UQM_HYPER_NAVIGATION_HPP_
 #include "hyper.h"
+#include "star_map.hpp"
 #include "navigation_encounters.hpp"
 #include "campaign_encounters.hpp"
 #include "encount.h"
@@ -18,12 +19,16 @@ enum class NavigationRealm { HyperSpace, QuasiSpace };
 // entities borrow it until scene reset; all native helpers use explicit references.
 class SpaceNavigation {
 public:
-    // player, engine and clock outlive this visit and its C callbacks. The realm
-    // must match the player location before run() or any navigation callback.
-    SpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock, NavigationRealm realm, CampaignEncounters &records) noexcept;
+    // session and engine outlive the visit. Its fixed realm must match the
+    // player location before run() or a callback; definitions/fleets are loaded
+    // by the owning campaign before navigation starts.
+    SpaceNavigation(GameSession &session, SimulationEngine &engine, NavigationRealm realm);
     // Borrowed mode-owned engine; must be selected for the synchronous scene.
     SimulationEngine &engine() noexcept { return engine_; }
-    void run(GameSession &session);
+    void run();
+    // Inclusive search bounds, in universe coordinates. Returns owned IDs in
+    // catalogue order and always uses this mode's realm and owning catalogue.
+    std::vector<StarId> starsNear(const POINT &position, SIZE xbounds, SIZE ybounds) const;
     void frame();
     void saveFacing(UWORD facing) { travel().flight.facing = facing; }
     // Stage a portal destination in legacy logical coordinates. The outgoing
@@ -69,6 +74,9 @@ public:
 private:
     // The realm selected by this mode must match the player variant.
     PLAYER_TRAVEL_POSITION &travel();
+    const StarMap &catalogue() const;
+    std::optional<StarId> &selectedStar() noexcept;
+    GameSession &session_;
     CampaignEncounters &records_;
     NavigationEncounterViews encounters_;
     const NavigationRealm realm_; // Fixed for this mode; portal crossings select a successor.

@@ -78,9 +78,11 @@ location variant, after outgoing callbacks and resource scopes have unwound.
    its supplied flagship record. The remaining C camera/clock functions lack an
    entity parameter; they resolve the selected engine's flagship owner, never an
    active-session getter. Shared ambient animation remains navigation-independent.
-   Native `run(session)` validates its player/clock borrows before acquisition.
+   Navigation captures a single `GameSession&` at construction and derives its
+   player, story, clock and encounter borrows from that owner; unrelated borrow
+   combinations cannot be supplied. `run()` uses that captured owner.
    Scene reset destroys all behaviors before navigation/resources can expire.
-4. **Encounter state — projection split complete; campaign interface remains.**
+4. **Encounter data inputs — implemented.**
    Deleted the screen-element handle from persistent `ENCOUNTER`. Each navigation
    visit indexes campaign records through generation-checked `EntityHandle`s;
    free/reset/reuse cannot resolve a stale projection. Clear the index after
@@ -91,10 +93,21 @@ location variant, after outgoing callbacks and resource scopes have unwound.
 
    Campaign encounter access now uses the explicit session-owned dense vector and
    selection interface described in [Game collections](../collections/README.md).
-   Race-fleet traversal uses typed vector order; remaining work is replacing
-   legacy fleet/state getters in generation and pursuit with explicit inputs. Preserve pursuit
-   limits, record ordering, crew, identity and campaign clock behavior; archive
-   format redesign stays separate.
+   Navigation reads race-fleet strength, location and ship defaults through its
+   owning session's checked `raceFleets()` view. It no longer resolves fleet
+   queues or races through GLOBAL/Lock/GetStarShipFromIndex. Generation reads
+   current fleet records, not detached snapshots. Spawn percentages, encounter
+   size ranges and pursuit speeds are typed constexpr `NavigationRules` exposed
+   by Session. Deleted their list macros and packed-nibble lookup at callers;
+   interplanetary group generation shares the same size table. Numerical values,
+   random-call order and pursuit limits are unchanged.
+
+   Catalogue searches use the owning session's immutable StarMap with the mode's
+   fixed realm. Star selection updates the owner's NavigationState by StarId.
+   Radar and star entities read native properties; navigation no longer calls
+   FindStar/GetCurrentStar/SetCurrentStar or resolves C descriptor/index buffers.
+   Legacy transition flags, autopilot and ship-stamp fields remain for step 5;
+   archive-format redesign remains separate.
 5. **Transitions and cleanup.** Give realm changes, system entry and encounters
    explicit results; confine activity-flag translation to remaining C boundaries.
    Persistent travel/portal information remains in `PlayerEntity`. Audit menus,
@@ -129,3 +142,12 @@ sizes at a resolution, menu scripts, selection and cursor placement. The shared
 compositor presents scene/UI layers and coordinates animation/audio playback.
 Simulation and UI vary independently. This ownership cutover does not introduce
 that framework or a second compositor implementation.
+
+### Navigation campaign-input checkpoint
+
+The remaining GLOBAL accesses in hyper.cpp are activity flags, the legacy
+ship-stamp drawing/camera projection and autopilot controls. There are no native
+campaign fleet/catalogue getters through the active-session C interfaces.
+A regression holds another session active while querying the owning catalogue
+and live fleet records, and checks realm-specific search and bounds failures.
+No replacement global navigation context or general runtime framework was added.

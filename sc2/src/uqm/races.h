@@ -495,57 +495,7 @@ enum
 		LOG_TO_IP (30),  /* YEHAT_REBEL_SHIP */ \
 		LOG_TO_IP (90),  /* URQUAN_DRONE_SHIP */
 
-#define LOG_TO_HYPER(s) (WORLD_TO_VELOCITY (s) >> 1)
-#define RACE_HYPER_SPEED \
-		LOG_TO_HYPER (40),  /* ARILOU_SHIP */ \
-		LOG_TO_HYPER (27),  /* CHMMR_SHIP */ \
-		LOG_TO_HYPER (24),  /* HUMAN_SHIP */ \
-		LOG_TO_HYPER (40),  /* ORZ_SHIP */ \
-		LOG_TO_HYPER (40),  /* PKUNK_SHIP */ \
-		LOG_TO_HYPER (35),  /* SHOFIXTI_SHIP */ \
-		LOG_TO_HYPER (48),  /* SPATHI_SHIP */ \
-		LOG_TO_HYPER (40),  /* SUPOX_SHIP */ \
-		LOG_TO_HYPER (50),  /* THRADDASH_SHIP */ \
-		LOG_TO_HYPER (30),  /* UTWIG_SHIP */ \
-		LOG_TO_HYPER (21),  /* VUX_SHIP */ \
-		LOG_TO_HYPER (30),  /* YEHAT_SHIP */ \
-		LOG_TO_HYPER (40),  /* MELNORME_SHIP */ \
-		LOG_TO_HYPER (20),  /* DRUUGE_SHIP */ \
-		LOG_TO_HYPER (25),  /* ILWRATH_SHIP */ \
-		LOG_TO_HYPER (27),  /* MYCON_SHIP */ \
-		LOG_TO_HYPER (60),  /* SLYLANDRO_SHIP */ \
-		LOG_TO_HYPER (18),  /* UMGAH_SHIP */ \
-		LOG_TO_HYPER (30),  /* URQUAN_SHIP */ \
-		LOG_TO_HYPER (40),  /* ZOQFOTPIK_SHIP */ \
-		LOG_TO_HYPER (36),  /* SYREEN_SHIP */ \
-		LOG_TO_HYPER (30),  /* BLACK_URQUAN_SHIP */ \
-		LOG_TO_HYPER (30),  /* YEHAT_REBEL_SHIP */
 
-#define RACE_HYPERSPACE_PERCENT \
-		20,  /* ARILOU_SHIP */ \
-		 0,  /* CHMMR_SHIP */ \
-		 0,  /* HUMAN_SHIP */ \
-		20,  /* ORZ_SHIP */ \
-		40,  /* PKUNK_SHIP */ \
-		 0,  /* SHOFIXTI_SHIP */ \
-		20,  /* SPATHI_SHIP */ \
-		40,  /* SUPOX_SHIP */ \
-		60,  /* THRADDASH_SHIP */ \
-		40,  /* UTWIG_SHIP */ \
-		40,  /* VUX_SHIP */ \
-		60,  /* YEHAT_SHIP */ \
-		 0,  /* MELNORME_SHIP */ \
-		30,  /* DRUUGE_SHIP */ \
-		60,  /* ILWRATH_SHIP */ \
-		40,  /* MYCON_SHIP */ \
-		 2,  /* SLYLANDRO_SHIP */ \
-		30,  /* UMGAH_SHIP */ \
-		70,  /* URQUAN_SHIP */ \
-		 0,  /* ZOQFOTPIK_SHIP */ \
-		 0,  /* SYREEN_SHIP */ \
-		70,  /* BLACK_URQUAN_SHIP */ \
-		60,  /* YEHAT_REBEL_SHIP */ \
-		 0,  /* URQUAN_DRONE_SHIP */
 
 #define RACE_INTERPLANETARY_PERCENT \
 		 0,  /* ARILOU_SHIP */ \
@@ -576,30 +526,6 @@ enum
 // How many ships will an encounter consist of.
 // The first number specifies the minimum, the second the maximum.
 // The chance is 50% for each ship past the minimum to be present.
-#define RACE_ENCOUNTER_MAKEUP \
-		MAKE_BYTE (1, 5),  /* ARILOU_SHIP */ \
-		0,                 /* CHMMR_SHIP */ \
-		0,                 /* HUMAN_SHIP */ \
-		MAKE_BYTE (1, 5),  /* ORZ_SHIP */ \
-		MAKE_BYTE (1, 5),  /* PKUNK_SHIP */ \
-		0,                 /* SHOFIXTI_SHIP */ \
-		MAKE_BYTE (1, 5),  /* SPATHI_SHIP */ \
-		MAKE_BYTE (1, 5),  /* SUPOX_SHIP */ \
-		MAKE_BYTE (1, 5),  /* THRADDASH_SHIP */ \
-		MAKE_BYTE (1, 5),  /* UTWIG_SHIP */ \
-		MAKE_BYTE (1, 5),  /* VUX_SHIP */ \
-		MAKE_BYTE (1, 5),  /* YEHAT_SHIP */ \
-		MAKE_BYTE (1, 1),  /* MELNORME_SHIP */ \
-		MAKE_BYTE (1, 5),  /* DRUUGE_SHIP */ \
-		MAKE_BYTE (1, 5),  /* ILWRATH_SHIP */ \
-		MAKE_BYTE (1, 5),  /* MYCON_SHIP */ \
-		MAKE_BYTE (1, 1),  /* SLYLANDRO_SHIP */ \
-		MAKE_BYTE (1, 5),  /* UMGAH_SHIP */ \
-		MAKE_BYTE (1, 5),  /* URQUAN_SHIP */ \
-		MAKE_BYTE (1, 5),  /* ZOQFOTPIK_SHIP */ \
-		0,                 /* SYREEN_SHIP */ \
-		MAKE_BYTE (1, 5),  /* BLACK_URQUAN_SHIP */ \
-		MAKE_BYTE (1, 5),  /* YEHAT_REBEL_SHIP */
 
 #define RACE_COLORS \
 		BUILD_COLOR (MAKE_RGB15_INIT (0x00, 0x00, 0x10), 0x53),  /* ARILOU_SHIP */ \
