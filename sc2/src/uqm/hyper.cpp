@@ -19,6 +19,8 @@
 #include "hyper_navigation.hpp"
 #include "device_menu.hpp"
 #include "game_state.hpp"
+#include "game_assets.hpp"
+#include <utility>
 #include "battle.h"
 #include "battle_driver.hpp"
 #include "clock.h"
@@ -66,8 +68,48 @@ static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1);
 static void hyper_transition_callback(ELEMENT *element);
 static HELEMENT getSisElement(void);
-static FRAME hyperstars[3];
-static COLORMAP hypercmaps[2];
+namespace uqm {
+// One run's asset lease. Elements borrow the stable address of stars until the
+// scene has reset its engine. The cache outlives this scope; playback state does
+// not live in the shared graphics. No other realm's artwork is loaded here.
+class NavigationPresentation {
+public:
+    explicit NavigationPresentation(AssetCache &cache) noexcept : cache_(cache) {}
+    ~NavigationPresentation() {
+        unbind();
+        if (colors) DestroyColorMap(ReleaseColorMap(colors));
+    }
+    NavigationPresentation(const NavigationPresentation &) = delete;
+    NavigationPresentation &operator=(const NavigationPresentation &) = delete;
+    void load(bool quasiSpace) {
+        if (ambient_) return;
+        ambient_ = cache_.find({AssetKind::Graphic, AMBIENT_MASK_PMAP_ANIM});
+        realm_ = cache_.find({AssetKind::Graphic,
+                quasiSpace ? ARISPACE_MASK_PMAP_ANIM : HYPERSTARS_MASK_PMAP_ANIM});
+        stars = dynamic_cast<const GraphicAsset &>(*realm_).frame();
+        colors = CaptureColorMap(LoadColorMap(quasiSpace ? ARISPACE_COLOR_TAB : HYPER_COLOR_TAB));
+        if (!colors) throw std::runtime_error("could not load navigation color map");
+    }
+    void bind() {
+        if (bound_) return;
+        previousStars_ = stars_in_space;
+        stars_in_space = dynamic_cast<const GraphicAsset &>(*ambient_).frame();
+        bound_ = true;
+    }
+    void unbind() noexcept {
+        if (!bound_) return;
+        stars_in_space = previousStars_;
+        bound_ = false;
+    }
+    FRAME stars = nullptr; // Borrowed by ELEMENT::image.farray; stable until teardown.
+    COLORMAP colors = nullptr;
+private:
+    AssetCache &cache_;
+    AssetCache::Pointer ambient_, realm_;
+    FRAME previousStars_ = nullptr;
+    bool bound_ = false;
+};
+} // namespace uqm
 
 // HyperspaceMenu() items
 enum HyperMenuItems
@@ -301,39 +343,6 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 }
 
-void
-FreeHyperData (void)
-{
-	DestroyDrawable (ReleaseDrawable (hyperstars[0]));
-	hyperstars[0] = 0;
-	DestroyDrawable (ReleaseDrawable (hyperstars[1]));
-	hyperstars[1] = 0;
-	DestroyDrawable (ReleaseDrawable (hyperstars[2]));
-	hyperstars[2] = 0;
-
-	DestroyColorMap (ReleaseColorMap (hypercmaps[0]));
-	hypercmaps[0] = 0;
-	DestroyColorMap (ReleaseColorMap (hypercmaps[1]));
-	hypercmaps[1] = 0;
-}
-
-static void
-LoadHyperData (void)
-{
-	if (hyperstars[0] == 0)
-	{
-		hyperstars[0] = CaptureDrawable (
-				LoadGraphic (AMBIENT_MASK_PMAP_ANIM));
-		hyperstars[1] = CaptureDrawable (
-				LoadGraphic (HYPERSTARS_MASK_PMAP_ANIM));
-		hypercmaps[0] = CaptureColorMap (LoadColorMap (HYPER_COLOR_TAB));
-
-		hyperstars[2] = CaptureDrawable (
-				LoadGraphic (ARISPACE_MASK_PMAP_ANIM));
-		hypercmaps[1] = CaptureColorMap (LoadColorMap (ARISPACE_COLOR_TAB));
-	}
-}
-
 BOOLEAN
 uqm::SpaceNavigation::LoadHyperspace(void)
 {
@@ -345,15 +354,8 @@ uqm::SpaceNavigation::LoadHyperspace(void)
 	GLOBAL (ShipStamp.origin.x) = -MAX_X_UNIVERSE;
 	GLOBAL (ShipStamp.origin.y) = -MAX_Y_UNIVERSE;
 
-	LoadHyperData ();
-	{
-		FRAME F;
-		
-		F = hyperstars[0];
-		hyperstars[0] = stars_in_space;
-		stars_in_space = F;
-        starsBound_ = true;
-	}
+    presentation_->load(isQuasiSpace());
+    presentation_->bind();
 
 	if (!(LastActivity & CHECK_LOAD))
 		RepairSISBorder ();
@@ -383,13 +385,13 @@ uqm::SpaceNavigation::LoadHyperspace(void)
 	{
 		SetContextBackGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x07, 0x00, 0x00), 0x2F));
-		SetColorMap (GetColorMapAddress (hypercmaps[0]));
+		SetColorMap (GetColorMapAddress (presentation_->colors));
 	}
 	else
 	{
 		SetContextBackGroundColor (
 				BUILD_COLOR (MAKE_RGB15 (0x00, 0x1A, 0x00), 0x2F));
-		SetColorMap (GetColorMapAddress (hypercmaps[1]));
+		SetColorMap (GetColorMapAddress (presentation_->colors));
 		story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
 		story_.set(uqm::StoryFlag::BroadcasterResponse, 0);
 	}
@@ -403,16 +405,7 @@ uqm::SpaceNavigation::LoadHyperspace(void)
 BOOLEAN
 uqm::SpaceNavigation::FreeHyperspace(void)
 {
-    if (!starsBound_) return TRUE;
-    starsBound_ = false;
-	{
-		FRAME F;
-		
-		F = hyperstars[0];
-		hyperstars[0] = stars_in_space;
-		stars_in_space = F;
-	}
-//    FreeHyperData ();
+    presentation_->unbind();
 
 	return TRUE;
 }
@@ -800,7 +793,7 @@ uqm::SpaceNavigation::AllocHyperElement(const POINT *elem_pt)
 		SetPrimType (&DisplayArray[HyperSpaceElementPtr->PrimIndex],
 				STAMP_PRIM);
 		HyperSpaceElementPtr->current.image.farray =
-				&hyperstars[1 + (isQuasiSpace() ? 1 : 0)];
+				&presentation_->stars;
 
 		UnlockElement (hHyperSpaceElement);
 	}
@@ -1501,7 +1494,7 @@ uqm::SpaceNavigation::SeedUniverse(void)
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
-					hyperstars[1 + (isQuasiSpace() ? 1 : 0)],
+					presentation_->stars,
 					SD[i].Index);
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
@@ -1548,7 +1541,7 @@ uqm::SpaceNavigation::SeedUniverse(void)
 
 			LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
 			HyperSpaceElementPtr->current.image.frame = SetAbsFrameIndex (
-					hyperstars[1 + (isQuasiSpace() ? 1 : 0)],
+					presentation_->stars,
 					STAR_TYPE (star_type) * NUM_STAR_COLORS
 					+ STAR_COLOR (star_type));
 			HyperSpaceElementPtr->preprocess_func = NULL;
@@ -1782,6 +1775,13 @@ namespace uqm {
 void SpaceNavigation::run(GameSession &session) {
     SimulationBinding simulation{engine_};
     NavigationBinding binding(session, *this);
+    NavigationPresentation presentation{session.assets()};
+    struct PresentationBorrow {
+        NavigationPresentation *&slot;
+        NavigationPresentation *previous;
+        ~PresentationBorrow() { slot = previous; }
+    } borrow{presentation_, std::exchange(presentation_, &presentation)};
+    // The scene destroys its entities before this asset lease ends, even on failure.
     runSpaceNavigation(*this, [this] { frame(); });
 }
 void SpaceNavigation::frame() {

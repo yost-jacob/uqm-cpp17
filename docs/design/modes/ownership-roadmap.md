@@ -22,7 +22,7 @@ independent or need the same simulation type.
 | Order | Existing mode(s) | Current owner / remaining boundary |
 | --- | --- | --- |
 | Checkpoint | `SolarSystemMode` (ExploreSpace) | `SolarSystemExploration`, native `SolarSystem`/`World` tree, `SystemFlightState`; eight-step ownership migration complete. Remaining drawing/collision projections and C service interfaces are documented separately. |
-| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Graphics arrays remain file-static; entity callbacks resolve a session binding; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
+| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; entity callbacks resolve a session binding; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
 | 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms and resource cleanup work with Hyperspace; portal destinations and fuel/encounter rules differ. |
 | 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
 | 4 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
@@ -55,11 +55,14 @@ location variant, after outgoing callbacks and resource scopes have unwound.
    scene. Scene acquisition/release calls that explicit navigation reference.
    Delete the unused global C `LoadHyperspace`/`FreeHyperspace` wrappers. The
    callback binding remains only for legacy callbacks, not native scene setup.
-2. **Presentation resources.** Replace file-static `hyperstars`/`hypercmaps` and
-   process-wide `FreeHyperData` cleanup with an owned navigation resource lease
-   using the session cache where supported. Restore `stars_in_space` before
-   releasing its backing resources, including partial initialization and failure.
-   Audit FMV and application cleanup callers before deleting those entry points.
+2. **Presentation resources — implemented.** Each navigation run owns a
+   `NavigationPresentation` lease: ambient/selected-realm graphics use the session
+   asset cache, and the selected colour map has scoped ownership. Elements borrow
+   a stable frame address until the scene resets its engine. Scene teardown
+   restores `stars_in_space` before `UninitSpace`; the lease also restores it on
+   exception unwind before releasing its assets. Deleted static graphics/colour
+   arrays, `FreeHyperData`, and movie/application cleanup callers. Missing assets
+   throw and release partial acquisitions. Other-realm artwork is not loaded.
 3. **Navigation entities.** Move star, portal, encounter and flagship callback
    context into engine-owned native entities, as exploration already does.
    Preserve element traversal/collision phases and handle lifetime contracts.
@@ -88,3 +91,14 @@ The initial native-scene regression runs without a `NavigationBinding`, ensuring
 orchestration does not reacquire the navigation owner through the active session.
 Backend asset loading remains substituted in that orchestration test; it does
 not claim to validate actual graphics loading or realm transitions.
+
+## Runtime composition target
+
+The eventual mode runtime is parameterized by simulation, UI and compositor,
+with the shared AV compositor as the default final template argument. Navigation
+modes share NavigationUI; combat and conversations have their own UIs, and title
+and starbase activities have separate UI concerns. UI owns pane layout, relative
+sizes at a resolution, menu scripts, selection and cursor placement. The shared
+compositor presents scene/UI layers and coordinates animation/audio playback.
+Simulation and UI vary independently. This ownership cutover does not introduce
+that framework or a second compositor implementation.
