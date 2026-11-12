@@ -40,26 +40,12 @@ class VuxSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
     bool pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 VuxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -114,95 +100,6 @@ VuxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 				solarSys->PlanetDesc[0].location.x,
 				solarSys->PlanetDesc[0].location.y);
 	}
-	return true;
-}
-
-bool
-VuxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if ((matchWorld (solarSys, world, 0, MATCH_PLANET)
-			&& (star().Index == VUX_DEFINED
-			|| (star().Index == MAIDENS_DEFINED
-			&& !story_.read(StoryFlag::ZexIsDead))))
-			&& StartSphereTracking (VUX_SHIP))
-	{
-		NotifyOthers (VUX_SHIP, IPNL_ALL_CLEAR);
-		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-		CloneShipFragment (VUX_SHIP,
-				&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-		if (star().Index == VUX_DEFINED)
-		{
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-		}
-		else
-		{
-			story_.set(StoryCounter::EncounterContext, 1 << 6);
-		}
-
-		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-		communicate(VUX_CONVERSATION);
-
-		if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			return true;
-
-		{
-			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-			encounter.restore();
-
-			if (star().Index == VUX_DEFINED
-					|| !story_.read(StoryFlag::ZexIsDead))
-				return true;
-
-			RepairSISBorder ();
-		}
-	}
-
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (star().Index == MAIDENS_DEFINED)
-		{
-			if (!story_.read(StoryFlag::ShofixtiMaidens))
-			{
-				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-				solarSys->graphics->PlanetSideFrame[1] = CaptureDrawable (
-						LoadGraphic (MAIDENS_MASK_PMAP_ANIM));
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						CaptureStringTable (
-						LoadStringTable (MAIDENS_STRTAB));
-			}
-		}
-		else if (star().Index == VUX_BEAST_DEFINED)
-		{
-			if (!story_.read(StoryFlag::VuxBeast))
-			{
-				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-				solarSys->graphics->PlanetSideFrame[1] = 0;
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						CaptureStringTable (
-						LoadStringTable (BEAST_STRTAB));
-			}
-		}
-		else
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		solarSys->SysInfo.PlanetInfo.Weather = 2;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-	}
-
 	return true;
 }
 

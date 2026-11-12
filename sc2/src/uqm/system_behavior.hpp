@@ -26,8 +26,6 @@ public:
     virtual bool generatePlanets(SOLARSYS_STATE &system);
     virtual bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &world);
     virtual bool generateName(const SOLARSYS_STATE &system, const PLANET_DESC &world);
-    // Entering orbit may invoke story UI/encounters; story state is checked now.
-    virtual bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &world);
     // Keep legacy node-index/count conventions. info is nullable for count queries.
     virtual COUNT generateMinerals(const SOLARSYS_STATE &system, const PLANET_DESC &world, COUNT node, NODE_INFO *info);
     virtual COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &world, COUNT node, NODE_INFO *info);
@@ -44,6 +42,8 @@ private:
     const STAR_DESC *star_ = nullptr;
     GameSession *session_ = nullptr;
 };
+// Synchronous encounter helper shared by system NPC hooks and world scripts.
+COUNT converseInSystem(GameSession &session, const STAR_DESC *star, CONVERSATION conversation);
 // Catalogue special-system ID selects rules; story state is checked by hooks.
 std::unique_ptr<SystemBehavior> createSystemBehavior(BYTE specialSystem, StoryState &story);
 std::unique_ptr<SystemBehavior> createChmmrSystemBehavior(StoryState &story);

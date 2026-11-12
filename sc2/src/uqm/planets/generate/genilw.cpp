@@ -34,22 +34,10 @@ class IlwrathSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 IlwrathSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -68,54 +56,6 @@ IlwrathSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 			COSINE (angle, solarSys->PlanetDesc[0].radius);
 	solarSys->PlanetDesc[0].location.y =
 			SINE (angle, solarSys->PlanetDesc[0].radius);
-
-	return true;
-}
-
-bool
-IlwrathSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (StartSphereTracking (ILWRATH_SHIP))
-		{
-			NotifyOthers (ILWRATH_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (ILWRATH_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-			communicate(ILWRATH_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-			return true;
-		}
-		else
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (
-					LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		solarSys->SysInfo.PlanetInfo.Weather = 2;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 3;
-	}
 
 	return true;
 }

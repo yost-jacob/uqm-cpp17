@@ -38,27 +38,12 @@ public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
     bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
     bool pickupLife(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 SpathiSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -109,99 +94,6 @@ SpathiSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 		solarSys->MoonDesc[0].location.y =
 				SINE (angle, solarSys->MoonDesc[0].radius);
 	}
-
-	return true;
-}
-
-bool
-SpathiSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	DWORD rand_val;
-
-	if (matchWorld (solarSys, world, 0, 0))
-	{
-		/* Spathiwa's moon */
-		if (!story_.read(StoryFlag::SpathiShieldedSelves)
-				&& StartSphereTracking (SPATHI_SHIP))
-		{
-			NotifyOthers (SPATHI_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (SPATHI_SHIP, &GLOBAL (npc_built_ship_q),
-					INFINITE_FLEET);
-
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			communicate(SPATHI_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-			return true;
-		}
-
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-		GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-
-		solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
-
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
-		if (!story_.read(StoryFlag::UmgahBroadcasters))
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (UMGAH_BCS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (UMGAH_BCS_STRTAB));
-			if (!story_.read(StoryFlag::SpathiShieldedSelves))
-			{	// The first report talks extensively about Spathi
-				// slave-shielding selves. If they never did so, the report
-				// makes no sense, so use an alternate.
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
-			}
-		}
-		LoadPlanet (NULL);
-		return true;
-	}
-	else if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		/* visiting Spathiwa */
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-
-		solarSys->SysInfo.PlanetInfo.PlanetRadius = 120;
-		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
-				CalcGravity (&solarSys->SysInfo.PlanetInfo);
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 31;
-
-		LoadPlanet (NULL);
-		return true;
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 
 	return true;
 }

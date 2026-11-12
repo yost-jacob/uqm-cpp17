@@ -37,22 +37,10 @@ class AndrosynthSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 AndrosynthSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -70,54 +58,6 @@ AndrosynthSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 			COSINE (angle, solarSys->PlanetDesc[1].radius);
 	solarSys->PlanetDesc[1].location.y =
 			SINE (angle, solarSys->PlanetDesc[1].radius);
-
-	return true;
-}
-
-bool
-AndrosynthSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
-	{
-        COUNT visits = story_.discovery(solarSys->worlds->system->world(1).id()).visitedSites.count();
-
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->graphics->PlanetSideFrame[1] =
-				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (
-				LoadStringTable (ANDROSYNTH_RUINS_STRTAB));
-        ConfigurePersonalEnergyBehavior (solarSys, 1, -1, NUM_RACE_RUINS,
-                GetStringTableCount (solarSys->SysInfo.PlanetInfo.DiscoveryString));
-        // The site remains in the shared world. This player's accepted visits
-        // select the next report independently of physical retrieval masks.
-		if (visits >= GetStringTableCount (
-				solarSys->SysInfo.PlanetInfo.DiscoveryString))
-		{	// All the reports were already given
-			DestroyStringTable (ReleaseStringTable (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString = 0;
-		}
-		else
-		{	// Advance the report sequence to the first unread
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetRelStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, visits);
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
-	{
-		solarSys->SysInfo.PlanetInfo.AtmoDensity =
-				EARTH_ATMOSPHERE * 144 / 100;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
-		solarSys->SysInfo.PlanetInfo.Weather = 1;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-	}
 
 	return true;
 }

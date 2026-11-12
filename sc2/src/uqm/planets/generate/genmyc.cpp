@@ -40,24 +40,11 @@ class MyconSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 MyconSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -79,115 +66,6 @@ MyconSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	solarSys->PlanetDesc[0].location.y =
 			SINE (angle, solarSys->PlanetDesc[0].radius);
 
-	return true;
-}
-
-bool
-MyconSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-        if (star().Index == SUN_DEVICE_DEFINED
-                || star().Index == EGG_CASE0_DEFINED
-                || star().Index == EGG_CASE1_DEFINED
-                || star().Index == EGG_CASE2_DEFINED)
-            ConfigureArtifactEnergyBehavior (solarSys, 0, -1);
-
-		if ((star().Index == MYCON_DEFINED
-				|| star().Index == SUN_DEVICE_DEFINED)
-				&& StartSphereTracking (MYCON_SHIP))
-		{
-			if (star().Index == MYCON_DEFINED
-					|| !story_.read(StoryFlag::SunDeviceUnguarded))
-			{
-				NotifyOthers (MYCON_SHIP, IPNL_ALL_CLEAR);
-				uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-				if (star().Index == MYCON_DEFINED
-						|| !story_.read(StoryFlag::MyconFellForAmbush))
-				{
-					CloneShipFragment (MYCON_SHIP,
-							&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-				}
-				else
-				{
-					COUNT i;
-
-					for (i = 0; i < 5; ++i)
-						CloneShipFragment (MYCON_SHIP,
-								&GLOBAL (npc_built_ship_q), 0);
-				}
-
-				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-				if (star().Index == MYCON_DEFINED)
-				{
-					story_.set(StoryCounter::EncounterContext, 1 << 7);
-				}
-				else
-				{
-					story_.set(StoryCounter::EncounterContext, 1 << 6);
-				}
-				communicate(MYCON_CONVERSATION);
-
-				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-					return true;
-
-				{
-					bool MyconSurvivors;
-
-					MyconSurvivors =
-							GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
-
-					GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-					encounter.restore();
-
-					if (MyconSurvivors)
-						return true;
-
-					story_.set(StoryFlag::SunDeviceUnguarded, (1) != 0);
-					RepairSISBorder ();
-				}
-			}
-		}
-
-		switch (star().Index)
-		{
-			case SUN_DEVICE_DEFINED:
-				if (!story_.read(StoryFlag::SunDevice))
-				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->graphics->PlanetSideFrame[1] =
-							CaptureDrawable (
-									LoadGraphic (SUN_DEVICE_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-									LoadStringTable (SUN_DEVICE_STRTAB));
-				}
-				break;
-			case EGG_CASE0_DEFINED:
-			case EGG_CASE1_DEFINED:
-			case EGG_CASE2_DEFINED:
-				if (story_.read(StoryCounter::KnowAboutShattered) == 0)
-					story_.set(StoryCounter::KnowAboutShattered, 1);
-
-				if (!isNodeRetrieved (&solarSys->SysInfo.PlanetInfo,
-						ENERGY_SCAN, 0))
-				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->graphics->PlanetSideFrame[1] =
-							CaptureDrawable (
-									LoadGraphic (EGG_CASE_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-									LoadStringTable (EGG_CASE_STRTAB));
-				}
-				break;
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 	return true;
 }
 
@@ -216,7 +94,7 @@ MyconSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		// XXX: DiscoveryString is set by generateOrbital() only when the
+		// XXX: DiscoveryString is set by the Mycon orbital script only when the
 		//   node has not been picked up yet
 		if (!solarSys->SysInfo.PlanetInfo.DiscoveryString)
 		{	// already picked up
@@ -301,7 +179,6 @@ MyconSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DES
 	(void) info;
 	return 0;
 }
-
 
 std::unique_ptr<SystemBehavior> createMyconSystemBehavior(StoryState &story) {
     return std::make_unique<MyconSystemBehavior>(story);

@@ -20,6 +20,6 @@ uqm_HFILES="dispatcher.hpp session.hpp session_activity.h uqm_context.hpp world_
 		nameref.h oscill.h pickship.h process.h races.h resinst.h respkg.h
 		restart.h save.h settings.h setup.h setupmenu.h shipcont.h ship.h
 		sis.h sounds.h starbase.h starcon.h state.h status.h tactrans.h
-		starmap.h star_map.hpp game_data.h game_data.hpp inventory.hpp inventory_transaction.hpp conversation_commerce.hpp conversation_reports.hpp campaign_clock.hpp game_definitions.hpp game_definitions_legacy.hpp game_state.hpp world_state.hpp world_types.hpp world.hpp world_visit.hpp system_behavior.hpp system_builders.hpp orbital_encounter.hpp system_runtime.hpp exploration_rendering.hpp energy_behavior.hpp world_c.h game_mode.hpp game_menu.hpp game_session_c.h ship_behavior.hpp ship_factory.hpp ship_builders.hpp ship_tuning.hpp
+		starmap.h star_map.hpp game_data.h game_data.hpp inventory.hpp inventory_transaction.hpp conversation_commerce.hpp conversation_reports.hpp campaign_clock.hpp game_definitions.hpp game_definitions_legacy.hpp game_state.hpp world_state.hpp world_types.hpp world.hpp world_visit.hpp orbit_events.hpp system_behavior.hpp system_builders.hpp orbital_encounter.hpp system_runtime.hpp exploration_rendering.hpp energy_behavior.hpp world_c.h game_mode.hpp game_menu.hpp game_session_c.h ship_behavior.hpp ship_factory.hpp ship_builders.hpp ship_tuning.hpp
 		units.h uqmdebug.h util.h velocity.h weapon.h"
 

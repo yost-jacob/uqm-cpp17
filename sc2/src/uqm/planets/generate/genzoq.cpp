@@ -34,23 +34,10 @@ public:
     using SystemBehavior::SystemBehavior;
     bool initNpcs(SOLARSYS_STATE &system) override;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 ZoqFotPikSystemBehavior::initNpcs(SOLARSYS_STATE &system)
@@ -80,64 +67,6 @@ ZoqFotPikSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	solarSys->PlanetDesc[0].location.y =
 			SINE (angle, solarSys->PlanetDesc[0].radius);
 
-	return true;
-}
-
-bool
-ZoqFotPikSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (StartSphereTracking (ZOQFOTPIK_SHIP))
-		{
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			if (story_.read(StoryCounter::ZoqfotDistress))
-			{
-				CloneShipFragment (BLACK_URQUAN_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
-
-				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-				story_.set(StoryCounter::EncounterContext, 1 << 7);
-				communicate(BLACKURQ_CONVERSATION);
-
-				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-					return true;
-
-				if (GetHeadLink (&GLOBAL (npc_built_ship_q)))
-				{
-					GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-					encounter.restore();
-					return true;
-				}
-			}
-
-			CloneShipFragment (ZOQFOTPIK_SHIP, &GLOBAL (npc_built_ship_q),
-					INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-			communicate(ZOQFOTPIK_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-
-			return true;
-		}
-
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->graphics->PlanetSideFrame[1] =
-				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 	return true;
 }
 

@@ -27,18 +27,8 @@ class SlylandroSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
 }
-
-
-
-
-
-
-
-
-
 
 bool
 SlylandroSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -51,22 +41,6 @@ SlylandroSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	return true;
 }
-
-bool
-SlylandroSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 3, MATCH_PLANET))
-	{
-		communicate(SLYLANDRO_HOME_CONVERSATION);
-		return true;
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-	return true;
-}
-
 
 std::unique_ptr<SystemBehavior> createSlylandroSystemBehavior(StoryState &story) {
     return std::make_unique<SlylandroSystemBehavior>(story);

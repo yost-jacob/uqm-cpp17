@@ -1,4 +1,5 @@
 #include "world_visit.hpp"
+#include "orbit_events.hpp"
 #include "world.hpp"
 #include "system_runtime.hpp"
 #include "system_behavior.hpp"
@@ -8,6 +9,7 @@
 #include "gendef.h"
 #include "globdata.h"
 #include "setup.h"
+#include "sounds.h"
 #include "libs/inplib.h"
 #include "planets/generate/gendefault.h"
 #include <stdexcept>
@@ -18,31 +20,39 @@ std::optional<OrbitHandler> World::selectOrbitHandler(const WorldDefinition &def
     const auto body = [&](unsigned p, std::optional<unsigned> m = {}) {
         return planet == p && ((!moon && !m) || (moon && m && *moon == *m));
     };
-    bool scripted = false;
+    using namespace orbit_events;
     switch (definition.specialSystem) {
-        // Sol has distinct analysis/scan seed rules for every body.
-        case SOL_DEFINED: scripted = true; break;
-        case CHMMR_DEFINED: scripted = body(1) || body(1, 0); break;
-        case BURVIXESE_DEFINED: scripted = body(0) || body(0, 0); break;
-        case SPATHI_DEFINED: case SYREEN_DEFINED: scripted = body(0) || body(0, 0); break;
-        case ANDROSYNTH_DEFINED: scripted = body(1); break;
-        case URQUAN_WRECK_DEFINED: scripted = body(6); break;
-        case SHIP_VAULT_DEFINED: scripted = body(0, 0); break;
-        case SAMATRA_DEFINED: scripted = body(4, 0); break;
-        case SLYLANDRO_DEFINED: scripted = body(3); break;
-        case TAALO_PROTECTOR_DEFINED: scripted = body(1, 2); break;
-        case BOMB_DEFINED: scripted = body(5, 1); break;
-        case START_COLONY_DEFINED: case DRUUGE_DEFINED: case ORZ_DEFINED:
-        case TALKING_PET_DEFINED: case MYCON_TRAP_DEFINED: case UTWIG_DEFINED:
-        case AQUA_HELIX_DEFINED: case THRADD_DEFINED: case SUN_DEVICE_DEFINED:
-        case MYCON_DEFINED: case EGG_CASE0_DEFINED: case EGG_CASE1_DEFINED:
-        case EGG_CASE2_DEFINED: case MAIDENS_DEFINED: case VUX_BEAST_DEFINED:
-        case VUX_DEFINED: case ZOQFOT_DEFINED: case YEHAT_DEFINED:
-        case PKUNK_DEFINED: case SUPOX_DEFINED: case RAINBOW_DEFINED:
-        case ILWRATH_DEFINED: scripted = body(0); break;
+        case SOL_DEFINED: return &sol;
+        case CHMMR_DEFINED: if (body(1) || body(1, 0)) return &chmmr; break;
+        case BURVIXESE_DEFINED: if (body(0) || body(0, 0)) return &burvixese; break;
+        case SPATHI_DEFINED: if (body(0) || body(0, 0)) return &spathi; break;
+        case SYREEN_DEFINED: if (body(0) || body(0, 0)) return &syreen; break;
+        case ANDROSYNTH_DEFINED: if (body(1)) return &androsynth; break;
+        case URQUAN_WRECK_DEFINED: if (body(6)) return &urquanWreck; break;
+        case SHIP_VAULT_DEFINED: if (body(0, 0)) return &shipVault; break;
+        case SAMATRA_DEFINED: if (body(4, 0)) return &saMatra; break;
+        case SLYLANDRO_DEFINED: if (body(3)) return &slylandro; break;
+        case TAALO_PROTECTOR_DEFINED: if (body(1, 2)) return &orz; break;
+        case BOMB_DEFINED: if (body(5, 1)) return &utwig; break;
+        case START_COLONY_DEFINED: if (body(0)) return &colony; break;
+        case DRUUGE_DEFINED: if (body(0)) return &druuge; break;
+        case ORZ_DEFINED: if (body(0)) return &orz; break;
+        case TALKING_PET_DEFINED: if (body(0)) return &talkingPet; break;
+        case MYCON_TRAP_DEFINED: if (body(0)) return &myconTrap; break;
+        case UTWIG_DEFINED: if (body(0)) return &utwig; break;
+        case AQUA_HELIX_DEFINED: case THRADD_DEFINED: if (body(0)) return &thraddash; break;
+        case SUN_DEVICE_DEFINED: case MYCON_DEFINED: case EGG_CASE0_DEFINED:
+        case EGG_CASE1_DEFINED: case EGG_CASE2_DEFINED: if (body(0)) return &mycon; break;
+        case MAIDENS_DEFINED: case VUX_BEAST_DEFINED: case VUX_DEFINED: if (body(0)) return &vux; break;
+        case ZOQFOT_DEFINED: if (body(0)) return &zoqFotPik; break;
+        case YEHAT_DEFINED: if (body(0)) return &yehat; break;
+        case PKUNK_DEFINED: if (body(0)) return &pkunk; break;
+        case SUPOX_DEFINED: if (body(0)) return &supox; break;
+        case RAINBOW_DEFINED: if (body(0)) return &rainbowWorld; break;
+        case ILWRATH_DEFINED: if (body(0)) return &ilwrath; break;
         default: break;
     }
-    return scripted ? std::optional<OrbitHandler>{&WorldVisit::runSystemEvent} : std::nullopt;
+    return std::nullopt;
 }
 namespace {
 // Unlike a resource destructor, this scope only restores the location view.
@@ -92,13 +102,17 @@ private:
     PlanetRenderResources &graphics_;
 };
 WorldVisit::WorldVisit(GameSession &session, SOLARSYS_STATE &system, World &world)
-    : session_(session), system_(system), world_(world) {
-    if (!system.worlds || system.worlds->session != &session || &orbitalWorld(system) != &world)
+    : WorldVisit(session, system, world, false) {}
+WorldVisit::WorldVisit(GameSession &session, SOLARSYS_STATE &system, World &world, bool inspection)
+    : session_(session), system_(system), world_(world), inspection_(inspection) {
+    if (!system.worlds || (!inspection && system.worlds->session != &session) || &orbitalWorld(system) != &world)
         throw std::invalid_argument("orbit visit requires the session's selected world");
-    resources_ = std::make_unique<Resources>(system, world);
+    if (!inspection) resources_ = std::make_unique<Resources>(system, world);
+    else if (!system.graphics) throw std::logic_error("world inspection requires a graphics borrow");
 }
 WorldVisit::~WorldVisit() = default;
 bool WorldVisit::canContinue() const {
+    if (inspection_) return true;
     return !session_.menuExit() && !session_.dispatcher().exitRequest() && !QuitPosted
         && !(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER))
         && session_.player().crew() != static_cast<COUNT>(~0u)
@@ -106,22 +120,40 @@ bool WorldVisit::canContinue() const {
 }
 bool WorldVisit::run() {
     if (!canContinue()) return false;
-    loadPlanetProgress(system_);
+    if (!inspection_) loadPlanetProgress(system_);
     if (const auto handler = world_.orbitHandler()) (*handler)(*this);
     else enterOrbit();
     return canContinue();
 }
-void WorldVisit::enterOrbit() {
+void WorldVisit::inspectPreparedWorld(GameSession &session, SOLARSYS_STATE &system) {
+    WorldVisit visit{session, system, orbitalWorld(system), true};
+    visit.run();
+}
+StoryState &WorldVisit::story() const noexcept { return session_.player().story(); }
+const STAR_DESC &WorldVisit::star() const { return systemStar(system_); }
+PLANET_DESC &WorldVisit::legacyDescriptor() { return detail::selectedDescriptor(system_); }
+COUNT WorldVisit::converse(CONVERSATION conversation) {
+    if (!canInteract()) return 0;
+    return converseInSystem(session_, &star(), conversation);
+}
+void WorldVisit::prepareOrbit() {
     if (!canContinue()) return;
-    GenerateDefault_generateOrbital(&system_, &detail::selectedDescriptor(system_));
-    presentOrbit();
+    PrepareDefaultOrbit(&system_, &legacyDescriptor());
+    loadSurface(nullptr);
 }
-void WorldVisit::runSystemEvent(WorldVisit &visit) {
-    if (!visit.canContinue()) return;
-    systemBehavior(visit.system_).generateOrbital(visit.system_, detail::selectedDescriptor(visit.system_));
-    visit.presentOrbit();
+void WorldVisit::loadSurface(FRAME definition) {
+    if (canInteract()) LoadPlanet(definition);
+    else if (definition) DestroyDrawable(ReleaseDrawable(definition));
 }
-void WorldVisit::presentOrbit() {
+bool WorldVisit::canInteract() const { return !inspection_ && canContinue(); }
+void WorldVisit::reportDiscovery() { if (canInteract()) DoDiscoveryReport(MenuSounds); }
+void WorldVisit::restoreBorder() { if (canInteract()) RepairSISBorder(); }
+void WorldVisit::enterOrbit() {
+    prepareOrbit();
+    enterPreparedOrbit();
+}
+void WorldVisit::enterPreparedOrbit() {
+    if (inspection_) return;
     LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
     if (!canContinue() || !world_.renderResources().hasSurface()) return;
     // Surface nodes are prepared in the caller's engine. The orbital child owns

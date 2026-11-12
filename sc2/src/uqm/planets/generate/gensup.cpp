@@ -35,22 +35,10 @@ class SupoxSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 SupoxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -69,53 +57,6 @@ SupoxSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 			COSINE (angle, solarSys->PlanetDesc[0].radius);
 	solarSys->PlanetDesc[0].location.y =
 			SINE (angle, solarSys->PlanetDesc[0].radius);
-
-	return true;
-}
-
-bool
-SupoxSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (StartSphereTracking (SUPOX_SHIP))
-		{
-			NotifyOthers (SUPOX_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (SUPOX_SHIP, &GLOBAL (npc_built_ship_q),
-					INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-			communicate(SUPOX_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-			return true;
-		}
-		else
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (SUPOX_RUINS_STRTAB));
-			if (story_.read(StoryCounter::UltronCondition))
-			{	// Already picked up the Ultron, skip the report
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
-			}
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 
 	return true;
 }
@@ -156,7 +97,6 @@ SupoxSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 
 	return 0;
 }
-
 
 std::unique_ptr<SystemBehavior> createSupoxSystemBehavior(StoryState &story) {
     return std::make_unique<SupoxSystemBehavior>(story);

@@ -23,8 +23,8 @@ resources on destruction. `LoadPlanet` now requests construction through the
 selected world's graphics owner instead of directly invoking the terrain
 algorithm. A failed constructor releases its partially generated surface.
 
-Surface construction occurs on entering orbit, after the system's orbital
-handler has selected any special surface art, color maps, discoveries and story
+Surface construction occurs on entering orbit, after the selected orbital-event
+helper has selected any special surface art, color maps, discoveries and story
 behavior. Constructing all those assets when entering a system would require
 separating the orbital hooks: some launch conversations or combat instead of
 showing a landable planet. Those effects must not occur just because a system

@@ -28,18 +28,8 @@ public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
     bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
 }
-
-
-
-
-
-
-
-
-
 
 bool
 SyreenSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -72,36 +62,6 @@ SyreenSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 	return true;
 }
-
-bool
-SyreenSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		/* Syreen home planet */
-		GenerateDefault_generateOrbital (solarSys, world);
-
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 19;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.AtmoDensity = EARTH_ATMOSPHERE * 9 / 10;
-		return true;
-	}
-
-	if (matchWorld (solarSys, world, 0, 0))
-	{
-		/* Starbase */
-		communicate(SYREEN_CONVERSATION);
-		return true;
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	return true;
-}
-
 
 std::unique_ptr<SystemBehavior> createSyreenSystemBehavior(StoryState &story) {
     return std::make_unique<SyreenSystemBehavior>(story);

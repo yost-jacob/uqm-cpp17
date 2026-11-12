@@ -26,18 +26,8 @@ class TrapSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
 }
-
-
-
-
-
-
-
-
-
 
 bool
 TrapSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -59,25 +49,6 @@ TrapSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	return true;
 }
-
-bool
-TrapSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		solarSys->SysInfo.PlanetInfo.AtmoDensity = EARTH_ATMOSPHERE * 2;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 35;
-		solarSys->SysInfo.PlanetInfo.Weather = 3;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-	}
-
-	return true;
-}
-
 
 std::unique_ptr<SystemBehavior> createTrapSystemBehavior(StoryState &story) {
     return std::make_unique<TrapSystemBehavior>(story);
