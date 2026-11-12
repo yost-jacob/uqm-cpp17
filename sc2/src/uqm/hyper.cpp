@@ -20,6 +20,7 @@
 #include "device_menu.hpp"
 #include "game_state.hpp"
 #include "game_assets.hpp"
+#include "navigation_entities.hpp"
 #include <utility>
 #include "battle.h"
 #include "battle_driver.hpp"
@@ -53,20 +54,23 @@
 #include "libs/mathlib.h"
 
 
+namespace {
+using uqm::detail::EntityHooks;
+using uqm::detail::NavigationFlagship;
+using uqm::detail::NavigationStar;
+using uqm::detail::NavigationPortal;
+using uqm::detail::NavigationEncounter;
+NavigationFlagship &flagship(ELEMENT &element) {
+    auto *owner = dynamic_cast<NavigationFlagship *>(uqm::detail::borrowEntity(disp_q, &element));
+    if (!owner) throw std::logic_error("navigation operation requires its live flagship entity");
+    return *owner;
+}
+}
+uqm::SpaceNavigation &uqm::navigationFor(ELEMENT &element) { return flagship(element).navigation; }
+
 #define XOFFS ((RADAR_SCAN_WIDTH + (UNIT_SCREEN_WIDTH << 2)) >> 1)
 #define YOFFS ((RADAR_SCAN_HEIGHT + (UNIT_SCREEN_HEIGHT << 2)) >> 1)
 
-static void unhyper_transition(ELEMENT *ElementPtr);
-static void hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1);
-static void hyper_death(ELEMENT *ElementPtr);
-static void arilou_space_death(ELEMENT *ElementPtr);
-static void arilou_space_collision(ELEMENT *ElementPtr0,
-		POINT *pPt0, ELEMENT *ElementPtr1, POINT *pPt1);
-static void encounter_transition(ELEMENT *ElementPtr);
-static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1);
-static void hyper_transition_callback(ELEMENT *element);
 static HELEMENT getSisElement(void);
 namespace uqm {
 // One run's asset lease. Elements borrow the stable address of stars until the
@@ -583,8 +587,7 @@ uqm::SpaceNavigation::init_transition(ELEMENT *ElementPtr0, ELEMENT *ElementPtr1
 			- ElementPtr1->next.location.y);
 
 	ElementPtr1->state_flags |= NONSOLID;
-	ElementPtr1->preprocess_func = ::unhyper_transition;
-	ElementPtr1->postprocess_func = NULL;
+	flagship(*ElementPtr1).phase(*ElementPtr1, NavigationFlagship::Phase::Departing);
 	ElementPtr1->turn_wait = (BYTE) which_transition;
 
 	GetElementStarShip (ElementPtr1, &StarShipPtr);
@@ -617,9 +620,7 @@ uqm::SpaceNavigation::hyper_transition(ELEMENT *ElementPtr)
 		}
 		else
 		{
-			ElementPtr->preprocess_func =
-					hyper_transition_callback;
-			ElementPtr->postprocess_func = NULL;
+			flagship(*ElementPtr).phase(*ElementPtr, NavigationFlagship::Phase::Arriving);
 			ElementPtr->state_flags |= NONSOLID;
 			ElementPtr->next.image.frame =
 					SetAbsFrameIndex (ElementPtr->current.image.frame,
@@ -643,8 +644,7 @@ uqm::SpaceNavigation::hyper_transition(ELEMENT *ElementPtr)
 			GetElementStarShip (ElementPtr, &StarShipPtr);
 			if (frame_index == StarShipPtr->ShipFacing)
 			{
-				ElementPtr->preprocess_func = ship_preprocess;
-				ElementPtr->postprocess_func = ship_postprocess;
+				flagship(*ElementPtr).phase(*ElementPtr, NavigationFlagship::Phase::Flying);
 				ElementPtr->state_flags &= ~NONSOLID;
 			}
 		}
@@ -1053,7 +1053,8 @@ uqm::SpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *punive
 		ELEMENT *ElementPtr;
 
 		LockElement (hElement, &ElementPtr);
-		
+
+        uqm::detail::attachEntity(*ElementPtr, std::make_unique<NavigationEncounter>(*this), EntityHooks::Collision);
 		i = EncounterPtr->transition_state;
 		if (i || NewEncounter)
 		{
@@ -1067,7 +1068,7 @@ uqm::SpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *punive
 
 			ElementPtr->current.image.frame = SetRelFrameIndex (
 					ElementPtr->current.image.farray[0], -i);
-			ElementPtr->death_func = ::encounter_transition;
+			uqm::detail::enableEntityHooks(*ElementPtr, EntityHooks::Expiration);
 		}
 		else
 		{
@@ -1078,7 +1079,6 @@ uqm::SpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *punive
 		ElementPtr->turn_wait = VORTEX_WAIT;
 		ElementPtr->preprocess_func = NULL;
 		ElementPtr->postprocess_func = NULL;
-		ElementPtr->collision_func = ::encounter_collision;
 
 		SetUpElement (ElementPtr);
 
@@ -1257,7 +1257,7 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 
 			if (EncounterPtr->transition_state == 0)
 			{
-				ElementPtr->death_func = ::encounter_transition;
+				uqm::detail::enableEntityHooks(*ElementPtr, EntityHooks::Expiration);
 				EncounterPtr->transition_state = -1;
 				ElementPtr->hit_points = 1;
 			}
@@ -1498,12 +1498,12 @@ uqm::SpaceNavigation::SeedUniverse(void)
 					SD[i].Index);
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
-			HyperSpaceElementPtr->collision_func = ::arilou_space_collision;
+			uqm::detail::attachEntity(*HyperSpaceElementPtr, std::make_unique<NavigationPortal>(*this), EntityHooks::Collision);
 
 			SetUpElement (HyperSpaceElementPtr);
 
 			if (arilouSpaceSide == 1 || arilouSpaceSide == 2)
-				HyperSpaceElementPtr->death_func = ::arilou_space_death;
+				uqm::detail::enableEntityHooks(*HyperSpaceElementPtr, EntityHooks::Expiration);
 			else
 			{
 				HyperSpaceElementPtr->death_func = NULL;
@@ -1546,13 +1546,13 @@ uqm::SpaceNavigation::SeedUniverse(void)
 					+ STAR_COLOR (star_type));
 			HyperSpaceElementPtr->preprocess_func = NULL;
 			HyperSpaceElementPtr->postprocess_func = NULL;
-			HyperSpaceElementPtr->collision_func = ::hyper_collision;
+			uqm::detail::attachEntity(*HyperSpaceElementPtr, std::make_unique<NavigationStar>(*this), EntityHooks::Collision);
 
 			SetUpElement (HyperSpaceElementPtr);
 
 			if (SDPtr == GetCurrentStar()
 					&& story_.read(uqm::StoryCounter::PortalCounter) == 0)
-				HyperSpaceElementPtr->death_func = ::hyper_death;
+				uqm::detail::enableEntityHooks(*HyperSpaceElementPtr, EntityHooks::Expiration);
 			else
 			{
 				HyperSpaceElementPtr->death_func = NULL;
@@ -1747,34 +1747,28 @@ SaveSisHyperState(void)
 	LockElement (hSisElement, &ElementPtr);
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	// XXX: Solar system reentry test depends on ShipFacing != 0
-	uqm::gameSession().player().travel().flight.facing = StarShipPtr->ShipFacing + 1;
+	uqm::navigationFor(*ElementPtr).saveFacing(StarShipPtr->ShipFacing + 1);
 	UnlockElement (hSisElement);
 }
 
 
 namespace {
-uqm::SpaceNavigation &activeNavigation() { return uqm::gameSession().navigation(); }
+uqm::SpaceNavigation &flagshipNavigation() {
+    const auto handle = getSisElement();
+    if (!handle) throw std::logic_error("navigation callback without a live flagship");
+    return uqm::navigationFor(*static_cast<ELEMENT *>(handle));
 }
-void MoveSIS(SIZE *pdx, SIZE *pdy) { activeNavigation().MoveSIS(pdx, pdy); }
-void check_hyperspace_encounter(void) { activeNavigation().check_hyperspace_encounter(); }
-static void hyper_transition_callback(ELEMENT *element) { (void)activeNavigation().hyper_transition(element); }
-static void unhyper_transition(ELEMENT *ElementPtr) { activeNavigation().unhyper_transition(ElementPtr); }
-BOOLEAN hyper_transition(ELEMENT *ElementPtr) { return activeNavigation().hyper_transition(ElementPtr); }
-static void hyper_collision(ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().hyper_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
-static void hyper_death(ELEMENT *ElementPtr) { activeNavigation().hyper_death(ElementPtr); }
-static void arilou_space_death(ELEMENT *ElementPtr) { activeNavigation().arilou_space_death(ElementPtr); }
-static void arilou_space_collision(ELEMENT *ElementPtr0,
-		POINT *pPt0, ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().arilou_space_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
-static void encounter_transition(ELEMENT *ElementPtr) { activeNavigation().encounter_transition(ElementPtr); }
-static void encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1) { activeNavigation().encounter_collision(ElementPtr0, pPt0, ElementPtr1, pPt1); }
-void HyperspaceMenu(void) { activeNavigation().HyperspaceMenu(); }
+}
+// C clock/camera boundaries have no entity argument. Resolve only the selected
+// engine's flagship owner, never the active campaign/session.
+void MoveSIS(SIZE *pdx, SIZE *pdy) { flagshipNavigation().MoveSIS(pdx, pdy); }
+void check_hyperspace_encounter(void) { flagshipNavigation().check_hyperspace_encounter(); }
 
 namespace uqm {
 void SpaceNavigation::run(GameSession &session) {
+    if (&session.player() != &player_ || &session.clock() != &clock_)
+        throw std::invalid_argument("navigation requires its owning player and campaign clock");
     SimulationBinding simulation{engine_};
-    NavigationBinding binding(session, *this);
     NavigationPresentation presentation{session.assets()};
     struct PresentationBorrow {
         NavigationPresentation *&slot;
@@ -1782,7 +1776,17 @@ void SpaceNavigation::run(GameSession &session) {
         ~PresentationBorrow() { slot = previous; }
     } borrow{presentation_, std::exchange(presentation_, &presentation)};
     // The scene destroys its entities before this asset lease ends, even on failure.
-    runSpaceNavigation(*this, [this] { frame(); });
+    runSpaceNavigation(*this, [this, attached = false]() mutable {
+        if (!attached) {
+            const auto handle = getSisElement();
+            if (!handle) throw std::logic_error("navigation scene has no flagship");
+            auto &element = *static_cast<ELEMENT *>(handle);
+            uqm::detail::attachEntity(element, std::make_unique<NavigationFlagship>(*this),
+                    EntityHooks::Update | EntityHooks::Postprocess);
+            attached = true;
+        }
+        frame();
+    });
 }
 void SpaceNavigation::frame() {
     clock_.tick();

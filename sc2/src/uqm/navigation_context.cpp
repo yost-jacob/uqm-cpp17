@@ -13,15 +13,4 @@ void SpaceNavigation::prepareRealmTransition(NavigationRealm destination, PLAYER
     travel().position = position;
     story_.set(StoryCounter::ArilouSpaceSide, destination == NavigationRealm::QuasiSpace ? 3 : 0);
 }
-NavigationBinding::NavigationBinding(GameSession &session, SpaceNavigation &navigation)
-    : session_(session), previous_(session.navigation_) {
-    if (&session.player() != &navigation.player_ || &session.clock() != &navigation.clock_)
-        throw std::invalid_argument("navigation belongs to another player or campaign clock");
-    session.navigation_ = &navigation;
-}
-NavigationBinding::~NavigationBinding() { session_.navigation_ = previous_; }
-SpaceNavigation &GameSession::navigation() {
-    if (!navigation_) throw std::logic_error("navigation callback outside its owning mode");
-    return *navigation_;
-}
 }

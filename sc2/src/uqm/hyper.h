@@ -74,9 +74,7 @@ extern "C" {
 extern void MoveSIS (SIZE *pdx, SIZE *pdy);
 
 extern void check_hyperspace_encounter (void);
-extern BOOLEAN hyper_transition (ELEMENT *ElementPtr);
 
-extern void HyperspaceMenu (void);
 extern void SaveSisHyperState (void);
 
 #if defined(__cplusplus)

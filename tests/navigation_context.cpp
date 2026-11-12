@@ -1,36 +1,9 @@
 #include "uqm/hyper_navigation.hpp"
 #include "uqm/game_state.hpp"
+#include "uqm/navigation_entities.hpp"
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
-BOOST_AUTO_TEST_CASE(navigation_callbacks_borrow_only_within_the_owning_session_scope)
-{
-    auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
-    uqm::GameSession session{state, uqm::SinglePlayerId};
-    uqm::SimulationEngine firstEngine, secondEngine;
-    uqm::SpaceNavigation first{session.player(), firstEngine, session.clock(), uqm::NavigationRealm::HyperSpace}, second{session.player(), secondEngine, session.clock(), uqm::NavigationRealm::HyperSpace};
-    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
-    {
-        uqm::NavigationBinding outer{session, first};
-        BOOST_TEST(&session.navigation() == &first);
-        try {
-            uqm::NavigationBinding inner{session, second};
-            BOOST_TEST(&session.navigation() == &second);
-            throw std::runtime_error("unwind");
-        } catch (const std::runtime_error &) {}
-        BOOST_TEST(&session.navigation() == &first);
-    }
-    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
-}
-BOOST_AUTO_TEST_CASE(navigation_rejects_borrowing_another_players_state)
-{
-    auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
-    uqm::GameSession session{state, uqm::SinglePlayerId};
-    uqm::GameState other{{uqm::SinglePlayerId, "Other"}};
-    uqm::SimulationEngine engine;
-    uqm::SpaceNavigation navigation{other.player(uqm::SinglePlayerId), engine, session.clock(), uqm::NavigationRealm::HyperSpace};
-    BOOST_CHECK_THROW((uqm::NavigationBinding{session, navigation}), std::invalid_argument);
-    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
-}
+#include <algorithm>
 BOOST_AUTO_TEST_CASE(portal_position_belongs_to_the_player_and_survives_navigation_mode_recreation)
 {
     uqm::GameState first{{uqm::SinglePlayerId, "First"}}, second{{uqm::SinglePlayerId, "Second"}};
@@ -45,15 +18,6 @@ BOOST_AUTO_TEST_CASE(portal_position_belongs_to_the_player_and_survives_navigati
     BOOST_TEST(player.navigationState().portalY == 5678);
     BOOST_TEST(second.player(uqm::SinglePlayerId).navigationState().portalX == 0);
 }
-BOOST_AUTO_TEST_CASE(navigation_rejects_another_sessions_clock_even_for_the_same_player)
-{
-    auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
-    uqm::GameSession first{state, uqm::SinglePlayerId}, second{state, uqm::SinglePlayerId};
-    uqm::SimulationEngine engine;
-    uqm::SpaceNavigation navigation{first.player(), engine, second.clock(), uqm::NavigationRealm::HyperSpace};
-    BOOST_CHECK_THROW((uqm::NavigationBinding{first, navigation}), std::invalid_argument);
-}
-
 BOOST_AUTO_TEST_CASE(portal_handoff_preserves_outgoing_location_until_successor_entry)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
@@ -79,4 +43,63 @@ BOOST_AUTO_TEST_CASE(portal_handoff_preserves_outgoing_location_until_successor_
         BOOST_TEST(player.travel().position.y == 2345678);
         BOOST_TEST(player.travel().flight.facing == 7u);
     }
+}
+
+namespace {
+uqm::SpaceNavigation *calledNavigation = nullptr;
+unsigned hookCalls[10]{};
+}
+// The real engine-owned entity dispatch is under test. Gameplay kernels and
+// shared ship updates are replaced at this boundary, without a session lookup.
+BOOLEAN uqm::SpaceNavigation::hyper_transition(ELEMENT *) { calledNavigation = this; ++hookCalls[0]; return TRUE; }
+void uqm::SpaceNavigation::unhyper_transition(ELEMENT *) { calledNavigation = this; ++hookCalls[1]; }
+void uqm::SpaceNavigation::hyper_death(ELEMENT *) { calledNavigation = this; ++hookCalls[2]; }
+void uqm::SpaceNavigation::arilou_space_death(ELEMENT *) { calledNavigation = this; ++hookCalls[3]; }
+void uqm::SpaceNavigation::encounter_transition(ELEMENT *) { calledNavigation = this; ++hookCalls[4]; }
+void uqm::SpaceNavigation::hyper_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { calledNavigation = this; ++hookCalls[5]; }
+void uqm::SpaceNavigation::arilou_space_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { calledNavigation = this; ++hookCalls[6]; }
+void uqm::SpaceNavigation::encounter_collision(ELEMENT *, POINT *, ELEMENT *, POINT *) { calledNavigation = this; ++hookCalls[7]; }
+extern "C" void ship_preprocess(ELEMENT *) { ++hookCalls[8]; }
+extern "C" void ship_postprocess(ELEMENT *) { ++hookCalls[9]; }
+
+BOOST_AUTO_TEST_CASE(navigation_entity_hooks_keep_their_owner_and_transition_phase)
+{
+    using namespace uqm::detail;
+    uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
+    uqm::CampaignClock clock;
+    uqm::SimulationEngine engine{4};
+    uqm::SimulationBinding selected{engine};
+    uqm::SpaceNavigation hyper{state.player(uqm::SinglePlayerId), engine, clock, uqm::NavigationRealm::HyperSpace};
+    uqm::SpaceNavigation quasi{state.player(uqm::SinglePlayerId), engine, clock, uqm::NavigationRealm::QuasiSpace};
+    std::fill(std::begin(hookCalls), std::end(hookCalls), 0u);
+    auto &star = engine.allocateElement()->get();
+    auto &portal = engine.allocateElement()->get();
+    auto &encounter = engine.allocateElement()->get();
+    auto &ship = engine.allocateElement()->get();
+    const auto hooks = EntityHooks::Collision | EntityHooks::Expiration;
+    attachEntity(star, std::make_unique<NavigationStar>(hyper), hooks);
+    attachEntity(portal, std::make_unique<NavigationPortal>(quasi), hooks);
+    attachEntity(encounter, std::make_unique<NavigationEncounter>(hyper), hooks);
+    POINT point{};
+    for (auto *self : {&star, &portal, &encounter}) {
+        self->death_func(self);
+        self->collision_func(self, &point, &ship, &point);
+        BOOST_TEST(calledNavigation == (self == &portal ? &quasi : &hyper));
+    }
+    auto behavior = std::make_unique<NavigationFlagship>(hyper);
+    auto &flagship = *behavior;
+    attachEntity(ship, std::move(behavior), EntityHooks::Update | EntityHooks::Postprocess);
+    ship.preprocess_func(&ship); ship.postprocess_func(&ship);
+    flagship.phase(ship, NavigationFlagship::Phase::Arriving);
+    BOOST_TEST(ship.postprocess_func == nullptr);
+    ship.preprocess_func(&ship);
+    flagship.phase(ship, NavigationFlagship::Phase::Departing);
+    BOOST_TEST(ship.postprocess_func == nullptr);
+    ship.preprocess_func(&ship);
+    BOOST_TEST(calledNavigation == &hyper);
+    flagship.phase(ship, NavigationFlagship::Phase::Flying);
+    BOOST_TEST(ship.postprocess_func != nullptr);
+    for (const auto count : hookCalls) BOOST_TEST(count == 1u);
+    engine.reset(); // Cancels owners without calling gameplay expiration hooks.
+    for (const auto count : hookCalls) BOOST_TEST(count == 1u);
 }

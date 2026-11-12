@@ -30,6 +30,7 @@
 #include "globdata.h"
 #include "status.h"
 #include "hyper.h"
+#include "hyper_navigation.hpp"
 #include "tactrans.h"
 #include "pickship.h"
 #include "intel.h"
@@ -212,7 +213,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			InitIntersectStartPoint (ElementPtr);
 			InitIntersectEndPoint (ElementPtr);
 
-			if (hyper_transition (ElementPtr))
+			if (uqm::navigationFor(*ElementPtr).hyper_transition(ElementPtr))
 				return;
 		}
 	}

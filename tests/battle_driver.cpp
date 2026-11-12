@@ -103,10 +103,7 @@ BOOST_AUTO_TEST_CASE(navigation_runs_its_typed_hook_without_combat_result_ui)
     auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
     uqm::GameSession session{state, uqm::SinglePlayerId};
     uqm::SpaceNavigation navigation{session.player(), engine, session.clock(), uqm::NavigationRealm::HyperSpace};
-    // Native scene orchestration does not need the legacy callback binding.
-    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
     uqm::runSpaceNavigation(navigation, [&] { ++frames; });
-    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
     BOOST_TEST(frames == 1u);
     BOOST_TEST(std::count(events.begin(), events.end(), 5) == 0);
     BOOST_TEST(events[events.size() - 2] == 8); BOOST_TEST(events.back() == 9);
