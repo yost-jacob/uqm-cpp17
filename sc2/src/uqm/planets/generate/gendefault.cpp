@@ -120,14 +120,14 @@ PrepareDefaultOrbit (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	uqm::analyzePlanet(*solarSys, *world, *sysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 	rand_val = RandomContext_GetSeed (&uqm::generationRandom(*solarSys));
 
-	sysInfo->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
+	sysInfo->PlanetInfo.data->ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 	GenerateLifeForms (sysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	rand_val = RandomContext_GetSeed (&uqm::generationRandom(*solarSys));
 
-	sysInfo->PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
+	sysInfo->PlanetInfo.data->ScanSeed[MINERAL_SCAN] = rand_val;
 	GenerateMineralDeposits (sysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 
-	sysInfo->PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
+	sysInfo->PlanetInfo.data->ScanSeed[ENERGY_SCAN] = rand_val;
 
 }
 

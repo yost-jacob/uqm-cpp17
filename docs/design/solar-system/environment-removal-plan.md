@@ -80,7 +80,7 @@ declaration. These counts do not imply that the remaining mixed environment is
 already separated into proper data owners.
 
 No physical planet data, scan progress, report-resource ownership or layout
-storage has moved as part of this checkpoint. Steps 3–8 remain pending. In
+storage moved as part of steps 1–2. Step 3 is recorded below; steps 4–8 remain pending. In
 particular, mutable globe work tables and rotation state stay for step 5.
 
 Compatibility: seed recipes and the legacy generation recurrence remain intact;
@@ -149,7 +149,7 @@ an active global system; the ordinary analysis routine is data-only. Small
 numerical differences are acceptable, but saved retrieval masks must continue
 identifying the same generated nodes.
 
-## 3. Separate planet data from the current `SysInfo` work area — next
+## 3. Separate planet data from the current `SysInfo` work area — complete
 
 **Depends on:** step 2.
 
@@ -169,7 +169,29 @@ previous world's analysis; physical data and seeds no longer live authoritativel
 in `SOLARSYS_STATE::SysInfo`. Persistent retrieval progress still belongs to
 `WorldState`, and player cargo still belongs to player inventory.
 
-## 4. Finish the orbital visit and report ownership split
+### Step 3 ownership checkpoint
+
+Each `World` now owns a zero-initialized `PlanetGeneratedData` record containing
+physical analysis and scan seeds. Orbit preparation and special event overrides
+write that same record. Native scripts use `WorldVisit::data()`; remaining C
+analysis, scanning, terrain and lander routines borrow it through
+`PLANET_INFO::data`. Scoped borrows restore the previous pointer on normal return
+and exception unwind. No copy-in/copy-out current-planet authority remains.
+
+Analysis still runs at the existing preparation point: retained values do not
+freeze story-dependent overrides or skip preparation. Preview analysis uses its
+own short-lived record. System reconstruction transfers owned records for matching
+world definitions, including seed, body type and orbital distance; changed
+inputs retain a fresh empty record. This is runtime retention, not new save data.
+
+Retrieval masks and discovery report resources remain in the compatibility visit
+record for step 4. Stellar analysis metadata remains in the system view. The
+`pSolarSysState` lexical count remains 93 lines across 11 files: this step changes
+ownership rather than deleting drawing/flight callback bindings. Tests exercise
+nested borrow restoration, world independence, and reconstruction/invalidation,
+as well as the real analysis and node kernels.
+
+## 4. Finish the orbital visit and report ownership split — next
 
 **Depends on:** steps 1 and 3.
 

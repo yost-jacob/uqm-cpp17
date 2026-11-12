@@ -15,7 +15,8 @@ namespace {
 bool sameDefinition(const WorldDefinition &a, const WorldDefinition &b) {
     return a.id == b.id && a.kind == b.kind && a.seed == b.seed
         && a.shielded == b.shielded && a.name == b.name && a.moonCount == b.moonCount
-        && a.specialSystem == b.specialSystem;
+        && a.specialSystem == b.specialSystem && a.bodyType == b.bodyType
+        && a.orbitalDistance == b.orbitalDistance;
 }
 }
 PlanetRenderResources &World::renderResources() {
@@ -40,7 +41,7 @@ World::World(WorldDefinition definition, std::shared_ptr<WorldState> state)
 World::World(WorldDefinition definition, std::shared_ptr<WorldState> state,
         std::unique_ptr<EnergyBehavior> energy)
     : definition_(std::move(definition)), orbitHandler_(selectOrbitHandler(definition_)),
-      state_(std::move(state)), energy_(std::move(energy)) {
+      state_(std::move(state)), energy_(std::move(energy)), data_(std::make_unique<PlanetGeneratedData>()) {
     if (!state_ || !energy_) throw std::invalid_argument("world requires state and energy behavior");
     if (id().universe != state_->id()) throw std::invalid_argument("world belongs to another universe");
 }
@@ -61,12 +62,13 @@ World::World(WorldDefinition description, std::shared_ptr<WorldState> state,
     children_.reserve(planet.NumPlanets);
     for (COUNT i = 0; i < planet.NumPlanets; ++i) {
         auto moon = system.MoonDesc[i];
-        moon.pPrevDesc = nullptr; // Snapshots retain no borrow into the active view.
-        generation_->moons.push_back(moon);
+        moon.pPrevDesc = &planet;
         auto moonId = id();
         moonId.moon = i;
         children_.push_back(std::make_unique<World>(
             detail::describeWorld(moonId, WorldKind::Moon, moon, definition_.specialSystem), state_));
+        moon.pPrevDesc = nullptr; // Snapshots retain no borrow into the active view.
+        generation_->moons.push_back(moon);
     }
 }
 void World::projectMoons(SOLARSYS_STATE &system, PLANET_DESC &planet) const {
@@ -107,6 +109,9 @@ SolarSystem::SolarSystem(StarId starId, std::shared_ptr<WorldState> state,
     }
 }
 World::~World() = default;
+PlanetGeneratedData &World::generatedData() noexcept { return *data_; }
+const PlanetGeneratedData &World::generatedData() const noexcept { return *data_; }
+bool World::hasGeneratedData() const noexcept { return data_->PlanDataPtr != nullptr; }
 const WorldDefinition &World::definition() const noexcept { return definition_; }
 const WorldId &World::id() const noexcept { return definition_.id; }
 bool World::canLand() const noexcept {
@@ -157,6 +162,20 @@ SolarSystem::SolarSystem(StarId star, std::shared_ptr<WorldState> state,
     if (!state_ || !behavior_) throw std::invalid_argument("system requires state and behavior");
 }
 SolarSystem::~SolarSystem() = default;
+void SolarSystem::preserveGeneratedData(SolarSystem &previous) noexcept {
+    if (star_ != previous.star_ || universe() != previous.universe()) return;
+    for (std::size_t i = 0; i < worlds_.size() && i < previous.worlds_.size(); ++i) {
+        auto &next = *worlds_[i];
+        auto &old = *previous.worlds_[i];
+        if (!sameDefinition(next.definition_, old.definition_)) continue;
+        next.data_.swap(old.data_);
+        for (std::size_t j = 0; j < next.children_.size() && j < old.children_.size(); ++j) {
+            auto &nextMoon = *next.children_[j];
+            auto &oldMoon = *old.children_[j];
+            if (sameDefinition(nextMoon.definition_, oldMoon.definition_)) nextMoon.data_.swap(oldMoon.data_);
+        }
+    }
+}
 SystemBehavior &SolarSystem::behavior() {
     if (!behavior_) throw std::logic_error("data-only system has no runtime behavior");
     return *behavior_;

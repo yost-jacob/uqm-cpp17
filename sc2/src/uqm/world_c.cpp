@@ -30,7 +30,8 @@ uqm::WorldDefinition definition(uqm::WorldId id, uqm::WorldKind kind, const PLAN
         kind = uqm::WorldKind::FinalBattleSite;
     const bool shielded = (kind == uqm::WorldKind::Planet || kind == uqm::WorldKind::Moon)
             && (world.data_index & PLANET_SHIELDED) != 0;
-    return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets, specialSystem};
+    const auto distance = id.moon ? (world.pPrevDesc ? world.pPrevDesc->radius : 0) : world.radius;
+    return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets, specialSystem, world.data_index, distance};
 }
 uqm::LegacyDiscoveryLocation discoveryLocation(uqm::SolarSystem &system, const uqm::WorldId &world) {
     std::uint32_t record = 0, records = 0;
@@ -62,6 +63,7 @@ void constructSystemWorlds(SOLARSYS_STATE &system, const STAR_DESC &star) {
     auto generated = std::make_unique<SolarSystem>(starId, context.world, context.story,
             star, system, context.session);
     importSystemDiscoveries(*generated, star, context);
+    if (context.system) generated->preserveGeneratedData(*context.system);
     context.system = std::move(generated);
 }
 World &orbitalWorld(SOLARSYS_STATE &system) {

@@ -1,4 +1,5 @@
 #include "uqm/world.hpp"
+#include "uqm/world_legacy.hpp"
 #include "uqm/system_behavior.hpp"
 #include "uqm/gendef.h"
 #include "uqm/game_state.hpp"
@@ -193,4 +194,62 @@ BOOST_AUTO_TEST_CASE(surface_constructor_owns_generation_and_unwinds_partial_fai
     BOOST_CHECK_THROW(resources.createSurface(projection, descriptor, nullptr), std::logic_error);
     resources.reset();
     BOOST_TEST(liveTestDrawables() == initial);
+}
+
+BOOST_AUTO_TEST_CASE(world_generated_values_have_one_owner_and_borrows_restore_on_unwind)
+{
+    auto state = std::make_shared<WorldState>(UniverseId{501});
+    World first{planet(0), state}, second{planet(1), state};
+    SYSTEM_INFO view{};
+    view.PlanetInfo.ScanRetrieveMask[MINERAL_SCAN] = 17;
+    auto &a = first.generatedData();
+    auto &b = second.generatedData();
+    a.PlanetRadius = 38;
+    a.ScanSeed[MINERAL_SCAN] = 123;
+    {
+        detail::WorldDataBorrow outer{view, first};
+        BOOST_TEST(view.PlanetInfo.data == &a);
+        view.PlanetInfo.data->SurfaceTemperature = 165; // Script override writes the owner.
+        try {
+            detail::WorldDataBorrow inner{view, second};
+            view.PlanetInfo.data->PlanetRadius = 100;
+            view.PlanetInfo.data->ScanSeed[MINERAL_SCAN] = 456;
+            throw std::runtime_error("cancelled preparation");
+        } catch (const std::runtime_error &) {}
+        BOOST_TEST(view.PlanetInfo.data == &a);
+        BOOST_TEST(view.PlanetInfo.data->PlanetRadius == 38u);
+        BOOST_TEST(view.PlanetInfo.data->ScanSeed[MINERAL_SCAN] == 123u);
+    }
+    BOOST_TEST(view.PlanetInfo.data == nullptr);
+    BOOST_TEST(first.generatedData().SurfaceTemperature == 165);
+    BOOST_TEST(second.generatedData().PlanetRadius == 100u);
+    BOOST_TEST(second.generatedData().ScanSeed[MINERAL_SCAN] == 456u);
+    BOOST_TEST(view.PlanetInfo.ScanRetrieveMask[MINERAL_SCAN] == 17u);
+    BOOST_TEST(a.SurfaceTemperature == 165); // Ending a view did not destroy either record.
+}
+BOOST_AUTO_TEST_CASE(layout_reconstruction_preserves_matching_world_data_and_invalidates_changed_inputs)
+{
+    auto state = std::make_shared<WorldState>(UniverseId{501});
+    auto description = planet(0, 1);
+    description.bodyType = WATER_WORLD;
+    description.orbitalDistance = EARTH_RADIUS;
+    SolarSystem previous{StarId{3}, state, std::vector<WorldDefinition>{description}};
+    previous.world(0).replaceChildren(moons(state));
+    previous.world(0).generatedData().SurfaceTemperature = 22;
+    previous.world(0).generatedData().ScanSeed[MINERAL_SCAN] = 1234;
+    previous.world(0).child(0).generatedData().PlanetRadius = 25;
+    auto *retained = &previous.world(0).generatedData();
+    SolarSystem next{StarId{3}, state, std::vector<WorldDefinition>{description}};
+    next.world(0).replaceChildren(moons(state));
+    next.preserveGeneratedData(previous);
+    BOOST_TEST(&next.world(0).generatedData() == retained);
+    BOOST_TEST(next.world(0).generatedData().SurfaceTemperature == 22);
+    BOOST_TEST(next.world(0).generatedData().ScanSeed[MINERAL_SCAN] == 1234u);
+    BOOST_TEST(next.world(0).child(0).generatedData().PlanetRadius == 25u);
+    description.orbitalDistance += 1;
+    SolarSystem changed{StarId{3}, state, std::vector<WorldDefinition>{description}};
+    changed.world(0).replaceChildren(moons(state));
+    changed.preserveGeneratedData(next);
+    BOOST_TEST(changed.world(0).generatedData().SurfaceTemperature == 0);
+    BOOST_TEST(changed.world(0).child(0).generatedData().PlanetRadius == 0u);
 }

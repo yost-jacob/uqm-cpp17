@@ -5,10 +5,15 @@
 #include <array>
 extern "C" const PlanetFrame planet_array[];
 namespace {
+struct AnalysisRecord {
+    PLANET_GENERATED_DATA data{};
+    SYSTEM_INFO view{};
+    AnalysisRecord() { view.PlanetInfo.data = &data; }
+};
 PlanetAnalysisInput inputs(PlanetAnalysisPolicy policy, SIZE radius = EARTH_RADIUS) {
     return {MAKE_STAR(DWARF_STAR, YELLOW_BODY, -1), radius, planet_array, policy};
 }
-void compare(const PLANET_INFO &a, const PLANET_INFO &b) {
+void compare(const PLANET_GENERATED_DATA &a, const PLANET_GENERATED_DATA &b) {
     BOOST_TEST(a.SurfaceTemperature == b.SurfaceTemperature);
     BOOST_TEST(a.AtmoDensity == b.AtmoDensity);
     BOOST_TEST(a.PlanetRadius == b.PlanetRadius);
@@ -27,13 +32,13 @@ BOOST_AUTO_TEST_CASE(analysis_is_independent_of_output_address_and_other_streams
         planet.rand_seed = 123456;
         planet.data_index = type;
         const auto configuration = inputs(PLANET_ANALYSIS_ORBIT);
-        SYSTEM_INFO stack{};
-        auto heap = std::make_unique<SYSTEM_INFO>();
+        AnalysisRecord stack;
+        auto heap = std::make_unique<AnalysisRecord>();
         RandomContext first{RandomDefaultSeed}, second{RandomDefaultSeed}, unrelated{987};
-        DoPlanetaryAnalysis(&stack, &planet, &first, &configuration);
+        DoPlanetaryAnalysis(&stack.view, &planet, &first, &configuration);
         for (unsigned i = 0; i < 100; ++i) RandomContext_Random(&unrelated);
-        DoPlanetaryAnalysis(heap.get(), &planet, &second, &configuration);
-        compare(stack.PlanetInfo, heap->PlanetInfo);
+        DoPlanetaryAnalysis(&heap->view, &planet, &second, &configuration);
+        compare(stack.data, heap->data);
         BOOST_TEST(first.seed == second.seed);
     }
 }
@@ -45,11 +50,11 @@ BOOST_AUTO_TEST_CASE(preview_and_orbit_analysis_have_explicit_temperature_policy
     auto previewInput = inputs(PLANET_ANALYSIS_PREVIEW, EARTH_RADIUS / 10);
     auto orbitInput = previewInput;
     orbitInput.policy = PLANET_ANALYSIS_ORBIT;
-    SYSTEM_INFO preview{}, orbit{};
+    AnalysisRecord preview, orbit;
     RandomContext first{RandomDefaultSeed}, second{RandomDefaultSeed};
-    DoPlanetaryAnalysis(&preview, &planet, &first, &previewInput);
-    DoPlanetaryAnalysis(&orbit, &planet, &second, &orbitInput);
-    BOOST_TEST(orbit.PlanetInfo.SurfaceTemperature > preview.PlanetInfo.SurfaceTemperature);
+    DoPlanetaryAnalysis(&preview.view, &planet, &first, &previewInput);
+    DoPlanetaryAnalysis(&orbit.view, &planet, &second, &orbitInput);
+    BOOST_TEST(orbit.data.SurfaceTemperature > preview.data.SurfaceTemperature);
     BOOST_TEST(first.seed != second.seed); // Preserve the policy's extra draws.
 }
 BOOST_AUTO_TEST_CASE(scan_generation_reproduces_node_identity_and_stream_position)
@@ -57,13 +62,14 @@ BOOST_AUTO_TEST_CASE(scan_generation_reproduces_node_identity_and_stream_positio
     PLANET_DESC planet{};
     planet.data_index = WATER_WORLD;
     planet.rand_seed = 123456;
-    SYSTEM_INFO info{};
+    AnalysisRecord record;
+    auto &info = record.view;
     const auto configuration = inputs(PLANET_ANALYSIS_ORBIT);
     RandomContext generation{RandomDefaultSeed};
     DoPlanetaryAnalysis(&info, &planet, &generation, &configuration);
-    info.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = generation.seed;
+    info.PlanetInfo.data->ScanSeed[BIOLOGICAL_SCAN] = generation.seed;
     GenerateLifeForms(&info, GENERATE_ALL, nullptr, &generation, EXTENT{210, 67});
-    info.PlanetInfo.ScanSeed[MINERAL_SCAN] = generation.seed;
+    info.PlanetInfo.data->ScanSeed[MINERAL_SCAN] = generation.seed;
     const auto minerals = GenerateMineralDeposits(&info, GENERATE_ALL, nullptr, &generation, EXTENT{210, 67});
     BOOST_TEST(minerals > 0u);
     BOOST_TEST(minerals <= 32u);
@@ -89,10 +95,11 @@ BOOST_AUTO_TEST_CASE(scan_generation_reproduces_node_identity_and_stream_positio
 
 BOOST_AUTO_TEST_CASE(biological_node_identity_uses_explicit_bounds_and_independent_workspace)
 {
-    SYSTEM_INFO info{};
-    info.PlanetInfo.PlanDataPtr = &planet_array[WATER_WORLD];
-    info.PlanetInfo.LifeChance = 1024;
-    info.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = 12345;
+    AnalysisRecord record;
+    auto &info = record.view;
+    info.PlanetInfo.data->PlanDataPtr = &planet_array[WATER_WORLD];
+    info.PlanetInfo.data->LifeChance = 1024;
+    info.PlanetInfo.data->ScanSeed[BIOLOGICAL_SCAN] = 12345;
     RandomContext generation{RandomDefaultSeed};
     const EXTENT bounds{210, 67};
     const auto count = GenerateLifeForms(&info, GENERATE_ALL, nullptr, &generation, bounds);

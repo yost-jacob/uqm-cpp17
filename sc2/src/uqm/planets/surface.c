@@ -35,7 +35,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 	COUNT num_deposits;
 	const ELEMENT_ENTRY *eptr;
 
-	eptr = &SysInfoPtr->PlanetInfo.PlanDataPtr->UsefulElements[0];
+	eptr = &SysInfoPtr->PlanetInfo.data->PlanDataPtr->UsefulElements[0];
 	num_deposits = 0;
 	j = NUM_USEFUL_ELEMENTS;
 	do
@@ -97,7 +97,7 @@ GenerateMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT whichDeposit,
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
 	RandomContext_SeedRandom (rng,
-			SysInfoPtr->PlanetInfo.ScanSeed[MINERAL_SCAN]);
+			SysInfoPtr->PlanetInfo.data->ScanSeed[MINERAL_SCAN]);
 	return CalcMineralDeposits (SysInfoPtr, whichDeposit, info, rng, mapSize);
 }
 
@@ -108,14 +108,14 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 	COUNT num_life_forms;
 
 	num_life_forms = 0;
-	if (PLANSIZE (SysInfoPtr->PlanetInfo.PlanDataPtr->Type) != GAS_GIANT)
+	if (PLANSIZE (SysInfoPtr->PlanetInfo.data->PlanDataPtr->Type) != GAS_GIANT)
 	{
 #define MIN_LIFE_CHANCE 10
 		SIZE life_var;
 
 		life_var = RandomContext_Random (rng) & 1023;
-		if (life_var < SysInfoPtr->PlanetInfo.LifeChance
-				|| (SysInfoPtr->PlanetInfo.LifeChance < MIN_LIFE_CHANCE
+		if (life_var < SysInfoPtr->PlanetInfo.data->LifeChance
+				|| (SysInfoPtr->PlanetInfo.data->LifeChance < MIN_LIFE_CHANCE
 				&& life_var < MIN_LIFE_CHANCE))
 		{
 			BYTE num_types;
@@ -148,7 +148,7 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 		else
 		{
 			log_add (log_Debug, "It's dead, Jim! (%d >= %d)", life_var,
-				SysInfoPtr->PlanetInfo.LifeChance);
+				SysInfoPtr->PlanetInfo.data->LifeChance);
 		}
 #endif /* DEBUG_SURFACE */
 	}
@@ -168,7 +168,7 @@ GenerateLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT whichLife,
 	if (!info) // user not interested in info but we need space for it
 		info = &temp_info;
 	RandomContext_SeedRandom (rng,
-			SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
+			SysInfoPtr->PlanetInfo.data->ScanSeed[BIOLOGICAL_SCAN]);
 	return CalcLifeForms (SysInfoPtr, whichLife, info, rng, mapSize);
 }
 
@@ -192,7 +192,7 @@ GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const SBYTE *lifeTypes,
 	// the order and number of Random() calls.
 
 	RandomContext_SeedRandom (rng,
-			SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
+			SysInfoPtr->PlanetInfo.data->ScanSeed[BIOLOGICAL_SCAN]);
 
 	for (i = 0; lifeTypes[i] >= 0; ++i)
 	{
@@ -234,7 +234,7 @@ GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, COUNT scan, COUNT numNodes,
 		info = &temp_info;
 
 	RandomContext_SeedRandom (rng,
-			SysInfoPtr->PlanetInfo.ScanSeed[scan]);
+			SysInfoPtr->PlanetInfo.data->ScanSeed[scan]);
 
 	for (i = 0; i < numNodes; ++i)
 	{

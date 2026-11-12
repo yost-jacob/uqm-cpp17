@@ -116,6 +116,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                     { WorldVisit visit{session, system, runtime.system->world(0)}; BOOST_TEST(visit.run() == (action == 0)); }
                 } catch (...) {
                     BOOST_TEST(system.graphics == nullptr);
+                    BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
                     BOOST_TEST(engine().size() == 1u);
                     BOOST_TEST(orbitFinishes == finished + 1);
                     BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
@@ -124,6 +125,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 BOOST_TEST(generations == 1u);
                 BOOST_TEST(engine().size() == 1u);
                 BOOST_TEST(system.graphics == nullptr);
+                BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
                 BOOST_TEST(orbitFinishes == finished + 1);
                 BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
                 BOOST_TEST(resumes == (action == 0 ? 1u : 0u));
@@ -204,8 +206,8 @@ BOOST_AUTO_TEST_CASE(debug_world_inspection_uses_scripts_without_modes_or_player
         BOOST_TEST(engine.size() == 0u);
         BOOST_TEST(orbitFinishes == finishes);
         if (special == SOL_DEFINED) {
-            BOOST_TEST(system.SysInfo.PlanetInfo.PlanetRadius == 38u);
-            BOOST_TEST(system.SysInfo.PlanetInfo.SurfaceTemperature == 165);
+            BOOST_TEST(world.generatedData().PlanetRadius == 38u);
+            BOOST_TEST(world.generatedData().SurfaceTemperature == 165);
         }
     }
 }

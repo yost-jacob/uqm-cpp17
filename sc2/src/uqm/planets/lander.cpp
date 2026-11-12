@@ -1965,11 +1965,11 @@ uqm::LanderMode::run()
 
 	// Set our chances of hazards occurring.
 	PSD.TectonicsChance = GetHazardChance (EARTHQUAKE_DISASTER,
-			planetSideDesc->system.SysInfo.PlanetInfo.Tectonics);
+			planetSideDesc->system.SysInfo.PlanetInfo.data->Tectonics);
 	PSD.WeatherChance = GetHazardChance (LIGHTNING_DISASTER,
-			planetSideDesc->system.SysInfo.PlanetInfo.Weather);
+			planetSideDesc->system.SysInfo.PlanetInfo.data->Weather);
 	PSD.FireChance = GetHazardChance (LAVASPOT_DISASTER, GetThermalHazardRating (
-			planetSideDesc->system.SysInfo.PlanetInfo.SurfaceTemperature));
+			planetSideDesc->system.SysInfo.PlanetInfo.data->SurfaceTemperature));
 
 	PSD.ElementLevel = GetStorageBayCapacity () - GLOBAL_SIS (TotalElementMass);
 	PSD.MaxElementLevel = MAX_SCROUNGED;

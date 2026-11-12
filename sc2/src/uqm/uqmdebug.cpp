@@ -663,6 +663,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPre != NULL)
 	{
 		SelectSystemWorld(system, planet);
+        uqm::detail::WorldDataBorrow generated{system->SysInfo, uqm::orbitalWorld(*system)};
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
 		uqm::analyzePlanet(*system, *planet, system->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
@@ -686,6 +687,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPost != NULL)
 	{
 		SelectSystemWorld(system, planet);
+        uqm::detail::WorldDataBorrow generated{system->SysInfo, uqm::orbitalWorld(*system)};
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
 		uqm::analyzePlanet(*system, *planet, system->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
@@ -710,6 +712,7 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->moonFunc != NULL)
 	{
 		SelectSystemWorld(system, moon);
+        uqm::detail::WorldDataBorrow generated{system->SysInfo, uqm::orbitalWorld(*system)};
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc).child(moon - system->MoonDesc)};
 		if (moon->data_index != HIERARCHY_STARBASE && moon->data_index != SA_MATRA)
@@ -1009,17 +1012,17 @@ dumpWorld (FILE *out, const PLANET_DESC *world)
 	}
 
 	info = &pSolarSysState->SysInfo.PlanetInfo;
-	fprintf(out, "          AxialTilt:  %d\n", info->AxialTilt);
-	fprintf(out, "          Tectonics:  %d\n", info->Tectonics);
-	fprintf(out, "          Weather:    %d\n", info->Weather);
-	fprintf(out, "          Density:    %d\n", info->PlanetDensity);
-	fprintf(out, "          Radius:     %d\n", info->PlanetRadius);
-	fprintf(out, "          Gravity:    %d\n", info->SurfaceGravity);
-	fprintf(out, "          Temp:       %d\n", info->SurfaceTemperature);
-	fprintf(out, "          Day:        %d\n", info->RotationPeriod);
-	fprintf(out, "          Atmosphere: %d\n", info->AtmoDensity);
-	fprintf(out, "          LifeChance: %d\n", info->LifeChance);
-	fprintf(out, "          DistToSun:  %d\n", info->PlanetToSunDist);
+	fprintf(out, "          AxialTilt:  %d\n", info->data->AxialTilt);
+	fprintf(out, "          Tectonics:  %d\n", info->data->Tectonics);
+	fprintf(out, "          Weather:    %d\n", info->data->Weather);
+	fprintf(out, "          Density:    %d\n", info->data->PlanetDensity);
+	fprintf(out, "          Radius:     %d\n", info->data->PlanetRadius);
+	fprintf(out, "          Gravity:    %d\n", info->data->SurfaceGravity);
+	fprintf(out, "          Temp:       %d\n", info->data->SurfaceTemperature);
+	fprintf(out, "          Day:        %d\n", info->data->RotationPeriod);
+	fprintf(out, "          Atmosphere: %d\n", info->data->AtmoDensity);
+	fprintf(out, "          LifeChance: %d\n", info->data->LifeChance);
+	fprintf(out, "          DistToSun:  %d\n", info->data->PlanetToSunDist);
 
 	if (world->data_index & PLANET_SHIELDED) {
 		// Slave-shielded planet

@@ -293,10 +293,12 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 		else
 		{
 			COUNT index;
-			SYSTEM_INFO SysInfo;
+			PLANET_GENERATED_DATA previewData{};
+            SYSTEM_INFO SysInfo{};
+            SysInfo.PlanetInfo.data = &previewData;
 
 			uqm::analyzePlanet(system, *pCurDesc, SysInfo, PLANET_ANALYSIS_PREVIEW, PlanData);
-			index = (SysInfo.PlanetInfo.SurfaceTemperature + 250) / 100;
+			index = (SysInfo.PlanetInfo.data->SurfaceTemperature + 250) / 100;
 			if (index >= TemperatureRanges)
 				index = TemperatureRanges - 1;
 			pCurDesc->temp_color = temp_color_array[index];

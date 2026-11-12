@@ -6,6 +6,19 @@ namespace uqm::detail {
 // Owned generated data; the legacy MoonDesc array is only a projected view.
 struct WorldGeneration { std::vector<PLANET_DESC> moons; };
 WorldDefinition describeWorld(WorldId id, WorldKind kind, const PLANET_DESC &descriptor, std::uint8_t specialSystem = 0);
+// Borrow one world's generated values into the C work record. The world and
+// output outlive the scope; destruction restores only the prior pointer.
+class WorldDataBorrow {
+public:
+    WorldDataBorrow(SYSTEM_INFO &output, World &world) noexcept
+        : output_(output), previous_(output.PlanetInfo.data) { output_.PlanetInfo.data = &world.generatedData(); }
+    ~WorldDataBorrow() { output_.PlanetInfo.data = previous_; }
+    WorldDataBorrow(const WorldDataBorrow &) = delete;
+    WorldDataBorrow &operator=(const WorldDataBorrow &) = delete;
+private:
+    SYSTEM_INFO &output_;
+    PLANET_GENERATED_DATA *previous_;
+};
 // Compatibility views of generated body data, not owners. Moons must belong to
 // the currently generated moon buffer. Borrow only while that view is loaded.
 PLANET_DESC &worldDescriptor(SOLARSYS_STATE &system, const World &world);
