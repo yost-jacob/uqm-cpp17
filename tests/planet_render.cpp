@@ -2,6 +2,7 @@
 #include "uqm/system_behavior.hpp"
 #include "uqm/gendef.h"
 #include "uqm/game_state.hpp"
+#include "uqm/system_runtime.hpp"
 #include "uqm/planet_render_legacy.hpp"
 #include "libs/strings/strintrn.h"
 #include "libs/memlib.h"
@@ -138,7 +139,10 @@ BOOST_AUTO_TEST_CASE(planet_constructor_owns_moons_and_projects_without_regenera
     GameState campaign{{SinglePlayerId, "Constructor test"}};
     MoonBehavior behavior{campaign.player(SinglePlayerId).story()};
     auto state = std::make_shared<WorldState>(UniverseId{501});
+    SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME runtime{campaign.player(SinglePlayerId).story(), simulation, state, nullptr};
     SOLARSYS_STATE projection{};
+    projection.worlds = &runtime;
     auto &parent = projection.PlanetDesc[0];
     parent.NumPlanets = 1;
     parent.rand_seed = 123;
@@ -158,7 +162,7 @@ unsigned surfaceGenerations = 0;
 bool failSurfaceGeneration = false;
 }
 // Device-free stand-in: exercise production construction and unwind ownership.
-extern "C" void GeneratePlanetSurface(PLANET_DESC *, FRAME) {
+extern "C" void GeneratePlanetSurface(PLANET_DESC *, FRAME, RandomContext *rng) {
     ++surfaceGenerations;
     pSolarSysState->graphics->TopoFrame = frame();
     pSolarSysState->graphics->Orbit.SphereFrame = frame();
@@ -167,7 +171,11 @@ extern "C" void GeneratePlanetSurface(PLANET_DESC *, FRAME) {
 BOOST_AUTO_TEST_CASE(surface_constructor_owns_generation_and_unwinds_partial_failure)
 {
     const auto initial = liveTestDrawables();
+    GameState campaign{{SinglePlayerId, "Surface generation"}};
+    SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME runtime{campaign.player(SinglePlayerId).story(), simulation, campaign.worldOwner(), nullptr};
     SOLARSYS_STATE projection{};
+    projection.worlds = &runtime;
     auto *previous = pSolarSysState;
     struct Restore { SOLARSYS_STATE *value; ~Restore() { pSolarSysState = value; } } restore{previous};
     pSolarSysState = &projection;

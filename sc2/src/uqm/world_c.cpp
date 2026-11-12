@@ -136,11 +136,6 @@ void InitPlanetInfo(void) {
     } catch (...) { std::abort(); }
 }
 void UninitPlanetInfo(void) { DeleteStateFile(STARINFO_FILE); }
-// Retained C compatibility entry; production exploration supplies its system.
-void GetPlanetInfo(void) {
-    try { uqm::loadPlanetProgress(*pSolarSysState); }
-    catch (...) { std::abort(); }
-}
 
 void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
     try {
@@ -148,6 +143,7 @@ void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
         const StarId id{GetStarIndex(star)};
         if (id.value >= NUM_SOLAR_SYSTEMS) throw std::out_of_range("invalid system star");
         auto &context = *system->worlds;
+        context.catalogueStar = star;
         context.system = std::make_unique<uqm::SolarSystem>(id, context.world,
                 context.story, star->Index);
         context.system->behavior().attachStar(*star);

@@ -79,7 +79,7 @@ ColonySystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	PLANET_DESC *pMinPlanet;
 
 	pMinPlanet = &solarSys->PlanetDesc[0];
-	FillOrbits (solarSys, (BYTE)~0, pMinPlanet, FALSE);
+	FillOrbits (solarSys, (BYTE)~0, pMinPlanet, FALSE, &uqm::generationRandom(system), &uqm::systemStar(system));
 
 	pMinPlanet->radius = EARTH_RADIUS * 115L / 100;
 	angle = ARCTAN (pMinPlanet->location.x, pMinPlanet->location.y);

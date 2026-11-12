@@ -55,7 +55,7 @@ SpathiSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	pMinPlanet = &solarSys->PlanetDesc[0];
 	solarSys->SunDesc[0].NumPlanets = 1;
 	FillOrbits (solarSys,
-			solarSys->SunDesc[0].NumPlanets, pMinPlanet, FALSE);
+			solarSys->SunDesc[0].NumPlanets, pMinPlanet, FALSE, &uqm::generationRandom(system), &uqm::systemStar(system));
 
 	pMinPlanet->radius = EARTH_RADIUS * 1150L / 100;
 	angle = ARCTAN (pMinPlanet->location.x, pMinPlanet->location.y);
@@ -88,7 +88,7 @@ SpathiSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 		solarSys->MoonDesc[0].data_index = PELLUCID_WORLD;
 		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS + MOON_DELTA;
-		angle = NORMALIZE_ANGLE (LOWORD (RandomContext_Random (&SysGenRNG)));
+		angle = NORMALIZE_ANGLE (LOWORD (RandomContext_Random (&uqm::generationRandom(system))));
 		solarSys->MoonDesc[0].location.x =
 				COSINE (angle, solarSys->MoonDesc[0].radius);
 		solarSys->MoonDesc[0].location.y =
@@ -149,7 +149,7 @@ SpathiSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DE
 	{
 		#define NUM_EVIL_ONES  32
 		return GenerateRandomNodes (&solarSys->SysInfo, BIOLOGICAL_SCAN, NUM_EVIL_ONES,
-				NUM_CREATURE_TYPES, whichNode, info);
+				NUM_CREATURE_TYPES, whichNode, info, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	}
 
 	return 0;

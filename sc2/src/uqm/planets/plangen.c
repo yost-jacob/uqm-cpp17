@@ -831,7 +831,7 @@ RenderPlanetSphere (FRAME MaskFrame, int offset, BOOLEAN doThrob)
 #define RANGE_SHIFT 6
 
 static void
-DitherMap (SBYTE *DepthArray)
+DitherMap (SBYTE *DepthArray, RandomContext *rng)
 {
 #define DITHER_VARIANCE  (1 << (RANGE_SHIFT - 3))
 	COUNT i;
@@ -842,7 +842,7 @@ DitherMap (SBYTE *DepthArray)
 	{
 		// Use up the random value byte by byte
 		if ((i & 3) == 0)
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (rng);
 		else
 			rand_val >>= 8;
 
@@ -1044,7 +1044,7 @@ MakeCrater (RECT *pRect, SBYTE *DepthArray, SIZE rim_delta, SIZE
 #define NUM_BAND_COLORS 4
 
 static void
-MakeStorms (COUNT storm_count, SBYTE *DepthArray)
+MakeStorms (COUNT storm_count, SBYTE *DepthArray, RandomContext *rng)
 {
 #define MAX_STORMS 8
 	COUNT i;
@@ -1066,7 +1066,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray)
 
 			intersect = FALSE;
 
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (rng);
 			loword = LOWORD (rand_val);
 			hiword = HIWORD (rand_val);
 			switch (HIBYTE (hiword) & 31)
@@ -1094,7 +1094,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray)
 			if (pstorm_r->extent.height <= 4)
 				pstorm_r->extent.height += 4;
 
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (rng);
 			loword = LOWORD (rand_val);
 			hiword = HIWORD (rand_val);
 
@@ -1169,7 +1169,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray)
 
 static void
 MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
-		depth_delta)
+		depth_delta, RandomContext *rng)
 {
 	COORD last_y, next_y;
 	SIZE band_error, band_bump, band_delta;
@@ -1183,7 +1183,7 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 	band_error = num_bands >> 1;
 	lpDst = DepthArray;
 
-	band_delta = ((LOWORD (RandomContext_Random (&SysGenRNG))
+	band_delta = ((LOWORD (RandomContext_Random (rng))
 			& (NUM_BAND_COLORS - 1)) << RANGE_SHIFT)
 			+ (1 << (RANGE_SHIFT - 1));
 	last_y = next_y = 0;
@@ -1191,7 +1191,7 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 	{
 		COORD cur_y;
 
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (rng);
 		loword = LOWORD (rand_val);
 		hiword = HIWORD (rand_val);
 
@@ -1215,7 +1215,7 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 			r.extent.height = 5;
 			DeltaTopography (50,
 					&DepthArray[(cur_y - 2) * r.extent.width],
-					&r, depth_delta);
+					&r, depth_delta, rng);
 		}
 
 		for (j = cur_y - last_y; j > 0; --j)
@@ -1232,9 +1232,9 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 				& (((1 << RANGE_SHIFT) * NUM_BAND_COLORS) - 1);
 	}
 
-	MakeStorms (4 + (RandomContext_Random (&SysGenRNG) & 3) + 1, DepthArray);
+	MakeStorms (4 + (RandomContext_Random (rng) & 3) + 1, DepthArray, rng);
 
-	DitherMap (DepthArray);
+	DitherMap (DepthArray, rng);
 }
 
 static void
@@ -1312,15 +1312,11 @@ planet_orbit_init (void)
 }
 
 static unsigned
-frandom (void)
+frandom (unsigned *detailSeed)
 {
-	static unsigned seed = 0x12345678;
-	
-	if (seed == 0)
-		seed = 15807;
-	seed = (seed >> 4) * 227;
-
-	return seed;
+    if (*detailSeed == 0) *detailSeed = 15807;
+    *detailSeed = (*detailSeed >> 4) * 227;
+    return *detailSeed;
 }
 
 static inline int
@@ -1331,16 +1327,16 @@ TopoVarianceFactor (int step, int allowed, int min)
 }
 
 static inline int
-TopoVarianceCalc (int factor)
+TopoVarianceCalc (int factor, unsigned *detailSeed)
 {
 	if (factor == 0)
 		return 0;
 	else
-		return (frandom () % factor) - (factor >> 1);
+		return (frandom (detailSeed) % factor) - (factor >> 1);
 }
 
 static void
-TopoScale4x (SBYTE *pDstTopo, SBYTE *pSrcTopo, int num_faults, int fault_var)
+TopoScale4x (SBYTE *pDstTopo, SBYTE *pSrcTopo, int num_faults, int fault_var, unsigned *detailSeed)
 {
 		// Interpolate the topographical data by connecting the elevations
 		// to their nearest neighboors using straight lines (in random
@@ -1423,7 +1419,7 @@ TopoScale4x (SBYTE *pDstTopo, SBYTE *pSrcTopo, int num_faults, int fault_var)
 		step = (prow[4] - val) / STEP_RANGE;
 		rndfact = TopoVarianceFactor (step, var_allow, var_min);
 		for (x2 = 1, val += step; x2 < 4; ++x2, val += step)
-			prow[x2] = val + TopoVarianceCalc (rndfact);
+			prow[x2] = val + TopoVarianceCalc (rndfact, detailSeed);
 	}
 
 	pSrc = pSrcTopo;
@@ -1447,7 +1443,7 @@ TopoScale4x (SBYTE *pDstTopo, SBYTE *pSrcTopo, int num_faults, int fault_var)
 		step = (elev[4][4] - val) / STEP_RANGE;
 		rndfact = TopoVarianceFactor (step, var_allow, var_min);
 		for (y2 = 1, val += step; y2 < 4; ++y2, val += step)
-			elev[4][y2] = val + TopoVarianceCalc (rndfact);
+			elev[4][y2] = val + TopoVarianceCalc (rndfact, detailSeed);
 
 		for (x = 0; x < w; ++x, ++pSrc, pDst += 4, prow += 4)
 		{
@@ -1477,17 +1473,17 @@ TopoScale4x (SBYTE *pDstTopo, SBYTE *pSrcTopo, int num_faults, int fault_var)
 			step = (elev[4][4] - val) / STEP_RANGE;
 			rndfact = TopoVarianceFactor (step, var_allow, var_min);
 			for (x2 = 1, val += step; x2 < 4; ++x2, val += step)
-				elev[x2][4] = val + TopoVarianceCalc (rndfact);
+				elev[x2][4] = val + TopoVarianceCalc (rndfact, detailSeed);
 
 			val = elev[4][0];
 			step = (elev[4][4] - val) / STEP_RANGE;
 			rndfact = TopoVarianceFactor (step, var_allow, var_min);
 			for (y2 = 1, val += step; y2 < 4; ++y2, val += step)
-				elev[4][y2] = val + TopoVarianceCalc (rndfact);
+				elev[4][y2] = val + TopoVarianceCalc (rndfact, detailSeed);
 
 			// fill in the rest by connecting opposing elevations
 			// some randomness to determine which elevations to connect
-			for (pld = fill_lines[frandom () & 3]; pld->x0 >= 0; ++pld)
+			for (pld = fill_lines[frandom (detailSeed) & 3]; pld->x0 >= 0; ++pld)
 			{
 				int num_steps;
 
@@ -1504,7 +1500,7 @@ TopoScale4x (SBYTE *pDstTopo, SBYTE *pSrcTopo, int num_faults, int fault_var)
 						x2 != pld->x1 || y2 != pld->y1;
 						x2 += pld->dx, y2 += pld->dy, val += step)
 				{
-					elev[x2][y2] = val + TopoVarianceCalc (rndfact);
+					elev[x2][y2] = val + TopoVarianceCalc (rndfact, detailSeed);
 				}
 			}
 
@@ -1718,10 +1714,11 @@ GenerateLightMap (SBYTE *pTopo, int w, int h)
 	}
 }
 
-// Sets the SysGenRNG to the required state first.
+// Reseeds the explicitly supplied generation workspace first.
 void
-GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
+GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame, RandomContext *rng)
 {
+    unsigned detailSeed = 0x12345678; // Per-surface refinement, separate from node/layout RNG.
 	RECT r;
 	const PlanetFrame *PlanDataPtr;
 	PLANET_INFO *PlanetInfo = &pSolarSysState->SysInfo.PlanetInfo;
@@ -1732,7 +1729,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 	BOOLEAN shielded = (pPlanetDesc->data_index & PLANET_SHIELDED) != 0;
 
-	RandomContext_SeedRandom (&SysGenRNG, pPlanetDesc->rand_seed);
+	RandomContext_SeedRandom (rng, pPlanetDesc->rand_seed);
 
 	TopoContext = CreateContext ("Plangen.TopoContext");
 	OldContext = SetContext (TopoContext);
@@ -1803,21 +1800,21 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 			{
 				case GAS_GIANT_ALGO:
 					MakeGasGiant (PlanDataPtr->num_faults,
-							Orbit->lpTopoData, &r, PlanDataPtr->fault_depth);
+							Orbit->lpTopoData, &r, PlanDataPtr->fault_depth, rng);
 					break;
 				case TOPO_ALGO:
 				case CRATERED_ALGO:
 					if (PlanDataPtr->num_faults)
 						DeltaTopography (PlanDataPtr->num_faults,
 								Orbit->lpTopoData, &r,
-								PlanDataPtr->fault_depth);
+								PlanDataPtr->fault_depth, rng);
 
 					for (i = 0; i < PlanDataPtr->num_blemishes; ++i)
 					{
 						RECT crater_r;
 						UWORD loword;
 				
-						loword = LOWORD (RandomContext_Random (&SysGenRNG));
+						loword = LOWORD (RandomContext_Random (rng));
 						switch (HIBYTE (loword) & 31)
 						{
 							case 0:
@@ -1840,7 +1837,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 								break;
 						}
 					
-						loword = LOWORD (RandomContext_Random (&SysGenRNG));
+						loword = LOWORD (RandomContext_Random (rng));
 						crater_r.extent.height = crater_r.extent.width;
 						crater_r.corner.x = HIBYTE (loword)
 								% (MAP_WIDTH - crater_r.extent.width);
@@ -1853,7 +1850,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 					}
 
 					if (PLANALGO (PlanDataPtr->Type) == CRATERED_ALGO)
-						DitherMap (Orbit->lpTopoData);
+						DitherMap (Orbit->lpTopoData, rng);
 					ValidateMap (Orbit->lpTopoData);
 					break;
 			}
@@ -1894,7 +1891,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 		{
 			TopoScale4x (pScaledTopo, Orbit->lpTopoData,
 					PlanDataPtr->num_faults, PlanDataPtr->fault_depth
-					* (PLANALGO (PlanDataPtr->Type) == CRATERED_ALGO ? 2 : 1  ));
+					* (PLANALGO (PlanDataPtr->Type) == CRATERED_ALGO ? 2 : 1  ), &detailSeed);
 			RenderTopography (Orbit->TopoZoomFrame, pScaledTopo,
 					MAP_WIDTH * 4, MAP_HEIGHT * 4);
 

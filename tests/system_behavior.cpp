@@ -53,7 +53,6 @@ void resetCalls() {
 // Dependencies are fake engine services. Tests below use the real behavior
 // factory, Chmmr hooks, campaign storage, world ownership and C callback bridge.
 extern "C" {
-RandomContext SysGenRNG{RandomDefaultSeed};
 SOUND MenuSounds = nullptr;
 bool GenerateDefault_initNpcs(SOLARSYS_STATE *system) {
     ++defaultCalls[0];
@@ -154,7 +153,7 @@ BOOLEAN GetGroupInfo(DWORD, BYTE) { ++groupsLoaded; return TRUE; }
 HSHIPFRAG CloneShipFragment(COUNT, QUEUE *, COUNT) { ++clones; return nullptr; }
 void LoadStdLanderFont(PLANET_INFO *) {}
 void FreeLanderFont(PLANET_INFO *) {}
-void DoDiscoveryReport(SOUND) {}
+void ShowDiscoveryReport(SOUND, FONT, FRAME, STRING) {}
 }
 
 namespace { std::string selectedBuilder; }
@@ -758,7 +757,10 @@ BOOST_AUTO_TEST_CASE(system_constructor_builds_special_planets_and_moons_without
     STAR_DESC star{};
     star.Index = CHMMR_DEFINED;
     star.star_pt = {1752, 1450};
+    uqm::SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME runtime{campaign.player(uqm::SinglePlayerId).story(), simulation, campaign.worldOwner(), nullptr};
     SOLARSYS_STATE projection{};
+    projection.worlds = &runtime;
     uqm::SolarSystem system{StarId{3}, campaign.worldOwner(),
         campaign.player(uqm::SinglePlayerId).story(), star, projection, nullptr};
     BOOST_TEST(system.worldCount() == 2u);
@@ -808,7 +810,8 @@ BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_ch
                 BOOST_REQUIRE(world.orbitHandler());
                 const auto handler = world.orbitHandler();
                 runtime.system->selectWorld(world.id());
-                runtime.system->behavior().attachStar(*GetStar(0));
+                runtime.catalogueStar = GetStar(0);
+                runtime.system->behavior().attachStar(*runtime.catalogueStar);
                 runtime.system->behavior().attachSession(session);
                 // Selection is immutable, while story conditions remain live.
                 if (scenario < 2 || scenario == 4) story.set(uqm::StoryFlag::ChmmrFreed);

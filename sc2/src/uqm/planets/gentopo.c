@@ -24,7 +24,7 @@
 
 void
 DeltaTopography (COUNT num_iterations, SBYTE *DepthArray, RECT *pRect,
-		SIZE depth_delta)
+		SIZE depth_delta, RandomContext *rng)
 {
 	SIZE width, height, delta_y;
 	struct
@@ -43,10 +43,10 @@ DeltaTopography (COUNT num_iterations, SBYTE *DepthArray, RECT *pRect,
 		DWORD rand_val;
 		SBYTE *lpDst;
 
-		if ((RandomContext_Random (&SysGenRNG) & 1) == 0)
+		if ((RandomContext_Random (rng) & 1) == 0)
 			depth_delta = -depth_delta;
 
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (rng);
 		w1 = LOWORD (rand_val);
 		w2 = HIWORD (rand_val);
 

@@ -143,7 +143,7 @@ SaMatraSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 		solarSys->MoonDesc[0].data_index = SA_MATRA;
 		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS + (2 * MOON_DELTA);
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (&uqm::generationRandom(system));
 		angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 		solarSys->MoonDesc[0].location.x =
 				COSINE (angle, solarSys->MoonDesc[0].radius);

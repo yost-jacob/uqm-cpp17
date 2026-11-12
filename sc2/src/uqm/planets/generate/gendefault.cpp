@@ -71,7 +71,7 @@ GenerateDefault_uninitNpcs (SOLARSYS_STATE *solarSys)
 bool
 GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys)
 {
-	FillOrbits (solarSys, (BYTE)~0, solarSys->PlanetDesc, FALSE);
+	FillOrbits (solarSys, (BYTE)~0, solarSys->PlanetDesc, FALSE, &uqm::generationRandom(*solarSys), &uqm::systemStar(*solarSys));
 	GeneratePlanets (solarSys);
 	return true;
 }
@@ -79,7 +79,7 @@ GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys)
 bool
 GenerateDefault_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 {
-	FillOrbits (solarSys, planet->NumPlanets, solarSys->MoonDesc, FALSE);
+	FillOrbits (solarSys, planet->NumPlanets, solarSys->MoonDesc, FALSE, &uqm::generationRandom(*solarSys), &uqm::systemStar(*solarSys));
 	return true;
 }
 
@@ -117,15 +117,15 @@ PrepareDefaultOrbit (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 
 	sysInfo = &solarSys->SysInfo;
 
-	DoPlanetaryAnalysis (sysInfo, world);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
+	uqm::analyzePlanet(*solarSys, *world, *sysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
+	rand_val = RandomContext_GetSeed (&uqm::generationRandom(*solarSys));
 
 	sysInfo->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms (sysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
+	GenerateLifeForms (sysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
+	rand_val = RandomContext_GetSeed (&uqm::generationRandom(*solarSys));
 
 	sysInfo->PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (sysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits (sysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 
 	sysInfo->PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
@@ -135,7 +135,7 @@ COUNT
 GenerateDefault_generateMinerals (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
 {
-	return GenerateMineralDeposits (&solarSys->SysInfo, whichNode, info);
+	return GenerateMineralDeposits (&solarSys->SysInfo, whichNode, info, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	(void) world;
 }
 
@@ -178,7 +178,7 @@ COUNT
 GenerateDefault_generateLife (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
 {
-	return GenerateLifeForms (&solarSys->SysInfo, whichNode, info);
+	return GenerateLifeForms (&solarSys->SysInfo, whichNode, info, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	(void) world;
 }
 
@@ -199,7 +199,7 @@ GenerateDefault_generateArtifact (const SOLARSYS_STATE *solarSys,
 {
 	// Generate an energy node at a random location
 	return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN, 1, 0,
-			whichNode, info);
+			whichNode, info, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 }
 
 COUNT
@@ -208,14 +208,14 @@ GenerateDefault_generateRuins (const SOLARSYS_STATE *solarSys,
 {
 	// Generate a standard spread of city ruins of a destroyed civilization
 	return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN, NUM_RACE_RUINS,
-			0, whichNode, info);
+			0, whichNode, info, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 }
 
 static inline void
-runLanderReport (void)
+runLanderReport (const PLANET_INFO *planet)
 {
 	UnbatchGraphics ();
-	DoDiscoveryReport (MenuSounds);
+	ShowDiscoveryReport (MenuSounds, planet->LanderFont, planet->LanderFontEff, planet->DiscoveryString);
 	BatchGraphics ();
 }
 
@@ -227,7 +227,7 @@ GenerateDefault_landerReport (SOLARSYS_STATE *solarSys)
 	if (!planetInfo->DiscoveryString)
 		return false;
 
-	runLanderReport ();
+	runLanderReport (planetInfo);
 
 	// XXX: A non-cycling report is given only once and has to be deleted
 	//   in some circumstances (like the Syreen Vault). It does not
@@ -248,7 +248,7 @@ GenerateDefault_landerReportCycle (SOLARSYS_STATE *solarSys)
 	if (!planetInfo->DiscoveryString)
 		return false;
 
-	runLanderReport ();
+	runLanderReport (planetInfo);
 	// Advance to the next report
 	planetInfo->DiscoveryString = SetRelStringTableIndex (
 			planetInfo->DiscoveryString, 1);
@@ -278,7 +278,7 @@ GeneratePlanets (SOLARSYS_STATE *solarSys)
 		BYTE num_moons;
 		BYTE type;
 
-		rand_val = RandomContext_Random (&SysGenRNG);
+		rand_val = RandomContext_Random (&uqm::generationRandom(*solarSys));
 		byte_val = LOBYTE (rand_val);
 
 		num_moons = 0;

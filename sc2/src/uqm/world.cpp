@@ -1,4 +1,5 @@
 #include "world.hpp"
+#include "system_runtime.hpp"
 #include "world_legacy.hpp"
 #include "system_behavior.hpp"
 #include "planet_render.hpp"
@@ -49,7 +50,7 @@ World::World(WorldDefinition description, std::shared_ptr<WorldState> state,
     if (planet.NumPlanets > MAX_MOONS)
         throw std::out_of_range("declared moon count exceeds descriptor capacity");
     generation_ = std::make_unique<detail::WorldGeneration>();
-    RandomContext_SeedRandom(&SysGenRNG, planet.rand_seed);
+    RandomContext_SeedRandom(&uqm::generationRandom(system), planet.rand_seed);
     std::fill(std::begin(system.MoonDesc), std::end(system.MoonDesc), PLANET_DESC{});
     behavior.generateMoons(system, planet);
     if (planet.NumPlanets > MAX_MOONS)
@@ -80,11 +81,13 @@ void World::projectMoons(SOLARSYS_STATE &system, PLANET_DESC &planet) const {
 SolarSystem::SolarSystem(StarId starId, std::shared_ptr<WorldState> state,
         StoryState &story, const STAR_DESC &star, SOLARSYS_STATE &system, GameSession *session)
     : SolarSystem(starId, std::move(state), story, star.Index) {
+    if (!system.worlds) throw std::invalid_argument("generated system requires a generation owner");
+    system.worlds->catalogueStar = &star;
     behavior_->attachStar(star);
     if (session) behavior_->attachSession(*session);
-    RandomContext_SeedRandom(&SysGenRNG, MAKE_DWORD(star.star_pt.x, star.star_pt.y));
+    RandomContext_SeedRandom(&uqm::generationRandom(system), MAKE_DWORD(star.star_pt.x, star.star_pt.y));
     system.SunDesc[0] = {};
-    system.SunDesc[0].rand_seed = RandomContext_Random(&SysGenRNG);
+    system.SunDesc[0].rand_seed = RandomContext_Random(&uqm::generationRandom(system));
     system.SunDesc[0].data_index = STAR_TYPE(star.Type);
     behavior_->generatePlanets(system);
     if (system.SunDesc[0].NumPlanets > MAX_PLANETS)

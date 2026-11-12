@@ -51,6 +51,44 @@ Current ownership already helps: exploration owns `UQM_SYSTEM_RUNTIME`; it owns
 Player location and persistent world retrieval state already have session-owned
 authorities. Those responsibilities should not move back into a new struct.
 
+## Steps 1–2 completion checkpoint
+
+- Reports now receive explicit text/font/effect borrows. Native report callers
+  no longer rediscover the current solar-system environment.
+- Deleted the unused production `GetPlanetInfo()` wrapper and disabled duplicate
+  state queries. Archive tests use an explicit, test-only C-to-native bridge.
+- Native surface ownership no longer checks the process-global selected system.
+  The remaining legacy C surface-loader entry still resolves that binding.
+- Catalogue context is an explicit visit borrow, available during construction;
+  native star lookup no longer falls back through the active-session C getter.
+- Deleted `SysGenRNG`. Each exploration/debug visit owns its generation workspace;
+  layout, analysis, nodes and terrain receive explicit random contexts. Star-field
+  randomness and high-resolution surface refinement have separate local streams.
+- Analysis takes stellar type, orbital distance, immutable planet-type data and
+  a named preview/orbit policy. Output address no longer controls temperature
+  adjustments or random consumption. Node generation takes explicit map bounds
+  rather than reading display width.
+- Real analysis/node kernels and real planet-type tables now have an isolated
+  Boost.Test target, without a selected world, star or display environment.
+
+The lexical `pSolarSysState` inventory is now **93 lines across 11 files**, down
+from 105/15. Remaining references belong to terrain/globe drawing (33), debug
+binding (19), legacy flight/input and naming callbacks (14), globe animation (10),
+orbital C loops (6), NPC callbacks (5), scan C adapters (2), and one each in group
+loading, the C surface-loader adapter, the C device-menu adapter and its header
+declaration. These counts do not imply that the remaining mixed environment is
+already separated into proper data owners.
+
+No physical planet data, scan progress, report-resource ownership or layout
+storage has moved as part of this checkpoint. Steps 3–8 remain pending. In
+particular, mutable globe work tables and rotation state stay for step 5.
+
+Compatibility: seed recipes and the legacy generation recurrence remain intact;
+map bounds at game call sites retain their previous values. The formerly static
+surface-refinement seed is now reset per generated surface, making visual detail
+independent of visit history. That refinement does not change mineral/biological
+node identities. Save format is unchanged; randomized universes are not added.
+
 ## Field destinations
 
 These are responsibility names, not a demand for a class per field.
@@ -71,7 +109,7 @@ These are responsibility names, not a demand for a class per field.
 | Rotation cursors, projection/lighting scratch, tint state | Planet presentation/generation owner; working state separate from immutable tables |
 | `worlds` back-pointer | Remove from native operations; retain only in a temporary C projection if necessary |
 
-## 1. Make callers explicit at the outer boundary
+## 1. Make callers explicit at the outer boundary — complete
 
 **Depends on:** existing `WorldVisit`, orbital child and session ownership.
 
@@ -89,7 +127,7 @@ These are responsibility names, not a demand for a class per field.
 legacy subsystems / C adapters; new native code has no implicit lookup. Update
 this inventory once at the cutover, not after every function edit.
 
-## 2. Extract explicit generation inputs and RNG ownership
+## 2. Extract explicit generation inputs and RNG ownership — complete
 
 **Depends on:** step 1 for entry paths; enables steps 3 and 5.
 
@@ -111,7 +149,7 @@ an active global system; the ordinary analysis routine is data-only. Small
 numerical differences are acceptable, but saved retrieval masks must continue
 identifying the same generated nodes.
 
-## 3. Separate planet data from the current `SysInfo` work area
+## 3. Separate planet data from the current `SysInfo` work area — next
 
 **Depends on:** step 2.
 

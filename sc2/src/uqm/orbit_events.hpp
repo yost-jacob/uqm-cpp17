@@ -98,15 +98,15 @@ inline void burvixese(WorldVisit &visit)
     auto *world = &body;
 	DWORD rand_val;
 
-	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
+	uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
+	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
+	GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
+	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
@@ -212,7 +212,7 @@ inline void colony(WorldVisit &visit)
     auto *world = &body;
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
+		uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 
 		solarSys->SysInfo.PlanetInfo.AtmoDensity =
 				EARTH_ATMOSPHERE * 98 / 100;
@@ -787,12 +787,12 @@ inline void sol(WorldVisit &visit)
 		return visit.enterPreparedOrbit();
 	}
 
-	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
+	uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
+	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
+	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
+	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 	planetNr = planetIndex (solarSys, world);
 	if (worldIsPlanet (solarSys, world))
@@ -1065,15 +1065,15 @@ inline void spathi(WorldVisit &visit)
 			return visit.enterPreparedOrbit();
 		}
 
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
+		uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
+		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-		GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
+		GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
+		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
+		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
@@ -1102,12 +1102,12 @@ inline void spathi(WorldVisit &visit)
 	else if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		/* visiting Spathiwa */
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
+		uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
+		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-		rand_val = RandomContext_GetSeed (&SysGenRNG);
+		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
+		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
 		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 

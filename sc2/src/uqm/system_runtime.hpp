@@ -4,6 +4,7 @@
 #include "planets/planets.h"
 #include "game_state.hpp"
 #include <cassert>
+#include <stdexcept>
 #include <type_traits>
 #include <functional>
 #include <vector>
@@ -43,8 +44,15 @@ struct UQM_SYSTEM_RUNTIME {
     SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
     TimeCount nextFlightFrame = 0;
     uqm::SystemViewState viewState{};
+    const STAR_DESC *catalogueStar = nullptr; // Catalogue borrow, available during construction.
+    RandomContext generation{RandomDefaultSeed}; // Visit-owned generation workspace, not gameplay RNG.
 };
 namespace uqm {
+// Generation workspace belongs to this explicit visit. No process-wide binding.
+inline RandomContext &generationRandom(const SOLARSYS_STATE &system) {
+    if (!system.worlds) throw std::logic_error("generation requires an explicit system owner");
+    return system.worlds->generation;
+}
 // Compatibility helpers borrow the explicitly attached exploration context.
 inline StoryState &systemStory(const SOLARSYS_STATE &system) {
     assert(system.worlds);
@@ -98,6 +106,15 @@ private:
 };
 // Prepared system context is required; no process-wide selected-star lookup.
 const STAR_DESC &systemStar(const SOLARSYS_STATE &system);
+// Explicit analysis entry: output placement never determines policy. The caller
+// supplies immutable planet-type data; generation mutates only its visit's RNG.
+inline void analyzePlanet(const SOLARSYS_STATE &system, const PLANET_DESC &body,
+        SYSTEM_INFO &output, PlanetAnalysisPolicy policy, const PlanetFrame *planetTypes) {
+    const auto radius = body.pPrevDesc == system.SunDesc ? body.radius : body.pPrevDesc->radius;
+    const PlanetAnalysisInput inputs{systemStar(system).Type, radius, planetTypes, policy};
+    DoPlanetaryAnalysis(&output, &body, &generationRandom(system), &inputs);
+}
+
 const UNICODE *namedPlanetaryBody(const SOLARSYS_STATE &system);
 // Orbit descriptor and world layout must already be attached. Loading replaces
 // local masks; publishing merges permanent retrieval bits without awarding cargo.

@@ -69,6 +69,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 UQM_SYSTEM_RUNTIME runtime{session.player().story(), engine(), session.worldOwner(), nullptr, &session};
                 auto &system = runtime.engine;
                 system.worlds = &runtime;
+                runtime.catalogueStar = GetStar(0);
                 runtime.system = std::make_unique<SolarSystem>(StarId{0}, session.worldOwner(),
                     std::vector<WorldDefinition>{definition(session.world().id(), 0, 0)});
                 runtime.system->selectWorld(runtime.system->world(0).id());
@@ -141,6 +142,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
 // Device-free dependencies for the actual inline event scripts. These tests
 // exercise event routing and ownership, not terrain algorithms or UI drawing.
 extern "C" {
+const PlanetFrame *PlanData = nullptr;
 SIZE EncounterRace = 0;
 BYTE EncounterGroup = 0;
 void LoadPlanet(FRAME) {}
@@ -149,9 +151,9 @@ void RepairSISBorder() {}
 void DrawHyperCoords(POINT) {}
 void DrawSISMessage(const UNICODE *) {}
 DWORD FadeScreen(ScreenFadeType, SIZE) { return 0; }
-void DoPlanetaryAnalysis(SYSTEM_INFO *, PLANET_DESC *) {}
-COUNT GenerateLifeForms(const SYSTEM_INFO *, COUNT, NODE_INFO *) { return 0; }
-COUNT GenerateMineralDeposits(const SYSTEM_INFO *, COUNT, NODE_INFO *) { return 0; }
+void DoPlanetaryAnalysis(SYSTEM_INFO *, const PLANET_DESC *, RandomContext *, const PlanetAnalysisInput *) {}
+COUNT GenerateLifeForms(const SYSTEM_INFO *, COUNT, NODE_INFO *, RandomContext *rng, EXTENT mapSize) { return 0; }
+COUNT GenerateMineralDeposits(const SYSTEM_INFO *, COUNT, NODE_INFO *, RandomContext *rng, EXTENT mapSize) { return 0; }
 UWORD CalcGravity(const PLANET_INFO *) { return 0; }
 bool worldIsPlanet(const SOLARSYS_STATE *system, const PLANET_DESC *world) {
     return world->pPrevDesc == system->SunDesc;
@@ -179,6 +181,7 @@ BOOST_AUTO_TEST_CASE(debug_world_inspection_uses_scripts_without_modes_or_player
         UQM_SYSTEM_RUNTIME runtime{session.player().story(), engine, session.worldOwner(), nullptr};
         auto &system = runtime.engine;
         system.worlds = &runtime;
+        runtime.catalogueStar = GetStar(0);
         std::vector<WorldDefinition> definitions{definition(session.world().id(), special, 0)};
         if (special == CHMMR_DEFINED) definitions.push_back(definition(session.world().id(), special, 1));
         runtime.system = std::make_unique<SolarSystem>(StarId{0}, session.worldOwner(), definitions);

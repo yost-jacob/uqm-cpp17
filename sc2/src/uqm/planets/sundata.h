@@ -43,18 +43,33 @@ typedef struct
 	PLANET_INFO PlanetInfo;
 } SYSTEM_INFO;
 
+// Explicit policy replaces the former output-address test in temperature analysis.
+typedef enum PlanetAnalysisPolicy {
+    PLANET_ANALYSIS_PREVIEW,
+    PLANET_ANALYSIS_ORBIT
+} PlanetAnalysisPolicy;
+typedef struct PlanetAnalysisInput {
+    BYTE starType; // Packed star size/color, as in STAR_DESC::Type.
+    SIZE orbitalRadius; // Positive planet-to-star distance, including for moons.
+    const PlanetFrame *planetTypes; // NUMBER_OF_PLANET_TYPES immutable entries.
+    PlanetAnalysisPolicy policy;
+} PlanetAnalysisInput;
+
 #define GENERATE_ALL  ((COUNT)~0)
 		
+// Node generators reseed the supplied workspace from ScanSeed and return its
+// resulting stream position. Map bounds are explicit and must exceed 16 on
+// both axes; output nodes borrow no world, renderer or global environment.
 extern COUNT GenerateMineralDeposits (const SYSTEM_INFO *, COUNT whichDeposit,
-		NODE_INFO *info);
+		NODE_INFO *info, RandomContext *rng, EXTENT mapSize);
 extern COUNT GenerateLifeForms (const SYSTEM_INFO *, COUNT whichLife,
-		NODE_INFO *info);
-extern void GenerateRandomLocation (POINT *loc);
+		NODE_INFO *info, RandomContext *rng, EXTENT mapSize);
+extern void GenerateRandomLocation (POINT *loc, RandomContext *rng, EXTENT mapSize);
 extern COUNT GenerateRandomNodes (const SYSTEM_INFO *, COUNT scan, COUNT numNodes,
-		COUNT type, COUNT whichNode, NODE_INFO *info);
+		COUNT type, COUNT whichNode, NODE_INFO *info, RandomContext *rng, EXTENT mapSize);
 // Generate lifeforms from a preset lifeTypes[] array
 extern COUNT GeneratePresetLife (const SYSTEM_INFO *,
-		const SBYTE *lifeTypes, COUNT whichLife, NODE_INFO *info);
+		const SBYTE *lifeTypes, COUNT whichLife, NODE_INFO *info, RandomContext *rng, EXTENT mapSize);
 
 #define DWARF_ELEMENT_DENSITY  1
 #define GIANT_ELEMENT_DENSITY 3
@@ -62,8 +77,11 @@ extern COUNT GeneratePresetLife (const SYSTEM_INFO *,
 
 #define MAX_ELEMENT_DENSITY ((MAX_ELEMENT_UNITS * SUPERGIANT_ELEMENT_DENSITY) << 1)
 
+// Output address has no meaning. Inputs and RNG are required; the planet-type
+// table and descriptor remain borrowed, and the supplied stream is reseeded.
 extern void DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr,
-		PLANET_DESC *pPlanetDesc);
+		const PLANET_DESC *pPlanetDesc, RandomContext *rng,
+        const PlanetAnalysisInput *inputs);
 
 #if defined(__cplusplus)
 }

@@ -146,7 +146,8 @@ void WorldVisit::loadSurface(FRAME definition) {
     else if (definition) DestroyDrawable(ReleaseDrawable(definition));
 }
 bool WorldVisit::canInteract() const { return !inspection_ && canContinue(); }
-void WorldVisit::reportDiscovery() { if (canInteract()) DoDiscoveryReport(MenuSounds); }
+void WorldVisit::reportDiscovery() { if (canInteract()) ShowDiscoveryReport(MenuSounds, system_.SysInfo.PlanetInfo.LanderFont,
+    system_.SysInfo.PlanetInfo.LanderFontEff, system_.SysInfo.PlanetInfo.DiscoveryString); }
 void WorldVisit::restoreBorder() { if (canInteract()) RepairSISBorder(); }
 void WorldVisit::enterOrbit() {
     prepareOrbit();

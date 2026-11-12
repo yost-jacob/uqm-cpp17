@@ -340,33 +340,7 @@ inBattle (void)
 }
 #endif
 
-#if 0
-// Disabled for now as there are similar functions in uqm/planets/planets.h
-// Pre: inFullGame()
-BOOLEAN
-inInterPlanetary (void)
-{
-	assert (inFullGame ());
-	return (pSolarSysState != NULL);
-}
 
-// Pre: inFullGame()
-BOOLEAN
-inSolarSystem (void)
-{
-	assert (inFullGame ());
-	return (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY);
-}
-
-// Pre: inFullGame()
-BOOLEAN
-inOrbit (void)
-{
-	assert (inFullGame ());
-	return (pSolarSysState != NULL) &&
-			(GetSystemSelectedDescriptor(pSolarSysState) != NULL);
-}
-#endif
 
 // In HyperSpace or QuasiSpace
 // Pre: inFullGame()

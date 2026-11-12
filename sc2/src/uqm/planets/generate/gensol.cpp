@@ -93,7 +93,7 @@ SolSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	COUNT planetI;
 
 #define SOL_SEED 334241042L
-	RandomContext_SeedRandom (&SysGenRNG, SOL_SEED);
+	RandomContext_SeedRandom (&uqm::generationRandom(system), SOL_SEED);
 
 	solarSys->SunDesc[0].NumPlanets = 9;
 	for (planetI = 0; planetI < 9; ++planetI)
@@ -103,7 +103,7 @@ SolSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 		UWORD word_val;
 		PLANET_DESC *pCurDesc = &solarSys->PlanetDesc[planetI];
 
-		pCurDesc->rand_seed = RandomContext_Random (&SysGenRNG);
+		pCurDesc->rand_seed = RandomContext_Random (&uqm::generationRandom(system));
 		rand_val = pCurDesc->rand_seed;
 		word_val = LOWORD (rand_val);
 		angle = NORMALIZE_ANGLE ((COUNT)HIBYTE (word_val));
@@ -196,7 +196,7 @@ SolSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 			solarSys->MoonDesc[1].data_index = SELENIC_WORLD;
 			solarSys->MoonDesc[1].radius = MIN_MOON_RADIUS
 					+ (MAX_MOONS - 1) * MOON_DELTA;
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (&uqm::generationRandom(system));
 			angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 			solarSys->MoonDesc[1].location.x =
 					COSINE (angle, solarSys->MoonDesc[1].radius);
@@ -338,7 +338,7 @@ SolSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 	{
 		/* Earth Moon */
 		return GenerateRandomNodes (&solarSys->SysInfo, BIOLOGICAL_SCAN, 10,
-				NUM_CREATURE_TYPES + 1, whichNode, info);
+				NUM_CREATURE_TYPES + 1, whichNode, info, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	}
 
 	return 0;

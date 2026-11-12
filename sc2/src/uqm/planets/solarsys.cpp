@@ -94,7 +94,6 @@ SIZE EncounterRace;
 BYTE EncounterGroup;
 		// last encountered group info
 
-RandomContext SysGenRNG = {RandomDefaultSeed};
 
 // Native selection is resolved through the system's World tree. These short
 // helpers expose legacy descriptor references only to the remaining flight code.
@@ -206,7 +205,6 @@ FreeIPData (void)
 	DestroyMusic (SpaceMusic);
 	SpaceMusic = 0;
 
-	RandomContext_SeedRandom (&SysGenRNG, RandomDefaultSeed);
 }
 
 void
@@ -297,7 +295,7 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 			COUNT index;
 			SYSTEM_INFO SysInfo;
 
-			DoPlanetaryAnalysis (&SysInfo, pCurDesc);
+			uqm::analyzePlanet(system, *pCurDesc, SysInfo, PLANET_ANALYSIS_PREVIEW, PlanData);
 			index = (SysInfo.PlanetInfo.SurfaceTemperature + 250) / 100;
 			if (index >= TemperatureRanges)
 				index = TemperatureRanges - 1;
@@ -1442,7 +1440,8 @@ CreateStarBackGround(SOLARSYS_STATE &system)
 
 	ClearDrawable ();
 
-	RandomContext_SeedRandom (&SysGenRNG, GetRandomSeedForStar (&uqm::systemStar(system)));
+	RandomContext backgroundRandom{RandomDefaultSeed};
+	RandomContext_SeedRandom (&backgroundRandom, GetRandomSeedForStar (&uqm::systemStar(system)));
 
     constexpr COUNT NUM_DIM_PIECES = 8;
 	s.frame = SpaceJunkFrame;
@@ -1451,7 +1450,7 @@ CreateStarBackGround(SOLARSYS_STATE &system)
     constexpr COUNT NUM_DIM_DRAWN = 5;
 		for (j = 0; j < NUM_DIM_DRAWN; ++j)
 		{
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (&backgroundRandom);
 			s.origin.x = LOWORD (rand_val) % SIS_SCREEN_WIDTH;
 			s.origin.y = HIWORD (rand_val) % SIS_SCREEN_HEIGHT;
 
@@ -1465,7 +1464,7 @@ CreateStarBackGround(SOLARSYS_STATE &system)
     constexpr COUNT NUM_BRT_DRAWN = 30;
 		for (j = 0; j < NUM_BRT_DRAWN; ++j)
 		{
-			rand_val = RandomContext_Random (&SysGenRNG);
+			rand_val = RandomContext_Random (&backgroundRandom);
 			s.origin.x = LOWORD (rand_val) % SIS_SCREEN_WIDTH;
 			s.origin.y = HIWORD (rand_val) % SIS_SCREEN_HEIGHT;
 

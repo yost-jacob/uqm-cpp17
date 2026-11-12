@@ -43,11 +43,9 @@ bool inInnerSystem(const SOLARSYS_STATE &system) noexcept {
 }
 
 const STAR_DESC &systemStar(const SOLARSYS_STATE &system) {
-    if (!system.worlds || !system.worlds->system)
-        throw std::logic_error("star lookup requires a prepared runtime");
-    const auto *star = GetStar(system.worlds->system->star().value);
-    if (!star) throw std::logic_error("system star is outside the catalogue");
-    return *star;
+    if (!system.worlds || !system.worlds->catalogueStar)
+        throw std::logic_error("star lookup requires explicit catalogue context");
+    return *system.worlds->catalogueStar;
 }
 
 SystemBehavior &systemBehavior(const SOLARSYS_STATE &system) {

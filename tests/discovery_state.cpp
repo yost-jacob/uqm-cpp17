@@ -1,3 +1,4 @@
+#include "uqm/system_runtime.hpp"
 #include "uqm/game_state.hpp"
 #include "uqm/state.h"
 #include <boost/test/unit_test.hpp>
@@ -104,3 +105,6 @@ BOOST_AUTO_TEST_CASE(discovery_save_rejects_missing_layout_and_malformed_archive
     bad.systemWords = 11;
     BOOST_CHECK_THROW(story.importLegacyDiscovery(bad, 0), std::invalid_argument);
 }
+
+// Test-only C caller bridge; production callers use the explicit native API.
+extern "C" void test_load_planet_progress(SOLARSYS_STATE *system) { uqm::loadPlanetProgress(*system); }
