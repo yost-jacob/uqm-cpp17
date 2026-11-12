@@ -33,6 +33,8 @@ struct Fixture {
     ~Fixture() { GLOBAL(CurrentActivity) = saved; QuitPosted = savedQuit; scriptPost = scriptUninit = uiDriver = {}; }
 };
 }
+unsigned destroyedTestFonts() noexcept { return fontsFreed; }
+
 // Only drawing/input/audio are simulated. The real mode factory, dispatcher,
 // script bindings, script completion policy and resource owner are linked.
 void uqm::ConversationRuntime::run() {

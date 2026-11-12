@@ -327,7 +327,7 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/orbits.c
     sc2/src/uqm/planets/oval.c
     sc2/src/uqm/planets/pl_stuff.c
-    sc2/src/uqm/planets/planets.c
+    sc2/src/uqm/planets/planets.cpp
     sc2/src/uqm/planets/plangen.c
     sc2/src/uqm/planets/pstarmap.c
     sc2/src/uqm/planets/report.c

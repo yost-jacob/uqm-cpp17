@@ -279,16 +279,12 @@ typedef struct PlanetGeneratedData
 	DWORD ScanSeed[NUM_SCAN_TYPES];
 } PLANET_GENERATED_DATA;
 
-// A borrowed view of world-owned generated values, plus visit/progress fields.
+// A borrowed view of world-owned generated values, plus retrieval-mask staging.
 typedef struct
 {
     PLANET_GENERATED_DATA *data;
 
 	DWORD ScanRetrieveMask[NUM_SCAN_TYPES];
-
-	STRING DiscoveryString;
-	FONT LanderFont;
-	FRAME LanderFontEff;
 } PLANET_INFO;
 
 enum

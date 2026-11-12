@@ -2,6 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <algorithm>
+#include <functional>
 #include <cstring>
 #include <fstream>
 #include <iterator>
@@ -49,6 +50,8 @@ Table conversation(const char *path)
 }
 }
 
+std::function<void *(RESOURCE)> testResourceLookup;
+
 extern "C" {
 uio_DirHandle *contentDir = nullptr;
 const char *_cur_resfile_name = nullptr;
@@ -61,7 +64,7 @@ BOOLEAN InstallResTypeVectors(const char *type, ResourceLoadFun *,
 
 // Resource installation links these instance-lookup entry points; fixtures
 // load file bytes directly and never create a global resource index.
-void *res_GetResource(RESOURCE) { return nullptr; }
+void *res_GetResource(RESOURCE resource) { return testResourceLookup ? testResourceLookup(resource) : nullptr; }
 void *res_DetachResource(RESOURCE) { return nullptr; }
 void *LoadResourceFromPath(const char *path, ResourceLoadFileFun *load) {
     const Stream stream(res_OpenResFile(contentDir, path, "rb"), res_CloseResFile);

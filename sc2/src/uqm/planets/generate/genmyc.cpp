@@ -92,11 +92,9 @@ MyconSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_D
 			|| star().Index == EGG_CASE2_DEFINED)
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		// This check is redundant since the retrieval bit will keep the
-		// node from showing up again
-		// XXX: DiscoveryString is set by the Mycon orbital script only when the
-		//   node has not been picked up yet
-		if (!solarSys->SysInfo.PlanetInfo.DiscoveryString)
+		// Retrieval state decides whether the artifact exists. Presentation
+		// resources are visit-owned and are not an availability flag.
+		if (isNodeRetrieved(&solarSys->SysInfo.PlanetInfo, ENERGY_SCAN, 0))
 		{	// already picked up
 			return 0;
 		}

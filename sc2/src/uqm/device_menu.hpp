@@ -21,7 +21,7 @@ private:
     bool useCaster();
     DeviceStatus invoke(BYTE device);
     static BOOLEAN manipulate(MENU_STATE *menu);
-    bool inOrbit() const noexcept { return system_ && system_->InOrbit; }
+    bool inOrbit() const;
     StoryState &story_;
     SOLARSYS_STATE *system_ = nullptr; // Optional borrowed exploration descriptor.
 };

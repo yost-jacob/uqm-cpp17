@@ -20,6 +20,7 @@
 #include <functional>
 #include <typeinfo>
 std::function<void(SOLARSYS_STATE &)> testOrbitGeneration;
+std::function<void(FONT, FRAME, STRING)> testDiscoveryReport;
 namespace {
 std::array<unsigned, 13> defaultCalls{};
 unsigned communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
@@ -151,9 +152,9 @@ COUNT StartSphereTracking(COUNT) { return sphereTracked ? 1 : 0; }
 DWORD PutGroupInfo(DWORD, BYTE) { ++groupsSaved; return 0; }
 BOOLEAN GetGroupInfo(DWORD, BYTE) { ++groupsLoaded; return TRUE; }
 HSHIPFRAG CloneShipFragment(COUNT, QUEUE *, COUNT) { ++clones; return nullptr; }
-void LoadStdLanderFont(PLANET_INFO *) {}
-void FreeLanderFont(PLANET_INFO *) {}
-void ShowDiscoveryReport(SOUND, FONT, FRAME, STRING) {}
+void ShowDiscoveryReport(SOUND, FONT font, FRAME effect, STRING text) {
+    if (testDiscoveryReport) testDiscoveryReport(font, effect, text);
+}
 }
 
 namespace { std::string selectedBuilder; }

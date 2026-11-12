@@ -98,9 +98,8 @@ InitSphereRotation (int direction, BOOLEAN shielded)
 }
 
 void
-UninitSphereRotation (void)
+UninitSphereRotation (PLANET_ORBIT *Orbit)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
 
 	if (Orbit->WorkFrame)
 	{

@@ -192,7 +192,6 @@ struct solarsys_state
     UQM_SYSTEM_RUNTIME *worlds; // Opaque owner of native World/EnergyBehavior objects.
 
     PLANET_RENDER_DATA *graphics; // Scoped borrow from the current native World.
-	BOOLEAN InOrbit;
 			// Set to TRUE when player hits a world in an inner system
 			// Homeworld encounters count as 'in orbit'
 };
@@ -220,12 +219,7 @@ POINT locationToDisplay (POINT pt, SIZE scaleRadius);
 POINT displayToLocation (POINT pt, SIZE scaleRadius);
 POINT planetOuterLocation (COUNT planetI);
 
-extern void LoadPlanet (FRAME SurfDefFrame);
 extern void DrawPlanet (int dy, Color tintColor);
-// Finish active orbit-screen services; the native body retains its graphics.
-extern void FinishPlanetOrbit (void);
-extern void LoadStdLanderFont (PLANET_INFO *info);
-extern void FreeLanderFont (PLANET_INFO *info);
 
 extern void DrawStarBackGround (void);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);
@@ -235,7 +229,7 @@ extern void FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
 extern void InitLander (BYTE LanderFlags);
 
 extern void InitSphereRotation (int direction, BOOLEAN shielded);
-extern void UninitSphereRotation (void);
+extern void UninitSphereRotation (PLANET_ORBIT *orbit);
 extern void PrepareNextRotationFrame (void);
 extern void DrawPlanetSphere (int x, int y);
 extern void DrawDefaultPlanetSphere (void);
@@ -247,7 +241,6 @@ extern void RotatePlanetSphere (BOOLEAN keepRate);
 
 extern void DrawScannedObjects (BOOLEAN Reversed);
 // Construct the selected World's owned surface; active orbit view required.
-extern void ConstructPlanetSurface (FRAME surfaceDefinition);
 extern void GeneratePlanetSurface (PLANET_DESC *pPlanetDesc,
 		FRAME SurfDefFrame, RandomContext *rng);
 extern void DeltaTopography (COUNT num_iterations, SBYTE *DepthArray,

@@ -1409,4 +1409,3 @@ void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
 
 // Remaining C planet-loop entry points resolve context only at the boundary.
 void ScanSystem(void) { uqm::runScan(*pSolarSysState); }
-void GeneratePlanetSide(void) { uqm::generatePlanetSide(*pSolarSysState); }
