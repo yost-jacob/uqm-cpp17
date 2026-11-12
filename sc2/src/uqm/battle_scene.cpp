@@ -25,7 +25,7 @@
 #include "colors.h"
 #include "encount.h"
 #include "globdata.h"
-#include "hyper.h"
+#include "hyper_navigation.hpp"
 #include "init.h"
 #include "nameref.h"
 #include "pickship.h"
@@ -64,10 +64,10 @@ void uqm::detail::BattleScene::initialize() {
     SetContext(SpaceContext);
     InitDisplayList();
     InitGalaxy();
-    if (kind_ == SceneKind::Navigation) {
+    if (navigation_ != nullptr) {
         engine_.shipRoster().clear();
         engine_.shipRoster().append(RosterSide::First, SIS_SHIP_ID);
-        LoadHyperspace();
+        navigation_->LoadHyperspace();
         return;
     }
     SetContextFGFrame(Screen);
@@ -124,7 +124,7 @@ uqm::detail::BattleScene::~BattleScene() {
     engine_.reset();
     if (!completed_) engine_.shipRoster().clear();
     GLOBAL(CurrentActivity) &= ~IN_BATTLE;
-    if (kind_ == SceneKind::Navigation) FreeHyperspace();
+    if (navigation_ != nullptr) navigation_->FreeHyperspace();
     if (spaceAcquired_) UninitSpace();
     DestroyMusic(music_);
     activeScene = previous_;

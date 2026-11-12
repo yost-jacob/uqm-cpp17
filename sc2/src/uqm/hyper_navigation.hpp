@@ -16,6 +16,8 @@ class HyperSpaceNavigation {
 public:
     // Both borrows outlive this navigation visit and its C callbacks.
     HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock) noexcept;
+    // Borrowed mode-owned engine; must be selected for the synchronous scene.
+    SimulationEngine &engine() noexcept { return engine_; }
     void run(GameSession &session);
     void frame();
     HyperSpaceNavigation(const HyperSpaceNavigation &) = delete;
