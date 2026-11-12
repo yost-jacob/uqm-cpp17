@@ -62,7 +62,7 @@ ShofixtiSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 	{
 		GLOBAL (BattleGroupRef) = story_.read(StoryCounter::ShofixtiGrpoffs0);
 		if (GLOBAL (BattleGroupRef) == 0
-				|| !GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
+				|| !uqm::initializeGroups(GLOBAL(BattleGroupRef), {solarSys->SunDesc[0], solarSys->PlanetDesc}, GLOBAL(ip_group_q)))
 		{
 			HSHIPFRAG hStarShip;
 

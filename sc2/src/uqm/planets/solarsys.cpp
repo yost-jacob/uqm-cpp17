@@ -227,30 +227,6 @@ LoadIPData (void)
 
 }
 
-// Apply this player's equipped thrusters/jets to the visit's flight limits.
-static void
-initSolarSysSISCharacteristics(SOLARSYS_STATE &system)
-{
-    const auto loadout = system.worlds->session->player().sis().loadout();
-	BYTE i;
-	BYTE num_thrusters;
-
-	num_thrusters = 0;
-	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
-	{
-		if (loadout.drives[i] == FUSION_THRUSTER)
-			++num_thrusters;
-	}
-	system.max_ship_speed = (BYTE)(
-			(num_thrusters + 5) * IP_SHIP_THRUST_INCREMENT);
-
-	system.turn_wait = IP_SHIP_TURN_WAIT;
-	for (i = 0; i < NUM_JET_SLOTS; ++i)
-	{
-		if (loadout.jets[i] == TURNING_JETS)
-			system.turn_wait -= IP_SHIP_TURN_DECREMENT;
-	}
-}
 
 DWORD
 GetRandomSeedForStar (const STAR_DESC *star)
@@ -325,7 +301,7 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 		uqm::systemStory(system).clear(uqm::StoryFlag::PlanetaryLanding);
 	}
 
-	initSolarSysSISCharacteristics(system);
+	system.worlds->flight.configure(system.worlds->session->player().sis().loadout());
 
 	if (flight.loadOrbit)
 	{	// Only when loading a game into orbital
@@ -378,9 +354,9 @@ saveNonOrbitalLocation(SOLARSYS_STATE &system)
 static void
 FreeSolarSys(SOLARSYS_STATE &system)
 {
-	if (system.InIpFlight)
+	if (system.worlds->flight.active)
 	{
-		system.InIpFlight = FALSE;
+		system.worlds->flight.active = FALSE;
 		
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			saveNonOrbitalLocation(system);
@@ -393,10 +369,10 @@ FreeSolarSys(SOLARSYS_STATE &system)
 }
 
 static FRAME
-getCollisionFrame(const SOLARSYS_STATE &system, const PLANET_DESC *planet, COUNT WaitPlanet)
+getCollisionFrame(const uqm::SystemFlightState &motion, const PLANET_DESC *planet, COUNT WaitPlanet)
 {
-	if (system.WaitIntersect != (COUNT)~0
-			&& system.WaitIntersect != WaitPlanet)
+	if (motion.waitIntersect != (COUNT)~0
+			&& motion.waitIntersect != WaitPlanet)
 	{	// New collisions are with a single point (center of planet)
 		return DecFrameIndex (stars_in_space);
 	}
@@ -431,7 +407,7 @@ CheckIntersect(SOLARSYS_STATE &system)
 	PlanetIntersect.IntersectStamp.origin.y = SIS_SCREEN_HEIGHT >> 1;
 	PlanetIntersect.EndPoint = PlanetIntersect.IntersectStamp.origin;
 
-	PlanetIntersect.IntersectStamp.frame = getCollisionFrame(system, pCurDesc,
+	PlanetIntersect.IntersectStamp.frame = getCollisionFrame(system.worlds->flight, pCurDesc,
 			MAKE_WORD (PlanetOffset, MoonOffset));
 
 	// Start with no collisions
@@ -446,10 +422,10 @@ CheckIntersect(SOLARSYS_STATE &system)
 				MoonOffset);
 #endif /* DEBUG_SOLARSYS */
 		NewWaitPlanet = MAKE_WORD (PlanetOffset, MoonOffset);
-		if (system.WaitIntersect != (COUNT)~0
-				&& system.WaitIntersect != NewWaitPlanet)
+		if (system.worlds->flight.waitIntersect != (COUNT)~0
+				&& system.worlds->flight.waitIntersect != NewWaitPlanet)
 		{
-			system.WaitIntersect = NewWaitPlanet;
+			system.worlds->flight.waitIntersect = NewWaitPlanet;
 #ifdef DEBUG_SOLARSYS
 			log_add (log_Debug, "Star index = %d, Planet index = %d, <%d, %d>",
 					GetStarIndex(&uqm::systemStar(system)),
@@ -469,7 +445,7 @@ CheckIntersect(SOLARSYS_STATE &system)
 		PlanetIntersect.EndPoint = PlanetIntersect.IntersectStamp.origin;
         PlanetOffset = body.id().planet + 1;
         MoonOffset = body.id().moon ? *body.id().moon + 2 : 0;
-		PlanetIntersect.IntersectStamp.frame = getCollisionFrame(system, pCurDesc,
+		PlanetIntersect.IntersectStamp.frame = getCollisionFrame(system.worlds->flight, pCurDesc,
 				MAKE_WORD (PlanetOffset, MoonOffset));
 
 		if (DrawablesIntersect (&ShipIntersect,
@@ -481,19 +457,19 @@ CheckIntersect(SOLARSYS_STATE &system)
 #endif /* DEBUG_SOLARSYS */
 			NewWaitPlanet = MAKE_WORD (PlanetOffset, MoonOffset);
 			
-			if (system.WaitIntersect == (COUNT)~0)
+			if (system.worlds->flight.waitIntersect == (COUNT)~0)
 			{	// All collisions disallowed, but the ship is still colliding
 				// with something. Collisions will remain disabled.
 				break;
 			}
-			else if (system.WaitIntersect == NewWaitPlanet)
+			else if (system.worlds->flight.waitIntersect == NewWaitPlanet)
 			{	// Existing and continued collision -- ignore
 				continue;
 			}
 			
 			// Collision with a new planet/moon. This may cause a transition
 			// to an inner system or start an orbital view.
-			system.WaitIntersect = NewWaitPlanet;
+			system.worlds->flight.waitIntersect = NewWaitPlanet;
 			return std::ref(body);
 		}
 	}
@@ -502,8 +478,8 @@ CheckIntersect(SOLARSYS_STATE &system)
 	// It may be a previously existing collision also (the value won't change)
 	// If all collisions were disabled, this will reenable then once the ship
 	// stops colliding with any planets
-	if (system.WaitIntersect != (COUNT)~0 || NewWaitPlanet == 0)
-		system.WaitIntersect = NewWaitPlanet;
+	if (system.worlds->flight.waitIntersect != (COUNT)~0 || NewWaitPlanet == 0)
+		system.worlds->flight.waitIntersect = NewWaitPlanet;
 
 	return std::nullopt;
 }
@@ -640,15 +616,15 @@ FindRadius(SOLARSYS_STATE &system, POINT shipLoc, SIZE fromRadius)
 }
 
 static UWORD
-flagship_inertial_thrust(const SOLARSYS_STATE &system, COUNT CurrentAngle)
+flagship_inertial_thrust(const uqm::SystemFlightState &motion, VELOCITY_DESC &velocity, COUNT CurrentAngle)
 {
 	BYTE max_speed;
 	SIZE cur_delta_x, cur_delta_y;
 	COUNT TravelAngle;
 	VELOCITY_DESC *VelocityPtr;
 
-	max_speed = system.max_ship_speed;
-	VelocityPtr = &GLOBAL (velocity);
+	max_speed = motion.maxSpeed;
+	VelocityPtr = &velocity;
 	GetCurrentVelocityComponents (VelocityPtr, &cur_delta_x, &cur_delta_y);
 	TravelAngle = GetVelocityTravelAngle (VelocityPtr);
 	if (TravelAngle == CurrentAngle
@@ -706,7 +682,7 @@ flagship_inertial_thrust(const SOLARSYS_STATE &system, COUNT CurrentAngle)
 }
 
 static void
-ProcessShipControls(SOLARSYS_STATE &system)
+ProcessShipControls(uqm::SystemFlightState &motion, VELOCITY_DESC &velocity, STAMP &ship, POINT &autopilot)
 {
 	COUNT index;
 	SIZE delta_x, delta_y;
@@ -724,17 +700,17 @@ ProcessShipControls(SOLARSYS_STATE &system)
 		
 	if (delta_x || delta_y < 0)
 	{
-		GLOBAL (autopilot.x) = ~0;
-		GLOBAL (autopilot.y) = ~0;
+		autopilot.x = ~0;
+		autopilot.y = ~0;
 	}
-	else if (GLOBAL (autopilot.x) != ~0 && GLOBAL (autopilot.y) != ~0)
+	else if (autopilot.x != ~0 && autopilot.y != ~0)
 		delta_y = -1;
 	else
 		delta_y = 0;
 
-	index = GetFrameIndex (GLOBAL (ShipStamp.frame));
-	if (system.turn_counter)
-		--system.turn_counter;
+	index = GetFrameIndex (ship.frame);
+	if (motion.turnCounter)
+		--motion.turnCounter;
 	else if (delta_x)
 	{
 		if (delta_x < 0)
@@ -742,19 +718,19 @@ ProcessShipControls(SOLARSYS_STATE &system)
 		else
 			index = NORMALIZE_FACING (index + 1);
 
-		GLOBAL (ShipStamp.frame) =
-				SetAbsFrameIndex (GLOBAL (ShipStamp.frame), index);
+		ship.frame =
+				SetAbsFrameIndex (ship.frame, index);
 
-		system.turn_counter = system.turn_wait;
+		motion.turnCounter = motion.turnWait;
 	}
-	if (system.thrust_counter)
-		--system.thrust_counter;
+	if (motion.thrustCounter)
+		--motion.thrustCounter;
 	else if (delta_y < 0)
 	{
         constexpr BYTE ThrustWait = 1;
-		flagship_inertial_thrust(system, FACING_TO_ANGLE (index));
+		flagship_inertial_thrust(motion, velocity, FACING_TO_ANGLE (index));
 
-		system.thrust_counter = ThrustWait;
+		motion.thrustCounter = ThrustWait;
 	}
 }
 
@@ -805,13 +781,13 @@ leaveInnerSystem(SOLARSYS_STATE &system)
 
 	// Now the ship is in outer system (as per game logic)
 
-	system.WaitIntersect = outerPlanetWait;
+	system.worlds->flight.waitIntersect = outerPlanetWait;
 	// See if we also intersect with another planet, and if we do,
 	// disable collisions comletely until we stop intersecting
 	// with any planet at all.
 	CheckIntersect(system);
-	if (system.WaitIntersect != outerPlanetWait)
-		system.WaitIntersect = (COUNT)~0;
+	if (system.worlds->flight.waitIntersect != outerPlanetWait)
+		system.worlds->flight.waitIntersect = (COUNT)~0;
 }
 
 static void
@@ -819,7 +795,7 @@ enterOrbital(SOLARSYS_STATE &system, const uqm::World &world)
 {
 	ZeroVelocityComponents (&GLOBAL (velocity));
 	bodies(system).selectWorld(world.id());
-	system.worlds->pendingOrbit = world.id();
+	system.worlds->flight.pendingOrbit = world.id();
 }
 
 static BOOLEAN
@@ -945,7 +921,7 @@ IP_frame(SOLARSYS_STATE &system)
 	SetContext (SpaceContext);
 
 	system.worlds->session->clock().tick();
-	ProcessShipControls(system);
+	ProcessShipControls(system.worlds->flight, GLOBAL(velocity), GLOBAL(ShipStamp), GLOBAL(autopilot));
 	
 	locChange = CheckShipLocation(system, &newRadius);
 	if (locChange)
@@ -1037,13 +1013,13 @@ ResetSolarSys(SOLARSYS_STATE &system)
 	// Originally there was a flash_task test here, however, I found no cases
 	// where flash_task could be set at the time of call. The test was
 	// probably needed on 3DO when IP_frame(system) was a task.
-	assert (!system.InIpFlight);
+	assert (!system.worlds->flight.active);
 
 	DrawMenuStateStrings (PM_STARMAP, -(PM_NAVIGATE - PM_SCAN));
 
 	InitDisplayList ();
 	// This also spawns the flagship element
-	DoMissions ();
+	uqm::runSystemMissions(system);
 
 	// Figure out and note which planet/moon we just left, if any
 	// This records any existing collision and prevents the ship
@@ -1053,7 +1029,7 @@ ResetSolarSys(SOLARSYS_STATE &system)
 	//   the same time. While quite rare, it's still possible.
 	CheckIntersect(system);
 	
-	system.InIpFlight = TRUE;
+	system.worlds->flight.active = TRUE;
 
 	// Do not start playing the music if we entered the solarsys only
 	// to load a game (load invoked from Main menu)
@@ -1068,7 +1044,7 @@ ResetSolarSys(SOLARSYS_STATE &system)
 static void
 EnterPlanetOrbit(SOLARSYS_STATE &system)
 {
-	if (system.InIpFlight)
+	if (system.worlds->flight.active)
 	{	// This means we hit a planet in IP flight; not a Load into orbit
 		FreeSolarSys(system);
 
@@ -1760,12 +1736,12 @@ static BOOLEAN
 DoIpFlight (SOLARSYS_STATE *pSS)
 {
     auto &system = *pSS;
-	auto &NextTime = system.worlds->nextFlightFrame;
+	auto &NextTime = system.worlds->flight.nextFrame;
 	bool cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 
-	if (system.worlds->pendingOrbit)
+	if (system.worlds->flight.pendingOrbit)
 	{	// Consume the entry intent before running the scoped orbital visit.
-        const auto target = *std::exchange(system.worlds->pendingOrbit, std::nullopt);
+        const auto target = *std::exchange(system.worlds->flight.pendingOrbit, std::nullopt);
         bodies(system).selectWorld(target);
 		EnterPlanetOrbit(system);
 		SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
@@ -1777,7 +1753,7 @@ DoIpFlight (SOLARSYS_STATE *pSS)
 	}
 	else
 	{
-		assert (system.InIpFlight);
+		assert (system.worlds->flight.active);
 		IP_frame(system);
 		SleepThreadUntil (NextTime);
 		NextTime = GetTimeCounter () + InterplanetaryFrameInterval;
@@ -1797,6 +1773,5 @@ UNICODE *GetNamedPlanetaryBody(void) {
 
 // Remaining C boundaries resolve the legacy binding once. Native helpers above
 // use references and never select a different system implicitly.
-POINT planetOuterLocation(COUNT planet) { return uqm::planetOuterLocation(*pSolarSysState, planet); }
 
 void SaveSolarSysLocation(void) { uqm::saveSolarSystemLocation(*pSolarSysState); }

@@ -17,6 +17,7 @@
  */
 
 #include "build.h"
+#include "system_flight.hpp"
 #include "starmap.h"
 #include "gendef.h"
 #include "libs/file.h"
@@ -35,7 +36,7 @@
 static BYTE LastEncGroup;
 		// Last encountered group, saved into state files
 
-void
+extern "C" void
 ReadGroupHeader (GAME_STATE_FILE *fp, GROUP_HEADER *pGH)
 {
 	sread_8   (fp, &pGH->NumGroups);
@@ -47,7 +48,7 @@ ReadGroupHeader (GAME_STATE_FILE *fp, GROUP_HEADER *pGH)
 	sread_a32 (fp, pGH->GroupOffset, NUM_SAVED_BATTLE_GROUPS + 1);
 }
 
-void
+extern "C" void
 WriteGroupHeader (GAME_STATE_FILE *fp, const GROUP_HEADER *pGH)
 {
 	swrite_8   (fp, pGH->NumGroups);
@@ -59,7 +60,7 @@ WriteGroupHeader (GAME_STATE_FILE *fp, const GROUP_HEADER *pGH)
 	swrite_a32 (fp, pGH->GroupOffset, NUM_SAVED_BATTLE_GROUPS + 1);
 }
 
-void
+extern "C" void
 ReadShipFragment (GAME_STATE_FILE *fp, SHIP_FRAGMENT *FragPtr)
 {
 	BYTE tmpb;
@@ -81,7 +82,7 @@ ReadShipFragment (GAME_STATE_FILE *fp, SHIP_FRAGMENT *FragPtr)
 	sread_16 (fp, NULL); /* unused; was loc.y */
 }
 
-void
+extern "C" void
 WriteShipFragment (GAME_STATE_FILE *fp, const SHIP_FRAGMENT *FragPtr)
 {
 	swrite_16 (fp, 0); /* unused: was which_side */
@@ -99,7 +100,7 @@ WriteShipFragment (GAME_STATE_FILE *fp, const SHIP_FRAGMENT *FragPtr)
 	swrite_16 (fp, 0); /* unused; was loc.y */
 }
 
-void
+extern "C" void
 ReadIpGroup (GAME_STATE_FILE *fp, IP_GROUP *GroupPtr)
 {
 	BYTE tmpb;
@@ -122,7 +123,7 @@ ReadIpGroup (GAME_STATE_FILE *fp, IP_GROUP *GroupPtr)
 	sread_16s(fp, &GroupPtr->loc.y);
 }
 
-void
+extern "C" void
 WriteIpGroup (GAME_STATE_FILE *fp, const IP_GROUP *GroupPtr)
 {
 	swrite_16 (fp, 0); /* unused; was which_side */
@@ -208,8 +209,10 @@ BuildGroup (QUEUE *pDstQueue, BYTE race_id)
 	return hGroup;
 }
 
+static BOOLEAN readGroupInfo(DWORD, BYTE, const uqm::SystemGeometry *, QUEUE &);
+
 void
-BuildGroups (void)
+uqm::buildGroups (const SystemGeometry &geometry, QUEUE &groups)
 {
 	BYTE Index;
 	BYTE BestIndex = 0;
@@ -374,7 +377,7 @@ FoundHome:
 		} while (--num_groups);
 	}
 
-	GetGroupInfo (GROUPS_RANDOM, GROUP_INIT_IP);
+	initializeGroups (GROUPS_RANDOM, geometry, groups);
 }
 
 static void
@@ -511,8 +514,8 @@ FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group, GAME_STATE_FI
 	}
 }
 
-BOOLEAN
-GetGroupInfo (DWORD offset, BYTE which_group)
+static BOOLEAN
+readGroupInfo (DWORD offset, BYTE which_group, const uqm::SystemGeometry *geometry, QUEUE &groups)
 {
 	GAME_STATE_FILE *fp;
 	GROUP_HEADER GH;
@@ -536,7 +539,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 	{
 		COUNT month_index, day_index, year_index;
 
-		ReinitQueue (&GLOBAL (ip_group_q));
+		ReinitQueue (&groups);
 #ifdef DEBUG_GROUPS
 		log_add (log_Debug, "%u == %u", GH.star_index,
 				(COUNT)(GetStarIndex(GetCurrentStar())));
@@ -589,8 +592,8 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			if (!NumShips)
 				continue; /* group is dead */
 
-			hGroup = BuildGroup (&GLOBAL (ip_group_q), RaceType);
-			GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			hGroup = BuildGroup (&groups, RaceType);
+			GroupPtr = LockIpGroup (&groups, hGroup);
 			GroupPtr->group_id = which_group;
 			GroupPtr->in_system = 1;
 
@@ -601,7 +604,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			GroupPtr->orbit_pos = NORMALIZE_FACING (
 					LOBYTE (HIWORD (rand_val)));
 
-			group_loc = pSolarSysState->SunDesc[0].NumPlanets;
+			group_loc = geometry->sun.NumPlanets;
 			if (group_loc == 1 && task == EXPLORE)
 				task = IN_ORBIT;
 			else
@@ -621,7 +624,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 				COUNT angle;
 				POINT org;
 
-				org = planetOuterLocation (group_loc - 1);
+				org = geometry->planetLocation (group_loc - 1);
 				angle = FACING_TO_ANGLE (GroupPtr->orbit_pos + 1);
 				GroupPtr->loc.x = org.x + COSINE (angle, STATION_RADIUS);
 				GroupPtr->loc.y = org.y + SINE (angle, STATION_RADIUS);
@@ -644,7 +647,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 					task);
 #endif /* DEBUG_GROUPS */
 
-			UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			UnlockIpGroup (&groups, hGroup);
 		}
 
 		if (offset != GROUPS_RANDOM)
@@ -657,7 +660,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		}
 
 		CloseStateFile (fp);
-		return (GetHeadLink (&GLOBAL (ip_group_q)) != 0);
+		return GetHeadLink (&groups) ? TRUE : FALSE;
 	}
 	
 	if (!GH.GroupOffset[which_group])
@@ -696,7 +699,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
 
 		/* Read group 0 into ip_group_q */
-		ReinitQueue (&GLOBAL (ip_group_q));
+		ReinitQueue (&groups);
 		/* Need a seek because Put/Flush has moved the file ptr */
 		SeekStateFile (fp, GH.GroupOffset[0] + 1, SEEK_SET);
 		sread_8 (fp, &NumGroups);
@@ -710,8 +713,8 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 
 			sread_8 (fp, &RaceType);
 
-			hGroup = BuildGroup (&GLOBAL (ip_group_q), RaceType);
-			GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			hGroup = BuildGroup (&groups, RaceType);
+			GroupPtr = LockIpGroup (&groups, hGroup);
 			ReadIpGroup (fp, GroupPtr);
 			group_id = GroupPtr->group_id;
 
@@ -725,7 +728,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 					GroupPtr->dest_loc);
 #endif /* DEBUG_GROUPS */
 
-			UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			UnlockIpGroup (&groups, hGroup);
 
 			if (group_id == LastEncGroup && !ShipsLeftInLEG)
 			{
@@ -733,13 +736,13 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 #ifdef DEBUG_GROUPS
 				log_add (log_Debug, " -- REMOVING");
 #endif /* DEBUG_GROUPS */
-				RemoveQueue (&GLOBAL (ip_group_q), hGroup);
-				FreeIpGroup (&GLOBAL (ip_group_q), hGroup);
+				RemoveQueue (&groups, hGroup);
+				FreeIpGroup (&groups, hGroup);
 			}
 		}
 
 		CloseStateFile (fp);
-		return (GetHeadLink (&GLOBAL (ip_group_q)) != 0);
+		return GetHeadLink (&groups) ? TRUE : FALSE;
 	}
 	else
 	{
@@ -762,7 +765,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			PutGroupInfo (GROUPS_RANDOM, GROUP_LIST);
 		else
 			FlushGroupInfo (&GH, GROUPS_RANDOM, GROUP_LIST, fp);
-		ReinitQueue (&GLOBAL (ip_group_q));
+		ReinitQueue (&groups);
 
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
 		// skip RaceType
@@ -786,7 +789,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		}
 
 		CloseStateFile (fp);
-		return (GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0);
+		return GetHeadLink (&GLOBAL (npc_built_ship_q)) ? TRUE : FALSE;
 	}
 }
 
@@ -863,3 +866,14 @@ PutGroupInfo (DWORD offset, BYTE which_group)
 	return (offset);
 }
 
+
+// Loading a saved list/single fleet needs no system geometry. Initial placement
+// is a separate native operation, so this C boundary cannot select a system.
+extern "C" BOOLEAN GetGroupInfo(DWORD offset, BYTE whichGroup) {
+    assert(whichGroup != GROUP_INIT_IP);
+    if (whichGroup == GROUP_INIT_IP) return FALSE;
+    return readGroupInfo(offset, whichGroup, nullptr, GLOBAL(ip_group_q));
+}
+bool uqm::initializeGroups(DWORD offset, const SystemGeometry &geometry, QUEUE &groups) {
+    return readGroupInfo(offset, GROUP_INIT_IP, &geometry, groups) != FALSE;
+}

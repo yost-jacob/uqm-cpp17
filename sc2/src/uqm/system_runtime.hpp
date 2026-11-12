@@ -1,6 +1,7 @@
 #ifndef UQM_SYSTEM_RUNTIME_HPP_
 #define UQM_SYSTEM_RUNTIME_HPP_
 #include "world.hpp"
+#include "system_flight.hpp"
 #include "planets/planets.h"
 #include "game_state.hpp"
 #include <cassert>
@@ -42,11 +43,10 @@ struct UQM_SYSTEM_RUNTIME {
     uqm::ExplorationView view = uqm::ExplorationView::Flight;
     uqm::SurfaceScanState scan{};
     SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
-    TimeCount nextFlightFrame = 0;
+    uqm::SystemFlightState flight{};
     uqm::SystemViewState viewState{};
     const STAR_DESC *catalogueStar = nullptr; // Catalogue borrow, available during construction.
     uqm::WorldVisit *visit = nullptr; // Borrowed only during synchronous orbital scripts/children.
-    std::optional<uqm::WorldId> pendingOrbit; // Entry intent, not the player's active orbit location.
     RandomContext generation{RandomDefaultSeed}; // Visit-owned generation workspace, not gameplay RNG.
 };
 namespace uqm {

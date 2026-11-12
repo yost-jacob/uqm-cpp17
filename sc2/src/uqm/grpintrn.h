@@ -46,6 +46,9 @@ typedef struct
 
 } GROUP_HEADER;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void ReadGroupHeader (GAME_STATE_FILE *fp, GROUP_HEADER *pGH);
 void WriteGroupHeader (GAME_STATE_FILE *fp, const GROUP_HEADER *pGH);
 void ReadShipFragment (GAME_STATE_FILE *fp, SHIP_FRAGMENT *FragPtr);
@@ -53,4 +56,8 @@ void WriteShipFragment (GAME_STATE_FILE *fp, const SHIP_FRAGMENT *FragPtr);
 void ReadIpGroup (GAME_STATE_FILE *fp, IP_GROUP *GroupPtr);
 void WriteIpGroup (GAME_STATE_FILE *fp, const IP_GROUP *GroupPtr);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif

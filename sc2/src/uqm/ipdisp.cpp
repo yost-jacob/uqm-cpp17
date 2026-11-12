@@ -17,6 +17,8 @@
  */
 
 #include "ipdisp.h"
+#include "system_runtime.hpp"
+#include "combat_entity_legacy.hpp"
 
 #include "collide.h"
 #include "globdata.h"
@@ -28,25 +30,42 @@
 		// for EncounterGroup, EncounterRace
 #include "libs/mathlib.h"
 
+namespace {
+// Captured by each native flight entity. All references outlive its flight
+// scene; destruction performs no callbacks or gameplay state publication.
+struct FlightScene {
+    uqm::SystemGeometry geometry;
+    const std::unique_ptr<uqm::SolarSystem> &bodies;
+    uqm::SolarSystemLocation &location;
+    uqm::StoryState &story;
+    QUEUE &groups;
+    ACTIVITY &activity;
+    VELOCITY_DESC &velocity;
+    STAMP &shipStamp;
+    BYTE &encounterGroup;
+    SIZE &encounterRace;
+};
+}
+
 
 void
-NotifyOthers (COUNT which_race, BYTE target_loc)
+uqm::notifyGroups (QUEUE &groups, COUNT which_race, BYTE target_loc)
 {
 	HSHIPFRAG hGroup, hNextGroup;
 
 	// NOTE: "Others" includes the group causing the notification too.
 
-	for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
+	for (hGroup = GetHeadLink (&groups);
 			hGroup; hGroup = hNextGroup)
 	{
 		IP_GROUP *GroupPtr;
 
-		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		GroupPtr = LockIpGroup (&groups, hGroup);
 		hNextGroup = _GetSuccLink (GroupPtr);
 
 		if (GroupPtr->race_id != which_race)
 		{
-			UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			UnlockIpGroup (&groups, hGroup);
 			continue;
 		}
 
@@ -69,10 +88,7 @@ NotifyOthers (COUNT which_race, BYTE target_loc)
 				//   group destination, before the intercept task.
 				GroupPtr->dest_loc = GroupPtr->orbit_pos;
 				GroupPtr->orbit_pos = NORMALIZE_FACING (TFB_Random ());
-#ifdef OLD
-				GroupPtr->dest_loc = (BYTE)(((COUNT)TFB_Random ()
-						% pSolarSysState->SunDesc[0].NumPlanets) + 1);
-#endif /* OLD */
+
 			}
 			// If the group wasn't intercepting, it will just continue
 			// going about its business.
@@ -93,16 +109,17 @@ NotifyOthers (COUNT which_race, BYTE target_loc)
 			GroupPtr->dest_loc = target_loc;
 		}
 
-		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		UnlockIpGroup (&groups, hGroup);
 	}
 }
 
+namespace {
 static SIZE
-zoomRadiusForLocation (BYTE location)
+zoomRadiusForLocation (const FlightScene &scene, BYTE location)
 {
 	if (location == 0)
 	{	// In outer system view; use current zoom radius
-		return pSolarSysState->SunDesc[0].radius;
+		return scene.geometry.sun.radius;
 	}
 	else
 	{	// In inner system view; always max zoom
@@ -125,17 +142,12 @@ adjustDeltaVforZoom (SIZE zoom, SIZE *dx, SIZE *dy)
 	}
 }
 
-static BYTE
-getFlagshipLocation (void)
-{
-	if (!playerInInnerSystem ())
-		return 0;
-	else
-		return 1 + planetIndex (pSolarSysState, GetSystemSelectedDescriptor(pSolarSysState));
+static BYTE getFlagshipLocation(const FlightScene &scene) {
+    return scene.bodies->inInnerSystem() ? 1 + scene.bodies->innerPlanet().id().planet : 0;
 }
 
 static void
-ip_group_preprocess (ELEMENT *ElementPtr)
+ip_group_preprocess (const FlightScene &scene, IP_GROUP &group, ELEMENT *ElementPtr)
 {
 #define TRACK_WAIT 5
 	BYTE task;
@@ -150,11 +162,11 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 	EPtr->state_flags &= ~(DISAPPEARING | NONSOLID); // "I'm not quite dead"
 	++EPtr->life_span; // so that it will 'die' again next time
 
-	GetElementStarShip (EPtr, &GroupPtr);
+    GroupPtr = &group;
 	group_loc = GroupPtr->sys_loc; // save old location
 	DisplayArray[EPtr->PrimIndex].Object.Point = GroupPtr->loc;
 
-	radius = zoomRadiusForLocation (group_loc);
+	radius = zoomRadiusForLocation (scene, group_loc);
 	dest_pt = locationToDisplay (GroupPtr->loc, radius);
 	EPtr->current.location.x = DISPLAY_TO_WORLD (dest_pt.x)
 			+ (COORD)(LOG_SPACE_WIDTH >> 1)
@@ -165,7 +177,7 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 
 	InitIntersectStartPoint (EPtr);
 
-	flagship_loc = getFlagshipLocation ();
+	flagship_loc = getFlagshipLocation (scene);
 
 	task = GroupPtr->task;
 
@@ -211,15 +223,15 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 				if (GroupPtr->race_id == URQUAN_DRONE_SHIP)
 					detect_dist <<= 1;
 			}
-			vdx = GetPlayerTravelPosition()->flight.position.x - GroupPtr->loc.x;
-			vdy = GetPlayerTravelPosition()->flight.position.y - GroupPtr->loc.y;
+			vdx = scene.location.flight.position.x - GroupPtr->loc.x;
+			vdy = scene.location.flight.position.y - GroupPtr->loc.y;
 			if ((long)vdx * vdx
 					+ (long)vdy * vdy < (long)detect_dist * detect_dist)
 			{
 				EPtr->thrust_wait = 0;
 				ZeroVelocityComponents (&EPtr->velocity);
 
-				NotifyOthers (GroupPtr->race_id, IPNL_INTERCEPT_PLAYER);
+				uqm::notifyGroups (scene.groups, GroupPtr->race_id, IPNL_INTERCEPT_PLAYER);
 				task = GroupPtr->task;
 				target_loc = GroupPtr->dest_loc;
 				if (target_loc == IPNL_INTERCEPT_PLAYER)
@@ -256,7 +268,7 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 				&& group_loc == 0))
 		{
 			if (GroupPtr->dest_loc == IPNL_INTERCEPT_PLAYER)
-				dest_pt = GetPlayerTravelPosition()->flight.position;
+				dest_pt = scene.location.flight.position;
 			else
 			{
 				COUNT orbit_dist;
@@ -270,7 +282,7 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 				else
 				{
 					orbit_dist = STATION_RADIUS;
-					org = planetOuterLocation (target_loc - 1);
+					org = scene.geometry.planetLocation (target_loc - 1);
 				}
 
 				angle = FACING_TO_ANGLE (GroupPtr->orbit_pos + 1);
@@ -292,7 +304,7 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 						--GroupPtr->group_counter;
 					else if (task == EXPLORE
 							&& (next_loc = (BYTE)(((COUNT)TFB_Random ()
-							% pSolarSysState->SunDesc[0].NumPlanets)
+							% scene.geometry.sun.NumPlanets)
 							+ 1)) != target_loc)
 					{
 						EPtr->thrust_wait = 0;
@@ -305,9 +317,9 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 		else if (group_loc == 0)
 		{
 			if (GroupPtr->dest_loc == IPNL_INTERCEPT_PLAYER)
-				dest_pt = pSolarSysState->SunDesc[0].location;
+				dest_pt = scene.geometry.sun.location;
 			else
-				dest_pt = planetOuterLocation (target_loc - 1);
+				dest_pt = scene.geometry.planetLocation (target_loc - 1);
 		}
 		else
 		{
@@ -408,7 +420,7 @@ CheckGetAway:
 				ZeroVelocityComponents (&EPtr->velocity);
 				if (group_loc != 0)
 				{
-					GroupPtr->loc = planetOuterLocation (group_loc - 1);
+					GroupPtr->loc = scene.geometry.planetLocation (group_loc - 1);
 					group_loc = 0;
 					GroupPtr->sys_loc = 0;
 				}
@@ -450,7 +462,7 @@ CheckGetAway:
 		}
 	}
 
-	radius = zoomRadiusForLocation (group_loc);
+	radius = zoomRadiusForLocation (scene, group_loc);
 	adjustDeltaVforZoom (radius, &vdx, &vdy);
 	GroupPtr->loc.x += vdx;
 	GroupPtr->loc.y += vdy;
@@ -483,10 +495,10 @@ CheckGetAway:
 }
 
 static void
-flag_ship_collision (ELEMENT *ElementPtr0, POINT *pPt0,
+flag_ship_collision (const FlightScene &scene, ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
-	if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
+	if (scene.activity & START_ENCOUNTER)
 		return; // ignore the rest of the collisions
 
 	if (!(ElementPtr1->state_flags & COLLISION))
@@ -497,24 +509,24 @@ flag_ship_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	else
 	{	// Both element's collisions have now been processed
 		ElementPtr1->state_flags &= ~COLLISION;
-		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+		scene.activity |= START_ENCOUNTER;
 	}
 	(void) pPt0;  /* Satisfying compiler (unused parameter) */
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
 static void
-ip_group_collision (ELEMENT *ElementPtr0, POINT *pPt0,
+ip_group_collision (const FlightScene &scene, IP_GROUP &group, ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
 	IP_GROUP *GroupPtr;
 	void *OtherPtr;
 
-	if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
+	if (scene.activity & START_ENCOUNTER)
 		return; // ignore the rest of the collisions
 
-	GetElementStarShip (ElementPtr0, &GroupPtr);
-	GetElementStarShip (ElementPtr1, &OtherPtr);
+    GroupPtr = &group;
+    OtherPtr = ElementPtr1->pParent; // C projection marks NPC groups, never dereferenced as a ship.
 	if (OtherPtr)
 	{	// Collision with another group
 		// Prevent the groups from coalescing into a single ship icon
@@ -535,14 +547,14 @@ ip_group_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 	else // if (!OtherPtr)
 	{	// Collision with a flagship
-		EncounterGroup = GroupPtr->group_id;
+		scene.encounterGroup = GroupPtr->group_id;
 
 		GroupPtr->task |= REFORM_GROUP;
 		GroupPtr->group_counter = 100;
 		// Send "all clear" for the time being. After the encounter, if
 		// the player battles the group, the "intercept" notify will be
 		// resent.
-		NotifyOthers (GroupPtr->race_id, IPNL_ALL_CLEAR);
+		uqm::notifyGroups (scene.groups, GroupPtr->race_id, IPNL_ALL_CLEAR);
 
 		if (!(ElementPtr1->state_flags & COLLISION))
 		{	// The other element's collision has not been processed yet
@@ -552,15 +564,27 @@ ip_group_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		else
 		{	// Both element's collisions have now been processed
 			ElementPtr1->state_flags &= ~COLLISION;
-			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+			scene.activity |= START_ENCOUNTER;
 		}
 	}
 	(void) pPt0;  /* Satisfying compiler (unused parameter) */
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
+class GroupEntity final : public uqm::combat::CombatEntity {
+public:
+    GroupEntity(const FlightScene &scene, IP_GROUP &group) : scene_(scene), group_(group) {}
+    void update(ELEMENT &) override {}
+    void expire(ELEMENT &self) override { ip_group_preprocess(scene_, group_, &self); }
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override {
+        ip_group_collision(scene_, group_, &self, &point, &other, &otherPoint);
+    }
+private:
+    FlightScene scene_;
+    IP_GROUP &group_;
+};
 static void
-spawn_ip_group (IP_GROUP *GroupPtr)
+spawn_ip_group (const FlightScene &scene, IP_GROUP *GroupPtr)
 {
 	HELEMENT hIPSHIPElement;
 
@@ -587,14 +611,14 @@ spawn_ip_group (IP_GROUP *GroupPtr)
 			 * same result without the side
 			 * effect (InitIntersectFrame)
 			 */
-		IPSHIPElementPtr->death_func = ip_group_preprocess;
-		IPSHIPElementPtr->collision_func = ip_group_collision;
+        uqm::detail::attachEntity(*IPSHIPElementPtr, std::make_unique<GroupEntity>(scene, *GroupPtr),
+            uqm::detail::EntityHooks::Expiration | uqm::detail::EntityHooks::Collision);
 
 		{
 			SIZE radius;
 			POINT pt;
 
-			radius = zoomRadiusForLocation (GroupPtr->sys_loc);
+			radius = zoomRadiusForLocation (scene, GroupPtr->sys_loc);
 			pt = locationToDisplay (GroupPtr->loc, radius);
 
 			IPSHIPElementPtr->current.location.x =
@@ -607,7 +631,7 @@ spawn_ip_group (IP_GROUP *GroupPtr)
 					- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 		}
 
-		SetElementStarShip (IPSHIPElementPtr, GroupPtr);
+		IPSHIPElementPtr->pParent = GroupPtr; // Borrowed C collision marker; the native entity holds the typed reference.
 
 		SetUpElement (IPSHIPElementPtr);
 		IPSHIPElementPtr->IntersectControl.IntersectStamp.frame =
@@ -622,7 +646,7 @@ spawn_ip_group (IP_GROUP *GroupPtr)
 #define FLIP_WAIT 42
 
 static void
-flag_ship_preprocess (ELEMENT *ElementPtr)
+flag_ship_preprocess (const FlightScene &scene, ELEMENT *ElementPtr)
 {
 	if (--ElementPtr->thrust_wait == 0)
 		/* juggle list after flagship */
@@ -651,13 +675,13 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 		SIZE vdx, vdy, radius;
 		POINT pt;
 
-		GetCurrentVelocityComponents (&GLOBAL (velocity), &vdx, &vdy);
+		GetCurrentVelocityComponents (&scene.velocity, &vdx, &vdy);
 
-		flagship_loc = getFlagshipLocation ();
-		radius = zoomRadiusForLocation (flagship_loc);
+		flagship_loc = getFlagshipLocation (scene);
+		radius = zoomRadiusForLocation (scene, flagship_loc);
 		adjustDeltaVforZoom (radius, &vdx, &vdy);
 
-		pt = locationToDisplay (GetPlayerTravelPosition()->flight.position, radius);
+		pt = locationToDisplay (scene.location.flight.position, radius);
 		ElementPtr->current.location.x = DISPLAY_TO_WORLD (pt.x)
 				+ (COORD)(LOG_SPACE_WIDTH >> 1)
 				- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
@@ -666,10 +690,10 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 				- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 		InitIntersectStartPoint (ElementPtr);
 
-		GetPlayerTravelPosition()->flight.position.x += vdx;
-		GetPlayerTravelPosition()->flight.position.y += vdy;
+		scene.location.flight.position.x += vdx;
+		scene.location.flight.position.y += vdy;
 
-		pt = locationToDisplay (GetPlayerTravelPosition()->flight.position, radius);
+		pt = locationToDisplay (scene.location.flight.position, radius);
 		ElementPtr->next.location.x = DISPLAY_TO_WORLD (pt.x)
 				+ (COORD)(LOG_SPACE_WIDTH >> 1)
 				- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
@@ -677,8 +701,8 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 				+ (COORD)(LOG_SPACE_HEIGHT >> 1)
 				- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 
-		GLOBAL (ShipStamp.origin) = pt;
-		ElementPtr->next.image.frame = GLOBAL (ShipStamp.frame);
+		scene.shipStamp.origin = pt;
+		ElementPtr->next.image.frame = scene.shipStamp.frame;
 
 		if (ElementPtr->sys_loc == flagship_loc)
 		{
@@ -691,21 +715,31 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->sys_loc = flagship_loc;
 		}
 
-		if ((ec = GET_GAME_STATE (ESCAPE_COUNTER))
-				&& !(GLOBAL (CurrentActivity) & START_ENCOUNTER))
+		if ((ec = scene.story.read(uqm::StoryCounter::EscapeCounter))
+				&& !(scene.activity & START_ENCOUNTER))
 		{
 			ElementPtr->state_flags |= NONSOLID;
 
 			--ec;
-			SET_GAME_STATE (ESCAPE_COUNTER, ec);
+			scene.story.set(uqm::StoryCounter::EscapeCounter, ec);
 		}
 
 		ElementPtr->state_flags |= CHANGING;
 	}
 }
 
+class FlagshipEntity final : public uqm::combat::CombatEntity {
+public:
+    explicit FlagshipEntity(const FlightScene &scene) : scene_(scene) {}
+    void update(ELEMENT &self) override { flag_ship_preprocess(scene_, &self); }
+    void collide(ELEMENT &self, POINT &point, ELEMENT &other, POINT &otherPoint) override {
+        flag_ship_collision(scene_, &self, &point, &other, &otherPoint);
+    }
+private:
+    FlightScene scene_;
+};
 static void
-spawn_flag_ship (void)
+spawn_flag_ship (const FlightScene &scene)
 {
 	HELEMENT hFlagShipElement;
 
@@ -718,19 +752,19 @@ spawn_flag_ship (void)
 		FlagShipElementPtr->hit_points = 1;
 		// Must have mass_points for collisions to work
 		FlagShipElementPtr->mass_points = 1;
-		FlagShipElementPtr->sys_loc = getFlagshipLocation ();
+		FlagShipElementPtr->sys_loc = getFlagshipLocation (scene);
 		FlagShipElementPtr->state_flags = APPEARING | IGNORE_VELOCITY;
-		if (GET_GAME_STATE (ESCAPE_COUNTER))
+		if (scene.story.read(uqm::StoryCounter::EscapeCounter))
 			FlagShipElementPtr->state_flags |= NONSOLID;
 		FlagShipElementPtr->life_span = NORMAL_LIFE;
 		FlagShipElementPtr->thrust_wait = FLIP_WAIT;
 		SetPrimType (&DisplayArray[FlagShipElementPtr->PrimIndex], STAMP_PRIM);
 		FlagShipElementPtr->current.image.farray =
-				&GLOBAL (ShipStamp.frame);
+				&scene.shipStamp.frame;
 		FlagShipElementPtr->current.image.frame =
-				GLOBAL (ShipStamp.frame);
-		FlagShipElementPtr->preprocess_func = flag_ship_preprocess;
-		FlagShipElementPtr->collision_func = flag_ship_collision;
+				scene.shipStamp.frame;
+        uqm::detail::attachEntity(*FlagShipElementPtr, std::make_unique<FlagshipEntity>(scene),
+            uqm::detail::EntityHooks::Update | uqm::detail::EntityHooks::Collision);
 
 		FlagShipElementPtr->current.location.x =
 				DISPLAY_TO_WORLD (GLOBAL (ShipStamp.origin.x))
@@ -747,31 +781,39 @@ spawn_flag_ship (void)
 	}
 }
 
+} // namespace
 void
-DoMissions (void)
+uqm::runSystemMissions (SOLARSYS_STATE &system)
 {
+    const FlightScene scene{{system.SunDesc[0], system.PlanetDesc}, system.worlds->system,
+        systemLocation(system), systemStory(system), GLOBAL(ip_group_q), GLOBAL(CurrentActivity),
+        GLOBAL(velocity), GLOBAL(ShipStamp), EncounterGroup, EncounterRace};
 	HSHIPFRAG hGroup, hNextGroup;
 
-	spawn_flag_ship ();
+	spawn_flag_ship (scene);
 
-	if (EncounterRace >= 0)
+	if (scene.encounterRace >= 0)
 	{	// There was a battle. Call in reinforcements.
-		NotifyOthers (EncounterRace, IPNL_INTERCEPT_PLAYER);
-		EncounterRace = -1;
+		uqm::notifyGroups (scene.groups, scene.encounterRace, IPNL_INTERCEPT_PLAYER);
+		scene.encounterRace = -1;
 	}
 
-	for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
+	for (hGroup = GetHeadLink (&scene.groups);
 			hGroup; hGroup = hNextGroup)
 	{
 		IP_GROUP *GroupPtr;
 
-		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		GroupPtr = LockIpGroup (&scene.groups, hGroup);
 		hNextGroup = _GetSuccLink (GroupPtr);
 
 		if (GroupPtr->in_system)
-			spawn_ip_group (GroupPtr);
+			spawn_ip_group (scene, GroupPtr);
 
-		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		UnlockIpGroup (&scene.groups, hGroup);
 	}
 }
 
+
+extern "C" void NotifyOthers(COUNT race, BYTE target) {
+    uqm::notifyGroups(GLOBAL(ip_group_q), race, target);
+}

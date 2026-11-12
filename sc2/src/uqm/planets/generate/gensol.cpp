@@ -44,7 +44,7 @@ public:
     COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 private:
-    int init_probe(void);
+    int init_probe(const SystemGeometry &geometry);
     void check_probe(void);
 };
 }
@@ -62,7 +62,7 @@ SolSystemBehavior::initNpcs(SOLARSYS_STATE &system)
 		story_.set(StoryCounter::UrquanProbeGrpoffs0, GLOBAL (BattleGroupRef));
 	}
 
-	if (!init_probe ())
+	if (!init_probe ({solarSys->SunDesc[0], solarSys->PlanetDesc}))
 		GenerateDefault_initNpcs (solarSys);
 
 	return true;
@@ -345,12 +345,12 @@ SolSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 }
 
 int
-SolSystemBehavior::init_probe(void)
+SolSystemBehavior::init_probe(const SystemGeometry &geometry)
 {
 	HIPGROUP hGroup;
 
 	if (!story_.read(StoryFlag::ProbeMessageDelivered)
-			&& GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP)
+			&& uqm::initializeGroups(GLOBAL(BattleGroupRef), geometry, GLOBAL(ip_group_q))
 			&& (hGroup = GetHeadLink (&GLOBAL (ip_group_q))))
 	{
 		IP_GROUP *GroupPtr;
