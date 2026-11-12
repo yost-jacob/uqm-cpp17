@@ -31,6 +31,10 @@ POINT displayToLocation(POINT point, SIZE scaleRadius) {
     return {static_cast<COORD>((static_cast<long>(point.x) - (SIS_SCREEN_WIDTH >> 1)) * scaleRadius / scale),
             static_cast<COORD>((static_cast<long>(point.y) - (SIS_SCREEN_HEIGHT >> 1)) * scaleRadius / scale)};
 }
+POINT SystemGeometry::planetLocation(COUNT index) const {
+    if (index >= sun.NumPlanets) throw std::out_of_range("system planet index");
+    return uqm::displayToLocation(planets[index].image.origin, sun.radius);
+}
 POINT planetOuterLocation(const SOLARSYS_STATE &system, COUNT planet) {
     return uqm::displayToLocation(system.PlanetDesc[planet].image.origin, system.SunDesc[0].radius);
 }

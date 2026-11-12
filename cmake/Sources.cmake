@@ -272,13 +272,13 @@ set(UQM_SOURCES
     sc2/src/uqm/world_c.cpp
     sc2/src/uqm/game_state_bits.c
     sc2/src/uqm/gravity.cpp
-    sc2/src/uqm/grpinfo.c
+    sc2/src/uqm/grpinfo.cpp
     sc2/src/uqm/hyper.cpp
     sc2/src/uqm/navigation_context.cpp
     sc2/src/uqm/init.c
     sc2/src/uqm/intel.c
     sc2/src/uqm/intro.c
-    sc2/src/uqm/ipdisp.c
+    sc2/src/uqm/ipdisp.cpp
     sc2/src/uqm/load.c
     sc2/src/uqm/load_legacy.c
     sc2/src/uqm/loadship.cpp

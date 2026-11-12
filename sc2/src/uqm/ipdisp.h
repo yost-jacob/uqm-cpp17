@@ -28,7 +28,6 @@ extern void NotifyOthers (COUNT which_race, BYTE target_loc);
 #define IPNL_INTERCEPT_PLAYER   0
 #define IPNL_ALL_CLEAR          ((BYTE)-1)
 
-extern void DoMissions (void);
 
 #if defined(__cplusplus)
 }

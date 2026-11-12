@@ -80,7 +80,7 @@ declaration. These counts do not imply that the remaining mixed environment is
 already separated into proper data owners.
 
 No physical planet data, scan progress, report-resource ownership or layout
-storage moved as part of steps 1–2. Steps 3–5 are recorded below; steps 6–8 remain pending. In
+storage moved as part of steps 1–2. Steps 3–6 are recorded below; steps 7–8 remain pending. In
 particular, mutable globe work tables and rotation state stay for step 5.
 
 Compatibility: seed recipes and the legacy generation recurrence remain intact;
@@ -314,7 +314,7 @@ Per-body projection tables increase retained memory compared with one shared
 workspace; allocation remains lazy and reset/system teardown releases it. The
 existing renderer, animation cadence and generation recipes remain in use.
 
-## 6. Isolate flight and NPC/group operations — next
+## 6. Isolate flight and NPC/group operations — complete
 
 **Depends on:** step 1; complete data migration uses step 3.
 
@@ -333,7 +333,52 @@ existing renderer, animation cadence and generation recipes remain in use.
 report resources or selected planet analysis; callback adapters are the only
 remaining exceptions and their borrow lifetimes are explicit.
 
-## 7. Make layout descriptors borrowed projections
+### Step 6 ownership checkpoint
+
+The exploration runtime owns `SystemFlightState`: turn/thrust countdowns,
+loadout-derived speed/turn limits, collision suppression, flight activation,
+frame timing and pending orbit intent. Those fields no longer live in
+`SOLARSYS_STATE`. Persistent player position is unchanged. One `configure()`
+operation serves normal entry and debug loadout changes without resetting active
+countdowns. Thrust/control and collision-frame helpers receive the flight state
+and legacy velocity/stamp/autopilot borrows they actually need.
+
+Converted `ipdisp.c` to C++17. Native flagship and NPC group entities use the
+existing engine-owned entity hooks. Each captures geometry, the native system
+owner, player location/story, group queue and encounter output references. The
+NPC's original death-hook movement stage, two-phase collision handshake,
+reinforcement notifications, traversal order and encounter dispatch remain.
+No callback resolves `pSolarSysState`, player location or story through globals.
+The remaining C notification entry resolves its queue once; native callbacks
+notify their explicitly supplied queue. The C element projection still carries
+a non-owning group marker for the existing collision code; native group logic
+uses a typed group reference rather than treating a group as a ship.
+
+Converted `grpinfo.c` to C++17. Initial group placement takes `SystemGeometry`
+and the destination queue. Sol's probe helper now also receives that geometry.
+Saved-list/single-fleet loading remains a separate C operation and cannot
+implicitly initialize placements. Serialization functions retain C linkage and
+their byte layout. Deleted `DoMissions`, `BuildGroups`, the global planet-location
+adapter and disabled duplicate destination-selection code. The existing group
+file routines, last-encounter metadata, fleet-building session adapters and
+legacy encounter output variables remain part of persistence/campaign cleanup;
+this step does not redesign save storage or move those globals into flight state.
+
+`SystemGeometry` is a read-only borrow of descriptor backing for now, with an
+indexed planet-position operation. Step 7 replaces that backing authority;
+there is no second copied planet layout. All entity hooks must finish before
+that exploration/player context is destroyed, and pool teardown invokes no
+state-publishing callbacks.
+
+The lexical global-pointer inventory is **30 lines across 4 files**: debug
+binding (16), flight/input/naming boundaries (12), the orbital input callback
+(1), and the declaration (1). NPC movement and group-placement implementations
+have zero references. Tests cover loadout changes preserving live countdowns,
+geometry bounds, native group expiration/collision hooks and captured player
+state remaining independent of the currently activated session. The live Sol
+check advances both flagship and NPC entities through the actual engine loop.
+
+## 7. Make layout descriptors borrowed projections — next
 
 **Depends on:** steps 3 and 6; presentation adapters consume step 5's interfaces.
 
@@ -403,5 +448,5 @@ remaining-reference counts at the end of each completed step.
 - [Mixed planet-info record](../../../sc2/src/uqm/planets/plandata.h)
 - [Terrain / globe work state](../../../sc2/src/uqm/planets/plangen.cpp)
 - [Rotation cursors](../../../sc2/src/uqm/planets/pl_stuff.cpp)
-- [NPC callbacks](../../../sc2/src/uqm/ipdisp.c)
-- [Group loading](../../../sc2/src/uqm/grpinfo.c)
+- [NPC callbacks](../../../sc2/src/uqm/ipdisp.cpp)
+- [Group loading](../../../sc2/src/uqm/grpinfo.cpp)

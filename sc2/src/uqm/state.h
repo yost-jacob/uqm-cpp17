@@ -60,7 +60,6 @@ extern DWORD PutGroupInfo (DWORD offset, BYTE which_group);
 #define GROUP_SAVE_IP  ((BYTE)~0)
 		// Write IP group list from ip_group_q to the list entry
 		// (GROUP_LIST) in one of the state files
-extern void BuildGroups (void);
 
 typedef struct GAME_STATE_FILE GAME_STATE_FILE;
 

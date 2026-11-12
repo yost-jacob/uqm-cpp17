@@ -161,15 +161,6 @@ struct solarsys_state
 	// Standard field required by DoInput()
 	BOOLEAN (*InputFunc) (struct solarsys_state *);
 
-	BOOLEAN InIpFlight;
-			// Set to TRUE when player is flying around in interplanetary
-			// Reset to FALSE when going into orbit or encounter
-
-	COUNT WaitIntersect;
-			// Planet/moon number with which the flagship should not collide
-			// For example, if the player just left the planet or inner system
-			// If set to (COUNT)~0, all planet collisions are disabled until
-			// the flagship stops intersecting with all planets.
 	PLANET_DESC SunDesc[MAX_SUNS];
 	PLANET_DESC PlanetDesc[MAX_PLANETS];
 			// Description of the planets in the system.
@@ -180,12 +171,6 @@ struct solarsys_state
 			// by the native inner-system selection.
 			// Only defined after a call to SystemBehavior::generateMoons()
 			// as its argument, and overwritten by subsequent calls.
-
-	BYTE turn_counter;
-	BYTE turn_wait;
-	BYTE thrust_counter;
-	BYTE max_ship_speed;
-
 
 	SYSTEM_INFO SysInfo;
 
@@ -217,7 +202,6 @@ DWORD GetRandomSeedForStar (const STAR_DESC *star);
 
 POINT locationToDisplay (POINT pt, SIZE scaleRadius);
 POINT displayToLocation (POINT pt, SIZE scaleRadius);
-POINT planetOuterLocation (COUNT planetI);
 
 
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);

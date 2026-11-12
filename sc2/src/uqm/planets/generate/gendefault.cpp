@@ -34,10 +34,10 @@ static void check_yehat_rebellion (uqm::StoryState &story);
 bool
 GenerateDefault_initNpcs (SOLARSYS_STATE *solarSys)
 {
-	if (!GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
+	if (!uqm::initializeGroups(GLOBAL(BattleGroupRef), {solarSys->SunDesc[0], solarSys->PlanetDesc}, GLOBAL(ip_group_q)))
 	{
 		GLOBAL (BattleGroupRef) = 0;
-		BuildGroups ();
+		uqm::buildGroups({solarSys->SunDesc[0], solarSys->PlanetDesc}, GLOBAL(ip_group_q));
 	}
 
 	(void) solarSys;

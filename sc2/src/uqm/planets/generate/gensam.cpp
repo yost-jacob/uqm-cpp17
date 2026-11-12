@@ -201,7 +201,7 @@ SaMatraSystemBehavior::BuildUrquanGuard(SOLARSYS_STATE *solarSys)
 
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
 
-	GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP);
+	uqm::initializeGroups(GLOBAL(BattleGroupRef), {solarSys->SunDesc[0], solarSys->PlanetDesc}, GLOBAL(ip_group_q));
 
 	org = uqm::planetOuterLocation(*solarSys, 4);
 	hGroup = GetHeadLink (&GLOBAL (ip_group_q));

@@ -163,7 +163,6 @@ extern "C" {
 const PlanetFrame *PlanData = nullptr;
 SIZE EncounterRace = 0;
 BYTE EncounterGroup = 0;
-void NotifyOthers(COUNT, BYTE) {}
 void RepairSISBorder() {}
 void DrawHyperCoords(POINT) {}
 void DrawSISMessage(const UNICODE *) {}

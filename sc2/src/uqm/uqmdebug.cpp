@@ -329,17 +329,7 @@ equipShip (void)
 	// Update the maximum speed and turning rate when in interplanetary.
 	if (pSolarSysState != NULL)
 	{
-		// Thrusters:
-		pSolarSysState->max_ship_speed = 5 * IP_SHIP_THRUST_INCREMENT;
-		for (i = 0; i < NUM_DRIVE_SLOTS; i++)
-			if (GLOBAL_SIS (DriveSlots[i] == FUSION_THRUSTER))
-				pSolarSysState->max_ship_speed += IP_SHIP_THRUST_INCREMENT;
-
-		// Turning jets:
-		pSolarSysState->turn_wait = IP_SHIP_TURN_WAIT;
-		for (i = 0; i < NUM_JET_SLOTS; i++)
-			if (GLOBAL_SIS (JetSlots[i]) == TURNING_JETS)
-				pSolarSysState->turn_wait -= IP_SHIP_TURN_DECREMENT;
+        pSolarSysState->worlds->flight.configure(uqm::gameSession().player().sis().loadout());
 	}
 
 	// Make sure everything is redrawn:
