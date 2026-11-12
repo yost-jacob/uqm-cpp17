@@ -1,6 +1,7 @@
 #ifndef UQM_ENCOUNTER_RUNTIME_HPP_
 #define UQM_ENCOUNTER_RUNTIME_HPP_
 #include "comm.h"
+#include "encounter_arena.hpp"
 #include "runtime_ship_roster.hpp"
 #include "planets/planets.h"
 namespace uqm {
@@ -31,6 +32,7 @@ private:
     const STAR_DESC *star_;
     SimulationEngine &engine_; // Owning mode outlives this runtime and its children.
     GameSession *session_ = nullptr;
+    EncounterArena arena_; // Released before the owning mode's engine/backend bindings.
 };
 } // namespace uqm
 #endif
