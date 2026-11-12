@@ -1,6 +1,7 @@
 #ifndef UQM_HYPER_NAVIGATION_HPP_
 #define UQM_HYPER_NAVIGATION_HPP_
 #include "hyper.h"
+#include "navigation_encounters.hpp"
 #include "encount.h"
 #include "menustat.h"
 #include "player_location.h"
@@ -67,6 +68,7 @@ public:
 private:
     // The realm selected by this mode must match the player variant.
     PLAYER_TRAVEL_POSITION &travel();
+    NavigationEncounterViews encounters_;
     const NavigationRealm realm_; // Fixed for this mode; portal crossings select a successor.
     PlayerEntity &player_;
     CampaignClock &clock_;

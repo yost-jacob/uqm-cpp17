@@ -274,6 +274,7 @@ set(UQM_SOURCES
     sc2/src/uqm/gravity.cpp
     sc2/src/uqm/grpinfo.cpp
     sc2/src/uqm/hyper.cpp
+    sc2/src/uqm/navigation_encounters.hpp
     sc2/src/uqm/navigation_entities.hpp
     sc2/src/uqm/navigation_context.cpp
     sc2/src/uqm/init.c

@@ -22,7 +22,7 @@ independent or need the same simulation type.
 | Order | Existing mode(s) | Current owner / remaining boundary |
 | --- | --- | --- |
 | Checkpoint | `SolarSystemMode` (ExploreSpace) | `SolarSystemExploration`, native `SolarSystem`/`World` tree, `SystemFlightState`; eight-step ownership migration complete. Remaining drawing/collision projections and C service interfaces are documented separately. |
-| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; native entity callbacks borrow navigation directly; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
+| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; native entity callbacks borrow navigation directly; encounter screen associations are visit-owned and generation-checked; campaign queues and transition flags still use legacy interfaces. **In progress.** |
 | 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms and resource cleanup work with Hyperspace; portal destinations and fuel/encounter rules differ. |
 | 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
 | 4 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
@@ -80,10 +80,19 @@ location variant, after outgoing callbacks and resource scopes have unwound.
    active-session getter. Shared ambient animation remains navigation-independent.
    Native `run(session)` validates its player/clock borrows before acquisition.
    Scene reset destroys all behaviors before navigation/resources can expire.
-4. **Encounter state.** Separate persistent campaign encounters from transient
-   on-screen representations. Pass fleet/catalogue/state/RNG references into
-   spawning and movement. Preserve pursuit limits, save identities and campaign
-   clock behavior; leave archive-format redesign to save/load work.
+4. **Encounter state — projection split complete; campaign interface remains.**
+   Deleted the screen-element handle from persistent `ENCOUNTER`. Each navigation
+   visit indexes campaign records through generation-checked `EntityHandle`s;
+   free/reset/reuse cannot resolve a stale projection. Clear the index after
+   selecting the collided campaign record, and erase an entry before freeing its
+   campaign slot. Dropping a projection does not itself mutate fleet/crew data.
+   Modern save fields and record size on disk remain unchanged. Legacy decoding
+   still consumes its historical pointer placeholder without storing it.
+
+   Remaining work: replace the campaign queue/fleet global macros in generation
+   and pursuit with explicit state/catalogue/clock/RNG references. Preserve pursuit
+   limits, record ordering, crew, identity and campaign clock behavior; archive
+   format redesign stays separate.
 5. **Transitions and cleanup.** Give realm changes, system entry and encounters
    explicit results; confine activity-flag translation to remaining C boundaries.
    Persistent travel/portal information remains in `PlayerEntity`. Audit menus,
