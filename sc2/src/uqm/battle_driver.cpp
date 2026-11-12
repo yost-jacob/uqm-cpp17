@@ -144,7 +144,7 @@ void CombatDriver::run() {
     }
     scene.complete();
 }
-void runSpaceNavigation(HyperSpaceNavigation &navigation, std::function<void()> beforeSimulation) {
+void runSpaceNavigation(SpaceNavigation &navigation, std::function<void()> beforeSimulation) {
     auto &engine = navigation.engine();
     journalSeed();
     detail::BattleScene scene(engine, navigation);

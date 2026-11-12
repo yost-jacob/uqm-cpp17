@@ -22,24 +22,35 @@ independent or need the same simulation type.
 | Order | Existing mode(s) | Current owner / remaining boundary |
 | --- | --- | --- |
 | Checkpoint | `SolarSystemMode` (ExploreSpace) | `SolarSystemExploration`, native `SolarSystem`/`World` tree, `SystemFlightState`; eight-step ownership migration complete. Remaining drawing/collision projections and C service interfaces are documented separately. |
-| 1 | `HyperSpaceMode`, including Quasispace | Owns `HyperSpaceNavigation`; borrows player, story, clock and mode engine. Graphics arrays remain file-static; entity callbacks resolve a session binding; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
-| 2 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
-| 3 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
-| 4 | `LanderMode` | Owns a child engine; audit surface entities, expedition state, collection/loss publication and landing/return presentation. Keep durable retrieval and inventory state in their existing owners. |
-| 5 | `ConversationMode` | Owns `ConversationRuntime`; audit graph/script state, presentation/audio/input bindings and transaction completion. Reuse the existing graph engine, not another dialogue rewrite. |
-| 6 | `CombatMode` | Shared campaign/arcade combat mode; audit roster/ship/entity lifetimes, projectile source references, round completion, survivor reconciliation and cancellation. |
-| 7 | `FleetSelectionMode` | Owned by the separate `ArcadeSession`; audit frontend/network/selection resources and handoff to the same combat mode. |
-| 8 | `LoadMenuMode`, `TitleMenuMode` | Audit UI state and borrowed result storage; saves/loads remain a session responsibility. Ordinary cargo/roster/starmap/options menus are currently functions, not independent modes. |
-| 9 | `CutsceneMode` | One concrete mode currently selects startup, attract, credits, introduction or ending. Audit playback ownership/completion before deciding whether separate derived scene types add value. |
+| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Graphics arrays remain file-static; entity callbacks resolve a session binding; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
+| 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms and resource cleanup work with Hyperspace; portal destinations and fuel/encounter rules differ. |
+| 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
+| 4 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
+| 5 | `LanderMode` | Owns a child engine; audit surface entities, expedition state, collection/loss publication and landing/return presentation. Keep durable retrieval and inventory state in their existing owners. |
+| 6 | `ConversationMode` | Owns `ConversationRuntime`; audit graph/script state, presentation/audio/input bindings and transaction completion. Reuse the existing graph engine, not another dialogue rewrite. |
+| 7 | `CombatMode` | Shared campaign/arcade combat mode; audit roster/ship/entity lifetimes, projectile source references, round completion, survivor reconciliation and cancellation. |
+| 8 | `FleetSelectionMode` | Owned by the separate `ArcadeSession`; audit frontend/network/selection resources and handoff to the same combat mode. |
+| 9 | `LoadMenuMode`, `TitleMenuMode` | Audit UI state and borrowed result storage; saves/loads remain a session responsibility. Ordinary cargo/roster/starmap/options menus are currently functions, not independent modes. |
+| 10 | `CutsceneMode` | One concrete mode currently selects startup, attract, credits, introduction or ending. Audit playback ownership/completion before deciding whether separate derived scene types add value. |
 | Tooling | `DebugMode` | Debug-only hook runner; explicit inspection context and exception-safe bindings must remain intact. Not a gameplay simulation. |
 
 Outfitting and starbase activities are still legacy entry paths, not existing
 independent modes. Their eventual boundaries belong in the UI/state audit; do
 not disguise them as completed modes in this inventory.
 
-## Hyperspace ownership sequence
+## Hyperspace and Quasispace separation
 
-1. **Native scene boundary — implemented.** Pass `HyperSpaceNavigation&` into
+The dispatcher chooses a concrete mode from the saved story realm marker. Each
+mode constructs `SpaceNavigation` with a fixed `NavigationRealm`; fuel use,
+encounter eligibility, graphics and location access use that realm. Portal
+collision phase still belongs to the legacy story counter. A crossing stages
+the destination and realm marker, ends the navigation scene, and lets the
+dispatcher select the successor. Only the incoming mode converts the player
+location variant, after outgoing callbacks and resource scopes have unwound.
+
+## Shared navigation ownership sequence
+
+1. **Native scene boundary — implemented.** Pass `SpaceNavigation&` into
    `runSpaceNavigation`; obtain its engine from that owner and pass it into the
    scene. Scene acquisition/release calls that explicit navigation reference.
    Delete the unused global C `LoadHyperspace`/`FreeHyperspace` wrappers. The
