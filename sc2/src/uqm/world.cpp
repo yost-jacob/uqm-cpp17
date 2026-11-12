@@ -13,7 +13,8 @@ namespace uqm {
 namespace {
 bool sameDefinition(const WorldDefinition &a, const WorldDefinition &b) {
     return a.id == b.id && a.kind == b.kind && a.seed == b.seed
-        && a.shielded == b.shielded && a.name == b.name && a.moonCount == b.moonCount;
+        && a.shielded == b.shielded && a.name == b.name && a.moonCount == b.moonCount
+        && a.specialSystem == b.specialSystem;
 }
 }
 PlanetRenderResources &World::renderResources() {
@@ -37,7 +38,8 @@ World::World(WorldDefinition definition, std::shared_ptr<WorldState> state)
     : World(std::move(definition), std::move(state), std::make_unique<EnergyBehavior>()) {}
 World::World(WorldDefinition definition, std::shared_ptr<WorldState> state,
         std::unique_ptr<EnergyBehavior> energy)
-    : definition_(std::move(definition)), state_(std::move(state)), energy_(std::move(energy)) {
+    : definition_(std::move(definition)), orbitHandler_(selectOrbitHandler(definition_)),
+      state_(std::move(state)), energy_(std::move(energy)) {
     if (!state_ || !energy_) throw std::invalid_argument("world requires state and energy behavior");
     if (id().universe != state_->id()) throw std::invalid_argument("world belongs to another universe");
 }
@@ -63,7 +65,7 @@ World::World(WorldDefinition description, std::shared_ptr<WorldState> state,
         auto moonId = id();
         moonId.moon = i;
         children_.push_back(std::make_unique<World>(
-            detail::describeWorld(moonId, WorldKind::Moon, moon), state_));
+            detail::describeWorld(moonId, WorldKind::Moon, moon, definition_.specialSystem), state_));
     }
 }
 void World::projectMoons(SOLARSYS_STATE &system, PLANET_DESC &planet) const {
@@ -94,7 +96,7 @@ SolarSystem::SolarSystem(StarId starId, std::shared_ptr<WorldState> state,
     worlds_.reserve(layout_.size());
     for (COUNT i = 0; i < layout_.size(); ++i) {
         auto planet = std::make_unique<World>(
-            detail::describeWorld({state_->id(), star_, i, std::nullopt}, WorldKind::Planet, system.PlanetDesc[i]),
+            detail::describeWorld({state_->id(), star_, i, std::nullopt}, WorldKind::Planet, system.PlanetDesc[i], star.Index),
             state_, system, system.PlanetDesc[i], *behavior_);
         planet->attachLayout(layout_);
         for (auto &moon : planet->children_) moon->attachLayout(layout_);

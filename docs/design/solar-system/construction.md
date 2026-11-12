@@ -62,3 +62,5 @@ constructor cleanup after success and failure. Device-free tests use the existin
 fake engine dependencies. A separate live smoke reaches Luna's orbit menu with
 the real Sol layout, generated terrain and globe. This is not a complete story
 or visual regression playthrough.
+
+Orbit entry now uses [constructor-selected events and an orbital child mode](orbit-events.md).

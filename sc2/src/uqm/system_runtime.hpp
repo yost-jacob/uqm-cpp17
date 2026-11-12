@@ -111,7 +111,8 @@ void redrawExploration(SOLARSYS_STATE &system, ExplorationView view);
 // Native engine entry, called only by SolarSystemExploration::run.
 void runExploration(UQM_SYSTEM_RUNTIME &runtime);
 // Create a child visit for this session and its prepared exploration system.
-// The owning exploration mode and story state must outlive the child callbacks.
+// The owning world visit and story state outlive the child callbacks. The
+// source must be the active orbital engine, which lends its prepared surface scene.
 std::unique_ptr<GameMode> createLanderMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &surfaceSource, POINT planetLoc);
 }
 #endif

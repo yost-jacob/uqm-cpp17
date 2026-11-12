@@ -23,14 +23,14 @@ uqm::WorldId id(uqm::SolarSystem &system, COUNT planet, int moon) {
     return {system.universe(), system.star(), planet,
             moon == -1 ? std::nullopt : std::optional<std::uint16_t>{static_cast<std::uint16_t>(moon)}};
 }
-uqm::WorldDefinition definition(uqm::WorldId id, uqm::WorldKind kind, const PLANET_DESC &world) {
+uqm::WorldDefinition definition(uqm::WorldId id, uqm::WorldKind kind, const PLANET_DESC &world, std::uint8_t specialSystem = 0) {
     if (world.data_index == HIERARCHY_STARBASE)
         kind = uqm::WorldKind::Starbase;
     else if (world.data_index == SA_MATRA)
         kind = uqm::WorldKind::FinalBattleSite;
     const bool shielded = (kind == uqm::WorldKind::Planet || kind == uqm::WorldKind::Moon)
             && (world.data_index & PLANET_SHIELDED) != 0;
-    return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets};
+    return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets, specialSystem};
 }
 uqm::LegacyDiscoveryLocation discoveryLocation(uqm::SolarSystem &system, const uqm::WorldId &world) {
     std::uint32_t record = 0, records = 0;
@@ -88,8 +88,8 @@ void publishPlanetProgress(SOLARSYS_STATE &system) {
 } // namespace uqm
 
 namespace uqm::detail {
-WorldDefinition describeWorld(WorldId world, WorldKind kind, const PLANET_DESC &descriptor) {
-    return definition(world, kind, descriptor);
+WorldDefinition describeWorld(WorldId world, WorldKind kind, const PLANET_DESC &descriptor, std::uint8_t specialSystem) {
+    return definition(world, kind, descriptor, specialSystem);
 }
 const PLANET_DESC &worldDescriptor(const SOLARSYS_STATE &system, const World &world) {
     const auto &id = world.id();
@@ -176,7 +176,7 @@ void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
         std::vector<uqm::WorldDefinition> planets;
         for (COUNT i = 0; i < system->SunDesc[0].NumPlanets; ++i)
             planets.push_back(definition({state, starId, i, std::nullopt},
-                    uqm::WorldKind::Planet, system->PlanetDesc[i]));
+                    uqm::WorldKind::Planet, system->PlanetDesc[i], star->Index));
         auto &native = runtime(*system);
         if (native.star() != starId) throw std::logic_error("wrong active system");
         native.refreshPlanets(std::move(planets));
@@ -192,7 +192,7 @@ void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
         std::vector<std::unique_ptr<uqm::World>> moons;
         for (COUNT i = 0; i < planet->NumPlanets; ++i)
             moons.push_back(std::make_unique<uqm::World>(definition(id(native, static_cast<COUNT>(slot), i),
-                    uqm::WorldKind::Moon, system->MoonDesc[i]), system->worlds->world));
+                    uqm::WorldKind::Moon, system->MoonDesc[i], native.world(slot).definition().specialSystem), system->worlds->world));
         native.world(static_cast<std::size_t>(slot)).refreshChildren(std::move(moons));
     } catch (...) { std::abort(); }
 }
