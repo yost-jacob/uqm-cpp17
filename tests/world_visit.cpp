@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE(report_only_orbit_script_releases_its_assets_without_a_surf
         auto &world = runtime.system->world(1).child(0);
         runtime.system->selectWorld(world.id());
         system.PlanetDesc[1].pPrevDesc = system.SunDesc;
-        system.MoonDesc[0].pPrevDesc = &system.PlanetDesc[1];
+        runtime.system->world(1).projectMoons(system, system.PlanetDesc[1]);
         testResourceLookup = [](RESOURCE) -> void * { return AllocStringTable(1); };
         const auto frames = liveTestDrawables();
         const auto fonts = destroyedTestFonts();

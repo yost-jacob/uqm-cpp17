@@ -80,7 +80,7 @@ declaration. These counts do not imply that the remaining mixed environment is
 already separated into proper data owners.
 
 No physical planet data, scan progress, report-resource ownership or layout
-storage moved as part of steps 1–2. Steps 3–6 are recorded below; steps 7–8 remain pending. In
+storage moved as part of steps 1–2. Steps 3–7 are recorded below; step 8 remains pending. In
 particular, mutable globe work tables and rotation state stay for step 5.
 
 Compatibility: seed recipes and the legacy generation recurrence remain intact;
@@ -378,7 +378,7 @@ geometry bounds, native group expiration/collision hooks and captured player
 state remaining independent of the currently activated session. The live Sol
 check advances both flagship and NPC entities through the actual engine loop.
 
-## 7. Make layout descriptors borrowed projections — next
+## 7. Make layout descriptors borrowed projections — complete
 
 **Depends on:** steps 3 and 6; presentation adapters consume step 5's interfaces.
 
@@ -398,7 +398,51 @@ check advances both flagship and NPC entities through the actual engine loop.
 views cannot invalidate authoritative world identity or erase another body's
 owned data.
 
-## 8. Delete the remaining global environment and stop
+### Step 7 ownership checkpoint
+
+`WorldDefinition::orbit` owns each planet/moon's generated radius and logical
+position; seed, type, shielding and declared children are also native values.
+`SolarSystem` owns the generated stellar seed/type and derives the planet count
+from its native children. Parent relationships use WorldId, never pointers into
+a reused descriptor array. Deleted `WorldGeneration` and its separate vector of
+moon-descriptor snapshots: moon projections are built directly from native
+children. Geometry participates in reconstruction matching, so changed inputs
+invalidate retained analysis conservatively.
+
+System construction uses a private temporary `SOLARSYS_STATE` generation buffer.
+Existing generation algorithms fill it, then the native tree adopts the values.
+Construction does not publish that scratch backing into the active flight view.
+The production boundary publishes the completed candidate's descriptor projection
+after adoption. Debug import boundaries explicitly adopt generated planet/moon
+values; their C arrays are construction inputs, not live parallel authorities.
+
+`SolarSystem::project()` restores physical fields in the C view while retaining
+view-owned frame/color state. Typed native shield changes appear on the next
+projection. `World::projectMoons()` requires the correct parent view and records
+its parent identity. Accessing a moon through another parent's active projection
+throws; selecting/rebuilding a view never changes the native moon or its ID.
+Raw descriptor and parent-pointer borrows end when that view is reprojected.
+
+The old SunDesc radius/location were camera zoom and an outer-view anchor, not
+stellar properties. These now belong to `SystemFlightState`; native flight and
+coordinate helpers use that owner. The sun view projects them for the remaining
+NPC/drawing consumers. C descriptor arrays remain in the compatibility envelope
+as fixed-capacity drawing/collision views. They retain gameplay capacities,
+ordering and visual state, and may be removed when their backend consumers are
+migrated; they are not a second editable native layout.
+
+The lexical global-pointer inventory remains **30 lines across 4 files**. This
+step changes layout authority, not the remaining debug/input/UI bindings. Tests
+cover construction without publishing scratch buffers, independent native and
+C-view lifetimes, restoring a modified view, retaining render state, typed shield
+updates, moon-parent validation and stable moon identities across view changes.
+The existing retrieval-state, generation and reconstruction tests remain in use.
+A live lunar-orbit return rebuilds the system view and checks its moon seed and
+parent link; a separate live flight check advances flagship and NPC entities.
+Save identifiers and record formats are unchanged. The ownership map is ready
+for step 8's remaining-boundary audit; no new mode-runtime hierarchy was added.
+
+## 8. Delete the remaining global environment and stop — next
 
 **Depends on:** the completed component cutovers above.
 

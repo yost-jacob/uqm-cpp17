@@ -12,6 +12,8 @@ struct SystemFlightState {
     COUNT waitIntersect = 0; // ~0 suppresses all body collisions until clear.
     BYTE turnCounter = 0, turnWait = 0, thrustCounter = 0, maxSpeed = 0;
     TimeCount nextFrame = 0;
+    SIZE viewRadius = 0; // Camera zoom, not stellar geometry.
+    POINT outerAnchor{}; // Outer-view location retained while flying around moons.
     std::optional<WorldId> pendingOrbit;
     // Recompute limits from equipped drives/jets; preserve active countdowns.
     void configure(const SISLoadout &loadout) noexcept {
@@ -21,7 +23,7 @@ struct SystemFlightState {
         for (const auto jet : loadout.jets) if (jet == TURNING_JETS) turnWait -= IP_SHIP_TURN_DECREMENT;
     }
 };
-// Read-only descriptor projection until step 7 moves geometry into native bodies.
+// Read-only drawing projection of native body geometry and flight camera state.
 // Referenced arrays must outlive the flight entities and group initialization.
 struct SystemGeometry {
     const PLANET_DESC &sun;

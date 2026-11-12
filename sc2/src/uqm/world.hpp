@@ -13,13 +13,17 @@ struct planet_desc;
 struct star_desc;
 struct PlanetGeneratedData;
 namespace uqm {
-namespace detail { struct WorldGeneration; }
 class StoryState;
 class WorldVisit;
 using OrbitHandler = void (*)(WorldVisit &);
 class SystemBehavior;
 class PlanetRenderResources;
 enum class WorldKind { Planet, Moon, Starbase, FinalBattleSite };
+// Generated orbit coordinates in legacy logical units, not screen pixels.
+struct WorldOrbit {
+    std::int32_t radius = 0;
+    std::int16_t x = 0, y = 0;
+};
 struct WorldDefinition {
     WorldId id;
     WorldKind kind;
@@ -30,6 +34,7 @@ struct WorldDefinition {
     std::uint8_t specialSystem = 0; // Immutable script identity, not story state.
     std::uint8_t bodyType = 0; // Planet-type generation input, including shield bits.
     std::int32_t orbitalDistance = 0; // Planet-to-star distance used for analysis.
+    WorldOrbit orbit{}; // Native geometry; contains no pointers into descriptor views.
 };
 // Owns a runtime world's behavior and generated children. Physical persistence
 // stays in the shared state; personal progress stays in the interacting story state.
@@ -43,7 +48,8 @@ public:
     // system descriptors and behavior are borrowed only for this call.
     World(WorldDefinition definition, std::shared_ptr<WorldState> state,
             solarsys_state &system, planet_desc &planet, SystemBehavior &behavior);
-    // Copy owned moon descriptors into the active legacy flight view.
+    // Build a moon view from native child geometry. Parent/view are borrowed
+    // only for this call; prior moon-descriptor borrows end at reprojection.
     void projectMoons(solarsys_state &system, planet_desc &planet) const;
     ~World();
     World(const World &) = delete;
@@ -92,7 +98,6 @@ private:
     std::unique_ptr<PlanetGeneratedData> data_;
     std::unique_ptr<PlanetRenderResources> rendering_;
     std::vector<std::unique_ptr<World>> children_;
-    std::unique_ptr<detail::WorldGeneration> generation_;
 };
 class SolarSystem {
 public:
@@ -104,11 +109,17 @@ public:
     SolarSystem(StarId star, std::shared_ptr<WorldState> state,
             StoryState &story, std::uint8_t specialSystem);
     // Construct a complete generated layout. system must be the active legacy
-    // generation view; star/session outlive the selected behavior. No orbit
+    // workspace provider; generation uses private temporary descriptors. No live
+    // descriptor view is published by construction. star/session outlive the
+    // selected behavior. No orbit
     // handlers, encounters or presentation are run by this constructor.
     SolarSystem(StarId star, std::shared_ptr<WorldState> state, StoryState &story,
             const star_desc &description, solarsys_state &system, class GameSession *session);
     ~SolarSystem();
+    // Project physical fields into the C drawing view, retaining view-owned art.
+    // Call after construction or camera changes; no gameplay state is imported.
+    void project(solarsys_state &view) const;
+    void adoptStar(const planet_desc &generated) noexcept; // Construction/import boundary only.
     // Transfer last generated values for exactly matching inputs during layout
     // reconstruction. No progress/resources are published or copied.
     void preserveGeneratedData(SolarSystem &previous) noexcept;
@@ -157,6 +168,8 @@ private:
     SystemLayout layout_;
     std::vector<std::unique_ptr<World>> worlds_;
     std::optional<WorldId> innerPlanet_, selectedWorld_;
+    std::uint32_t starSeed_ = 0;
+    std::uint8_t starType_ = 0;
 };
 } // namespace uqm
 #endif

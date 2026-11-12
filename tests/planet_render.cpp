@@ -311,3 +311,67 @@ BOOST_AUTO_TEST_CASE(generated_surface_workspaces_are_independent_and_reset_with
     second.reset(); first.reset();
     BOOST_TEST(liveTestDrawables() == frames);
 }
+
+BOOST_AUTO_TEST_CASE(native_layout_is_authoritative_and_moon_views_never_own_geometry)
+{
+    GameState campaign{{SinglePlayerId, "Native layout"}};
+    auto state = std::make_shared<WorldState>(UniverseId{501});
+    SimulationEngine engine;
+    UQM_SYSTEM_RUNTIME runtime{campaign.player(SinglePlayerId).story(), engine, state, nullptr};
+    auto a = planet(0, 1), b = planet(1, 1);
+    a.bodyType = WATER_WORLD; a.orbit = {EARTH_RADIUS, 100, 200};
+    b.bodyType = METAL_WORLD; b.orbit = {EARTH_RADIUS * 2, -300, 400};
+    runtime.system = std::make_unique<SolarSystem>(StarId{3}, state, std::vector<WorldDefinition>{a, b});
+    for (unsigned slot = 0; slot < 2; ++slot) {
+        auto description = a;
+        description.id.planet = slot; description.id.moon = 0;
+        description.kind = WorldKind::Moon; description.moonCount = 0;
+        description.seed = 456 + slot;
+        description.orbit = {100 + static_cast<int>(slot), 50, 60};
+        std::vector<std::unique_ptr<World>> children;
+        children.push_back(std::make_unique<World>(description, state));
+        runtime.system->world(slot).replaceChildren(std::move(children));
+    }
+    PLANET_DESC star{}; star.rand_seed = 77; star.data_index = 2;
+    runtime.system->adoptStar(star);
+    runtime.flight.viewRadius = MAX_ZOOM_RADIUS;
+    runtime.flight.outerAnchor = {3, 4};
+    SOLARSYS_STATE view{}; view.worlds = &runtime;
+    runtime.system->project(view);
+    BOOST_TEST(view.SunDesc[0].rand_seed == 77u);
+    BOOST_TEST(view.SunDesc[0].NumPlanets == 2u);
+    BOOST_TEST(view.SunDesc[0].radius == MAX_ZOOM_RADIUS);
+    BOOST_TEST(view.SunDesc[0].location.x == 3);
+    view.PlanetDesc[0].rand_seed = 999;
+    view.PlanetDesc[0].radius = 1;
+    view.PlanetDesc[0].location = {};
+    view.PlanetDesc[0].image.origin = {10, 20};
+    view.PlanetDesc[0].temp_color.r = 99;
+    BOOST_TEST(runtime.system->world(0).definition().seed == 123u);
+    BOOST_TEST(runtime.system->world(0).definition().orbit.radius == EARTH_RADIUS);
+    runtime.system->project(view);
+    BOOST_TEST(view.PlanetDesc[0].rand_seed == 123u);
+    BOOST_TEST(view.PlanetDesc[0].location.x == 100);
+    BOOST_TEST(view.PlanetDesc[0].pPrevDesc == view.SunDesc);
+    BOOST_TEST(view.PlanetDesc[0].image.origin.x == 10); // Render state is a different concern.
+    BOOST_TEST(view.PlanetDesc[0].temp_color.r == 99u);
+    BOOST_CHECK_THROW(runtime.system->world(0).projectMoons(view, view.PlanetDesc[1]), std::invalid_argument);
+    auto &firstMoon = runtime.system->world(0).child(0);
+    const auto identity = firstMoon.id();
+    runtime.system->world(0).projectMoons(view, view.PlanetDesc[0]);
+    BOOST_TEST(view.MoonDesc[0].rand_seed == 456u);
+    runtime.system->world(1).projectMoons(view, view.PlanetDesc[1]);
+    BOOST_TEST(view.MoonDesc[0].rand_seed == 457u);
+    BOOST_TEST(view.MoonDesc[0].pPrevDesc == &view.PlanetDesc[1]);
+    BOOST_TEST(firstMoon.definition().orbit.radius == 100);
+    BOOST_CHECK(firstMoon.id() == identity);
+    BOOST_CHECK_THROW(detail::worldDescriptor(view, firstMoon), std::logic_error);
+    runtime.system->world(0).projectMoons(view, view.PlanetDesc[0]);
+    view.PlanetDesc[0].radius = 1;
+    BOOST_TEST(detail::worldDescriptor(view, firstMoon).rand_seed == 456u);
+    BOOST_TEST(view.PlanetDesc[0].radius == EARTH_RADIUS);
+    // A typed native change appears in the next projection, not a second store.
+    runtime.system->world(0).setShielded(true);
+    runtime.system->project(view);
+    BOOST_TEST((view.PlanetDesc[0].data_index & PLANET_SHIELDED) != 0);
+}

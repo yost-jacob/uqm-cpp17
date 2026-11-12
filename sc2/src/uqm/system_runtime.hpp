@@ -46,6 +46,7 @@ struct UQM_SYSTEM_RUNTIME {
     uqm::SystemFlightState flight{};
     uqm::SystemViewState viewState{};
     const STAR_DESC *catalogueStar = nullptr; // Catalogue borrow, available during construction.
+    std::optional<uqm::WorldId> projectedMoonParent; // Identity of the current C moon view.
     uqm::WorldVisit *visit = nullptr; // Borrowed only during synchronous orbital scripts/children.
     RandomContext generation{RandomDefaultSeed}; // Visit-owned generation workspace, not gameplay RNG.
 };

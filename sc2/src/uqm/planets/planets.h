@@ -161,23 +161,20 @@ struct solarsys_state
 	// Standard field required by DoInput()
 	BOOLEAN (*InputFunc) (struct solarsys_state *);
 
-	PLANET_DESC SunDesc[MAX_SUNS];
-	PLANET_DESC PlanetDesc[MAX_PLANETS];
-			// Description of the planets in the system.
-			// Only defined after a call to SystemBehavior::generatePlanets()
-			// and overwritten by subsequent calls.
-	PLANET_DESC MoonDesc[MAX_MOONS];
-			// Description of the moons orbiting the planet pointed to
-			// by the native inner-system selection.
-			// Only defined after a call to SystemBehavior::generateMoons()
-			// as its argument, and overwritten by subsequent calls.
+    // Compatibility projections during a visit; native SolarSystem/World
+    // values own physical geometry. Generators instead fill private scratch
+    // records before adoption. Only image/color state is mutable in live views.
+    PLANET_DESC SunDesc[MAX_SUNS];
+    PLANET_DESC PlanetDesc[MAX_PLANETS];
+    // One parent's moon view. Borrows (including pPrevDesc) end when projected
+    // for another parent; native WorldId values remain stable.
+    PLANET_DESC MoonDesc[MAX_MOONS];
 
 	SYSTEM_INFO SysInfo;
 
     UQM_SYSTEM_RUNTIME *worlds; // Opaque owner of native World/EnergyBehavior objects.
 
     PLANET_RENDER_DATA *graphics; // Scoped borrow from the current native World.
-			// Set to TRUE when player hits a world in an inner system
 			// Homeworld encounters count as 'in orbit'
 };
 
