@@ -48,7 +48,6 @@ DoShipSpin (COUNT index, MUSIC_REF hMusic)
 	if (hMusic)
 		StopMusic ();
 
-	FreeHyperData ();
 
 	// TODO: It would be nice to have better resource names for these.
 	sprintf (vnbuf, "slides.spins.%02u", (unsigned)index);

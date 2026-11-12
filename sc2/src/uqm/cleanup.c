@@ -78,7 +78,6 @@ FreeGameData (void)
 	FreeSC2Data ();
 	FreeLanderData ();
 	FreeIPData ();
-	FreeHyperData ();
 }
 
 void
