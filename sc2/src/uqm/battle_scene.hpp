@@ -3,7 +3,7 @@
 #include "libs/sndlib.h"
 namespace uqm {
 class SimulationEngine;
-class HyperSpaceNavigation;
+class SpaceNavigation;
 namespace detail {
 // Internal scene/resource owner. initialize runs after construction so partial
 // acquisition also unwinds. complete explicitly publishes crew/results; the
@@ -12,7 +12,7 @@ class BattleScene {
 public:
     explicit BattleScene(SimulationEngine &engine) noexcept : engine_(engine) {}
     // navigation and its engine outlive this synchronous scene, including teardown.
-    BattleScene(SimulationEngine &engine, HyperSpaceNavigation &navigation) noexcept
+    BattleScene(SimulationEngine &engine, SpaceNavigation &navigation) noexcept
         : engine_(engine), navigation_(&navigation) {}
     ~BattleScene();
     BattleScene(const BattleScene &) = delete;
@@ -23,7 +23,7 @@ public:
 private:
     void loadMusic();
     SimulationEngine &engine_;
-    HyperSpaceNavigation *navigation_ = nullptr; // Borrowed; null denotes combat.
+    SpaceNavigation *navigation_ = nullptr; // Borrowed; null denotes combat.
     MUSIC_REF music_ = 0;
     BattleScene *previous_ = nullptr;
     bool bound_ = false, spaceAcquired_ = false, completed_ = false;

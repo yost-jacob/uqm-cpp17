@@ -277,7 +277,8 @@ public:
     const PlayerLocation &location() const noexcept;
     PLAYER_TRAVEL_POSITION &travel() noexcept;
     const PLAYER_TRAVEL_POSITION &travel() const noexcept;
-    // Only top-level realm changes replace the variant. Children leave it intact.
+    // Called by an incoming top-level mode after the outgoing mode has unwound.
+    // Preserves travel values; child modes leave the variant intact.
     void enterNavigation(bool quasispace);
     SolarSystemLocation &enterSolarSystem();
     void resetLocation() noexcept;
@@ -331,7 +332,7 @@ private:
 };
 
 // Session retains its owner, not a cached player pointer or separate campaign.
-class HyperSpaceNavigation;
+class SpaceNavigation;
 class NavigationBinding;
 class GameSession : public Session {
 public:
@@ -352,7 +353,7 @@ public:
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
     CampaignClock &clock() noexcept { return clock_; }
     const CampaignClock &clock() const noexcept { return clock_; }
-    HyperSpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
+    SpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
     PlayerId playerId() const noexcept;
     GameData &gameData() { return player().gameData(); }
     const GameData &gameData() const { return player().gameData(); }
@@ -369,7 +370,7 @@ private:
     std::shared_ptr<GameState> state_;
     PlayerId player_;
     friend class NavigationBinding;
-    HyperSpaceNavigation *navigation_ = nullptr;
+    SpaceNavigation *navigation_ = nullptr;
 };
 
 // Transitional C lookup: active campaign, or startup fallback outside a session.

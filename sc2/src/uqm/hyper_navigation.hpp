@@ -10,18 +10,25 @@ class StoryState;
 class PlayerEntity;
 class GameSession;
 class SimulationEngine;
-// One navigation visit, owned by HyperSpaceMode. C element/input callbacks borrow
+enum class NavigationRealm { HyperSpace, QuasiSpace };
+// One navigation visit, owned by HyperSpaceMode or QuasiSpaceMode. C element/input callbacks borrow
 // it through a scoped session binding; all native helpers use this object's state.
-class HyperSpaceNavigation {
+class SpaceNavigation {
 public:
-    // Both borrows outlive this navigation visit and its C callbacks.
-    HyperSpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock) noexcept;
+    // player, engine and clock outlive this visit and its C callbacks. The realm
+    // must match the player location before run() or any navigation callback.
+    SpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock, NavigationRealm realm) noexcept;
     // Borrowed mode-owned engine; must be selected for the synchronous scene.
     SimulationEngine &engine() noexcept { return engine_; }
     void run(GameSession &session);
     void frame();
-    HyperSpaceNavigation(const HyperSpaceNavigation &) = delete;
-    HyperSpaceNavigation &operator=(const HyperSpaceNavigation &) = delete;
+    // Stage a portal destination in legacy logical coordinates. The outgoing
+    // location variant remains valid; the successor mode converts it on entry.
+    void prepareRealmTransition(NavigationRealm destination, PLAYER_MAP_POSITION position);
+    NavigationRealm realm() const noexcept { return realm_; }
+    bool isQuasiSpace() const noexcept { return realm_ == NavigationRealm::QuasiSpace; }
+    SpaceNavigation(const SpaceNavigation &) = delete;
+    SpaceNavigation &operator=(const SpaceNavigation &) = delete;
     enum TransitionType { RANDOM_ENCOUNTER_TRANSITION, INTERPLANETARY_TRANSITION, ARILOU_SPACE_TRANSITION };
     // Legacy engine entry points. Inputs retain their existing pointer contracts.
     void MoveSIS(SIZE *pdx, SIZE *pdy);
@@ -59,6 +66,7 @@ private:
     friend class NavigationBinding;
     // The realm selected by this mode must match the player variant.
     PLAYER_TRAVEL_POSITION &travel();
+    const NavigationRealm realm_; // Fixed for this mode; portal crossings select a successor.
     PlayerEntity &player_;
     CampaignClock &clock_;
     SimulationEngine &engine_;
@@ -71,13 +79,13 @@ private:
 // registration is cleared/restored before the owning mode can be destroyed.
 class NavigationBinding {
 public:
-    NavigationBinding(GameSession &session, HyperSpaceNavigation &navigation);
+    NavigationBinding(GameSession &session, SpaceNavigation &navigation);
     ~NavigationBinding();
     NavigationBinding(const NavigationBinding &) = delete;
     NavigationBinding &operator=(const NavigationBinding &) = delete;
 private:
     GameSession &session_;
-    HyperSpaceNavigation *previous_;
+    SpaceNavigation *previous_;
 };
 } // namespace uqm
 #endif

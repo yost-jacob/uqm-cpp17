@@ -75,9 +75,9 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
 class HyperSpaceMode final : public GameMode {
 public:
     HyperSpaceMode(GameSession &session)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine(), session.clock()) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine(), session.clock(), NavigationRealm::HyperSpace) {}
     ModeResult run() override {
-        session_.player().enterNavigation(session_.player().story().read(StoryCounter::ArilouSpaceSide) > 1);
+        session_.player().enterNavigation(false);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
@@ -86,7 +86,25 @@ public:
     }
 private:
     GameSession &session_;
-    HyperSpaceNavigation navigation_;
+    SpaceNavigation navigation_;
+};
+// Shares navigation mechanisms with hyperspace; the realm is fixed for this mode.
+class QuasiSpaceMode final : public GameMode {
+public:
+    explicit QuasiSpaceMode(GameSession &session)
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
+          navigation_(session.player(), engine(), session.clock(), NavigationRealm::QuasiSpace) {}
+    ModeResult run() override {
+        session_.player().enterNavigation(true);
+        GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
+        DrawAutoPilotMessage(TRUE);
+        session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
+        navigation_.run(session_);
+        return finishMode(session_, engine());
+    }
+private:
+    GameSession &session_;
+    SpaceNavigation navigation_;
 };
 class SolarSystemMode final : public GameMode {
 public:
@@ -176,6 +194,8 @@ std::unique_ptr<GameMode> selectMode(GameSession &session) {
     }
     if (GLOBAL(CurrentActivity) & START_INTERPLANETARY)
         return std::make_unique<SolarSystemMode>(session);
+    if (session.player().story().read(StoryCounter::ArilouSpaceSide) > 1)
+        return std::make_unique<QuasiSpaceMode>(session);
     return std::make_unique<HyperSpaceMode>(session);
 }
 
