@@ -30,6 +30,20 @@
 namespace uqm {
 namespace {
 std::unique_ptr<GameMode> selectMode(GameSession &session);
+std::unique_ptr<GameMode> selectNavigationMode(GameSession &, const NavigationTransition &);
+// One projection into the legacy mode/menu protocol. Native navigation never
+// chooses a successor by writing START_* bits or moving a fleet to the front.
+void projectNavigationTransition(GameSession &session, const NavigationTransition &transition) {
+    const auto legacy = detail::navigationLegacy(session.player());
+    if (transition.destination == NavigationDestination::SolarSystem)
+        session.player().navigationState().currentStar = transition.star.value();
+    else if (transition.star) session.player().navigationState().currentStar = transition.star;
+    legacy.activity &= ~(START_INTERPLANETARY | START_ENCOUNTER);
+    if (transition.destination == NavigationDestination::SolarSystem)
+        legacy.activity |= START_INTERPLANETARY;
+    else if (transition.destination == NavigationDestination::Encounter)
+        legacy.activity |= START_ENCOUNTER;
+}
 
 // Legacy input/resources remain C-owned internally. This scope ends only after
 // every mode and nested menu has returned; no load runs with these frames alive.
@@ -54,7 +68,9 @@ public:
 private:
     bool input_ = false, structures_ = false;
 };
-ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
+ModeResult finishMode(GameSession &session, SimulationEngine &engine,
+        std::optional<NavigationTransition> transition = std::nullopt) {
+    if (transition) projectNavigationTransition(session, *transition);
     SetFlashRect(nullptr);
     LastActivity = GLOBAL(CurrentActivity);
     if (QuitPosted) return SessionExit::shutdown();
@@ -70,6 +86,12 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
         else if (GLOBAL(CurrentActivity) & CHECK_RESTART) GLOBAL(CurrentActivity) &= ~CHECK_RESTART;
         return SessionExit::title();
     }
+    if (transition && !(GLOBAL(CurrentActivity) & CHECK_LOAD)) {
+#ifdef DEBUG
+        if (debugHook) return selectMode(session);
+#endif
+        return selectNavigationMode(session, *transition);
+    }
     return selectMode(session);
 }
 class HyperSpaceMode final : public GameMode {
@@ -81,8 +103,8 @@ public:
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
-        navigation_.run();
-        return finishMode(session_, engine());
+        const auto transition = navigation_.run();
+        return finishMode(session_, engine(), transition);
     }
 private:
     GameSession &session_;
@@ -99,8 +121,8 @@ public:
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
-        navigation_.run();
-        return finishMode(session_, engine());
+        const auto transition = navigation_.run();
+        return finishMode(session_, engine(), transition);
     }
 private:
     GameSession &session_;
@@ -174,23 +196,42 @@ private:
     GameSession &session_;
 };
 #endif
-std::unique_ptr<GameMode> selectMode(GameSession &session) {
-#ifdef DEBUG
-    if (debugHook) return std::make_unique<DebugMode>(session);
-#endif
-    SetStatusMessageMode(SMM_DEFAULT);
-    if (!((GLOBAL(CurrentActivity) | NextActivity) & CHECK_LOAD))
-        ZeroVelocityComponents(&GLOBAL(velocity));
-    else if (GLOBAL(CurrentActivity) & CHECK_LOAD)
-        GLOBAL(CurrentActivity) = NextActivity;
-
-    if ((GLOBAL(CurrentActivity) & START_ENCOUNTER) || session.player().story().read(StoryCounter::BombProgress) == 2) {
+std::unique_ptr<GameMode> createEncounterMode(GameSession &session) {
         const auto kind = session.player().story().read(StoryCounter::BombProgress) == 2 && !session.player().story().read(StoryFlag::StarbaseAccessGranted)
                 ? EncounterKind::InstallBomb
                 : session.player().story().read(StoryCounter::EncounterContext) == static_cast<BYTE>(~0u)
                     || session.player().story().read(StoryCounter::BombProgress) == 2
                 ? EncounterKind::Starbase : EncounterKind::Communication;
         return std::make_unique<EncounterMode>(session, kind);
+}
+void prepareModeSelection() {
+    SetStatusMessageMode(SMM_DEFAULT);
+    if (!((GLOBAL(CurrentActivity) | NextActivity) & CHECK_LOAD))
+        ZeroVelocityComponents(&GLOBAL(velocity));
+    else if (GLOBAL(CurrentActivity) & CHECK_LOAD)
+        GLOBAL(CurrentActivity) = NextActivity;
+}
+std::unique_ptr<GameMode> selectNavigationMode(GameSession &session, const NavigationTransition &transition) {
+    prepareModeSelection();
+    // Preserve the existing scripted bomb-installation priority.
+    if (session.player().story().read(StoryCounter::BombProgress) == 2)
+        return createEncounterMode(session);
+    switch (transition.destination) {
+        case NavigationDestination::SolarSystem: return std::make_unique<SolarSystemMode>(session);
+        case NavigationDestination::Encounter: return createEncounterMode(session);
+        case NavigationDestination::HyperSpace: return std::make_unique<HyperSpaceMode>(session);
+        case NavigationDestination::QuasiSpace: return std::make_unique<QuasiSpaceMode>(session);
+    }
+    throw std::logic_error("unknown navigation destination");
+}
+std::unique_ptr<GameMode> selectMode(GameSession &session) {
+#ifdef DEBUG
+    if (debugHook) return std::make_unique<DebugMode>(session);
+#endif
+    prepareModeSelection();
+
+    if ((GLOBAL(CurrentActivity) & START_ENCOUNTER) || session.player().story().read(StoryCounter::BombProgress) == 2) {
+        return createEncounterMode(session);
     }
     if (GLOBAL(CurrentActivity) & START_INTERPLANETARY)
         return std::make_unique<SolarSystemMode>(session);

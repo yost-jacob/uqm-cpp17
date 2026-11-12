@@ -6,6 +6,7 @@
 #include "fleet_legacy.hpp"
 #include "sis_legacy.hpp"
 #include "legacy_runtime.hpp"
+#include "navigation_legacy.hpp"
 
 #include <cstdlib>
 #include <algorithm>
@@ -440,4 +441,9 @@ const uqm::RaceFleets<> &uqm::GameSession::raceFleets() const {
     const auto &queue = detail::LegacyStateAccess::data(player()).Game_state.avail_race_q;
     if (!queue.storage) throw std::logic_error("campaign race fleets are not initialized");
     return detail::raceFleets(queue);
+}
+
+uqm::detail::NavigationLegacyView uqm::detail::navigationLegacy(PlayerEntity &player) noexcept {
+    auto &state = LegacyStateAccess::data(player).Game_state;
+    return {state.CurrentActivity, state.autopilot, state.ShipStamp};
 }

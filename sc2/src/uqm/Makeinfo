@@ -15,7 +15,7 @@ uqm_HFILES="dispatcher.hpp session.hpp session_activity.h uqm_context.hpp world_
 		collide.h colors.h commanim.h commglue.h comm.h conversation.hpp conversation_cues.hpp conversation_native.h conversation_text.hpp conversation_story.hpp conversation_state.hpp conversation_context.hpp conversation_resources.hpp conversation_animation.hpp mode_rendering.hpp cons_res.h controls.h
 		credits.h demo.h displist.h element.h encount.h fleet.hpp sis_state.hpp sis_legacy.hpp projectile.hpp projectile_legacy.hpp sis_weapons.hpp ship_state.hpp fleet_legacy.hpp combat_mode.hpp encounter_runtime.hpp device_menu.hpp
 		flash.h fmv.h gameev.h gameopt.h gamestr.h gendef.h globdata.h
-		grpinfo.h hyper.h hyper_navigation.hpp navigation_rules.hpp navigation_entities.hpp navigation_encounters.hpp campaign_encounters.hpp collection_storage.hpp game_collections.hpp ifontres.h igfxres.h ikey_con.h imusicre.h init.h
+		grpinfo.h hyper.h hyper_navigation.hpp navigation_legacy.hpp navigation_transition.hpp navigation_rules.hpp navigation_entities.hpp navigation_encounters.hpp campaign_encounters.hpp collection_storage.hpp game_collections.hpp ifontres.h igfxres.h ikey_con.h imusicre.h init.h
 		intel.h ipdisp.h isndres.h istrtab.h master.h menustat.h
 		nameref.h oscill.h pickship.h process.h races.h resinst.h respkg.h
 		restart.h save.h settings.h setup.h setupmenu.h shipcont.h ship.h

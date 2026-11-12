@@ -38,6 +38,12 @@ BOOST_AUTO_TEST_CASE(portal_handoff_preserves_outgoing_location_until_successor_
         BOOST_TEST(outgoing.isQuasiSpace() == fromQuasi);
         BOOST_TEST(std::holds_alternative<uqm::QuasiSpaceLocation>(player.location()) == fromQuasi);
         BOOST_TEST(player.story().read(uqm::StoryCounter::ArilouSpaceSide) == (fromQuasi ? 0u : 3u));
+        BOOST_REQUIRE(outgoing.transition());
+        BOOST_CHECK(outgoing.transition()->destination == (fromQuasi
+            ? uqm::NavigationDestination::HyperSpace : uqm::NavigationDestination::QuasiSpace));
+        // A later portal-expiration callback must not undo the staged realm.
+        outgoing.settlePortalSide(false);
+        BOOST_TEST(player.story().read(uqm::StoryCounter::ArilouSpaceSide) == (fromQuasi ? 0u : 3u));
         // Callbacks still have the correct outgoing variant after the story marker changes.
         outgoing.prepareRealmTransition(destination, {1234567, 2345678});
         player.enterNavigation(!fromQuasi);
@@ -196,4 +202,39 @@ BOOST_AUTO_TEST_CASE(navigation_reads_its_own_catalogue_and_fleets_with_another_
         for (const auto id : quasiMatches)
             BOOST_CHECK(catalogue.at(id).space() == StarSpace::QuasiSpace);
     }
+}
+
+BOOST_AUTO_TEST_CASE(portal_collision_side_normalization_stops_after_a_destination_is_staged)
+{
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"}), uqm::SinglePlayerId};
+    uqm::SimulationEngine engine;
+    uqm::SpaceNavigation navigation{session, engine, uqm::NavigationRealm::HyperSpace};
+    auto &player = session.player();
+    player.story().set(uqm::StoryCounter::ArilouSpaceCounter, 5);
+    player.story().set(uqm::StoryCounter::ArilouSpaceSide, 1);
+    navigation.settlePortalSide(true);
+    BOOST_TEST(player.story().read(uqm::StoryCounter::ArilouSpaceSide) == 1u);
+    navigation.settlePortalSide(false);
+    BOOST_TEST(player.story().read(uqm::StoryCounter::ArilouSpaceSide) == 0u);
+    navigation.prepareRealmTransition(uqm::NavigationRealm::QuasiSpace, {123, 456});
+    player.story().set(uqm::StoryCounter::ArilouSpaceCounter, 0);
+    navigation.settlePortalSide(true);
+    BOOST_TEST(player.story().read(uqm::StoryCounter::ArilouSpaceSide) == 3u);
+}
+
+BOOST_AUTO_TEST_CASE(navigation_c_projection_borrows_its_owner_even_with_another_session_active)
+{
+    uqm::GameSession owner{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Owner"}), uqm::SinglePlayerId};
+    uqm::GameSession other{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Other"}), uqm::SinglePlayerId};
+    uqm::SessionActivation wrongActive{other};
+    const auto view = uqm::detail::navigationLegacy(owner.player());
+    const auto otherView = uqm::detail::navigationLegacy(other.player());
+    view.activity = IN_HYPERSPACE | IN_BATTLE;
+    view.autopilot = {123, 456};
+    view.shipStamp.origin = {78, 90};
+    BOOST_TEST(&view.activity != &otherView.activity);
+    BOOST_TEST(GLOBAL(CurrentActivity) == 0u);
+    BOOST_TEST(GLOBAL(autopilot.x) == 0);
+    BOOST_TEST(GLOBAL(ShipStamp.origin.x) == 0);
+    BOOST_TEST(uqm::detail::navigationLegacy(owner.player()).autopilot.x == 123);
 }
