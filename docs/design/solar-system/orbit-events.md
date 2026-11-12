@@ -98,3 +98,5 @@ child modes, surface presentation, discovery UI, border drawing or abduction.
 This inspection API does not create a second registry or virtual dispatch path.
 It retains the old metadata/story calculations; it is not a transactionally
 isolated campaign snapshot.
+
+Next: [incremental plan to remove the solar-system global environment](environment-removal-plan.md).
