@@ -45,6 +45,8 @@ struct UQM_SYSTEM_RUNTIME {
     TimeCount nextFlightFrame = 0;
     uqm::SystemViewState viewState{};
     const STAR_DESC *catalogueStar = nullptr; // Catalogue borrow, available during construction.
+    uqm::WorldVisit *visit = nullptr; // Borrowed only during synchronous orbital scripts/children.
+    std::optional<uqm::WorldId> pendingOrbit; // Entry intent, not the player's active orbit location.
     RandomContext generation{RandomDefaultSeed}; // Visit-owned generation workspace, not gameplay RNG.
 };
 namespace uqm {
@@ -121,6 +123,10 @@ const UNICODE *namedPlanetaryBody(const SOLARSYS_STATE &system);
 World &orbitalWorld(SOLARSYS_STATE &system);
 void loadPlanetProgress(SOLARSYS_STATE &system);
 void publishPlanetProgress(SOLARSYS_STATE &system);
+// The system must have an active WorldVisit; callbacks borrow it until return.
+WorldVisit &systemVisit(const SOLARSYS_STATE &system);
+// Prepare presentation using the explicit selected world and borrowed graphics.
+void loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME definition);
 void runScan(SOLARSYS_STATE &system);
 void generatePlanetSide(SOLARSYS_STATE &system);
 void redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLocation);

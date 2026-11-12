@@ -48,28 +48,20 @@ inline void androsynth(WorldVisit &visit)
 	{
         COUNT visits = story.discovery(solarSys->worlds->system->world(1).id()).visitedSites.count();
 
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (
-				LoadStringTable (ANDROSYNTH_RUINS_STRTAB));
+		visit.report().load(ANDROSYNTH_RUINS_STRTAB);
         ConfigurePersonalEnergyBehavior (solarSys, 1, -1, NUM_RACE_RUINS,
-                GetStringTableCount (solarSys->SysInfo.PlanetInfo.DiscoveryString));
+                visit.report().size());
         // The site remains in the shared world. This player's accepted visits
         // select the next report independently of physical retrieval masks.
-		if (visits >= GetStringTableCount (
-				solarSys->SysInfo.PlanetInfo.DiscoveryString))
+		if (visits >= visit.report().size())
 		{	// All the reports were already given
-			DestroyStringTable (ReleaseStringTable (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString = 0;
+			visit.report().clear();
 		}
 		else
 		{	// Advance the report sequence to the first unread
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetRelStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, visits);
+			visit.report().select(visits);
 		}
 	}
 
@@ -112,24 +104,19 @@ inline void burvixese(WorldVisit &visit)
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (
 				LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (
-						LoadStringTable (BURV_RUINS_STRTAB));
+		visit.report().load(BURV_RUINS_STRTAB);
 		visit.data().Weather = 0;
 		visit.data().Tectonics = 0;
 	}
 	else if (matchWorld (solarSys, world, 0, 0)
 			&& !story.read(StoryFlag::BurvixeseBroadcasters))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] = CaptureDrawable (
 				LoadGraphic (BURV_BCS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (BURV_BCS_STRTAB));
+		visit.report().load(BURV_BCS_STRTAB);
 	}
 
 	visit.loadSurface(NULL);
@@ -183,16 +170,11 @@ inline void chmmr(WorldVisit &visit)
 	else if (matchWorld (&system, &body, 1, 0))
 	{
 		/* Starbase */
-		LoadStdLanderFont (&system.SysInfo.PlanetInfo);
-		system.SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (CHMMR_BASE_STRTAB));
+		visit.report().load(CHMMR_BASE_STRTAB);
 
 		visit.reportDiscovery();
 
-		DestroyStringTable (ReleaseStringTable (
-				system.SysInfo.PlanetInfo.DiscoveryString));
-		system.SysInfo.PlanetInfo.DiscoveryString = 0;
-		FreeLanderFont (&system.SysInfo.PlanetInfo);
+		visit.report().clear();
 
 		return visit.enterPreparedOrbit();
 	}
@@ -261,17 +243,12 @@ inline void druuge(WorldVisit &visit)
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (
-							LoadStringTable (DRUUGE_RUINS_STRTAB));
+			visit.report().load(DRUUGE_RUINS_STRTAB);
 			if (story.read(StoryFlag::RosySphere))
 			{	// Already picked up Rosy Sphere, skip the report
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+				visit.report().select(1);
 			}
 		}
 	}
@@ -313,12 +290,10 @@ inline void ilwrath(WorldVisit &visit)
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (
 					LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+			visit.report().load(RUINS_STRTAB);
 		}
 	}
 
@@ -412,13 +387,10 @@ inline void mycon(WorldVisit &visit)
 			case SUN_DEVICE_DEFINED:
 				if (!story.read(StoryFlag::SunDevice))
 				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 									LoadGraphic (SUN_DEVICE_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-									LoadStringTable (SUN_DEVICE_STRTAB));
+					visit.report().load(SUN_DEVICE_STRTAB);
 				}
 				break;
 			case EGG_CASE0_DEFINED:
@@ -430,13 +402,10 @@ inline void mycon(WorldVisit &visit)
 				if (!isNodeRetrieved (&solarSys->SysInfo.PlanetInfo,
 						ENERGY_SCAN, 0))
 				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 									LoadGraphic (EGG_CASE_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-									LoadStringTable (EGG_CASE_STRTAB));
+					visit.report().load(EGG_CASE_STRTAB);
 				}
 				break;
 		}
@@ -532,21 +501,16 @@ inline void orz(WorldVisit &visit)
 		story.set(StoryFlag::TaaloUnprotected, (1) != 0);
 		if (visit.star().Index == TAALO_PROTECTOR_DEFINED)
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (
 					LoadGraphic (TAALO_DEVICE_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (
-					LoadStringTable (TAALO_DEVICE_STRTAB));
+			visit.report().load(TAALO_DEVICE_STRTAB);
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+			visit.report().load(RUINS_STRTAB);
 		}
 	}
 
@@ -587,16 +551,12 @@ inline void pkunk(WorldVisit &visit)
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (PKUNK_RUINS_STRTAB));
+			visit.report().load(PKUNK_RUINS_STRTAB);
 			if (story.read(StoryFlag::ClearSpindle))
 			{	// Already picked up the Clear Spindle, skip the report
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+				visit.report().select(1);
 			}
 		}
 	}
@@ -721,22 +681,16 @@ inline void shipVault(WorldVisit &visit)
     auto *world = &body;
 	if (matchWorld (solarSys, world, 0, 0))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (VAULT_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (VAULT_STRTAB));
+		visit.report().load(VAULT_STRTAB);
 		if (story.read(StoryFlag::ShipVaultUnlocked))
 		{
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, 2);
+			visit.report().select(2);
 		}
 		else if (story.read(StoryFlag::SyreenShuttleOnShip))
 		{
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+			visit.report().select(1);
 		}
 	}
 
@@ -897,13 +851,10 @@ inline void sol(WorldVisit &visit)
 			case 8: /* PLUTO */
 				if (!story.read(StoryCounter::FoundPlutoSpathi))
 				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 							LoadGraphic (SPAPLUTO_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-							LoadStringTable (SPAPLUTO_STRTAB));
+					visit.report().load(SPAPLUTO_STRTAB);
 				}
 
 				visit.data().AtmoDensity = 0;
@@ -944,13 +895,10 @@ inline void sol(WorldVisit &visit)
 
 				if (!story.read(StoryFlag::MoonbaseDestroyed))
 				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 					solarSys->graphics->PlanetSideFrame[1] =
 							CaptureDrawable (
 							LoadGraphic (MOONBASE_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-							LoadStringTable (MOONBASE_STRTAB));
+					visit.report().load(MOONBASE_STRTAB);
 				}
 
 				visit.data().PlanetDensity = 60;
@@ -1082,18 +1030,14 @@ inline void spathi(WorldVisit &visit)
 		visit.data().SurfaceTemperature = 28;
 		if (!story.read(StoryFlag::UmgahBroadcasters))
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (UMGAH_BCS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (UMGAH_BCS_STRTAB));
+			visit.report().load(UMGAH_BCS_STRTAB);
 			if (!story.read(StoryFlag::SpathiShieldedSelves))
 			{	// The first report talks extensively about Spathi
 				// slave-shielding selves. If they never did so, the report
 				// makes no sense, so use an alternate.
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+				visit.report().select(1);
 			}
 		}
 		visit.loadSurface(NULL);
@@ -1159,16 +1103,12 @@ inline void supox(WorldVisit &visit)
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (SUPOX_RUINS_STRTAB));
+			visit.report().load(SUPOX_RUINS_STRTAB);
 			if (story.read(StoryCounter::UltronCondition))
 			{	// Already picked up the Ultron, skip the report
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+				visit.report().select(1);
 			}
 		}
 	}
@@ -1353,11 +1293,9 @@ inline void talkingPet(WorldVisit &visit)
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+		visit.report().load(RUINS_STRTAB);
 	}
 
 	visit.prepareOrbit();
@@ -1418,19 +1356,15 @@ inline void thraddash(WorldVisit &visit)
 		if (visit.star().Index == AQUA_HELIX_DEFINED
 				&& !story.read(StoryFlag::AquaHelix))
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (AQUA_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (AQUA_STRTAB));
+			visit.report().load(AQUA_STRTAB);
 		}
 		else if (visit.star().Index == THRADD_DEFINED)
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+			visit.report().load(RUINS_STRTAB);
 		}
 	}
 
@@ -1449,16 +1383,12 @@ inline void urquanWreck(WorldVisit &visit)
     auto *world = &body;
 	if (matchWorld (solarSys, world, 6, MATCH_PLANET))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (WRECK_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (WRECK_STRTAB));
+		visit.report().load(WRECK_STRTAB);
 		if (story.read(StoryFlag::PortalKey))
 		{	// Already picked it up, skip the first report
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+			visit.report().select(1);
 		}
 	}
 
@@ -1549,19 +1479,15 @@ inline void utwig(WorldVisit &visit)
 
 		if (visit.star().Index == BOMB_DEFINED)
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (BOMB_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (BOMB_STRTAB));
+			visit.report().load(BOMB_STRTAB);
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+			visit.report().load(RUINS_STRTAB);
 		}
 	}
 
@@ -1630,32 +1556,24 @@ inline void vux(WorldVisit &visit)
 		{
 			if (!story.read(StoryFlag::ShofixtiMaidens))
 			{
-				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 				solarSys->graphics->PlanetSideFrame[1] = CaptureDrawable (
 						LoadGraphic (MAIDENS_MASK_PMAP_ANIM));
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						CaptureStringTable (
-						LoadStringTable (MAIDENS_STRTAB));
+				visit.report().load(MAIDENS_STRTAB);
 			}
 		}
 		else if (visit.star().Index == VUX_BEAST_DEFINED)
 		{
 			if (!story.read(StoryFlag::VuxBeast))
 			{
-				LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 				solarSys->graphics->PlanetSideFrame[1] = 0;
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						CaptureStringTable (
-						LoadStringTable (BEAST_STRTAB));
+				visit.report().load(BEAST_STRTAB);
 			}
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 			solarSys->graphics->PlanetSideFrame[1] =
 					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+			visit.report().load(RUINS_STRTAB);
 		}
 	}
 
@@ -1702,11 +1620,9 @@ inline void yehat(WorldVisit &visit)
 			return visit.enterPreparedOrbit();
 		}
 
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+		visit.report().load(RUINS_STRTAB);
 	}
 
 	visit.prepareOrbit();
@@ -1764,11 +1680,9 @@ inline void zoqFotPik(WorldVisit &visit)
 			return visit.enterPreparedOrbit();
 		}
 
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->graphics->PlanetSideFrame[1] =
 				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+		visit.report().load(RUINS_STRTAB);
 	}
 
 	visit.prepareOrbit();

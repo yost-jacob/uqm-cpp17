@@ -140,6 +140,7 @@ struct AssetFixture {
 // Minimal resource backend for the loader ownership tests. Opaque graphics are
 // never dereferenced; string-table functions use the real existing test linkage.
 extern "C" void *LoadGraphicInstance(RESOURCE resource) {
+    if (std::string(resource) == "font.lander") return new char;
     if (failAnimation && std::string(resource) == "test.ship.medium") return nullptr;
     ++graphicLoads[resource];
     auto *image = new FakeImage;

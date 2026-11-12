@@ -2,6 +2,7 @@
 #define UQM_WORLD_VISIT_HPP_
 #include <memory>
 #include "comm.h"
+#include "planet_report.hpp"
 struct solarsys_state;
 struct star_desc;
 struct planet_desc;
@@ -11,7 +12,8 @@ class GameSession;
 class StoryState;
 class World;
 // Synchronous visit controller. Session, system and selected world outlive this
-// object and all its children. Owns the orbit location/graphics service scopes.
+// object and all its children. Owns report assets and the orbit location,
+// graphics and presentation scopes. Teardown never publishes gameplay state.
 class WorldVisit {
 public:
     WorldVisit(GameSession &session, solarsys_state &system, World &world);
@@ -30,6 +32,8 @@ public:
     // child-mode handoff. Pending exits prevent further preparation/presentation.
     StoryState &story() const noexcept;
     PlanetGeneratedData &data() noexcept;
+    // The returned report belongs to this visit and outlives synchronous children.
+    PlanetReport &report() noexcept { return report_; }
     const star_desc &star() const;
     COUNT converse(CONVERSATION conversation);
     void prepareOrbit();
@@ -50,6 +54,8 @@ private:
     solarsys_state &system_;
     World &world_;
     bool inspection_ = false;
+    PlanetReport report_;
+    WorldVisit *previousVisit_ = nullptr; // Restored before this visit releases its resources.
     std::unique_ptr<Resources> resources_;
 };
 }

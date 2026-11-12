@@ -1,3 +1,4 @@
+#include "../../world_visit.hpp"
 //Copyright Paul Reiche, Fred Ford. 1992-2002
 
 /*
@@ -72,8 +73,7 @@ AndrosynthSystemBehavior::pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body
         ENERGY_INTERACTION result = InteractWorldEnergy (solarSys, 1, -1, whichNode, FALSE);
         if (!result.accepted || !result.hasReport)
             return false;
-        solarSys->SysInfo.PlanetInfo.DiscoveryString = SetAbsStringTableIndex (
-                solarSys->SysInfo.PlanetInfo.DiscoveryString, result.report);
+        uqm::systemVisit(*solarSys).report().select(result.report);
 
 		// Androsynth ruins have several lander reports which form a story
 		GenerateDefault_landerReportCycle (solarSys);

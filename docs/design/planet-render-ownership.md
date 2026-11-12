@@ -34,10 +34,11 @@ are not yet a cache-reuse protocol. Resources remain owned after changing views,
 but are regenerated on the next orbit entry. Retained graphics therefore use
 memory until regeneration, body/layout replacement or system destruction.
 
-Orbit rotation, music, discovery-report fonts/text and screen contexts retain
-visit lifetimes. Their cleanup now runs in a scope around generation and the
-orbit menu, including early exits after a surface was created. FinishPlanetOrbit
-finishes those visit services while the body retains its graphics and buffers. A future device-service
+Orbit rotation, music and screen contexts have a visit-owned OrbitPresentation
+scope, started before surface generation. It releases services on normal return,
+load cancellation and partial generation failure while the body retains its
+graphics and buffers. Discovery text and fonts belong to WorldVisit::report(),
+including report-only events that never create a surface. A future device-service
 uqm_context is independent of this ownership change.
 
 Descriptor refresh uses refreshPlanets/refreshChildren. If generated definitions

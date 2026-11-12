@@ -80,7 +80,7 @@ declaration. These counts do not imply that the remaining mixed environment is
 already separated into proper data owners.
 
 No physical planet data, scan progress, report-resource ownership or layout
-storage moved as part of steps 1–2. Step 3 is recorded below; steps 4–8 remain pending. In
+storage moved as part of steps 1–2. Steps 3–4 are recorded below; steps 5–8 remain pending. In
 particular, mutable globe work tables and rotation state stay for step 5.
 
 Compatibility: seed recipes and the legacy generation recurrence remain intact;
@@ -184,14 +184,15 @@ own short-lived record. System reconstruction transfers owned records for matchi
 world definitions, including seed, body type and orbital distance; changed
 inputs retain a fresh empty record. This is runtime retention, not new save data.
 
-Retrieval masks and discovery report resources remain in the compatibility visit
-record for step 4. Stellar analysis metadata remains in the system view. The
+At this checkpoint, retrieval masks and discovery report resources remained in
+the compatibility visit record; step 4 below removes report resources. Stellar
+analysis metadata remains in the system view. The
 `pSolarSysState` lexical count remains 93 lines across 11 files: this step changes
 ownership rather than deleting drawing/flight callback bindings. Tests exercise
 nested borrow restoration, world independence, and reconstruction/invalidation,
 as well as the real analysis and node kernels.
 
-## 4. Finish the orbital visit and report ownership split — next
+## 4. Finish the orbital visit and report ownership split — complete
 
 **Depends on:** steps 1 and 3.
 
@@ -212,7 +213,47 @@ its own references. Teardown releases resources without giving rewards or
 publishing ordinary-completion story actions. Load/shutdown cancels the rest of
 the sequence, and the report code needs no global system.
 
-## 5. Move generation scratch and globe animation into their owners
+### Step 4 ownership checkpoint
+
+`WorldVisit` owns a `PlanetReport`: its text table, font and font effect are
+private RAII resources. Scripts load/select/clear reports through that owner;
+lander callbacks borrow the explicitly attached visit. Report display takes
+only borrowed handles and menu sounds. Replacing or consuming text releases
+it immediately; the font/effect pair lasts until visit teardown. Report-only
+visits, inspection and exception unwinding release assets without requiring a
+planet surface or publishing story/inventory changes.
+
+The surface loader is now native C++ with explicit system/world references.
+Deleted `LoadPlanet`, `ConstructPlanetSurface`, `GeneratePlanetSide`, the
+load/free-font functions, and `FinishPlanetOrbit`. A visit-owned
+`OrbitPresentation` scope establishes the display contexts and releases them,
+rotation services and music before detaching graphics. It also handles partial
+surface/node generation failure. The C drawing backend remains in use; mutable
+rotation and terrain work are step 5, not a new renderer implementation here.
+Both CMake and the legacy build compile `planets.cpp`.
+
+Removed the overloaded `InOrbit` Boolean. Flight queues an optional `WorldId`
+as orbit-entry intent and consumes it before running the visit. Device/save/UI
+queries use the player's typed orbital location. Scripted contact can finish
+without ever creating an orbit display. Mycon egg-case availability now checks
+retrieval state rather than the lifetime of a loaded report table.
+
+The lexical global-pointer inventory is now **84 lines across 9 files**:
+terrain/globe generation (33), debug binding (19), flight/input/naming (14), globe
+animation (9), NPC callbacks (5), and one each in group loading, the scan adapter,
+the device-menu adapter and the declaration. No report resource fields remain in
+`PLANET_INFO`; it holds only the generated-data borrow and retrieval-mask staging.
+The temporary active-visit borrow belongs to the explicit exploration runtime,
+is restored on unwind, and is not a new process-global binding. Remaining
+`legacySystem()` use in event scripts is descriptor/generation/gameplay work
+for later component migrations.
+
+Tests cover report-only normal/load/exception exits, resource replacement and
+cycling, nested mode scene handoff, restored visit/data bindings and partial
+presentation failure. Teardown does not commit gameplay actions. The save format
+and successful report sequencing are unchanged.
+
+## 5. Move generation scratch and globe animation into their owners — next
 
 **Depends on:** steps 2–4; does not require a new renderer API.
 

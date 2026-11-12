@@ -1,4 +1,6 @@
 #include "uqm/world_visit.hpp"
+#include "uqm/orbit_presentation.hpp"
+#include "libs/strings/strintrn.h"
 #include "uqm/world.hpp"
 #include "uqm/system_runtime.hpp"
 #include "uqm/game_definitions_legacy.hpp"
@@ -11,11 +13,16 @@
 #include <fstream>
 using namespace uqm;
 extern std::function<void(SOLARSYS_STATE &)> testOrbitGeneration;
+extern std::function<void *(RESOURCE)> testResourceLookup;
+extern std::function<void(FONT, FRAME, STRING)> testDiscoveryReport;
+extern std::size_t liveTestDrawables() noexcept;
+extern unsigned destroyedTestFonts() noexcept;
 namespace {
-std::function<void()> orbitMenu;
+std::function<void()> orbitMenu, surfaceLoader;
 unsigned orbitFinishes = 0;
+int batchDepth = 1;
 struct Hooks {
-    ~Hooks() { testOrbitGeneration = {}; orbitMenu = {}; }
+    ~Hooks() { testOrbitGeneration = {}; orbitMenu = {}; surfaceLoader = {}; testResourceLookup = {}; testDiscoveryReport = {}; batchDepth = 1; }
 };
 WorldDefinition definition(UniverseId universe, BYTE special, unsigned planet, int moon = -1) {
     return {{universe, StarId{0}, static_cast<std::uint16_t>(planet),
@@ -23,8 +30,12 @@ WorldDefinition definition(UniverseId universe, BYTE special, unsigned planet, i
         moon < 0 ? WorldKind::Planet : WorldKind::Moon, 12, false, {}, 0, special};
 }
 }
+extern "C" void BatchGraphics() { ++batchDepth; }
+extern "C" void UnbatchGraphics() { --batchDepth; }
 extern "C" void PlanetOrbitMenu() { if (orbitMenu) orbitMenu(); }
-extern "C" void FinishPlanetOrbit() { ++orbitFinishes; }
+uqm::OrbitPresentation::OrbitPresentation(SOLARSYS_STATE &system) : system_(system) {}
+uqm::OrbitPresentation::~OrbitPresentation() { ++orbitFinishes; }
+void uqm::loadPlanetSurface(SOLARSYS_STATE &, World &, FRAME) { if (surfaceLoader) surfaceLoader(); }
 BOOST_AUTO_TEST_CASE(world_construction_selects_only_applicable_orbit_events)
 {
     auto state = std::make_shared<WorldState>(UniverseId{900});
@@ -52,7 +63,7 @@ BOOST_AUTO_TEST_CASE(world_construction_selects_only_applicable_orbit_events)
 }
 BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_on_load_or_failure)
 {
-    for (const auto action : {0u, 1u, 2u}) {
+    for (const auto action : {0u, 1u, 2u, 3u}) {
         Hooks hooks;
         GameSession session{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Orbit pilot"}), SinglePlayerId};
         std::ifstream stars{UQM_TEST_STARMAP_PATH};
@@ -80,16 +91,19 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 unsigned generations = 0;
                 testOrbitGeneration = [&](SOLARSYS_STATE &prepared) {
                     ++generations;
-                    prepared.graphics->TopoFrame = CaptureDrawable(static_cast<DRAWABLE>(LoadGraphicInstance("test.orbit")));
+                    if (action != 3) prepared.graphics->TopoFrame = CaptureDrawable(static_cast<DRAWABLE>(LoadGraphicInstance("test.orbit")));
                     auto element = engine().allocateElement();
                     BOOST_REQUIRE(element);
                     engine().enqueue(element->get());
                 };
+                surfaceLoader = [&] { if (action == 3) throw std::runtime_error("partial surface failure"); };
                 orbitMenu = [&] {
                     BOOST_TEST(&simulationEngine() != source);
                     BOOST_TEST(simulationEngine().size() == 1u);
                     BOOST_TEST(source->size() == 0u);
                     BOOST_CHECK(runtime.view == ExplorationView::Orbit);
+                    BOOST_TEST(runtime.visit != nullptr);
+                    BOOST_TEST(&systemVisit(system) == runtime.visit);
                     if (action == 0) {
                         struct SurfaceChild final : GameMode {
                             SimulationEngine &source;
@@ -117,6 +131,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 } catch (...) {
                     BOOST_TEST(system.graphics == nullptr);
                     BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
+                    BOOST_TEST(runtime.visit == nullptr);
                     BOOST_TEST(engine().size() == 1u);
                     BOOST_TEST(orbitFinishes == finished + 1);
                     BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
@@ -126,6 +141,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 BOOST_TEST(engine().size() == 1u);
                 BOOST_TEST(system.graphics == nullptr);
                 BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
+                BOOST_TEST(runtime.visit == nullptr);
                 BOOST_TEST(orbitFinishes == finished + 1);
                 BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
                 BOOST_TEST(resumes == (action == 0 ? 1u : 0u));
@@ -136,7 +152,7 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
             void resume() override { ++resumes; BOOST_TEST(&simulationEngine() == &engine()); }
         };
         auto result = session.run(std::make_unique<Explore>(session, action));
-        const auto expected = action == 1 ? SessionExitKind::LoadGame : action == 2 ? SessionExitKind::Failed : SessionExitKind::ReturnToTitle;
+        const auto expected = action == 1 ? SessionExitKind::LoadGame : action >= 2 ? SessionExitKind::Failed : SessionExitKind::ReturnToTitle;
         BOOST_CHECK(result.kind == expected);
     }
 }
@@ -147,7 +163,6 @@ extern "C" {
 const PlanetFrame *PlanData = nullptr;
 SIZE EncounterRace = 0;
 BYTE EncounterGroup = 0;
-void LoadPlanet(FRAME) {}
 void NotifyOthers(COUNT, BYTE) {}
 void RepairSISBorder() {}
 void DrawHyperCoords(POINT) {}
@@ -209,5 +224,103 @@ BOOST_AUTO_TEST_CASE(debug_world_inspection_uses_scripts_without_modes_or_player
             BOOST_TEST(world.generatedData().PlanetRadius == 38u);
             BOOST_TEST(world.generatedData().SurfaceTemperature == 165);
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(planet_reports_cycle_consume_and_release_resources_even_on_display_failure)
+{
+    Hooks hooks;
+    const auto frames = liveTestDrawables();
+    const auto fonts = destroyedTestFonts();
+    testResourceLookup = [](RESOURCE) -> void * { return AllocStringTable(3); };
+    std::vector<unsigned> seen;
+    testDiscoveryReport = [&](FONT font, FRAME effect, STRING text) {
+        BOOST_TEST(font != nullptr);
+        BOOST_TEST(effect != nullptr);
+        BOOST_TEST(batchDepth == 0);
+        seen.push_back(GetStringTableIndex(text));
+    };
+    {
+        PlanetReport report;
+        report.load("test.report");
+        BOOST_TEST(report.size() == 3u);
+        report.select(1);
+        BOOST_TEST(report.showLander(nullptr, true));
+        BOOST_TEST(report.showLander(nullptr, true));
+        BOOST_TEST(report.empty());
+        BOOST_TEST(!report.showLander(nullptr, true));
+        BOOST_TEST(batchDepth == 1);
+        BOOST_REQUIRE(seen.size() == 2u);
+        BOOST_TEST(seen[0] == 1u);
+        BOOST_TEST(seen[1] == 2u);
+        report.load("test.report");
+        BOOST_TEST(report.showLander(nullptr, false));
+        BOOST_TEST(report.empty());
+        // Replacing text keeps one font/effect pair for this visit.
+        report.load("test.report");
+        report.load("test.report");
+        BOOST_TEST(liveTestDrawables() == frames + 1);
+        testDiscoveryReport = [](FONT, FRAME, STRING) { throw std::runtime_error("display failure"); };
+        BOOST_CHECK_THROW(report.showLander(nullptr, false), std::runtime_error);
+        BOOST_TEST(batchDepth == 1);
+        BOOST_TEST(!report.empty()); // A failed display did not consume the report.
+    }
+    BOOST_TEST(liveTestDrawables() == frames);
+    BOOST_TEST(destroyedTestFonts() == fonts + 1);
+}
+
+BOOST_AUTO_TEST_CASE(report_only_orbit_script_releases_its_assets_without_a_surface_or_state_publication)
+{
+    for (const auto outcome : {0u, 1u, 2u}) {
+        Hooks hooks;
+        GameSession session{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Visitor"}), SinglePlayerId};
+        std::ifstream stars{UQM_TEST_STARMAP_PATH};
+        detail::DefinitionsAccess::loadStars(detail::DefinitionsAccess::storage(session), stars);
+        SessionActivation activation{session};
+        GLOBAL(CurrentActivity) = IN_INTERPLANETARY;
+        session.player().enterSolarSystem();
+        SimulationEngine engine;
+        UQM_SYSTEM_RUNTIME runtime{session.player().story(), engine, session.worldOwner(), nullptr, &session};
+        auto &system = runtime.engine;
+        system.worlds = &runtime;
+        runtime.catalogueStar = GetStar(0);
+        auto first = definition(session.world().id(), CHMMR_DEFINED, 0);
+        auto parent = definition(session.world().id(), CHMMR_DEFINED, 1);
+        parent.moonCount = 1;
+        runtime.system = std::make_unique<SolarSystem>(StarId{0}, session.worldOwner(), std::vector<WorldDefinition>{first, parent});
+        std::vector<std::unique_ptr<World>> moons;
+        moons.push_back(std::make_unique<World>(definition(session.world().id(), CHMMR_DEFINED, 1, 0), session.worldOwner()));
+        runtime.system->world(1).replaceChildren(std::move(moons));
+        auto &world = runtime.system->world(1).child(0);
+        runtime.system->selectWorld(world.id());
+        system.PlanetDesc[1].pPrevDesc = system.SunDesc;
+        system.MoonDesc[0].pPrevDesc = &system.PlanetDesc[1];
+        testResourceLookup = [](RESOURCE) -> void * { return AllocStringTable(1); };
+        const auto frames = liveTestDrawables();
+        const auto fonts = destroyedTestFonts();
+        const auto finishes = orbitFinishes;
+        unsigned shown = 0;
+        testDiscoveryReport = [&](FONT, FRAME, STRING) {
+            ++shown;
+            BOOST_TEST(runtime.visit != nullptr);
+            BOOST_TEST(session.player().story().read(StoryFlag::ChmmrFreed) == false);
+            if (outcome == 1) session.requestLoad(2);
+            if (outcome == 2) throw std::runtime_error("report cancelled");
+        };
+        if (outcome == 2) {
+            BOOST_CHECK_THROW((WorldVisit{session, system, world}.run()), std::runtime_error);
+        } else {
+            WorldVisit visit{session, system, world};
+            BOOST_TEST(visit.run() == (outcome == 0));
+            BOOST_TEST(!world.renderResources().hasSurface());
+        }
+        BOOST_TEST(shown == 1u);
+        BOOST_TEST(liveTestDrawables() == frames);
+        BOOST_TEST(destroyedTestFonts() == fonts + 1);
+        BOOST_TEST(orbitFinishes == finishes); // No orbit display was created.
+        BOOST_TEST(runtime.visit == nullptr);
+        BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
+        BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
+        BOOST_TEST(session.player().story().read(StoryFlag::ChmmrFreed) == false);
     }
 }

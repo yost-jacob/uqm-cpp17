@@ -17,6 +17,10 @@
  */
 
 #include "planets.h"
+#include "../system_runtime.hpp"
+#include "../world_legacy.hpp"
+#include "../planet_render.hpp"
+#include "../orbit_presentation.hpp"
 
 #include "scan.h"
 #include "lander.h"
@@ -237,26 +241,19 @@ DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
 }
 
 // Initialise the surface graphics, and start the planet music.
-// Called from the GenerateFunctions.generateOribital() function
+// Called by the native WorldVisit
 // (when orbit is entered; either from IP, or from loading a saved game)
 // and when "starmap" is selected from orbit and then cancelled;
 // also after in-orbit comm and after defeating planet guards in combat.
 // SurfDefFrame contains surface definition images when a planet comes
 // with its own bitmap (currently only for Earth)
 void
-LoadPlanet (FRAME SurfDefFrame)
+uqm::loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME SurfDefFrame)
 {
 	bool WaitMode = !(LastActivity & CHECK_LOAD);
-	PLANET_DESC *pPlanetDesc;
+	auto &body = uqm::detail::worldDescriptor(system, world);
 
-#ifdef DEBUG
-	if (disableInteractivity)
-		return;
-#endif
-
-	assert (pSolarSysState->InOrbit && !pSolarSysState->graphics->TopoFrame);
-
-	CreatePlanetContext ();
+	assert (systemLocation(system).orbit && !system.graphics->TopoFrame);
 
 	if (WaitMode)
 	{
@@ -265,10 +262,9 @@ LoadPlanet (FRAME SurfDefFrame)
 
 	StopMusic ();
 
-	pPlanetDesc = GetSystemSelectedDescriptor(pSolarSysState);
-	ConstructPlanetSurface (SurfDefFrame);
-	SetPlanetMusic (pPlanetDesc->data_index & ~PLANET_SHIELDED);
-	GeneratePlanetSide ();
+	world.renderResources().createSurface(system, body, SurfDefFrame);
+	SetPlanetMusic (body.data_index & ~PLANET_SHIELDED);
+	uqm::generatePlanetSide(system);
 
 	if (!PLRPlaying ((MUSIC_REF)~0))
 		PlayMusic (LanderMusic, TRUE, 1);
@@ -284,17 +280,13 @@ LoadPlanet (FRAME SurfDefFrame)
 	}
 }
 
-void
-FinishPlanetOrbit (void)
+uqm::OrbitPresentation::OrbitPresentation(SOLARSYS_STATE &system) : system_(system) {
+    CreatePlanetContext();
+}
+uqm::OrbitPresentation::~OrbitPresentation()
 {
-    UninitSphereRotation();
+    UninitSphereRotation(&system_.graphics->Orbit);
     StopMusic();
-
-	DestroyStringTable (ReleaseStringTable (
-			pSolarSysState->SysInfo.PlanetInfo.DiscoveryString
-			));
-	pSolarSysState->SysInfo.PlanetInfo.DiscoveryString = 0;
-	FreeLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
 
 	// Need to make sure our own CONTEXTs are not active because
 	// we will destroy them now
@@ -304,34 +296,17 @@ FinishPlanetOrbit (void)
 
 }
 
-void
-LoadStdLanderFont (PLANET_INFO *info)
-{
-	info->LanderFont = LoadFont (LANDER_FONT);
-	info->LanderFontEff = CaptureDrawable (
-			LoadGraphic (LANDER_FONTEFF_PMAP_ANIM));
-}
-
-void
-FreeLanderFont (PLANET_INFO *info)
-{
-	DestroyFont (info->LanderFont);
-	info->LanderFont = NULL;
-	DestroyDrawable (ReleaseDrawable (info->LanderFontEff));
-	info->LanderFontEff = NULL;
-}
-
 static BOOLEAN
 DoPlanetOrbit (MENU_STATE *pMS)
 {
-	BOOLEAN select = PulsedInputState.menu[KEY_MENU_SELECT];
+	bool select = PulsedInputState.menu[KEY_MENU_SELECT] != 0;
 	BOOLEAN handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
 		return FALSE;
 
-	// XXX: pMS actually refers to pSolarSysState->MenuState
+	// The menu callback borrows the active orbital menu state.
 	handled = DoMenuChooser (pMS, PM_SCAN);
 	if (handled)
 		return TRUE;

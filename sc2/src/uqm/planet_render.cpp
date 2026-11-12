@@ -67,14 +67,3 @@ PlanetRenderBorrow::PlanetRenderBorrow(SOLARSYS_STATE &system, World &world) : s
 PlanetRenderBorrow::~PlanetRenderBorrow() { system_.graphics = nullptr; }
 }
 }
-
-// C orbit loader boundary. Surface construction remains with the selected
-// native world's graphics owner; no gameplay side effects occur in cleanup.
-extern "C" void ConstructPlanetSurface(FRAME definition) {
-    try {
-        auto &system = *pSolarSysState;
-        auto &world = uqm::orbitalWorld(system);
-        world.renderResources().createSurface(system,
-            uqm::detail::selectedDescriptor(system), definition);
-    } catch (...) { std::abort(); }
-}

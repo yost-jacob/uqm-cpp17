@@ -572,6 +572,10 @@ BOOLEAN DevicesMenu(void) {
     if (pSolarSysState) return uqm::DeviceMenu{story, *pSolarSysState}.run();
     return uqm::DeviceMenu{story}.run();
 }
+bool uqm::DeviceMenu::inOrbit() const {
+    return system_ && uqm::systemLocation(*system_).orbit.has_value();
+}
+
 uqm::DeviceMenu::DeviceMenu(StoryState &story, SOLARSYS_STATE &system)
     : story_(story), system_(&system) {
     if (&systemStory(system) != &story)

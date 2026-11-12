@@ -172,7 +172,7 @@ playerInSolarSystem (void)
 bool
 playerInPlanetOrbit (void)
 {
-	return playerInSolarSystem () && pSolarSysState->InOrbit;
+	return playerInSolarSystem () && uqm::systemLocation(*pSolarSysState).orbit.has_value();
 }
 
 bool
@@ -819,7 +819,7 @@ enterOrbital(SOLARSYS_STATE &system, const uqm::World &world)
 {
 	ZeroVelocityComponents (&GLOBAL (velocity));
 	bodies(system).selectWorld(world.id());
-	system.InOrbit = TRUE;
+	system.worlds->pendingOrbit = world.id();
 }
 
 static BOOLEAN
@@ -1642,7 +1642,7 @@ uqm::saveSolarSystemLocation(SOLARSYS_STATE &system)
 	// Stage 1: called when saving from inner/outer view
 	// Stage 2: called when saving from orbital
 
-	if (!system.InOrbit)
+	if (!uqm::systemLocation(system).orbit)
 	{
 		saveNonOrbitalLocation(system);
 	}
@@ -1763,11 +1763,12 @@ DoIpFlight (SOLARSYS_STATE *pSS)
 	auto &NextTime = system.worlds->nextFlightFrame;
 	bool cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 
-	if (system.InOrbit)
-	{	// CheckShipLocation(system) or InitSolarSys() sent us to orbital
+	if (system.worlds->pendingOrbit)
+	{	// Consume the entry intent before running the scoped orbital visit.
+        const auto target = *std::exchange(system.worlds->pendingOrbit, std::nullopt);
+        bodies(system).selectWorld(target);
 		EnterPlanetOrbit(system);
 		SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
-		system.InOrbit = FALSE;
 	}
 	else if (cancel || LastActivity == CHECK_LOAD)
 	{

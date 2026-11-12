@@ -1,4 +1,5 @@
 #include "world_visit.hpp"
+#include "orbit_presentation.hpp"
 #include "orbit_events.hpp"
 #include "world.hpp"
 #include "system_runtime.hpp"
@@ -13,6 +14,7 @@
 #include "libs/inplib.h"
 #include "planets/generate/gendefault.h"
 #include <stdexcept>
+#include <utility>
 namespace uqm {
 std::optional<OrbitHandler> World::selectOrbitHandler(const WorldDefinition &definition) {
     const auto planet = definition.id.planet;
@@ -94,13 +96,15 @@ private:
 class WorldVisit::Resources {
 public:
     Resources(SOLARSYS_STATE &system, World &world)
-        : location_(systemLocation(system), world.id()), data_(system.SysInfo, world), rendering_(system, world), graphics_(world.renderResources()) {}
-    ~Resources() { if (graphics_.hasSurface()) FinishPlanetOrbit(); }
+        : location_(systemLocation(system), world.id()), data_(system.SysInfo, world), rendering_(system, world) {}
+    void beginPresentation(SOLARSYS_STATE &system) {
+        if (!presentation_) presentation_.emplace(system);
+    }
 private:
     VisitOrbitLocation location_;
     detail::WorldDataBorrow data_;
     detail::PlanetRenderBorrow rendering_;
-    PlanetRenderResources &graphics_;
+    std::optional<OrbitPresentation> presentation_;
 };
 WorldVisit::WorldVisit(GameSession &session, SOLARSYS_STATE &system, World &world)
     : WorldVisit(session, system, world, false) {}
@@ -110,8 +114,13 @@ WorldVisit::WorldVisit(GameSession &session, SOLARSYS_STATE &system, World &worl
         throw std::invalid_argument("orbit visit requires the session's selected world");
     if (!inspection) resources_ = std::make_unique<Resources>(system, world);
     else if (!system.graphics) throw std::logic_error("world inspection requires a graphics borrow");
+    previousVisit_ = std::exchange(system.worlds->visit, this);
 }
-WorldVisit::~WorldVisit() = default;
+WorldVisit::~WorldVisit() { system_.worlds->visit = previousVisit_; }
+WorldVisit &systemVisit(const SOLARSYS_STATE &system) {
+    if (!system.worlds || !system.worlds->visit) throw std::logic_error("operation requires an active orbital visit");
+    return *system.worlds->visit;
+}
 bool WorldVisit::canContinue() const {
     if (inspection_) return true;
     return !session_.menuExit() && !session_.dispatcher().exitRequest() && !QuitPosted
@@ -145,12 +154,14 @@ void WorldVisit::prepareOrbit() {
     loadSurface(nullptr);
 }
 void WorldVisit::loadSurface(FRAME definition) {
-    if (canInteract()) LoadPlanet(definition);
+    if (canInteract()) {
+        resources_->beginPresentation(system_);
+        loadPlanetSurface(system_, world_, definition);
+    }
     else if (definition) DestroyDrawable(ReleaseDrawable(definition));
 }
 bool WorldVisit::canInteract() const { return !inspection_ && canContinue(); }
-void WorldVisit::reportDiscovery() { if (canInteract()) ShowDiscoveryReport(MenuSounds, system_.SysInfo.PlanetInfo.LanderFont,
-    system_.SysInfo.PlanetInfo.LanderFontEff, system_.SysInfo.PlanetInfo.DiscoveryString); }
+void WorldVisit::reportDiscovery() { if (canInteract()) report_.show(MenuSounds); }
 void WorldVisit::restoreBorder() { if (canInteract()) RepairSISBorder(); }
 void WorldVisit::enterOrbit() {
     prepareOrbit();

@@ -16,6 +16,7 @@
 
 #include "genall.h"
 #include "../../system_runtime.hpp"
+#include "../../world_visit.hpp"
 #include "../planets.h"
 #include "../lander.h"
 #include "../../encount.h"
@@ -211,56 +212,16 @@ GenerateDefault_generateRuins (const SOLARSYS_STATE *solarSys,
 			0, whichNode, info, &uqm::generationRandom(*solarSys), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 }
 
-static inline void
-runLanderReport (const PLANET_INFO *planet)
-{
-	UnbatchGraphics ();
-	ShowDiscoveryReport (MenuSounds, planet->LanderFont, planet->LanderFontEff, planet->DiscoveryString);
-	BatchGraphics ();
-}
-
 bool
 GenerateDefault_landerReport (SOLARSYS_STATE *solarSys)
 {
-	PLANET_INFO *planetInfo = &solarSys->SysInfo.PlanetInfo;
-
-	if (!planetInfo->DiscoveryString)
-		return false;
-
-	runLanderReport (planetInfo);
-
-	// XXX: A non-cycling report is given only once and has to be deleted
-	//   in some circumstances (like the Syreen Vault). It does not
-	//   hurt to simply delete it in all cases. Nothing should rely on
-	//   the presence of DiscoveryString, but the Syreen Vault and the
-	//   Mycon Egg Cases rely on its absence.
-	DestroyStringTable (ReleaseStringTable (planetInfo->DiscoveryString));
-	planetInfo->DiscoveryString = 0;
-
-	return true;
+    return uqm::systemVisit(*solarSys).report().showLander(MenuSounds, false);
 }
 
 bool
 GenerateDefault_landerReportCycle (SOLARSYS_STATE *solarSys)
 {
-	PLANET_INFO *planetInfo = &solarSys->SysInfo.PlanetInfo;
-
-	if (!planetInfo->DiscoveryString)
-		return false;
-
-	runLanderReport (planetInfo);
-	// Advance to the next report
-	planetInfo->DiscoveryString = SetRelStringTableIndex (
-			planetInfo->DiscoveryString, 1);
-
-	// If our discovery strings have cycled, we're done
-	if (GetStringTableIndex (planetInfo->DiscoveryString) == 0)
-	{
-		DestroyStringTable (ReleaseStringTable (planetInfo->DiscoveryString));
-		planetInfo->DiscoveryString = 0;
-	}
-
-	return true;
+    return uqm::systemVisit(*solarSys).report().showLander(MenuSounds, true);
 }
 
 // NB. This function modifies the RNG state.
