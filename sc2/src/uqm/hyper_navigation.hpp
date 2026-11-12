@@ -12,8 +12,8 @@ class PlayerEntity;
 class GameSession;
 class SimulationEngine;
 enum class NavigationRealm { HyperSpace, QuasiSpace };
-// One navigation visit, owned by HyperSpaceMode or QuasiSpaceMode. C element/input callbacks borrow
-// it through a scoped session binding; all native helpers use this object's state.
+// One navigation visit, owned by HyperSpaceMode or QuasiSpaceMode. Engine-owned
+// entities borrow it until scene reset; all native helpers use explicit references.
 class SpaceNavigation {
 public:
     // player, engine and clock outlive this visit and its C callbacks. The realm
@@ -23,6 +23,7 @@ public:
     SimulationEngine &engine() noexcept { return engine_; }
     void run(GameSession &session);
     void frame();
+    void saveFacing(UWORD facing) { travel().flight.facing = facing; }
     // Stage a portal destination in legacy logical coordinates. The outgoing
     // location variant remains valid; the successor mode converts it on entry.
     void prepareRealmTransition(NavigationRealm destination, PLAYER_MAP_POSITION position);
@@ -64,7 +65,6 @@ public:
     BOOLEAN DoHyperspaceMenu(MENU_STATE *pMS);
     void HyperspaceMenu(void);
 private:
-    friend class NavigationBinding;
     // The realm selected by this mode must match the player variant.
     PLAYER_TRAVEL_POSITION &travel();
     const NavigationRealm realm_; // Fixed for this mode; portal crossings select a successor.
@@ -76,17 +76,8 @@ private:
     BYTE fuel_ticks = 1;
     COUNT hyper_dx = 0, hyper_dy = 0, hyper_extra = 0;
 };
-// Binding never owns navigation. Session and owner outlive every C callback;
-// registration is cleared/restored before the owning mode can be destroyed.
-class NavigationBinding {
-public:
-    NavigationBinding(GameSession &session, SpaceNavigation &navigation);
-    ~NavigationBinding();
-    NavigationBinding(const NavigationBinding &) = delete;
-    NavigationBinding &operator=(const NavigationBinding &) = delete;
-private:
-    GameSession &session_;
-    SpaceNavigation *previous_;
-};
+// element must be the live flagship in the selected navigation engine. The
+// returned borrow ends when its engine slot is released/reset; mismatch throws.
+SpaceNavigation &navigationFor(ELEMENT &element);
 } // namespace uqm
 #endif

@@ -19,6 +19,7 @@
 #include "../../beam.hpp"
 #include "../ship.h"
 #include "uqm/ship_behavior.hpp"
+#include "uqm/hyper_navigation.hpp"
 #include "uqm/ship_builders.hpp"
 #include "uqm/ship_tuning.hpp"
 #include <optional>
@@ -317,7 +318,7 @@ sis_hyper_postprocess (ELEMENT *ElementPtr)
 			PulsedInputState.menu[KEY_MENU_CANCEL])
 			&& StarShipPtr->special_counter == 0)
 	{
-		HyperspaceMenu ();
+		uqm::navigationFor(*ElementPtr).HyperspaceMenu();
 		StarShipPtr->cur_status_flags &= ~SHIP_AT_MAX_SPEED;
 		StarShipPtr->special_counter = MenuDelay;
 	}

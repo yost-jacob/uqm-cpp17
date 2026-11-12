@@ -332,8 +332,6 @@ private:
 };
 
 // Session retains its owner, not a cached player pointer or separate campaign.
-class SpaceNavigation;
-class NavigationBinding;
 class GameSession : public Session {
 public:
     using Session::run;
@@ -353,7 +351,6 @@ public:
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
     CampaignClock &clock() noexcept { return clock_; }
     const CampaignClock &clock() const noexcept { return clock_; }
-    SpaceNavigation &navigation(); // Checked C callback borrow; simulation thread only.
     PlayerId playerId() const noexcept;
     GameData &gameData() { return player().gameData(); }
     const GameData &gameData() const { return player().gameData(); }
@@ -369,8 +366,6 @@ private:
     Entry entry_ = Entry::NewGame;
     std::shared_ptr<GameState> state_;
     PlayerId player_;
-    friend class NavigationBinding;
-    SpaceNavigation *navigation_ = nullptr;
 };
 
 // Transitional C lookup: active campaign, or startup fallback outside a session.

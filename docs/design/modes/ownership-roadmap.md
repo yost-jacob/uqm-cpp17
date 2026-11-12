@@ -22,7 +22,7 @@ independent or need the same simulation type.
 | Order | Existing mode(s) | Current owner / remaining boundary |
 | --- | --- | --- |
 | Checkpoint | `SolarSystemMode` (ExploreSpace) | `SolarSystemExploration`, native `SolarSystem`/`World` tree, `SystemFlightState`; eight-step ownership migration complete. Remaining drawing/collision projections and C service interfaces are documented separately. |
-| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; entity callbacks resolve a session binding; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
+| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; native entity callbacks borrow navigation directly; encounter queues and transition activity flags still use legacy interfaces. **In progress.** |
 | 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms and resource cleanup work with Hyperspace; portal destinations and fuel/encounter rules differ. |
 | 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
 | 4 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
@@ -63,10 +63,23 @@ location variant, after outgoing callbacks and resource scopes have unwound.
    exception unwind before releasing its assets. Deleted static graphics/colour
    arrays, `FreeHyperData`, and movie/application cleanup callers. Missing assets
    throw and release partial acquisitions. Other-realm artwork is not loaded.
-3. **Navigation entities.** Move star, portal, encounter and flagship callback
-   context into engine-owned native entities, as exploration already does.
-   Preserve element traversal/collision phases and handle lifetime contracts.
-   Do not let a callback outlive its navigation owner.
+3. **Navigation entities — implemented.** Engine slots own native star,
+   portal, encounter and flagship behaviors holding `SpaceNavigation&`. The
+   flagship is attached before the first navigation clock/simulation pass; its
+   flying/arriving/departing phases preserve shared ship updates and suppress
+   postprocessing during transitions. Star/portal/encounter collision and
+   expiration hooks retain their original simulation phases. Encounter
+   `death_func` presence still represents active transition animation; no pointer
+   comparison with a removed navigation trampoline remains.
+
+   Deleted `NavigationBinding`, `GameSession::navigation`, its stored pointer and
+   navigation-specific C trampolines. Ship arrival and flagship menus use their
+   entity's explicit navigation reference. Save-facing preparation also resolves
+   its supplied flagship record. The remaining C camera/clock functions lack an
+   entity parameter; they resolve the selected engine's flagship owner, never an
+   active-session getter. Shared ambient animation remains navigation-independent.
+   Native `run(session)` validates its player/clock borrows before acquisition.
+   Scene reset destroys all behaviors before navigation/resources can expire.
 4. **Encounter state.** Separate persistent campaign encounters from transient
    on-screen representations. Pass fleet/catalogue/state/RNG references into
    spawning and movement. Preserve pursuit limits, save identities and campaign
@@ -87,9 +100,12 @@ boundaries. Build with CMake/Ninja and the preserved legacy build at cutovers.
 Use a short live navigation/realm/encounter check when changing actual gameplay
 callbacks; do not require a campaign playthrough for each ownership increment.
 
-The initial native-scene regression runs without a `NavigationBinding`, ensuring
-orchestration does not reacquire the navigation owner through the active session.
-Backend asset loading remains substituted in that orchestration test; it does
+The native-scene regression runs without a session navigation binding. Native
+entity-hook regression coverage verifies explicit owner routing, flagship phase
+switches and cancellation without gameplay expiration hooks.
+A live debugger-driven realm round trip also advances native arrival, sustained
+normal flight and departure hooks before scene teardown. Backend asset loading
+remains substituted in the orchestration test; it does
 not claim to validate actual graphics loading or realm transitions.
 
 ## Runtime composition target
