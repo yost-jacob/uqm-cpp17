@@ -11,6 +11,7 @@
 struct solarsys_state;
 struct planet_desc;
 struct star_desc;
+struct PlanetGeneratedData;
 namespace uqm {
 namespace detail { struct WorldGeneration; }
 class StoryState;
@@ -27,6 +28,8 @@ struct WorldDefinition {
     std::string name;
     std::uint16_t moonCount = 0; // Declared moon count in the generated layout.
     std::uint8_t specialSystem = 0; // Immutable script identity, not story state.
+    std::uint8_t bodyType = 0; // Planet-type generation input, including shield bits.
+    std::int32_t orbitalDistance = 0; // Planet-to-star distance used for analysis.
 };
 // Owns a runtime world's behavior and generated children. Physical persistence
 // stays in the shared state; personal progress stays in the interacting story state.
@@ -50,6 +53,11 @@ public:
     const WorldDefinition &definition() const noexcept;
     const WorldId &id() const noexcept;
     bool canLand() const noexcept;
+    // Owned resolved properties/seeds. Empty until prepared; story preparation
+    // writes this same record, never an independent current-world copy.
+    PlanetGeneratedData &generatedData() noexcept;
+    const PlanetGeneratedData &generatedData() const noexcept;
+    bool hasGeneratedData() const noexcept;
     std::optional<OrbitHandler> orbitHandler() const noexcept { return orbitHandler_; }
     WorldProgress progress() const; // Requires layout attachment by SolarSystem; fresh copy.
     void replaceProgress(const WorldProgress &progress); // Explicit import/reset only.
@@ -81,6 +89,7 @@ private:
     std::optional<OrbitHandler> orbitHandler_;
     std::shared_ptr<WorldState> state_;
     std::unique_ptr<EnergyBehavior> energy_;
+    std::unique_ptr<PlanetGeneratedData> data_;
     std::unique_ptr<PlanetRenderResources> rendering_;
     std::vector<std::unique_ptr<World>> children_;
     std::unique_ptr<detail::WorldGeneration> generation_;
@@ -100,6 +109,9 @@ public:
     SolarSystem(StarId star, std::shared_ptr<WorldState> state, StoryState &story,
             const star_desc &description, solarsys_state &system, class GameSession *session);
     ~SolarSystem();
+    // Transfer last generated values for exactly matching inputs during layout
+    // reconstruction. No progress/resources are published or copied.
+    void preserveGeneratedData(SolarSystem &previous) noexcept;
     SystemBehavior &behavior();
     const SystemBehavior &behavior() const;
     // Attach one complete generated planet layout. Validate before replacing it;

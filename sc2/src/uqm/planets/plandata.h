@@ -260,7 +260,7 @@ typedef struct
 	SIZE base_elevation;
 } PlanetFrame;
 
-typedef struct
+typedef struct PlanetGeneratedData
 {
 	SIZE AxialTilt;
 	UWORD Tectonics;
@@ -277,6 +277,13 @@ typedef struct
 	const PlanetFrame *PlanDataPtr;
 
 	DWORD ScanSeed[NUM_SCAN_TYPES];
+} PLANET_GENERATED_DATA;
+
+// A borrowed view of world-owned generated values, plus visit/progress fields.
+typedef struct
+{
+    PLANET_GENERATED_DATA *data;
+
 	DWORD ScanRetrieveMask[NUM_SCAN_TYPES];
 
 	STRING DiscoveryString;

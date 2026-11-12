@@ -183,7 +183,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE),
 			LEFT_SIDE_BASELINE_X_PC); // "Orbit: "
-	val = ((system.SysInfo.PlanetInfo.PlanetToSunDist * 100L
+	val = ((system.SysInfo.PlanetInfo.data->PlanetToSunDist * 100L
 			+ (EARTH_RADIUS >> 1)) / EARTH_RADIUS);
 	MakeScanValue (buf, val,
 			GAME_STRING (ORBITSCAN_STRING_BASE + 1)); // " a.u."
@@ -194,15 +194,15 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 2),
 			LEFT_SIDE_BASELINE_X_PC); // "Atmo: "
-	if (system.SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE)
+	if (system.SysInfo.PlanetInfo.data->AtmoDensity == GAS_GIANT_ATMOSPHERE)
 		utf8StringCopy (buf, sizeof (buf),
 				GAME_STRING (ORBITSCAN_STRING_BASE + 3)); // "Super Thick"
-	else if (system.SysInfo.PlanetInfo.AtmoDensity == 0)
+	else if (system.SysInfo.PlanetInfo.data->AtmoDensity == 0)
 		utf8StringCopy (buf, sizeof (buf),
 				GAME_STRING (ORBITSCAN_STRING_BASE + 4)); // "Vacuum"
 	else
 	{
-		val = (system.SysInfo.PlanetInfo.AtmoDensity * 100
+		val = (system.SysInfo.PlanetInfo.data->AtmoDensity * 100
 			+ (EARTH_ATMOSPHERE >> 1)) / EARTH_ATMOSPHERE;
 		MakeScanValue (buf, val,
 				GAME_STRING (ORBITSCAN_STRING_BASE + 5)); // " atm"
@@ -215,7 +215,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 6),
 			LEFT_SIDE_BASELINE_X_PC); // "Temp: "
 	sprintf (buf, "%d" STR_DEGREE_SIGN " c",
-			system.SysInfo.PlanetInfo.SurfaceTemperature);
+			system.SysInfo.PlanetInfo.data->SurfaceTemperature);
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
@@ -223,13 +223,13 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 7),
 			LEFT_SIDE_BASELINE_X_PC); // "Weather: "
-	if (system.SysInfo.PlanetInfo.AtmoDensity == 0)
+	if (system.SysInfo.PlanetInfo.data->AtmoDensity == 0)
 		t.pStr = GAME_STRING (ORBITSCAN_STRING_BASE + 8); // "None"
 	else
 	{
 		sprintf (buf, "%s %u",
 				GAME_STRING (ORBITSCAN_STRING_BASE + 9), // "Class"
-				system.SysInfo.PlanetInfo.Weather + 1);
+				system.SysInfo.PlanetInfo.data->Weather + 1);
 		t.pStr = buf;
 	}
 	t.CharCount = (COUNT)~0;
@@ -238,14 +238,14 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 10),
 			LEFT_SIDE_BASELINE_X_PC); // "Tectonics: "
-	if (PLANSIZE (system.SysInfo.PlanetInfo.PlanDataPtr->Type) ==
+	if (PLANSIZE (system.SysInfo.PlanetInfo.data->PlanDataPtr->Type) ==
 			GAS_GIANT)
 		t.pStr = GAME_STRING (ORBITSCAN_STRING_BASE + 8); // "None"
 	else
 	{
 		sprintf (buf, "%s %u",
 				GAME_STRING (ORBITSCAN_STRING_BASE + 9), // "Class"
-				system.SysInfo.PlanetInfo.Tectonics + 1);
+				system.SysInfo.PlanetInfo.data->Tectonics + 1);
 		t.pStr = buf;
 	}
 	t.CharCount = (COUNT)~0;
@@ -255,9 +255,9 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 11),
 			RIGHT_SIDE_BASELINE_X_PC); // "Mass: "
-	val = system.SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.data->PlanetRadius;
 	val = ((DWORD) val * (DWORD) val * (DWORD) val / 100L
-			* system.SysInfo.PlanetInfo.PlanetDensity
+			* system.SysInfo.PlanetInfo.data->PlanetDensity
 			+ ((100L * 100L) >> 1)) / (100L * 100L);
 	if (val == 0)
 		val = 1;
@@ -270,7 +270,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 13),
 			RIGHT_SIDE_BASELINE_X_PC); // "Radius: "
-	val = system.SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.data->PlanetRadius;
 	MakeScanValue (buf, val,
 			GAME_STRING (ORBITSCAN_STRING_BASE + 12)); // " e.s."
 	t.pStr = buf;
@@ -280,7 +280,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 14),
 			RIGHT_SIDE_BASELINE_X_PC); // "Gravity: "
-	val = system.SysInfo.PlanetInfo.SurfaceGravity;
+	val = system.SysInfo.PlanetInfo.data->SurfaceGravity;
 	if (val == 0)
 		val = 1;
 	MakeScanValue (buf, val,
@@ -292,7 +292,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 16),
 			RIGHT_SIDE_BASELINE_X_PC); // "Day: "
-	val = (SDWORD)system.SysInfo.PlanetInfo.RotationPeriod
+	val = (SDWORD)system.SysInfo.PlanetInfo.data->RotationPeriod
 			* 10 / 24;
 	MakeScanValue (buf, val,
 			GAME_STRING (ORBITSCAN_STRING_BASE + 17)); // " days"
@@ -303,7 +303,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	PrintScanTitlePC (&t, &r, GAME_STRING (ORBITSCAN_STRING_BASE + 18),
 			RIGHT_SIDE_BASELINE_X_PC); // "Tilt: "
-	val = system.SysInfo.PlanetInfo.AxialTilt;
+	val = system.SysInfo.PlanetInfo.data->AxialTilt;
 	if (val < 0)
 		val = -val;
 	t.pStr = buf;
@@ -349,7 +349,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.align = ALIGN_LEFT;
 
 	t.pStr = buf;
-	val = ((system.SysInfo.PlanetInfo.PlanetToSunDist * 100L
+	val = ((system.SysInfo.PlanetInfo.data->PlanetToSunDist * 100L
 			+ (EARTH_RADIUS >> 1)) / EARTH_RADIUS);
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
@@ -357,11 +357,11 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	if (system.SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE)
+	if (system.SysInfo.PlanetInfo.data->AtmoDensity == GAS_GIANT_ATMOSPHERE)
 		strcpy (buf, STR_INFINITY_SIGN);
 	else
 	{
-		val = (system.SysInfo.PlanetInfo.AtmoDensity * 100
+		val = (system.SysInfo.PlanetInfo.data->AtmoDensity * 100
 				+ (EARTH_ATMOSPHERE >> 1)) / EARTH_ATMOSPHERE;
 		MakeScanValue (buf, val, STR_EARTH_SIGN);
 	}
@@ -371,14 +371,14 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 
 	t.pStr = buf;
 	sprintf (buf, "%d" STR_DEGREE_SIGN,
-			system.SysInfo.PlanetInfo.SurfaceTemperature);
+			system.SysInfo.PlanetInfo.data->SurfaceTemperature);
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	sprintf (buf, "<%u>", system.SysInfo.PlanetInfo.AtmoDensity == 0
-			? 0 : (system.SysInfo.PlanetInfo.Weather + 1));
+	sprintf (buf, "<%u>", system.SysInfo.PlanetInfo.data->AtmoDensity == 0
+			? 0 : (system.SysInfo.PlanetInfo.data->Weather + 1));
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 	t.baseline.y += SCAN_LEADING;
@@ -386,9 +386,9 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.pStr = buf;
 	sprintf (buf, "<%u>",
 			PLANSIZE (
-			system.SysInfo.PlanetInfo.PlanDataPtr->Type
+			system.SysInfo.PlanetInfo.data->PlanDataPtr->Type
 			) == GAS_GIANT
-			? 0 : (system.SysInfo.PlanetInfo.Tectonics + 1));
+			? 0 : (system.SysInfo.PlanetInfo.data->Tectonics + 1));
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 
@@ -397,9 +397,9 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.align = ALIGN_RIGHT;
 
 	t.pStr = buf;
-	val = system.SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.data->PlanetRadius;
 	val = ((DWORD) val * (DWORD) val * (DWORD) val / 100L
-			* system.SysInfo.PlanetInfo.PlanetDensity
+			* system.SysInfo.PlanetInfo.data->PlanetDensity
 			+ ((100L * 100L) >> 1)) / (100L * 100L);
 	if (val == 0)
 		val = 1;
@@ -409,7 +409,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = system.SysInfo.PlanetInfo.PlanetRadius;
+	val = system.SysInfo.PlanetInfo.data->PlanetRadius;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 
 	t.CharCount = (COUNT)~0;
@@ -417,7 +417,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = system.SysInfo.PlanetInfo.SurfaceGravity;
+	val = system.SysInfo.PlanetInfo.data->SurfaceGravity;
 	if (val == 0)
 		val = 1;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
@@ -426,7 +426,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = system.SysInfo.PlanetInfo.AxialTilt;
+	val = system.SysInfo.PlanetInfo.data->AxialTilt;
 	if (val < 0)
 		val = -val;
 	sprintf (buf, "%d" STR_DEGREE_SIGN, val);
@@ -435,7 +435,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 	t.baseline.y += SCAN_LEADING;
 
 	t.pStr = buf;
-	val = (SDWORD)system.SysInfo.PlanetInfo.RotationPeriod
+	val = (SDWORD)system.SysInfo.PlanetInfo.data->RotationPeriod
 			* 10 / 24;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
@@ -585,7 +585,7 @@ getLandingFuelNeeded(const SOLARSYS_STATE &system)
 {
 	COUNT fuel;
 
-	fuel = system.SysInfo.PlanetInfo.SurfaceGravity << 1;
+	fuel = system.SysInfo.PlanetInfo.data->SurfaceGravity << 1;
 	if (fuel > 3 * FUEL_TANK_SCALE)
 		fuel = 3 * FUEL_TANK_SCALE;
 
@@ -1056,7 +1056,7 @@ DoScan(MENU_STATE *pMS)
 			COUNT fuel_required;
 
 			if ((uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
-					|| (system.SysInfo.PlanetInfo.AtmoDensity ==
+					|| (system.SysInfo.PlanetInfo.data->AtmoDensity ==
 						GAS_GIANT_ATMOSPHERE))
 			{	// cannot dispatch to shielded planets or gas giants
 				PlayMenuSound (MENU_SOUND_FAILURE);
@@ -1099,7 +1099,7 @@ DoScan(MENU_STATE *pMS)
 	}
 	else if (optWhichMenu == OPT_PC ||
 			(!(uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
-			&& system.SysInfo.PlanetInfo.AtmoDensity !=
+			&& system.SysInfo.PlanetInfo.data->AtmoDensity !=
 				GAS_GIANT_ATMOSPHERE))
 	{
 		DoMenuChooser (pMS, PM_MIN_SCAN);
@@ -1180,7 +1180,7 @@ uqm::runScan(SOLARSYS_STATE &system)
 
 	if (optWhichMenu == OPT_3DO &&
 			((uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
-			|| system.SysInfo.PlanetInfo.AtmoDensity ==
+			|| system.SysInfo.PlanetInfo.data->AtmoDensity ==
 				GAS_GIANT_ATMOSPHERE))
 	{
 		MenuState.CurState = EXIT_SCAN;

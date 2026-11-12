@@ -5,6 +5,7 @@
 struct solarsys_state;
 struct star_desc;
 struct planet_desc;
+struct PlanetGeneratedData;
 namespace uqm {
 class GameSession;
 class StoryState;
@@ -28,6 +29,7 @@ public:
     // Script operations borrow current session state and perform synchronous
     // child-mode handoff. Pending exits prevent further preparation/presentation.
     StoryState &story() const noexcept;
+    PlanetGeneratedData &data() noexcept;
     const star_desc &star() const;
     COUNT converse(CONVERSATION conversation);
     void prepareOrbit();

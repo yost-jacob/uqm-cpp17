@@ -104,9 +104,9 @@ static UWORD
 GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, SIZE SurfaceTemp,
 		SIZE radius, RandomContext *rng)
 {
-	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
+	if (PLANSIZE (PlanetInfoPtr->data->PlanDataPtr->Type) == GAS_GIANT)
 	{
-		PlanetInfoPtr->Weather = 7 << 5;
+		PlanetInfoPtr->data->Weather = 7 << 5;
 		return (GAS_GIANT_ATMOSPHERE);
 	}
 	else
@@ -114,9 +114,9 @@ GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, SIZE SurfaceTemp,
 		BYTE range;
 		UWORD atmo;
 
-		PlanetInfoPtr->Weather = 0;
+		PlanetInfoPtr->data->Weather = 0;
 		atmo = 0;
-		if ((range = HINIBBLE (PlanetInfoPtr->PlanDataPtr->AtmoAndDensity)) <= HEAVY)
+		if ((range = HINIBBLE (PlanetInfoPtr->data->PlanDataPtr->AtmoAndDensity)) <= HEAVY)
 		{
 			if (SurfaceTemp < COLD_THRESHOLD)
 				--range;
@@ -129,27 +129,27 @@ GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, SIZE SurfaceTemp,
 				{
 					case LIGHT:
 						atmo = THIN_ATMOSPHERE;
-						PlanetInfoPtr->Weather = 1 << 5;
+						PlanetInfoPtr->data->Weather = 1 << 5;
 						break;
 					case MEDIUM:
 						atmo = NORMAL_ATMOSPHERE;
-						PlanetInfoPtr->Weather = 2 << 5;
+						PlanetInfoPtr->data->Weather = 2 << 5;
 						break;
 					case HEAVY:
 						atmo = THICK_ATMOSPHERE;
-						PlanetInfoPtr->Weather = 4 << 5;
+						PlanetInfoPtr->data->Weather = 4 << 5;
 						break;
 					default:
 						atmo = SUPER_THICK_ATMOSPHERE;
-						PlanetInfoPtr->Weather = 6 << 5;
+						PlanetInfoPtr->data->Weather = 6 << 5;
 						break;
 				}
 
 				radius /= EARTH_RADIUS;
 				if (radius < 2)
-					PlanetInfoPtr->Weather += 1 << 5;
+					PlanetInfoPtr->data->Weather += 1 << 5;
 				else if (radius > 10)
-					PlanetInfoPtr->Weather -= 1 << 5;
+					PlanetInfoPtr->data->Weather -= 1 << 5;
 				atmo = CalcHalfBaseVariance (atmo, rng);
 			}
 		}
@@ -190,7 +190,7 @@ CalcTemp (SYSTEM_INFO *SysInfoPtr, SIZE radius, RandomContext *rng, const Planet
 
 	bonus = 0;
 	if (inputs->policy == PLANET_ANALYSIS_ORBIT
-			&& HINIBBLE (SysInfoPtr->PlanetInfo.PlanDataPtr->AtmoAndDensity) <= HEAVY)
+			&& HINIBBLE (SysInfoPtr->PlanetInfo.data->PlanDataPtr->AtmoAndDensity) <= HEAVY)
 	{
 #define COLD_BONUS 20
 #define HOT_BONUS 200
@@ -199,7 +199,7 @@ CalcTemp (SYSTEM_INFO *SysInfoPtr, SIZE radius, RandomContext *rng, const Planet
 		else if (centigrade >= COLD_THRESHOLD)
 			bonus = COLD_BONUS;
 
-		bonus <<= HINIBBLE (SysInfoPtr->PlanetInfo.PlanDataPtr->AtmoAndDensity);
+		bonus <<= HINIBBLE (SysInfoPtr->PlanetInfo.data->PlanDataPtr->AtmoAndDensity);
 		bonus = CalcHalfBaseVariance (bonus, rng);
 	}
 
@@ -209,7 +209,7 @@ CalcTemp (SYSTEM_INFO *SysInfoPtr, SIZE radius, RandomContext *rng, const Planet
 static COUNT
 CalcRotation (PLANET_INFO *PlanetInfoPtr, RandomContext *rng)
 {
-	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
+	if (PLANSIZE (PlanetInfoPtr->data->PlanDataPtr->Type) == GAS_GIANT)
 		return CalcFromBase (80, 80, rng);
 	else if (LOBYTE (RandomContext_Random (rng)) % 10 == 0)
 		return CalcFromBase (50 * 240, 200 * 240, rng);
@@ -239,7 +239,7 @@ CalcTilt (RandomContext *rng)
 UWORD
 CalcGravity (const PLANET_INFO *PlanetInfoPtr)
 {
-	return (DWORD)PlanetInfoPtr->PlanetDensity * PlanetInfoPtr->PlanetRadius
+	return (DWORD)PlanetInfoPtr->data->PlanetDensity * PlanetInfoPtr->data->PlanetRadius
 				/ 100;
 }
 
@@ -266,37 +266,37 @@ CalcLifeChance (const PLANET_INFO *PlanetInfoPtr)
 {
 	SIZE life_var = 0;
 
-	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
+	if (PLANSIZE (PlanetInfoPtr->data->PlanDataPtr->Type) == GAS_GIANT)
 		return -1;
 
-	if (PlanetInfoPtr->SurfaceTemperature < -151)
+	if (PlanetInfoPtr->data->SurfaceTemperature < -151)
 		life_var -= 300;
-	else if (PlanetInfoPtr->SurfaceTemperature < -51)
+	else if (PlanetInfoPtr->data->SurfaceTemperature < -51)
 		life_var -= 100;
-	else if (PlanetInfoPtr->SurfaceTemperature < 0)
+	else if (PlanetInfoPtr->data->SurfaceTemperature < 0)
 		life_var += 100;
-	else if (PlanetInfoPtr->SurfaceTemperature < 50)
+	else if (PlanetInfoPtr->data->SurfaceTemperature < 50)
 		life_var += 300;
-	else if (PlanetInfoPtr->SurfaceTemperature < 150)
+	else if (PlanetInfoPtr->data->SurfaceTemperature < 150)
 		life_var += 50;
-	else if (PlanetInfoPtr->SurfaceTemperature < 250)
+	else if (PlanetInfoPtr->data->SurfaceTemperature < 250)
 		life_var -= 100;
-	else if (PlanetInfoPtr->SurfaceTemperature < 500)
+	else if (PlanetInfoPtr->data->SurfaceTemperature < 500)
 		life_var -= 400;
 	else
 		life_var -= 800;
 
-	if (PlanetInfoPtr->AtmoDensity == 0)
+	if (PlanetInfoPtr->data->AtmoDensity == 0)
 		life_var -= 1000;
-	else if (PlanetInfoPtr->AtmoDensity < 15)
+	else if (PlanetInfoPtr->data->AtmoDensity < 15)
 		life_var += 100;
-	else if (PlanetInfoPtr->AtmoDensity < 30)
+	else if (PlanetInfoPtr->data->AtmoDensity < 30)
 		life_var += 200;
-	else if (PlanetInfoPtr->AtmoDensity < 100)
+	else if (PlanetInfoPtr->data->AtmoDensity < 100)
 		life_var += 300;
-	else if (PlanetInfoPtr->AtmoDensity < 1000)
+	else if (PlanetInfoPtr->data->AtmoDensity < 1000)
 		life_var += 150;
-	else if (PlanetInfoPtr->AtmoDensity < 2500)
+	else if (PlanetInfoPtr->data->AtmoDensity < 2500)
 		;
 	else
 		life_var -= 100;
@@ -304,47 +304,47 @@ CalcLifeChance (const PLANET_INFO *PlanetInfoPtr)
 #ifndef NOTYET
 	life_var += 200 + 80 + 80;
 #else /* NOTYET */
-	if (PlanetInfoPtr->SurfaceGravity < 10)
+	if (PlanetInfoPtr->data->SurfaceGravity < 10)
 		;
-	else if (PlanetInfoPtr->SurfaceGravity < 35)
+	else if (PlanetInfoPtr->data->SurfaceGravity < 35)
 		life_var += 50;
-	else if (PlanetInfoPtr->SurfaceGravity < 75)
+	else if (PlanetInfoPtr->data->SurfaceGravity < 75)
 		life_var += 100;
-	else if (PlanetInfoPtr->SurfaceGravity < 150)
+	else if (PlanetInfoPtr->data->SurfaceGravity < 150)
 		life_var += 200;
-	else if (PlanetInfoPtr->SurfaceGravity < 400)
+	else if (PlanetInfoPtr->data->SurfaceGravity < 400)
 		life_var += 50;
-	else if (PlanetInfoPtr->SurfaceGravity < 800)
+	else if (PlanetInfoPtr->data->SurfaceGravity < 800)
 		;
 	else
 		life_var -= 100;
 
-	if (PlanetInfoPtr->Tectonics < 1)
+	if (PlanetInfoPtr->data->Tectonics < 1)
 		life_var += 80;
-	else if (PlanetInfoPtr->Tectonics < 2)
+	else if (PlanetInfoPtr->data->Tectonics < 2)
 		life_var += 70;
-	else if (PlanetInfoPtr->Tectonics < 3)
+	else if (PlanetInfoPtr->data->Tectonics < 3)
 		life_var += 60;
-	else if (PlanetInfoPtr->Tectonics < 4)
+	else if (PlanetInfoPtr->data->Tectonics < 4)
 		life_var += 50;
-	else if (PlanetInfoPtr->Tectonics < 5)
+	else if (PlanetInfoPtr->data->Tectonics < 5)
 		life_var += 25;
-	else if (PlanetInfoPtr->Tectonics < 6)
+	else if (PlanetInfoPtr->data->Tectonics < 6)
 		;
 	else
 		life_var -= 100;
 
-	if (PlanetInfoPtr->Weather < 1)
+	if (PlanetInfoPtr->data->Weather < 1)
 		life_var += 80;
-	else if (PlanetInfoPtr->Weather < 2)
+	else if (PlanetInfoPtr->data->Weather < 2)
 		life_var += 70;
-	else if (PlanetInfoPtr->Weather < 3)
+	else if (PlanetInfoPtr->data->Weather < 3)
 		life_var += 60;
-	else if (PlanetInfoPtr->Weather < 4)
+	else if (PlanetInfoPtr->data->Weather < 4)
 		life_var += 50;
-	else if (PlanetInfoPtr->Weather < 5)
+	else if (PlanetInfoPtr->data->Weather < 5)
 		life_var += 25;
-	else if (PlanetInfoPtr->Weather < 6)
+	else if (PlanetInfoPtr->data->Weather < 6)
 		;
 	else
 		life_var -= 100;
@@ -358,6 +358,7 @@ void
 DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, const PLANET_DESC *pPlanetDesc, RandomContext *rng, const PlanetAnalysisInput *inputs)
 {
 	assert (inputs && inputs->planetTypes && inputs->orbitalRadius > 0);
+    assert (SysInfoPtr && SysInfoPtr->PlanetInfo.data);
 	assert ((pPlanetDesc->data_index & ~WORLD_TYPE_SPECIAL)
 			< NUMBER_OF_PLANET_TYPES);
 
@@ -392,74 +393,74 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, const PLANET_DESC *pPlanetDesc, Ra
 	{
 		SIZE radius;
 
-		SysInfoPtr->PlanetInfo.PlanDataPtr =
+		SysInfoPtr->PlanetInfo.data->PlanDataPtr =
 				&inputs->planetTypes[pPlanetDesc->data_index & ~PLANET_SHIELDED];
 
 		radius = inputs->orbitalRadius;
-		SysInfoPtr->PlanetInfo.PlanetToSunDist = radius;
+		SysInfoPtr->PlanetInfo.data->PlanetToSunDist = radius;
 
-		SysInfoPtr->PlanetInfo.SurfaceTemperature =
+		SysInfoPtr->PlanetInfo.data->SurfaceTemperature =
 				CalcTemp (SysInfoPtr, radius, rng, inputs);
-		switch (LONIBBLE (SysInfoPtr->PlanetInfo.PlanDataPtr->AtmoAndDensity))
+		switch (LONIBBLE (SysInfoPtr->PlanetInfo.data->PlanDataPtr->AtmoAndDensity))
 		{
 			case GAS_DENSITY:
-				SysInfoPtr->PlanetInfo.PlanetDensity = 20;
+				SysInfoPtr->PlanetInfo.data->PlanetDensity = 20;
 				break;
 			case LIGHT_DENSITY:
-				SysInfoPtr->PlanetInfo.PlanetDensity = 33;
+				SysInfoPtr->PlanetInfo.data->PlanetDensity = 33;
 				break;
 			case LOW_DENSITY:
-				SysInfoPtr->PlanetInfo.PlanetDensity = 60;
+				SysInfoPtr->PlanetInfo.data->PlanetDensity = 60;
 				break;
 			case NORMAL_DENSITY:
-				SysInfoPtr->PlanetInfo.PlanetDensity = 100;
+				SysInfoPtr->PlanetInfo.data->PlanetDensity = 100;
 				break;
 			case HIGH_DENSITY:
-				SysInfoPtr->PlanetInfo.PlanetDensity = 150;
+				SysInfoPtr->PlanetInfo.data->PlanetDensity = 150;
 				break;
 			case SUPER_DENSITY:
-				SysInfoPtr->PlanetInfo.PlanetDensity = 200;
+				SysInfoPtr->PlanetInfo.data->PlanetDensity = 200;
 				break;
 		}
-		SysInfoPtr->PlanetInfo.PlanetDensity +=
-				(SysInfoPtr->PlanetInfo.PlanetDensity / 20)
+		SysInfoPtr->PlanetInfo.data->PlanetDensity +=
+				(SysInfoPtr->PlanetInfo.data->PlanetDensity / 20)
 				- (LOWORD (RandomContext_Random (rng))
-				% (SysInfoPtr->PlanetInfo.PlanetDensity / 10));
+				% (SysInfoPtr->PlanetInfo.data->PlanetDensity / 10));
 
-		switch (PLANSIZE (SysInfoPtr->PlanetInfo.PlanDataPtr->Type))
+		switch (PLANSIZE (SysInfoPtr->PlanetInfo.data->PlanDataPtr->Type))
 		{
 			case SMALL_ROCKY_WORLD:
 #define SMALL_RADIUS 25
-				SysInfoPtr->PlanetInfo.PlanetRadius = CalcHalfBaseVariance (SMALL_RADIUS, rng);
+				SysInfoPtr->PlanetInfo.data->PlanetRadius = CalcHalfBaseVariance (SMALL_RADIUS, rng);
 				break;
 			case LARGE_ROCKY_WORLD:
 #define LARGE_RADIUS 75
-				SysInfoPtr->PlanetInfo.PlanetRadius = CalcHalfBaseVariance (LARGE_RADIUS, rng);
+				SysInfoPtr->PlanetInfo.data->PlanetRadius = CalcHalfBaseVariance (LARGE_RADIUS, rng);
 				break;
 			case GAS_GIANT:
 #define MIN_GAS_RADIUS 300
 #define MAX_GAS_RADIUS 1500
-				SysInfoPtr->PlanetInfo.PlanetRadius =
+				SysInfoPtr->PlanetInfo.data->PlanetRadius =
 						CalcFromBase (MIN_GAS_RADIUS, MAX_GAS_RADIUS - MIN_GAS_RADIUS, rng);
 				break;
 		}
 
-		SysInfoPtr->PlanetInfo.RotationPeriod = CalcRotation (&SysInfoPtr->PlanetInfo, rng);
-		SysInfoPtr->PlanetInfo.SurfaceGravity = CalcGravity (&SysInfoPtr->PlanetInfo);
-		SysInfoPtr->PlanetInfo.AxialTilt = CalcTilt (rng);
-		if ((SysInfoPtr->PlanetInfo.Tectonics =
-				CalcTectonics (SysInfoPtr->PlanetInfo.PlanDataPtr->BaseTectonics,
-				SysInfoPtr->PlanetInfo.SurfaceTemperature, rng)) > MAX_TECTONICS)
-			SysInfoPtr->PlanetInfo.Tectonics = MAX_TECTONICS;
+		SysInfoPtr->PlanetInfo.data->RotationPeriod = CalcRotation (&SysInfoPtr->PlanetInfo, rng);
+		SysInfoPtr->PlanetInfo.data->SurfaceGravity = CalcGravity (&SysInfoPtr->PlanetInfo);
+		SysInfoPtr->PlanetInfo.data->AxialTilt = CalcTilt (rng);
+		if ((SysInfoPtr->PlanetInfo.data->Tectonics =
+				CalcTectonics (SysInfoPtr->PlanetInfo.data->PlanDataPtr->BaseTectonics,
+				SysInfoPtr->PlanetInfo.data->SurfaceTemperature, rng)) > MAX_TECTONICS)
+			SysInfoPtr->PlanetInfo.data->Tectonics = MAX_TECTONICS;
 
-		SysInfoPtr->PlanetInfo.AtmoDensity =
+		SysInfoPtr->PlanetInfo.data->AtmoDensity =
 				GeneratePlanetComposition (&SysInfoPtr->PlanetInfo,
-				SysInfoPtr->PlanetInfo.SurfaceTemperature, radius, rng);
+				SysInfoPtr->PlanetInfo.data->SurfaceTemperature, radius, rng);
 
-		SysInfoPtr->PlanetInfo.Tectonics >>= 5;
-		SysInfoPtr->PlanetInfo.Weather >>= 5;
+		SysInfoPtr->PlanetInfo.data->Tectonics >>= 5;
+		SysInfoPtr->PlanetInfo.data->Weather >>= 5;
 
-		SysInfoPtr->PlanetInfo.LifeChance = CalcLifeChance (&SysInfoPtr->PlanetInfo);
+		SysInfoPtr->PlanetInfo.data->LifeChance = CalcLifeChance (&SysInfoPtr->PlanetInfo);
 
 #ifdef DEBUG_PLANET_CALC
 		radius = (SIZE)((DWORD)UNSCALE_RADIUS (radius) * 100 / UNSCALE_RADIUS (EARTH_RADIUS));
@@ -468,37 +469,37 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, const PLANET_DESC *pPlanetDesc, Ra
 		// SysInfoPtr->PlanetInfo.PlanetMass / 100,
 		// SysInfoPtr->PlanetInfo.PlanetMass % 100);
 		log_add (log_Debug, "\tPlanetary Radius   : %d.%02d Earth radii",
-				SysInfoPtr->PlanetInfo.PlanetRadius / 100,
-				SysInfoPtr->PlanetInfo.PlanetRadius % 100);
+				SysInfoPtr->PlanetInfo.data->PlanetRadius / 100,
+				SysInfoPtr->PlanetInfo.data->PlanetRadius % 100);
 		log_add (log_Debug, "\tSurface Gravity: %d.%02d gravities",
-				SysInfoPtr->PlanetInfo.SurfaceGravity / 100,
-				SysInfoPtr->PlanetInfo.SurfaceGravity % 100);
+				SysInfoPtr->PlanetInfo.data->SurfaceGravity / 100,
+				SysInfoPtr->PlanetInfo.data->SurfaceGravity % 100);
 		log_add (log_Debug, "\tSurface Temperature: %d degrees C",
-				SysInfoPtr->PlanetInfo.SurfaceTemperature );
+				SysInfoPtr->PlanetInfo.data->SurfaceTemperature );
 		log_add (log_Debug, "\tAxial Tilt : %d degrees",
-				abs (SysInfoPtr->PlanetInfo.AxialTilt));
+				abs (SysInfoPtr->PlanetInfo.data->AxialTilt));
 		log_add (log_Debug, "\tTectonics : Class %u",
-				SysInfoPtr->PlanetInfo.Tectonics + 1);
+				SysInfoPtr->PlanetInfo.data->Tectonics + 1);
 		log_add (log_Debug, "\tAtmospheric Density: %u.%02u",
-				SysInfoPtr->PlanetInfo.AtmoDensity / EARTH_ATMOSPHERE,
-				(SysInfoPtr->PlanetInfo.AtmoDensity * 100 / EARTH_ATMOSPHERE) % 100);
-		if (SysInfoPtr->PlanetInfo.AtmoDensity == 0)
+				SysInfoPtr->PlanetInfo.data->AtmoDensity / EARTH_ATMOSPHERE,
+				(SysInfoPtr->PlanetInfo.data->AtmoDensity * 100 / EARTH_ATMOSPHERE) % 100);
+		if (SysInfoPtr->PlanetInfo.data->AtmoDensity == 0)
 		{
 			log_add (log_Debug, "\tAtmosphere: (Vacuum)");
 		}
-		else if (SysInfoPtr->PlanetInfo.AtmoDensity < THIN_ATMOSPHERE)
+		else if (SysInfoPtr->PlanetInfo.data->AtmoDensity < THIN_ATMOSPHERE)
 		{
 			log_add (log_Debug, "\tAtmosphere: (Thin)");
 		}
-		else if (SysInfoPtr->PlanetInfo.AtmoDensity < NORMAL_ATMOSPHERE)
+		else if (SysInfoPtr->PlanetInfo.data->AtmoDensity < NORMAL_ATMOSPHERE)
 		{
 			log_add (log_Debug, "\tAtmosphere: (Normal)");
 		}
-		else if (SysInfoPtr->PlanetInfo.AtmoDensity < THICK_ATMOSPHERE)
+		else if (SysInfoPtr->PlanetInfo.data->AtmoDensity < THICK_ATMOSPHERE)
 		{
 			log_add (log_Debug, "\tAtmosphere: (Thick)");
 		}
-		else if (SysInfoPtr->PlanetInfo.AtmoDensity < SUPER_THICK_ATMOSPHERE)
+		else if (SysInfoPtr->PlanetInfo.data->AtmoDensity < SUPER_THICK_ATMOSPHERE)
 		{
 			log_add (log_Debug, "\tAtmosphere: (Super thick)");
 		}
@@ -508,19 +509,19 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, const PLANET_DESC *pPlanetDesc, Ra
 		}
 
 		log_add (log_Debug, "\tWeather   : Class %u",
-				SysInfoPtr->PlanetInfo.Weather + 1);
+				SysInfoPtr->PlanetInfo.data->Weather + 1);
 
-		if (SysInfoPtr->PlanetInfo.RotationPeriod >= 480)
+		if (SysInfoPtr->PlanetInfo.data->RotationPeriod >= 480)
 		{
 			log_add (log_Debug, "\tLength of day  : %d.%d Earth days",
-					SysInfoPtr->PlanetInfo.RotationPeriod / 240,
-					SysInfoPtr->PlanetInfo.RotationPeriod % 240);
+					SysInfoPtr->PlanetInfo.data->RotationPeriod / 240,
+					SysInfoPtr->PlanetInfo.data->RotationPeriod % 240);
 		}
 		else
 		{
 			log_add (log_Debug, "\tLength of day  : %d.%d Earth hours",
-					SysInfoPtr->PlanetInfo.RotationPeriod / 10,
-					SysInfoPtr->PlanetInfo.RotationPeriod % 10);
+					SysInfoPtr->PlanetInfo.data->RotationPeriod / 10,
+					SysInfoPtr->PlanetInfo.data->RotationPeriod % 10);
 		}
 #endif /* DEBUG_PLANET_CALC */
 	}

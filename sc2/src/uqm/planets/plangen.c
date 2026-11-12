@@ -1863,14 +1863,14 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame, RandomConte
 		pSolarSysState->graphics->XlatRef = CaptureStringTable (
 				LoadStringTable (PlanDataPtr->XlatTabInstance));
 
-		if (PlanetInfo->SurfaceTemperature > HOT_THRESHOLD)
+		if (PlanetInfo->data->SurfaceTemperature > HOT_THRESHOLD)
 		{
 			pSolarSysState->graphics->OrbitalCMap = SetAbsColorMapIndex (
 					pSolarSysState->graphics->OrbitalCMap, 2);
 			pSolarSysState->graphics->XlatRef = SetAbsStringTableIndex (
 					pSolarSysState->graphics->XlatRef, 2);
 		}
-		else if (PlanetInfo->SurfaceTemperature > COLD_THRESHOLD)
+		else if (PlanetInfo->data->SurfaceTemperature > COLD_THRESHOLD)
 		{
 			pSolarSysState->graphics->OrbitalCMap = SetAbsColorMapIndex (
 					pSolarSysState->graphics->OrbitalCMap, 1);
@@ -1883,7 +1883,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame, RandomConte
 
 	}
 
-	if (!shielded && PlanetInfo->AtmoDensity != GAS_GIANT_ATMOSPHERE)
+	if (!shielded && PlanetInfo->data->AtmoDensity != GAS_GIANT_ATMOSPHERE)
 	{	// produce 4x scaled topo image for Planetside
 		// for the planets that we can land on
 		SBYTE *pScaledTopo = HMalloc (MAP_WIDTH * 4 * MAP_HEIGHT * 4);
@@ -1934,10 +1934,10 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame, RandomConte
 	
 	// Rotating planet sphere initialization
 	GenerateSphereMask (loc);
-	CreateSphereTiltMap (PlanetInfo->AxialTilt);
+	CreateSphereTiltMap (PlanetInfo->data->AxialTilt);
 	if (shielded)
 		Orbit->ObjectFrame = CreateShieldMask ();
-	InitSphereRotation (1 - 2 * (PlanetInfo->AxialTilt & 1), shielded);
+	InitSphereRotation (1 - 2 * (PlanetInfo->data->AxialTilt & 1), shielded);
 
 	if (shielded)
 	{	// This overwrites pSolarSysState->graphics->TopoFrame, so everything that

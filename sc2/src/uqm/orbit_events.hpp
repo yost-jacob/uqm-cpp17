@@ -77,11 +77,11 @@ inline void androsynth(WorldVisit &visit)
 
 	if (matchWorld (solarSys, world, 1, MATCH_PLANET))
 	{
-		solarSys->SysInfo.PlanetInfo.AtmoDensity =
+		visit.data().AtmoDensity =
 				EARTH_ATMOSPHERE * 144 / 100;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
-		solarSys->SysInfo.PlanetInfo.Weather = 1;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 1;
+		visit.data().SurfaceTemperature = 28;
+		visit.data().Weather = 1;
+		visit.data().Tectonics = 1;
 	}
 
 	return visit.enterPreparedOrbit();
@@ -101,14 +101,14 @@ inline void burvixese(WorldVisit &visit)
 	uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-	solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
+	visit.data().ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 	GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
+	visit.data().ScanSeed[MINERAL_SCAN] = rand_val;
 	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 
-	solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
+	visit.data().ScanSeed[ENERGY_SCAN] = rand_val;
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
@@ -119,8 +119,8 @@ inline void burvixese(WorldVisit &visit)
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (
 						LoadStringTable (BURV_RUINS_STRTAB));
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
+		visit.data().Weather = 0;
+		visit.data().Tectonics = 0;
 	}
 	else if (matchWorld (solarSys, world, 0, 0)
 			&& !story.read(StoryFlag::BurvixeseBroadcasters))
@@ -214,11 +214,11 @@ inline void colony(WorldVisit &visit)
 	{
 		uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 
-		solarSys->SysInfo.PlanetInfo.AtmoDensity =
+		visit.data().AtmoDensity =
 				EARTH_ATMOSPHERE * 98 / 100;
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
+		visit.data().Weather = 0;
+		visit.data().Tectonics = 0;
+		visit.data().SurfaceTemperature = 28;
 
 		visit.loadSurface(NULL);
 
@@ -326,8 +326,8 @@ inline void ilwrath(WorldVisit &visit)
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		solarSys->SysInfo.PlanetInfo.Weather = 2;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 3;
+		visit.data().Weather = 2;
+		visit.data().Tectonics = 3;
 	}
 
 	return visit.enterPreparedOrbit();
@@ -458,10 +458,10 @@ inline void myconTrap(WorldVisit &visit)
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		solarSys->SysInfo.PlanetInfo.AtmoDensity = EARTH_ATMOSPHERE * 2;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 35;
-		solarSys->SysInfo.PlanetInfo.Weather = 3;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 1;
+		visit.data().AtmoDensity = EARTH_ATMOSPHERE * 2;
+		visit.data().SurfaceTemperature = 35;
+		visit.data().Weather = 3;
+		visit.data().Tectonics = 1;
 	}
 
 	return visit.enterPreparedOrbit();
@@ -790,7 +790,7 @@ inline void sol(WorldVisit &visit)
 	uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
+	visit.data().ScanSeed[MINERAL_SCAN] = rand_val;
 	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 	rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
@@ -800,98 +800,98 @@ inline void sol(WorldVisit &visit)
 		switch (planetNr)
 		{
 			case 0: /* MERCURY */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 98;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 38;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 3;
-				solarSys->SysInfo.PlanetInfo.Weather = 0;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 2;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 59 * 240;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 165;
+				visit.data().AtmoDensity = 0;
+				visit.data().PlanetDensity = 98;
+				visit.data().PlanetRadius = 38;
+				visit.data().AxialTilt = 3;
+				visit.data().Weather = 0;
+				visit.data().Tectonics = 2;
+				visit.data().RotationPeriod = 59 * 240;
+				visit.data().SurfaceTemperature = 165;
 				break;
 			case 1: /* VENUS */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 90 *
+				visit.data().AtmoDensity = 90 *
 						EARTH_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 95;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 95;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 177;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 243 * 240;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 457;
+				visit.data().PlanetDensity = 95;
+				visit.data().PlanetRadius = 95;
+				visit.data().AxialTilt = 177;
+				visit.data().Weather = 7;
+				visit.data().Tectonics = 1;
+				visit.data().RotationPeriod = 243 * 240;
+				visit.data().SurfaceTemperature = 457;
 				break;
 			case 2: /* EARTH */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
+				visit.data().AtmoDensity =
 						EARTH_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 100;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 100;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 23;
-				solarSys->SysInfo.PlanetInfo.Weather = 1;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 240;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 22;
+				visit.data().PlanetDensity = 100;
+				visit.data().PlanetRadius = 100;
+				visit.data().AxialTilt = 23;
+				visit.data().Weather = 1;
+				visit.data().Tectonics = 1;
+				visit.data().RotationPeriod = 240;
+				visit.data().SurfaceTemperature = 22;
 				break;
 			case 3: /* MARS */
 				// XXX: Mars atmo should actually be 1/2 in current units
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 1;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 72;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 53;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 24;
-				solarSys->SysInfo.PlanetInfo.Weather = 1;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 246;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -53;
+				visit.data().AtmoDensity = 1;
+				visit.data().PlanetDensity = 72;
+				visit.data().PlanetRadius = 53;
+				visit.data().AxialTilt = 24;
+				visit.data().Weather = 1;
+				visit.data().Tectonics = 1;
+				visit.data().RotationPeriod = 246;
+				visit.data().SurfaceTemperature = -53;
 				break;
 			case 4: /* JUPITER */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
+				visit.data().AtmoDensity =
 						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 24;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 1120;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 3;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 98;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -143;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetDensity = 24;
+				visit.data().PlanetRadius = 1120;
+				visit.data().AxialTilt = 3;
+				visit.data().Weather = 7;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 98;
+				visit.data().SurfaceTemperature = -143;
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 520L / 100;
 				break;
 			case 5: /* SATURN */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
+				visit.data().AtmoDensity =
 						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 13;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 945;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 27;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 102;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -197;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetDensity = 13;
+				visit.data().PlanetRadius = 945;
+				visit.data().AxialTilt = 27;
+				visit.data().Weather = 7;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 102;
+				visit.data().SurfaceTemperature = -197;
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 952L / 100;
 				break;
 			case 6: /* URANUS */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
+				visit.data().AtmoDensity =
 						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 21;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 411;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 98;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 172;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -217;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetDensity = 21;
+				visit.data().PlanetRadius = 411;
+				visit.data().AxialTilt = 98;
+				visit.data().Weather = 7;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 172;
+				visit.data().SurfaceTemperature = -217;
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 1916L / 100;
 				break;
 			case 7: /* NEPTUNE */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
+				visit.data().AtmoDensity =
 						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 28;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 396;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 30;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 182;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -229;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetDensity = 28;
+				visit.data().PlanetRadius = 396;
+				visit.data().AxialTilt = 30;
+				visit.data().Weather = 7;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 182;
+				visit.data().SurfaceTemperature = -229;
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 2999L / 100;
 				break;
 			case 8: /* PLUTO */
@@ -906,20 +906,20 @@ inline void sol(WorldVisit &visit)
 							LoadStringTable (SPAPLUTO_STRTAB));
 				}
 
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 33;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 18;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 119;
-				solarSys->SysInfo.PlanetInfo.Weather = 0;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 1533;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -235;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().AtmoDensity = 0;
+				visit.data().PlanetDensity = 33;
+				visit.data().PlanetRadius = 18;
+				visit.data().AxialTilt = 119;
+				visit.data().Weather = 0;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 1533;
+				visit.data().SurfaceTemperature = -235;
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 3937L / 100;
 				break;
 		}
 
-		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
+		visit.data().SurfaceGravity =
 				CalcGravity (&solarSys->SysInfo.PlanetInfo);
 		visit.loadSurface(planetNr == 2 ?
 				CaptureDrawable (LoadGraphic (EARTH_MASK_ANIM)) : NULL);
@@ -929,9 +929,9 @@ inline void sol(WorldVisit &visit)
 		// World is a moon.
 		COUNT moonNr = moonIndex (solarSys, world);
 
-		solarSys->SysInfo.PlanetInfo.AxialTilt = 0;
-		solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
+		visit.data().AxialTilt = 0;
+		visit.data().AtmoDensity = 0;
+		visit.data().Weather = 0;
 		switch (planetNr)
 		{
 			case 2: /* moons of EARTH */
@@ -939,7 +939,7 @@ inline void sol(WorldVisit &visit)
 				//   The seed will be used to randomly place the tractors, but
 				//   since they are mobile, they will be moved to different
 				//   locations not governed by this seed.
-				solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
+				visit.data().ScanSeed[BIOLOGICAL_SCAN] =
 						rand_val;
 
 				if (!story.read(StoryFlag::MoonbaseDestroyed))
@@ -953,76 +953,76 @@ inline void sol(WorldVisit &visit)
 							LoadStringTable (MOONBASE_STRTAB));
 				}
 
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 60;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 25;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 0;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 240 * 29;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -18;
+				visit.data().PlanetDensity = 60;
+				visit.data().PlanetRadius = 25;
+				visit.data().AxialTilt = 0;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 240 * 29;
+				visit.data().SurfaceTemperature = -18;
 				break;
 
 			case 4: /* moons of JUPITER */
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 520L / 100;
 				switch (moonNr)
 				{
 					case 0: /* Io */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 69;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 25;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 3;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 390;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -163;
+						visit.data().PlanetDensity = 69;
+						visit.data().PlanetRadius = 25;
+						visit.data().Tectonics = 3;
+						visit.data().RotationPeriod = 390;
+						visit.data().SurfaceTemperature = -163;
 						break;
 					case 1: /* Europa */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 54;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 25;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 840;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -161;
+						visit.data().PlanetDensity = 54;
+						visit.data().PlanetRadius = 25;
+						visit.data().Tectonics = 1;
+						visit.data().RotationPeriod = 840;
+						visit.data().SurfaceTemperature = -161;
 						break;
 					case 2: /* Ganymede */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 35;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 41;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 1728;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -164;
+						visit.data().PlanetDensity = 35;
+						visit.data().PlanetRadius = 41;
+						visit.data().Tectonics = 0;
+						visit.data().RotationPeriod = 1728;
+						visit.data().SurfaceTemperature = -164;
 						break;
 					case 3: /* Callisto */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 35;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 38;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 4008;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -167;
+						visit.data().PlanetDensity = 35;
+						visit.data().PlanetRadius = 38;
+						visit.data().Tectonics = 1;
+						visit.data().RotationPeriod = 4008;
+						visit.data().SurfaceTemperature = -167;
 						break;
 				}
 				break;
 
 			case 5: /* moon of SATURN: Titan */
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 952L / 100;
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 160;
-				solarSys->SysInfo.PlanetInfo.Weather = 2;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 34;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 40;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 3816;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -178;
+				visit.data().AtmoDensity = 160;
+				visit.data().Weather = 2;
+				visit.data().PlanetDensity = 34;
+				visit.data().PlanetRadius = 40;
+				visit.data().Tectonics = 1;
+				visit.data().RotationPeriod = 3816;
+				visit.data().SurfaceTemperature = -178;
 				break;
 
 			case 7: /* moon of NEPTUNE: Triton */
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
+				visit.data().PlanetToSunDist =
 						EARTH_RADIUS * 2999L / 100;
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 10;
-				solarSys->SysInfo.PlanetInfo.Weather = 1;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 95;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 27;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 4300;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -216;
+				visit.data().AtmoDensity = 10;
+				visit.data().Weather = 1;
+				visit.data().PlanetDensity = 95;
+				visit.data().PlanetRadius = 27;
+				visit.data().Tectonics = 0;
+				visit.data().RotationPeriod = 4300;
+				visit.data().SurfaceTemperature = -216;
 				break;
 		}
 
-		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
+		visit.data().SurfaceGravity =
 				CalcGravity (&solarSys->SysInfo.PlanetInfo);
 		visit.loadSurface(NULL);
 	}
@@ -1068,18 +1068,18 @@ inline void spathi(WorldVisit &visit)
 		uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
+		visit.data().ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 		GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
+		visit.data().ScanSeed[MINERAL_SCAN] = rand_val;
 		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 
-		solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
+		visit.data().ScanSeed[ENERGY_SCAN] = rand_val;
 
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
+		visit.data().Weather = 0;
+		visit.data().Tectonics = 0;
+		visit.data().SurfaceTemperature = 28;
 		if (!story.read(StoryFlag::UmgahBroadcasters))
 		{
 			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
@@ -1105,18 +1105,18 @@ inline void spathi(WorldVisit &visit)
 		uqm::analyzePlanet(system, body, solarSys->SysInfo, PLANET_ANALYSIS_ORBIT, PlanData);
 		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-		solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
+		visit.data().ScanSeed[MINERAL_SCAN] = rand_val;
 		GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL, &uqm::generationRandom(system), EXTENT{static_cast<COORD>(MAP_WIDTH), static_cast<COORD>(MAP_HEIGHT)});
 		rand_val = RandomContext_GetSeed (&uqm::generationRandom(system));
 
-		solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
+		visit.data().ScanSeed[BIOLOGICAL_SCAN] = rand_val;
 
-		solarSys->SysInfo.PlanetInfo.PlanetRadius = 120;
-		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
+		visit.data().PlanetRadius = 120;
+		visit.data().SurfaceGravity =
 				CalcGravity (&solarSys->SysInfo.PlanetInfo);
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 31;
+		visit.data().Weather = 0;
+		visit.data().Tectonics = 0;
+		visit.data().SurfaceTemperature = 31;
 
 		visit.loadSurface(NULL);
 		return visit.enterPreparedOrbit();
@@ -1191,10 +1191,10 @@ inline void syreen(WorldVisit &visit)
 		/* Syreen home planet */
 		visit.prepareOrbit();
 
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 19;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.AtmoDensity = EARTH_ATMOSPHERE * 9 / 10;
+		visit.data().SurfaceTemperature = 19;
+		visit.data().Tectonics = 0;
+		visit.data().Weather = 0;
+		visit.data().AtmoDensity = EARTH_ATMOSPHERE * 9 / 10;
 		return visit.enterPreparedOrbit();
 	}
 
@@ -1363,7 +1363,7 @@ inline void talkingPet(WorldVisit &visit)
 	visit.prepareOrbit();
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
+		visit.data().Weather = 0;
 
 	return visit.enterPreparedOrbit();
 }
@@ -1570,8 +1570,8 @@ inline void utwig(WorldVisit &visit)
 	if (visit.star().Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		solarSys->SysInfo.PlanetInfo.Weather = 1;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 1;
+		visit.data().Weather = 1;
+		visit.data().Tectonics = 1;
 	}
 
 	return visit.enterPreparedOrbit();
@@ -1663,8 +1663,8 @@ inline void vux(WorldVisit &visit)
 
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
-		solarSys->SysInfo.PlanetInfo.Weather = 2;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
+		visit.data().Weather = 2;
+		visit.data().Tectonics = 0;
 	}
 
 	return visit.enterPreparedOrbit();

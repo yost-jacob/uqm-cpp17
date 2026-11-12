@@ -94,10 +94,11 @@ private:
 class WorldVisit::Resources {
 public:
     Resources(SOLARSYS_STATE &system, World &world)
-        : location_(systemLocation(system), world.id()), rendering_(system, world), graphics_(world.renderResources()) {}
+        : location_(systemLocation(system), world.id()), data_(system.SysInfo, world), rendering_(system, world), graphics_(world.renderResources()) {}
     ~Resources() { if (graphics_.hasSurface()) FinishPlanetOrbit(); }
 private:
     VisitOrbitLocation location_;
+    detail::WorldDataBorrow data_;
     detail::PlanetRenderBorrow rendering_;
     PlanetRenderResources &graphics_;
 };
@@ -126,9 +127,11 @@ bool WorldVisit::run() {
     return canContinue();
 }
 void WorldVisit::inspectPreparedWorld(GameSession &session, SOLARSYS_STATE &system) {
+    detail::WorldDataBorrow data{system.SysInfo, orbitalWorld(system)};
     WorldVisit visit{session, system, orbitalWorld(system), true};
     visit.run();
 }
+PlanetGeneratedData &WorldVisit::data() noexcept { return world_.generatedData(); }
 StoryState &WorldVisit::story() const noexcept { return session_.player().story(); }
 const STAR_DESC &WorldVisit::star() const { return systemStar(system_); }
 PLANET_DESC &WorldVisit::legacyDescriptor() { return detail::selectedDescriptor(system_); }
