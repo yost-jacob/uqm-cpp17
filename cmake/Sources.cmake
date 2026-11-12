@@ -274,6 +274,10 @@ set(UQM_SOURCES
     sc2/src/uqm/gravity.cpp
     sc2/src/uqm/grpinfo.cpp
     sc2/src/uqm/hyper.cpp
+    sc2/src/uqm/game_collections.hpp
+    sc2/src/uqm/collection_storage.hpp
+    sc2/src/uqm/campaign_encounters.cpp
+    sc2/src/uqm/campaign_encounters.hpp
     sc2/src/uqm/navigation_encounters.hpp
     sc2/src/uqm/navigation_entities.hpp
     sc2/src/uqm/navigation_context.cpp

@@ -17,6 +17,7 @@
  */
 
 #include "ipdisp.h"
+#include "game_collections.hpp"
 #include "system_runtime.hpp"
 #include "combat_entity_legacy.hpp"
 
@@ -51,21 +52,11 @@ struct FlightScene {
 void
 uqm::notifyGroups (QUEUE &groups, COUNT which_race, BYTE target_loc)
 {
-	HSHIPFRAG hGroup, hNextGroup;
-
 	// NOTE: "Others" includes the group causing the notification too.
 
-	for (hGroup = GetHeadLink (&groups);
-			hGroup; hGroup = hNextGroup)
-	{
-		IP_GROUP *GroupPtr;
-
-		GroupPtr = LockIpGroup (&groups, hGroup);
-		hNextGroup = _GetSuccLink (GroupPtr);
-
+    for (auto *GroupPtr : detail::systemGroups(groups)) {
 		if (GroupPtr->race_id != which_race)
 		{
-			UnlockIpGroup (&groups, hGroup);
 			continue;
 		}
 
@@ -109,7 +100,6 @@ uqm::notifyGroups (QUEUE &groups, COUNT which_race, BYTE target_loc)
 			GroupPtr->dest_loc = target_loc;
 		}
 
-		UnlockIpGroup (&groups, hGroup);
 	}
 }
 

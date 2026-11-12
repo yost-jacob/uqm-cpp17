@@ -235,22 +235,19 @@ static void
 SaveEncounters (uio_Stream *fh)
 {
 	COUNT num_links;
-	HENCOUNTER hEncounter;
-	num_links = CountLinks (&GLOBAL (encounter_q));
+	COUNT index = 0;
+	num_links = CampaignEncounterCount();
 	if (num_links == 0)
 		return;
 	write_32 (fh, ENCOUNTERS_TAG);
 	write_32 (fh, 65 * num_links);
 
-	hEncounter = GetHeadLink (&GLOBAL (encounter_q));
 	while (num_links--)
 	{
-		HENCOUNTER hNextEncounter;
 		ENCOUNTER *EncounterPtr;
 		COUNT i;
 
-		LockEncounter (hEncounter, &EncounterPtr);
-		hNextEncounter = GetSuccEncounter (EncounterPtr);
+		EncounterPtr = CampaignEncounterForSave(index++);
 
 		write_16  (fh, EncounterPtr->transition_state);
 		write_16  (fh, EncounterPtr->origin.x);
@@ -278,8 +275,6 @@ SaveEncounters (uio_Stream *fh)
 		write_32  (fh, EncounterPtr->log_x);
 		write_32  (fh, EncounterPtr->log_y);
 
-		UnlockEncounter (hEncounter);
-		hEncounter = hNextEncounter;
 	}
 }
 

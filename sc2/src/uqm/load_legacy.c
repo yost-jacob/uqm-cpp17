@@ -385,9 +385,7 @@ LoadEncounter (ENCOUNTER *EncounterPtr, DECODE_REF fh)
 	BYTE tmpb;
 
 	cread_ptr (fh); /* useless ptr; HENCOUNTER pred */
-	EncounterPtr->pred = 0;
 	cread_ptr (fh); /* useless ptr; HENCOUNTER succ */
-	EncounterPtr->succ = 0;
 	cread_ptr (fh); /* useless ptr; HELEMENT hElement */
 	cread_16s (fh, &EncounterPtr->transition_state);
 	cread_16s (fh, &EncounterPtr->origin.x);
@@ -523,7 +521,7 @@ LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh)
 	DummyLoadQueue (&GSPtr->avail_race_q, fh);
 	DummyLoadQueue (&GSPtr->npc_built_ship_q, fh);
 	// Not loading ip_group_q, was not there originally
-	DummyLoadQueue (&GSPtr->encounter_q, fh);
+	DummyLoadQueue (NULL, fh); /* Removed encounter container descriptor. */
 	// Old saves contain an unused queue descriptor before the packed story bits.
     // Consume its bytes without giving it ownership of the player's Fleet.
     DummyLoadQueue (NULL, fh);
@@ -660,7 +658,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	}
 
 	ClearCampaignEvents ();
-	ReinitQueue (&GLOBAL (encounter_q));
+	ClearCampaignEncounters();
 	ReinitQueue (&GLOBAL (ip_group_q));
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
 	ReinitQueue (GetPlayerFleetQueue());
@@ -730,19 +728,16 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 
 	// Load the encounters (black globes in HS/QS (compressed))
 	cread_16 (fh, &num_links);
+    if (num_links > MAX_ENCOUNTERS) {
+        cclose(fh); res_CloseResFile(in_fp); return FALSE;
+    }
 	{
 		while (num_links--)
 		{
-			HENCOUNTER hEncounter;
-			ENCOUNTER *EncounterPtr;
-
-			hEncounter = AllocEncounter ();
-			LockEncounter (hEncounter, &EncounterPtr);
-
-			LoadEncounter (EncounterPtr, fh);
-
-			UnlockEncounter (hEncounter);
-			PutEncounter (hEncounter);
+			ENCOUNTER *EncounterPtr = AppendCampaignEncounter();
+                if (!EncounterPtr) { cclose(fh); res_CloseResFile(in_fp); return FALSE; }
+                LoadEncounter (EncounterPtr, fh);
+                if (CampaignEncounterCount() == 1) SelectCampaignEncounter(0);
 		}
 	}
 

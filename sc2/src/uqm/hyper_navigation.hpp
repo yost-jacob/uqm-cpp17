@@ -2,6 +2,7 @@
 #define UQM_HYPER_NAVIGATION_HPP_
 #include "hyper.h"
 #include "navigation_encounters.hpp"
+#include "campaign_encounters.hpp"
 #include "encount.h"
 #include "menustat.h"
 #include "player_location.h"
@@ -19,7 +20,7 @@ class SpaceNavigation {
 public:
     // player, engine and clock outlive this visit and its C callbacks. The realm
     // must match the player location before run() or any navigation callback.
-    SpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock, NavigationRealm realm) noexcept;
+    SpaceNavigation(PlayerEntity &player, SimulationEngine &engine, CampaignClock &clock, NavigationRealm realm, CampaignEncounters &records) noexcept;
     // Borrowed mode-owned engine; must be selected for the synchronous scene.
     SimulationEngine &engine() noexcept { return engine_; }
     void run(GameSession &session);
@@ -68,6 +69,7 @@ public:
 private:
     // The realm selected by this mode must match the player variant.
     PLAYER_TRAVEL_POSITION &travel();
+    CampaignEncounters &records_;
     NavigationEncounterViews encounters_;
     const NavigationRealm realm_; // Fixed for this mode; portal crossings select a successor.
     PlayerEntity &player_;

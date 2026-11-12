@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(navigation_runs_its_typed_hook_without_combat_result_ui)
     unsigned frames = 0;
     auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
     uqm::GameSession session{state, uqm::SinglePlayerId};
-    uqm::SpaceNavigation navigation{session.player(), engine, session.clock(), uqm::NavigationRealm::HyperSpace};
+    uqm::SpaceNavigation navigation{session.player(), engine, session.clock(), uqm::NavigationRealm::HyperSpace, session.encounters()};
     uqm::runSpaceNavigation(navigation, [&] { ++frames; });
     BOOST_TEST(frames == 1u);
     BOOST_TEST(std::count(events.begin(), events.end(), 5) == 0);

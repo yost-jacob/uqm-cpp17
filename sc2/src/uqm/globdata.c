@@ -227,7 +227,7 @@ InitGameStructures (void)
 			QUEUE_SHIP_FRAGMENT);
 	InitQueue (&GLOBAL (ip_group_q), MAX_BATTLE_GROUPS,
 			QUEUE_IP_GROUP);
-	InitQueue (&GLOBAL (encounter_q), MAX_ENCOUNTERS, QUEUE_ENCOUNTER);
+	ClearCampaignEncounters();
 
 	GLOBAL (CurrentActivity) = IN_INTERPLANETARY | START_INTERPLANETARY;
 
@@ -271,7 +271,7 @@ UninitGameStructures (void)
 {
 	HFLEETINFO hStarShip;
 
-	UninitQueue (&GLOBAL (encounter_q));
+	ClearCampaignEncounters();
 	UninitQueue (&GLOBAL (ip_group_q));
 	UninitQueue (&GLOBAL (npc_built_ship_q));
 	ReinitQueue (GetPlayerFleetQueue());

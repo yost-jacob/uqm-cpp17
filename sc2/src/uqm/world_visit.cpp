@@ -177,3 +177,5 @@ void WorldVisit::enterPreparedOrbit() {
         GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
 }
 }
+
+uqm::CampaignEncounters &uqm::WorldVisit::encounters() const noexcept { return session_.encounters(); }

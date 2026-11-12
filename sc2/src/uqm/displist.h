@@ -32,7 +32,7 @@ typedef struct link { HLINK pred, succ; } LINK;
 
 typedef enum {
     QUEUE_ELEMENT, QUEUE_STARSHIP, QUEUE_SHIP_FRAGMENT, QUEUE_FLEET_INFO,
-    QUEUE_IP_GROUP, QUEUE_ENCOUNTER, QUEUE_MASTER_SHIP
+    QUEUE_IP_GROUP, QUEUE_MASTER_SHIP
 } QueueKind;
 
 typedef struct QueueStorage QueueStorage;

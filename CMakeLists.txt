@@ -109,7 +109,7 @@ if(BUILD_TESTING)
         tests/combat_mode.cpp tests/battle_driver.cpp sc2/src/uqm/battle_driver.cpp sc2/src/uqm/combat_mode.cpp sc2/src/uqm/campaign_combat.cpp
         sc2/src/uqm/conversation_context.cpp sc2/src/uqm/conversation_resources.cpp sc2/src/uqm/conversation_lifetime.cpp
         tests/rendering_handoff.cpp sc2/src/uqm/exploration_rendering.cpp sc2/src/uqm/mode_rendering.cpp
-        tests/navigation_context.cpp sc2/src/uqm/navigation_context.cpp
+        tests/navigation_context.cpp sc2/src/uqm/navigation_context.cpp sc2/src/uqm/campaign_encounters.cpp
         tests/game_state_c.c tests/world_state.cpp tests/planet_render.cpp tests/world_visit.cpp tests/world_state_c.c
         tests/ship_behavior.cpp sc2/src/uqm/ship_behavior.cpp
         tests/ship_tuning.cpp sc2/src/uqm/ship_tuning.cpp

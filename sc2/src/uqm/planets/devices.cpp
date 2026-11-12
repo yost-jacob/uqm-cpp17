@@ -357,9 +357,11 @@ uqm::DeviceMenu::invoke(BYTE which_device)
 			story_.set(uqm::StoryCounter::EncounterContext, 0);
 			if (inHQSpace ())
 			{
-				if (GetHeadEncounter ())
+				if (!encounters_->empty())
 				{
 					story_.set(uqm::StoryFlag::ShipToCompel, 1);
+                    if (encounters_->current() == encounters_->end())
+                        encounters_->select(encounters_->begin());
 				}
 				GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 
