@@ -24,6 +24,7 @@
 #include <optional>
 #include <stdexcept>
 #include "lander.h"
+#include "../planet_sphere.hpp"
 #include "../state.h"
 
 #include "lifeform.h"
@@ -1269,13 +1270,13 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 }
 
 static void
-animationInterframe (TimeCount *TimeIn, COUNT periods)
+animationInterframe (PLANET_RENDER_DATA &graphics, TimeCount *TimeIn, COUNT periods)
 {
 #define ANIM_FRAME_RATE  (ONE_SECOND / 30)
 
 	for ( ; periods; --periods)
 	{
-		RotatePlanetSphere (TRUE);
+		uqm::RotatePlanetSphere (graphics, true);
 
 		SleepThreadUntil (*TimeIn + ANIM_FRAME_RATE);
 		*TimeIn = GetTimeCounter ();
@@ -1283,7 +1284,7 @@ animationInterframe (TimeCount *TimeIn, COUNT periods)
 }
 
 static void
-AnimateLaunch (FRAME farray)
+AnimateLaunch (PLANET_RENDER_DATA &graphics, FRAME farray)
 {
 	RECT r;
 	STAMP s;
@@ -1307,9 +1308,9 @@ AnimateLaunch (FRAME farray)
 		BatchGraphics ();
 		RepairBackRect (&r);
 #ifdef SPIN_ON_LAUNCH
-		RotatePlanetSphere (FALSE);
+		uqm::RotatePlanetSphere (graphics, false);
 #else
-		DrawDefaultPlanetSphere ();
+		uqm::DrawDefaultPlanetSphere (graphics);
 #endif
 		DrawStamp (&s);
 		UnbatchGraphics ();
@@ -1324,7 +1325,7 @@ AnimateLaunch (FRAME farray)
 }
 
 static void
-AnimateLanderWarmup (void)
+AnimateLanderWarmup (PLANET_RENDER_DATA &graphics)
 {
 	SIZE num_crew;
 	STAMP s;
@@ -1339,18 +1340,18 @@ AnimateLanderWarmup (void)
 
 	DrawStamp (&s);
 
-	animationInterframe (&TimeIn, 2);
+	animationInterframe (graphics, &TimeIn, 2);
 
 	for (num_crew = 0; num_crew < (NUM_CREW_COLS * NUM_CREW_ROWS)
 			&& GLOBAL_SIS (CrewEnlisted); ++num_crew)
 	{
-		animationInterframe (&TimeIn, 1);
+		animationInterframe (graphics, &TimeIn, 1);
 		
 		DeltaSISGauges (-1, 0, 0);
 		DeltaLanderCrew (1, 0);
 	}
 
-	animationInterframe (&TimeIn, 2);
+	animationInterframe (graphics, &TimeIn, 2);
 
 	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderShot))
 		s.frame = SetAbsFrameIndex (s.frame, 58);
@@ -1359,7 +1360,7 @@ AnimateLanderWarmup (void)
 				(ANGLE_TO_FACING (FULL_CIRCLE) << 1) + 2);
 	DrawStamp (&s);
 
-	animationInterframe (&TimeIn, 2);
+	animationInterframe (graphics, &TimeIn, 2);
 
 	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderSpeed))
 		s.frame = SetAbsFrameIndex (s.frame, 57);
@@ -1369,7 +1370,7 @@ AnimateLanderWarmup (void)
 				(ANGLE_TO_FACING (FULL_CIRCLE) << 1) + 3);
 		DrawStamp (&s);
 
-		animationInterframe (&TimeIn, 2);
+		animationInterframe (graphics, &TimeIn, 2);
 
 		s.frame = IncFrameIndex (s.frame);
 	}
@@ -1377,13 +1378,13 @@ AnimateLanderWarmup (void)
 
 	if (planetSideDesc->story.read(uqm::StoryFlag::ImprovedLanderCargo))
 	{
-		animationInterframe (&TimeIn, 2);
+		animationInterframe (graphics, &TimeIn, 2);
 
 		s.frame = SetAbsFrameIndex (s.frame, 59);
 		DrawStamp (&s);
 	}
 
-	animationInterframe (&TimeIn, 2);
+	animationInterframe (graphics, &TimeIn, 2);
 
 	PlaySound (SetAbsSoundIndex (LanderSounds, LANDER_DEPARTS),
 			NotPositional (), NULL, GAME_SOUND_PRIORITY + 1);
@@ -2008,8 +2009,8 @@ uqm::LanderMode::run()
 	planetSideDesc->damage_index = 0;
 	planetSideDesc->explosion_index = 0;
 
-	AnimateLanderWarmup ();
-	AnimateLaunch (LanderFrame[5]);
+	AnimateLanderWarmup (*planetSideDesc->system.graphics);
+	AnimateLaunch (*planetSideDesc->system.graphics, LanderFrame[5]);
 	InitPlanetSide (planetLoc);
 
 	landerInputState.NextTime = GetTimeCounter () + PLANET_SIDE_RATE;
@@ -2038,7 +2039,7 @@ uqm::LanderMode::run()
 
 			LandingTakeoffSequence (&landerInputState, FALSE);
 			drawTakeoffBackdrop ();
-			AnimateLaunch (LanderFrame[6]);
+			AnimateLaunch (*planetSideDesc->system.graphics, LanderFrame[6]);
 			
 			DeltaSISGauges (planetSideDesc->crew_left, 0, 0);
 

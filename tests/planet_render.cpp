@@ -5,6 +5,7 @@
 #include "uqm/game_state.hpp"
 #include "uqm/system_runtime.hpp"
 #include "uqm/planet_render_legacy.hpp"
+#include "uqm/planet_sphere.hpp"
 #include "libs/strings/strintrn.h"
 #include "libs/memlib.h"
 #include <boost/test/unit_test.hpp>
@@ -42,13 +43,11 @@ BOOST_AUTO_TEST_CASE(planet_graphics_release_partial_and_complete_generation_onc
     data.XlatRef = CaptureStringTable(AllocStringTable(1));
     data.OrbitalCMap = CaptureColorMap(AllocStringTable(1));
     data.XlatPtr = &data;
-    data.Orbit.lpTopoData = static_cast<SBYTE *>(HMalloc(8));
-    data.Orbit.TopoColors = static_cast<Color *>(HMalloc(3 * sizeof(Color)));
-    data.Orbit.ScratchArray = static_cast<Color *>(HMalloc(4 * sizeof(Color)));
     BOOST_TEST(resources.hasSurface());
     BOOST_TEST(liveTestDrawables() == initial + 12u);
     resources.reset();
     BOOST_TEST(!resources.hasSurface());
+    BOOST_TEST(data.sphere == nullptr);
     BOOST_TEST(liveTestDrawables() == initial);
     BOOST_TEST(data.XlatRef == nullptr);
     BOOST_TEST(data.XlatPtr == nullptr);
@@ -163,10 +162,19 @@ unsigned surfaceGenerations = 0;
 bool failSurfaceGeneration = false;
 }
 // Device-free stand-in: exercise production construction and unwind ownership.
-extern "C" void GeneratePlanetSurface(PLANET_DESC *, FRAME, RandomContext *rng) {
+void uqm::GeneratePlanetSurface(PLANET_RENDER_DATA &graphics, const PLANET_GENERATED_DATA &, const PLANET_DESC &body, POINT, FRAME, RandomContext &) {
     ++surfaceGenerations;
-    pSolarSysState->graphics->TopoFrame = frame();
-    pSolarSysState->graphics->Orbit.SphereFrame = frame();
+    auto &sphere = *graphics.sphere;
+    sphere.lighting[0][0] = body.rand_seed;
+    sphere.projection[0][0].p[0].x = static_cast<COORD>(body.rand_seed);
+    sphere.elevation.resize(8);
+    sphere.colors.resize(8);
+    sphere.scratch.resize(8);
+    graphics.Orbit.lpTopoData = sphere.elevation.data();
+    graphics.Orbit.TopoColors = sphere.colors.data();
+    graphics.Orbit.ScratchArray = sphere.scratch.data();
+    graphics.TopoFrame = frame();
+    graphics.Orbit.SphereFrame = frame();
     if (failSurfaceGeneration) throw std::runtime_error("surface generation failed");
 }
 BOOST_AUTO_TEST_CASE(surface_constructor_owns_generation_and_unwinds_partial_failure)
@@ -177,16 +185,17 @@ BOOST_AUTO_TEST_CASE(surface_constructor_owns_generation_and_unwinds_partial_fai
     UQM_SYSTEM_RUNTIME runtime{campaign.player(SinglePlayerId).story(), simulation, campaign.worldOwner(), nullptr};
     SOLARSYS_STATE projection{};
     projection.worlds = &runtime;
-    auto *previous = pSolarSysState;
-    struct Restore { SOLARSYS_STATE *value; ~Restore() { pSolarSysState = value; } } restore{previous};
-    pSolarSysState = &projection;
     PlanetRenderResources resources;
     projection.graphics = &detail::PlanetRenderAccess::data(resources);
     PLANET_DESC descriptor{};
+    descriptor.pPrevDesc = projection.SunDesc;
+    PLANET_GENERATED_DATA analysis{};
+    projection.SysInfo.PlanetInfo.data = &analysis;
     failSurfaceGeneration = true;
     BOOST_CHECK_THROW(resources.createSurface(projection, descriptor, nullptr), std::runtime_error);
     failSurfaceGeneration = false;
     BOOST_TEST(!resources.hasSurface());
+    BOOST_TEST(projection.graphics->sphere == nullptr);
     BOOST_TEST(liveTestDrawables() == initial);
     resources.createSurface(projection, descriptor, nullptr);
     BOOST_TEST(resources.hasSurface());
@@ -252,4 +261,53 @@ BOOST_AUTO_TEST_CASE(layout_reconstruction_preserves_matching_world_data_and_inv
     changed.preserveGeneratedData(next);
     BOOST_TEST(changed.world(0).generatedData().SurfaceTemperature == 0);
     BOOST_TEST(changed.world(0).child(0).generatedData().PlanetRadius == 0u);
+}
+
+BOOST_AUTO_TEST_CASE(generated_surface_workspaces_are_independent_and_reset_with_their_owner)
+{
+    const auto frames = liveTestDrawables();
+    GameState campaign{{SinglePlayerId, "Independent surfaces"}};
+    SimulationEngine simulation;
+    UQM_SYSTEM_RUNTIME runtime{campaign.player(SinglePlayerId).story(), simulation, campaign.worldOwner(), nullptr};
+    SOLARSYS_STATE a{}, b{};
+    a.worlds = b.worlds = &runtime;
+    PLANET_GENERATED_DATA analysis{};
+    a.SysInfo.PlanetInfo.data = b.SysInfo.PlanetInfo.data = &analysis;
+    PLANET_DESC bodyA{}, bodyB{};
+    bodyA.pPrevDesc = a.SunDesc; bodyA.rand_seed = 12;
+    bodyB.pPrevDesc = b.SunDesc; bodyB.rand_seed = 34;
+    PlanetRenderResources first, second;
+    a.graphics = &detail::PlanetRenderAccess::data(first);
+    b.graphics = &detail::PlanetRenderAccess::data(second);
+    first.createSurface(a, bodyA, nullptr);
+    auto &workspace = *a.graphics->sphere;
+    workspace.nextFrame = 900;
+    workspace.point = 17;
+    workspace.scratch[0].r = 100;
+    workspace.direction = -1;
+    workspace.point = 0;
+    workspace.advance(210);
+    BOOST_TEST(workspace.point == 209);
+    BOOST_TEST(workspace.nextFrame == 900u);
+    workspace.advance(210);
+    BOOST_TEST(workspace.point == 208);
+    BOOST_TEST(workspace.nextFrame == 900u);
+    second.createSurface(b, bodyB, nullptr);
+    BOOST_TEST(a.graphics->sphere != b.graphics->sphere);
+    BOOST_TEST(a.graphics->Orbit.lpTopoData != b.graphics->Orbit.lpTopoData);
+    BOOST_TEST(workspace.lighting[0][0] == 12u);
+    BOOST_TEST(workspace.projection[0][0].p[0].x == 12);
+    BOOST_TEST(workspace.point == 208);
+    BOOST_TEST(workspace.nextFrame == 900u);
+    BOOST_TEST(workspace.scratch[0].r == 100u);
+    BOOST_TEST(b.graphics->sphere->lighting[0][0] == 34u);
+    first.reset();
+    BOOST_TEST(a.graphics->sphere == nullptr);
+    BOOST_TEST(a.graphics->Orbit.lpTopoData == nullptr);
+    BOOST_TEST(b.graphics->sphere->lighting[0][0] == 34u);
+    first.createSurface(a, bodyA, nullptr);
+    BOOST_TEST(a.graphics->sphere->point == 0);
+    BOOST_TEST(a.graphics->sphere->nextFrame == 0u);
+    second.reset(); first.reset();
+    BOOST_TEST(liveTestDrawables() == frames);
 }

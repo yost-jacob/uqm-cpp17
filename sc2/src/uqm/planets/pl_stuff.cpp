@@ -18,6 +18,7 @@
 
 #include "libs/threadlib.h"
 #include "planets.h"
+#include "../planet_sphere.hpp"
 #include "../colors.h"
 #include "../setup.h"
 #include "libs/graphics/gfx_common.h"
@@ -34,17 +35,13 @@
 // It still doesn't look right though (it is too bright)
 #define USE_ADDITIVE_SCAN_BLIT
 
-static int rotFrameIndex;
-static int rotDirection;
-static bool throbShield;
-static int rotPointIndex;
-
+namespace uqm {
 // Draw the planet sphere and any extra graphic (like a shield) if present
 void
-DrawPlanetSphere (int x, int y)
+DrawPlanetSphere (PLANET_RENDER_DATA &graphics, int x, int y)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
+	PLANET_ORBIT *Orbit = &graphics.Orbit;
 
 	s.origin.x = x;
 	s.origin.y = y;
@@ -61,25 +58,26 @@ DrawPlanetSphere (int x, int y)
 }
 
 void
-DrawDefaultPlanetSphere (void)
+DrawDefaultPlanetSphere (PLANET_RENDER_DATA &graphics)
 {
 	CONTEXT oldContext;
 
 	oldContext = SetContext (PlanetContext);
-	DrawPlanetSphere (SIS_SCREEN_WIDTH / 2, PLANET_ORG_Y);
+	DrawPlanetSphere (graphics, SIS_SCREEN_WIDTH / 2, PLANET_ORG_Y);
 	SetContext (oldContext);
 }
 
 void
-InitSphereRotation (int direction, BOOLEAN shielded)
+InitSphereRotation (PLANET_RENDER_DATA &graphics, int direction, bool shielded)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
+	PLANET_ORBIT *Orbit = &graphics.Orbit;
 
-	rotDirection = direction;
-	rotPointIndex = 0;
-	throbShield = shielded && optWhichShield == OPT_3DO;
+	graphics.sphere->direction = direction;
+	graphics.sphere->point = 0;
+    graphics.sphere->nextFrame = 0;
+	graphics.sphere->throb = shielded && optWhichShield == OPT_3DO;
 
-	if (throbShield)
+	if (graphics.sphere->throb)
 	{
 		// ObjectFrame must contain the shield graphic
 		Orbit->WorkFrame = Orbit->ObjectFrame;
@@ -93,13 +91,14 @@ InitSphereRotation (int direction, BOOLEAN shielded)
 
 	// Render the first sphere/shield frame
 	// Prepare will set the next one
-	rotFrameIndex = 1;
-	PrepareNextRotationFrame ();
+	graphics.sphere->frame = 1;
+	PrepareNextRotationFrame (graphics);
 }
 
 void
-UninitSphereRotation (PLANET_ORBIT *Orbit)
+UninitSphereRotation (PLANET_ORBIT &orbit)
 {
+    auto *Orbit = &orbit;
 
 	if (Orbit->WorkFrame)
 	{
@@ -110,31 +109,24 @@ UninitSphereRotation (PLANET_ORBIT *Orbit)
 }
 
 void
-PrepareNextRotationFrame (void)
+PrepareNextRotationFrame (PLANET_RENDER_DATA &graphics)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
+	PLANET_ORBIT *Orbit = &graphics.Orbit;
 
 	// Generate the next rotation frame
 	// We alternate between the frames because we do not call FlushGraphics()
 	// The frame we just drew may not have made it to the screen yet
-	rotFrameIndex ^= 1;
-
-	// Go to next point, taking care of wraparounds
-	rotPointIndex += rotDirection;
-	if (rotPointIndex < 0)
-		rotPointIndex = MAP_WIDTH - 1;
-	else if (rotPointIndex >= MAP_WIDTH)
-		rotPointIndex = 0;
+    graphics.sphere->advance(MAP_WIDTH);
 
 	// prepare the next sphere frame
-	Orbit->SphereFrame = SetAbsFrameIndex (Orbit->SphereFrame, rotFrameIndex);
-	RenderPlanetSphere (Orbit->SphereFrame, rotPointIndex, throbShield);
+	Orbit->SphereFrame = SetAbsFrameIndex (Orbit->SphereFrame, graphics.sphere->frame);
+	RenderPlanetSphere (graphics, Orbit->SphereFrame, graphics.sphere->point, graphics.sphere->throb);
 	
-	if (throbShield)
+	if (graphics.sphere->throb)
 	{	// prepare the next shield throb frame
 		Orbit->ObjectFrame = SetAbsFrameIndex (Orbit->ObjectFrame,
-				rotFrameIndex);
-		SetShieldThrobEffect (Orbit->WorkFrame, rotPointIndex,
+				graphics.sphere->frame);
+		SetShieldThrobEffect (graphics, Orbit->WorkFrame, graphics.sphere->point,
 				Orbit->ObjectFrame);
 	}
 }
@@ -145,9 +137,9 @@ PrepareNextRotationFrame (void)
 // This takes care of zooming the planet sphere into place
 // when entering orbit
 void
-ZoomInPlanetSphere (void)
+ZoomInPlanetSphere (PLANET_RENDER_DATA &graphics)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
+	PLANET_ORBIT *Orbit = &graphics.Orbit;
 	const int base = GSCALE_IDENTITY;
 	int dx, dy;
 	int oldScale;
@@ -200,7 +192,7 @@ ZoomInPlanetSphere (void)
 
 		oldMode = SetGraphicScaleMode (TFB_SCALE_BILINEAR);
 		oldScale = SetGraphicScale ((int)(base * scale + 0.5));
-		DrawPlanetSphere (pt.x, pt.y);
+		DrawPlanetSphere (graphics, pt.x, pt.y);
 		SetGraphicScale (oldScale);
 		SetGraphicScaleMode (oldMode);
 
@@ -209,31 +201,31 @@ ZoomInPlanetSphere (void)
 		repairRect.corner.x = pt.x + frameRect.corner.x;
 		repairRect.corner.y = pt.y + frameRect.corner.y;
 
-		PrepareNextRotationFrame ();
+		PrepareNextRotationFrame (graphics);
 
 		SleepThreadUntil (NextTime);
 	}
 }
 
 void
-RotatePlanetSphere (BOOLEAN keepRate)
+RotatePlanetSphere (PLANET_RENDER_DATA &graphics, bool keepRate)
 {
-	static TimeCount NextTime;
+	auto &NextTime = graphics.sphere->nextFrame;
 	TimeCount Now = GetTimeCounter ();
 
 	if (keepRate && Now < NextTime)
 		return; // not time yet
 
 	NextTime = Now + PLANET_ROTATION_RATE;
-	DrawDefaultPlanetSphere ();
+	DrawDefaultPlanetSphere (graphics);
 
-	PrepareNextRotationFrame ();
+	PrepareNextRotationFrame (graphics);
 }
 
 static void
-renderTintFrame (Color tintColor)
+renderTintFrame (PLANET_RENDER_DATA &graphics, Color tintColor)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
+	PLANET_ORBIT *Orbit = &graphics.Orbit;
 	CONTEXT oldContext;
 	DrawMode mode, oldMode;
 	STAMP s;
@@ -248,7 +240,7 @@ renderTintFrame (Color tintColor)
 	// copy the topo frame to the tint frame
 	s.origin.x = 0;
 	s.origin.y = 0;
-	s.frame = pSolarSysState->graphics->TopoFrame;
+	s.frame = graphics.TopoFrame;
 	DrawStamp (&s);
 
 	// apply the tint
@@ -267,10 +259,10 @@ renderTintFrame (Color tintColor)
 
 // tintColor.a is ignored
 void
-DrawPlanet (int tintY, Color tintColor)
+DrawPlanet (PLANET_RENDER_DATA &graphics, int tintY, Color tintColor)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->graphics->Orbit;
+	PLANET_ORBIT *Orbit = &graphics.Orbit;
 
 	s.origin.x = 0;
 	s.origin.y = 0;
@@ -278,7 +270,7 @@ DrawPlanet (int tintY, Color tintColor)
 	BatchGraphics ();
 	if (sameColor (tintColor, BLACK_COLOR))
 	{	// no tint -- just draw the surface
-		s.frame = pSolarSysState->graphics->TopoFrame;
+		s.frame = graphics.TopoFrame;
 		DrawStamp (&s);
 	}
 	else
@@ -288,13 +280,13 @@ DrawPlanet (int tintY, Color tintColor)
 
 		if (!sameColor (tintColor, Orbit->TintColor))
 		{
-			renderTintFrame (tintColor);
+			renderTintFrame (graphics, tintColor);
 			Orbit->TintColor = tintColor;
 		}
 		
 		if (tintY < height - 1)
 		{	// untinted piece showing, draw regular topo
-			s.frame = pSolarSysState->graphics->TopoFrame;
+			s.frame = graphics.TopoFrame;
 			DrawStamp (&s);
 		}
 
@@ -316,3 +308,5 @@ DrawPlanet (int tintY, Color tintColor)
 	UnbatchGraphics ();
 }
 
+
+} // namespace uqm

@@ -42,5 +42,6 @@ typedef struct PlanetRenderData {
     FRAME PlanetSideFrame[3 + MAX_LIFE_VARIATION];
     FRAME TopoFrame;
     PLANET_ORBIT Orbit;
+    struct PlanetSphereData *sphere; // Borrowed mutable workspace; owner is native.
 } PLANET_RENDER_DATA;
 #endif

@@ -1,7 +1,7 @@
-uqm_CXXFILES="devices.cpp lander.cpp scan.cpp solarsys.cpp planets.cpp"
+uqm_CXXFILES="devices.cpp lander.cpp scan.cpp solarsys.cpp planets.cpp plangen.cpp pl_stuff.cpp"
 uqm_SUBDIRS="generate"
 uqm_CFILES="calc.c cargo.c gentopo.c orbits.c
-		oval.c pl_stuff.c plangen.c pstarmap.c report.c
+		oval.c pstarmap.c report.c
 		roster.c surface.c"
 uqm_HFILES="elemdata.h lander.h lifeform.h plandata.h planets.h
 		scan.h solarsys.h sundata.h"

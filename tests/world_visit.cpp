@@ -32,7 +32,7 @@ WorldDefinition definition(UniverseId universe, BYTE special, unsigned planet, i
 }
 extern "C" void BatchGraphics() { ++batchDepth; }
 extern "C" void UnbatchGraphics() { --batchDepth; }
-extern "C" void PlanetOrbitMenu() { if (orbitMenu) orbitMenu(); }
+void uqm::runPlanetOrbit(SOLARSYS_STATE &) { if (orbitMenu) orbitMenu(); }
 uqm::OrbitPresentation::OrbitPresentation(SOLARSYS_STATE &system) : system_(system) {}
 uqm::OrbitPresentation::~OrbitPresentation() { ++orbitFinishes; }
 void uqm::loadPlanetSurface(SOLARSYS_STATE &, World &, FRAME) { if (surfaceLoader) surfaceLoader(); }

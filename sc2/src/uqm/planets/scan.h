@@ -46,7 +46,6 @@ struct scan_block
 	SCAN_DESC *scan_base;
 };
 
-extern void ScanSystem (void);
 
 extern void RepairBackRect (RECT *pRect);
 extern COUNT callGenerateForScanType (const SOLARSYS_STATE *,

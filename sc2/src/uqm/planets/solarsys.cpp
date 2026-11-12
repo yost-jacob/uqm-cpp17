@@ -1798,6 +1798,5 @@ UNICODE *GetNamedPlanetaryBody(void) {
 // Remaining C boundaries resolve the legacy binding once. Native helpers above
 // use references and never select a different system implicitly.
 POINT planetOuterLocation(COUNT planet) { return uqm::planetOuterLocation(*pSolarSysState, planet); }
-void DrawStarBackGround(void) { uqm::drawStarBackground(*pSolarSysState); }
 
 void SaveSolarSysLocation(void) { uqm::saveSolarSystemLocation(*pSolarSysState); }

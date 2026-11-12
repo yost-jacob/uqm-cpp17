@@ -53,6 +53,23 @@ service bindings, descriptor arrays and shared system-wide star/planet artwork.
 This increment does not introduce an asset-cache framework or a second graphics
 state alongside the owning record.
 
+## Generation and animation workspace
+
+The graphics owner lazily allocates PlanetSphereData with the surface. Its
+lighting/projection arrays, elevation/color/scratch vectors and rotation state
+belong to that body. C render records borrow vector storage without owning it;
+no buffer is resized while its frames are being animated. Reset detaches the
+views and releases the workspace. Partial generation failure releases both its
+frames and workspace, allowing a fresh attempt.
+
+Terrain and globe functions take explicit references, not a selected-system
+global. Drawing an existing globe frame does not advance it. Rotation/zoom
+updates the owning body's frame/map cursors and deadline. The legacy input-frame
+callback has no userdata and still resolves the active graphics at that one
+boundary; scoped callback restoration prevents it surviving its orbital menu.
+The general animation compositor, tick scheduler and renderer services remain
+separate future work.
+
 ## System flight views
 
 SystemViewState belongs to SolarSystemExploration's runtime. It owns the prepared

@@ -4,6 +4,7 @@
 #include <memory>
 struct solarsys_state;
 struct planet_desc;
+struct PlanetSphereData;
 namespace uqm {
 namespace detail { struct PlanetRenderAccess; }
 // One body's generated graphics and backing buffers. Owned lazily by World,
@@ -26,6 +27,7 @@ private:
     friend struct detail::PlanetRenderAccess;
     class Surface;
     PLANET_RENDER_DATA data_{}; // Outlives Surface, including failed construction.
+    std::unique_ptr<PlanetSphereData> sphere_;
     std::unique_ptr<Surface> surface_;
 };
 }
