@@ -1,6 +1,7 @@
 #ifndef UQM_SESSION_HPP_
 #define UQM_SESSION_HPP_
 #include "asset_cache.hpp"
+#include "navigation_rules.hpp"
 #include "game_definitions.hpp"
 #include "game_mode.hpp"
 #include "legacy_runtime.hpp"
@@ -43,6 +44,7 @@ public:
     SessionExit run(std::unique_ptr<GameMode> initial) { return dispatcher_.run(std::move(initial)); }
     // Immutable catalogs; absent for title/intro sessions. Borrows expire with this session.
     const GameDefinitions &definitions() const;
+    const NavigationRules &navigationRules() const noexcept { return navigationRules_; }
     AssetCache &assets() noexcept { return assets_; }
     std::uint32_t nextModeSeed() noexcept { return random_(); }
     ModeDispatcher &dispatcher() noexcept { return dispatcher_; }
@@ -67,6 +69,7 @@ private:
     // Internally synchronized by RAII lock guards. First member: all derived
     // state, modes and other asset holders finish before this cache is destroyed.
     AssetCache assets_;
+    inline static constexpr NavigationRules navigationRules_{};
     std::unique_ptr<GameDefinitions> definitions_;
     std::optional<StarId> selectedStar_;
     RandomStream random_;

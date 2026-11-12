@@ -228,5 +228,6 @@ const FleetShips<> &fleetShips(const QUEUE &queue) { return std::get<FleetShips<
 const BattleParticipants<> &battleParticipants(QUEUE &queue) { return std::get<BattleParticipants<>>(queue.storage->objects); }
 const BattleParticipants<> &battleParticipants(const QUEUE &queue) { return std::get<BattleParticipants<>>(queue.storage->objects); }
 const RaceFleets<> &raceFleets(QUEUE &queue) { return std::get<RaceFleets<>>(queue.storage->objects); }
+const RaceFleets<> &raceFleets(const QUEUE &queue) { return std::get<RaceFleets<>>(queue.storage->objects); }
 const SystemGroups<> &systemGroups(QUEUE &queue) { return std::get<SystemGroups<>>(queue.storage->objects); }
 }

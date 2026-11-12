@@ -279,6 +279,7 @@ set(UQM_SOURCES
     sc2/src/uqm/campaign_encounters.cpp
     sc2/src/uqm/campaign_encounters.hpp
     sc2/src/uqm/navigation_encounters.hpp
+    sc2/src/uqm/navigation_rules.hpp
     sc2/src/uqm/navigation_entities.hpp
     sc2/src/uqm/navigation_context.cpp
     sc2/src/uqm/init.c

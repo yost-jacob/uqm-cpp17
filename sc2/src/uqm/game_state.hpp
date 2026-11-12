@@ -4,6 +4,7 @@
 #include "game_data.hpp"
 #include "campaign_clock.hpp"
 #include "campaign_encounters.hpp"
+#include "game_collections.hpp"
 #include <string_view>
 #include <array>
 #include <cstdint>
@@ -350,6 +351,9 @@ public:
     // Production lifecycle/legacy adapters; load only at an unwound boundary.
     SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
+    // Campaign fleet records must already be initialized. The session owns the
+    // borrow; const access exposes live strengths/locations without global lookup.
+    const RaceFleets<> &raceFleets() const;
     CampaignEncounters &encounters() noexcept { return encounters_; }
     const CampaignEncounters &encounters() const noexcept { return encounters_; }
     CampaignClock &clock() noexcept { return clock_; }

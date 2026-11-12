@@ -75,13 +75,13 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
 class HyperSpaceMode final : public GameMode {
 public:
     HyperSpaceMode(GameSession &session)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine(), session.clock(), NavigationRealm::HyperSpace, session.encounters()) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session, engine(), NavigationRealm::HyperSpace) {}
     ModeResult run() override {
         session_.player().enterNavigation(false);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
-        navigation_.run(session_);
+        navigation_.run();
         return finishMode(session_, engine());
     }
 private:
@@ -93,13 +93,13 @@ class QuasiSpaceMode final : public GameMode {
 public:
     explicit QuasiSpaceMode(GameSession &session)
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
-          navigation_(session.player(), engine(), session.clock(), NavigationRealm::QuasiSpace, session.encounters()) {}
+          navigation_(session, engine(), NavigationRealm::QuasiSpace) {}
     ModeResult run() override {
         session_.player().enterNavigation(true);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
         DrawAutoPilotMessage(TRUE);
         session_.clock().setRate(HYPERSPACE_CLOCK_RATE);
-        navigation_.run(session_);
+        navigation_.run();
         return finishMode(session_, engine());
     }
 private:

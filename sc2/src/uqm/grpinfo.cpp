@@ -17,6 +17,7 @@
  */
 
 #include "build.h"
+#include "navigation_rules.hpp"
 #include "system_flight.hpp"
 #include "starmap.h"
 #include "gendef.h"
@@ -348,10 +349,7 @@ FoundHome:
 	if (BestPercent)
 	{
 		BYTE which_group, num_groups;
-		BYTE EncounterMakeup[] =
-		{
-			RACE_ENCOUNTER_MAKEUP
-		};
+        static constexpr uqm::NavigationRules rules{};
 
 		which_group = 0;
 		num_groups = ((COUNT)TFB_Random () % (BestPercent >> 1)) + 1;
@@ -363,10 +361,10 @@ FoundHome:
 			num_groups = 5;
 		do
 		{
-			for (Index = HINIBBLE (EncounterMakeup[BestIndex]); Index;
+			for (Index = rules.encounterSize.at(BestIndex).maximum; Index;
 					--Index)
 			{
-				if (Index <= LONIBBLE (EncounterMakeup[BestIndex])
+				if (Index <= rules.encounterSize.at(BestIndex).minimum
 						|| (COUNT)TFB_Random () % 100 < 50)
 					CloneShipFragment (BestIndex,
 							&GLOBAL (npc_built_ship_q), 0);

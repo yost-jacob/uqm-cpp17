@@ -23,6 +23,8 @@ public:
     T *data() noexcept { return slots_.data(); }
     std::size_t capacity() const noexcept { return slots_.size(); }
     std::size_t size() const noexcept { return order_.size(); }
+    T &at(std::size_t index) { return *order_.at(index); }
+    const T &at(std::size_t index) const { return *order_.at(index); }
     iterator begin() noexcept { return order_.begin(); }
     iterator end() noexcept { return order_.end(); }
     auto begin() const noexcept { return order_.begin(); }

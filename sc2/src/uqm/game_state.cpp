@@ -32,6 +32,7 @@ struct PlayerStorage {
 // Only the C boundary sees a mutable legacy aggregate. Native callers use the
 // typed state/location references and detached ship snapshots.
 struct LegacyStateAccess {
+    static const GLOBDATA &data(const PlayerEntity &player) noexcept { return player.storage_->legacy; }
     static GLOBDATA &data(PlayerEntity &player) noexcept {
         return player.storage_->legacy;
     }
@@ -433,4 +434,10 @@ extern "C" COUNT GetShipPrice(COUNT race) {
 namespace uqm {
 Inventory &PlayerEntity::inventory() noexcept { return *inventory_; }
 const Inventory &PlayerEntity::inventory() const noexcept { return *inventory_; }
+}
+
+const uqm::RaceFleets<> &uqm::GameSession::raceFleets() const {
+    const auto &queue = detail::LegacyStateAccess::data(player()).Game_state.avail_race_q;
+    if (!queue.storage) throw std::logic_error("campaign race fleets are not initialized");
+    return detail::raceFleets(queue);
 }
