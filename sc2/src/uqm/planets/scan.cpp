@@ -25,6 +25,7 @@
 #include "lander.h"
 #include "lifeform.h"
 #include "scan.h"
+#include "../planet_sphere.hpp"
 #include "../build.h"
 #include "../colors.h"
 #include "../cons_res.h"
@@ -60,7 +61,7 @@ extern FRAME SpaceJunkFrame;
 static CONTEXT ScanContext;
 
 
-// ScanSystem(system) menu items
+// Surface scan menu items
 // The first three are from enum PlanetScanTypes in planets.h
 enum ScanMenuItems
 {
@@ -92,7 +93,7 @@ EraseCoarseScan(SOLARSYS_STATE &system)
 	
 	BatchGraphics ();
 	uqm::drawStarBackground(system);
-	DrawDefaultPlanetSphere ();
+	uqm::DrawDefaultPlanetSphere(*system.graphics);
 	UnbatchGraphics ();
 }
 
@@ -568,7 +569,7 @@ uqm::redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLoc)
 	OldContext = SetContext (ScanContext);
 
 	BatchGraphics ();
-	DrawPlanet (0, BLACK_COLOR);
+	uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 	DrawScannedObjects (TRUE);
 	if (newLoc)
 	{
@@ -774,7 +775,7 @@ PickPlanetSide(SOLARSYS_STATE &system)
 	ClearSISRect (CLEAR_SIS_RADAR);
 	SetContext (ScanContext);
 	BatchGraphics ();
-	DrawPlanet (0, BLACK_COLOR);
+	uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 	DrawScannedObjects (FALSE);
 	UnbatchGraphics ();
 
@@ -923,7 +924,7 @@ callPickupForScanType (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 }
 
 static void
-ScanPlanet (COUNT scanType)
+ScanPlanet (SOLARSYS_STATE &system, COUNT scanType)
 {
 #define SCAN_DURATION   (ONE_SECOND * 7 / 4)
 // NUM_FLASH_COLORS for flashing blips; 1 for the final frame
@@ -989,7 +990,7 @@ ScanPlanet (COUNT scanType)
 
 		// Draw a virgin surface
 		BatchGraphics ();
-		DrawPlanet (0, BLACK_COLOR);
+		uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 		UnbatchGraphics ();
 
 		tintColor = tintColors[scan];
@@ -1003,18 +1004,18 @@ ScanPlanet (COUNT scanType)
 				break;
 
 			BatchGraphics ();
-			DrawPlanet (i, tintColor);
+			uqm::DrawPlanet(*system.graphics, i, tintColor);
 			DrawScannedStuff (i, scan);
 			UnbatchGraphics ();
 #ifdef SPIN_ON_SCAN
-			RotatePlanetSphere (TRUE);
+			uqm::RotatePlanetSphere(*system.graphics, TRUE);
 #endif
 		}
 
 		if (i < SCAN_LINES)
 		{	// Aborted by a keypress; draw in finished state
 			BatchGraphics ();
-			DrawPlanet (SCAN_LINES - 1, tintColor);
+			uqm::DrawPlanet(*system.graphics, SCAN_LINES - 1, tintColor);
 			DrawScannedStuff (SCAN_LINES - 1, scan);
 			UnbatchGraphics ();
 		}
@@ -1026,7 +1027,7 @@ ScanPlanet (COUNT scanType)
 	SetContext (ScanContext);
 	if (scanType == AUTO_SCAN)
 	{	// clear the last scan
-		DrawPlanet (0, BLACK_COLOR);
+		uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 		DrawScannedObjects (FALSE);
 	}
 
@@ -1090,7 +1091,7 @@ DoScan(MENU_STATE *pMS)
 			return TRUE;
 		}
 
-		ScanPlanet (pMS->CurState);
+		ScanPlanet (system, pMS->CurState);
 		if (pMS->CurState == AUTO_SCAN)
 		{
 			pMS->CurState = DISPATCH_SHUTTLE;
@@ -1214,7 +1215,7 @@ uqm::runScan(SOLARSYS_STATE &system)
 	// cleanup scan graphics
 	BatchGraphics ();
 	SetContext (ScanContext);
-	DrawPlanet (0, BLACK_COLOR);
+	uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 	EraseCoarseScan(system);
 	UnbatchGraphics ();
 
@@ -1397,7 +1398,7 @@ void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
     } restore{SetContext(PlanetContext)};
     BatchGraphics();
     uqm::drawStarBackground(system);
-    DrawDefaultPlanetSphere();
+    uqm::DrawDefaultPlanetSphere(*system.graphics);
     DrawPlanetSurfaceBorder();
     uqm::redrawSurfaceScan(system, nullptr);
     UnbatchGraphics();
@@ -1406,6 +1407,3 @@ void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
         else PrintCoarseScan3DO(system);
     }
 }
-
-// Remaining C planet-loop entry points resolve context only at the boundary.
-void ScanSystem(void) { uqm::runScan(*pSolarSysState); }

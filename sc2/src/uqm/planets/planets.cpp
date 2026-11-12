@@ -20,6 +20,8 @@
 #include "../system_runtime.hpp"
 #include "../world_legacy.hpp"
 #include "../planet_render.hpp"
+#include "../planet_sphere.hpp"
+#include "../device_menu.hpp"
 #include "../orbit_presentation.hpp"
 
 #include "scan.h"
@@ -39,7 +41,21 @@
 #include "libs/graphics/gfx_common.h"
 
 
-// PlanetOrbitMenu() items
+namespace {
+// Legacy input callbacks have no userdata; retain the existing callback API,
+// but restore its binding on every normal, cancellation and exception exit.
+class InputCallbackScope {
+public:
+    explicit InputCallbackScope(InputFrameCallback *callback) : previous_(SetInputCallback(callback)) {}
+    ~InputCallbackScope() { SetInputCallback(previous_); }
+    InputCallbackScope(const InputCallbackScope &) = delete;
+    InputCallbackScope &operator=(const InputCallbackScope &) = delete;
+private:
+    InputFrameCallback *previous_;
+};
+}
+
+// Orbital menu items
 enum PlanetMenuItems
 {
 	// XXX: Must match the enum in menustat.h
@@ -187,7 +203,7 @@ typedef enum
 } DRAW_ORBITAL_MODE;
 
 static void
-DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
+DrawOrbitalDisplay (SOLARSYS_STATE &system, DRAW_ORBITAL_MODE Mode)
 {
 	RECT r;
 
@@ -203,7 +219,7 @@ DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
 		DrawSISFrame ();
 		DrawSISMessage (NULL);
 		DrawSISTitle (GLOBAL_SIS (PlanetName));
-		DrawStarBackGround ();
+		uqm::drawStarBackground(system);
 		DrawPlanetSurfaceBorder ();
 	}
 
@@ -220,13 +236,13 @@ DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
 	}
 	else if (Mode == DRAW_ORBITAL_FULL)
 	{
-		DrawDefaultPlanetSphere ();
+		uqm::DrawDefaultPlanetSphere (*system.graphics);
 	}
 
 	if (Mode != DRAW_ORBITAL_WAIT)
 	{
 		SetContext (GetScanContext (NULL));
-		DrawPlanet (0, BLACK_COLOR);
+		uqm::DrawPlanet (*system.graphics, 0, BLACK_COLOR);
 	}
 
 	if (Mode != DRAW_ORBITAL_UPDATE)
@@ -257,7 +273,7 @@ uqm::loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME SurfDefFrame)
 
 	if (WaitMode)
 	{
-		DrawOrbitalDisplay (DRAW_ORBITAL_WAIT);
+		DrawOrbitalDisplay (system, DRAW_ORBITAL_WAIT);
 	}
 
 	StopMusic ();
@@ -271,12 +287,12 @@ uqm::loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME SurfDefFrame)
 
 	if (WaitMode)
 	{
-		ZoomInPlanetSphere ();
-		DrawOrbitalDisplay (DRAW_ORBITAL_UPDATE);
+		uqm::ZoomInPlanetSphere (*system.graphics);
+		DrawOrbitalDisplay (system, DRAW_ORBITAL_UPDATE);
 	}
 	else
 	{
-		DrawOrbitalDisplay (DRAW_ORBITAL_FULL);
+		DrawOrbitalDisplay (system, DRAW_ORBITAL_FULL);
 	}
 }
 
@@ -285,7 +301,7 @@ uqm::OrbitPresentation::OrbitPresentation(SOLARSYS_STATE &system) : system_(syst
 }
 uqm::OrbitPresentation::~OrbitPresentation()
 {
-    UninitSphereRotation(&system_.graphics->Orbit);
+    uqm::UninitSphereRotation(system_.graphics->Orbit);
     StopMusic();
 
 	// Need to make sure our own CONTEXTs are not active because
@@ -299,6 +315,7 @@ uqm::OrbitPresentation::~OrbitPresentation()
 static BOOLEAN
 DoPlanetOrbit (MENU_STATE *pMS)
 {
+    auto &system = *static_cast<SOLARSYS_STATE *>(pMS->privData);
 	bool select = PulsedInputState.menu[KEY_MENU_SELECT] != 0;
 	BOOLEAN handled;
 
@@ -319,14 +336,14 @@ DoPlanetOrbit (MENU_STATE *pMS)
 	switch (pMS->CurState)
 	{
 		case SCAN:
-			ScanSystem ();
+			uqm::runScan(system);
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 			{	// Found Fwiffo on Pluto
 				return FALSE;
 			}
 			break;
 		case EQUIP_DEVICE:
-			select = DevicesMenu ();
+			select = uqm::DeviceMenu{uqm::systemStory(system), system}.run();
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 			{	// Invoked Talking Pet, a Caster or Sun Device over Chmmr,
 				// or a Caster for Ilwrath
@@ -347,23 +364,16 @@ DoPlanetOrbit (MENU_STATE *pMS)
 		case STARMAP:
 		{
 			BOOLEAN AutoPilotSet;
-			InputFrameCallback *oldCallback;
-
-			// Deactivate planet rotation
-			oldCallback = SetInputCallback (NULL);
-
-			RepairSISBorder ();
-
-			AutoPilotSet = StarMap ();
-			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return FALSE;
-
-			// Reactivate planet rotation
-			SetInputCallback (oldCallback);
+            {
+                InputCallbackScope pauseRotation{nullptr};
+                RepairSISBorder();
+                AutoPilotSet = StarMap();
+                if (GLOBAL(CurrentActivity) & CHECK_ABORT) return FALSE;
+            } // Restore rotation before redrawing the orbital view.
 
 			if (!AutoPilotSet)
 			{	// Redraw the orbital display
-				DrawOrbitalDisplay (DRAW_ORBITAL_FULL);
+				DrawOrbitalDisplay (system, DRAW_ORBITAL_FULL);
 				break;
 			}
 			// Fall through !!!
@@ -389,28 +399,28 @@ DoPlanetOrbit (MENU_STATE *pMS)
 static void
 on_input_frame (void)
 {
-	RotatePlanetSphere (TRUE);
+	// Legacy input callback has no userdata; resolve the active graphics once.
+    uqm::RotatePlanetSphere (*pSolarSysState->graphics, true);
 }
 
 void
-PlanetOrbitMenu (void)
+uqm::runPlanetOrbit (SOLARSYS_STATE &system)
 {
 	MENU_STATE MenuState;
-	InputFrameCallback *oldCallback;
 
 	memset (&MenuState, 0, sizeof MenuState);
 
 	DrawMenuStateStrings (PM_SCAN, SCAN);
 	SetFlashRect (SFR_MENU_3DO);
 
+    MenuState.privData = &system;
 	MenuState.CurState = SCAN;
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-	oldCallback = SetInputCallback (on_input_frame);
+    InputCallbackScope rotation{on_input_frame};
 
 	MenuState.InputFunc = DoPlanetOrbit;
 	DoInput (&MenuState, TRUE);
 
-	SetInputCallback (oldCallback);
 
 	SetFlashRect (NULL);
 	DrawMenuStateStrings (PM_STARMAP, -NAVIGATION);

@@ -566,12 +566,6 @@ uqm::DeviceMenu::run()
 }
 
 
-// Remaining C planet-menu callers obtain their context once here.
-BOOLEAN DevicesMenu(void) {
-    auto &story = uqm::gameSession().player().story();
-    if (pSolarSysState) return uqm::DeviceMenu{story, *pSolarSysState}.run();
-    return uqm::DeviceMenu{story}.run();
-}
 bool uqm::DeviceMenu::inOrbit() const {
     return system_ && uqm::systemLocation(*system_).orbit.has_value();
 }

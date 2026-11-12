@@ -219,30 +219,14 @@ POINT locationToDisplay (POINT pt, SIZE scaleRadius);
 POINT displayToLocation (POINT pt, SIZE scaleRadius);
 POINT planetOuterLocation (COUNT planetI);
 
-extern void DrawPlanet (int dy, Color tintColor);
 
-extern void DrawStarBackGround (void);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);
 extern void DrawFilledOval (RECT *pRect);
 extern void FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
 		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined, RandomContext *rng, const STAR_DESC *star);
 extern void InitLander (BYTE LanderFlags);
 
-extern void InitSphereRotation (int direction, BOOLEAN shielded);
-extern void UninitSphereRotation (PLANET_ORBIT *orbit);
-extern void PrepareNextRotationFrame (void);
-extern void DrawPlanetSphere (int x, int y);
-extern void DrawDefaultPlanetSphere (void);
-extern void RenderPlanetSphere (FRAME Frame, int offset, BOOLEAN doThrob);
-extern void SetShieldThrobEffect (FRAME FromFrame, int offset, FRAME ToFrame);
-
-extern void ZoomInPlanetSphere (void);
-extern void RotatePlanetSphere (BOOLEAN keepRate);
-
 extern void DrawScannedObjects (BOOLEAN Reversed);
-// Construct the selected World's owned surface; active orbit view required.
-extern void GeneratePlanetSurface (PLANET_DESC *pPlanetDesc,
-		FRAME SurfDefFrame, RandomContext *rng);
 extern void DeltaTopography (COUNT num_iterations, SBYTE *DepthArray,
 		RECT *pRect, SIZE depth_delta, RandomContext *rng);
 
@@ -251,7 +235,6 @@ extern void DrawPlanetSurfaceBorder (void);
 extern UNICODE* GetNamedPlanetaryBody (void);
 extern void GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize);
 
-extern void PlanetOrbitMenu (void);
 extern void SaveSolarSysLocation (void);
 
 #if defined(__cplusplus)

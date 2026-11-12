@@ -127,6 +127,7 @@ void publishPlanetProgress(SOLARSYS_STATE &system);
 WorldVisit &systemVisit(const SOLARSYS_STATE &system);
 // Prepare presentation using the explicit selected world and borrowed graphics.
 void loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME definition);
+void runPlanetOrbit(SOLARSYS_STATE &system);
 void runScan(SOLARSYS_STATE &system);
 void generatePlanetSide(SOLARSYS_STATE &system);
 void redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLocation);

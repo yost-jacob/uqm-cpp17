@@ -80,7 +80,7 @@ declaration. These counts do not imply that the remaining mixed environment is
 already separated into proper data owners.
 
 No physical planet data, scan progress, report-resource ownership or layout
-storage moved as part of steps 1–2. Steps 3–4 are recorded below; steps 5–8 remain pending. In
+storage moved as part of steps 1–2. Steps 3–5 are recorded below; steps 6–8 remain pending. In
 particular, mutable globe work tables and rotation state stay for step 5.
 
 Compatibility: seed recipes and the legacy generation recurrence remain intact;
@@ -253,7 +253,7 @@ cycling, nested mode scene handoff, restored visit/data bindings and partial
 presentation failure. Teardown does not commit gameplay actions. The save format
 and successful report sequencing are unchanged.
 
-## 5. Move generation scratch and globe animation into their owners — next
+## 5. Move generation scratch and globe animation into their owners — complete
 
 **Depends on:** steps 2–4; does not require a new renderer API.
 
@@ -273,7 +273,48 @@ and successful report sequencing are unchanged.
 another world's mutable work state; `plangen.c`, `pl_stuff.c` and their native
 owners no longer resolve the current solar-system global.
 
-## 6. Isolate flight and NPC/group operations
+### Step 5 ownership checkpoint
+
+`PlanetRenderResources` now lazily owns a `PlanetSphereData` workspace for its
+generated surface. Lighting and tilt-projection tables use `std::array`;
+elevation, RGBA and shader scratch buffers use `std::vector`. The C render record
+borrows those stable buffers and the workspace only until reset. Rotation frame,
+map position, direction, shield state and the next-frame deadline belong to the
+same workspace. Regeneration starts with fresh animation state. Reset and failed
+construction release the workspace and clear its borrowed pointers.
+
+Converted `plangen.c` and `pl_stuff.c` to C++17. Their entry points now receive
+explicit graphics, analyzed body data, descriptor, stellar-relative position and
+random-workspace references as needed. Neither file accesses `pSolarSysState` or
+selects a descriptor indirectly. Surface generation uses the analyzed body's
+immutable planet-type reference rather than looking up a global table again.
+Temporary interpolation/scaling buffers use vectors; temporary graphics contexts
+and supplied/rescaled definition artwork have scoped ownership. Deleted the
+shared lighting/projection arrays, static rotation timer/cursors and disabled
+profiling accumulators. Immutable algorithm tables remain shared and const.
+
+Native orbit, scan and lander callers pass their graphics explicitly. Deleted
+the now-unused `DrawStarBackGround`, `ScanSystem` and `DevicesMenu` C adapters
+after switching their last callers to explicit native operations. Redraw
+functions draw the prepared frames without advancing the animation; the existing
+rotation/zoom routines remain responsible for advancement. The orbit input-frame
+callback still resolves the active graphics at its single boundary in
+`planets.cpp`, because the legacy callback API has no userdata parameter. Its
+binding is now restored by RAII, including starmap cancellation and exception
+unwind. No replacement process-global workspace or renderer framework was added.
+
+The lexical global-pointer inventory is **40 lines across 6 files**: debug
+binding (19), flight/input/naming (13), NPC callbacks (5), and one each in group
+loading, the orbital input callback and the declaration. The terrain/globe implementations have zero references.
+
+Tests exercise two live graphics owners, independent buffers/projection values,
+reset/regeneration and partial-construction cleanup without binding a selected
+global system. The existing physical/node generation tests remain in place.
+Per-body projection tables increase retained memory compared with one shared
+workspace; allocation remains lazy and reset/system teardown releases it. The
+existing renderer, animation cadence and generation recipes remain in use.
+
+## 6. Isolate flight and NPC/group operations — next
 
 **Depends on:** step 1; complete data migration uses step 3.
 
@@ -360,7 +401,7 @@ remaining-reference counts at the end of each completed step.
 - [Inline event helpers](../../../sc2/src/uqm/orbit_events.hpp)
 - [Physical analysis / implicit policy](../../../sc2/src/uqm/planets/calc.c)
 - [Mixed planet-info record](../../../sc2/src/uqm/planets/plandata.h)
-- [Terrain / globe work state](../../../sc2/src/uqm/planets/plangen.c)
-- [Rotation cursors](../../../sc2/src/uqm/planets/pl_stuff.c)
+- [Terrain / globe work state](../../../sc2/src/uqm/planets/plangen.cpp)
+- [Rotation cursors](../../../sc2/src/uqm/planets/pl_stuff.cpp)
 - [NPC callbacks](../../../sc2/src/uqm/ipdisp.c)
 - [Group loading](../../../sc2/src/uqm/grpinfo.c)

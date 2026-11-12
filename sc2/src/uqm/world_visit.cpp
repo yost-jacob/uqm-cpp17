@@ -71,7 +71,7 @@ public:
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), system_(system), source_(source) {}
     ModeResult run() override {
         ExplorationViewScope view{*system_.worlds, ExplorationView::Orbit};
-        PlanetOrbitMenu();
+        runPlanetOrbit(system_);
         if (auto exit = session_.menuExit()) return *exit;
         if (QuitPosted) return SessionExit::shutdown();
         return ModeCompleted{};
