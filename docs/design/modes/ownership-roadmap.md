@@ -197,3 +197,35 @@ checks, not a complete manual campaign playthrough.
 
 The next ownership audit is EncounterMode/SystemEncounterMode. The eventual
 runtime remains parameterized by simulation, UI and a default shared compositor.
+
+## Encounter ownership audit
+
+EncounterMode owns EncounterRuntime and its SimulationEngine. SystemEncounterMode
+owns the same orchestration as a synchronous child; its result reference borrows
+its suspended caller's stack. The session, player story and immutable catalogue
+entry outlive these modes. Deep-space encounters legitimately have no star.
+
+| Responsibility | Current owner / remaining boundary |
+| --- | --- |
+| Selected roaming encounter | GameSession::CampaignEncounters; borrowed through synchronous children, with no structural mutation until they return |
+| Battle participants | Mode SimulationEngine::shipRoster; stable source ship identities point back to their fleet |
+| Planet artwork used by encounter and combat | EncounterRuntime::EncounterArena; explicit release before aftermath, automatic release on cancellation/unwind |
+| Dialogue assets and playback | Child ConversationRuntime; constructed after hail/attack selection |
+| Source player fleet | Session player fleet; a detached debug/test entry still resolves the legacy active session |
+| Source NPC fleet, activity and presentation labels | Session legacy payload accessed through GLOBAL; explicit owner borrows are still needed |
+| Encounter choice menu | Legacy synchronous input, graphics and music calls; needs scoped presentation ownership |
+| Orbital NPC group suspension | OrbitalEncounter restores normal exits; abort/load skips restoration. Group archive backend still resolves global queues |
+| Rewards and survivor reconciliation | Explicit finish/run steps, mixed with tally presentation; these must remain completion effects, never destructor effects |
+
+Next increments: replace detached runtime/session fallback and NPC/activity
+lookups with explicit owner borrows; scope choice-screen resources; give orbital
+group persistence an explicit owner interface; then separate aftermath state
+changes from tally presentation. This is not yet the encounter ownership
+checkpoint. The future runtime/UI/compositor framework remains deferred.
+
+Arena regression coverage substitutes graphics loading and checks normal
+completion, repeated reset, replacement, child failure and partial-load failure.
+Debug and Release CMake builds/tests and the legacy build pass. A focused live
+check hands off the explicitly selected non-first roaming fleet; a second loads
+real planet artwork, cancels at the choice screen and verifies arena release
+before aftermath. It does not exercise a complete battle or salvage tally.

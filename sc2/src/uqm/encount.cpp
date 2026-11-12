@@ -117,18 +117,18 @@ void uqm::EncounterRuntime::buildBattle(RosterSide side)
 
     if (side == RosterSide::Second) {
         // The NPC side is prepared first, before conversation and combat. Its
-        // arena belongs to the encounter and is released by finish().
+        // arena belongs to the encounter, including exceptional exits.
         switch (LOBYTE(GLOBAL(CurrentActivity))) {
             case IN_LAST_BATTLE:
-                load_gravity_well(NUMBER_OF_PLANET_TYPES);
+                arena_.load(NUMBER_OF_PLANET_TYPES);
                 break;
             case IN_HYPERSPACE:
-                load_gravity_well(static_cast<BYTE>(static_cast<COUNT>(engine_.random()())
+                arena_.load(static_cast<BYTE>(static_cast<COUNT>(engine_.random()())
                     % NUMBER_OF_PLANET_TYPES));
                 break;
             default:
                 story_.set(StoryCounter::EscapeCounter, 110);
-                load_gravity_well(story_.read(StoryCounter::BattlePlanet));
+                arena_.load(story_.read(StoryCounter::BattlePlanet));
                 break;
         }
     }
@@ -416,7 +416,7 @@ uqm::EncounterRuntime::finish()
 
 	ships_killed = 0;
 
-	free_gravity_well ();
+    arena_.reset(); // Release presentation before tallying; never apply rewards in a destructor.
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
