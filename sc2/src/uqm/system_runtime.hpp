@@ -9,6 +9,7 @@
 #include <type_traits>
 #include <functional>
 #include <vector>
+#include <string_view>
 namespace uqm {
 enum class ExplorationView { Flight, Orbit, Scan };
 // Own captured drawable frames; borrows passed to the C renderer expire at reset
@@ -76,7 +77,7 @@ POINT transformLocation(const SOLARSYS_STATE &system, POINT point, bool toDispla
 bool inInnerSystem(const SOLARSYS_STATE &system) noexcept;
 // Draw the mode-owned star field using the caller's current drawing context.
 void drawStarBackground(const SOLARSYS_STATE &system);
-// Prepare legacy save markers from this visit; live orbit state stays separate.
+// Prepare legacy save markers from this explicit visit; live orbit state stays separate.
 void saveSolarSystemLocation(SOLARSYS_STATE &system);
 // Borrowed lookup; system must have a prepared native runtime.
 SystemBehavior &systemBehavior(const SOLARSYS_STATE &system);
@@ -118,7 +119,8 @@ inline void analyzePlanet(const SOLARSYS_STATE &system, const PLANET_DESC &body,
     DoPlanetaryAnalysis(&output, &body, &generationRandom(system), &inputs);
 }
 
-const UNICODE *namedPlanetaryBody(const SOLARSYS_STATE &system);
+// Borrow named-body text from session strings; those resources outlive the view.
+std::optional<std::string_view> namedPlanetaryBody(const STAR_DESC &star, const SolarSystem &system);
 // Orbit descriptor and world layout must already be attached. Loading replaces
 // local masks; publishing merges permanent retrieval bits without awarding cargo.
 World &orbitalWorld(SOLARSYS_STATE &system);

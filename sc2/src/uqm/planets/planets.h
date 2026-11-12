@@ -175,18 +175,15 @@ struct solarsys_state
     UQM_SYSTEM_RUNTIME *worlds; // Opaque owner of native World/EnergyBehavior objects.
 
     PLANET_RENDER_DATA *graphics; // Scoped borrow from the current native World.
-			// Homeworld encounters count as 'in orbit'
 };
 
-extern SOLARSYS_STATE *pSolarSysState;
 extern MUSIC_REF SpaceMusic;
 extern CONTEXT PlanetContext;
 
-// Random contexts are explicitly owned by generation callers.
+// Legacy save-summary queries use a scoped, narrow exploration adapter.
 
 bool playerInSolarSystem (void);
 bool playerInPlanetOrbit (void);
-bool playerInInnerSystem (void);
 bool worldIsPlanet (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world);
 bool worldIsMoon (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world);
 COUNT planetIndex (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world);
@@ -195,7 +192,6 @@ COUNT moonIndex (const SOLARSYS_STATE *solarSys, const PLANET_DESC *moon);
 bool matchWorld (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world,
 		BYTE planetI, BYTE moonI);
 
-DWORD GetRandomSeedForStar (const STAR_DESC *star);
 
 POINT locationToDisplay (POINT pt, SIZE scaleRadius);
 POINT displayToLocation (POINT pt, SIZE scaleRadius);
@@ -213,7 +209,6 @@ extern void DeltaTopography (COUNT num_iterations, SBYTE *DepthArray,
 
 extern void DrawPlanetSurfaceBorder (void);
 
-extern UNICODE* GetNamedPlanetaryBody (void);
 extern void GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize);
 
 extern void SaveSolarSysLocation (void);

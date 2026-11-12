@@ -21,6 +21,7 @@
 
 
 #include "system_runtime.hpp"
+#include "exploration_legacy.hpp"
 #include "world_legacy.hpp"
 #include "planet_render_legacy.hpp"
 #include "system_behavior.hpp"
@@ -59,18 +60,18 @@ static void moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system,
 
 static void dumpSystemCallback (const STAR_DESC *star,
 		const SOLARSYS_STATE *system, void *arg);
-static void dumpPlanetCallback (const PLANET_DESC *planet, void *arg);
-static void dumpMoonCallback (const PLANET_DESC *moon, void *arg);
-static void dumpWorld (FILE *out, const PLANET_DESC *world);
+static void dumpPlanetCallback (const SOLARSYS_STATE *system, const PLANET_DESC *planet, void *arg);
+static void dumpMoonCallback (const SOLARSYS_STATE *system, const PLANET_DESC *moon, void *arg);
+static void dumpWorld (FILE *out, const SOLARSYS_STATE *system, const PLANET_DESC *world);
 
 typedef struct TallyResourcesArg TallyResourcesArg;
 static void tallySystemPreCallback (const STAR_DESC *star, const
 		SOLARSYS_STATE *system, void *arg);
 static void tallySystemPostCallback (const STAR_DESC *star, const
 		SOLARSYS_STATE *system, void *arg);
-static void tallyPlanetCallback (const PLANET_DESC *planet, void *arg);
-static void tallyMoonCallback (const PLANET_DESC *moon, void *arg);
-static void tallyResourcesWorld (TallyResourcesArg *arg,
+static void tallyPlanetCallback (const SOLARSYS_STATE *system, const PLANET_DESC *planet, void *arg);
+static void tallyMoonCallback (const SOLARSYS_STATE *system, const PLANET_DESC *moon, void *arg);
+static void tallyResourcesWorld (TallyResourcesArg *arg, const SOLARSYS_STATE *system,
 		const PLANET_DESC *world);
 
 static void dumpPlanetTypeCallback (int index, const PlanetFrame *planet,
@@ -327,10 +328,7 @@ equipShip (void)
 	}
 
 	// Update the maximum speed and turning rate when in interplanetary.
-	if (pSolarSysState != NULL)
-	{
-        pSolarSysState->worlds->flight.configure(uqm::gameSession().player().sis().loadout());
-	}
+	RefreshExplorationFlightLimits();
 
 	// Make sure everything is redrawn:
 	if (inHQSpace () ||
@@ -541,8 +539,6 @@ forAllPlanets (STAR_DESC *star, SOLARSYS_STATE *system, void (*callback) (
 {
 	COUNT i;
 
-	assert(GetCurrentStar() == star);
-	assert(pSolarSysState == system);
 
 	for (i = 0; i < system->SunDesc[0].NumPlanets; i++)
 		callback (star, system, &system->PlanetDesc[i], arg);
@@ -555,7 +551,6 @@ forAllMoons (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 {
 	COUNT i;
 
-	assert(pSolarSysState == system);
 
 	for (i = 0; i < planet->NumPlanets; i++)
 		callback (star, system, planet, &system->MoonDesc[i], arg);
@@ -567,7 +562,6 @@ forAllMoons (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 void
 UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
 {
-	ACTIVITY savedActivity;
 	
 	if (universeRecurseArg->systemFuncPre == NULL
 			&& universeRecurseArg->systemFuncPost == NULL
@@ -577,14 +571,15 @@ UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
 		return;
 	
     std::lock_guard clockGuard(uqm::gameSession().clock());
-	//TFB_DEBUG_HALT = 1;
-	savedActivity = GLOBAL (CurrentActivity);
-	disableInteractivity = TRUE;
+    struct InspectionScope {
+        ACTIVITY &activity;
+        ACTIVITY previous;
+        BOOLEAN interactivity = disableInteractivity;
+        ~InspectionScope() { activity = previous; disableInteractivity = interactivity; }
+    } inspection{GLOBAL(CurrentActivity), GLOBAL(CurrentActivity)};
+    disableInteractivity = TRUE;
+    forAllStars(starRecurse, universeRecurseArg);
 
-	forAllStars (starRecurse, (void *) universeRecurseArg);
-	
-	disableInteractivity = FALSE;
-	GLOBAL (CurrentActivity) = savedActivity;
 }
 
 static void
@@ -592,27 +587,11 @@ starRecurse (STAR_DESC *star, void *arg)
 {
 	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
 
-	SOLARSYS_STATE SolarSysState;
-	SOLARSYS_STATE *oldPSolarSysState = pSolarSysState;
-	STAR_DESC *oldStarDescPtr = GetCurrentStar();
-	SetCurrentStar(star);
-
-	RandomContext constructionRandom{RandomDefaultSeed};
-	RandomContext_SeedRandom (&constructionRandom, GetRandomSeedForStar (star));
-
-	memset (&SolarSysState, 0, sizeof (SolarSysState));
-	SolarSysState.SunDesc[0].pPrevDesc = 0;
-	SolarSysState.SunDesc[0].rand_seed = RandomContext_Random (&constructionRandom);
-	SolarSysState.SunDesc[0].data_index = STAR_TYPE (star->Type);
-	SolarSysState.SunDesc[0].location.x = 0;
-	SolarSysState.SunDesc[0].location.y = 0;
-	//SolarSysState.SunDesc[0].radius = MIN_ZOOM_RADIUS;
-	CreateSystemWorlds (&SolarSysState, star);
-    SolarSysState.worlds->generation = constructionRandom;
-
-	pSolarSysState = &SolarSysState;
-	uqm::systemBehavior(SolarSysState).generatePlanets(*(&SolarSysState));
-    BuildSystemWorlds (&SolarSysState, star);
+    auto &session = uqm::gameSession();
+    UQM_SYSTEM_RUNTIME runtime{session.player().story(), uqm::simulationEngine(), session.worldOwner(), nullptr};
+    auto &SolarSysState = runtime.engine;
+    SolarSysState.worlds = &runtime;
+    uqm::constructSystemWorlds(SolarSysState, *star);
 
 	if (universeRecurseArg->systemFuncPre != NULL)
 	{
@@ -634,9 +613,6 @@ starRecurse (STAR_DESC *star, void *arg)
 				star, &SolarSysState, universeRecurseArg->arg);
 	}
 	
-    DestroySystemWorlds (&SolarSysState);
-	pSolarSysState = oldPSolarSysState;
-	SetCurrentStar(oldStarDescPtr);
 }
 
 static void
@@ -645,14 +621,12 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 {
 	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
 	
-	assert(GetCurrentStar() == star);
-	assert(pSolarSysState == system);
 
 	planet->pPrevDesc = &system->SunDesc[0];
 
 	if (universeRecurseArg->planetFuncPre != NULL)
 	{
-		SelectSystemWorld(system, planet);
+		system->worlds->system->selectWorld(uqm::detail::worldFromDescriptor(*system, *planet).id());
         uqm::detail::WorldDataBorrow generated{system->SysInfo, uqm::orbitalWorld(*system)};
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
@@ -660,15 +634,12 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		// Event-specific analysis/scan seeds are also needed for debug reports.
 		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->planetFuncPre) (
-				planet, universeRecurseArg->arg);
+				system, planet, universeRecurseArg->arg);
 	}
 
 	if (universeRecurseArg->moonFunc != NULL)
 	{
-		RandomContext_SeedRandom (&uqm::generationRandom(*system), planet->rand_seed);
-		
-		uqm::systemBehavior(*system).generateMoons(*(system), *(planet));
-        BuildMoonWorlds (system, planet);
+        uqm::detail::worldFromDescriptor(*system, *planet).projectMoons(*system, *planet);
 
 		forAllMoons (star, system, planet, moonRecurse,
 				(void *) universeRecurseArg);
@@ -676,7 +647,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	
 	if (universeRecurseArg->planetFuncPost != NULL)
 	{
-		SelectSystemWorld(system, planet);
+		system->worlds->system->selectWorld(uqm::detail::worldFromDescriptor(*system, *planet).id());
         uqm::detail::WorldDataBorrow generated{system->SysInfo, uqm::orbitalWorld(*system)};
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
@@ -684,7 +655,7 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		// Event-specific analysis/scan seeds are also needed for debug reports.
 		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->planetFuncPost) (
-				planet, universeRecurseArg->arg);
+				system, planet, universeRecurseArg->arg);
 	}
 }
 
@@ -694,14 +665,12 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 {
 	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
 	
-	assert(GetCurrentStar() == star);
-	assert(pSolarSysState == system);
 	
 	moon->pPrevDesc = planet;
 
 	if (universeRecurseArg->moonFunc != NULL)
 	{
-		SelectSystemWorld(system, moon);
+		system->worlds->system->selectWorld(uqm::detail::worldFromDescriptor(*system, *moon).id());
         uqm::detail::WorldDataBorrow generated{system->SysInfo, uqm::orbitalWorld(*system)};
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc).child(moon - system->MoonDesc)};
@@ -712,7 +681,7 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		}
 		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->moonFunc) (
-				moon, universeRecurseArg->arg);
+				system, moon, universeRecurseArg->arg);
 	}
 }
 
@@ -943,30 +912,30 @@ starPresenceString (BYTE index)
 }
 
 static void
-dumpPlanetCallback (const PLANET_DESC *planet, void *arg)
+dumpPlanetCallback (const SOLARSYS_STATE *system, const PLANET_DESC *planet, void *arg)
 {
 	FILE *out = ((DumpUniverseArg *) arg)->out;
-	dumpPlanet (out, planet);
+	dumpPlanet (out, system, planet);
 }
 
 void
-dumpPlanet (FILE *out, const PLANET_DESC *planet)
+dumpPlanet (FILE *out, const SOLARSYS_STATE *system, const PLANET_DESC *planet)
 {
-	uqm::systemBehavior(*pSolarSysState).generateName(*(pSolarSysState), *(planet));
+	uqm::systemBehavior(*system).generateName(*system, *planet);
 	fprintf (out, "- %-37s  %s\n", GLOBAL_SIS (PlanetName),
 			planetTypeString (planet->data_index & ~PLANET_SHIELDED));
-	dumpWorld (out, planet);
+	dumpWorld (out, system, planet);
 }
 
 static void
-dumpMoonCallback (const PLANET_DESC *moon, void *arg)
+dumpMoonCallback (const SOLARSYS_STATE *system, const PLANET_DESC *moon, void *arg)
 {
 	FILE *out = ((DumpUniverseArg *) arg)->out;
-	dumpMoon (out, moon);
+	dumpMoon (out, system, moon);
 }
 
 void
-dumpMoon (FILE *out, const PLANET_DESC *moon)
+dumpMoon (FILE *out, const SOLARSYS_STATE *system, const PLANET_DESC *moon)
 {
 	const char *typeStr;
 	
@@ -983,15 +952,15 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 		typeStr = planetTypeString (moon->data_index & ~PLANET_SHIELDED);
 	}
 	fprintf (out, "  - Moon %-30c  %s\n",
-			'a' + static_cast<int>(moon - &pSolarSysState->MoonDesc[0]), typeStr);
+			'a' + static_cast<int>(moon - &system->MoonDesc[0]), typeStr);
 
-	dumpWorld (out, moon);
+	dumpWorld (out, system, moon);
 }
 
 static void
-dumpWorld (FILE *out, const PLANET_DESC *world)
+dumpWorld (FILE *out, const SOLARSYS_STATE *system, const PLANET_DESC *world)
 {
-	PLANET_INFO *info;
+	const PLANET_INFO *info;
 	
 	if (world->data_index == HIERARCHY_STARBASE) {
 		return;
@@ -1001,7 +970,7 @@ dumpWorld (FILE *out, const PLANET_DESC *world)
 		return;
 	}
 
-	info = &pSolarSysState->SysInfo.PlanetInfo;
+	info = &system->SysInfo.PlanetInfo;
 	fprintf(out, "          AxialTilt:  %d\n", info->data->AxialTilt);
 	fprintf(out, "          Tectonics:  %d\n", info->data->Tectonics);
 	fprintf(out, "          Weather:    %d\n", info->data->Weather);
@@ -1020,8 +989,8 @@ dumpWorld (FILE *out, const PLANET_DESC *world)
 	}
 
 	fprintf (out, "          Bio: %4d    Min: %4d\n",
-			calculateBioValue (pSolarSysState, world),
-			calculateMineralValue (pSolarSysState, world));
+			calculateBioValue (system, world),
+			calculateMineralValue (system, world));
 }
 
 COUNT
@@ -1198,19 +1167,19 @@ tallySystemPostCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
 }
 
 static void
-tallyPlanetCallback (const PLANET_DESC *planet, void *arg)
+tallyPlanetCallback (const SOLARSYS_STATE *system, const PLANET_DESC *planet, void *arg)
 {
-	tallyResourcesWorld ((TallyResourcesArg *) arg, planet);
+	tallyResourcesWorld ((TallyResourcesArg *) arg, system, planet);
 }
 
 static void
-tallyMoonCallback (const PLANET_DESC *moon, void *arg)
+tallyMoonCallback (const SOLARSYS_STATE *system, const PLANET_DESC *moon, void *arg)
 {
-	tallyResourcesWorld ((TallyResourcesArg *) arg, moon);
+	tallyResourcesWorld ((TallyResourcesArg *) arg, system, moon);
 }
 
 static void
-tallyResourcesWorld (TallyResourcesArg *arg, const PLANET_DESC *world)
+tallyResourcesWorld (TallyResourcesArg *arg, const SOLARSYS_STATE *system, const PLANET_DESC *world)
 {
 	if (world->data_index == HIERARCHY_STARBASE) {
 		return;
@@ -1220,8 +1189,8 @@ tallyResourcesWorld (TallyResourcesArg *arg, const PLANET_DESC *world)
 		return;
 	}
 
-	arg->bioCount += calculateBioValue (pSolarSysState, world),
-	arg->mineralCount += calculateMineralValue (pSolarSysState, world);
+	arg->bioCount += calculateBioValue (system, world),
+	arg->mineralCount += calculateMineralValue (system, world);
 }
 
 ////////////////////////////////////////////////////////////////////////////

@@ -22,6 +22,7 @@
 #include "../planet_render.hpp"
 #include "../planet_sphere.hpp"
 #include "../device_menu.hpp"
+#include <utility>
 #include "../orbit_presentation.hpp"
 
 #include "scan.h"
@@ -42,6 +43,7 @@
 
 
 namespace {
+thread_local PLANET_RENDER_DATA *orbitCallbackGraphics = nullptr;
 // Legacy input callbacks have no userdata; retain the existing callback API,
 // but restore its binding on every normal, cancellation and exception exit.
 class InputCallbackScope {
@@ -400,7 +402,8 @@ static void
 on_input_frame (void)
 {
 	// Legacy input callback has no userdata; resolve the active graphics once.
-    uqm::RotatePlanetSphere (*pSolarSysState->graphics, true);
+    assert(orbitCallbackGraphics);
+    uqm::RotatePlanetSphere (*orbitCallbackGraphics, true);
 }
 
 void
@@ -416,6 +419,10 @@ uqm::runPlanetOrbit (SOLARSYS_STATE &system)
     MenuState.privData = &system;
 	MenuState.CurState = SCAN;
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+    struct GraphicsBorrow {
+        PLANET_RENDER_DATA *previous;
+        ~GraphicsBorrow() { orbitCallbackGraphics = previous; }
+    } graphicsBorrow{std::exchange(orbitCallbackGraphics, system.graphics)};
     InputCallbackScope rotation{on_input_frame};
 
 	MenuState.InputFunc = DoPlanetOrbit;

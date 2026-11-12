@@ -116,7 +116,7 @@ if(BUILD_TESTING)
         tests/ship_factory.cpp sc2/src/uqm/ship_factory.cpp sc2/src/uqm/loadship.cpp
         # Executable design prototype; deliberately excluded from UQM_SOURCES.
         tests/combat_ownership.cpp docs/design/combat/projectile.cpp
-        tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp tests/system_behavior.cpp tests/system_flight.cpp
+        tests/discovery_state.cpp tests/discovery_state_c.c tests/energy_behavior.cpp tests/system_behavior.cpp tests/system_flight.cpp tests/exploration_legacy.cpp
         sc2/src/uqm/system_behavior.cpp sc2/src/uqm/system_encounter.cpp sc2/src/uqm/orbital_encounter.cpp sc2/src/uqm/system_runtime.cpp sc2/src/uqm/ipdisp.cpp sc2/src/uqm/system_behavior_factory.cpp
         sc2/src/uqm/planets/generate/genchmmr.cpp sc2/src/uqm/planets/generate/gensyr.cpp
         tests/hash_tables.cpp
@@ -139,7 +139,7 @@ if(BUILD_TESTING)
         sc2/src/uqm/game_mode.cpp
         sc2/src/uqm/discovery_state.cpp sc2/src/uqm/discovery_state_c.cpp
         sc2/src/uqm/world_state.cpp
-        sc2/src/uqm/world.cpp sc2/src/uqm/world_visit.cpp sc2/src/uqm/planet_render.cpp sc2/src/uqm/energy_behavior.cpp sc2/src/uqm/world_c.cpp sc2/src/uqm/game_state_bits.c
+        sc2/src/uqm/world.cpp sc2/src/uqm/world_visit.cpp sc2/src/uqm/exploration_legacy.cpp sc2/src/uqm/planet_render.cpp sc2/src/uqm/energy_behavior.cpp sc2/src/uqm/world_c.cpp sc2/src/uqm/game_state_bits.c
         sc2/src/libs/uio/charhashtable.cpp
         sc2/src/libs/uio/memdebug.cpp)
     target_include_directories(uqm-build-tests PRIVATE

@@ -80,7 +80,7 @@ declaration. These counts do not imply that the remaining mixed environment is
 already separated into proper data owners.
 
 No physical planet data, scan progress, report-resource ownership or layout
-storage moved as part of steps 1–2. Steps 3–7 are recorded below; step 8 remains pending. In
+storage moved as part of steps 1–2. Steps 3–8 are recorded below; this ownership migration is complete. In
 particular, mutable globe work tables and rotation state stay for step 5.
 
 Compatibility: seed recipes and the legacy generation recurrence remain intact;
@@ -442,7 +442,7 @@ parent link; a separate live flight check advances flagship and NPC entities.
 Save identifiers and record formats are unchanged. The ownership map is ready
 for step 8's remaining-boundary audit; no new mode-runtime hierarchy was added.
 
-## 8. Delete the remaining global environment and stop — next
+## 8. Delete the remaining global environment and stop — complete
 
 **Depends on:** the completed component cutovers above.
 
@@ -463,6 +463,61 @@ orbital visit/report resources and generated presentation state have clear
 owners; gameplay work takes explicit references; and the global environment is
 absent or confined to a genuinely unavoidable C callback adapter. New runtimes
 can then compose these components without another ownership migration.
+
+### Step 8 ownership checkpoint
+
+Deleted `pSolarSysState` from production declarations, storage and bindings;
+there are **zero occurrences in `sc2/src` or tests**. Native algorithms use their
+explicit owners/references. The compatibility record remains an input envelope,
+fixed-capacity descriptor projection, generated-data/retrieval-mask view and
+planet-graphics borrow. It no longer owns the migrated gameplay data.
+
+Debug universe enumeration now owns a local native runtime per inspected star
+and passes its explicit view to planet/moon dump and tally callbacks. It neither
+selects a global solar system nor changes the selected catalogue star. Moon
+views come from the native tree. The existing no-mode/no-location-change
+inspection contract remains; activity/interactivity bindings restore on unwind.
+Legacy scripts' other debug side effects remain subject to the existing warning
+in the debug tools; separating all story actions from inspection is future work.
+
+Deleted the unused opaque create/prepare/build/destroy world adapters and the
+C selected-descriptor getter/setter. Native debug/selection code uses identities
+and explicit views. Old-format archive fixtures construct their native layouts
+through test-only setup helpers instead of keeping obsolete production APIs.
+Named-body lookup now returns an optional borrowed string view from explicit
+catalogue/system inputs.
+
+Two narrow C compatibility scopes remain; neither stores a `SOLARSYS_STATE*`,
+and neither exports a current-environment getter:
+
+| Boundary | Exact consumer and reason | Borrow / lifetime |
+| --- | --- | --- |
+| `ExplorationLegacyBinding` in `exploration_legacy.cpp` | `save.c` summary/location callbacks have no native mode argument; the debug equipment command can request a limit refresh | Player, native system-owner reference, flight state, catalogue star and ship stamp. Bound during exploration and synchronous child menus; restores the prior private thread-local binding on unwind. Save encoding uses the shared explicit `prepareSystemSave` operation. |
+| Orbital graphics binding in `planets.cpp` | `on_input_frame()` uses the legacy `InputFrameCallback(void)` signature, which has no userdata | Only `PLANET_RENDER_DATA*`. Scoped to the orbital menu, with callback restoration occurring before the graphics borrow ends. Child-mode drawing suspension keeps its existing behavior. |
+
+C save marker encodings and summary labels are preserved, including unnamed moon
+suffixes. Native device/scan save preparation passes explicit state and does not
+resolve the C binding. No save-file redesign, replacement global runtime or new
+mode hierarchy was introduced.
+
+### Completed ownership map
+
+| Responsibility | Owner / remaining view |
+| --- | --- |
+| Stellar metadata, generated planet/moon geometry and identities | Native `SolarSystem` / `WorldDefinition::orbit`; C arrays are projections |
+| Resolved body properties and scan seeds | `World::generatedData()`; scoped C borrow |
+| Permanent retrieval progress and personal discovery state | Shared `WorldState` and player's `StoryState`; short-lived retrieval-mask staging |
+| Terrain/globe frames, vectors, projection tables and rotation state | World-owned `PlanetRenderResources` / `PlanetSphereData` |
+| Discovery text/fonts and orbital presentation lifetime | `WorldVisit`, `PlanetReport` and `OrbitPresentation` |
+| Flight counters, zoom/anchor and pending orbit entry | Exploration-owned `SystemFlightState`; persistent position stays in `PlayerEntity` |
+| Entity pool and NPC/flagship hooks | Mode-owned `SimulationEngine`; native entities borrow explicit flight/encounter inputs |
+| Legacy drawing/input envelope | `SOLARSYS_STATE`, explicitly supplied; no global instance selector |
+
+Focused tests exercise nested compatibility scopes, exception restoration,
+inner/orbital save marker encodings, name suffixes, native selection/view lifetimes
+and existing no-mode inspection. Debug/Release builds, the legacy build and live
+flight/orbit/return checks validate the completed cutover. The planned ownership
+stopping point has been reached; future runtimes can compose these owners.
 
 Full menu modernization, animation/audio compositor replacement, removal of all
 C graphics calls, save-format redesign and online simulation are not prerequisites

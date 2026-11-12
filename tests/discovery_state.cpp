@@ -1,6 +1,8 @@
 #include "uqm/system_runtime.hpp"
+#include "uqm/world_legacy.hpp"
 #include "uqm/game_state.hpp"
 #include "uqm/state.h"
+#include "uqm/starmap.h"
 #include <boost/test/unit_test.hpp>
 #include <cstring>
 #include <stdexcept>
@@ -108,3 +110,34 @@ BOOST_AUTO_TEST_CASE(discovery_save_rejects_missing_layout_and_malformed_archive
 
 // Test-only C caller bridge; production callers use the explicit native API.
 extern "C" void test_load_planet_progress(SOLARSYS_STATE *system) { uqm::loadPlanetProgress(*system); }
+
+// Archive fixtures construct explicit native layouts; production no longer
+// maintains opaque create/build/destroy adapters just for this old-format test.
+extern "C" void test_create_archive_worlds(SOLARSYS_STATE *view, const STAR_DESC *star) {
+    auto &session = uqm::gameSession();
+    auto runtime = std::make_unique<UQM_SYSTEM_RUNTIME>(UQM_SYSTEM_RUNTIME{
+        session.player().story(), uqm::simulationEngine(), session.worldOwner(), nullptr});
+    runtime->catalogueStar = star;
+    std::vector<uqm::WorldDefinition> planets;
+    for (COUNT i = 0; i < view->SunDesc[0].NumPlanets; ++i)
+        planets.push_back(uqm::detail::describeWorld({session.world().id(), StarId{GetStarIndex(star)}, i, {}},
+            uqm::WorldKind::Planet, view->PlanetDesc[i], star->Index));
+    runtime->system = std::make_unique<uqm::SolarSystem>(StarId{GetStarIndex(star)}, session.worldOwner(), std::move(planets));
+    view->worlds = runtime.release();
+}
+extern "C" void test_build_archive_moons(SOLARSYS_STATE *view, const PLANET_DESC *parent) {
+    auto &planet = uqm::detail::worldFromDescriptor(*view, *parent);
+    std::vector<std::unique_ptr<uqm::World>> children;
+    for (COUNT i = 0; i < parent->NumPlanets; ++i) {
+        auto identity = planet.id(); identity.moon = i;
+        auto descriptor = view->MoonDesc[i]; descriptor.pPrevDesc = const_cast<PLANET_DESC *>(parent);
+        children.push_back(std::make_unique<uqm::World>(uqm::detail::describeWorld(identity, uqm::WorldKind::Moon,
+            descriptor, planet.definition().specialSystem), view->worlds->world));
+    }
+    planet.replaceChildren(std::move(children));
+}
+extern "C" void test_destroy_archive_worlds(SOLARSYS_STATE *view) { delete view->worlds; view->worlds = nullptr; }
+
+extern "C" void test_select_archive_world(SOLARSYS_STATE *view, const PLANET_DESC *body) {
+    view->worlds->system->selectWorld(uqm::detail::worldFromDescriptor(*view, *body).id());
+}

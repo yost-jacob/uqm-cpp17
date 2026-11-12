@@ -19,6 +19,7 @@
 #include "libs/threadlib.h"
 #include "uqm/planet_render_legacy.hpp"
 #include "../system_runtime.hpp"
+#include "../exploration_legacy.hpp"
 #include "../world_legacy.hpp"
 #include "../world_visit.hpp"
 #include "../sis_state.hpp"
@@ -81,7 +82,6 @@ enum SolarSysMenuMenuItems
 	NAVIGATION,
 };
 
-SOLARSYS_STATE *pSolarSysState;
 FRAME SISIPFrame;
 FRAME SunFrame;
 FRAME OrbitalFrame;
@@ -163,21 +163,6 @@ matchWorld (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world,
 	return true;
 }
 
-bool
-playerInSolarSystem (void)
-{
-	return pSolarSysState != NULL;
-}
-
-bool
-playerInPlanetOrbit (void)
-{
-	return playerInSolarSystem () && uqm::systemLocation(*pSolarSysState).orbit.has_value();
-}
-
-bool
-playerInInnerSystem(void) { return uqm::inInnerSystem(*pSolarSysState); }
-
 // Select the already constructed moon layout; naming remains a visit action.
 static void
 ProjectMoons(SOLARSYS_STATE &system, PLANET_DESC &planet)
@@ -228,7 +213,7 @@ LoadIPData (void)
 }
 
 
-DWORD
+static DWORD
 GetRandomSeedForStar (const STAR_DESC *star)
 {
 	return MAKE_DWORD (star->star_pt.x, star->star_pt.y);
@@ -333,24 +318,6 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 	return orbital;
 }
 
-static void
-saveNonOrbitalLocation(SOLARSYS_STATE &system)
-{
-    auto &flight = uqm::systemLocation(system).flight;
-	// XXX: Solar system reentry test depends on ShipFacing != 0
-	flight.facing = GetFrameIndex (GLOBAL (ShipStamp.frame)) + 1;
-	flight.loadOrbit = 0;
-	if (!uqm::inInnerSystem(system))
-	{
-		flight.planet = 0;
-	}
-	else
-	{
-		// ip_planet is 1-based because code tests for ip_planet!=0
-		flight.planet = 1 + bodies(system).innerPlanet().id().planet;
-		flight.position = system.worlds->flight.outerAnchor;
-	}
-}
 
 static void
 FreeSolarSys(SOLARSYS_STATE &system)
@@ -360,7 +327,7 @@ FreeSolarSys(SOLARSYS_STATE &system)
 		system.worlds->flight.active = FALSE;
 		
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			saveNonOrbitalLocation(system);
+			uqm::saveSolarSystemLocation(system);
 	}
 
 	system.worlds->viewState.scene.reset();
@@ -1482,16 +1449,13 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 	location.position.x = UNIVERSE_TO_LOGX (GetCurrentStar()->star_pt.x);
 	location.position.y = UNIVERSE_TO_LOGY (GetCurrentStar()->star_pt.y);
 
-    struct Binding {
-        SOLARSYS_STATE *previous = pSolarSysState;
-        ~Binding() { pSolarSysState = previous; }
-    } binding;
     system = {};
-    pSolarSysState = &system;
 
 	system.worlds = &runtime;
 	uqm::constructSystemWorlds(system, *GetCurrentStar());
     location.system = runtime.system->star();
+    ExplorationLegacyBinding saveBinding{runtime.session->player(), runtime.system, runtime.flight,
+        systemStar(system), GLOBAL(ShipStamp)};
 
 	InitSolarSys(system);
     struct Cleanup {
@@ -1501,143 +1465,6 @@ uqm::runExploration(UQM_SYSTEM_RUNTIME &runtime)
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	system.InputFunc = DoIpFlight;
 	DoInput (&system, FALSE);
-}
-
-const UNICODE *
-uqm::namedPlanetaryBody(const SOLARSYS_STATE &system)
-{
-	if (!bodies(system).inInnerSystem() || !bodies(system).hasSelectedWorld())
-		return NULL; // Not inside an inner system, so no name
-
-
-	if (uqm::systemStar(system).Index == SOL_DEFINED)
-	{	// Planets and moons in Sol
-		int planet;
-		int moon;
-
-		planet = bodies(system).selectedWorld().id().planet;
-
-		if (!bodies(system).selectedWorld().id().moon)
-		{	// A planet
-			return GAME_STRING (PLANET_NUMBER_BASE + planet);
-		}
-
-		// Moons
-		moon = *bodies(system).selectedWorld().id().moon;
-		switch (planet)
-		{
-			case 2: // Earth
-				switch (moon)
-				{
-					case 0: // Starbase
-						return GAME_STRING (STARBASE_STRING_BASE + 0);
-					case 1: // Luna
-						return GAME_STRING (PLANET_NUMBER_BASE + 9);
-				}
-				break;
-			case 4: // Jupiter
-				switch (moon)
-				{
-					case 0: // Io
-						return GAME_STRING (PLANET_NUMBER_BASE + 10);
-					case 1: // Europa
-						return GAME_STRING (PLANET_NUMBER_BASE + 11);
-					case 2: // Ganymede
-						return GAME_STRING (PLANET_NUMBER_BASE + 12);
-					case 3: // Callisto
-						return GAME_STRING (PLANET_NUMBER_BASE + 13);
-				}
-				break;
-			case 5: // Saturn
-				if (moon == 0) // Titan
-					return GAME_STRING (PLANET_NUMBER_BASE + 14);
-				break;
-			case 7: // Neptune
-				if (moon == 0) // Triton
-					return GAME_STRING (PLANET_NUMBER_BASE + 15);
-				break;
-		}
-	}
-	else if (uqm::systemStar(system).Index == SPATHI_DEFINED)
-	{
-		if (bodies(system).selectedWorld().id().planet == 0 && !bodies(system).selectedWorld().id().moon)
-		{
-#ifdef NOTYET
-			return "Spathiwa";
-#endif // NOTYET
-		}
-	}
-	else if (uqm::systemStar(system).Index == SAMATRA_DEFINED)
-	{
-		if (bodies(system).selectedWorld().id().planet == 4 && bodies(system).selectedWorld().id().moon == 0)
-		{	// Sa-Matra
-			return GAME_STRING (PLANET_NUMBER_BASE + 32);
-		}
-	}
-
-	return NULL;
-}
-
-void
-GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize)
-{
-	UNICODE *named;
-	int moon;
-	int i;
-
-	named = GetNamedPlanetaryBody ();
-	if (named)
-	{
-		utf8StringCopy (buf, bufsize, named);
-		return;
-	}
-		
-	// Either not named or we already have a name
-	utf8StringCopy (buf, bufsize, GLOBAL_SIS (PlanetName));
-
-	if (!playerInSolarSystem () || !playerInInnerSystem () ||
-			worldIsPlanet (pSolarSysState, GetSystemSelectedDescriptor(pSolarSysState)))
-	{	// Outer or inner system or orbiting a planet
-		return;
-	}
-
-	// Orbiting an unnamed moon
-	i = strlen (buf);
-	buf += i;
-	bufsize -= i;
-	moon = moonIndex (pSolarSysState, GetSystemSelectedDescriptor(pSolarSysState));
-	if (bufsize >= 3)
-	{
-		snprintf (buf, bufsize, "-%c", 'A' + moon);
-		buf[bufsize - 1] = '\0';
-	}
-}
-
-void
-uqm::saveSolarSystemLocation(SOLARSYS_STATE &system)
-{
-    auto &flight = uqm::systemLocation(system).flight;
-
-	// This is a two-stage saving procedure
-	// Stage 1: called when saving from inner/outer view
-	// Stage 2: called when saving from orbital
-
-	if (!uqm::systemLocation(system).orbit)
-	{
-		saveNonOrbitalLocation(system);
-	}
-	else
-	{	// In orbit around a planet.
-		BYTE moon;
-
-		// flight.planet is already set
-		assert (flight.planet != 0);
-
-        // Encode the typed body identity only at the legacy save boundary.
-        const auto &target = bodies(system).selectedWorld().id();
-        moon = target.moon ? *target.moon + 2 : 1;
-		flight.loadOrbit = moon;
-	}
 }
 
 static BOOLEAN
@@ -1768,14 +1595,3 @@ DoIpFlight (SOLARSYS_STATE *pSS)
 			| CHECK_ABORT | CHECK_LOAD))
 			&& system.worlds->session->player().crew() != (COUNT)~0) ? TRUE : FALSE;
 }
-
-// Legacy C UI adapter. Native scan code supplies its exploration directly.
-UNICODE *GetNamedPlanetaryBody(void) {
-    if (!pSolarSysState || !GetCurrentStar()) return nullptr;
-    return const_cast<UNICODE *>(uqm::namedPlanetaryBody(*pSolarSysState));
-}
-
-// Remaining C boundaries resolve the legacy binding once. Native helpers above
-// use references and never select a different system implicitly.
-
-void SaveSolarSysLocation(void) { uqm::saveSolarSystemLocation(*pSolarSysState); }

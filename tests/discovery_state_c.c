@@ -2,14 +2,16 @@
 #include "uqm/starmap.h"
 #include "uqm/gendef.h"
 extern void test_load_planet_progress(SOLARSYS_STATE *system);
+extern void test_create_archive_worlds(SOLARSYS_STATE *, const STAR_DESC *);
+extern void test_build_archive_moons(SOLARSYS_STATE *, const PLANET_DESC *);
+extern void test_destroy_archive_worlds(SOLARSYS_STATE *);
+extern void test_select_archive_world(SOLARSYS_STATE *, const PLANET_DESC *);
 
 /* Real planet-info adapters need only these runtime descriptors, not rendering.
  * The fixture supplies a layout; it never substitutes persistence functions. */
-SOLARSYS_STATE *pSolarSysState;
 int discovery_state_c_round_trip(void)
 {
     SOLARSYS_STATE solar = {0};
-    SOLARSYS_STATE *old_system = pSolarSysState;
     STAR_DESC *old_star = GetCurrentStar();
     COUNT star, i;
     DWORD energy_offset;
@@ -21,7 +23,6 @@ int discovery_state_c_round_trip(void)
         if (GetStar(star)->Index == ANDROSYNTH_DEFINED) break;
     if (star == NUM_SOLAR_SYSTEMS) return 0;
     SetCurrentStar(GetStar(star));
-    pSolarSysState = &solar;
     solar.SunDesc[0].NumPlanets = 2;
     solar.PlanetDesc[0].NumPlanets = 2;
     solar.PlanetDesc[1].pPrevDesc = solar.SunDesc;
@@ -37,11 +38,10 @@ int discovery_state_c_round_trip(void)
     swrite_32(file, UINT32_C(0x00050003));
     CloseStateFile(file);
     file = NULL;
-    CreateSystemWorlds (&solar, GetCurrentStar());
-    BuildSystemWorlds (&solar, GetCurrentStar());
-    SelectSystemWorld (&solar, &solar.PlanetDesc[1]);
+    test_create_archive_worlds (&solar, GetCurrentStar());
+    test_select_archive_world (&solar, &solar.PlanetDesc[1]);
     ConfigurePersonalEnergyBehavior (&solar, 1, -1, 16, 4);
-    BuildMoonWorlds (&solar, &solar.PlanetDesc[0]);
+    test_build_archive_moons (&solar, &solar.PlanetDesc[0]);
     ConfigureArtifactEnergyBehavior (&solar, 0, 1);
     {
         ENERGY_INTERACTION artifact = InteractWorldEnergy (&solar, 0, 1, 0, FALSE);
@@ -82,9 +82,8 @@ int discovery_state_c_round_trip(void)
 done:
     if (file) CloseStateFile(file);
     ReleasePlanetInfoSnapshot(snapshot);
-    DestroySystemWorlds (&solar);
+    test_destroy_archive_worlds (&solar);
     UninitPlanetInfo();
-    pSolarSysState = old_system;
     SetCurrentStar(old_star);
     return ok;
 }
