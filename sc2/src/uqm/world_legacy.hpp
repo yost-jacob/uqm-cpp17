@@ -3,8 +3,8 @@
 #include "world.hpp"
 #include "planets/planets.h"
 namespace uqm::detail {
-// Owned generated data; the legacy MoonDesc array is only a projected view.
-struct WorldGeneration { std::vector<PLANET_DESC> moons; };
+// Replace only physical fields; frame/color state belongs to the view.
+void projectWorld(const World &world, PLANET_DESC &output, PLANET_DESC &parent);
 WorldDefinition describeWorld(WorldId id, WorldKind kind, const PLANET_DESC &descriptor, std::uint8_t specialSystem = 0);
 // Borrow one world's generated values into the C work record. The world and
 // output outlive the scope; destruction restores only the prior pointer.

@@ -36,11 +36,11 @@ POINT SystemGeometry::planetLocation(COUNT index) const {
     return uqm::displayToLocation(planets[index].image.origin, sun.radius);
 }
 POINT planetOuterLocation(const SOLARSYS_STATE &system, COUNT planet) {
-    return uqm::displayToLocation(system.PlanetDesc[planet].image.origin, system.SunDesc[0].radius);
+    return uqm::displayToLocation(system.PlanetDesc[planet].image.origin, system.worlds->flight.viewRadius);
 }
 POINT transformLocation(const SOLARSYS_STATE &system, POINT point, bool toDisplay) {
-    return toDisplay ? uqm::locationToDisplay(point, system.SunDesc[0].radius)
-                     : uqm::displayToLocation(point, system.SunDesc[0].radius);
+    return toDisplay ? uqm::locationToDisplay(point, system.worlds->flight.viewRadius)
+                     : uqm::displayToLocation(point, system.worlds->flight.viewRadius);
 }
 bool inInnerSystem(const SOLARSYS_STATE &system) noexcept {
     return system.worlds->system->inInnerSystem();

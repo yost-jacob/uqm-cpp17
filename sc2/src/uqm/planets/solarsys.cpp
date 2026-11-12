@@ -253,8 +253,9 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 	};
 
     if (regenerate) uqm::constructSystemWorlds(system, *GetCurrentStar());
+    bodies(system).project(system);
     SunFrame = SetAbsFrameIndex(SunFrame, STAR_TYPE(uqm::systemStar(system).Type));
-    system.SunDesc[0].image.origin = system.SunDesc[0].location;
+    system.SunDesc[0].image.origin = system.worlds->flight.outerAnchor;
     system.SunDesc[0].image.frame = SunFrame;
 
 	for (i = 0, pCurDesc = system.PlanetDesc;
@@ -289,7 +290,7 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 	}
 	else
 	{	// Inner system
-		system.SunDesc[0].location = flight.position;
+		system.worlds->flight.outerAnchor = flight.position;
 		flight.position = uqm::displayToLocation (
 				GLOBAL (ShipStamp.origin), MAX_ZOOM_RADIUS);
 
@@ -316,7 +317,7 @@ LoadSolarSys(SOLARSYS_STATE &system, bool regenerate = true)
 			i -= 1;
 			orbital = std::ref(bodies(system).innerPlanet().child(i));
 		}
-		flight.position = system.SunDesc[0].location;
+		flight.position = system.worlds->flight.outerAnchor;
 		flight.loadOrbit = 0;
 	}
 	else
@@ -347,7 +348,7 @@ saveNonOrbitalLocation(SOLARSYS_STATE &system)
 	{
 		// ip_planet is 1-based because code tests for ip_planet!=0
 		flight.planet = 1 + bodies(system).innerPlanet().id().planet;
-		flight.position = system.SunDesc[0].location;
+		flight.position = system.worlds->flight.outerAnchor;
 	}
 }
 
@@ -430,8 +431,8 @@ CheckIntersect(SOLARSYS_STATE &system)
 			log_add (log_Debug, "Star index = %d, Planet index = %d, <%d, %d>",
 					GetStarIndex(&uqm::systemStar(system)),
 					pCurDesc - system.PlanetDesc,
-					system.SunDesc[0].location.x,
-					system.SunDesc[0].location.y);
+					system.worlds->flight.outerAnchor.x,
+					system.worlds->flight.outerAnchor.y);
 #endif /* DEBUG_SOLARSYS */
 			return std::ref(bodies(system).innerPlanet());
 		}
@@ -757,8 +758,9 @@ enterInnerSystem(SOLARSYS_STATE &system, uqm::World &planet)
 	flight.position = uqm::displayToLocation (
 			GLOBAL (ShipStamp.origin), MAX_ZOOM_RADIUS);
 	
-	system.SunDesc[0].location =
+	system.worlds->flight.outerAnchor =
 			uqm::planetOuterLocation(system, planet.id().planet);
+    bodies(system).project(system);
 	ZeroVelocityComponents (&GLOBAL (velocity));
 
 	ProjectMoons(system, uqm::detail::worldDescriptor(system, planet));
@@ -775,7 +777,7 @@ leaveInnerSystem(SOLARSYS_STATE &system)
 	bodies(system).enterOuterSystem();
 
 	outerPlanetWait = MAKE_WORD (planet + 1, 0);
-	flight.position = system.SunDesc[0].location;
+	flight.position = system.worlds->flight.outerAnchor;
 	GLOBAL (ShipStamp.origin) = uqm::transformLocation(system, flight.position, true);
 	ZeroVelocityComponents (&GLOBAL (velocity));
 
@@ -804,8 +806,8 @@ CheckShipLocation(SOLARSYS_STATE &system, SIZE *newRadius)
     auto &flight = uqm::systemLocation(system).flight;
 	SIZE radius;
 
-	radius = system.SunDesc[0].radius;
-	*newRadius = system.SunDesc[0].radius;
+	radius = system.worlds->flight.viewRadius;
+	*newRadius = system.worlds->flight.viewRadius;
 	
 	if (GLOBAL (ShipStamp.origin.x) < 0
 			|| GLOBAL (ShipStamp.origin.x) >= SIS_SCREEN_WIDTH
@@ -888,7 +890,8 @@ ScaleSystem(SOLARSYS_STATE &system, SIZE new_radius)
     auto &flight = uqm::systemLocation(system).flight;
 	RECT r;
 
-	system.SunDesc[0].radius = new_radius;
+	system.worlds->flight.viewRadius = new_radius;
+    bodies(system).project(system);
 	GLOBAL (ShipStamp.origin) = uqm::transformLocation(system, flight.position, true);
 
 	GetContextClipRect (&r);
@@ -930,7 +933,7 @@ IP_frame(SOLARSYS_STATE &system)
 		{	// Entering inner system
 			DrawSystemTransition(system, TRUE);
 		}
-		else if (system.SunDesc[0].radius == newRadius)
+		else if (system.worlds->flight.viewRadius == newRadius)
 		{	// Leaving inner system to outer
 			DrawSystemTransition(system, FALSE);
 		}
@@ -959,17 +962,18 @@ CheckZoomLevel(SOLARSYS_STATE &system)
 
 	InnerSystem = uqm::inInnerSystem(system);
 	if (InnerSystem)
-		shipLoc = system.SunDesc[0].location;
+		shipLoc = system.worlds->flight.outerAnchor;
 	else
 		shipLoc = flight.position;
 
-	system.SunDesc[0].radius = FindRadius(system, shipLoc,
+	system.worlds->flight.viewRadius = FindRadius(system, shipLoc,
 			MAX_ZOOM_RADIUS << 1);
 	if (!InnerSystem)
 	{	// Update ship stamp since the radius probably changed
 		GLOBAL (ShipStamp.origin) = uqm::transformLocation(system, shipLoc, true);
 	}
 
+    bodies(system).project(system);
 	return InnerSystem;
 }
 
@@ -978,7 +982,7 @@ ValidateOrbits(SOLARSYS_STATE &system)
 {
     for (std::size_t i = 0; i < bodies(system).worldCount(); ++i)
         ValidateOrbit(system, bodies(system).world(i), DISPLAY_FACTOR, DISPLAY_FACTOR / 4,
-                system.SunDesc[0].radius);
+                system.worlds->flight.viewRadius);
 }
 
 static void
@@ -1003,7 +1007,7 @@ static void
 DrawOuterSystem(SOLARSYS_STATE &system)
 {
 	ValidateOrbits(system);
-	DrawSystem(system, system.SunDesc[0].radius, FALSE);
+	DrawSystem(system, system.worlds->flight.viewRadius, FALSE);
 	DrawHyperCoords (uqm::systemStar(system).star_pt);
 }
 

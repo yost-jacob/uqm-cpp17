@@ -31,7 +31,7 @@ uqm::WorldDefinition definition(uqm::WorldId id, uqm::WorldKind kind, const PLAN
     const bool shielded = (kind == uqm::WorldKind::Planet || kind == uqm::WorldKind::Moon)
             && (world.data_index & PLANET_SHIELDED) != 0;
     const auto distance = id.moon ? (world.pPrevDesc ? world.pPrevDesc->radius : 0) : world.radius;
-    return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets, specialSystem, world.data_index, distance};
+    return {id, kind, world.rand_seed, shielded, {}, world.NumPlanets, specialSystem, world.data_index, distance, {world.radius, world.location.x, world.location.y}};
 }
 uqm::LegacyDiscoveryLocation discoveryLocation(uqm::SolarSystem &system, const uqm::WorldId &world) {
     std::uint32_t record = 0, records = 0;
@@ -65,6 +65,8 @@ void constructSystemWorlds(SOLARSYS_STATE &system, const STAR_DESC &star) {
     importSystemDiscoveries(*generated, star, context);
     if (context.system) generated->preserveGeneratedData(*context.system);
     context.system = std::move(generated);
+    context.projectedMoonParent.reset();
+    context.system->project(system);
 }
 World &orbitalWorld(SOLARSYS_STATE &system) {
     auto &native = runtime(system);
@@ -90,16 +92,35 @@ void publishPlanetProgress(SOLARSYS_STATE &system) {
 } // namespace uqm
 
 namespace uqm::detail {
+void projectWorld(const World &world, PLANET_DESC &output, PLANET_DESC &parent) {
+    const auto &definition = world.definition();
+    output.rand_seed = definition.seed;
+    output.data_index = definition.bodyType;
+    output.NumPlanets = static_cast<BYTE>(definition.moonCount);
+    output.radius = static_cast<SIZE>(definition.orbit.radius);
+    output.location = {definition.orbit.x, definition.orbit.y};
+    output.pPrevDesc = &parent;
+}
 WorldDefinition describeWorld(WorldId world, WorldKind kind, const PLANET_DESC &descriptor, std::uint8_t specialSystem) {
     return definition(world, kind, descriptor, specialSystem);
 }
 const PLANET_DESC &worldDescriptor(const SOLARSYS_STATE &system, const World &world) {
     const auto &id = world.id();
+    if (id.moon && (!system.worlds->projectedMoonParent
+            || system.worlds->projectedMoonParent->planet != id.planet))
+        throw std::logic_error("moon view must be projected explicitly");
     return id.moon ? system.MoonDesc[*id.moon] : system.PlanetDesc[id.planet];
 }
 PLANET_DESC &worldDescriptor(SOLARSYS_STATE &system, const World &world) {
     const auto &id = world.id();
-    return id.moon ? system.MoonDesc[*id.moon] : system.PlanetDesc[id.planet];
+    auto &parent = id.moon ? system.PlanetDesc[id.planet] : system.SunDesc[0];
+    if (id.moon && (!system.worlds->projectedMoonParent
+            || system.worlds->projectedMoonParent->planet != id.planet))
+        throw std::logic_error("moon descriptor belongs to a different projected parent");
+    if (id.moon) projectWorld(runtime(system).world(id.planet), parent, system.SunDesc[0]);
+    auto &output = id.moon ? system.MoonDesc[*id.moon] : system.PlanetDesc[id.planet];
+    projectWorld(world, output, parent);
+    return output;
 }
 PLANET_DESC &selectedDescriptor(SOLARSYS_STATE &system) { return worldDescriptor(system, runtime(system).selectedWorld()); }
 const PLANET_DESC &selectedDescriptor(const SOLARSYS_STATE &system) { return worldDescriptor(system, runtime(system).selectedWorld()); }
@@ -109,9 +130,10 @@ World &worldFromDescriptor(SOLARSYS_STATE &system, const PLANET_DESC &descriptor
         if (&descriptor == &system.PlanetDesc[i]) return native.world(i);
     for (std::size_t i = 0; i < MAX_MOONS; ++i) {
         if (&descriptor != &system.MoonDesc[i]) continue;
-        for (std::size_t parent = 0; parent < native.worldCount(); ++parent)
-            if (descriptor.pPrevDesc == &system.PlanetDesc[parent])
-                return native.world(parent).child(i);
+        if (system.worlds->projectedMoonParent) {
+            const auto parent = system.worlds->projectedMoonParent->planet;
+            if (descriptor.pPrevDesc == &system.PlanetDesc[parent]) return native.world(parent).child(i);
+        }
     }
     throw std::invalid_argument("body descriptor does not belong to the generated system");
 }
@@ -177,7 +199,9 @@ void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
                     uqm::WorldKind::Planet, system->PlanetDesc[i], star->Index));
         auto &native = runtime(*system);
         if (native.star() != starId) throw std::logic_error("wrong active system");
+        native.adoptStar(system->SunDesc[0]);
         native.refreshPlanets(std::move(planets));
+        system->worlds->projectedMoonParent.reset();
         importSystemDiscoveries(native, *star, *system->worlds);
     } catch (...) { std::abort(); }
 }
@@ -188,10 +212,15 @@ void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
         if (static_cast<std::size_t>(slot) >= native.worldCount() || planet->NumPlanets > MAX_MOONS)
             throw std::out_of_range("invalid moon parent");
         std::vector<std::unique_ptr<uqm::World>> moons;
-        for (COUNT i = 0; i < planet->NumPlanets; ++i)
+        for (COUNT i = 0; i < planet->NumPlanets; ++i) {
+            auto moon = system->MoonDesc[i];
+            moon.pPrevDesc = &system->PlanetDesc[slot];
             moons.push_back(std::make_unique<uqm::World>(definition(id(native, static_cast<COUNT>(slot), i),
-                    uqm::WorldKind::Moon, system->MoonDesc[i], native.world(slot).definition().specialSystem), system->worlds->world));
+                    uqm::WorldKind::Moon, moon, native.world(slot).definition().specialSystem), system->worlds->world));
+            system->MoonDesc[i].pPrevDesc = moon.pPrevDesc;
+        }
         native.world(static_cast<std::size_t>(slot)).refreshChildren(std::move(moons));
+        system->worlds->projectedMoonParent = native.world(slot).id();
     } catch (...) { std::abort(); }
 }
 void DestroySystemWorlds(SOLARSYS_STATE *system) {

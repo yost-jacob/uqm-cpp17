@@ -594,6 +594,8 @@ BOOST_AUTO_TEST_CASE(system_coordinates_depend_on_the_supplied_system_not_a_sele
     uqm::SimulationEngine engine;
     UQM_SYSTEM_RUNTIME firstRuntime{state.player(uqm::SinglePlayerId).story(), engine, state.worldOwner(), nullptr};
     UQM_SYSTEM_RUNTIME secondRuntime{state.player(uqm::SinglePlayerId).story(), engine, state.worldOwner(), nullptr};
+    firstRuntime.flight.viewRadius = first.SunDesc[0].radius;
+    secondRuntime.flight.viewRadius = second.SunDesc[0].radius;
     first.worlds = &firstRuntime;
     second.worlds = &secondRuntime;
     const uqm::WorldDefinition definition{{state.world().id(), StarId{0}, 0, {}}, uqm::WorldKind::Planet, 0, false, "Planet"};
@@ -731,7 +733,7 @@ BOOST_AUTO_TEST_CASE(legacy_selected_body_views_resolve_native_ids_without_retai
     context.system->world(0).replaceChildren(std::move(children));
     SOLARSYS_STATE buffer{};
     buffer.worlds = &context;
-    buffer.MoonDesc[0].pPrevDesc = &buffer.PlanetDesc[0];
+    context.system->world(0).projectMoons(buffer, buffer.PlanetDesc[0]);
     BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == nullptr);
     SelectSystemWorld(&buffer, &buffer.PlanetDesc[0]);
     BOOST_CHECK(context.system->selectedWorld().id() == planet);
@@ -741,7 +743,7 @@ BOOST_AUTO_TEST_CASE(legacy_selected_body_views_resolve_native_ids_without_retai
     BOOST_CHECK(orbitalWorld(buffer).id() == moon);
     SOLARSYS_STATE replacement{};
     replacement.worlds = &context;
-    replacement.MoonDesc[0].pPrevDesc = &replacement.PlanetDesc[0];
+    context.system->world(0).projectMoons(replacement, replacement.PlanetDesc[0]);
     BOOST_TEST(GetSystemSelectedDescriptor(&replacement) == &replacement.MoonDesc[0]);
     PLANET_DESC foreign{};
     BOOST_CHECK_THROW(detail::worldFromDescriptor(buffer, foreign), std::invalid_argument);
@@ -764,6 +766,9 @@ BOOST_AUTO_TEST_CASE(system_constructor_builds_special_planets_and_moons_without
     projection.worlds = &runtime;
     uqm::SolarSystem system{StarId{3}, campaign.worldOwner(),
         campaign.player(uqm::SinglePlayerId).story(), star, projection, nullptr};
+    BOOST_TEST(projection.SunDesc[0].NumPlanets == 0u); // Construction did not publish scratch buffers.
+    BOOST_TEST(projection.MoonDesc[0].rand_seed == 0u);
+    system.project(projection);
     BOOST_TEST(system.worldCount() == 2u);
     BOOST_TEST(system.world(1).childCount() == 1u);
     BOOST_TEST(system.world(1).orbitHandler().has_value());
