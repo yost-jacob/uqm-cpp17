@@ -439,11 +439,9 @@ uqm::SpaceNavigation::cleanup_hyperspace(void)
 
 		LockEncounter (hEncounter, &EncounterPtr);
 		hNextEncounter = GetSuccEncounter (EncounterPtr);
-		if (EncounterPtr->hElement)
+		if (auto element = encounters_.find(*EncounterPtr, engine_))
 		{
-			ELEMENT *ElementPtr;
-
-			LockElement (EncounterPtr->hElement, &ElementPtr);
+			auto *ElementPtr = &element->get();
 
 			if (ElementPtr->hTarget)
 			{	// This is the encounter that collided with flagship
@@ -453,11 +451,10 @@ uqm::SpaceNavigation::cleanup_hyperspace(void)
 				InsertEncounter (hEncounter, GetHeadEncounter ());
 			}
 
-			UnlockElement (EncounterPtr->hElement);
 		}
-		EncounterPtr->hElement = 0;
 		UnlockEncounter (hEncounter);
 	}
+    encounters_.clear();
 }
 
 
@@ -930,13 +927,10 @@ uqm::SpaceNavigation::encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 
 		LockEncounter (hEncounter, &EncounterPtr);
 		hNextEncounter = GetSuccEncounter (EncounterPtr);
-		if (EncounterPtr->hElement)
+		if (auto element = encounters_.find(*EncounterPtr, engine_))
 		{
-			ELEMENT *ElementPtr;
-
-			LockElement (EncounterPtr->hElement, &ElementPtr);
+			auto *ElementPtr = &element->get();
 			ElementPtr->state_flags |= NONSOLID | IGNORE_SIMILAR;
-			UnlockElement (EncounterPtr->hElement);
 		}
 		UnlockEncounter (hEncounter);
 	}
@@ -1092,7 +1086,8 @@ uqm::SpaceNavigation::AddEncounterElement(ENCOUNTER *EncounterPtr, POINT *punive
 		InsertElement (hElement, GetTailElement ());
 	}
 	
-	EncounterPtr->hElement = hElement;
+	if (hElement) encounters_.insert(*EncounterPtr,
+            uqm::combat::EntityHandle::capture(disp_q, *static_cast<ELEMENT *>(hElement)));
 	return hElement;
 }
 
@@ -1157,11 +1152,12 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 	ELEMENT *ElementPtr;
 	COORD ex, ey;
 
-	if (EncounterPtr->hElement == 0
-			&& AddEncounterElement (EncounterPtr, puniverse) == 0)
-		return false;
-
-	LockElement (EncounterPtr->hElement, &ElementPtr);
+	auto element = encounters_.find(*EncounterPtr, engine_);
+    if (!element) {
+        if (!AddEncounterElement(EncounterPtr, puniverse)) return false;
+        element = encounters_.find(*EncounterPtr, engine_);
+    }
+    ElementPtr = &element->get();
 
 	if (ElementPtr->death_func)
 	{
@@ -1174,7 +1170,6 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 					-NUM_VORTEX_TRANSITIONS)
 			{
 				ElementPtr->death_func = NULL;
-				UnlockElement (EncounterPtr->hElement);
 				return false;
 			}
 			else
@@ -1264,7 +1259,6 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 			else
 			{
 				ElementPtr->death_func = NULL;
-				UnlockElement (EncounterPtr->hElement);
 				return false;
 			}
 		}
@@ -1304,14 +1298,12 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 		{
 			ElementPtr->life_span = 0;
 			ElementPtr->death_func = NULL;
-			UnlockElement (EncounterPtr->hElement);
 			return false;
 		}
 
 		SetPrimType (&DisplayArray[ElementPtr->PrimIndex], NO_PRIM);
 	}
 
-	UnlockElement (EncounterPtr->hElement);
 		
 	stamp->origin.x = (COORD)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH) - ox;
 	stamp->origin.y = (COORD)((long)(MAX_Y_UNIVERSE - ey) * RADAR_HEIGHT
@@ -1340,6 +1332,7 @@ uqm::SpaceNavigation::ProcessEncounters(POINT *puniverse, COORD ox, COORD oy)
 		{
 			UnlockEncounter (hEncounter);
 			RemoveEncounter (hEncounter);
+            encounters_.erase(*EncounterPtr);
 			FreeEncounter (hEncounter);
 			continue;
 		}

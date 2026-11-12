@@ -103,3 +103,37 @@ BOOST_AUTO_TEST_CASE(navigation_entity_hooks_keep_their_owner_and_transition_pha
     engine.reset(); // Cancels owners without calling gameplay expiration hooks.
     for (const auto count : hookCalls) BOOST_TEST(count == 1u);
 }
+
+BOOST_AUTO_TEST_CASE(encounter_views_do_not_own_campaign_records_or_recycled_engine_slots)
+{
+    uqm::SimulationEngine engine{1};
+    uqm::SimulationBinding selected{engine};
+    ENCOUNTER record{};
+    record.race_id = 3;
+    record.num_ships = 2;
+    record.ShipList[0].crew_level = 7;
+    uqm::NavigationEncounterViews views;
+    auto &first = engine.allocateElement()->get();
+    views.insert(record, uqm::combat::EntityHandle::capture(disp_q, first));
+    BOOST_REQUIRE(views.find(record, engine));
+    BOOST_TEST(&views.find(record, engine)->get() == &first);
+    engine.releaseElement(first);
+    BOOST_TEST(!views.find(record, engine));
+    auto &replacement = engine.allocateElement()->get();
+    BOOST_TEST(!views.find(record, engine)); // Same pool slot is a different identity.
+    views.insert(record, uqm::combat::EntityHandle::capture(disp_q, replacement));
+    BOOST_REQUIRE(views.find(record, engine));
+    views.erase(record);
+    BOOST_TEST(!views.find(record, engine));
+    views.insert(record, uqm::combat::EntityHandle::capture(disp_q, replacement));
+    views.clear();
+    BOOST_TEST(!views.find(record, engine));
+    BOOST_TEST(record.race_id == 3u);
+    BOOST_TEST(record.num_ships == 2u);
+    BOOST_TEST(record.ShipList[0].crew_level == 7u);
+    // Dropping the index does not destroy the live projection either.
+    BOOST_TEST(uqm::combat::EntityHandle::capture(disp_q, replacement).resolve(disp_q).has_value());
+    views.insert(record, uqm::combat::EntityHandle::capture(disp_q, replacement));
+    engine.reset();
+    BOOST_TEST(!views.find(record, engine));
+}

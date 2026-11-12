@@ -64,7 +64,7 @@ struct encounter
 	// LINK elements; must be first
 	HENCOUNTER pred, succ;
 
-	HELEMENT hElement;
+	// Screen entities belong to the active navigation visit, not this record.
 
 	SIZE transition_state;
 	POINT origin;

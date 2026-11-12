@@ -245,7 +245,6 @@ LoadEncounter (ENCOUNTER *EncounterPtr, void *fh)
 
 	EncounterPtr->pred = 0;
 	EncounterPtr->succ = 0;
-	EncounterPtr->hElement = 0;
 	read_16s (fh, &EncounterPtr->transition_state);
 	read_16s (fh, &EncounterPtr->origin.x);
 	read_16s (fh, &EncounterPtr->origin.y);

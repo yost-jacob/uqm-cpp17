@@ -389,7 +389,6 @@ LoadEncounter (ENCOUNTER *EncounterPtr, DECODE_REF fh)
 	cread_ptr (fh); /* useless ptr; HENCOUNTER succ */
 	EncounterPtr->succ = 0;
 	cread_ptr (fh); /* useless ptr; HELEMENT hElement */
-	EncounterPtr->hElement = 0;
 	cread_16s (fh, &EncounterPtr->transition_state);
 	cread_16s (fh, &EncounterPtr->origin.x);
 	cread_16s (fh, &EncounterPtr->origin.y);
