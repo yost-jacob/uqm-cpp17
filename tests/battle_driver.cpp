@@ -1,5 +1,7 @@
 #include "uqm/battle_driver.hpp"
 #include "uqm/battle_scene.hpp"
+#include "uqm/hyper_navigation.hpp"
+#include "uqm/game_state.hpp"
 #include "uqm/simulation_engine.hpp"
 #include "uqm/globdata.h"
 #include "uqm/battle.h"
@@ -98,7 +100,13 @@ BOOST_AUTO_TEST_CASE(navigation_runs_its_typed_hook_without_combat_result_ui)
     events.clear();
     uqm::SimulationEngine engine(2); uqm::SimulationBinding binding(engine);
     unsigned frames = 0;
-    uqm::runSpaceNavigation(engine, [&] { ++frames; });
+    auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Player"});
+    uqm::GameSession session{state, uqm::SinglePlayerId};
+    uqm::HyperSpaceNavigation navigation{session.player(), engine, session.clock()};
+    // Native scene orchestration does not need the legacy callback binding.
+    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
+    uqm::runSpaceNavigation(navigation, [&] { ++frames; });
+    BOOST_CHECK_THROW(session.navigation(), std::logic_error);
     BOOST_TEST(frames == 1u);
     BOOST_TEST(std::count(events.begin(), events.end(), 5) == 0);
     BOOST_TEST(events[events.size() - 2] == 8); BOOST_TEST(events.back() == 9);

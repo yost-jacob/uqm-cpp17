@@ -18,6 +18,7 @@
 
 #include "battle_driver.hpp"
 #include "battle_scene.hpp"
+#include "hyper_navigation.hpp"
 #include "simulation_loop.hpp"
 #include "simulation_engine.hpp"
 #include "battle.h"
@@ -124,7 +125,7 @@ void initializeRound(SimulationEngine &engine) {
 }
 void CombatDriver::run() {
     journalSeed();
-    detail::BattleScene scene(engine_, detail::SceneKind::Combat);
+    detail::BattleScene scene(engine_);
     scene.initialize();
     if (std::exchange(instantVictory, FALSE)) {
         engine_.shipRoster().setRemaining(RosterSide::First, 1);
@@ -143,9 +144,10 @@ void CombatDriver::run() {
     }
     scene.complete();
 }
-void runSpaceNavigation(SimulationEngine &engine, std::function<void()> beforeSimulation) {
+void runSpaceNavigation(HyperSpaceNavigation &navigation, std::function<void()> beforeSimulation) {
+    auto &engine = navigation.engine();
     journalSeed();
-    detail::BattleScene scene(engine, detail::SceneKind::Navigation);
+    detail::BattleScene scene(engine, navigation);
     scene.initialize();
     initializeRound(engine);
     {

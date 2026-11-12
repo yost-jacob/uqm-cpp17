@@ -1772,8 +1772,6 @@ uqm::HyperSpaceNavigation &activeNavigation() { return uqm::gameSession().naviga
 }
 void MoveSIS(SIZE *pdx, SIZE *pdy) { activeNavigation().MoveSIS(pdx, pdy); }
 void check_hyperspace_encounter(void) { activeNavigation().check_hyperspace_encounter(); }
-BOOLEAN LoadHyperspace(void) { return activeNavigation().LoadHyperspace(); }
-BOOLEAN FreeHyperspace(void) { return activeNavigation().FreeHyperspace(); }
 static void hyper_transition_callback(ELEMENT *element) { (void)activeNavigation().hyper_transition(element); }
 static void unhyper_transition(ELEMENT *ElementPtr) { activeNavigation().unhyper_transition(ElementPtr); }
 BOOLEAN hyper_transition(ELEMENT *ElementPtr) { return activeNavigation().hyper_transition(ElementPtr); }
@@ -1792,7 +1790,7 @@ namespace uqm {
 void HyperSpaceNavigation::run(GameSession &session) {
     SimulationBinding simulation{engine_};
     NavigationBinding binding(session, *this);
-    runSpaceNavigation(engine_, [this] { frame(); });
+    runSpaceNavigation(*this, [this] { frame(); });
 }
 void HyperSpaceNavigation::frame() {
     clock_.tick();

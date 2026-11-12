@@ -71,8 +71,6 @@ extern "C" {
 #define SOL_Y  1450
 
 
-extern BOOLEAN LoadHyperspace (void);
-extern BOOLEAN FreeHyperspace (void);
 extern void MoveSIS (SIZE *pdx, SIZE *pdy);
 
 extern void FreeHyperData (void);
