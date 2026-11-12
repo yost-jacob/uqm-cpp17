@@ -14,6 +14,8 @@ struct star_desc;
 namespace uqm {
 namespace detail { struct WorldGeneration; }
 class StoryState;
+class WorldVisit;
+using OrbitHandler = void (*)(WorldVisit &);
 class SystemBehavior;
 class PlanetRenderResources;
 enum class WorldKind { Planet, Moon, Starbase, FinalBattleSite };
@@ -24,6 +26,7 @@ struct WorldDefinition {
     bool shielded;
     std::string name;
     std::uint16_t moonCount = 0; // Declared moon count in the generated layout.
+    std::uint8_t specialSystem = 0; // Immutable script identity, not story state.
 };
 // Owns a runtime world's behavior and generated children. Physical persistence
 // stays in the shared state; personal progress stays in the interacting story state.
@@ -47,6 +50,7 @@ public:
     const WorldDefinition &definition() const noexcept;
     const WorldId &id() const noexcept;
     bool canLand() const noexcept;
+    std::optional<OrbitHandler> orbitHandler() const noexcept { return orbitHandler_; }
     WorldProgress progress() const; // Requires layout attachment by SolarSystem; fresh copy.
     void replaceProgress(const WorldProgress &progress); // Explicit import/reset only.
     void mergeProgress(const WorldProgress &confirmed); // Permanent bits; no cargo award.
@@ -70,9 +74,11 @@ public:
     void refreshChildren(std::vector<std::unique_ptr<World>> children);
 private:
     friend class SolarSystem;
+    static std::optional<OrbitHandler> selectOrbitHandler(const WorldDefinition &definition);
     void attachLayout(const SystemLayout &layout);
     SystemLayout layout_;
     WorldDefinition definition_;
+    std::optional<OrbitHandler> orbitHandler_;
     std::shared_ptr<WorldState> state_;
     std::unique_ptr<EnergyBehavior> energy_;
     std::unique_ptr<PlanetRenderResources> rendering_;

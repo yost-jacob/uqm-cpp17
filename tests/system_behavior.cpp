@@ -4,6 +4,9 @@
 #include "uqm/system_builders.hpp"
 #include "uqm/system_runtime.hpp"
 #include "uqm/world_legacy.hpp"
+#include "uqm/world_visit.hpp"
+#include "uqm/game_definitions_legacy.hpp"
+#include <fstream>
 #include "uqm/gendef.h"
 #include "uqm/globdata.h"
 #include "uqm/build.h"
@@ -16,6 +19,7 @@
 #include <array>
 #include <functional>
 #include <typeinfo>
+std::function<void(SOLARSYS_STATE &)> testOrbitGeneration;
 namespace {
 std::array<unsigned, 13> defaultCalls{};
 unsigned communications = 0, groupsSaved = 0, groupsLoaded = 0, clones = 0;
@@ -86,6 +90,7 @@ bool GenerateDefault_generateName(const SOLARSYS_STATE *system, const PLANET_DES
 }
 bool GenerateDefault_generateOrbital(SOLARSYS_STATE *system, PLANET_DESC *world) {
     ++defaultCalls[6];
+    if (testOrbitGeneration) testOrbitGeneration(*system);
     (void)system;
     (void)world;
     return true;
@@ -815,6 +820,8 @@ BOOST_AUTO_TEST_CASE(system_constructor_builds_special_planets_and_moons_without
         campaign.player(uqm::SinglePlayerId).story(), star, projection, nullptr};
     BOOST_TEST(system.worldCount() == 2u);
     BOOST_TEST(system.world(1).childCount() == 1u);
+    BOOST_TEST(system.world(1).orbitHandler().has_value());
+    BOOST_TEST(system.world(1).child(0).orbitHandler().has_value());
     BOOST_TEST(system.world(1).definition().shielded);
     BOOST_TEST(system.world(1).child(0).id().moon.value() == 0u);
     auto progress = system.world(1).child(0).progress();
@@ -826,4 +833,61 @@ BOOST_AUTO_TEST_CASE(system_constructor_builds_special_planets_and_moons_without
     BOOST_TEST(defaultCalls[5] == 0u); // No naming / story selection.
     BOOST_TEST(defaultCalls[6] == 0u); // No orbit-entry actions.
     BOOST_TEST(communications == 0u);
+}
+
+BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_child_load)
+{
+    for (bool load : {false, true}) {
+        resetCalls();
+        uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Visitor"}), uqm::SinglePlayerId};
+        std::ifstream stars{UQM_TEST_STARMAP_PATH};
+        uqm::detail::DefinitionsAccess::loadStars(uqm::detail::DefinitionsAccess::storage(session), stars);
+        uqm::SessionActivation activation{session};
+        struct Explore final : uqm::GameMode {
+            uqm::GameSession &session;
+            bool load;
+            Explore(uqm::GameSession &s, bool l) : GameMode(s.dispatcher()), session(s), load(l) {}
+            uqm::ModeResult run() override {
+                GLOBAL(CurrentActivity) = IN_INTERPLANETARY;
+                session.player().enterSolarSystem();
+                auto &story = session.player().story();
+                story.clear(uqm::StoryFlag::ChmmrFreed);
+                UQM_SYSTEM_RUNTIME runtime{story, engine(), session.worldOwner(), nullptr, &session};
+                auto &system = runtime.engine;
+                system.worlds = &runtime;
+                runtime.system = std::make_unique<uqm::SolarSystem>(StarId{0}, session.worldOwner(), story, CHMMR_DEFINED);
+                std::vector<uqm::WorldDefinition> definitions;
+                for (unsigned i = 0; i < 2; ++i) definitions.push_back({
+                    {session.world().id(), StarId{0}, static_cast<std::uint16_t>(i), {}},
+                    uqm::WorldKind::Planet, 1, true, {}, 0, CHMMR_DEFINED});
+                runtime.system->replacePlanets(std::move(definitions));
+                auto &world = runtime.system->world(1);
+                BOOST_REQUIRE(world.orbitHandler());
+                const auto handler = world.orbitHandler();
+                runtime.system->selectWorld(world.id());
+                runtime.system->behavior().attachStar(*GetStar(0));
+                runtime.system->behavior().attachSession(session);
+                // Selection is immutable, while story conditions remain live.
+                story.set(uqm::StoryFlag::ChmmrFreed);
+                BOOST_CHECK(world.orbitHandler() == handler);
+                const auto *parentEngine = &engine();
+                dialogueHook = [&] {
+                    BOOST_TEST(&uqm::simulationEngine() != parentEngine);
+                    if (load) session.requestLoad(4);
+                };
+                { uqm::WorldVisit visit{session, system, world}; BOOST_TEST(visit.run() == !load); }
+                dialogueHook = {};
+                BOOST_TEST(communications == 1u);
+                BOOST_TEST(lastConversation == CHMMR_CONVERSATION);
+                BOOST_TEST(defaultCalls[6] == 0u); // Conversation did not fall through to orbit.
+                BOOST_TEST(system.graphics == nullptr);
+                BOOST_TEST(!std::get<uqm::SolarSystemLocation>(session.player().location()).orbit);
+                if (auto exit = session.menuExit()) return *exit;
+                return uqm::ModeCompleted{};
+            }
+        };
+        const auto result = session.run(std::make_unique<Explore>(session, load));
+        dialogueHook = {};
+        BOOST_CHECK(result.kind == (load ? uqm::SessionExitKind::LoadGame : uqm::SessionExitKind::ReturnToTitle));
+    }
 }

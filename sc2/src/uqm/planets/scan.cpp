@@ -633,7 +633,7 @@ DispatchLander(SOLARSYS_STATE &system)
 
     if (!system.worlds->session) throw std::logic_error("lander requires its owning session");
     auto &session = *system.worlds->session;
-    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, system, system.worlds->simulation, cursor.location))) {
+    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, system, uqm::simulationEngine(), cursor.location))) {
         GLOBAL(CurrentActivity) |= exit->kind == uqm::SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
         return FALSE;
     }

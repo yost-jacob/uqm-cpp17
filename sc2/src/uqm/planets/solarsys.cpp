@@ -20,6 +20,7 @@
 #include "uqm/planet_render_legacy.hpp"
 #include "../system_runtime.hpp"
 #include "../world_legacy.hpp"
+#include "../world_visit.hpp"
 #include "../sis_state.hpp"
 #include "../device_menu.hpp"
 #include "../system_behavior.hpp"
@@ -1087,37 +1088,9 @@ EnterPlanetOrbit(SOLARSYS_STATE &system)
 	}
 
     {
-        auto &body = uqm::orbitalWorld(system);
-        auto &location = uqm::systemLocation(system);
-        location.enterOrbit(body.id());
-        struct OrbitLocationScope {
-            uqm::SolarSystemLocation &location;
-            ~OrbitLocationScope() { location.leaveOrbit(); }
-        } orbitLocation{location};
-        uqm::detail::PlanetRenderBorrow rendering{system, body};
-        auto &graphics = body.renderResources();
-        struct OrbitServices {
-            uqm::PlanetRenderResources &graphics;
-            ~OrbitServices() { if (graphics.hasSurface()) FinishPlanetOrbit(); }
-        } services{graphics};
-	uqm::loadPlanetProgress(system);
-	uqm::systemBehavior(system).generateOrbital(system, selectedDescriptor(system));
-	LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
-	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
-			START_ENCOUNTER)) || system.worlds->session->player().crew() == (COUNT)~0
-			|| uqm::systemStory(system).read(uqm::StoryCounter::BombProgress) == 2)
-		return;
-
-	// Implement a to-do in generate.h for a better test
-	if (graphics.hasSurface())
-	{	// We've entered orbit; LoadPlanet() called planet surface-gen code
-        uqm::ExplorationViewScope view{*system.worlds, uqm::ExplorationView::Orbit};
-		PlanetOrbitMenu ();
-	}
-	// Otherwise, generateOrbital function started a homeworld conversation,
-	// and we did not get to the planet no matter what.
-
-    } // Orbit services end; the World retains its graphics.
+        uqm::WorldVisit visit{*system.worlds->session, system, uqm::orbitalWorld(system)};
+        if (!visit.run()) return;
+    } // Visit services end before rebuilding the flight view.
 
 	// START_ENCOUNTER could be set by Devices menu a number of ways:
 	// Talking Pet, Sun Device or a Caster over Chmmr, or

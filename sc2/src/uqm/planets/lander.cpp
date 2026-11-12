@@ -2162,7 +2162,7 @@ InitLander (BYTE LanderFlags)
 }
 
 std::unique_ptr<uqm::GameMode> uqm::createLanderMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &surfaceSource, POINT location) {
-    if (!system.worlds || &surfaceSource != &system.worlds->simulation)
-        throw std::invalid_argument("lander scene source must belong to its exploration runtime");
+    if (!system.worlds || &surfaceSource != &simulationEngine())
+        throw std::invalid_argument("lander scene source must be the active orbital engine");
     return std::make_unique<LanderMode>(session, system, surfaceSource, location);
 }
