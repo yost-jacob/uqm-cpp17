@@ -127,10 +127,10 @@ static void
 GetPlanetTitle(const SOLARSYS_STATE &system, UNICODE *buf, COUNT bufsize)
 {
 	int val;
-	const UNICODE *named = uqm::namedPlanetaryBody(system);
+	const auto named = uqm::namedPlanetaryBody(uqm::systemStar(system), *system.worlds->system);
 	if (named)
 	{
-		utf8StringCopy (buf, bufsize, named);
+		utf8StringCopy (buf, bufsize, named->data());
 		return;
 	}
 

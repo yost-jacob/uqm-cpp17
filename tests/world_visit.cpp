@@ -84,9 +84,6 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 runtime.system = std::make_unique<SolarSystem>(StarId{0}, session.worldOwner(),
                     std::vector<WorldDefinition>{definition(session.world().id(), 0, 0)});
                 runtime.system->selectWorld(runtime.system->world(0).id());
-                auto *old = pSolarSysState;
-                struct Restore { SOLARSYS_STATE *old; ~Restore() { pSolarSysState = old; } } restore{old};
-                pSolarSysState = &system;
                 auto *source = &engine();
                 unsigned generations = 0;
                 testOrbitGeneration = [&](SOLARSYS_STATE &prepared) {
@@ -204,9 +201,6 @@ BOOST_AUTO_TEST_CASE(debug_world_inspection_uses_scripts_without_modes_or_player
         auto &world = runtime.system->world(special == CHMMR_DEFINED ? 1 : 0);
         runtime.system->selectWorld(world.id());
         system.PlanetDesc[world.id().planet].pPrevDesc = system.SunDesc;
-        auto *previous = pSolarSysState;
-        struct Restore { SOLARSYS_STATE *value; ~Restore() { pSolarSysState = value; } } restore{previous};
-        pSolarSysState = &system;
         const auto locationKind = session.player().location().index();
         const auto finishes = orbitFinishes;
         orbitMenu = [] { BOOST_FAIL("inspection opened an orbital menu"); };

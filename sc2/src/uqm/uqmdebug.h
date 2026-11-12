@@ -96,11 +96,11 @@ typedef struct
 	void (*systemFuncPost) (const STAR_DESC *star,
 			const SOLARSYS_STATE *system, void *arg);
 			// Called for each system after recursing to its planets.
-	void (*planetFuncPre) (const PLANET_DESC *planet, void *arg);
+	void (*planetFuncPre) (const SOLARSYS_STATE *system, const PLANET_DESC *planet, void *arg);
 			// Called for each planet prior to recursing to its moons.
-	void (*planetFuncPost) (const PLANET_DESC *planet, void *arg);
+	void (*planetFuncPost) (const SOLARSYS_STATE *system, const PLANET_DESC *planet, void *arg);
 			// Called for each planet after recursing to its moons.
-	void (*moonFunc) (const PLANET_DESC *moon, void *arg);
+	void (*moonFunc) (const SOLARSYS_STATE *system, const PLANET_DESC *moon, void *arg);
 			// Called for each moon.
 	void *arg;
 			// User data.
@@ -126,9 +126,9 @@ const char *starPresenceString (BYTE index);
 // Get a list describing all planets in a star.
 void dumpPlanets (FILE *out, const STAR_DESC *star);
 // Describe one planet.
-void dumpPlanet(FILE *out, const PLANET_DESC *planet);
+void dumpPlanet(FILE *out, const SOLARSYS_STATE *system, const PLANET_DESC *planet);
 // Describe one moon.
-void dumpMoon (FILE *out, const PLANET_DESC *moon);
+void dumpMoon (FILE *out, const SOLARSYS_STATE *system, const PLANET_DESC *moon);
 // Calculate the total value of all minerals on a world.
 COUNT calculateMineralValue (const SOLARSYS_STATE *system,
 		const PLANET_DESC *world);

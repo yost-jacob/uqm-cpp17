@@ -140,19 +140,6 @@ World &worldFromDescriptor(SOLARSYS_STATE &system, const PLANET_DESC &descriptor
 }
 
 extern "C" {
-PLANET_DESC *GetSystemSelectedDescriptor(SOLARSYS_STATE *system) {
-    try {
-        auto &native = runtime(*system);
-        return native.hasSelectedWorld() ? &uqm::detail::worldDescriptor(*system, native.selectedWorld()) : nullptr;
-    } catch (...) { std::abort(); }
-}
-void SelectSystemWorld(SOLARSYS_STATE *system, const PLANET_DESC *descriptor) {
-    try {
-        auto &native = runtime(*system);
-        if (descriptor) native.selectWorld(uqm::detail::worldFromDescriptor(*system, *descriptor).id());
-        else native.clearSelection();
-    } catch (...) { std::abort(); }
-}
 void InitPlanetInfo(void) {
     try {
         uqm::gameSession().world().initializePlanetProgress();
@@ -161,72 +148,6 @@ void InitPlanetInfo(void) {
 }
 void UninitPlanetInfo(void) { DeleteStateFile(STARINFO_FILE); }
 
-void PrepareSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
-    try {
-        if (!system || !system->worlds || !star) throw std::invalid_argument("missing exploration context");
-        const StarId id{GetStarIndex(star)};
-        if (id.value >= NUM_SOLAR_SYSTEMS) throw std::out_of_range("invalid system star");
-        auto &context = *system->worlds;
-        context.catalogueStar = star;
-        context.system = std::make_unique<uqm::SolarSystem>(id, context.world,
-                context.story, star->Index);
-        context.system->behavior().attachStar(*star);
-        if (context.session) context.system->behavior().attachSession(*context.session);
-    } catch (...) { std::abort(); }
-}
-// Legacy debug tooling still owns an opaque heap handle. Production exploration
-// instead supplies a stack-owned context carrying its explicit campaign borrow.
-void CreateSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
-    try {
-        auto next = std::make_unique<UQM_SYSTEM_RUNTIME>(UQM_SYSTEM_RUNTIME{
-                uqm::gameSession().player().story(), uqm::simulationEngine(), uqm::gameSession().worldOwner(), nullptr});
-        system->worlds = next.get();
-        PrepareSystemWorlds(system, star);
-        next.release();
-    } catch (...) { std::abort(); }
-}
-void BuildSystemWorlds(SOLARSYS_STATE *system, const STAR_DESC *star) {
-    try {
-        if (!system || !star || system->SunDesc[0].NumPlanets > MAX_PLANETS)
-            throw std::invalid_argument("invalid system descriptor");
-        const StarId starId{GetStarIndex(star)};
-        if (starId.value >= NUM_SOLAR_SYSTEMS)
-            throw std::out_of_range("world system requires a real catalogue star");
-        auto state = system->worlds->world->id();
-        std::vector<uqm::WorldDefinition> planets;
-        for (COUNT i = 0; i < system->SunDesc[0].NumPlanets; ++i)
-            planets.push_back(definition({state, starId, i, std::nullopt},
-                    uqm::WorldKind::Planet, system->PlanetDesc[i], star->Index));
-        auto &native = runtime(*system);
-        if (native.star() != starId) throw std::logic_error("wrong active system");
-        native.adoptStar(system->SunDesc[0]);
-        native.refreshPlanets(std::move(planets));
-        system->worlds->projectedMoonParent.reset();
-        importSystemDiscoveries(native, *star, *system->worlds);
-    } catch (...) { std::abort(); }
-}
-void BuildMoonWorlds(SOLARSYS_STATE *system, const PLANET_DESC *planet) {
-    try {
-        auto &native = runtime(*system);
-        const auto slot = uqm::detail::worldFromDescriptor(*system, *planet).id().planet;
-        if (static_cast<std::size_t>(slot) >= native.worldCount() || planet->NumPlanets > MAX_MOONS)
-            throw std::out_of_range("invalid moon parent");
-        std::vector<std::unique_ptr<uqm::World>> moons;
-        for (COUNT i = 0; i < planet->NumPlanets; ++i) {
-            auto moon = system->MoonDesc[i];
-            moon.pPrevDesc = &system->PlanetDesc[slot];
-            moons.push_back(std::make_unique<uqm::World>(definition(id(native, static_cast<COUNT>(slot), i),
-                    uqm::WorldKind::Moon, moon, native.world(slot).definition().specialSystem), system->worlds->world));
-            system->MoonDesc[i].pPrevDesc = moon.pPrevDesc;
-        }
-        native.world(static_cast<std::size_t>(slot)).refreshChildren(std::move(moons));
-        system->worlds->projectedMoonParent = native.world(slot).id();
-    } catch (...) { std::abort(); }
-}
-void DestroySystemWorlds(SOLARSYS_STATE *system) {
-    delete system->worlds;
-    system->worlds = nullptr;
-}
 void ConfigurePersonalEnergyBehavior(SOLARSYS_STATE *system, COUNT planet, int moon, COUNT sites, COUNT reports) {
     try {
         auto &native = runtime(*system);

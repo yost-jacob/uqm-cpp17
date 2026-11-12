@@ -336,14 +336,12 @@ extern "C" int system_behavior_bridge_contract(STAR_DESC *star) {
     UQM_SYSTEM_RUNTIME context{story, simulation, state.worldOwner(), nullptr};
     SOLARSYS_STATE system{};
     system.worlds = &context;
-    PrepareSystemWorlds(&system, star);
+    uqm::constructSystemWorlds(system, *star);
     auto *identity = &context.system->behavior();
-    if (!uqm::systemBehavior(system).generatePlanets(system)) return 0;
     if (!(system.PlanetDesc[1].data_index & PLANET_SHIELDED)) return 0;
-    BuildSystemWorlds(&system, star);
     if (&context.system->behavior() != identity || context.system->worldCount() != 2) return 0;
     story.set(uqm::StoryFlag::ChmmrFreed);
-    if (!uqm::systemBehavior(system).generatePlanets(system)) return 0;
+    uqm::constructSystemWorlds(system, *star);
     if (system.PlanetDesc[1].data_index & PLANET_SHIELDED) return 0;
     if (uqm::systemBehavior(system).generateMinerals(system, system.PlanetDesc[0], 7, nullptr) != 7) return 0;
     return 1;
@@ -718,7 +716,7 @@ BOOST_AUTO_TEST_CASE(body_selection_survives_refresh_and_resolves_replaced_moons
     BOOST_TEST(!system.inInnerSystem());
 }
 
-BOOST_AUTO_TEST_CASE(legacy_selected_body_views_resolve_native_ids_without_retaining_buffer_addresses)
+BOOST_AUTO_TEST_CASE(native_selected_body_views_resolve_ids_without_retaining_buffer_addresses)
 {
     using namespace uqm;
     GameState state{{SinglePlayerId, "Selection"}};
@@ -734,22 +732,22 @@ BOOST_AUTO_TEST_CASE(legacy_selected_body_views_resolve_native_ids_without_retai
     SOLARSYS_STATE buffer{};
     buffer.worlds = &context;
     context.system->world(0).projectMoons(buffer, buffer.PlanetDesc[0]);
-    BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == nullptr);
-    SelectSystemWorld(&buffer, &buffer.PlanetDesc[0]);
+    BOOST_TEST(!context.system->hasSelectedWorld());
+    context.system->selectWorld(planet);
     BOOST_CHECK(context.system->selectedWorld().id() == planet);
     context.system->enterInnerSystem(planet);
-    SelectSystemWorld(&buffer, &buffer.MoonDesc[0]);
-    BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == &buffer.MoonDesc[0]);
+    context.system->selectWorld(moon);
+    BOOST_TEST(&detail::selectedDescriptor(buffer) == &buffer.MoonDesc[0]);
     BOOST_CHECK(orbitalWorld(buffer).id() == moon);
     SOLARSYS_STATE replacement{};
     replacement.worlds = &context;
     context.system->world(0).projectMoons(replacement, replacement.PlanetDesc[0]);
-    BOOST_TEST(GetSystemSelectedDescriptor(&replacement) == &replacement.MoonDesc[0]);
+    BOOST_TEST(&detail::selectedDescriptor(replacement) == &replacement.MoonDesc[0]);
     PLANET_DESC foreign{};
     BOOST_CHECK_THROW(detail::worldFromDescriptor(buffer, foreign), std::invalid_argument);
     BOOST_CHECK(context.system->selectedWorld().id() == moon);
-    SelectSystemWorld(&buffer, nullptr);
-    BOOST_TEST(GetSystemSelectedDescriptor(&buffer) == nullptr);
+    context.system->clearSelection();
+    BOOST_TEST(!context.system->hasSelectedWorld());
     BOOST_TEST(context.system->inInnerSystem());
 }
 
