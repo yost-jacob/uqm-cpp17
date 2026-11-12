@@ -948,9 +948,6 @@ typedef struct
 	QUEUE ip_group_q;
 			/* List of groups present in solarsys (during IP);
 			 * queue element is IP_GROUP */
-	QUEUE encounter_q;
-			/* List of HyperSpace encounters (black globes);
-			 * queue element is ENCOUNTER */
 
 	BYTE GameState[(NUM_GAME_STATE_BITS + 7) >> 3];
 } GAME_STATE;

@@ -27,6 +27,7 @@
 #include <variant>
 #include <vector>
 #include "displist.h"
+#include "game_collections.hpp"
 #include "fleet_legacy.hpp"
 #include "combat_entity_legacy.hpp"
 #include "entity_handle.hpp"
@@ -40,11 +41,9 @@
 struct QueueStorage {
     // Concrete objects have their actual C types and alignment, not byte-array
     // storage. Each vector is sized once, before any handles are published.
-    std::variant<std::vector<ELEMENT>, std::vector<STARSHIP>,
-            std::vector<uqm::Ship>, std::vector<FLEET_INFO>,
-            std::vector<IP_GROUP>, std::vector<ENCOUNTER>,
-            std::vector<MASTER_SHIP_INFO>> objects;
-    std::vector<HLINK> free;
+    std::variant<uqm::SimulationElements<>, uqm::BattleParticipants<>,
+            uqm::FleetShips<>, uqm::RaceFleets<>, uqm::SystemGroups<>,
+            uqm::MasterShips<>> objects;
     std::vector<std::unique_ptr<uqm::combat::CombatEntity>> entities;
     std::vector<std::uint64_t> generations;
     uintptr_t begin = 0;
@@ -72,13 +71,12 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
     assert(queue && !queue->storage);
     auto pool = std::make_unique<QueueStorage>();
     switch (kind) {
-        case QUEUE_ELEMENT: pool->objects.emplace<std::vector<ELEMENT>>(capacity); break;
-        case QUEUE_STARSHIP: pool->objects.emplace<std::vector<STARSHIP>>(capacity); break;
-        case QUEUE_SHIP_FRAGMENT: pool->objects.emplace<std::vector<uqm::Ship>>(capacity); break;
-        case QUEUE_FLEET_INFO: pool->objects.emplace<std::vector<FLEET_INFO>>(capacity); break;
-        case QUEUE_IP_GROUP: pool->objects.emplace<std::vector<IP_GROUP>>(capacity); break;
-        case QUEUE_ENCOUNTER: pool->objects.emplace<std::vector<ENCOUNTER>>(capacity); break;
-        case QUEUE_MASTER_SHIP: pool->objects.emplace<std::vector<MASTER_SHIP_INFO>>(capacity); break;
+        case QUEUE_ELEMENT: pool->objects.emplace<uqm::SimulationElements<>>(capacity); break;
+        case QUEUE_STARSHIP: pool->objects.emplace<uqm::BattleParticipants<>>(capacity); break;
+        case QUEUE_SHIP_FRAGMENT: pool->objects.emplace<uqm::FleetShips<>>(capacity); break;
+        case QUEUE_FLEET_INFO: pool->objects.emplace<uqm::RaceFleets<>>(capacity); break;
+        case QUEUE_IP_GROUP: pool->objects.emplace<uqm::SystemGroups<>>(capacity); break;
+        case QUEUE_MASTER_SHIP: pool->objects.emplace<uqm::MasterShips<>>(capacity); break;
         default: std::terminate();
     }
     if (kind == QUEUE_ELEMENT) {
@@ -86,7 +84,6 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
         pool->generations.resize(capacity);
     }
     pool->capacity = capacity;
-    pool->free.reserve(capacity);
     std::visit([&](auto &objects) {
         using Stored = typename std::decay_t<decltype(objects)>::value_type;
         using Object = std::conditional_t<std::is_same_v<Stored, uqm::Ship>, SHIP_FRAGMENT, Stored>;
@@ -94,8 +91,6 @@ BOOLEAN InitQueue(QUEUE *queue, const COUNT capacity, const QueueKind kind) try 
         static_assert(offsetof(Object, pred) == 0 && offsetof(Object, succ) == sizeof(HLINK));
         queue->object_size = sizeof(Object);
         pool->begin = reinterpret_cast<uintptr_t>(objects.data());
-        for (auto it = objects.rbegin(); it != objects.rend(); ++it)
-            pool->free.push_back(&*it);
     }, pool->objects);
     queue->head = queue->tail = nullptr;
     queue->storage = pool.release();
@@ -118,39 +113,34 @@ void ReinitQueue(QUEUE *queue) {
     auto &pool = *queue->storage;
     for (auto &entity : pool.entities) entity.reset();
     std::fill(pool.generations.begin(), pool.generations.end(), 0);
-    pool.free.clear();
-    std::visit([&](auto &objects) {
-        for (auto it = objects.rbegin(); it != objects.rend(); ++it)
-            pool.free.push_back(&*it);
-    }, pool.objects);
+    std::visit([](auto &objects) { objects.clear(); }, pool.objects);
 }
 HLINK AllocLink(QUEUE *queue) {
     assert(queue && queue->storage);
-    auto &free = queue->storage->free;
-    if (free.empty())
-        return nullptr;
-    const auto link = free.back();
-    free.pop_back();
+    const HLINK link = std::visit([](auto &objects) -> HLINK { return objects.allocate(); }, queue->storage->objects);
+    if (!link) return nullptr;
     auto &pool = *queue->storage;
     if (!pool.generations.empty()) {
         const auto generation = nextEntityGeneration.fetch_add(1, std::memory_order_relaxed);
         if (!generation) std::terminate();
         pool.generations[(reinterpret_cast<uintptr_t>(link) - pool.begin) / queue->object_size] = generation;
     }
-    if (std::holds_alternative<std::vector<uqm::Ship>>(queue->storage->objects))
+    if (std::holds_alternative<uqm::FleetShips<>>(queue->storage->objects))
         uqm::detail::FleetAccess::activate(uqm::detail::FleetAccess::ship(*static_cast<SHIP_FRAGMENT *>(link)));
     return link;
 }
 void FreeLink(QUEUE *queue, HLINK link) {
     assert(link && contains(queue, link));
     auto &pool = *queue->storage;
-    assert(pool.free.size() < pool.capacity);
     if (!pool.entities.empty()) {
         const auto index = (reinterpret_cast<uintptr_t>(link) - pool.begin) / queue->object_size;
         pool.generations[index] = 0;
         pool.entities[index].reset();
     }
-    pool.free.push_back(link); // Capacity was reserved in InitQueue.
+    std::visit([&](auto &objects) {
+        using T = typename std::decay_t<decltype(objects)>::value_type;
+        objects.release(static_cast<T *>(link));
+    }, pool.objects);
 }
 LINK *LockLink(const QUEUE *queue, HLINK link) {
     assert(!link || contains(queue, link));
@@ -162,25 +152,37 @@ void UnlockLink(const QUEUE *queue, HLINK link) {
 void PutQueue(QUEUE *queue, HLINK link) { InsertQueue(queue, link, nullptr); }
 void InsertQueue(QUEUE *queue, HLINK link, HLINK ref) {
     assert(link && contains(queue, link) && (!ref || contains(queue, ref)));
-    const auto pred = ref ? _GetPredLink(ref) : queue->tail;
-    setPred(link, pred);
-    setSucc(link, ref);
-    if (pred) setSucc(pred, link); else queue->head = link;
-    if (ref) setPred(ref, link); else queue->tail = link;
+    std::visit([&](auto &objects) {
+        using T = typename std::decay_t<decltype(objects)>::value_type;
+        auto position = std::find(objects.begin(), objects.end(), static_cast<T *>(ref));
+        assert(!ref || position != objects.end());
+        const HLINK pred = position == objects.begin() ? nullptr : *(position - 1);
+        objects.insert(position, static_cast<T *>(link));
+        // C links are projections of vector order, not the ordering authority.
+        setPred(link, pred); setSucc(link, ref);
+        if (pred) setSucc(pred, link); else queue->head = link;
+        if (ref) setPred(ref, link); else queue->tail = link;
+    }, queue->storage->objects);
 }
 void RemoveQueue(QUEUE *queue, HLINK link) {
     assert(link && contains(queue, link));
-    const auto pred = _GetPredLink(link), succ = _GetSuccLink(link);
-    if (pred) setSucc(pred, succ); else queue->head = succ;
-    if (succ) setPred(succ, pred); else queue->tail = pred;
+    std::visit([&](auto &objects) {
+        using T = typename std::decay_t<decltype(objects)>::value_type;
+        const auto position = std::find(objects.begin(), objects.end(), static_cast<T *>(link));
+        assert(position != objects.end());
+        const HLINK pred = position == objects.begin() ? nullptr : *(position - 1);
+        const HLINK succ = position + 1 == objects.end() ? nullptr : *(position + 1);
+        objects.erase(position);
+        if (pred) setSucc(pred, succ); else queue->head = succ;
+        if (succ) setPred(succ, pred); else queue->tail = pred;
+    }, queue->storage->objects);
 }
 COUNT CountLinks(const QUEUE *queue) {
     assert(queue);
-    COUNT count = 0;
-    for (auto link = queue->head; link; link = _GetSuccLink(link))
-        ++count;
-    return count;
+    if (!queue->storage) return 0;
+    return std::visit([](const auto &objects) { return static_cast<COUNT>(objects.size()); }, queue->storage->objects);
 }
+
 void ForAllLinks(QUEUE *queue, void (*callback)(LINK *, void *), void *arg) try {
     assert(queue && callback);
     for (auto link = queue->head; link;) {
@@ -218,4 +220,13 @@ std::optional<std::reference_wrapper<ELEMENT>> EntityHandle::resolve(const QUEUE
     if (generation != generation_) return std::nullopt;
     return std::ref(*slot_);
 }
+}
+
+namespace uqm::detail {
+const FleetShips<> &fleetShips(QUEUE &queue) { return std::get<FleetShips<>>(queue.storage->objects); }
+const FleetShips<> &fleetShips(const QUEUE &queue) { return std::get<FleetShips<>>(queue.storage->objects); }
+const BattleParticipants<> &battleParticipants(QUEUE &queue) { return std::get<BattleParticipants<>>(queue.storage->objects); }
+const BattleParticipants<> &battleParticipants(const QUEUE &queue) { return std::get<BattleParticipants<>>(queue.storage->objects); }
+const RaceFleets<> &raceFleets(QUEUE &queue) { return std::get<RaceFleets<>>(queue.storage->objects); }
+const SystemGroups<> &systemGroups(QUEUE &queue) { return std::get<SystemGroups<>>(queue.storage->objects); }
 }

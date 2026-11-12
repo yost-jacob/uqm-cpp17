@@ -75,7 +75,7 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine) {
 class HyperSpaceMode final : public GameMode {
 public:
     HyperSpaceMode(GameSession &session)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine(), session.clock(), NavigationRealm::HyperSpace) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), navigation_(session.player(), engine(), session.clock(), NavigationRealm::HyperSpace, session.encounters()) {}
     ModeResult run() override {
         session_.player().enterNavigation(false);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
@@ -93,7 +93,7 @@ class QuasiSpaceMode final : public GameMode {
 public:
     explicit QuasiSpaceMode(GameSession &session)
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session),
-          navigation_(session.player(), engine(), session.clock(), NavigationRealm::QuasiSpace) {}
+          navigation_(session.player(), engine(), session.clock(), NavigationRealm::QuasiSpace, session.encounters()) {}
     ModeResult run() override {
         session_.player().enterNavigation(true);
         GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);

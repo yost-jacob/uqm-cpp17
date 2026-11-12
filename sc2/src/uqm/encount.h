@@ -25,6 +25,7 @@ typedef struct encounter ENCOUNTER;
 // XXX: temporary, for CONVERSATION
 #include "commglue.h"
 #include "displist.h"
+#include <stdint.h>
 #include "libs/gfxlib.h"
 #include "planets/planets.h"
 #include "element.h"
@@ -35,7 +36,6 @@ extern "C" {
 #endif
 
 
-typedef HLINK HENCOUNTER;
 
 #define MAX_HYPER_SHIPS 7
 
@@ -61,8 +61,7 @@ struct brief_ship_info
 
 struct encounter
 {
-	// LINK elements; must be first
-	HENCOUNTER pred, succ;
+	uint64_t runtime_id; // Session-local identity; not part of either save format.
 
 	// Screen entities belong to the active navigation visit, not this record.
 
@@ -81,17 +80,15 @@ struct encounter
 	SDWORD log_x, log_y;
 };
 
-#define AllocEncounter() AllocLink (&GLOBAL (encounter_q))
-#define PutEncounter(h) PutQueue (&GLOBAL (encounter_q), h)
-#define InsertEncounter(h,i) InsertQueue (&GLOBAL (encounter_q), h, i)
-#define GetHeadEncounter() GetHeadLink (&GLOBAL (encounter_q))
-#define GetTailEncounter() GetTailLink (&GLOBAL (encounter_q))
-#define LockEncounter(h,ppe) (*(ppe) = (ENCOUNTER*)LockLink (&GLOBAL (encounter_q), h))
-#define UnlockEncounter(h) UnlockLink (&GLOBAL (encounter_q), h)
-#define RemoveEncounter(h) RemoveQueue (&GLOBAL (encounter_q), h)
-#define FreeEncounter(h) FreeLink (&GLOBAL (encounter_q), h)
-#define GetPredEncounter(l) _GetPredLink (l)
-#define GetSuccEncounter(l) _GetSuccLink (l)
+// C save/load and legacy-menu adapters. Native callers borrow the session's
+// CampaignEncounters directly. Pointers expire on erase/clear; no archive/load
+// runs while a child mode holds an encounter borrow.
+COUNT CampaignEncounterCount(void);
+ENCOUNTER *AppendCampaignEncounter(void); // NULL when the gameplay cap is reached.
+void ClearCampaignEncounters(void);
+void SelectCampaignEncounter(COUNT index); // count clears selection.
+// Existing save formats encode selection by putting the selected record first.
+ENCOUNTER *CampaignEncounterForSave(COUNT index);
 
 enum
 {

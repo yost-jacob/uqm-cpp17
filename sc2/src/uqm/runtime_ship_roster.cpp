@@ -1,4 +1,5 @@
 #include "runtime_ship_roster.hpp"
+#include "game_collections.hpp"
 #include "init.h"
 #include "build.h"
 #include "libs/math/random.hpp"
@@ -36,8 +37,8 @@ Participant RuntimeShipRoster::append(RosterSide side, SPECIES_ID species) noexc
 BYTE RuntimeShipRoster::chooseCaptain(RosterSide side, SPECIES_ID species, RandomStream &random) const {
     std::array<bool, NUM_CAPTAINS_NAMES> used{};
     const auto &queue = queues_[index(side)];
-    for (auto handle = GetHeadLink(&queue); handle; handle = _GetSuccLink(handle)) {
-        const auto &ship = *LockStarShip(&queue, handle);
+    for (const auto *participant : detail::battleParticipants(queue)) {
+        const auto &ship = *participant;
         if (ship.SpeciesID == species && ship.captains_name_index >= NAME_OFFSET
                 && ship.captains_name_index < NAME_OFFSET + used.size())
             used[ship.captains_name_index - NAME_OFFSET] = true;
@@ -61,8 +62,8 @@ Participant RuntimeShipRoster::last(RosterSide side) noexcept {
 }
 bool RuntimeShipRoster::contains(RosterSide side, const STARSHIP &ship) const noexcept {
     const auto &queue = queues_[index(side)];
-    for (auto handle = GetHeadLink(&queue); handle; handle = _GetSuccLink(handle))
-        if (LockStarShip(&queue, handle) == &ship) return true;
+    for (const auto *participant : detail::battleParticipants(queue))
+        if (participant == &ship) return true;
     return false;
 }
 Participant RuntimeShipRoster::next(RosterSide side, const STARSHIP &previous) {

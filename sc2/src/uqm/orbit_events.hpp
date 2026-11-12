@@ -1156,23 +1156,19 @@ namespace detail {
 inline void abductToUrquan(WorldVisit &visit)
 {
     if (!visit.canInteract()) return;
-	HENCOUNTER hEncounter;
-
-	if ((hEncounter = AllocEncounter ()) || (hEncounter = GetHeadEncounter ()))
-	{
-		SIZE dx, dy;
-		ENCOUNTER *EncounterPtr;
-		HFLEETINFO hStarShip;
-		FLEET_INFO *TemplatePtr;
-		BRIEF_SHIP_INFO *BSIPtr;
-
-		LockEncounter (hEncounter, &EncounterPtr);
-
-		if (hEncounter == GetHeadEncounter ())
-			RemoveEncounter (hEncounter);
-		*EncounterPtr = {};
-
-		InsertEncounter (hEncounter, GetHeadEncounter ());
+    auto &entries = visit.encounters();
+    auto entry = entries.insert();
+    if (entry == entries.end()) entry = entries.begin(); // Preserve the full-capacity fallback.
+    if (entry != entries.end()) {
+        SIZE dx, dy;
+        HFLEETINFO hStarShip;
+        FLEET_INFO *TemplatePtr;
+        BRIEF_SHIP_INFO *BSIPtr;
+        const auto id = entry->runtime_id;
+        *entry = {};
+        entry->runtime_id = id;
+        entries.select(entry);
+        auto *EncounterPtr = &*entry;
 
 		hStarShip = GetStarShipFromIndex (&GLOBAL (avail_race_q), URQUAN_SHIP);
 		TemplatePtr = LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
@@ -1217,7 +1213,6 @@ inline void abductToUrquan(WorldVisit &visit)
 		DrawSISMessage (NULL);
 		DrawHyperCoords (EncounterPtr->loc_pt);
 
-		UnlockEncounter (hEncounter);
 	}
 }
 }

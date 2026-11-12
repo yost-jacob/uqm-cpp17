@@ -3,6 +3,7 @@
 #include <memory>
 #include "comm.h"
 #include "planet_report.hpp"
+#include "campaign_encounters.hpp"
 struct solarsys_state;
 struct star_desc;
 struct planet_desc;
@@ -31,6 +32,7 @@ public:
     // Script operations borrow current session state and perform synchronous
     // child-mode handoff. Pending exits prevent further preparation/presentation.
     StoryState &story() const noexcept;
+    CampaignEncounters &encounters() const noexcept;
     PlanetGeneratedData &data() noexcept;
     // The returned report belongs to this visit and outlives synchronous children.
     PlanetReport &report() noexcept { return report_; }

@@ -12,8 +12,9 @@ BOOST_AUTO_TEST_CASE(portal_position_belongs_to_the_player_and_survives_navigati
     player.navigationState().portalY = 5678;
     uqm::SimulationEngine firstEngine, secondEngine;
     uqm::CampaignClock clock;
-    { uqm::SpaceNavigation visit{player, firstEngine, clock, uqm::NavigationRealm::HyperSpace}; }
-    { uqm::SpaceNavigation nextVisit{player, secondEngine, clock, uqm::NavigationRealm::HyperSpace}; }
+    uqm::CampaignEncounters records;
+    { uqm::SpaceNavigation visit{player, firstEngine, clock, uqm::NavigationRealm::HyperSpace, records}; }
+    { uqm::SpaceNavigation nextVisit{player, secondEngine, clock, uqm::NavigationRealm::HyperSpace, records}; }
     BOOST_TEST(player.navigationState().portalX == 1234);
     BOOST_TEST(player.navigationState().portalY == 5678);
     BOOST_TEST(second.player(uqm::SinglePlayerId).navigationState().portalX == 0);
@@ -23,13 +24,14 @@ BOOST_AUTO_TEST_CASE(portal_handoff_preserves_outgoing_location_until_successor_
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
     auto &player = state.player(uqm::SinglePlayerId);
     uqm::CampaignClock clock;
+    uqm::CampaignEncounters records;
     uqm::SimulationEngine engine;
     for (const auto source : {uqm::NavigationRealm::HyperSpace, uqm::NavigationRealm::QuasiSpace}) {
         const bool fromQuasi = source == uqm::NavigationRealm::QuasiSpace;
         player.enterNavigation(fromQuasi);
         player.story().set(uqm::StoryCounter::ArilouSpaceSide, fromQuasi ? 3 : 0);
         player.travel().flight.facing = 7;
-        uqm::SpaceNavigation outgoing{player, engine, clock, source};
+        uqm::SpaceNavigation outgoing{player, engine, clock, source, records};
         const auto destination = fromQuasi ? uqm::NavigationRealm::HyperSpace : uqm::NavigationRealm::QuasiSpace;
         outgoing.prepareRealmTransition(destination, {123, 456});
         BOOST_TEST(outgoing.isQuasiSpace() == fromQuasi);
@@ -67,10 +69,11 @@ BOOST_AUTO_TEST_CASE(navigation_entity_hooks_keep_their_owner_and_transition_pha
     using namespace uqm::detail;
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
     uqm::CampaignClock clock;
+    uqm::CampaignEncounters records;
     uqm::SimulationEngine engine{4};
     uqm::SimulationBinding selected{engine};
-    uqm::SpaceNavigation hyper{state.player(uqm::SinglePlayerId), engine, clock, uqm::NavigationRealm::HyperSpace};
-    uqm::SpaceNavigation quasi{state.player(uqm::SinglePlayerId), engine, clock, uqm::NavigationRealm::QuasiSpace};
+    uqm::SpaceNavigation hyper{state.player(uqm::SinglePlayerId), engine, clock, uqm::NavigationRealm::HyperSpace, records};
+    uqm::SpaceNavigation quasi{state.player(uqm::SinglePlayerId), engine, clock, uqm::NavigationRealm::QuasiSpace, records};
     std::fill(std::begin(hookCalls), std::end(hookCalls), 0u);
     auto &star = engine.allocateElement()->get();
     auto &portal = engine.allocateElement()->get();
@@ -136,4 +139,20 @@ BOOST_AUTO_TEST_CASE(encounter_views_do_not_own_campaign_records_or_recycled_eng
     views.insert(record, uqm::combat::EntityHandle::capture(disp_q, replacement));
     engine.reset();
     BOOST_TEST(!views.find(record, engine));
+}
+
+BOOST_AUTO_TEST_CASE(encounter_projection_identity_survives_dense_record_erasure)
+{
+    uqm::CampaignEncounters entries;
+    entries.insert(); entries.insert();
+    const auto retainedId = (entries.begin() + 1)->runtime_id;
+    uqm::SimulationEngine engine{1};
+    uqm::SimulationBinding selected{engine};
+    auto &element = engine.allocateElement()->get();
+    uqm::NavigationEncounterViews views;
+    views.insert(*(entries.begin() + 1), uqm::combat::EntityHandle::capture(disp_q, element));
+    entries.erase(entries.begin());
+    BOOST_TEST(entries.begin()->runtime_id == retainedId);
+    BOOST_REQUIRE(views.find(*entries.begin(), engine));
+    BOOST_TEST(&views.find(*entries.begin(), engine)->get() == &element);
 }

@@ -20,6 +20,7 @@
 #include "device_menu.hpp"
 #include "game_state.hpp"
 #include "game_assets.hpp"
+#include "game_collections.hpp"
 #include "navigation_entities.hpp"
 #include <utility>
 #include "battle.h"
@@ -229,9 +230,8 @@ uqm::SpaceNavigation::MoveSIS(SIZE *pdx, SIZE *pdy)
 void
 uqm::SpaceNavigation::check_hyperspace_encounter(void)
 {
-	BYTE Type;
+	BYTE nextType = 0;
 	POINT universe;
-	HFLEETINFO hStarShip, hNextShip;
 	COUNT EncounterPercent[] =
 	{
 		RACE_HYPERSPACE_PERCENT
@@ -239,24 +239,16 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 	
 	universe.x = LOGX_TO_UNIVERSE (travel().position.x);
 	universe.y = LOGY_TO_UNIVERSE (travel().position.y);
-	for (hStarShip = GetHeadLink (&GLOBAL (avail_race_q)), Type = 0;
-			hStarShip && (GLOBAL (CurrentActivity) & IN_BATTLE);
-			hStarShip = hNextShip, ++Type)
-	{
-		COUNT encounter_radius;
-		FLEET_INFO *FleetPtr;
-
-		FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
-		hNextShip = _GetSuccLink (FleetPtr);
-
+    for (auto *FleetPtr : detail::raceFleets(GLOBAL(avail_race_q))) {
+        if (!(GLOBAL(CurrentActivity) & IN_BATTLE)) break;
+        const BYTE Type = nextType++;
+        COUNT encounter_radius;
 		encounter_radius = FleetPtr->actual_strength;
 		if (encounter_radius)
 		{
 			BYTE encounter_flags;
 			SIZE dx, dy;
 			COUNT percent;
-			HENCOUNTER hEncounter;
-			ENCOUNTER *EncounterPtr;
 
 			encounter_flags = 0;
 			percent = EncounterPercent[Type];
@@ -268,7 +260,6 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 			}
 			else /* encounter_radius == infinity */
 			{
-				HENCOUNTER hNextEncounter;
 
 				encounter_radius = (MAX_X_UNIVERSE + 1) << 1;
 				if (Type == SLYLANDRO_SHIP)
@@ -292,18 +283,9 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 				}
 
 				// There can be only one! (of either Slylandro or Melnorme)
-				for (hEncounter = GetHeadEncounter ();
-						hEncounter; hEncounter = hNextEncounter)
-				{
-					LockEncounter (hEncounter, &EncounterPtr);
-					hNextEncounter = GetSuccEncounter (EncounterPtr);
-					if (EncounterPtr->race_id == Type)
-					{
-						percent = 0;
-						hNextEncounter = 0;
-					}
-					UnlockEncounter (hEncounter);
-				}
+                for (const auto &record : records_) {
+                    if (record.race_id == Type) { percent = 0; break; }
+                }
 
 
 				if (percent == 100 && Type == MELNORME_SHIP)
@@ -324,24 +306,16 @@ uqm::SpaceNavigation::check_hyperspace_encounter(void)
 					(DWORD)encounter_radius * encounter_radius
 					&& ((COUNT)engine_.random()() % 100) < percent)
 			{
-				// Ship spawned for encounter.
-				hEncounter = AllocEncounter ();
-				if (hEncounter)
-				{
-					LockEncounter (hEncounter, &EncounterPtr);
-					memset (EncounterPtr, 0, sizeof (*EncounterPtr));
-					EncounterPtr->origin = FleetPtr->loc;
-					EncounterPtr->radius = encounter_radius;
-					EncounterPtr->flags = encounter_flags;
-					EncounterPtr->race_id = Type;
-					UnlockEncounter (hEncounter);
-
-					PutEncounter (hEncounter);
-				}
+                // Capacity is a gameplay limit, not an allocation request.
+                if (auto entry = records_.insert(); entry != records_.end()) {
+                    entry->origin = FleetPtr->loc;
+                    entry->radius = encounter_radius;
+                    entry->flags = encounter_flags;
+                    entry->race_id = Type;
+                }
 			}
 		}
 
-		UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
 	}
 
 	story_.set(uqm::StoryFlag::UsedBroadcaster, 0);
@@ -430,30 +404,11 @@ uqm::SpaceNavigation::ElementToUniverse(ELEMENT *ElementPtr, POINT *pPt)
 void
 uqm::SpaceNavigation::cleanup_hyperspace(void)
 {
-	HENCOUNTER hEncounter, hNextEncounter;
-
-	for (hEncounter = GetHeadEncounter ();
-			hEncounter != 0; hEncounter = hNextEncounter)
-	{
-		ENCOUNTER *EncounterPtr;
-
-		LockEncounter (hEncounter, &EncounterPtr);
-		hNextEncounter = GetSuccEncounter (EncounterPtr);
-		if (auto element = encounters_.find(*EncounterPtr, engine_))
-		{
-			auto *ElementPtr = &element->get();
-
-			if (ElementPtr->hTarget)
-			{	// This is the encounter that collided with flagship
-				// Move the encounter to the head of the queue so that
-				// comm.c:RaceCommunication() gets the right one.
-				RemoveEncounter (hEncounter);
-				InsertEncounter (hEncounter, GetHeadEncounter ());
-			}
-
-		}
-		UnlockEncounter (hEncounter);
-	}
+    for (auto entry = records_.begin(); entry != records_.end(); ++entry) {
+        if (auto element = encounters_.find(*entry, engine_)) {
+            if (element->get().hTarget) records_.select(entry);
+        }
+    }
     encounters_.clear();
 }
 
@@ -911,29 +866,13 @@ void
 uqm::SpaceNavigation::encounter_collision(ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
-	HENCOUNTER hEncounter;
-	HENCOUNTER hNextEncounter;
-
-	if (!(ElementPtr1->state_flags & PLAYER_SHIP)
-			|| !(GLOBAL (CurrentActivity) & IN_BATTLE))
-		return;
-
-	init_transition (ElementPtr0, ElementPtr1, RANDOM_ENCOUNTER_TRANSITION);
-
-	for (hEncounter = GetHeadEncounter ();
-			hEncounter != 0; hEncounter = hNextEncounter)
-	{
-		ENCOUNTER *EncounterPtr;
-
-		LockEncounter (hEncounter, &EncounterPtr);
-		hNextEncounter = GetSuccEncounter (EncounterPtr);
-		if (auto element = encounters_.find(*EncounterPtr, engine_))
-		{
-			auto *ElementPtr = &element->get();
-			ElementPtr->state_flags |= NONSOLID | IGNORE_SIMILAR;
-		}
-		UnlockEncounter (hEncounter);
-	}
+    if (!(ElementPtr1->state_flags & PLAYER_SHIP)
+            || !(GLOBAL(CurrentActivity) & IN_BATTLE)) return;
+    init_transition(ElementPtr0, ElementPtr1, RANDOM_ENCOUNTER_TRANSITION);
+    for (auto &record : records_) {
+        if (auto element = encounters_.find(record, engine_))
+            element->get().state_flags |= NONSOLID | IGNORE_SIMILAR;
+    }
 
 	// Mark this element as collided with flagship
 	// XXX: We could simply set hTarget to 1 or to ElementPtr1,
@@ -1316,29 +1255,14 @@ uqm::SpaceNavigation::ProcessEncounter(ENCOUNTER *EncounterPtr, POINT *puniverse
 void
 uqm::SpaceNavigation::ProcessEncounters(POINT *puniverse, COORD ox, COORD oy)
 {
-	STAMP stamp;
-	HENCOUNTER hEncounter, hNextEncounter;
-
-	stamp.frame = SetAbsFrameIndex (stars_in_space, 91);
-	for (hEncounter = GetHeadEncounter ();
-			hEncounter; hEncounter = hNextEncounter)
-	{
-		ENCOUNTER *EncounterPtr;
-
-		LockEncounter (hEncounter, &EncounterPtr);
-		hNextEncounter = GetSuccEncounter (EncounterPtr);
-
-		if (!ProcessEncounter (EncounterPtr, puniverse, ox, oy, &stamp))
-		{
-			UnlockEncounter (hEncounter);
-			RemoveEncounter (hEncounter);
-            encounters_.erase(*EncounterPtr);
-			FreeEncounter (hEncounter);
-			continue;
-		}
-
-		UnlockEncounter (hEncounter);
-	}
+    STAMP stamp{};
+    stamp.frame = SetAbsFrameIndex(stars_in_space, 91);
+    for (auto entry = records_.begin(); entry != records_.end();) {
+        if (!ProcessEncounter(&*entry, puniverse, ox, oy, &stamp)) {
+            encounters_.erase(*entry);
+            entry = records_.erase(entry);
+        } else ++entry;
+    }
 }
 
 void
@@ -1637,7 +1561,7 @@ uqm::SpaceNavigation::DoHyperspaceMenu(MENU_STATE *pMS)
 	switch (pMS->CurState)
 	{
 		case EQUIP_DEVICE:
-			select = uqm::DeviceMenu{story_}.run();
+			select = uqm::DeviceMenu{story_, records_}.run();
 			if (story_.read(uqm::StoryCounter::PortalCounter))
 			{	// A player-induced portal to QuasiSpace is opening
 				return FALSE;
@@ -1759,7 +1683,7 @@ void check_hyperspace_encounter(void) { flagshipNavigation().check_hyperspace_en
 
 namespace uqm {
 void SpaceNavigation::run(GameSession &session) {
-    if (&session.player() != &player_ || &session.clock() != &clock_)
+    if (&session.player() != &player_ || &session.clock() != &clock_ || &session.encounters() != &records_)
         throw std::invalid_argument("navigation requires its owning player and campaign clock");
     SimulationBinding simulation{engine_};
     NavigationPresentation presentation{session.assets()};

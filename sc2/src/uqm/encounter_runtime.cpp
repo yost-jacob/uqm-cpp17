@@ -188,7 +188,7 @@ uqm::EncounterRuntime::run()
 	COUNT i, status;
 	HSHIPFRAG hStarShip;
 	SHIP_FRAGMENT *FragPtr;
-	HENCOUNTER hEncounter = 0;
+	ENCOUNTER *selectedEncounter = nullptr;
 	static constexpr CONVERSATION RaceComm[] =
 	{
 		RACE_COMMUNICATION
@@ -238,10 +238,10 @@ uqm::EncounterRuntime::run()
 			/* Encounter with a black globe in HS, prepare enemy ship list */
 			ENCOUNTER *EncounterPtr;
 
-			// The encounter globe that the flagship collided with is moved
-			// to the head of the queue in hyper.c:cleanup_hyperspace()
-			hEncounter = GetHeadEncounter ();
-			LockEncounter (hEncounter, &EncounterPtr);
+            if (!session_) throw std::logic_error("roaming encounter requires its campaign session");
+            auto &entries = session_->encounters();
+            if (entries.current() == entries.end()) throw std::logic_error("no selected campaign encounter");
+            EncounterPtr = selectedEncounter = &*entries.current();
 
 			for (i = 0; i < EncounterPtr->num_ships; ++i)
 			{
@@ -250,7 +250,6 @@ uqm::EncounterRuntime::run()
 						EncounterPtr->ShipList[i].crew_level);
 			}
 
-			UnlockEncounter (hEncounter);
 		}
 	}
 
@@ -275,13 +274,13 @@ uqm::EncounterRuntime::run()
 		if (i == SLYLANDRO_SHIP && status == 0)
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
 	}
-	else if (hEncounter)
+	else if (selectedEncounter)
 	{
 		/* Update HSpace encounter info, ships lefts, etc. */
 		BYTE i, NumShips;
 		ENCOUNTER *EncounterPtr;
 
-		LockEncounter (hEncounter, &EncounterPtr);
+		EncounterPtr = selectedEncounter;
 
 		NumShips = CountLinks (&GLOBAL (npc_built_ship_q));
 		EncounterPtr->num_ships = NumShips;
@@ -305,7 +304,6 @@ uqm::EncounterRuntime::run()
 			UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
 		}
 
-		UnlockEncounter (hEncounter);
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
 	}
 }

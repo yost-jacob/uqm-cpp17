@@ -3,6 +3,7 @@
 
 #include "game_data.hpp"
 #include "campaign_clock.hpp"
+#include "campaign_encounters.hpp"
 #include <string_view>
 #include <array>
 #include <cstdint>
@@ -349,6 +350,8 @@ public:
     // Production lifecycle/legacy adapters; load only at an unwound boundary.
     SessionExit runCampaign(std::optional<unsigned> loadSlot = std::nullopt);
     void requestLoad(unsigned slot) { requestMenuExit(SessionExit::load(slot)); }
+    CampaignEncounters &encounters() noexcept { return encounters_; }
+    const CampaignEncounters &encounters() const noexcept { return encounters_; }
     CampaignClock &clock() noexcept { return clock_; }
     const CampaignClock &clock() const noexcept { return clock_; }
     PlayerId playerId() const noexcept;
@@ -362,6 +365,7 @@ public:
 protected:
     detail::LegacyRuntimeView legacyRuntime() noexcept override;
 private:
+    CampaignEncounters encounters_;
     CampaignClock clock_;
     Entry entry_ = Entry::NewGame;
     std::shared_ptr<GameState> state_;

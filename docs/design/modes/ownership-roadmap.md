@@ -89,8 +89,10 @@ location variant, after outgoing callbacks and resource scopes have unwound.
    Modern save fields and record size on disk remain unchanged. Legacy decoding
    still consumes its historical pointer placeholder without storing it.
 
-   Remaining work: replace the campaign queue/fleet global macros in generation
-   and pursuit with explicit state/catalogue/clock/RNG references. Preserve pursuit
+   Campaign encounter access now uses the explicit session-owned dense vector and
+   selection interface described in [Game collections](../collections/README.md).
+   Race-fleet traversal uses typed vector order; remaining work is replacing
+   legacy fleet/state getters in generation and pursuit with explicit inputs. Preserve pursuit
    limits, record ordering, crew, identity and campaign clock behavior; archive
    format redesign stays separate.
 5. **Transitions and cleanup.** Give realm changes, system entry and encounters

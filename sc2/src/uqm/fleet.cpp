@@ -1,4 +1,5 @@
 #include "fleet_legacy.hpp"
+#include "game_collections.hpp"
 #include "build.h"
 #include "libs/math/random.hpp"
 #include <algorithm>
@@ -95,8 +96,7 @@ std::optional<std::reference_wrapper<const Ship>> Fleet::find(ShipId id) const {
 std::vector<ShipId> Fleet::ships() const {
     std::vector<ShipId> ids;
     ids.reserve(size());
-    for (auto link = queue_.head; link; link = _GetSuccLink(link))
-        ids.push_back({LockShipFrag(&queue_, link)->ship_id});
+    for (const auto *ship : detail::fleetShips(queue_)) ids.push_back(ship->id());
     return ids;
 }
 COUNT Fleet::size() const noexcept { return CountLinks(&queue_); }
@@ -127,11 +127,9 @@ void FleetAccess::activate(Ship &ship) noexcept {
     if (!ship.data_.ship_id) std::terminate();
 }
 std::optional<std::reference_wrapper<const Ship>> findShip(const QUEUE &queue, ShipId id) {
-    if (!id.value) return std::nullopt;
-    for (auto link = queue.head; link; link = _GetSuccLink(link)) {
-        const auto &record = *LockShipFrag(&queue, link);
-        if (record.ship_id == id.value) return std::cref(FleetAccess::ship(record));
-    }
+    if (!id.value || !queue.storage) return std::nullopt;
+    for (const auto *ship : fleetShips(queue))
+        if (ship->id() == id) return std::cref(*ship);
     return std::nullopt;
 }
 std::optional<std::reference_wrapper<Ship>> findShip(QUEUE &queue, ShipId id) {

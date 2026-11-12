@@ -243,8 +243,6 @@ LoadEncounter (ENCOUNTER *EncounterPtr, void *fh)
 {
 	COUNT i;
 
-	EncounterPtr->pred = 0;
-	EncounterPtr->succ = 0;
 	read_16s (fh, &EncounterPtr->transition_state);
 	read_16s (fh, &EncounterPtr->origin.x);
 	read_16s (fh, &EncounterPtr->origin.y);
@@ -638,7 +636,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 	(*GetPlayerSISState()) = SummPtr->SS;
 
 	ClearCampaignEvents ();
-	ReinitQueue (&GLOBAL (encounter_q));
+	ClearCampaignEncounters();
 	ReinitQueue (&GLOBAL (ip_group_q));
 	ReinitQueue (&GLOBAL (npc_built_ship_q));
 	ReinitQueue (GetPlayerFleetQueue());
@@ -680,19 +678,17 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr)
 			LoadGroupQueue (in_fp, &GLOBAL (ip_group_q), chunkSize);
 			break;
 		case ENCOUNTERS_TAG:
+            if (chunkSize % 65 != 0 || chunkSize / 65 > MAX_ENCOUNTERS - CampaignEncounterCount()) {
+                res_CloseResFile(in_fp);
+                return FALSE;
+            }
 			num_links = chunkSize / 65;
 			while (num_links--)
 			{
-				HENCOUNTER hEncounter;
-				ENCOUNTER *EncounterPtr;
-
-				hEncounter = AllocEncounter ();
-				LockEncounter (hEncounter, &EncounterPtr);
-
-				LoadEncounter (EncounterPtr, in_fp);
-
-				UnlockEncounter (hEncounter);
-				PutEncounter (hEncounter);
+				ENCOUNTER *EncounterPtr = AppendCampaignEncounter();
+                if (!EncounterPtr) { res_CloseResFile(in_fp); return FALSE; }
+                LoadEncounter (EncounterPtr, in_fp);
+                if (CampaignEncounterCount() == 1) SelectCampaignEncounter(0);
 			}
 			break;
 		case EVENTS_TAG:

@@ -1,11 +1,15 @@
 #include <boost/test/unit_test.hpp>
 #include <cstdint>
 #include <vector>
+#include <memory_resource>
+#include "uqm/collection_storage.hpp"
+#include "uqm/game_state.hpp"
 #include "uqm/displist.h"
 #include "uqm/element.h"
 #include "uqm/races.h"
 #include "uqm/grpinfo.h"
 #include "uqm/encount.h"
+#include "uqm/campaign_encounters.hpp"
 #include "uqm/master.h"
 #include "uqm/globdata.h"
 
@@ -45,7 +49,6 @@ BOOST_AUTO_TEST_CASE(game_queue_typed_storage_capacity_alignment_and_stability) 
             {QUEUE_STARSHIP, sizeof(STARSHIP), alignof(STARSHIP)},
             {QUEUE_SHIP_FRAGMENT, sizeof(SHIP_FRAGMENT), alignof(SHIP_FRAGMENT)},
             {QUEUE_FLEET_INFO, sizeof(FLEET_INFO), alignof(FLEET_INFO)},
-            {QUEUE_ENCOUNTER, sizeof(ENCOUNTER), alignof(ENCOUNTER)},
             {QUEUE_IP_GROUP, sizeof(IP_GROUP), alignof(IP_GROUP)},
             {QUEUE_MASTER_SHIP, sizeof(MASTER_SHIP_INFO), alignof(MASTER_SHIP_INFO)}}) {
         OwnedQueue owned(type.kind, 3);
@@ -70,20 +73,16 @@ BOOST_AUTO_TEST_CASE(game_queue_typed_storage_capacity_alignment_and_stability) 
 
 BOOST_AUTO_TEST_CASE(game_queue_encounter_limit_and_zero_capacity) {
     static_assert(MAX_ENCOUNTERS == 16);
-    OwnedQueue encounters(QUEUE_ENCOUNTER, MAX_ENCOUNTERS);
+    uqm::CampaignEncounters encounters;
     for (int i = 0; i < MAX_ENCOUNTERS; ++i) {
-        const auto link = AllocLink(&encounters.value);
-        BOOST_REQUIRE(link);
-        PutQueue(&encounters.value, link);
+        const auto entry = encounters.insert();
+        BOOST_REQUIRE(entry != encounters.end());
     }
-    BOOST_TEST(CountLinks(&encounters.value) == MAX_ENCOUNTERS);
-    BOOST_TEST(AllocLink(&encounters.value) == nullptr);
-    const auto first = GetHeadLink(&encounters.value);
-    RemoveQueue(&encounters.value, first);
-    // Unlinking does not return capacity until explicitly released.
-    BOOST_TEST(AllocLink(&encounters.value) == nullptr);
-    FreeLink(&encounters.value, first);
-    BOOST_TEST(AllocLink(&encounters.value) == first);
+    BOOST_TEST(encounters.size() == MAX_ENCOUNTERS);
+    BOOST_CHECK(encounters.insert() == encounters.end());
+    encounters.erase(encounters.begin());
+    const auto replacement = encounters.insert();
+    BOOST_CHECK(replacement != encounters.end());
     OwnedQueue empty(QUEUE_IP_GROUP, 0);
     BOOST_TEST(AllocLink(&empty.value) == nullptr);
     ReinitQueue(&empty.value);
@@ -167,4 +166,60 @@ BOOST_AUTO_TEST_CASE(game_queue_visitation_can_remove_current_and_c_api_works) {
     BOOST_TEST(order(owned.value).empty());
     BOOST_TEST(AllocLink(&owned.value) == expected.back());
     BOOST_TEST(game_queue_c_contract() == 1);
+}
+
+BOOST_AUTO_TEST_CASE(stable_collections_accept_an_alternative_stl_storage)
+{
+    uqm::CollectionStorage<IP_GROUP, std::pmr::vector<IP_GROUP>> groups{3};
+    auto *first = groups.allocate();
+    auto *second = groups.allocate();
+    groups.insert(groups.end(), first);
+    groups.insert(groups.end(), second);
+    groups.erase(groups.begin());
+    BOOST_TEST(*groups.begin() == second);
+    BOOST_TEST(groups.data() == first); // Order mutation never moves live slots.
+    groups.release(first);
+    BOOST_TEST(groups.allocate() == first);
+}
+
+BOOST_AUTO_TEST_CASE(campaign_encounters_keep_selection_identity_and_capacity_without_reordering)
+{
+    uqm::BasicCampaignEncounters<std::pmr::vector<ENCOUNTER>> encounters;
+    ENCOUNTER record{};
+    record.num_ships = 1;
+    record.ShipList[0].crew_level = 5;
+    const auto first = encounters.insert(record);
+    const auto firstId = first->runtime_id;
+    auto *firstAddress = &*first;
+    for (unsigned i = 1; i < encounters.limit; ++i) encounters.insert(record);
+    BOOST_TEST(&*encounters.begin() == firstAddress); // No reallocations up to cap.
+    BOOST_CHECK(encounters.insert() == encounters.end());
+    encounters.select(encounters.begin() + 2);
+    const auto selectedId = encounters.current()->runtime_id;
+    BOOST_TEST(encounters.begin()->runtime_id == firstId);
+    encounters.erase(encounters.begin());
+    BOOST_TEST(encounters.current()->runtime_id == selectedId);
+    BOOST_TEST(encounters.current()->ShipList[0].crew_level == 5u);
+    encounters.erase(encounters.current());
+    BOOST_CHECK(encounters.current() == encounters.end());
+    encounters.clear();
+    BOOST_TEST(encounters.insert()->runtime_id != firstId);
+}
+
+BOOST_AUTO_TEST_CASE(encounter_archive_adapter_preserves_selection_without_mutating_vector_order)
+{
+    auto &entries = uqm::gameSession().encounters();
+    entries.clear();
+    for (unsigned i = 0; i < 3; ++i) {
+        auto *entry = AppendCampaignEncounter();
+        BOOST_REQUIRE(entry);
+        entry->race_id = static_cast<BYTE>(i);
+    }
+    SelectCampaignEncounter(2);
+    BOOST_TEST(entries.current()->race_id == 2u);
+    BOOST_TEST(CampaignEncounterForSave(0)->race_id == 2u);
+    BOOST_TEST(CampaignEncounterForSave(1)->race_id == 0u);
+    BOOST_TEST(CampaignEncounterForSave(2)->race_id == 1u);
+    BOOST_TEST(entries.begin()->race_id == 0u);
+    ClearCampaignEncounters();
 }
