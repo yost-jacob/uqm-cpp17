@@ -30,18 +30,8 @@ class RainbowWorldSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
 }
-
-
-
-
-
-
-
-
-
 
 bool
 RainbowWorldSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -67,39 +57,6 @@ RainbowWorldSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	return true;
 }
-
-bool
-RainbowWorldSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		BYTE which_rainbow;
-		UWORD rainbow_mask;
-		STAR_DESC *SDPtr;
-
-		rainbow_mask = MAKE_WORD (
-				story_.read(StoryCounter::RainbowWorld0),
-				story_.read(StoryCounter::RainbowWorld1));
-
-		which_rainbow = 0;
-		SDPtr = GetStar(0);
-		while (SDPtr != &star())
-		{
-			if (SDPtr->Index == RAINBOW_DEFINED)
-				++which_rainbow;
-			SDPtr = GetStar(GetStarIndex(SDPtr) + 1);
-		}
-		rainbow_mask |= 1 << which_rainbow;
-		story_.set(StoryCounter::RainbowWorld0, LOBYTE (rainbow_mask));
-		story_.set(StoryCounter::RainbowWorld1, HIBYTE (rainbow_mask));
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-	return true;
-}
-
 
 std::unique_ptr<SystemBehavior> createRainbowWorldSystemBehavior(StoryState &story) {
     return std::make_unique<RainbowWorldSystemBehavior>(story);

@@ -40,7 +40,6 @@ public:
     bool generatePlanets(SOLARSYS_STATE &system) override;
     bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     bool generateName(const SOLARSYS_STATE &system, const PLANET_DESC &body) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     COUNT generateLife(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
@@ -49,25 +48,6 @@ private:
     void check_probe(void);
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 SolSystemBehavior::initNpcs(SOLARSYS_STATE &system)
@@ -260,270 +240,6 @@ SolSystemBehavior::generateName(const SOLARSYS_STATE &system, const PLANET_DESC 
 	return true;
 }
 
-bool
-SolSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	DWORD rand_val;
-	COUNT planetNr;
-
-	if (matchWorld (solarSys, world, 2, 0))
-	{
-		/* Starbase */
-		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
-
-		EncounterGroup = 0;
-		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-		story_.set(StoryCounter::EncounterContext, (BYTE)~0);
-		return true;
-	}
-
-	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-	planetNr = planetIndex (solarSys, world);
-	if (worldIsPlanet (solarSys, world))
-	{
-		switch (planetNr)
-		{
-			case 0: /* MERCURY */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 98;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 38;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 3;
-				solarSys->SysInfo.PlanetInfo.Weather = 0;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 2;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 59 * 240;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 165;
-				break;
-			case 1: /* VENUS */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 90 *
-						EARTH_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 95;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 95;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 177;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 243 * 240;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 457;
-				break;
-			case 2: /* EARTH */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						EARTH_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 100;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 100;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 23;
-				solarSys->SysInfo.PlanetInfo.Weather = 1;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 240;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 22;
-				break;
-			case 3: /* MARS */
-				// XXX: Mars atmo should actually be 1/2 in current units
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 1;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 72;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 53;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 24;
-				solarSys->SysInfo.PlanetInfo.Weather = 1;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 246;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -53;
-				break;
-			case 4: /* JUPITER */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 24;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 1120;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 3;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 98;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -143;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 520L / 100;
-				break;
-			case 5: /* SATURN */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 13;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 945;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 27;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 102;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -197;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 952L / 100;
-				break;
-			case 6: /* URANUS */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 21;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 411;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 98;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 172;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -217;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 1916L / 100;
-				break;
-			case 7: /* NEPTUNE */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 28;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 396;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 30;
-				solarSys->SysInfo.PlanetInfo.Weather = 7;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 182;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -229;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 2999L / 100;
-				break;
-			case 8: /* PLUTO */
-				if (!story_.read(StoryCounter::FoundPlutoSpathi))
-				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->graphics->PlanetSideFrame[1] =
-							CaptureDrawable (
-							LoadGraphic (SPAPLUTO_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-							LoadStringTable (SPAPLUTO_STRTAB));
-				}
-
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 33;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 18;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 119;
-				solarSys->SysInfo.PlanetInfo.Weather = 0;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 1533;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -235;
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 3937L / 100;
-				break;
-		}
-
-		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
-				CalcGravity (&solarSys->SysInfo.PlanetInfo);
-		LoadPlanet (planetNr == 2 ?
-				CaptureDrawable (LoadGraphic (EARTH_MASK_ANIM)) : NULL);
-	}
-	else
-	{
-		// World is a moon.
-		COUNT moonNr = moonIndex (solarSys, world);
-
-		solarSys->SysInfo.PlanetInfo.AxialTilt = 0;
-		solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		switch (planetNr)
-		{
-			case 2: /* moons of EARTH */
-				// NOTE: Even though we save the seed here, it is irrelevant.
-				//   The seed will be used to randomly place the tractors, but
-				//   since they are mobile, they will be moved to different
-				//   locations not governed by this seed.
-				solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
-						rand_val;
-
-				if (!story_.read(StoryFlag::MoonbaseDestroyed))
-				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-					solarSys->graphics->PlanetSideFrame[1] =
-							CaptureDrawable (
-							LoadGraphic (MOONBASE_MASK_PMAP_ANIM));
-					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-							LoadStringTable (MOONBASE_STRTAB));
-				}
-
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 60;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 25;
-				solarSys->SysInfo.PlanetInfo.AxialTilt = 0;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 240 * 29;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -18;
-				break;
-
-			case 4: /* moons of JUPITER */
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 520L / 100;
-				switch (moonNr)
-				{
-					case 0: /* Io */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 69;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 25;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 3;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 390;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -163;
-						break;
-					case 1: /* Europa */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 54;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 25;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 840;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -161;
-						break;
-					case 2: /* Ganymede */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 35;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 41;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 1728;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -164;
-						break;
-					case 3: /* Callisto */
-						solarSys->SysInfo.PlanetInfo.PlanetDensity = 35;
-						solarSys->SysInfo.PlanetInfo.PlanetRadius = 38;
-						solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-						solarSys->SysInfo.PlanetInfo.RotationPeriod = 4008;
-						solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -167;
-						break;
-				}
-				break;
-
-			case 5: /* moon of SATURN: Titan */
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 952L / 100;
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 160;
-				solarSys->SysInfo.PlanetInfo.Weather = 2;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 34;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 40;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 1;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 3816;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -178;
-				break;
-
-			case 7: /* moon of NEPTUNE: Triton */
-				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 2999L / 100;
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 10;
-				solarSys->SysInfo.PlanetInfo.Weather = 1;
-				solarSys->SysInfo.PlanetInfo.PlanetDensity = 95;
-				solarSys->SysInfo.PlanetInfo.PlanetRadius = 27;
-				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-				solarSys->SysInfo.PlanetInfo.RotationPeriod = 4300;
-				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -216;
-				break;
-		}
-
-		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
-				CalcGravity (&solarSys->SysInfo.PlanetInfo);
-		LoadPlanet (NULL);
-	}
-
-	return true;
-}
-
 COUNT
 SolSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT whichNode, NODE_INFO *info)
 {
@@ -628,7 +344,6 @@ SolSystemBehavior::generateLife(const SOLARSYS_STATE &system, const PLANET_DESC 
 	return 0;
 }
 
-
 int
 SolSystemBehavior::init_probe(void)
 {
@@ -681,7 +396,6 @@ SolSystemBehavior::check_probe(void)
 	}
 	UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
 }
-
 
 std::unique_ptr<SystemBehavior> createSolSystemBehavior(StoryState &story) {
     return std::make_unique<SolSystemBehavior>(story);

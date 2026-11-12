@@ -1,3 +1,4 @@
+#include "world_visit.hpp"
 #include "libs/threadlib.h"
 #include "game_state.hpp"
 /*
@@ -663,10 +664,8 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
-				// When GenerateDefaultFunctions is used as genFuncs,
-				// generateOrbital will also call DoPlanetaryAnalysis,
-				// but with other GenerateFunctions this is not guaranteed.
-		uqm::systemBehavior(*system).generateOrbital(*(system), *(planet));
+		// Event-specific analysis/scan seeds are also needed for debug reports.
+		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->planetFuncPre) (
 				planet, universeRecurseArg->arg);
 	}
@@ -688,10 +687,8 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
         uqm::detail::PlanetRenderBorrow rendering{*system,
             system->worlds->system->world(planet - system->PlanetDesc)};
 		DoPlanetaryAnalysis (&system->SysInfo, planet);
-				// When GenerateDefaultFunctions is used as genFuncs,
-				// generateOrbital will also call DoPlanetaryAnalysis,
-				// but with other GenerateFunctions this is not guaranteed.
-		uqm::systemBehavior(*system).generateOrbital(*(system), *(planet));
+		// Event-specific analysis/scan seeds are also needed for debug reports.
+		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->planetFuncPost) (
 				planet, universeRecurseArg->arg);
 	}
@@ -716,11 +713,9 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		if (moon->data_index != HIERARCHY_STARBASE && moon->data_index != SA_MATRA)
 		{
 			DoPlanetaryAnalysis (&system->SysInfo, moon);
-				// When GenerateDefaultFunctions is used as genFuncs,
-				// generateOrbital will also call DoPlanetaryAnalysis,
-				// but with other GenerateFunctions this is not guaranteed.
+		// Event-specific analysis/scan seeds are also needed for debug reports.
 		}
-		uqm::systemBehavior(*system).generateOrbital(*(system), *(moon));
+		uqm::WorldVisit::inspectPreparedWorld(uqm::gameSession(), *system);
 		(*universeRecurseArg->moonFunc) (
 				moon, universeRecurseArg->arg);
 	}

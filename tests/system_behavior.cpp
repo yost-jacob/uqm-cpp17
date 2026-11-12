@@ -88,12 +88,11 @@ bool GenerateDefault_generateName(const SOLARSYS_STATE *system, const PLANET_DES
     (void)world;
     return true;
 }
-bool GenerateDefault_generateOrbital(SOLARSYS_STATE *system, PLANET_DESC *world) {
+void PrepareDefaultOrbit(SOLARSYS_STATE *system, PLANET_DESC *world) {
     ++defaultCalls[6];
     if (testOrbitGeneration) testOrbitGeneration(*system);
     (void)system;
     (void)world;
-    return true;
 }
 COUNT GenerateDefault_generateMinerals(const SOLARSYS_STATE *system, const PLANET_DESC *world, COUNT node, NODE_INFO *info) {
     ++defaultCalls[7];
@@ -279,61 +278,6 @@ BOOST_AUTO_TEST_CASE(system_factory_selects_native_chmmr_and_default_rules)
     BOOST_TEST(defaultCalls[3] == 1u);
     BOOST_TEST(system.PlanetDesc[1].NumPlanets == 1u);
 }
-BOOST_AUTO_TEST_CASE(chmmr_hooks_read_the_borrowed_campaign_at_action_time)
-{
-    uqm::GameState alice{{uqm::SinglePlayerId, "Alice"}}, bob{{uqm::SinglePlayerId, "Bob"}};
-    auto &a = alice.player(uqm::SinglePlayerId).story();
-    auto &b = bob.player(uqm::SinglePlayerId).story();
-    auto first = uqm::createSystemBehavior(CHMMR_DEFINED, a);
-    auto second = uqm::createSystemBehavior(CHMMR_DEFINED, b);
-    SOLARSYS_STATE system{};
-    resetCalls();
-    b.set(uqm::StoryFlag::ChmmrFreed);
-    first->generatePlanets(system);
-    BOOST_TEST((system.PlanetDesc[1].data_index & PLANET_SHIELDED) != 0);
-    second->generatePlanets(system);
-    BOOST_TEST((system.PlanetDesc[1].data_index & PLANET_SHIELDED) == 0);
-    a.set(uqm::StoryFlag::ChmmrFreed); // Construction did not cache the flag.
-    a.set(uqm::StoryCounter::BombProgress, 2);
-    const auto oldActivity = GLOBAL(CurrentActivity);
-    GLOBAL(CurrentActivity) = 0;
-    first->generateOrbital(system, system.PlanetDesc[1]);
-    BOOST_TEST(communications == 1u);
-    BOOST_TEST(static_cast<int>(lastConversation) == static_cast<int>(CHMMR_CONVERSATION));
-    BOOST_TEST(a.read(uqm::StoryCounter::EncounterContext) == 128u);
-    BOOST_TEST(b.read(uqm::StoryCounter::EncounterContext) == 0u);
-    BOOST_TEST((GLOBAL(CurrentActivity) & END_INTERPLANETARY) != 0);
-    BOOST_TEST(defaultCalls[6] == 0u); // Handled special orbit never falls through.
-    GLOBAL(CurrentActivity) = oldActivity;
-}
-BOOST_AUTO_TEST_CASE(chmmr_ilwrath_gate_and_ordinary_orbits_preserve_fallback_order)
-{
-    uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
-    auto &story = state.player(uqm::SinglePlayerId).story();
-    auto behavior = uqm::createSystemBehavior(CHMMR_DEFINED, story);
-    SOLARSYS_STATE system{};
-    resetCalls();
-    behavior->generateOrbital(system, system.PlanetDesc[0]);
-    BOOST_TEST(defaultCalls[6] == 1u);
-    story.set(uqm::StoryFlag::SunDeviceOnShip);
-    story.set(uqm::StoryFlag::IlwrathDeceived);
-    EncounterQueues queues;
-    sphereTracked = true;
-    behavior->generateOrbital(system, system.PlanetDesc[1]);
-    BOOST_TEST(communications == 0u);
-    story.clear(uqm::StoryFlag::IlwrathDeceived);
-    const auto oldActivity = GLOBAL(CurrentActivity);
-    GLOBAL(CurrentActivity) = 0;
-    behavior->generateOrbital(system, system.PlanetDesc[1]);
-    BOOST_TEST(communications == 1u);
-    BOOST_TEST(static_cast<int>(lastConversation) == static_cast<int>(ILWRATH_CONVERSATION));
-    BOOST_TEST(story.read(uqm::StoryCounter::EncounterContext) == 64u);
-    BOOST_TEST(groupsSaved == 1u);
-    BOOST_TEST(groupsLoaded == 1u);
-    BOOST_TEST(clones == 1u);
-    BOOST_TEST((GLOBAL(CurrentActivity) & START_INTERPLANETARY) == 0);
-    GLOBAL(CurrentActivity) = oldActivity;
-}
 BOOST_AUTO_TEST_CASE(system_keeps_behavior_identity_when_generated_layout_is_attached)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
@@ -361,7 +305,7 @@ BOOST_AUTO_TEST_CASE(system_keeps_behavior_identity_when_generated_layout_is_att
     identity->generatePlanets(system);
     BOOST_TEST((system.PlanetDesc[1].data_index & PLANET_SHIELDED) == 0);
 }
-BOOST_AUTO_TEST_CASE(default_system_hooks_forward_all_thirteen_existing_contracts)
+BOOST_AUTO_TEST_CASE(default_system_hooks_forward_remaining_non_orbital_contracts)
 {
     uqm::GameState state{{uqm::SinglePlayerId, "Player"}};
     uqm::SystemBehavior behavior{state.player(uqm::SinglePlayerId).story()};
@@ -374,14 +318,13 @@ BOOST_AUTO_TEST_CASE(default_system_hooks_forward_all_thirteen_existing_contract
     BOOST_TEST(behavior.generatePlanets(system) == true);
     BOOST_TEST(behavior.generateMoons(system, world) == true);
     BOOST_TEST(behavior.generateName(system, world) == true);
-    BOOST_TEST(behavior.generateOrbital(system, world) == true);
     BOOST_TEST(behavior.generateMinerals(system, world, COUNT{7}, nullptr) == 7u);
     BOOST_TEST(behavior.generateEnergy(system, world, COUNT{7}, nullptr) == 7u);
     BOOST_TEST(behavior.generateLife(system, world, COUNT{7}, nullptr) == 7u);
     BOOST_TEST(behavior.pickupMinerals(system, world, COUNT{7}) == true);
     BOOST_TEST(behavior.pickupEnergy(system, world, COUNT{7}) == true);
     BOOST_TEST(behavior.pickupLife(system, world, COUNT{7}) == true);
-    for (auto calls : defaultCalls) BOOST_TEST(calls == 1u);
+    for (std::size_t i = 0; i < defaultCalls.size(); ++i) BOOST_TEST(defaultCalls[i] == (i == 6 ? 0u : 1u));
 }
 
 // Called under the real catalogue fixture; tests explicit local campaign context
@@ -837,7 +780,7 @@ BOOST_AUTO_TEST_CASE(system_constructor_builds_special_planets_and_moons_without
 
 BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_child_load)
 {
-    for (bool load : {false, true}) {
+    for (unsigned scenario = 0; scenario < 5; ++scenario) {
         resetCalls();
         uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Visitor"}), uqm::SinglePlayerId};
         std::ifstream stars{UQM_TEST_STARMAP_PATH};
@@ -845,8 +788,8 @@ BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_ch
         uqm::SessionActivation activation{session};
         struct Explore final : uqm::GameMode {
             uqm::GameSession &session;
-            bool load;
-            Explore(uqm::GameSession &s, bool l) : GameMode(s.dispatcher()), session(s), load(l) {}
+            unsigned scenario;
+            Explore(uqm::GameSession &s, unsigned value) : GameMode(s.dispatcher()), session(s), scenario(value) {}
             uqm::ModeResult run() override {
                 GLOBAL(CurrentActivity) = IN_INTERPLANETARY;
                 session.player().enterSolarSystem();
@@ -868,26 +811,37 @@ BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_ch
                 runtime.system->behavior().attachStar(*GetStar(0));
                 runtime.system->behavior().attachSession(session);
                 // Selection is immutable, while story conditions remain live.
-                story.set(uqm::StoryFlag::ChmmrFreed);
+                if (scenario < 2 || scenario == 4) story.set(uqm::StoryFlag::ChmmrFreed);
+                else {
+                    story.set(uqm::StoryFlag::SunDeviceOnShip);
+                    story.set(uqm::StoryFlag::IlwrathDeceived, scenario == 3);
+                    sphereTracked = true;
+                }
+                EncounterQueues queues;
                 BOOST_CHECK(world.orbitHandler() == handler);
                 const auto *parentEngine = &engine();
                 dialogueHook = [&] {
                     BOOST_TEST(&uqm::simulationEngine() != parentEngine);
-                    if (load) session.requestLoad(4);
+                    if (scenario == 1) session.requestLoad(4);
+                    if (scenario == 4) story.set(uqm::StoryCounter::BombProgress, 2);
                 };
-                { uqm::WorldVisit visit{session, system, world}; BOOST_TEST(visit.run() == !load); }
+                { uqm::WorldVisit visit{session, system, world}; BOOST_TEST(visit.run() == (scenario != 1 && scenario != 4)); }
                 dialogueHook = {};
-                BOOST_TEST(communications == 1u);
-                BOOST_TEST(lastConversation == CHMMR_CONVERSATION);
-                BOOST_TEST(defaultCalls[6] == 0u); // Conversation did not fall through to orbit.
+                BOOST_TEST(communications == (scenario == 3 ? 0u : 1u));
+                if (scenario != 3) BOOST_TEST(lastConversation == (scenario == 2 ? ILWRATH_CONVERSATION : CHMMR_CONVERSATION));
+                BOOST_TEST(defaultCalls[6] == (scenario == 3 ? 1u : 0u));
+                if (scenario == 2) {
+                    BOOST_TEST(groupsSaved == 1u); BOOST_TEST(groupsLoaded == 1u); BOOST_TEST(clones == 1u);
+                }
+                if (scenario == 4) BOOST_TEST((GLOBAL(CurrentActivity) & END_INTERPLANETARY) != 0);
                 BOOST_TEST(system.graphics == nullptr);
                 BOOST_TEST(!std::get<uqm::SolarSystemLocation>(session.player().location()).orbit);
                 if (auto exit = session.menuExit()) return *exit;
                 return uqm::ModeCompleted{};
             }
         };
-        const auto result = session.run(std::make_unique<Explore>(session, load));
+        const auto result = session.run(std::make_unique<Explore>(session, scenario));
         dialogueHook = {};
-        BOOST_CHECK(result.kind == (load ? uqm::SessionExitKind::LoadGame : uqm::SessionExitKind::ReturnToTitle));
+        BOOST_CHECK(result.kind == (scenario == 1 ? uqm::SessionExitKind::LoadGame : uqm::SessionExitKind::ReturnToTitle));
     }
 }

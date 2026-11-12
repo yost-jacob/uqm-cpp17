@@ -1,4 +1,10 @@
 See the [current runtime encapsulation map](../runtime-encapsulation.md) for the
+
+Current orbital-entry update: the virtual `generateOrbital()` hook has been
+retired. Its scripts now live inline in `uqm::orbit_events`, selected directly
+by each world's constructor. See [orbital events](orbit-events.md). The remaining
+system behavior hooks still govern layout, NPCs, scan-node generation and pickups.
+
 exploration/navigation/encounter/lander ownership. This document focuses on
 the native behavior interface and migration contracts.
 

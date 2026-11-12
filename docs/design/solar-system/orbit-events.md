@@ -19,11 +19,19 @@ handler cache is introduced.
 
 ## Existing scripts and selection
 
-The initial event function reuses `SystemBehavior::generateOrbital`, retaining
-its existing authored sequences and current-story checks. This virtual call is
-an adapter to those scripts, not a new lookup of the world's event identity.
-Their future extraction into individual free functions is independent of this
-change. Ordinary worlds bypass that virtual orbital hook.
+All 25 event scripts are inline functions in
+[`uqm::orbit_events`](../../../sc2/src/uqm/orbit_events.hpp). The constructor
+selector stores the specific helper address, such as `orbit_events::chmmr` or
+`orbit_events::sol`. There is no virtual `generateOrbital()` hook or generic
+system-event adapter remaining.
+
+Helpers use `WorldVisit` to read current story state, converse through child
+modes, prepare ordinary orbit, load a special surface, and enter prepared orbit.
+Preparation and presentation are distinct so environmental overrides and custom
+scan-seed ordering still occur at their original points. `PrepareDefaultOrbit`
+now only computes ordinary physical analysis and scan seeds; it does not launch
+presentation. Existing C descriptor/resource access remains explicitly marked
+inside the helpers while those subsystems are migrated.
 
 Selection is restricted to the bodies affected by each existing script: for
 example, Chmmr planet 1 and its starbase, the Taalo moon at planet 1/moon 2, and
@@ -75,7 +83,18 @@ a nested encounter requesting load, ordinary orbital child execution, nested
 surface-scene transfer, normal resume, load cancellation and exception cleanup.
 The device-free tests use fake menus and existing fake engine dependencies.
 
-The orbital menu/scan drawing, physical analysis, terrain generation and authored
-system scripts still contain legacy code. This change establishes the event and
+The orbital menu/scan drawing, physical analysis and terrain generation still
+contain legacy code. The inline event scripts also retain descriptor operations
+and resource IDs from their original implementations. This change establishes the event and
 mode handoff; it does not claim to replace those subsystems. NPC groups continue
 using their ordinary encounter path and acquire no new optional scripting field.
+
+## Debug enumeration
+
+The debug universe dump uses `WorldVisit::inspectPreparedWorld` with its existing
+borrowed graphics scope. Inspection executes the same selected script to obtain
+custom analysis and scan seeds, but never changes the player location or starts
+child modes, surface presentation, discovery UI, border drawing or abduction.
+This inspection API does not create a second registry or virtual dispatch path.
+It retains the old metadata/story calculations; it is not a transactionally
+isolated campaign snapshot.

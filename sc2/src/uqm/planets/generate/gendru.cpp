@@ -37,22 +37,10 @@ class DruugeSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 DruugeSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -78,53 +66,6 @@ DruugeSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	solarSys->PlanetDesc[0].rand_seed = MAKE_DWORD (
 			solarSys->PlanetDesc[0].location.x,
 			solarSys->PlanetDesc[0].location.y);
-
-	return true;
-}
-
-bool
-DruugeSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (StartSphereTracking (DRUUGE_SHIP))
-		{
-			NotifyOthers (DRUUGE_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (DRUUGE_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-			communicate(DRUUGE_CONVERSATION);
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-			return true;
-		}
-		else
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (
-							LoadStringTable (DRUUGE_RUINS_STRTAB));
-			if (story_.read(StoryFlag::RosySphere))
-			{	// Already picked up Rosy Sphere, skip the report
-				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
-						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
-			}
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 
 	return true;
 }
@@ -166,7 +107,6 @@ DruugeSystemBehavior::generateEnergy(const SOLARSYS_STATE &system, const PLANET_
 
 	return 0;
 }
-
 
 std::unique_ptr<SystemBehavior> createDruugeSystemBehavior(StoryState &story) {
     return std::make_unique<DruugeSystemBehavior>(story);

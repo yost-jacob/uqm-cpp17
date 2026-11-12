@@ -36,8 +36,11 @@ COUNT SystemBehavior::communicate(CONVERSATION conversation) {
         EncounterRuntime encounter{story_, star_, simulationEngine()};
         return encounter.communicate(conversation);
     }
+    return converseInSystem(*session_, star_, conversation);
+}
+COUNT converseInSystem(GameSession &session, const STAR_DESC *star, CONVERSATION conversation) {
     COUNT result = 0;
-    if (auto exit = session_->swapGameMode(std::make_unique<SystemEncounterMode>(*session_, star_, conversation, result))) {
+    if (auto exit = session.swapGameMode(std::make_unique<SystemEncounterMode>(session, star, conversation, result))) {
         // Let the existing C exploration stack unwind using its established flags.
         GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
     }

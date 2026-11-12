@@ -34,22 +34,10 @@ class YehatSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 YehatSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -68,45 +56,6 @@ YehatSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 	solarSys->PlanetDesc[0].location.y =
 			SINE (angle, solarSys->PlanetDesc[0].radius);
 
-	return true;
-}
-
-bool
-YehatSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (StartSphereTracking (YEHAT_SHIP))
-		{
-			NotifyOthers (YEHAT_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (YEHAT_SHIP, &GLOBAL (npc_built_ship_q),
-					INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			story_.set(StoryCounter::EncounterContext, 1 << 7);
-			communicate(YEHAT_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-
-			return true;
-		}
-
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->graphics->PlanetSideFrame[1] =
-				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 	return true;
 }
 

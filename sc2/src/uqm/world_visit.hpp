@@ -1,9 +1,13 @@
 #ifndef UQM_WORLD_VISIT_HPP_
 #define UQM_WORLD_VISIT_HPP_
 #include <memory>
+#include "comm.h"
 struct solarsys_state;
+struct star_desc;
+struct planet_desc;
 namespace uqm {
 class GameSession;
+class StoryState;
 class World;
 // Synchronous visit controller. Session, system and selected world outlive this
 // object and all its children. Owns the orbit location/graphics service scopes.
@@ -16,18 +20,34 @@ public:
     // Invoke the constructor-selected script, or ordinary orbit for nullopt.
     // False means an exit/story handoff prevents resuming system flight.
     bool run();
+    // Debug enumeration only: caller already owns the selected graphics borrow.
+    // Populate script-specific data without modes, audio/UI or location changes.
+    static void inspectPreparedWorld(GameSession &session, solarsys_state &system);
     // Ordinary generation followed by an orbital child mode, unless exiting.
     void enterOrbit();
-    // Existing system scripts retain their procedural story/encounter logic.
-    // This adapter also presents any orbit surface prepared by that script.
-    static void runSystemEvent(WorldVisit &visit);
+    // Script operations borrow current session state and perform synchronous
+    // child-mode handoff. Pending exits prevent further preparation/presentation.
+    StoryState &story() const noexcept;
+    const star_desc &star() const;
+    COUNT converse(CONVERSATION conversation);
+    void prepareOrbit();
+    // Consumes an optional surface-definition drawable, including on cancellation.
+    void loadSurface(FRAME definition);
+    void enterPreparedOrbit();
+    bool canInteract() const;
+    void reportDiscovery();
+    void restoreBorder();
+    // Transitional descriptor access for the extracted scripts, not ownership.
+    solarsys_state &legacySystem() noexcept { return system_; }
+    planet_desc &legacyDescriptor();
 private:
+    WorldVisit(GameSession &, solarsys_state &, World &, bool inspection);
     bool canContinue() const;
-    void presentOrbit();
     class Resources;
     GameSession &session_;
     solarsys_state &system_;
     World &world_;
+    bool inspection_ = false;
     std::unique_ptr<Resources> resources_;
 };
 }

@@ -38,22 +38,10 @@ class ThraddashSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 ThraddashSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -86,72 +74,6 @@ ThraddashSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 		solarSys->PlanetDesc[0].location.y =
 				SINE (angle, solarSys->PlanetDesc[0].radius);
 	}
-	return true;
-}
-
-bool
-ThraddashSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		if (StartSphereTracking (THRADDASH_SHIP)
-				&& (star().Index == THRADD_DEFINED
-				|| (!story_.read(StoryFlag::HelixUnprotected)
-				&& (BYTE)(story_.read(StoryCounter::ThraddMission) - 1) >= 3)))
-		{
-			NotifyOthers (THRADDASH_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (THRADDASH_SHIP, &GLOBAL (npc_built_ship_q),
-					INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			if (star().Index == THRADD_DEFINED)
-			{
-				story_.set(StoryCounter::EncounterContext, 1 << 7);
-			}
-			else
-			{
-				story_.set(StoryCounter::EncounterContext, 1 << 6);
-			}
-			communicate(THRADD_CONVERSATION);
-
-			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-				return true;
-
-			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-			encounter.restore();
-
-			if (star().Index == THRADD_DEFINED
-					|| (!story_.read(StoryFlag::HelixUnprotected)
-					&& (BYTE)(story_.read(StoryCounter::ThraddMission) - 1) >= 3))
-				return true;
-
-			RepairSISBorder ();
-		}
-
-		if (star().Index == AQUA_HELIX_DEFINED
-				&& !story_.read(StoryFlag::AquaHelix))
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (AQUA_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (AQUA_STRTAB));
-		}
-		else if (star().Index == THRADD_DEFINED)
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 	return true;
 }
 

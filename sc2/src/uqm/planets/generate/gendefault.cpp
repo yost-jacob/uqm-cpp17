@@ -27,12 +27,8 @@
 #include "../../sounds.h"
 #include "libs/mathlib.h"
 
-
 static void GeneratePlanets (SOLARSYS_STATE *system);
 static void check_yehat_rebellion (uqm::StoryState &story);
-
-
-
 
 bool
 GenerateDefault_initNpcs (SOLARSYS_STATE *solarSys)
@@ -99,8 +95,8 @@ GenerateDefault_generateName (const SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-bool
-GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+void
+PrepareDefaultOrbit (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
 	DWORD rand_val;
 	SYSTEM_INFO *sysInfo;
@@ -132,9 +128,7 @@ GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	GenerateMineralDeposits (sysInfo, GENERATE_ALL, NULL);
 
 	sysInfo->PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
-	LoadPlanet (NULL);
 
-	return true;
 }
 
 COUNT
@@ -355,5 +349,4 @@ check_yehat_rebellion (uqm::StoryState &story)
 		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
 	}
 }
-
 

@@ -30,50 +30,9 @@ namespace {
 class VaultSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
-}
-
-
-
-
-
-
-
-
-
-
-
-bool
-VaultSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, 0))
-	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->graphics->PlanetSideFrame[1] =
-				CaptureDrawable (LoadGraphic (VAULT_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (VAULT_STRTAB));
-		if (story_.read(StoryFlag::ShipVaultUnlocked))
-		{
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, 2);
-		}
-		else if (story_.read(StoryFlag::SyreenShuttleOnShip))
-		{
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
-					solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-	return true;
 }
 
 COUNT

@@ -5,6 +5,7 @@
 #include "uqm/gendef.h"
 #include "uqm/setup.h"
 #include "uqm/world_legacy.hpp"
+#include "uqm/planet_render_legacy.hpp"
 #include <boost/test/unit_test.hpp>
 #include <functional>
 #include <fstream>
@@ -134,5 +135,74 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
         auto result = session.run(std::make_unique<Explore>(session, action));
         const auto expected = action == 1 ? SessionExitKind::LoadGame : action == 2 ? SessionExitKind::Failed : SessionExitKind::ReturnToTitle;
         BOOST_CHECK(result.kind == expected);
+    }
+}
+
+// Device-free dependencies for the actual inline event scripts. These tests
+// exercise event routing and ownership, not terrain algorithms or UI drawing.
+extern "C" {
+SIZE EncounterRace = 0;
+BYTE EncounterGroup = 0;
+void LoadPlanet(FRAME) {}
+void NotifyOthers(COUNT, BYTE) {}
+void RepairSISBorder() {}
+void DrawHyperCoords(POINT) {}
+void DrawSISMessage(const UNICODE *) {}
+DWORD FadeScreen(ScreenFadeType, SIZE) { return 0; }
+void DoPlanetaryAnalysis(SYSTEM_INFO *, PLANET_DESC *) {}
+COUNT GenerateLifeForms(const SYSTEM_INFO *, COUNT, NODE_INFO *) { return 0; }
+COUNT GenerateMineralDeposits(const SYSTEM_INFO *, COUNT, NODE_INFO *) { return 0; }
+UWORD CalcGravity(const PLANET_INFO *) { return 0; }
+bool worldIsPlanet(const SOLARSYS_STATE *system, const PLANET_DESC *world) {
+    return world->pPrevDesc == system->SunDesc;
+}
+COUNT planetIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world) {
+    return (worldIsPlanet(system, world) ? world : world->pPrevDesc) - system->PlanetDesc;
+}
+COUNT moonIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world) { return world - system->MoonDesc; }
+bool isNodeRetrieved(const PLANET_INFO *planet, BYTE scan, BYTE node) {
+    return (planet->ScanRetrieveMask[scan] & (DWORD{1} << node)) != 0;
+}
+}
+
+BOOST_AUTO_TEST_CASE(debug_world_inspection_uses_scripts_without_modes_or_player_location_changes)
+{
+    for (BYTE special : {BYTE{CHMMR_DEFINED}, BYTE{SOL_DEFINED}}) {
+        Hooks hooks;
+        GameSession session{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Inspector"}), SinglePlayerId};
+        std::ifstream stars{UQM_TEST_STARMAP_PATH};
+        detail::DefinitionsAccess::loadStars(detail::DefinitionsAccess::storage(session), stars);
+        SessionActivation activation{session};
+        SimulationEngine engine{16};
+        SimulationBinding simulation{engine};
+        session.player().story().set(StoryFlag::ChmmrFreed);
+        UQM_SYSTEM_RUNTIME runtime{session.player().story(), engine, session.worldOwner(), nullptr};
+        auto &system = runtime.engine;
+        system.worlds = &runtime;
+        std::vector<WorldDefinition> definitions{definition(session.world().id(), special, 0)};
+        if (special == CHMMR_DEFINED) definitions.push_back(definition(session.world().id(), special, 1));
+        runtime.system = std::make_unique<SolarSystem>(StarId{0}, session.worldOwner(), definitions);
+        auto &world = runtime.system->world(special == CHMMR_DEFINED ? 1 : 0);
+        runtime.system->selectWorld(world.id());
+        system.PlanetDesc[world.id().planet].pPrevDesc = system.SunDesc;
+        auto *previous = pSolarSysState;
+        struct Restore { SOLARSYS_STATE *value; ~Restore() { pSolarSysState = value; } } restore{previous};
+        pSolarSysState = &system;
+        const auto locationKind = session.player().location().index();
+        const auto finishes = orbitFinishes;
+        orbitMenu = [] { BOOST_FAIL("inspection opened an orbital menu"); };
+        {
+            detail::PlanetRenderBorrow graphics{system, world};
+            WorldVisit::inspectPreparedWorld(session, system);
+            BOOST_TEST(system.graphics != nullptr);
+            BOOST_TEST(!world.renderResources().hasSurface());
+        }
+        BOOST_TEST(session.player().location().index() == locationKind);
+        BOOST_TEST(engine.size() == 0u);
+        BOOST_TEST(orbitFinishes == finishes);
+        if (special == SOL_DEFINED) {
+            BOOST_TEST(system.SysInfo.PlanetInfo.PlanetRadius == 38u);
+            BOOST_TEST(system.SysInfo.PlanetInfo.SurfaceTemperature == 165);
+        }
     }
 }

@@ -32,19 +32,8 @@ public:
     using SystemBehavior::SystemBehavior;
     bool initNpcs(SOLARSYS_STATE &system) override;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
 
 bool
 ColonySystemBehavior::initNpcs(SOLARSYS_STATE &system)
@@ -100,32 +89,6 @@ ColonySystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 
 	return true;
 }
-
-bool
-ColonySystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-
-		solarSys->SysInfo.PlanetInfo.AtmoDensity =
-				EARTH_ATMOSPHERE * 98 / 100;
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
-
-		LoadPlanet (NULL);
-
-		return true;
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	return true;
-}
-
 
 std::unique_ptr<SystemBehavior> createColonySystemBehavior(StoryState &story) {
     return std::make_unique<ColonySystemBehavior>(story);

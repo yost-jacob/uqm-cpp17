@@ -39,23 +39,10 @@ public:
     using SystemBehavior::SystemBehavior;
     bool initNpcs(SOLARSYS_STATE &system) override;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 UtwigSystemBehavior::initNpcs(SOLARSYS_STATE &system)
@@ -94,113 +81,6 @@ UtwigSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 				COSINE (angle, solarSys->PlanetDesc[0].radius);
 		solarSys->PlanetDesc[0].location.y =
 				SINE (angle, solarSys->PlanetDesc[0].radius);
-	}
-
-	return true;
-}
-
-bool
-UtwigSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if ((star().Index == UTWIG_DEFINED
-			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
-			|| (star().Index == BOMB_DEFINED
-			&& matchWorld (solarSys, world, 5, 1)
-			&& !story_.read(StoryFlag::UtwigBomb)))
-	{
-		if ((star().Index == UTWIG_DEFINED
-				|| !story_.read(StoryFlag::UtwigHaveUltron))
-				&& StartSphereTracking (UTWIG_SHIP))
-		{
-			NotifyOthers (UTWIG_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (UTWIG_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			if (star().Index == UTWIG_DEFINED)
-			{
-				story_.set(StoryCounter::EncounterContext, 1 << 7);
-			}
-			else
-			{
-				story_.set(StoryCounter::EncounterContext, 1 << 6);
-			}
-			communicate(UTWIG_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-			return true;
-		}
-
-		if (star().Index == BOMB_DEFINED
-				&& !story_.read(StoryFlag::BombUnprotected)
-				&& StartSphereTracking (DRUUGE_SHIP))
-		{
-			COUNT i;
-
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			for (i = 0; i < 5; ++i)
-			{
-				CloneShipFragment (DRUUGE_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
-			}
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			story_.set(StoryCounter::EncounterContext, 1 << 6);
-			communicate(DRUUGE_CONVERSATION);
-
-			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-				return true;
-
-			{
-				bool DruugeSurvivors;
-
-				DruugeSurvivors =
-						GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
-
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-
-				if (DruugeSurvivors)
-					return true;
-
-				RepairSISBorder ();
-				story_.set(StoryFlag::BombUnprotected, (1) != 0);
-			}
-		}
-
-		if (star().Index == BOMB_DEFINED)
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (BOMB_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (BOMB_STRTAB));
-		}
-		else
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
-
-	if (star().Index == UTWIG_DEFINED
-			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		solarSys->SysInfo.PlanetInfo.Weather = 1;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 1;
 	}
 
 	return true;

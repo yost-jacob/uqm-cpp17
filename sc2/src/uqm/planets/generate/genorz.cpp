@@ -38,22 +38,10 @@ class OrzSystemBehavior final : public SystemBehavior {
 public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 OrzSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -75,90 +63,6 @@ OrzSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
 		solarSys->PlanetDesc[0].location.y =
 				SINE (angle, solarSys->PlanetDesc[0].radius);
 	}
-
-	return true;
-}
-
-bool
-OrzSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	if ((star().Index == ORZ_DEFINED
-			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
-			|| (star().Index == TAALO_PROTECTOR_DEFINED
-			&& matchWorld (solarSys, world, 1, 2)
-			&& !story_.read(StoryFlag::TaaloProtector)))
-	{
-		COUNT i;
-
-		if ((star().Index == ORZ_DEFINED
-				|| !story_.read(StoryFlag::TaaloUnprotected))
-				&& StartSphereTracking (ORZ_SHIP))
-		{
-			NotifyOthers (ORZ_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			if (star().Index == ORZ_DEFINED)
-			{
-				CloneShipFragment (ORZ_SHIP,
-						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-				story_.set(StoryCounter::EncounterContext, 1 << 7);
-			}
-			else
-			{
-				for (i = 0; i < 14; ++i)
-				{
-					CloneShipFragment (ORZ_SHIP,
-							&GLOBAL (npc_built_ship_q), 0);
-				}
-				story_.set(StoryCounter::EncounterContext, 1 << 6);
-			}
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			communicate(ORZ_CONVERSATION);
-
-			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-				return true;
-
-			{
-				bool OrzSurvivors;
-
-				OrzSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q))
-						&& (star().Index == ORZ_DEFINED
-						|| !story_.read(StoryFlag::TaaloUnprotected));
-
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-
-				if (OrzSurvivors)
-					return true;
-
-				RepairSISBorder ();
-			}
-		}
-
-		story_.set(StoryFlag::TaaloUnprotected, (1) != 0);
-		if (star().Index == TAALO_PROTECTOR_DEFINED)
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (
-					LoadGraphic (TAALO_DEVICE_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (
-					LoadStringTable (TAALO_DEVICE_STRTAB));
-		}
-		else
-		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-			solarSys->graphics->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
-			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
-		}
-	}
-
-	GenerateDefault_generateOrbital (solarSys, world);
 
 	return true;
 }

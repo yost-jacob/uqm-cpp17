@@ -38,7 +38,6 @@ public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
     bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &planet) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &world) override;
 };
 }
 bool
@@ -76,68 +75,6 @@ ChmmrSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body)
 
 	return true;
 }
-
-bool
-ChmmrSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-	if (matchWorld (&system, &body, 1, MATCH_PLANET))
-	{
-		if (story_.read(StoryFlag::ChmmrFreed))
-		{
-			story_.set(StoryCounter::EncounterContext, 1u << 7);
-			communicate(CHMMR_CONVERSATION);
-
-			if (story_.read(StoryCounter::BombProgress) == 2)
-			{
-				GLOBAL (CurrentActivity) |= END_INTERPLANETARY;
-			}
-
-			return true;
-		}
-		else if (story_.read(StoryFlag::SunDeviceOnShip)
-				&& !story_.read(StoryFlag::IlwrathDeceived)
-				&& StartSphereTracking (ILWRATH_SHIP))
-		{
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-
-			CloneShipFragment (ILWRATH_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
-
-			story_.set(StoryCounter::EncounterContext, 1u << 6);
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			communicate(ILWRATH_CONVERSATION);
-
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
-			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				encounter.restore();
-			}
-
-			return true;
-		}
-	}
-	else if (matchWorld (&system, &body, 1, 0))
-	{
-		/* Starbase */
-		LoadStdLanderFont (&system.SysInfo.PlanetInfo);
-		system.SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (CHMMR_BASE_STRTAB));
-
-		DoDiscoveryReport (MenuSounds);
-
-		DestroyStringTable (ReleaseStringTable (
-				system.SysInfo.PlanetInfo.DiscoveryString));
-		system.SysInfo.PlanetInfo.DiscoveryString = 0;
-		FreeLanderFont (&system.SysInfo.PlanetInfo);
-
-		return true;
-	}
-
-	GenerateDefault_generateOrbital (&system, &body);
-
-	return true;
-}
-
 
 std::unique_ptr<SystemBehavior> createChmmrSystemBehavior(StoryState &story) {
     return std::make_unique<ChmmrSystemBehavior>(story);

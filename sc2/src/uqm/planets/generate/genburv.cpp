@@ -32,23 +32,10 @@ public:
     using SystemBehavior::SystemBehavior;
     bool generatePlanets(SOLARSYS_STATE &system) override;
     bool generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body) override;
-    bool generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body) override;
     COUNT generateEnergy(const SOLARSYS_STATE &system, const PLANET_DESC &body, COUNT node, NODE_INFO *info) override;
     bool pickupEnergy(SOLARSYS_STATE &system, PLANET_DESC &body, COUNT node) override;
 };
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool
 BurvixeseSystemBehavior::generatePlanets(SOLARSYS_STATE &system)
@@ -92,52 +79,6 @@ BurvixeseSystemBehavior::generateMoons(SOLARSYS_STATE &system, PLANET_DESC &body
 		solarSys->MoonDesc[0].location.y =
 				SINE (angle, solarSys->MoonDesc[0].radius);
 	}
-	return true;
-}
-
-bool
-BurvixeseSystemBehavior::generateOrbital(SOLARSYS_STATE &system, PLANET_DESC &body)
-{
-    auto *solarSys = &system;
-    auto *world = &body;
-	DWORD rand_val;
-
-	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-	solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (&SysGenRNG);
-
-	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-
-	solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
-
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
-	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->graphics->PlanetSideFrame[1] =
-				CaptureDrawable (
-				LoadGraphic (RUINS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (
-						LoadStringTable (BURV_RUINS_STRTAB));
-		solarSys->SysInfo.PlanetInfo.Weather = 0;
-		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
-	}
-	else if (matchWorld (solarSys, world, 0, 0)
-			&& !story_.read(StoryFlag::BurvixeseBroadcasters))
-	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->graphics->PlanetSideFrame[1] = CaptureDrawable (
-				LoadGraphic (BURV_BCS_MASK_PMAP_ANIM));
-		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (BURV_BCS_STRTAB));
-	}
-
-	LoadPlanet (NULL);
-
 	return true;
 }
 
