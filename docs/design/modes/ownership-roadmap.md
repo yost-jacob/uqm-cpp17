@@ -22,8 +22,8 @@ independent or need the same simulation type.
 | Order | Existing mode(s) | Current owner / remaining boundary |
 | --- | --- | --- |
 | Checkpoint | `SolarSystemMode` (ExploreSpace) | `SolarSystemExploration`, native `SolarSystem`/`World` tree, `SystemFlightState`; eight-step ownership migration complete. Remaining drawing/collision projections and C service interfaces are documented separately. |
-| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; native entity callbacks borrow navigation directly; encounter screen associations are visit-owned and generation-checked; campaign queues and transition flags still use legacy interfaces. **In progress.** |
-| 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms and resource cleanup work with Hyperspace; portal destinations and fuel/encounter rules differ. |
+| 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; native entity callbacks borrow navigation directly; encounter screen associations are visit-owned and generation-checked; campaign queues and transition flags still use legacy interfaces. **Ownership checkpoint complete.** |
+| 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms with Hyperspace; portal destinations and fuel/encounter rules differ. **Ownership checkpoint complete.** |
 | 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
 | 4 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
 | 5 | `LanderMode` | Owns a child engine; audit surface entities, expedition state, collection/loss publication and landing/return presentation. Keep durable retrieval and inventory state in their existing owners. |
@@ -106,16 +106,35 @@ location variant, after outgoing callbacks and resource scopes have unwound.
    fixed realm. Star selection updates the owner's NavigationState by StarId.
    Radar and star entities read native properties; navigation no longer calls
    FindStar/GetCurrentStar/SetCurrentStar or resolves C descriptor/index buffers.
-   Legacy transition flags, autopilot and ship-stamp fields remain for step 5;
+   Step 5 below narrows transition flags, autopilot and ship-stamp compatibility;
    archive-format redesign remains separate.
-5. **Transitions and cleanup.** Give realm changes, system entry and encounters
-   explicit results; confine activity-flag translation to remaining C boundaries.
-   Persistent travel/portal information remains in `PlayerEntity`. Audit menus,
-   load cancellation, child-mode suspension/resumption and save callbacks.
-6. **Delete superseded paths and checkpoint.** Inventory remaining globals and C
-   callback adapters, remove unused wrappers, and record the final ownership map.
-   Only then extract common movement/collision/tick mechanisms into the new
-   runtime design, using real shared requirements from exploration and hyperspace.
+5. **Transitions and cleanup — implemented.** `SpaceNavigation::run()` returns
+   an optional `NavigationTransition` value after its scene/resource scopes have
+   unwound. It identifies solar-system entry, an encounter or either navigation
+   realm, carrying a StarId when needed. The outgoing mode chooses a concrete
+   successor from that result. Scripted bomb/debug priorities and shared status /
+   velocity preparation remain intact. One mode-boundary function projects the
+   result into START_* flags for remaining C consumers; those flags no longer
+   determine ordinary navigation's destination.
+
+   Navigation menu batch/context/colour/flash bindings now restore through RAII,
+   including exception unwind. Legacy device-menu results are adapted at the
+   input boundary. Load/abort and
+   requested session exits discard pending transitions; no successor launches
+   against a campaign being replaced. Portal-side normalization and remaining
+   contacts cannot overwrite a staged destination. World position and realm
+   markers remain player-owned, and only the incoming mode converts location.
+6. **Final audit and checkpoint — complete.** `hyper.cpp` has no GLOBAL,
+   active-session, fleet-index or C catalogue getter paths. Remaining legacy
+   activity/autopilot/drawing-stamp accesses are a narrow three-reference borrow
+   of the supplied player's session payload (`NavigationLegacyView`), not a
+   replacement global environment or duplicate data authority. Temporary portal
+   visuals use position/frame values, not fake STAR_DESC records. Native fleet
+   departure saves facing from its supplied flagship record; only C save/device
+   entry points need the no-argument compatibility wrapper.
+
+   The ownership map and exact C boundaries below are the stopping point before
+   the shared runtime/simulation design. No runtime framework was introduced.
 
 ## Verification
 
@@ -143,11 +162,38 @@ compositor presents scene/UI layers and coordinates animation/audio playback.
 Simulation and UI vary independently. This ownership cutover does not introduce
 that framework or a second compositor implementation.
 
-### Navigation campaign-input checkpoint
+## Completed navigation ownership map
 
-The remaining GLOBAL accesses in hyper.cpp are activity flags, the legacy
-ship-stamp drawing/camera projection and autopilot controls. There are no native
-campaign fleet/catalogue getters through the active-session C interfaces.
-A regression holds another session active while querying the owning catalogue
-and live fleet records, and checks realm-specific search and bounds failures.
-No replacement global navigation context or general runtime framework was added.
+| Responsibility | Owner / borrow |
+| --- | --- |
+| Travel position/facing, realm markers, portal coordinates and selected StarId | PlayerEntity / NavigationState / StoryState |
+| Encounter population and explicit selection | GameSession::CampaignEncounters; runtime identity survives dense-vector moves |
+| Live race-fleet records and ship defaults | Session campaign payload through checked typed raceFleets() borrow |
+| Immutable catalogue and navigation baseline rules | Session definitions / constexpr NavigationRules |
+| Realm, pending transition and navigation counters | Mode-owned SpaceNavigation |
+| Flagship, stars, portals, vortices and ambient effects | Mode-owned SimulationEngine; entity borrows end at reset before navigation dies |
+| Ambient/realm graphics, colour map and star-field lease | Run-owned NavigationPresentation, retaining session-cached graphics |
+| C activity/autopilot/stamp fields | Explicit NavigationLegacyView references to the owning player's payload |
+
+### Remaining compatibility boundaries
+
+| Boundary | Reason / contract |
+| --- | --- |
+| C camera MoveSIS and clock encounter hook | Signatures have no entity argument; resolve the selected engine's native flagship owner, never an active session. |
+| SaveSisHyperState | C save/device callers lack a native navigation argument; facing is written through the live flagship's owner. No-op when an encounter screen has no flagship. |
+| Legacy frame loop | IN_BATTLE is still its active-loop/stop protocol. The departure buffer callback ends that loop; pending typed data identifies the destination. |
+| Legacy device/options/cargo/roster/starmap menus | Synchronous input/service boundaries. Device encounter flags are adapted into a typed result; load/abort exits take priority. |
+| Shared ship physics, collision/drawing and audio/input services | Continue through the selected engine/service bindings. Scene reset precedes asset release; future runtime/UI/compositor work replaces these services separately. |
+| Mode-entry legacy projection | One function in gameplay_modes.cpp publishes START_* fields for remaining C code; native navigation mode selection consumes its result directly. |
+
+Regression coverage verifies owner-specific fleet/catalogue/C-field borrows while
+another session is active, realm searches, deferred location conversion and
+portal normalization after a staged transition. Debug/Release tests and the
+legacy build pass. Targeted live debugger checks cover both realm directions,
+system entry with a catalogue target, an explicitly selected fleet handoff and
+save/load with a pending realm transition cancelled, and menu return to flight.
+These are small focused
+checks, not a complete manual campaign playthrough.
+
+The next ownership audit is EncounterMode/SystemEncounterMode. The eventual
+runtime remains parameterized by simulation, UI and a default shared compositor.

@@ -1,7 +1,8 @@
 #ifndef UQM_HYPER_NAVIGATION_HPP_
 #define UQM_HYPER_NAVIGATION_HPP_
 #include "hyper.h"
-#include "star_map.hpp"
+#include "navigation_transition.hpp"
+#include "navigation_legacy.hpp"
 #include "navigation_encounters.hpp"
 #include "campaign_encounters.hpp"
 #include "encount.h"
@@ -14,7 +15,6 @@ class StoryState;
 class PlayerEntity;
 class GameSession;
 class SimulationEngine;
-enum class NavigationRealm { HyperSpace, QuasiSpace };
 // One navigation visit, owned by HyperSpaceMode or QuasiSpaceMode. Engine-owned
 // entities borrow it until scene reset; all native helpers use explicit references.
 class SpaceNavigation {
@@ -25,7 +25,11 @@ public:
     SpaceNavigation(GameSession &session, SimulationEngine &engine, NavigationRealm realm);
     // Borrowed mode-owned engine; must be selected for the synchronous scene.
     SimulationEngine &engine() noexcept { return engine_; }
-    void run();
+    std::optional<NavigationTransition> run();
+    std::optional<NavigationTransition> transition() const noexcept { return transition_; }
+    // Normalize portal collision-side bookkeeping only while still navigating;
+    // never overwrite the destination already staged for a successor mode.
+    void settlePortalSide(bool defiesPhysics);
     // Inclusive search bounds, in universe coordinates. Returns owned IDs in
     // catalogue order and always uses this mode's realm and owning catalogue.
     std::vector<StarId> starsNear(const POINT &position, SIZE xbounds, SIZE ybounds) const;
@@ -76,6 +80,8 @@ private:
     PLAYER_TRAVEL_POSITION &travel();
     const StarMap &catalogue() const;
     std::optional<StarId> &selectedStar() noexcept;
+    detail::NavigationLegacyView legacy_;
+    std::optional<NavigationTransition> transition_;
     GameSession &session_;
     CampaignEncounters &records_;
     NavigationEncounterViews encounters_;
