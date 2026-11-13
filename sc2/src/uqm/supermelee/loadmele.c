@@ -356,7 +356,7 @@ DoLoadTeam (MELEE_STATE *pMS)
 		{
 			RECT r;
 			
-			GetFrameRect (SetAbsFrameIndex (MeleeFrame, 28), &r);
+			GetFrameRect (SetAbsFrameIndex (GetMeleeState()->frame, 28), &r);
 			RepairMeleeFrame (&r);
 		}
 		return TRUE;

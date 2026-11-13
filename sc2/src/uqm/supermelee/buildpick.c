@@ -25,7 +25,7 @@
 #include "../sounds.h"
 #include "libs/gfxlib.h"
 
-static FRAME BuildPickFrame;
+
 
 void
 BuildBuildPickFrame (void)
@@ -38,13 +38,13 @@ BuildBuildPickFrame (void)
 	// create team building ship selection box
 	s.origin.x = 0;
 	s.origin.y = 0;
-	s.frame = SetAbsFrameIndex (MeleeFrame, 27);
+	s.frame = SetAbsFrameIndex (GetMeleeState()->frame, 27);
 			// 5x5 grid of ships to pick from
 	GetFrameRect (s.frame, &r);
 
-	BuildPickFrame = CaptureDrawable (CreateDrawable (
+	GetMeleeState()->buildFrame = CaptureDrawable (CreateDrawable (
 			WANT_PIXMAP, r.extent.width, r.extent.height, 1));
-	SetContextFGFrame (BuildPickFrame);
+	SetContextFGFrame (GetMeleeState()->buildFrame);
 	SetFrameHot (s.frame, MAKE_HOT_SPOT (0, 0));
 	DrawStamp (&s);
 
@@ -57,8 +57,8 @@ BuildBuildPickFrame (void)
 void
 DestroyBuildPickFrame (void)
 {
-	DestroyDrawable (ReleaseDrawable (BuildPickFrame));
-	BuildPickFrame = 0;
+	DestroyDrawable (ReleaseDrawable (GetMeleeState()->buildFrame));
+	GetMeleeState()->buildFrame = 0;
 }
 
 // Draw a ship icon in the ship selection popup.
@@ -68,7 +68,7 @@ DrawPickIcon (MeleeShip ship, bool DrawErase)
 	STAMP s;
 	RECT r;
 
-	GetFrameRect (BuildPickFrame, &r);
+	GetFrameRect (GetMeleeState()->buildFrame, &r);
 
 	s.origin.x = r.corner.x + 20 + (ship % NUM_PICK_COLS) * 18;
 	s.origin.y = r.corner.y +  5 + (ship / NUM_PICK_COLS) * 18;
@@ -97,7 +97,7 @@ DrawPickFrame (MELEE_STATE *pMS)
 	GetShipBox (&r1, 1, NUM_MELEE_ROWS - 1, NUM_MELEE_COLUMNS - 1),
 	BoxUnion (&r0, &r1, &ship_r);
 
-	s.frame = SetAbsFrameIndex (BuildPickFrame, 0);
+	s.frame = SetAbsFrameIndex (GetMeleeState()->buildFrame, 0);
 	GetFrameRect (s.frame, &r);
 	r.corner.x = -(ship_r.corner.x
 			+ ((ship_r.extent.width - r.extent.width) >> 1));
@@ -116,7 +116,7 @@ DrawPickFrame (MELEE_STATE *pMS)
 void
 GetBuildPickFrameRect (RECT *r)
 {
-	GetFrameRect (BuildPickFrame, r);
+	GetFrameRect (GetMeleeState()->buildFrame, r);
 }
 
 static BOOLEAN

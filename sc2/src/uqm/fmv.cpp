@@ -82,8 +82,8 @@ SplashScreen (void (* DoProcessing)(DWORD TimeOut))
 	SetContext (ScreenContext);
 	s.origin.x = s.origin.y = 0;
 	s.frame = CaptureDrawable (LoadGraphic (TITLE_ANIM));
+    struct SplashArtwork { FRAME frame; ~SplashArtwork() { DestroyDrawable(ReleaseDrawable(frame)); } } artwork{s.frame};
 	DrawStamp (&s);
-	DestroyDrawable (ReleaseDrawable (s.frame));
 
 	TimeOut = FadeScreen (FadeAllToColor, ONE_SECOND / 2);
 

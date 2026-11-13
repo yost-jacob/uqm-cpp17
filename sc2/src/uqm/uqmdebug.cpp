@@ -26,6 +26,7 @@
 #include "planet_render_legacy.hpp"
 #include "system_behavior.hpp"
 #include "uqmdebug.h"
+#include <atomic>
 
 #include "build.h"
 #include "colors.h"
@@ -80,7 +81,10 @@ static void dumpPlanetTypeCallback (int index, const PlanetFrame *planet,
 
 BOOLEAN instantMove = FALSE;
 BOOLEAN disableInteractivity = FALSE;
-void (* volatile debugHook) (void) = NULL;
+namespace { std::atomic<DebugHook> pendingDebugHook{nullptr}; }
+extern "C" void QueueDebugHook(DebugHook hook) { pendingDebugHook.store(hook); }
+extern "C" BOOLEAN HasDebugHook(void) { return pendingDebugHook.load() ? TRUE : FALSE; }
+extern "C" DebugHook TakeDebugHook(void) { return pendingDebugHook.exchange(nullptr); }
 
 
 // Must be called on the Starcon2Main thread.
@@ -138,11 +142,11 @@ debugKeyPressed (void)
 	// Informational:
 //	dumpStrings (stdout);
 //	dumpPlanetTypes(stderr);
-//	debugHook = dumpUniverseToFile;
+//	QueueDebugHook(dumpUniverseToFile);
 			// This will cause dumpUniverseToFile to be called from the
 			// Starcon2Main loop. Calling it from here would give threading
 			// problems.
-//	debugHook = tallyResourcesToFile;
+//	QueueDebugHook(tallyResourcesToFile);
 			// This will cause tallyResourcesToFile to be called from the
 			// Starcon2Main loop. Calling it from here would give threading
 			// problems.

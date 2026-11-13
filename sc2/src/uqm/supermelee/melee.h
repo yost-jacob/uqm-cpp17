@@ -50,7 +50,8 @@ typedef struct melee_state MELEE_STATE;
 #define ICON_WIDTH 16
 #define ICON_HEIGHT 16
 
-extern FRAME PickMeleeFrame;
+// Borrow the synchronous fleet-selection payload; invalid outside its visit.
+MELEE_STATE *GetMeleeState(void);
 
 #define PICK_BG_COLOR    BUILD_COLOR (MAKE_RGB15 (0x00, 0x01, 0x0F), 0x01)
 #define PICK_VALUE_COLOR BUILD_COLOR (MAKE_RGB15 (0x13, 0x00, 0x00), 0x2C)
@@ -80,6 +81,7 @@ struct melee_state
 	BOOLEAN (*InputFunc) (struct melee_state *pInputState);
 
     // Borrowed native session context for C menu callbacks; never serialized.
+    FRAME frame, pickFrame, buildFrame; // Owned by the fleet-selection visit.
     ArcadeSessionHandle *session;
     SimulationEngineHandle *engine; // Borrowed setup-mode engine; never serialized.
 	BOOLEAN Initialized;
@@ -117,7 +119,7 @@ void DrawMeleeIcon (COUNT which_icon);
 void GetShipBox (RECT *pRect, COUNT side, COUNT row, COUNT col);
 void RepairMeleeFrame (const RECT *pRect);
 void DrawMeleeShipStrings (MELEE_STATE *pMS, MeleeShip NewStarShip);
-extern FRAME MeleeFrame;
+
 void Melee_flashSelection (MELEE_STATE *pMS);
 
 COUNT GetShipValue (MeleeShip StarShip);

@@ -41,6 +41,8 @@
 #include "uqmversion.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/inplib.h"
+#include "mode_rendering.hpp"
+#include <stdexcept>
 
 
 enum
@@ -302,6 +304,16 @@ ShowCampaignEnding (void)
 static void
 RestartMenu (MENU_STATE *pMS)
 {
+    struct MenuResources {
+        MENU_STATE &menu;
+        ~MenuResources() {
+            StopMusic();
+            if (menu.hMusic) DestroyMusic(menu.hMusic);
+            if (menu.flashContext) Flash_terminate(menu.flashContext);
+            DestroyDrawable(ReleaseDrawable(menu.CurFrame));
+            menu.hMusic = 0; menu.flashContext = nullptr; menu.CurFrame = nullptr;
+        }
+    } resources{*pMS};
     TimeCount TimeOut = ONE_SECOND / 2;
     SetContext (ScreenContext);
 	LastActivity = 0;
@@ -312,24 +324,14 @@ RestartMenu (MENU_STATE *pMS)
 	SleepThreadUntil (FadeScreen (FadeAllToBlack, TimeOut));
 
 	pMS->CurFrame = CaptureDrawable (LoadGraphic (RESTART_PMAP_ANIM));
+    if (!pMS->CurFrame) throw std::runtime_error("could not load title-menu artwork");
 
 	DrawRestartMenuGraphic (pMS);
 	GLOBAL (CurrentActivity) &= ~CHECK_ABORT;
 	SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
 	SetDefaultMenuRepeatDelay ();
 	DoInput (pMS, TRUE);
-	
-	StopMusic ();
-	if (pMS->hMusic)
-	{
-		DestroyMusic (pMS->hMusic);
-		pMS->hMusic = 0;
-	}
-
-	Flash_terminate (pMS->flashContext);
-	pMS->flashContext = 0;
-	DestroyDrawable (ReleaseDrawable (pMS->CurFrame));
-	pMS->CurFrame = 0;
+    StopMusic();
 
 	if (GLOBAL (CurrentActivity) == (ACTIVITY)~0
 			|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
@@ -347,7 +349,8 @@ RestartMenu (MENU_STATE *pMS)
 UQM_TITLE_CHOICE
 RunTitleMenu (void)
 {
-    MENU_STATE menu;
+    auto drawing = uqm::suspendDrawingBindings({ScreenContext, OffScreenContext});
+    MENU_STATE menu{};
     TITLE_TIMING timing = {0, 0};
     GLOBAL (CurrentActivity) = 0;
     memset (&menu, 0, sizeof (menu));

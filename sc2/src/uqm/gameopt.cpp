@@ -37,7 +37,24 @@
 #include "util.h"
 #include "libs/graphics/gfx_common.h"
 
-#include <ctype.h>
+#include <cctype>
+#include "mode_rendering.hpp"
+#include <utility>
+namespace {
+// UI backend scopes only; no save decoding or gameplay completion on teardown.
+class GraphicsBatch {
+public:
+    GraphicsBatch() { BatchGraphics(); }
+    ~GraphicsBatch() { finish(); }
+    void finish() { if (std::exchange(active_, false)) UnbatchGraphics(); }
+private: bool active_ = true;
+};
+struct CapturedFrame {
+    STAMP stamp{};
+    ~CapturedFrame() { DestroyDrawable(ReleaseDrawable(stamp.frame)); }
+};
+}
+
 
 extern FRAME PlayFrame;
 
@@ -480,7 +497,7 @@ static BOOLEAN
 OnSaveNameChange (TEXTENTRY_STATE *pTES)
 {
 	COUNT hl = DDSHS_EDIT;
-	COUNT *gameIndex = pTES->CbParam;
+	const auto *gameIndex = static_cast<const COUNT *>(pTES->CbParam);
 
 	if (pTES->JoystickMode)
 		hl |= DDSHS_BLOCKCUR;
@@ -493,9 +510,8 @@ NameSaveGame (COUNT gameIndex, UNICODE *buf)
 {
 	TEXTENTRY_STATE tes;
 	COUNT CursPos = strlen(buf);
-	COUNT *gIndex = HMalloc (sizeof (COUNT));
+	COUNT localIndex = gameIndex;
 	RECT r;
-	*gIndex = gameIndex;
 
 	DrawSaveNameString (buf, CursPos, DDSHS_EDIT, gameIndex);
 
@@ -505,7 +521,7 @@ NameSaveGame (COUNT gameIndex, UNICODE *buf)
 	tes.Initialized = FALSE;
 	tes.BaseStr = buf;
 	tes.CursorPos = CursPos;
-	tes.CbParam = gIndex;
+	tes.CbParam = &localIndex; // DoTextEntry is synchronous; no heap allocation needed.
 	tes.ChangeCallback = OnSaveNameChange;
 	tes.FrameCallback = 0;
 	r.extent.width = (204 - SAFE_X);
@@ -525,8 +541,6 @@ NameSaveGame (COUNT gameIndex, UNICODE *buf)
 		namingCB ();
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-
-	HFree (gIndex);
 
 	SetFlashRect (NULL);
 
@@ -679,7 +693,7 @@ DrawSavegameCargo (SIS_STATE *sisState)
 #define ELEMENT_SPACING_X  36
 
 	SetContext (SpaceContext);
-	BatchGraphics ();
+	GraphicsBatch batch;
 	SetContextFont (StarConFont);
 
 	// setup element icons
@@ -728,7 +742,7 @@ DrawSavegameCargo (SIS_STATE *sisState)
 	t.CharCount = (COUNT)~0;
 	font_DrawText (&t);
 
-	UnbatchGraphics ();
+	batch.finish();
 }
 
 static void
@@ -738,7 +752,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 	RECT r;
 	STAMP s;
 
-	BatchGraphics ();
+	GraphicsBatch batch;
 
 	if (pSD->year_index == 0)
 	{
@@ -755,15 +769,23 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		COUNT i;
 		RECT OldRect;
 		TEXT t;
-		QUEUE player_q = {0};
+        struct PreviewState {
+            SIS_STATE &sis = *GetPlayerSISState();
+            SIS_STATE saved = sis;
+            QUEUE &live = *GetPlayerFleetQueue();
+            QUEUE held{};
+            PreviewState() { SwapQueues(&held, &live); }
+            ~PreviewState() {
+                if (live.storage) UninitQueue(&live);
+                SwapQueues(&live, &held);
+                sis = saved;
+            }
+        } preview;
+        auto drawing = uqm::suspendDrawingBindings({StatusContext, RadarContext});
 		CONTEXT OldContext;
-		SIS_STATE SaveSS;
 		UNICODE buf[256];
 		POINT starPt;
 
-		// Save the states because we will hack them
-		SaveSS = (*GetPlayerSISState());
-		SwapQueues (&player_q, GetPlayerFleetQueue());
 
 		OldContext = SetContext (StatusContext);
 		// Hack StatusContext so we can use standard SIS display funcs
@@ -931,12 +953,9 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 
 		SetContext (OldContext);
 
-		// Restore the states because we hacked them
-		SwapQueues (GetPlayerFleetQueue(), &player_q);
-		(*GetPlayerSISState()) = SaveSS;
 	}
 
-	UnbatchGraphics ();
+	batch.finish();
 }
 
 static void
@@ -949,7 +968,7 @@ DrawGameSelection (PICK_GAME_STATE *pickState, COUNT selSlot)
 	UNICODE buf[256];
 	UNICODE buf2[80];
 
-	BatchGraphics ();
+	GraphicsBatch batch;
 
 	SetContextFont (TinyFont);
 
@@ -1008,17 +1027,17 @@ DrawGameSelection (PICK_GAME_STATE *pickState, COUNT selSlot)
 		font_DrawText (&t);
 	}
 
-	UnbatchGraphics ();
+	batch.finish();
 }
 
 static void
 RedrawPickDisplay (PICK_GAME_STATE *pickState, COUNT selSlot)
 {
-	BatchGraphics ();
+	GraphicsBatch batch;
 	DrawBlankSavegameDisplay (pickState);
 	DrawSavegameSummary (pickState, selSlot);
 	DrawGameSelection (pickState, selSlot);
-	UnbatchGraphics ();
+	batch.finish();
 }
 
 static void
@@ -1036,7 +1055,7 @@ LoadGameDescriptions (SUMMARY_DESC *pSD)
 static BOOLEAN
 DoPickGame (MENU_STATE *pMS)
 {
-	PICK_GAME_STATE *pickState = pMS->privData;
+	auto *pickState = static_cast<PICK_GAME_STATE *>(pMS->privData);
 	BYTE NewState;
 	SUMMARY_DESC *pSD;
 	DWORD TimeIn = GetTimeCounter ();
@@ -1116,7 +1135,8 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 {
 	SUMMARY_DESC *desc = pickState->summary + gameIndex;
 	UNICODE nameBuf[256];
-	STAMP saveStamp;
+	CapturedFrame savedMessage;
+    auto &saveStamp = savedMessage.stamp;
 	BOOLEAN success;
 
 	saveStamp.frame = NULL;
@@ -1152,7 +1172,6 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 		DrawStamp (&saveStamp);
 	}
 
-	DestroyDrawable (ReleaseDrawable (saveStamp.frame));
 
 	return success;
 }
@@ -1160,13 +1179,15 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 BOOLEAN
 LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 {
-	CONTEXT OldContext;
+    auto drawing = uqm::suspendDrawingBindings({SpaceContext, StatusContext, RadarContext});
+    struct MusicResume { ~MusicResume() { ResumeMusic(); } } musicResume;
 	MENU_STATE MenuState;
 	PICK_GAME_STATE pickState;
 	RECT DlgRect;
-	STAMP DlgStamp;
+	CapturedFrame capturedDialog;
+    auto &DlgStamp = capturedDialog.stamp;
 	TimeCount TimeOut;
-	InputFrameCallback *oldCallback;
+
 
 	memset (&pickState, 0, sizeof pickState);
 	pickState.saving = saving;
@@ -1180,11 +1201,11 @@ LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 	TimeOut = FadeMusic (0, ONE_SECOND / 2);
 
 	// Deactivate any background drawing, like planet rotation
-	oldCallback = SetInputCallback (NULL);
+// drawing owns the suspended callback until all captured frames retire.
 
 	LoadGameDescriptions (pickState.summary);
 
-	OldContext = SetContext (SpaceContext);
+	SetContext (SpaceContext);
 	// Save the current state of the screen for later restoration
 	DlgStamp = SaveContextFrame (NULL);
 	GetContextClipRect (&DlgRect);
@@ -1196,7 +1217,7 @@ LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 
 	// draw the current savegame and fade in
 	SetTransitionSource (NULL);
-	BatchGraphics ();
+	GraphicsBatch batch;
 
 	SetContextBackGroundColor (BLACK_COLOR);
 	ClearDrawable ();
@@ -1205,7 +1226,7 @@ LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 
 	if (fromMainMenu)
 	{
-		UnbatchGraphics ();
+		batch.finish();
 		FadeScreen (FadeAllToColor, ONE_SECOND / 2);
 	}
 	else
@@ -1214,7 +1235,7 @@ LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 
 		GetContextClipRect (&ctxRect);
 		ScreenTransition (3, &ctxRect);
-		UnbatchGraphics ();
+		batch.finish();
 	}
 
 	SetMenuSounds (MENU_SOUND_ARROWS | MENU_SOUND_PAGEUP | MENU_SOUND_PAGEDOWN,
@@ -1257,20 +1278,12 @@ LegacyPickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 			(saving || (!pickState.success && !fromMainMenu)))
 	{	// Restore previous screen
 		SetTransitionSource (&DlgRect);
-		BatchGraphics ();
+		GraphicsBatch restoreBatch;
 		DrawStamp (&DlgStamp);
 		ScreenTransition (3, &DlgRect);
-		UnbatchGraphics ();
+		restoreBatch.finish();
 	}
 
-	DestroyDrawable (ReleaseDrawable (DlgStamp.frame));
-
-	SetContext (OldContext);
-
-	ResumeMusic ();
-
-	// Reactivate any background drawing, like planet rotation
-	SetInputCallback (oldCallback);
 
 	return pickState.success;
 }
@@ -1294,7 +1307,7 @@ LegacyDoGameOptions (MENU_STATE *pMS)
 			case SAVE_GAME:
 			case LOAD_GAME:
 				SetFlashRect (NULL);
-				if (LegacyPickGame (pMS->CurState == SAVE_GAME, FALSE))
+				if (LegacyPickGame (pMS->CurState == SAVE_GAME ? TRUE : FALSE, FALSE))
 					return FALSE;
 				SetFlashRect (SFR_MENU_3DO);
 				break;

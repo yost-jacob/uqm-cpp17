@@ -4,6 +4,7 @@
 #include "system_runtime.hpp"
 #include "hyper_navigation.hpp"
 #include "game_menu.hpp"
+#include "mode_rendering.hpp"
 #include "game_session_c.h"
 #include "globdata.h"
 #include "battle.h"
@@ -88,7 +89,7 @@ ModeResult finishMode(GameSession &session, SimulationEngine &engine,
     }
     if (transition && !(GLOBAL(CurrentActivity) & CHECK_LOAD)) {
 #ifdef DEBUG
-        if (debugHook) return selectMode(session);
+        if (HasDebugHook()) return selectMode(session);
 #endif
         return selectNavigationMode(session, *transition);
     }
@@ -187,9 +188,13 @@ public:
     explicit DebugMode(GameSession &session)
         : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session) {}
     ModeResult run() override {
-        auto hook = debugHook;
-        debugHook = nullptr;
+        SessionActivation legacy{session_};
+        RandomBinding random{engine().random()};
+        auto drawing = suspendDrawingBindings({ScreenContext, SpaceContext, StatusContext, OffScreenContext});
+        auto hook = TakeDebugHook();
         if (hook) hook();
+        if (auto exit = session_.menuExit()) return *exit;
+        if (QuitPosted) return SessionExit::shutdown();
         return selectMode(session_);
     }
 private:
@@ -226,7 +231,7 @@ std::unique_ptr<GameMode> selectNavigationMode(GameSession &session, const Navig
 }
 std::unique_ptr<GameMode> selectMode(GameSession &session) {
 #ifdef DEBUG
-    if (debugHook) return std::make_unique<DebugMode>(session);
+    if (HasDebugHook()) return std::make_unique<DebugMode>(session);
 #endif
     prepareModeSelection();
 

@@ -66,6 +66,7 @@
 #include "../legacy_runtime.hpp"
 #include "../arcade_session.hpp"
 #include "../combat_mode.hpp"
+#include "../mode_rendering.hpp"
 #include <memory>
 #include <stdexcept>
 #include <assert.h>
@@ -189,9 +190,13 @@ enum
 		BUILD_COLOR (MAKE_RGB15 (0x00, 0x14, 0x00), 0x02)
 
 
-FRAME MeleeFrame;
+
 		// Loaded from melee/melebkgd.ani
-MELEE_STATE *pMeleeState;
+namespace { thread_local MELEE_STATE *pMeleeState = nullptr; }
+extern "C" MELEE_STATE *GetMeleeState(void) {
+    if (!pMeleeState) std::terminate();
+    return pMeleeState;
+}
 
 BOOLEAN DoMelee (MELEE_STATE *pMS);
 static BOOLEAN DoEdit (MELEE_STATE *pMS);
@@ -220,7 +225,7 @@ DrawMeleeIcon (COUNT which_icon)
 			
 	s.origin.x = 0;
 	s.origin.y = 0;
-	s.frame = SetAbsFrameIndex (MeleeFrame, which_icon);
+	s.frame = SetAbsFrameIndex (GetMeleeState()->frame, which_icon);
 	DrawStamp (&s);
 }
 
@@ -1061,7 +1066,7 @@ BuildPickShipPopup (MELEE_STATE *pMS)
 	
 	pMS->MeleeOption = EDIT_MELEE;
 			// Must set this before the call to RepairMeleeFrame(), so that
-			// it will not redraw the BuildPickFrame.
+			// it will not redraw the GetMeleeState()->buildFrame.
 
 	{
 		RECT r;
@@ -1401,45 +1406,6 @@ DoConfirmSettings (MELEE_STATE *pMS)
 
 	return TRUE;
 #endif  /* defined (NETPLAY) */
-}
-
-static void
-LoadMeleeInfo (MELEE_STATE *pMS)
-{
-	BuildPickMeleeFrame ();
-	MeleeFrame = CaptureDrawable (LoadGraphic (MELEE_SCREEN_PMAP_ANIM));
-	BuildBuildPickFrame ();
-
-	InitSpace ();
-
-	LoadTeamList (pMS);
-}
-
-static void
-FreeMeleeInfo (MELEE_STATE *pMS)
-{
-	DestroyDirEntryTable (ReleaseDirEntryTable (pMS->load.dirEntries));
-	pMS->load.dirEntries = 0;
-
-	if (pMS->hMusic)
-	{
-		DestroyMusic (pMS->hMusic);
-		pMS->hMusic = 0;
-	}
-
-	UninitSpace ();
-		
-	DestroyPickMeleeFrame ();
-	DestroyDrawable (ReleaseDrawable (MeleeFrame));
-	MeleeFrame = 0;
-	DestroyBuildPickFrame ();
-
-#ifdef NETPLAY
-	closeAllConnections ();
-	// Clear the input delay in case we will go into the full game later.
-	// Must be done after the net connections are closed.
-	setupInputDelay (0);
-#endif
 }
 
 namespace {
@@ -2088,7 +2054,8 @@ namespace {
 class MeleeFrontend {
 public:
     MeleeFrontend(uqm::ArcadeSession &session, uqm::SimulationEngine &engine)
-        : previous_(pMeleeState), previousSounds_(GameSounds) {
+        : drawing_(uqm::suspendDrawingBindings({ScreenContext, SpaceContext, StatusContext, OffScreenContext})),
+          previous_(pMeleeState), previousSounds_(GameSounds) {
         menu_.session = &session;
         menu_.engine = &engine;
         pMeleeState = &menu_;
@@ -2096,8 +2063,18 @@ public:
     }
     ~MeleeFrontend() {
         StopMusic();
-        if (infoLoaded_) FreeMeleeInfo(&menu_);
-        if (soundLoaded_) DestroySound(ReleaseSound(GameSounds));
+#ifdef NETPLAY
+        closeAllConnections(); // No callback may retain menu_ beyond teardown.
+        setupInputDelay(0);
+#endif
+        SetContext(ScreenContext);
+        DestroyDirEntryTable(ReleaseDirEntryTable(menu_.load.dirEntries));
+        if (menu_.hMusic) DestroyMusic(menu_.hMusic);
+        if (spaceLoaded_) UninitSpace();
+        DestroyPickMeleeFrame();
+        DestroyBuildPickFrame();
+        DestroyDrawable(ReleaseDrawable(menu_.frame));
+        if (soundLoaded_) DestroySound(ReleaseSound(sounds_));
         GameSounds = previousSounds_;
         if (loadInitialized_) UninitMeleeLoadState(&menu_);
         pMeleeState = previous_;
@@ -2106,6 +2083,7 @@ public:
     void run() {
         InitGlobData();
         setup_.reset(MeleeSetup_new());
+        if (!setup_) throw std::bad_alloc();
         menu_.meleeSetup = setup_.get();
 #ifdef NETPLAY
         for (COUNT player = 0; player < NUM_PLAYERS; ++player) netConnections[player] = nullptr;
@@ -2115,10 +2093,18 @@ public:
         loadInitialized_ = true;
         InitMeleeLoadState(&menu_);
         GLOBAL(CurrentActivity) = SUPER_MELEE;
-        GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
+        sounds_ = CaptureSound(LoadSound(GAME_SOUNDS));
+        GameSounds = sounds_;
         soundLoaded_ = true;
-        infoLoaded_ = true;
-        LoadMeleeInfo(&menu_);
+        if (!sounds_) throw std::runtime_error("could not load fleet-selection sounds");
+        BuildPickMeleeFrame();
+        menu_.frame = CaptureDrawable(LoadGraphic(MELEE_SCREEN_PMAP_ANIM));
+        if (!menu_.frame || !menu_.pickFrame) throw std::runtime_error("could not load fleet-selection artwork");
+        BuildBuildPickFrame();
+        if (!menu_.buildFrame) throw std::runtime_error("could not build ship-selection artwork");
+        spaceLoaded_ = true; // InitSpace acquires before reporting failure.
+        if (!InitSpace()) throw std::runtime_error("could not initialize fleet-selection space");
+        LoadTeamList(&menu_);
         if (LoadMeleeConfig(&menu_) == -1) {
             PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
             Melee_LocalChange_team(&menu_, 0, menu_.load.preBuiltList[0]);
@@ -2129,14 +2115,17 @@ public:
         DoInput(&menu_, TRUE);
         StopMusic();
         WaitForSoundEnd(TFBSOUND_WAIT_ALL);
-        WriteMeleeConfig(&menu_); // Explicit completion, never in a destructor.
+        if (!QuitPosted && !menu_.session->menuExit())
+            WriteMeleeConfig(&menu_); // Explicit normal menu completion only.
     }
 private:
+    std::unique_ptr<uqm::ModeSuspension> drawing_;
     MELEE_STATE menu_{};
     MELEE_STATE *previous_;
     SOUND previousSounds_;
     std::unique_ptr<MeleeSetup, decltype(&MeleeSetup_delete)> setup_{nullptr, &MeleeSetup_delete};
-    bool loadInitialized_ = false, infoLoaded_ = false, soundLoaded_ = false;
+    SOUND sounds_ = nullptr;
+    bool loadInitialized_ = false, spaceLoaded_ = false, soundLoaded_ = false;
 };
 }
 namespace {
@@ -2152,6 +2141,9 @@ public:
     }
 protected:
     void initialize() override { frontend_.emplace(session_, engine()); }
+    std::unique_ptr<uqm::ModeSuspension> suspend() override {
+        return uqm::suspendDrawingBindings({ScreenContext, SpaceContext, StatusContext, OffScreenContext});
+    }
 private:
     uqm::ArcadeSession &session_;
     std::optional<MeleeFrontend> frontend_;

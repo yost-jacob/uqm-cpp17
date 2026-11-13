@@ -1,5 +1,6 @@
 #include "uqm_context.hpp"
 #include "session.hpp"
+#include "mode_rendering.hpp"
 #include "game_state.hpp"
 #include "arcade_session.hpp"
 #include "restart.h"
@@ -49,8 +50,13 @@ class CutsceneMode final : public GameMode {
 public:
     enum class Scene { Startup, Attract, Credits, Introduction, Ending };
     CutsceneMode(Session &session, UQM_Context &context, Scene scene)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), context_(context), scene_(scene) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), context_(context), scene_(scene) {}
     ModeResult run() override {
+        SessionActivation legacy{session_};
+        RandomBinding random{engine().random()};
+        auto drawing = suspendDrawingBindings({ScreenContext, OffScreenContext, SpaceContext, StatusContext});
+        if (auto exit = session_.menuExit()) return *exit;
+        if (QuitPosted) return SessionExit::shutdown();
         switch (scene_) {
             case Scene::Startup: { SplashBinding binding{context_}; SplashScreen(initializeSplash); break; }
             case Scene::Attract: SplashScreen(nullptr); break;
@@ -58,18 +64,32 @@ public:
             case Scene::Introduction: ::Introduction(); break;
             case Scene::Ending: ShowCampaignEnding(); break;
         }
-        return ModeCompleted{};
+        if (auto exit = session_.menuExit()) return *exit;
+        return QuitPosted ? ModeResult{SessionExit::shutdown()} : ModeResult{ModeCompleted{}};
     }
 private:
+    Session &session_;
     UQM_Context &context_;
     Scene scene_;
 };
 class TitleMenuMode final : public GameMode {
 public:
-    TitleMenuMode(Session &session, UQM_TITLE_CHOICE &choice)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), choice_(choice) {}
-    ModeResult run() override { choice_ = RunTitleMenu(); return ModeCompleted{}; }
-private: UQM_TITLE_CHOICE &choice_;
+    // choice is session-stack storage; the synchronous dispatcher destroys this
+    // mode before run() returns to that stack. Failed runs publish no selection.
+    TitleMenuMode(Session &session, std::optional<UQM_TITLE_CHOICE> &choice)
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), choice_(choice) {}
+    ModeResult run() override {
+        SessionActivation legacy{session_};
+        RandomBinding random{engine().random()};
+        const auto selected = RunTitleMenu();
+        if (auto exit = session_.menuExit()) return *exit;
+        if (QuitPosted) return SessionExit::shutdown();
+        choice_ = selected;
+        return ModeCompleted{};
+    }
+private:
+    Session &session_;
+    std::optional<UQM_TITLE_CHOICE> &choice_;
 };
 class TitleMenuSession final : public Session {
 public:
@@ -94,11 +114,13 @@ public:
 private: bool attract_;
 };
 SessionResult TitleMenuSession::run() {
-    UQM_TITLE_CHOICE choice = UQM_TITLE_QUIT;
+    std::optional<UQM_TITLE_CHOICE> choice;
     const auto exit = Session::run(std::make_unique<TitleMenuMode>(*this, choice));
     if (exit.kind == SessionExitKind::Failed) return ApplicationExit::failed(exit.error);
     if (QuitPosted) return ApplicationExit::completed();
-    switch (choice) {
+    if (exit.kind == SessionExitKind::Shutdown) return ApplicationExit::completed();
+    if (!choice) throw std::logic_error("title menu completed without a selection");
+    switch (*choice) {
         case UQM_TITLE_NEW_GAME: return std::make_unique<GameSession>(sessionDispatcher(), GameSession::Entry::NewGame);
         case UQM_TITLE_LOAD_GAME: return std::make_unique<GameSession>(sessionDispatcher(), GameSession::Entry::LoadMenu);
         case UQM_TITLE_ARCADE: return std::make_unique<ArcadeSession>(sessionDispatcher());
