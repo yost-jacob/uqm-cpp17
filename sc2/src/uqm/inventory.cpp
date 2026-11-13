@@ -24,8 +24,8 @@ constexpr Item items[] = {
     {"portal_spawner", "PORTAL_SPAWNER_ON_SHIP"}, {"portal_key", "PORTAL_KEY_ON_SHIP"},
     {"burvix_broadcaster", "BURV_BROADCASTERS_ON_SHIP"}, {"moonbase", "MOONBASE_ON_SHIP"}
 };
-constexpr std::string_view minerals[] = {"common", "corrosive", "base_metal", "noble",
-                                        "rare_earth", "precious", "radioactive", "exotic"};
+constexpr std::string_view minerals[] = {"minerals.common", "minerals.corrosive", "minerals.base_metal", "minerals.noble",
+                                        "minerals.rare_earth", "minerals.precious", "minerals.radioactive", "minerals.exotic"};
 enum class Kind { Crew, Fuel, Ru, Credits, Biomass, Landers, Mineral, Item };
 struct Key { Kind kind; std::size_t index = 0; };
 Key key(std::string_view name) {
@@ -37,7 +37,7 @@ Key key(std::string_view name) {
     if (name == "biomass") return {Kind::Biomass};
     if (name == "landers") return {Kind::Landers};
     for (std::size_t i = 0; i < std::size(minerals); ++i)
-        if (name.substr(0, 9) == "minerals." && name.substr(9) == minerals[i]) return {Kind::Mineral, i};
+        if (name == minerals[i]) return {Kind::Mineral, i};
     for (std::size_t i = 0; i < std::size(items); ++i)
         if (name.substr(0, 6) == "items." && name.substr(6) == items[i].name) return {Kind::Item, i};
     throw std::invalid_argument("unknown inventory asset: " + std::string(name));
@@ -98,6 +98,10 @@ std::int64_t Inventory::capacity(std::string_view name) const {
     const auto asset = key(name);
     const auto maximum = capacityLimit(detail::SISAccess::record(fleet_.sis()->get()), asset);
     return asset.kind == Kind::Fuel && asset.index == 0 ? maximum / FUEL_TANK_SCALE : maximum;
+}
+std::string_view Inventory::mineralKey(std::size_t category) {
+    if (category >= std::size(minerals)) throw std::out_of_range("unknown mineral category");
+    return minerals[category];
 }
 InventoryResult Inventory::transact(const InventoryTransaction &request) {
     struct Transfer { Key asset; std::int64_t amount; std::string name; };

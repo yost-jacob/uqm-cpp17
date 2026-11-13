@@ -18,6 +18,8 @@ public:
     std::int64_t quantity(std::string_view asset) const;
     std::int64_t capacity(std::string_view asset) const;
     static void validateKey(std::string_view asset);
+    // Canonical inventory key for the existing zero-based mineral category.
+    static std::string_view mineralKey(std::size_t category);
     static bool ownsLegacyField(std::string_view field) noexcept;
     // Validate all names/counts before inspecting balances. Exact fulfillment:
     // validate consideration, stage removals/additions, then commit everything.

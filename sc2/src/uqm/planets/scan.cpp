@@ -23,6 +23,7 @@
 #include "../world_visit.hpp"
 #include "../orbit_presentation.hpp"
 #include "../orbit_runtime.hpp"
+#include "../inventory.hpp"
 #include <stdexcept>
 #include "../system_behavior.hpp"
 #include "lander.h"
@@ -630,7 +631,13 @@ DispatchLander(SOLARSYS_STATE &system)
 	EraseCoarseScan(system);
 
 
-	DeltaSISGauges (0, -landingFuel, 0);
+    if (landingFuel) {
+        const auto result = uqm::orbitRuntime(system).session().player().inventory().transact(
+            {{{"fuel_hundredths", landingFuel}}, {}});
+        if (result.status != uqm::InventoryStatus::Completed)
+            throw std::logic_error("could not pay landing fuel");
+    }
+    DeltaSISGauges(0, UNDEFINED_DELTA, 0); // Redraw the already committed fuel balance.
 	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	drawPlanetCursor(system, FALSE);
 
