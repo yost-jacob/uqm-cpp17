@@ -5,12 +5,15 @@
 #include <optional>
 namespace uqm {
 class PlayerEntity;
+class GameSession;
+class RandomStream;
 class CampaignClock;
 // Visit-owned starbase plans. Preparing collects immutable speech and proposed
 // effects; only an explicit post-playback commit acknowledges or grants them.
+// The supplied session and RNG outlive these plans; no active-engine lookup.
 class StarbaseReports {
 public:
-    StarbaseReports(PlayerEntity &player, CampaignClock &clock, dialogue::Json phraseNames, bool voiced);
+    StarbaseReports(GameSession &session, RandomStream &random, dialogue::Json phraseNames, bool voiced);
     bool available(const std::string &name) const; // Devices or current-visit bulletins; no acknowledgement.
     // Prepare a named report with empty parameters. "hayes.commit" instead
     // takes the returned commit object after playback. Old plan tokens are stale.
@@ -23,6 +26,8 @@ private:
         unsigned bulletins = 0, gift = 0, ru = 0;
     };
     class Builder;
+    GameSession &session_;
+    RandomStream &random_;
     PlayerEntity &player_;
     CampaignClock &clock_;
     const dialogue::Json phrases_;

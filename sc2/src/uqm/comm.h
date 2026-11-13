@@ -42,7 +42,8 @@ extern void AlienTalkSegue (COUNT wait_track);
 BOOLEAN getLineWithinWidth(TEXT *pText, const char **startNext,
 		SIZE maxWidth, COUNT maxChars);
 
-extern RECT CommWndRect; /* comm window rect */
+/* C credits compositor borrows its session's presentation window. */
+extern RECT *GetConversationWindow(void);
 
 typedef enum
 {

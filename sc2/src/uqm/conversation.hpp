@@ -6,6 +6,8 @@
 #include "dialogue/live_definition.hpp"
 #include "game_mode.hpp"
 #include "sounds.h"
+#include "encounter_legacy.hpp"
+#include "libs/math/random.hpp"
 #include "libs/sound/trackplayer.h"
 #include <optional>
 #include <deque>
@@ -86,6 +88,9 @@ public:
     ConversationRuntime(const ConversationRuntime &) = delete;
     ConversationRuntime &operator=(const ConversationRuntime &) = delete;
     bool belongsTo(const GameSession &session) const noexcept { return &session_ == &session; }
+    RandomStream &random() noexcept { return random_; }
+    // Copied graph-entry queries from this owner; no mutation or RNG consumption.
+    dialogue::Json encounterContext(bool speech) const;
     void run();
     void finishWithoutDialogue(); // Attack path: retain post/uninit script timing.
     std::unique_ptr<ModeSuspension> suspend();
@@ -127,6 +132,8 @@ private:
     void stopPlayback();
     GameSession &session_;
     StoryState &story_;
+    detail::EncounterLegacyView campaign_;
+    RandomStream random_; // Seeded at child construction; shared by graph and animation helpers.
     ConversationResources resources_;
     LOCDATA &data_;
     ConversationAnimations animations_;

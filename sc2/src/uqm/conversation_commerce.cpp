@@ -44,20 +44,22 @@ Result exchange(Inventory &inventory, const InventoryTransaction &request) {
     }
     throw std::logic_error("unknown inventory result");
 }
+unsigned escortSlots(const GameSession &session, COUNT race) {
+    return race < session.raceFleets().size() ? MAX_BUILT_SHIPS - session.player().fleet().size() : 0;
+}
 // Reserve actual native vessels before any payment. Failure/exception removes
 // only this reservation and restores RNG, leaving earlier fleet entries intact.
 class ReservedShips {
 public:
-    ReservedShips(Fleet &fleet, COUNT race, unsigned count)
-        : fleet_(fleet), random_(simulationEngine().random()) {
+    ReservedShips(GameSession &session, RandomStream &random, COUNT race, unsigned count)
+        : fleet_(session.player().fleet()), source_(random), random_(random) {
         ids_.reserve(count);
-        const auto handle = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
-        if (!handle) return;
-        const auto definition = *LockFleetInfo(&GLOBAL(avail_race_q), handle);
-        UnlockFleetInfo(&GLOBAL(avail_race_q), handle);
+        const auto &fleets = session.raceFleets();
+        if (race >= fleets.size()) return;
+        const auto &definition = fleets.at(race);
         try {
             for (unsigned i = 0; i < count; ++i) {
-                const auto id = fleet_.create(race, definition, simulationEngine().random());
+                const auto id = fleet_.create(race, definition, source_);
                 if (!id) break;
                 ids_.push_back(*id);
             }
@@ -70,16 +72,17 @@ private:
     void rollback() noexcept {
         for (const auto id : ids_) fleet_.erase(id);
         ids_.clear();
-        simulationEngine().random() = random_;
+        source_ = random_;
     }
     Fleet &fleet_;
+    RandomStream &source_;
     RandomStream random_;
     std::vector<ShipId> ids_;
     bool committed_ = false;
 };
 }
-ConversationCommerce::ConversationCommerce(PlayerEntity &player, CampaignClock &clock, Json definitions)
-    : player_(player), clock_(clock), definitions_(std::move(definitions)) {
+ConversationCommerce::ConversationCommerce(GameSession &session, RandomStream &random, Json definitions)
+    : session_(session), random_(random), player_(session.player()), clock_(session.clock()), definitions_(std::move(definitions)) {
     const auto positive = [](const Json &value, Integer limit = 65535) {
         if (!value.is_number_integer() || value <= 0 || value > limit) throw std::invalid_argument("invalid merchant quantity/price");
     };
@@ -174,8 +177,8 @@ Result ConversationCommerce::purchase(const std::string &market, const std::stri
         if (inventory.quantity("crew") < cost) return {"no_credit", {}};
         InventoryTransaction request{{{"crew", cost}}, {}};
         if (item == "ship") {
-            if (!EscortFeasibilityStudy(DRUUGE_SHIP)) return {"no_room", {}};
-            ReservedShips reserved{inventory.fleet(), DRUUGE_SHIP, 1};
+            if (!escortSlots(session_, DRUUGE_SHIP)) return {"no_room", {}};
+            ReservedShips reserved{session_, random_, DRUUGE_SHIP, 1};
             if (reserved.size() != 1) return {"no_room", {}};
             auto result = exchange(inventory, request);
             if (result.code == "ok") { reserved.commit(); slavery_ += cost; }
@@ -451,8 +454,8 @@ Result ConversationCommerce::sellDruuge(const std::string &item, bool sphere) {
         return result;
     }
     const unsigned wanted = offer.at("ships");
-    const unsigned slots = EscortFeasibilityStudy(DRUUGE_SHIP);
-    ReservedShips reserved{inventory.fleet(), DRUUGE_SHIP, std::min(wanted, slots)};
+    const unsigned slots = escortSlots(session_, DRUUGE_SHIP);
+    ReservedShips reserved{session_, random_, DRUUGE_SHIP, std::min(wanted, slots)};
     if (reserved.size() != std::min(wanted, slots)) return {"no_room", {}};
     Json speech = Json::array({offer.at("speech"), "YOU_GET"});
     if (wanted) speech.push_back(slots >= wanted ? "DEAL_FOR_STATED_SHIPS" : slots == 0 ? "DEAL_FOR_NO_SHIPS" : "DEAL_FOR_LESS_SHIPS");

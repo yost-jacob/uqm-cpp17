@@ -5,14 +5,17 @@
 #include "conversation_reports.hpp"
 namespace uqm {
 class PlayerEntity;
+class GameSession;
+class RandomStream;
 class StoryState;
 class CampaignClock;
-// Borrow the active session's player for one visit. Story reads are const;
-// native fleet/event adapters still require that campaign's C binding to be active.
+// Borrow this session and visit-owned stream until the graph is destroyed.
+// Story queries are const. Remaining C fleet/refit/presentation calls select
+// this owner in a scoped compatibility binding and restore the caller.
 class CampaignDialogueState final : public dialogue::State {
   public:
     using Report = std::function<dialogue::Result(const std::string &, const dialogue::Json &)>;
-    CampaignDialogueState(PlayerEntity &, CampaignClock &, Report, dialogue::Json);
+    CampaignDialogueState(GameSession &, RandomStream &, Report, dialogue::Json);
     dialogue::Json read(const std::string &, const std::string &) const override;
     dialogue::Result set(const std::string &, const std::string &, const dialogue::Json &) override;
     dialogue::Integer storyMaximum(const std::string &) const override;
@@ -55,6 +58,8 @@ class CampaignDialogueState final : public dialogue::State {
     dialogue::Result adjustShip(const std::string &, dialogue::Integer) override;
 
   private:
+    GameSession &session_;
+    RandomStream &random_;
     PlayerEntity &player_;
     StoryState &story_;
     CampaignClock &clock_;

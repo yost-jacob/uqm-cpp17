@@ -13,11 +13,18 @@
 #include <algorithm>
 #include <limits>
 namespace uqm {
-CampaignDialogueState::CampaignDialogueState(PlayerEntity &player, CampaignClock &clock, Report report, dialogue::Json context)
-    : player_(player), story_(player.story()), clock_(clock),
+namespace {
+void redrawInventory(GameSession &session) {
+    SessionActivation legacy{session};
+    DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+}
+}
+
+CampaignDialogueState::CampaignDialogueState(GameSession &session, RandomStream &random, Report report, dialogue::Json context)
+    : session_(session), random_(random), player_(session.player()), story_(player_.story()), clock_(session.clock()),
       report_(std::move(report)), context_(std::move(context)),
-      commerce_(player, clock, context_.value("markets", dialogue::Json::object())),
-      reports_(player, clock, context_.value("phrases", dialogue::Json::array()), context_.value("using_speech", false)) {}
+      commerce_(session, random, context_.value("markets", dialogue::Json::object())),
+      reports_(session, random, context_.value("phrases", dialogue::Json::array()), context_.value("using_speech", false)) {}
 dialogue::Json CampaignDialogueState::read(const std::string &scope, const std::string &key) const {
     if (scope == "player" && key == "unreported_rainbows") return commerce_.unreportedRainbows();
     if (scope == "player")
@@ -64,7 +71,7 @@ dialogue::Result CampaignDialogueState::transact(const InventoryTransaction &req
     const auto result = player_.inventory().transact(request);
     switch (result.status) {
     case InventoryStatus::Completed:
-        DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+        redrawInventory(session_);
         return {};
     case InventoryStatus::Insufficient: return {"insufficient", {{"asset", result.asset}}};
     case InventoryStatus::NoCapacity: return {"no_capacity", {{"asset", result.asset}}};
@@ -81,6 +88,8 @@ dialogue::Integer CampaignDialogueState::balance(const std::string &account) con
     return player_.inventory().quantity(account);
 }
 dialogue::Result CampaignDialogueState::setOutcome(const std::string &outcome) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (outcome == "peace")
         setSegue(Segue_peace);
     else if (outcome == "hostile")
@@ -96,7 +105,7 @@ dialogue::Result CampaignDialogueState::setOutcome(const std::string &outcome) {
 dialogue::Integer CampaignDialogueState::randomBelow(dialogue::Integer bound) {
     if (bound <= 0)
         throw std::out_of_range("invalid random bound");
-    return TFB_Random() % bound;
+    return random_() % bound;
 }
 dialogue::Result CampaignDialogueState::scheduleEvent(const std::string &event,
                                                       dialogue::Integer months,
@@ -141,7 +150,7 @@ dialogue::Result CampaignDialogueState::prepareReport(const std::string &report,
         throw std::invalid_argument("report parameters must be an object");
     if (report.rfind("hayes.", 0) == 0) {
         auto result = reports_.prepare(report, parameters);
-        if (report == "hayes.commit" && result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+        if (report == "hayes.commit" && result.code == "ok") redrawInventory(session_);
         return result;
     }
     if (report.rfind("melnorme.", 0) == 0 || report.rfind("druuge.", 0) == 0)
@@ -161,27 +170,27 @@ bool CampaignDialogueState::marketAvailable(const std::string &market, const std
 dialogue::Integer CampaignDialogueState::salvageValue() const { return commerce_.salvageValue(); }
 dialogue::Result CampaignDialogueState::purchase(const std::string &market, const std::string &item, const dialogue::Json &quantity) {
     auto result = commerce_.purchase(market, item, quantity);
-    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    if (result.code == "ok") redrawInventory(session_);
     return result;
 }
 dialogue::Result CampaignDialogueState::sell(const std::string &market, const std::string &item, const dialogue::Json &quantity) {
     auto result = market == "starbase" && item == "minerals" ? reports_.sellMinerals() : commerce_.sell(market, item, quantity);
-    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    if (result.code == "ok") redrawInventory(session_);
     return result;
 }
 dialogue::Result CampaignDialogueState::prepareRescue(const std::string &name) {
     auto result = commerce_.prepareRescue(name);
-    if (result.code == "free") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    if (result.code == "free") redrawInventory(session_);
     return result;
 }
 dialogue::Result CampaignDialogueState::acceptRescue(const std::string &token) {
     auto result = commerce_.acceptRescue(token);
-    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    if (result.code == "ok") redrawInventory(session_);
     return result;
 }
 dialogue::Result CampaignDialogueState::stripShip(const std::string &name) {
     auto result = commerce_.stripShip(name);
-    if (result.code == "ok") DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+    if (result.code == "ok") redrawInventory(session_);
     return result;
 }
 } // namespace uqm
@@ -229,25 +238,30 @@ dialogue::Integer CampaignDialogueState::fuelCapacity() const {
     return player_.inventory().capacity("fuel");
 }
 dialogue::Integer CampaignDialogueState::quantity(const std::string &item) const {
-    if (item == "minerals") return detail::SISAccess::record(player_.sis()).TotalElementMass;
+    if (item == "minerals") return player_.sis().mineralMass();
     return player_.inventory().quantity(item == "radioactive" ? "minerals.radioactive" : item);
 }
 dialogue::Integer CampaignDialogueState::availableSlots(const std::string &type) const {
-    return EscortFeasibilityStudy(raceId(type));
+    return raceId(type) < session_.raceFleets().size() ? MAX_BUILT_SHIPS - player_.fleet().size() : 0;
 }
 dialogue::Integer CampaignDialogueState::shipCount(const std::string &type) const {
-    return CountEscortShips(raceId(type));
+    const auto race = raceId(type);
+    const auto &fleet = player_.fleet();
+    const auto ids = fleet.ships();
+    return std::count_if(ids.begin(), ids.end(), [&](ShipId id) { return fleet.find(id)->get().race() == race; });
 }
-bool CampaignDialogueState::hasShip(const std::string &type) const {
-    return shipCount(type) != 0;
-}
+bool CampaignDialogueState::hasShip(const std::string &type) const { return shipCount(type) != 0; }
 std::string CampaignDialogueState::relationship(const std::string &type) const {
-    const auto state = CheckAlliance(raceId(type));
+    const auto race = raceId(type);
+    const auto &fleets = session_.raceFleets();
+    const auto state = race < fleets.size() ? fleets.at(race).allied_state : 0;
     return state == GOOD_GUY ? "allied" : state == DEAD_GUY ? "extinct" : "neutral";
 }
 dialogue::Result CampaignDialogueState::createShip(const std::string &type,
                                                    const std::string &captain,
                                                    dialogue::Integer crew) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (type != "spathi" || captain != "fwiffo")
         throw std::invalid_argument("unregistered named captain: " + type + "." + captain);
     if (crew <= 0 || crew > combat::shipTuning(type).ship.maxCrew)
@@ -260,6 +274,8 @@ dialogue::Result CampaignDialogueState::createShip(const std::string &type,
 }
 dialogue::Result CampaignDialogueState::giveShips(const std::string &type,
                                                   dialogue::Integer count) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (count < 0 || count > std::numeric_limits<SIZE>::max())
         throw std::out_of_range("invalid escort count");
     const auto race = raceId(type);
@@ -267,6 +283,8 @@ dialogue::Result CampaignDialogueState::giveShips(const std::string &type,
 }
 dialogue::Result CampaignDialogueState::removeShips(const std::string &type,
                                                     dialogue::Integer count) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (count < 0 || count > std::numeric_limits<COUNT>::max())
         throw std::out_of_range("invalid escort removal count");
     const auto race = raceId(type);
@@ -280,21 +298,23 @@ dialogue::Result CampaignDialogueState::removeShips(const std::string &type,
 }
 dialogue::Result CampaignDialogueState::setRelationship(const std::string &type,
                                                         const std::string &relation) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (relation != "allied" && relation != "neutral")
         throw std::invalid_argument("invalid alliance relation");
     SetRaceAllied(raceId(type), relation == "allied" ? TRUE : FALSE);
     return {};
 }
 bool CampaignDialogueState::raceAvailable(const std::string &type) const {
-    const auto fleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), raceId(type));
-    if (!fleet)
-        return false;
-    const auto *info = LockFleetInfo(&GLOBAL(avail_race_q), fleet);
-    const bool available = info->actual_strength != 0 || info->allied_state != DEAD_GUY;
-    UnlockFleetInfo(&GLOBAL(avail_race_q), fleet);
-    return available;
+    const auto race = raceId(type);
+    const auto &fleets = session_.raceFleets();
+    if (race >= fleets.size()) return false;
+    const auto &info = fleets.at(race);
+    return info.actual_strength != 0 || info.allied_state != DEAD_GUY;
 }
 dialogue::Result CampaignDialogueState::revealRace(const std::string &type) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     // The native reveal returns a race index; Arilou's valid index is zero.
     const bool available = raceAvailable(type);
     StartSphereTracking(raceId(type));
@@ -302,6 +322,8 @@ dialogue::Result CampaignDialogueState::revealRace(const std::string &type) {
 }
 dialogue::Result CampaignDialogueState::configureShip(const std::string &operation,
                                                       const dialogue::Json &parameters) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (operation != "chmmr_bomb_refit" || !parameters.is_object() || !parameters.empty())
         throw std::invalid_argument("unregistered ship configuration: " + operation);
     ApplyChmmrBombRefit(story_.readNamed("STARBASE_AVAILABLE") != 0);
@@ -309,6 +331,8 @@ dialogue::Result CampaignDialogueState::configureShip(const std::string &operati
 }
 dialogue::Result CampaignDialogueState::adjustShip(const std::string &property,
                                                    dialogue::Integer delta) {
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     if (property == "fuel" || property == "crew") {
         const auto scale = property == "fuel" ? FUEL_TANK_SCALE : 1;
         // SIZE is the signed native gauge argument; never narrow into its sentinel.

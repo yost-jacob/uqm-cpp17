@@ -29,7 +29,7 @@ uqm::ConversationAnimations::randomFrameRate(SEQUENCE *pSeq)
 	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
 
 	return ADPtr->BaseFrameRate	+
-			TFB_Random () % (ADPtr->RandomFrameRate + 1);
+			random_() % (ADPtr->RandomFrameRate + 1);
 }
 
 DWORD
@@ -38,7 +38,7 @@ uqm::ConversationAnimations::randomRestartRate(SEQUENCE *pSeq)
 	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
 
 	return ADPtr->BaseRestartRate +
-			TFB_Random () % (ADPtr->RandomRestartRate + 1);
+			random_() % (ADPtr->RandomRestartRate + 1);
 }
 
 COUNT
@@ -46,7 +46,7 @@ uqm::ConversationAnimations::randomFrameIndex(SEQUENCE *pSeq, COUNT from)
 {
 	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
 
-	return from	+ TFB_Random () % (ADPtr->NumFrames - from);
+	return from	+ random_() % (ADPtr->NumFrames - from);
 }
 
 void
@@ -70,7 +70,7 @@ uqm::ConversationAnimations::SetupAmbientSequences(SEQUENCE *pSeq, COUNT Num)
 		// Default: first frame is neutral
 		if (ADPtr->AnimFlags & RANDOM_ANIM)
 		{	// Set a random frame/colormap
-			pSeq->NextIndex = TFB_Random () % ADPtr->NumFrames;
+			pSeq->NextIndex = random_() % ADPtr->NumFrames;
 		}
 		else if (ADPtr->AnimFlags & YOYO_ANIM)
 		{	// Skip the first frame/colormap (it's neutral)

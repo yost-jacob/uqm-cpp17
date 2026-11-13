@@ -5,12 +5,14 @@
 #include <optional>
 namespace uqm {
 class PlayerEntity;
+class GameSession;
+class RandomStream;
 class CampaignClock;
-// One conversation's offers. Borrows the player/clock until the visit ends;
+// One conversation's offers. Borrows its session and RNG until the visit ends;
 // queries never mutate, consume RNG or present media. Plans expire with this owner.
 class ConversationCommerce {
 public:
-    ConversationCommerce(PlayerEntity &player, CampaignClock &clock, dialogue::Json definitions);
+    ConversationCommerce(GameSession &session, RandomStream &random, dialogue::Json definitions);
     // Melnorme technology/information/category availability; no price/payment effects.
     bool marketAvailable(const std::string &market, const std::string &category) const;
     dialogue::Integer unreportedRainbows() const; // Discovered count minus already sold count, floored at zero.
@@ -27,6 +29,8 @@ public:
     dialogue::Result acceptRescue(const std::string &token); // Token belongs to this visit; validate current equipment before applying.
     dialogue::Result stripShip(const std::string &policy); // "melnorme.penance"; protect required crew pods.
 private:
+    GameSession &session_;
+    RandomStream &random_;
     PlayerEntity &player_;
     CampaignClock &clock_;
     const dialogue::Json definitions_;

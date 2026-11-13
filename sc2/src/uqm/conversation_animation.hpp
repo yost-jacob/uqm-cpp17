@@ -4,6 +4,7 @@
 #include "commanim.h"
 #include "globdata.h"
 #include <array>
+#include "libs/math/random.hpp"
 namespace uqm {
 typedef enum
 {
@@ -105,7 +106,7 @@ signaledStopTalkingAnim(const LOCDATA &data)
 // object's array/descriptors, so it must never be copied or moved.
 class ConversationAnimations {
 public:
-    explicit ConversationAnimations(LOCDATA &data) noexcept : data_(data) {}
+    ConversationAnimations(LOCDATA &data, RandomStream &random) noexcept : data_(data), random_(random) {}
     ConversationAnimations(const ConversationAnimations &) = delete;
     ConversationAnimations &operator=(const ConversationAnimations &) = delete;
     void InitCommAnimations();
@@ -126,6 +127,7 @@ private:
     void AdvanceTalkingSequence(SEQUENCE *pSeq, DWORD ElapsedTicks);
     BOOLEAN AdvanceTransitSequence(SEQUENCE *pSeq, DWORD ElapsedTicks);
     LOCDATA &data_;
+    RandomStream &random_;
     TimeCount LastTime = 0;
     std::array<SEQUENCE, MAX_ANIMATIONS + 2> Sequences{};
     DWORD ActiveMask = 0;
