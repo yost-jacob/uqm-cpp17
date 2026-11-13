@@ -1,3 +1,4 @@
+#include "world_archive.hpp"
 #include "world_state.hpp"
 #include "game_state.hpp"
 #include "state.h"
@@ -164,17 +165,12 @@ void WorldState::restore(WorldSnapshot candidate) {
 }
 } // namespace uqm
 
-// C adapters translate exceptions to existing failure results. Log diagnostics
-// only after releasing world locks. Handles belong to the active world's owner.
-extern "C" {
-GAME_STATE_FILE *OpenStateFile(int stateFile, const char *mode) {
+GAME_STATE_FILE *uqm::detail::openStateFile(WorldState &world, int stateFile, const char *mode) {
     if (stateFile < STARINFO_FILE || stateFile > DEFGRPINFO_FILE || !mode
             || (mode[0] != 'r' && mode[0] != 'w'))
         return nullptr;
     try {
-        if (stateFile == STARINFO_FILE && mode[0] == 'w')
-            ResetPersonalDiscoveries(); // New campaign or legacy checkpoint load.
-        auto &file = uqm::detail::LegacyWorldAccess::file(uqm::gameSession().world(), stateFile);
+        auto &file = uqm::detail::LegacyWorldAccess::file(world, stateFile);
         unsigned opens;
         {
             const std::unique_lock lock(file.mutex);
@@ -190,6 +186,15 @@ GAME_STATE_FILE *OpenStateFile(int stateFile, const char *mode) {
         return &file;
     } catch (...) { return nullptr; }
 }
+
+// C adapters translate exceptions to existing failure results. Log diagnostics
+// only after releasing world locks. Handles belong to the active world's owner.
+extern "C" {
+GAME_STATE_FILE *OpenStateFile(int stateFile, const char *mode) try {
+    if (stateFile == STARINFO_FILE && mode && mode[0] == 'w')
+        ResetPersonalDiscoveries(); // New campaign or legacy checkpoint load.
+    return uqm::detail::openStateFile(uqm::gameSession().world(), stateFile, mode);
+} catch (...) { return nullptr; }
 void CloseStateFile(GAME_STATE_FILE *file) {
     if (!file) return;
     try {

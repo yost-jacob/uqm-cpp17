@@ -1,3 +1,4 @@
+#include "encounter_legacy.hpp"
 #include "game_state.hpp"
 #include "inventory.hpp"
 #include <set>
@@ -323,7 +324,7 @@ GameSession::GameSession(std::shared_ptr<GameState> state, PlayerId player, std:
           auto view = bindingView();
           detail::LegacyRuntimeBinding binding{view};
           DrawStatusMessage(nullptr);
-      }), state_(std::move(state)), player_(player) {
+      }), state_(std::move(state)), player_(player), groupArchive_(*this) {
     if (!state_)
         throw std::invalid_argument("session requires game state");
     state_->player(player_); // Validate binding now, not at the first interaction.
@@ -446,4 +447,10 @@ const uqm::RaceFleets<> &uqm::GameSession::raceFleets() const {
 uqm::detail::NavigationLegacyView uqm::detail::navigationLegacy(PlayerEntity &player) noexcept {
     auto &state = LegacyStateAccess::data(player).Game_state;
     return {state.CurrentActivity, state.autopilot, state.ShipStamp};
+}
+
+uqm::detail::EncounterLegacyView uqm::detail::encounterLegacy(PlayerEntity &player) noexcept {
+    auto &state = LegacyStateAccess::data(player).Game_state;
+    return {state.npc_built_ship_q, state.ip_group_q, state.CurrentActivity,
+        state.glob_flags, state.ShipStamp, state.BattleGroupRef};
 }

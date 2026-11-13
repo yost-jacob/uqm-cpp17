@@ -32,17 +32,14 @@ void SystemBehavior::attachSession(GameSession &session) {
     session_ = &session;
 }
 COUNT SystemBehavior::communicate(CONVERSATION conversation) {
-    if (!session_) { // Native debug/test entry still uses the supplied story state.
-        EncounterRuntime encounter{story_, star_, simulationEngine()};
-        return encounter.communicate(conversation);
-    }
+    if (!session_) throw std::logic_error("system encounter requires its campaign session");
     return converseInSystem(*session_, star_, conversation);
 }
 COUNT converseInSystem(GameSession &session, const STAR_DESC *star, CONVERSATION conversation) {
     COUNT result = 0;
     if (auto exit = session.swapGameMode(std::make_unique<SystemEncounterMode>(session, star, conversation, result))) {
         // Let the existing C exploration stack unwind using its established flags.
-        GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+        detail::encounterLegacy(session.player()).activity |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
     }
     return result;
 }

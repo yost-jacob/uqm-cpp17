@@ -2,6 +2,7 @@
 #define UQM_ENCOUNTER_RUNTIME_HPP_
 #include "comm.h"
 #include "encounter_arena.hpp"
+#include "encounter_legacy.hpp"
 #include "runtime_ship_roster.hpp"
 #include "planets/planets.h"
 namespace uqm {
@@ -11,13 +12,11 @@ class SimulationEngine;
 // Reconstruct the special encounter selected by the old save flags. Fwiffo
 // takes precedence over location bits; this query never mutates story state.
 CONVERSATION conversationForRestoredEncounter(const StoryState &story);
-// Synchronous encounter orchestration, owned by an encounter mode. story
+// Synchronous encounter orchestration, owned by an encounter mode. The session
 // and engine outlive this object and its synchronous children. star borrows an
 // immutable catalogue entry, nullable in deep space; never retain a descriptor from a temporary encounter record.
 class EncounterRuntime {
 public:
-    EncounterRuntime(StoryState &story, const STAR_DESC *star, SimulationEngine &engine) noexcept
-        : story_(story), star_(star), engine_(engine) {}
     EncounterRuntime(GameSession &session, const STAR_DESC *star, SimulationEngine &engine) noexcept;
     void run(); // Select a race, communicate, and update the encountered fleet.
     COUNT communicate(CONVERSATION conversation); // Returns the legacy combat-status result.
@@ -31,7 +30,8 @@ private:
     StoryState &story_;
     const STAR_DESC *star_;
     SimulationEngine &engine_; // Owning mode outlives this runtime and its children.
-    GameSession *session_ = nullptr;
+    GameSession &session_;
+    detail::EncounterLegacyView campaign_;
     EncounterArena arena_; // Released before the owning mode's engine/backend bindings.
 };
 } // namespace uqm

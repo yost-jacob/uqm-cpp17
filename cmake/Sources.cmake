@@ -272,6 +272,7 @@ set(UQM_SOURCES
     sc2/src/uqm/world_c.cpp
     sc2/src/uqm/game_state_bits.c
     sc2/src/uqm/gravity.cpp
+    sc2/src/uqm/group_archive.cpp
     sc2/src/uqm/grpinfo.cpp
     sc2/src/uqm/hyper.cpp
     sc2/src/uqm/game_collections.hpp

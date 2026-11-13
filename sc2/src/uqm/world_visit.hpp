@@ -31,6 +31,7 @@ public:
     void enterOrbit();
     // Script operations borrow current session state and perform synchronous
     // child-mode handoff. Pending exits prevent further preparation/presentation.
+    GameSession &session() const noexcept { return session_; }
     StoryState &story() const noexcept;
     CampaignEncounters &encounters() const noexcept;
     PlanetGeneratedData &data() noexcept;

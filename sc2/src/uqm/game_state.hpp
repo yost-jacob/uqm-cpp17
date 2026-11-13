@@ -4,6 +4,7 @@
 #include "game_data.hpp"
 #include "campaign_clock.hpp"
 #include "campaign_encounters.hpp"
+#include "group_archive.hpp"
 #include "game_collections.hpp"
 #include <string_view>
 #include <array>
@@ -357,6 +358,7 @@ public:
     CampaignEncounters &encounters() noexcept { return encounters_; }
     const CampaignEncounters &encounters() const noexcept { return encounters_; }
     CampaignClock &clock() noexcept { return clock_; }
+    GroupArchive &groupArchive() noexcept { return groupArchive_; }
     const CampaignClock &clock() const noexcept { return clock_; }
     PlayerId playerId() const noexcept;
     GameData &gameData() { return player().gameData(); }
@@ -374,6 +376,7 @@ private:
     Entry entry_ = Entry::NewGame;
     std::shared_ptr<GameState> state_;
     PlayerId player_;
+    GroupArchive groupArchive_;
 };
 
 // Transitional C lookup: active campaign, or startup fallback outside a session.

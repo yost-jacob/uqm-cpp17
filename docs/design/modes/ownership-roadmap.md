@@ -195,8 +195,9 @@ save/load with a pending realm transition cancelled, and menu return to flight.
 These are small focused
 checks, not a complete manual campaign playthrough.
 
-The next ownership audit is EncounterMode/SystemEncounterMode. The eventual
-runtime remains parameterized by simulation, UI and a default shared compositor.
+EncounterMode/SystemEncounterMode now have explicit campaign ownership as
+described below; their menus remain deferred. The eventual runtime remains
+parameterized by simulation, UI and a default shared compositor.
 
 ## Encounter ownership audit
 
@@ -211,17 +212,36 @@ entry outlive these modes. Deep-space encounters legitimately have no star.
 | Battle participants | Mode SimulationEngine::shipRoster; stable source ship identities point back to their fleet |
 | Planet artwork used by encounter and combat | EncounterRuntime::EncounterArena; explicit release before aftermath, automatic release on cancellation/unwind |
 | Dialogue assets and playback | Child ConversationRuntime; constructed after hail/attack selection |
-| Source player fleet | Session player fleet; a detached debug/test entry still resolves the legacy active session |
-| Source NPC fleet, activity and presentation labels | Session legacy payload accessed through GLOBAL; explicit owner borrows are still needed |
-| Encounter choice menu | Legacy synchronous input, graphics and music calls; needs scoped presentation ownership |
-| Orbital NPC group suspension | OrbitalEncounter restores normal exits; abort/load skips restoration. Group archive backend still resolves global queues |
+| Source player fleet | Explicit session player fleet; detached story-only encounter construction has been removed |
+| Source NPC fleet, activity, flags and ship stamp | EncounterLegacyView references the supplied session player payload; C services see the same fields through their bindings |
+| Encounter choice menu | Legacy synchronous input, graphics and music calls; deferred until the UI/Menu framework |
+| Orbital NPC group suspension | OrbitalEncounter borrows GameSession::groupArchive and owner-specific collections/activity. Normal exits restore once; abort/load leaves the handoff untouched |
 | Rewards and survivor reconciliation | Explicit finish/run steps, mixed with tally presentation; these must remain completion effects, never destructor effects |
 
-Next increments: replace detached runtime/session fallback and NPC/activity
-lookups with explicit owner borrows; scope choice-screen resources; give orbital
-group persistence an explicit owner interface; then separate aftermath state
-changes from tally presentation. This is not yet the encounter ownership
-checkpoint. The future runtime/UI/compositor framework remains deferred.
+NPC/activity and orbital persistence now meet the agreed ownership boundary.
+GroupArchive owns last-encounter bookkeeping and borrows its session's world
+bytes, clock, selected star, race definitions and collections. Native loads and
+saves do not select a different active session. Legacy Get/Put/InitGroupInfo
+remain thin adapters for callers that have not migrated; group generation and
+its C BuildGroup entry are separate remaining exploration compatibility paths.
+The binary header/fragment/group codecs and their save layout are unchanged.
+That includes the existing one-byte crew encoding and its sentinel narrowing;
+this ownership cutover does not redesign that format.
+Archive file cursors close through RAII, including exceptional returns.
+
+Ship cloning shares one explicit-template implementation with the C recruitment
+adapter. Captain selection still uses the selected gameplay RNG service; it no
+longer looks up race defaults through the active campaign. Orbit scripts pass
+session-owned templates and queues. EncounterRuntime requires a session; a
+system behavior without an attached campaign throws instead of silently using
+another campaign. The nullable star remains an immutable catalogue borrow for
+deep-space encounters.
+
+The choice-screen input callback, FleetIsInfinite C combat service, presentation
+labels/gauges and the tally still use legacy service bindings. Menu ownership
+and UI redesign are explicitly deferred by agreement; no replacement menu or
+runtime framework is introduced here. Reward/survivor effects remain explicit
+completion steps, never destructor effects.
 
 Arena regression coverage substitutes graphics loading and checks normal
 completion, repeated reset, replacement, child failure and partial-load failure.
@@ -229,3 +249,16 @@ Debug and Release CMake builds/tests and the legacy build pass. A focused live
 check hands off the explicitly selected non-first roaming fleet; a second loads
 real planet artwork, cancels at the choice screen and verifies arena release
 before aftermath. It does not exercise a complete battle or salvage tally.
+
+
+Owner-routing regression coverage now uses the real GroupArchive and actual
+world bytes with another session selected. It covers orbital restoration and
+load/abort handoff, surviving/destroyed fleets, scripted groups, captain/crew
+round trips, campaign-specific expiry dates and cursor release on exceptions.
+
+
+For the NPC/activity and group archive cutover, Debug and Release CMake/Ninja
+builds and all five CTest suites pass, along with the legacy build. Focused live
+checks cover explicitly selected roaming fleet handoff, planet artwork release
+on cancellation, and native flagship/NPC flight in Sol. These do not constitute
+a complete campaign playthrough or a menu/tally redesign.
