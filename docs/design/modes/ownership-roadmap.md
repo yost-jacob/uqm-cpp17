@@ -27,7 +27,7 @@ independent or need the same simulation type.
 | 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime` with explicit campaign references and session-owned group archive; scoped arena resources. Menus/tally services remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
 | 4 | `OrbitMode` | Owns `OrbitRuntime`, scan cursor and orbital engine; borrows the enclosing `WorldVisit`. Visit-owned contexts/music and planet-owned generated assets have scoped handoffs. Menus remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
 | 5 | `LanderMode` | Owns a child engine and launch-local `LanderVisit`, artwork/sound leases and motion. Explicit transactions settle crew/cargo or a lost lander; finite effects are removed before scene handback. **Ownership checkpoint complete at the agreed boundary.** |
-| 6 | `ConversationMode` | Owns `ConversationRuntime`; audit graph/script state, presentation/audio/input bindings and transaction completion. Reuse the existing graph engine, not another dialogue rewrite. |
+| 6 | `ConversationMode` | Complete at the agreed boundary: visit-owned graph, presentation resources and RNG; explicit session queries/actions; scoped legacy service bindings. UI/Menu and device services remain deferred. |
 | 7 | `CombatMode` | Shared campaign/arcade combat mode; audit roster/ship/entity lifetimes, projectile source references, round completion, survivor reconciliation and cancellation. |
 | 8 | `FleetSelectionMode` | Owned by the separate `ArcadeSession`; audit frontend/network/selection resources and handoff to the same combat mode. |
 | 9 | `LoadMenuMode`, `TitleMenuMode` | Audit UI state and borrowed result storage; saves/loads remain a session responsibility. Ordinary cargo/roster/starmap/options menus are currently functions, not independent modes. |
@@ -376,3 +376,42 @@ and reconstructs the saved orbital state with the original crew/lander counts.
 These are targeted ownership checks, not a full campaign playthrough.
 The final live return check also verifies the exact launch-fuel debit through
 the owning inventory, with no second charge during landing or recovery.
+
+
+## Completed conversation ownership map
+
+| Responsibility | Owner / borrow |
+| --- | --- |
+| Pending introduction and conversation window | GameSession presentation state; construction consumes only that session's introduction |
+| Graph, local script memory, response strings and speech insertions | ConversationRuntime and its graph/state objects |
+| Animation, report and commerce randomness | Visit-owned RandomStream, explicitly borrowed by the animation and dialogue services |
+| Story, inventory, fleet, clock and encounter queries | Explicit owning GameSession/PlayerEntity references; query methods remain const |
+| Trade reservations | Transaction-local reservation owner; failed payment removes reserved ships and restores the supplied RNG |
+| Fonts, graphics, colormap, music and phrase handles | ConversationResources; playback stops before handles and script storage expire |
+| Native callbacks and remaining C actions | Scoped script/session/RNG borrows, restored before their owners retire |
+
+Construction no longer changes Melnorme's status panel. Abandoning an unrun
+runtime consumes its own introduction without running gameplay hooks. Completion
+is explicit and at most once; load, shutdown and abort skip completion policy
+and post-encounter actions. Destruction stops playback and releases resources,
+without granting rewards or completing a conversation. Resource identifier
+strings in the configuration are borrowed and must outlive the resource owner.
+
+Removed the file-static pending introduction, global CommWndRect and detached
+player/clock dialogue constructors. Graph-entry context is copied from the owner;
+commerce, reports and read-only fleet queries no longer discover an unrelated
+active campaign. Remaining legacy mutators select the owning session and random
+stream for their call scope. The C segue/instant-victory protocol belongs to the
+upcoming CombatMode audit. Input, drawing, speech playback and status-panel
+services remain compatibility boundaries; this is no new UI or AV framework.
+The dialogue JSON, graph vocabulary and authored conversation flow are unchanged.
+
+Debug and Release CMake/Ninja builds and all five CTest suites pass, as does the
+preserved legacy build. Tests cover cross-session routing, introduction isolation,
+abandoned construction, cancellation, resource retirement, completion hooks and
+trade/RNG rollback. A focused live Hayes conversation plays voice tracks, grants
+the expected aid, updates story state and returns to its orbital parent.
+A second live check requests a saved-game load during probe speech, verifies
+that the conversation runtime retires, and reaches restored navigation only
+after that retirement. These are focused lifecycle checks, not a full campaign
+playthrough.

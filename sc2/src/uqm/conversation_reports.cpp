@@ -23,6 +23,19 @@ public:
     const SIS_STATE &sis_;
     unsigned greeting_, intro_;
     bool restoreTalking_ = false;
+    COUNT alliance(COUNT race) const {
+        const auto &fleets = owner_.session_.raceFleets();
+        return race < fleets.size() ? fleets.at(race).allied_state : 0;
+    }
+    bool escortRoom(COUNT race) const {
+        return race < owner_.session_.raceFleets().size() && owner_.player_.fleet().size() < MAX_BUILT_SHIPS;
+    }
+    COUNT escortsWorth() const {
+        COUNT total = 0;
+        const auto &fleet = owner_.player_.fleet();
+        for (const auto id : fleet.ships()) total += shipPrice(fleet.find(id)->get().race());
+        return total;
+    }
     unsigned getByte(std::string_view name) const {
         const auto found = plan_.writes.find(name);
         return found == plan_.writes.end() ? owner_.player_.story().readNamed(name) : found->second;
@@ -141,10 +154,10 @@ void AnalyzeCondition() {
 		COUNT FleetStrength;
 		bool HasMaximum;
 
-		FleetStrength = CalculateEscortsWorth ();
+		FleetStrength = escortsWorth();
 		for (i = 0; i < NUM_AVAILABLE_RACES; ++i)
 		{
-			if (i != HUMAN_SHIP && CheckAlliance (i) == GOOD_GUY)
+			if (i != HUMAN_SHIP && alliance(i) == GOOD_GUY)
 				++num_aliens;
 		}
 
@@ -309,9 +322,9 @@ void CheckBulletins(bool repeat) {
     static constexpr std::pair<unsigned, COUNT> allies[] = {
         {0, SPATHI_SHIP}, {1, ZOQFOTPIK_SHIP}, {2, SUPOX_SHIP}, {3, UTWIG_SHIP},
         {4, ORZ_SHIP}, {12, CHMMR_SHIP}, {13, SHOFIXTI_SHIP}};
-    for (auto [index, race] : allies) eligible[index] = CheckAlliance(race) == GOOD_GUY;
+    for (auto [index, race] : allies) eligible[index] = alliance(race) == GOOD_GUY;
     obsolete[5] = get("ARILOU_MANNER") == 2;
-    eligible[5] = !obsolete[5] && get("PORTAL_SPAWNER") && (repeat || EscortFeasibilityStudy(ARILOU_SHIP));
+    eligible[5] = !obsolete[5] && get("PORTAL_SPAWNER") && (repeat || escortRoom(ARILOU_SHIP));
     eligible[6] = get("ZOQFOT_DISTRESS") == 1;
     obsolete[7] = obsolete[8] = get("MET_MELNORME") != 0;
     eligible[7] = !obsolete[7] && CheckTiming(3, 0);
@@ -432,8 +445,8 @@ void departure() {
 	}
 }
 };
-StarbaseReports::StarbaseReports(PlayerEntity &player, CampaignClock &clock, Json phrases, bool voiced)
-    : player_(player), clock_(clock), phrases_(std::move(phrases)), voiced_(voiced) {}
+StarbaseReports::StarbaseReports(GameSession &session, RandomStream &random, Json phrases, bool voiced)
+    : session_(session), random_(random), player_(session.player()), clock_(session.clock()), phrases_(std::move(phrases)), voiced_(voiced) {}
 StarbaseReports::Plan StarbaseReports::build(const std::string &name, unsigned greeting, unsigned intro) const {
     Builder builder{*this, greeting, intro};
     if (name == "hayes.devices") builder.DiscussDevices(true);
@@ -465,12 +478,12 @@ Result StarbaseReports::prepare(const std::string &name, const Json &parameters)
             if (result.status != InventoryStatus::Completed) return {"no_room", {}};
         }
         if (plan.gift) {
-            const auto handle = GetStarShipFromIndex(&GLOBAL(avail_race_q), ARILOU_SHIP);
-            if (handle) {
-                const auto definition = *LockFleetInfo(&GLOBAL(avail_race_q), handle);
-                UnlockFleetInfo(&GLOBAL(avail_race_q), handle);
-                // This is the existing up-to-three gift, not a paid exact purchase.
-                for (unsigned i = 0; i < plan.gift; ++i) if (!player_.fleet().create(ARILOU_SHIP, definition, simulationEngine().random())) break;
+            const auto &fleets = session_.raceFleets();
+            if (ARILOU_SHIP < fleets.size()) {
+                const auto &definition = fleets.at(ARILOU_SHIP);
+                // Existing up-to-three gift; the caller's stream supplies captain names.
+                for (unsigned i = 0; i < plan.gift; ++i)
+                    if (!player_.fleet().create(ARILOU_SHIP, definition, random_)) break;
             }
             // A played grant is durable even if the visit exits before farewell;
             // replaying the report must never recruit the gift a second time.
@@ -484,8 +497,8 @@ Result StarbaseReports::prepare(const std::string &name, const Json &parameters)
     }
     if (!parameters.empty()) throw std::invalid_argument("unexpected report arguments");
     if (name == "hayes.repeat_bulletins") return {"ok", {{"speech", bulletinSpeech_}, {"token", serial_}}};
-    const auto greeting = name == "hayes.arrival" || name == "hayes.departure" ? TFB_Random() & 7 : 0;
-    const auto introduction = name == "hayes.arrival" ? static_cast<BYTE>(TFB_Random()) % 7 : 0;
+    const auto greeting = name == "hayes.arrival" || name == "hayes.departure" ? random_() & 7 : 0;
+    const auto introduction = name == "hayes.arrival" ? static_cast<BYTE>(random_()) % 7 : 0;
     auto plan = build(name, greeting, introduction);
     Result result{"ok", {{"speech", plan.speech}, {"token", serial_ + 1}, {"commit", {{"token", serial_ + 1}}}}};
     if (name == "hayes.arrival") {

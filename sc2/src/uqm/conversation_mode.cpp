@@ -13,17 +13,11 @@ public:
             throw std::invalid_argument("conversation requires its owning session");
     }
     ModeResult run() override {
-        try {
-            conversation_->run();
-        } catch (...) {
-            // The nested dispatcher currently aborts on failure. Destroy this
-            // runtime first so partial assets and script borrows still unwind.
-            conversation_.reset();
-            throw;
-        }
+        RandomBinding random{conversation_->random()};
+        conversation_->run(); // Dispatcher destroys the child before restoring its parent.
         if (auto exit = session_.menuExit()) return *exit;
         if (QuitPosted) return SessionExit::shutdown();
-        if (GLOBAL(CurrentActivity) & CHECK_ABORT) return SessionExit::title();
+        if (detail::encounterLegacy(session_.player()).activity & CHECK_ABORT) return SessionExit::title();
         return ModeCompleted{};
     }
 protected:

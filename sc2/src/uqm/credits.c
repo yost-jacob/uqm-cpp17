@@ -352,7 +352,7 @@ RenderCreditsScreen (CONTEXT targetContext)
 	if (OutTakesRunning)
 	{	// Cut out the Outtakes rect
 		SetContextForeGroundColor (TRANS_COLOR);
-		DrawFilledRectangle (&CommWndRect);
+		DrawFilledRectangle (GetConversationWindow());
 	}
 	
 	SetContext (oldContext);
@@ -792,9 +792,9 @@ Credits (BOOLEAN WithOuttakes)
 	FadeScreen (FadeAllToColor, ONE_SECOND / 2);
 
 	// set the position of outtakes comm
-	CommWndRect.corner.x = (screenRect.extent.width - CommWndRect.extent.width)
+	GetConversationWindow()->corner.x = (screenRect.extent.width - GetConversationWindow()->extent.width)
 			/ 2;
-	CommWndRect.corner.y = 5;
+	GetConversationWindow()->corner.y = 5;
 	
 	InitCredits ();
 	SetInputCallback (on_input_frame);

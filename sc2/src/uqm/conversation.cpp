@@ -18,6 +18,7 @@
 
 #include "libs/threadlib.h"
 #include "conversation.hpp"
+#include "sis_legacy.hpp"
 #include "game_state.hpp"
 #include "mode_rendering.hpp"
 #include <stdexcept>
@@ -55,7 +56,6 @@ constexpr auto OSCILLOSCOPE_RATE = ONE_SECOND / 32;
 constexpr auto COMM_ANIM_RATE = ONE_SECOND / 40;
 constexpr auto FOREGROUND_VOL = NORMAL_VOLUME;
 static int backgroundVolume() { return usingSpeech ? NORMAL_VOLUME / 2 : NORMAL_VOLUME; }
-RECT CommWndRect = {{SIS_ORG_X, SIS_ORG_Y}, {0, 0}}; // Legacy credits layout boundary.
 /* _count_lines - sees how many lines a given input string would take to
  * display given the line wrapping information
  */
@@ -322,7 +322,7 @@ uqm::ConversationRuntime::DrawSISComWindow()
 {
 	CONTEXT OldContext;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+	if (LOBYTE (campaign_.activity) != WON_LAST_BATTLE)
 	{
 		RECT r;
 
@@ -693,7 +693,7 @@ uqm::ConversationRuntime::AlienTalkSegue(COUNT wait_track)
 
 		animations_.InitCommAnimations();
 
-		LastActivity &= ~CHECK_LOAD;
+		session_.activities().last &= ~CHECK_LOAD;
 	}
 
 	TalkingFinished = TalkSegue (wait_track);
@@ -893,7 +893,7 @@ uqm::ConversationRuntime::PlayerResponseInput(ENCOUNTER_STATE *pES)
 		SelectResponse (pES);
 	}
 	else if (PulsedInputState.menu[KEY_MENU_CANCEL] &&
-			LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+			LOBYTE (campaign_.activity) != WON_LAST_BATTLE)
 	{
 		SelectConversationSummary (pES);
 	}
@@ -959,7 +959,7 @@ uqm::ConversationRuntime::DoLastReplay(LAST_REPLAY_STATE *pLRS)
 		return FALSE; // timed out and done
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL] &&
-			LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+			LOBYTE (campaign_.activity) != WON_LAST_BATTLE)
 	{
 		FadeMusic (backgroundVolume(), ONE_SECOND);
 		SelectConversationSummary (NULL);
@@ -1068,13 +1068,12 @@ uqm::ConversationRuntime::run()
     oldContext_ = GetContext();
     GetMenuSounds(&oldArrows_, &oldSelect_);
     binding_.emplace(resources_.script);
-    const auto intro = takeConversationIntro();
-    setIntro(intro.mode, intro.duration);
+    if (data_.ConversationPhrasesRes && std::string_view(data_.ConversationPhrasesRes) == "comm.melnorme.dialogue")
+        previousStatusMode_ = static_cast<int>(SetStatusMessageMode(SMM_CREDITS));
     auto &ES = input_;
     ES.owner = this;
     MUSIC_REF SongRef = nullptr;
     Color TextBack = {0, 0, 0x84, 0};
-    window_ = CommWndRect; // Legacy credits supply the outer presentation rect.
 	TalkingFinished = FALSE;
 
 	ES.InputFunc = [](ENCOUNTER_STATE *state) { return state->owner->DoCommunication(state); };
@@ -1136,7 +1135,7 @@ uqm::ConversationRuntime::run()
 
 		SetTransitionSource (NULL);
 		BatchGraphics ();
-		if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+		if (LOBYTE (campaign_.activity) == WON_LAST_BATTLE)
 		{
 			r.corner = window_.corner;
 			SetContextClipRect (&r);
@@ -1162,16 +1161,16 @@ uqm::ConversationRuntime::run()
 			else
 			{	// Default titles: star name + planet name
 				DrawSISMessage (NULL);
-				DrawSISTitle (GLOBAL_SIS (PlanetName));
+				DrawSISTitle (detail::SISAccess::record(session_.player().sis()).PlanetName);
 			}
 		}
 
-		CommWndRect = window_; // Compatibility copy for the credits compositor.
+		session_.conversationPresentation().window = window_; // C credits compositor borrow.
 		DrawSISComWindow ();
 	}
 
 
-	LastActivity |= CHECK_LOAD; /* prevent spurious input */
+	session_.activities().last |= CHECK_LOAD; /* prevent spurious input */
     playback_ = true;
     graph_->advance();
     queueGraphSpeech();
@@ -1252,7 +1251,7 @@ std::unique_ptr<uqm::ModeSuspension> uqm::ConversationRuntime::suspend() {
     return suspendDrawingBindings({SpaceContext, RadarContext, resources_.animation, resources_.textCache});
 }
 void uqm::ConversationRuntime::resume() {
-    if (!started_ || session_.menuExit() || (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))) return;
+    if (!started_ || session_.menuExit() || (campaign_.activity & (CHECK_ABORT | CHECK_LOAD))) return;
     const auto oldContext = SetContext(resources_.animation);
     animations_.redraw();
     clear_subtitles = TRUE;

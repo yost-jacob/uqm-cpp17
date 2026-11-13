@@ -4,6 +4,7 @@
 #include <array>
 namespace uqm {
 class ConversationRuntime;
+class GameSession;
 struct ConversationScriptState {
     LOCDATA data{};
     std::array<UNICODE, CONVERSATION_PHRASE_CAPACITY> phrases{};
@@ -20,6 +21,11 @@ private:
 };
 ConversationRuntime &activeConversation(); // Throws outside a running script owner.
 struct ConversationIntro { CommIntroMode mode = CIM_DEFAULT; TimeCount duration = 0; };
-ConversationIntro takeConversationIntro() noexcept;
+// Session-owned pre-entry requests and the credits compositor's C window view.
+struct ConversationPresentation {
+    ConversationIntro intro{};
+    RECT window{{static_cast<COORD>(SIS_ORG_X), static_cast<COORD>(SIS_ORG_Y)}, {0, 0}};
+};
+ConversationIntro takeConversationIntro(GameSession &session) noexcept;
 } // namespace uqm
 #endif

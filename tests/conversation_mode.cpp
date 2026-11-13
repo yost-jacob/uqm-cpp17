@@ -87,10 +87,11 @@ BOOST_AUTO_TEST_CASE(conversation_c_scripts_borrow_only_bound_owner_data_and_phr
 BOOST_AUTO_TEST_CASE(conversation_intro_request_is_consumed_once_at_child_entry)
 {
     SetCommIntroMode(CIM_FADE_IN_SCREEN, 77);
-    const auto request = uqm::takeConversationIntro();
+    auto &session = uqm::gameSession();
+    const auto request = uqm::takeConversationIntro(session);
     BOOST_TEST(static_cast<int>(request.mode) == static_cast<int>(CIM_FADE_IN_SCREEN));
     BOOST_TEST(request.duration == 77u);
-    BOOST_TEST(static_cast<int>(uqm::takeConversationIntro().mode) == static_cast<int>(CIM_DEFAULT));
+    BOOST_TEST(static_cast<int>(uqm::takeConversationIntro(session).mode) == static_cast<int>(CIM_DEFAULT));
 }
 BOOST_AUTO_TEST_CASE(conversation_resources_release_partial_initialization_during_unwind)
 {
@@ -111,7 +112,7 @@ BOOST_FIXTURE_TEST_CASE(conversation_script_cleanup_runs_once_but_post_actions_s
         unsigned post = 0, uninit = 0;
         scriptPost = [&] { ++post; BOOST_TEST(GetConversationData()->AlienTextWidth == 123u); };
         scriptUninit = [&] { ++uninit; };
-        GLOBAL(CurrentActivity) = static_cast<ACTIVITY>(flag);
+        uqm::detail::encounterLegacy(session.player()).activity = static_cast<ACTIVITY>(flag);
         {
             uqm::ConversationRuntime conversation{session, configuration()};
             conversation.finishWithoutDialogue();
@@ -181,4 +182,82 @@ BOOST_FIXTURE_TEST_CASE(graph_owned_conversation_needs_no_empty_native_lifecycle
         BOOST_TEST(GetConversationData()->AlienTextWidth == 77u);
     }
     BOOST_CHECK_THROW(GetConversationData(), std::logic_error);
+}
+
+BOOST_FIXTURE_TEST_CASE(conversation_entry_state_and_intro_belong_to_the_supplied_session, Fixture)
+{
+    auto makeState = [] { return std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}); };
+    uqm::GameSession first{makeState(), uqm::SinglePlayerId}, other{makeState(), uqm::SinglePlayerId};
+    auto campaign = uqm::detail::encounterLegacy(first.player());
+    campaign.activity = IN_INTERPLANETARY;
+    campaign.flags = CYBORG_ENABLED;
+    campaign.battleGroupRef = 42;
+    first.player().story().set(uqm::StoryCounter::SamatraGrpoffs0, 42);
+    first.conversationPresentation().intro = {CIM_FADE_IN_SCREEN, 91};
+    first.conversationPresentation().window.corner = {7, 8};
+    other.conversationPresentation().intro = {CIM_CROSSFADE_SCREEN, 37};
+    uqm::detail::encounterLegacy(other.player()).activity = WON_LAST_BATTLE;
+    {
+        uqm::SessionActivation unrelated{other};
+        uqm::ConversationRuntime conversation{first, configuration()};
+        const auto random = conversation.random().state();
+        const auto snapshot = conversation.encounterContext(true);
+        BOOST_TEST(snapshot.at("at_samatra").get<bool>());
+        BOOST_TEST(snapshot.at("cyborg_enabled").get<bool>());
+        BOOST_TEST(!snapshot.at("won_last_battle").get<bool>());
+        BOOST_TEST(snapshot.at("using_speech").get<bool>());
+        BOOST_TEST(conversation.random().state() == random);
+        BOOST_CHECK(uqm::takeConversationIntro(first).mode == CIM_DEFAULT);
+        BOOST_TEST(GetConversationWindow() == &other.conversationPresentation().window);
+        BOOST_CHECK(uqm::takeConversationIntro(other).mode == CIM_CROSSFADE_SCREEN);
+        BOOST_CHECK(uqm::takeConversationIntro(other).mode == CIM_DEFAULT);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(discarding_a_conversation_consumes_only_its_owners_intro_and_never_runs_hooks, Fixture)
+{
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+    unsigned called = 0;
+    scriptPost = scriptUninit = [&] { ++called; };
+    session.conversationPresentation().intro = {CIM_FADE_IN_SCREEN, 10};
+    { uqm::ConversationRuntime abandoned{session, configuration()}; }
+    BOOST_TEST(called == 0u);
+    BOOST_CHECK(uqm::takeConversationIntro(session).mode == CIM_DEFAULT);
+    BOOST_CHECK_THROW(GetConversationData(), std::logic_error);
+}
+
+BOOST_FIXTURE_TEST_CASE(conversation_construction_does_not_switch_status_panel_or_run_script_effects, Fixture)
+{
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+    const auto previous = SetStatusMessageMode(SMM_DATE);
+    auto data = configuration();
+    data.ConversationPhrasesRes = "comm.melnorme.dialogue";
+    {
+        uqm::ConversationRuntime conversation{session, data};
+        BOOST_CHECK(SetStatusMessageMode(SMM_DATE) == SMM_DATE);
+    }
+    SetStatusMessageMode(previous);
+}
+
+BOOST_FIXTURE_TEST_CASE(conversation_lifecycle_hooks_select_the_owner_and_restore_an_unrelated_campaign, Fixture)
+{
+    auto state = [] { return std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}); };
+    uqm::GameSession owner{state(), uqm::SinglePlayerId}, other{state(), uqm::SinglePlayerId};
+    uqm::detail::encounterLegacy(other.player()).activity = CHECK_LOAD;
+    unsigned post = 0, uninit = 0;
+    scriptPost = [&] {
+        ++post;
+        BOOST_TEST(&uqm::gameSession() == &owner);
+        uqm::gameSession().player().story().set(uqm::StoryFlag::BattleSegue);
+    };
+    scriptUninit = [&] { ++uninit; BOOST_TEST(&uqm::gameSession() == &owner); };
+    {
+        uqm::SessionActivation unrelated{other};
+        uqm::ConversationRuntime conversation{owner, configuration()};
+        conversation.finishWithoutDialogue();
+        BOOST_TEST(post == 1u); BOOST_TEST(uninit == 1u);
+        BOOST_TEST(owner.player().story().read(uqm::StoryFlag::BattleSegue));
+        BOOST_TEST(!other.player().story().read(uqm::StoryFlag::BattleSegue));
+        BOOST_TEST(&uqm::gameSession() == &other);
+    }
 }

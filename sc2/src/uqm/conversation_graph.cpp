@@ -92,8 +92,12 @@ void ConversationRuntime::loadGraph() {
                 player["alliance_name"] = std::move(name);
             }
         }
+        auto context = encounterContext(usingSpeech != FALSE);
+        context["player"] = std::move(player);
+        context["markets"] = definition.value("markets", dialogue::Json::object());
+        context["phrases"] = definition.at("phrases");
         graphState_ = std::make_unique<CampaignDialogueState>(
-            session_.player(), session_.clock(),
+            session_, random_,
             [this](const std::string &report,
                    const dialogue::Json &parameters) -> dialogue::Result {
                 const std::string resource = data_.ConversationPhrasesRes;
@@ -116,32 +120,7 @@ void ConversationRuntime::loadGraph() {
                     throw std::invalid_argument("unknown specialized report handler: " + report);
                 return {"ok", {{"speech", dialogue::Json::array()}}};
             },
-            dialogue::Json{
-                {"player", std::move(player)},
-                {"markets", definition.value("markets", dialogue::Json::object())},
-                {"phrases", definition.at("phrases")},
-                {"won_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE},
-                {"in_last_battle", LOBYTE(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE},
-                {"cyborg_enabled", (GLOBAL(glob_flags) & CYBORG_ENABLED) != 0},
-                {"using_speech", usingSpeech != FALSE},
-                {"has_npc_ships", GetHeadLink(&GLOBAL(npc_built_ship_q)) != nullptr},
-                {"calendar_campaign_year", static_cast<int>(session_.clock().date().year) - START_YEAR},
-                {"years_to_kohrah_victory", YEARS_TO_KOHRAH_VICTORY},
-                {"thraddash_body_threshold", THRADDASH_BODY_THRESHOLD},
-                {"calendar_month", session_.clock().date().month},
-                {"calendar_day", session_.clock().date().day},
-                {"at_samatra",
-                 LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY &&
-                     GLOBAL(BattleGroupRef) != 0 &&
-                     GLOBAL(BattleGroupRef) == story_.read(StoryCounter::SamatraGrpoffs0)},
-                {"at_probe_message",
-                 LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY &&
-                     GLOBAL(BattleGroupRef) != 0 &&
-                     GLOBAL(BattleGroupRef) == story_.read(StoryCounter::UrquanProbeGrpoffs0)},
-                {"at_colony",
-                 LOBYTE(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY &&
-                     GLOBAL(BattleGroupRef) != 0 &&
-                     GLOBAL(BattleGroupRef) == story_.read(StoryCounter::ColonyGrpoffs0)}});
+            std::move(context));
         graph_ = dialogue::Conversation::load(definition, *graphState_);
     } catch (const std::exception &error) {
         throw std::runtime_error(path + ": " + error.what());

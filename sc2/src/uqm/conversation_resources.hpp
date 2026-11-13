@@ -4,6 +4,8 @@
 namespace uqm {
 // Owns loaded handles, including partial initialization. Script callbacks may
 // change frame/colormap indices; release functions accept those captured views.
+// configuration supplies borrowed resource IDs (normally static native names);
+// those names must outlive this owner. Loaded handles never transfer from it.
 class ConversationResources {
 public:
     explicit ConversationResources(const LOCDATA &configuration) noexcept;

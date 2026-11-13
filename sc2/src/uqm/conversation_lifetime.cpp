@@ -10,15 +10,17 @@
 #include <stdexcept>
 using namespace uqm;
 uqm::ConversationRuntime::ConversationRuntime(GameSession &session, const LOCDATA &configuration)
-    : session_(session), story_(session.player().story()), resources_(configuration),
-      data_(resources_.script.data), animations_(data_) {
+    : session_(session), story_(session.player().story()), campaign_(detail::encounterLegacy(session.player())),
+      random_(session.nextModeSeed()), resources_(configuration),
+      data_(resources_.script.data), animations_(data_, random_) {
     // Graph-owned scripts need no native turn callback. Optional post/uninit
     // hooks retain only the remaining native encounter policy, never ownership.
     if (data_.NumAnimations > MAX_ANIMATIONS)
         throw std::out_of_range("conversation animation capacity exceeded");
     resources_.script.owner = this;
-    if (data_.ConversationPhrasesRes && std::string_view(data_.ConversationPhrasesRes) == "comm.melnorme.dialogue")
-        previousStatusMode_ = static_cast<int>(SetStatusMessageMode(SMM_CREDITS));
+    const auto intro = takeConversationIntro(session_);
+    setIntro(intro.mode, intro.duration);
+    window_ = session_.conversationPresentation().window;
 }
 uqm::ConversationRuntime::~ConversationRuntime() {
     stopPlayback();
@@ -49,13 +51,16 @@ void uqm::ConversationRuntime::stopPlayback() {
     SleepThreadUntil(FadeMusic(NORMAL_VOLUME, 0) + ONE_SECOND / 60);
 }
 bool uqm::ConversationRuntime::exiting() const {
-    return QuitPosted || session_.menuExit().has_value() || (GLOBAL(CurrentActivity) & CHECK_ABORT);
+    return QuitPosted || session_.menuExit().has_value() || session_.dispatcher().exitRequest().has_value()
+        || (campaign_.activity & (CHECK_ABORT | CHECK_LOAD));
 }
 void uqm::ConversationRuntime::finishScript() {
     if (scriptFinished_)
         return;
+    SessionActivation legacy{session_};
+    RandomBinding random{random_};
     scriptFinished_ = true;
-    if (!exiting() && !(GLOBAL(CurrentActivity) & CHECK_LOAD)) {
+    if (!exiting() && !(campaign_.activity & CHECK_LOAD)) {
         bool salvage = false;
         if (graph_) {
             const auto found = graph_->memory().local.find("attempted_salvage");
@@ -63,7 +68,7 @@ void uqm::ConversationRuntime::finishScript() {
         }
         if (data_.ConversationPhrasesRes) completeConversationPolicy(story_, data_.ConversationPhrasesRes, getSegue() == Segue_hostile, salvage);
     }
-    if (data_.post_encounter_func && !exiting() && !(GLOBAL(CurrentActivity) & CHECK_LOAD))
+    if (data_.post_encounter_func && !exiting() && !(campaign_.activity & CHECK_LOAD))
         data_.post_encounter_func();
     if (data_.uninit_encounter_func)
         data_.uninit_encounter_func();

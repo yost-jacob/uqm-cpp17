@@ -44,7 +44,7 @@ struct CommerceFixture {
     }
     ~CommerceFixture() { UninitQueue(&GLOBAL(avail_race_q)); }
     void credits(unsigned n) { player.story().setNamed("MELNORME_CREDIT0", n & 255); player.story().setNamed("MELNORME_CREDIT1", n >> 8); }
-    ConversationCommerce merchant(const Json &graph) { return {player, session.clock(), graph.at("markets")}; }
+    ConversationCommerce merchant(const Json &graph) { return {session, engine.random(), graph.at("markets")}; }
 };
 }
 // Only catalogue queries are adapted for the isolated test executable; the real
@@ -157,7 +157,7 @@ BOOST_FIXTURE_TEST_CASE(rescue_preparation_is_stable_and_acceptance_rejects_stal
     BOOST_TEST(shop.acceptRescue("melnorme.rescue").code == "unavailable");
 }
 BOOST_FIXTURE_TEST_CASE(starbase_reports_do_not_acknowledge_devices_until_explicit_playback_commit, CommerceFixture) {
-    StarbaseReports reports{player, session.clock(), starbase.at("phrases"), true};
+    StarbaseReports reports{session, engine.random(), starbase.at("phrases"), true};
     player.story().setNamed("SUN_DEVICE_ON_SHIP", 1);
     BOOST_TEST(reports.available("hayes.devices"));
     BOOST_TEST(player.story().readNamed("DISCUSSED_SUN_EFFICIENCY") == 0u);
@@ -169,7 +169,7 @@ BOOST_FIXTURE_TEST_CASE(starbase_reports_do_not_acknowledge_devices_until_explic
     BOOST_TEST(reports.prepare("hayes.commit", plan.values.at("commit")).code == "ok");
 }
 BOOST_FIXTURE_TEST_CASE(starbase_ready_report_commits_once_and_report_replay_never_recruits_again, CommerceFixture) {
-    StarbaseReports reports{player, session.clock(), starbase.at("phrases"), false};
+    StarbaseReports reports{session, engine.random(), starbase.at("phrases"), false};
     player.story().setNamed("MOONBASE_ON_SHIP", 1);
     const auto ready = reports.prepare("hayes.arrival", Json::object());
     BOOST_TEST(sis.ResUnits == 0u);
@@ -178,7 +178,7 @@ BOOST_FIXTURE_TEST_CASE(starbase_ready_report_commits_once_and_report_replay_nev
     reports.prepare("hayes.commit", ready.values.at("commit"));
     BOOST_TEST(sis.ResUnits == 2500u);
     player.story().setNamed("MOONBASE_ON_SHIP", 0); player.story().setNamed("PORTAL_SPAWNER", 1);
-    StarbaseReports returning{player, session.clock(), starbase.at("phrases"), true};
+    StarbaseReports returning{session, engine.random(), starbase.at("phrases"), true};
     const auto bulletins = returning.prepare("hayes.arrival", Json::object());
     BOOST_TEST(player.fleet().size() == 0u);
     returning.prepare("hayes.commit", bulletins.values.at("commit"));
@@ -188,7 +188,7 @@ BOOST_FIXTURE_TEST_CASE(starbase_ready_report_commits_once_and_report_replay_nev
     BOOST_TEST(player.fleet().size() == 3u);
 }
 BOOST_FIXTURE_TEST_CASE(starbase_mineral_sale_rejects_account_overflow_without_taking_cargo, CommerceFixture) {
-    StarbaseReports reports{player, session.clock(), starbase.at("phrases"), true};
+    StarbaseReports reports{session, engine.random(), starbase.at("phrases"), true};
     sis.ElementAmounts[COMMON] = sis.TotalElementMass = 20; sis.ResUnits = std::numeric_limits<DWORD>::max();
     BOOST_TEST(reports.sellMinerals().code == "no_room"); BOOST_TEST(sis.TotalElementMass == 20u);
     sis.ResUnits = 0;
@@ -218,7 +218,7 @@ CampaignDialogueState::Report noOtherReports = [](const std::string &, const Jso
 }
 BOOST_FIXTURE_TEST_CASE(live_druuge_graph_uses_native_state_for_crew_purchase_and_departure, CommerceFixture) {
     player.story().setNamed("GLOBAL_FLAGS_AND_DATA", 128);
-    CampaignDialogueState adapter{player, session.clock(), noOtherReports, context(druuge)};
+    CampaignDialogueState adapter{session, engine.random(), noOtherReports, context(druuge)};
     auto graph = dialogue::Conversation::load(druuge, adapter);
     graph->advance(); settle(*graph);
     choose(*graph, "want_to_buy"); choose(*graph, "im_ready_to_buy"); choose(*graph, "buy_art_1");
@@ -227,7 +227,7 @@ BOOST_FIXTURE_TEST_CASE(live_druuge_graph_uses_native_state_for_crew_purchase_an
     BOOST_TEST(graph->ended()); BOOST_TEST(player.story().readNamed("CREW_SOLD_TO_DRUUGE0") == 100u);
 }
 BOOST_FIXTURE_TEST_CASE(live_melnorme_graph_preserves_topic_priority_and_exhausted_account_routing, CommerceFixture) {
-    CampaignDialogueState adapter{player, session.clock(), noOtherReports, context(melnorme)};
+    CampaignDialogueState adapter{session, engine.random(), noOtherReports, context(melnorme)};
     auto graph = dialogue::Conversation::load(melnorme, adapter);
     graph->advance(); settle(*graph);
     choose(*graph, "what_about_universe");
@@ -245,7 +245,7 @@ BOOST_FIXTURE_TEST_CASE(live_melnorme_graph_preserves_topic_priority_and_exhaust
 }
 BOOST_FIXTURE_TEST_CASE(live_starbase_graph_commits_report_after_playback_and_retains_all_information_menus, CommerceFixture) {
     player.story().setNamed("SUN_DEVICE_ON_SHIP", 1);
-    CampaignDialogueState adapter{player, session.clock(), noOtherReports, context(starbase)};
+    CampaignDialogueState adapter{session, engine.random(), noOtherReports, context(starbase)};
     auto graph = dialogue::Conversation::load(starbase, adapter);
     graph->advance(); settle(*graph);
     graph->choose(graph->view().entry, "new_devices");
@@ -314,14 +314,14 @@ BOOST_FIXTURE_TEST_CASE(starbase_timed_bulletins_use_strict_boundaries_and_pendi
     player.story().setNamed("STARBASE_VISITED", 1);
     player.story().setNamed("STARBASE_MONTH", 2); player.story().setNamed("STARBASE_DAY", 17);
     session.clock().advance(7);
-    StarbaseReports sameDay{player, session.clock(), starbase.at("phrases"), true};
+    StarbaseReports sameDay{session, engine.random(), starbase.at("phrases"), true};
     const auto atBoundary = sameDay.prepare("hayes.arrival", Json::object());
     const auto contains = [](const Json &speech, const std::string &id) {
         return std::find(speech.begin(), speech.end(), Json(id)) != speech.end();
     };
     BOOST_TEST(!contains(atBoundary.values.at("speech"), "STARBASE_BULLETIN_10"));
     session.clock().advance(1);
-    StarbaseReports after{player, session.clock(), starbase.at("phrases"), true};
+    StarbaseReports after{session, engine.random(), starbase.at("phrases"), true};
     const auto report = after.prepare("hayes.arrival", Json::object());
     BOOST_TEST(contains(report.values.at("speech"), "STARBASE_BULLETIN_10"));
     after.prepare("hayes.devices", Json::object());
@@ -331,14 +331,14 @@ BOOST_FIXTURE_TEST_CASE(starbase_timed_bulletins_use_strict_boundaries_and_pendi
 BOOST_FIXTURE_TEST_CASE(invalid_merchant_definitions_fail_before_any_gameplay_mutation, CommerceFixture) {
     auto bad = melnorme.at("markets");
     bad["melnorme"]["technology"][0]["grant"]["module"] = "UNKNOWN_MODULE";
-    BOOST_CHECK_THROW((ConversationCommerce{player, session.clock(), bad}), std::invalid_argument);
+    BOOST_CHECK_THROW((ConversationCommerce{session, engine.random(), bad}), std::invalid_argument);
     bad = melnorme.at("markets"); bad["melnorme"]["fuel"]["unit_price"] = -1;
-    BOOST_CHECK_THROW((ConversationCommerce{player, session.clock(), bad}), std::invalid_argument);
+    BOOST_CHECK_THROW((ConversationCommerce{session, engine.random(), bad}), std::invalid_argument);
     BOOST_TEST(sis.CrewEnlisted == 150u); BOOST_TEST(player.gameData().prices.modules[BLASTER_WEAPON] == 0u);
 }
 BOOST_FIXTURE_TEST_CASE(live_druuge_bomb_space_and_salvage_entries_keep_distinct_outcomes, CommerceFixture) {
     player.story().setNamed("GLOBAL_FLAGS_AND_DATA", 64);
-    CampaignDialogueState adapter{player, session.clock(), noOtherReports, context(druuge)};
+    CampaignDialogueState adapter{session, engine.random(), noOtherReports, context(druuge)};
     auto bomb = dialogue::Conversation::load(druuge, adapter);
     bomb->advance(); settle(*bomb);
     choose(*bomb,"whats_up_at_bomb_planet"); choose(*bomb,"we_get_bomb"); choose(*bomb,"then_we_take_bomb");
@@ -356,7 +356,7 @@ BOOST_FIXTURE_TEST_CASE(live_druuge_bomb_space_and_salvage_entries_keep_distinct
 BOOST_FIXTURE_TEST_CASE(live_melnorme_rescue_and_hostility_branches_use_bounded_native_operations, CommerceFixture) {
     player.story().setNamed("MET_MELNORME", 1); player.story().setNamed("MELNORME_YACK_STACK2", 6);
     sis.DriveSlots[0] = FUSION_THRUSTER;
-    CampaignDialogueState adapter{player, session.clock(), noOtherReports, context(melnorme)};
+    CampaignDialogueState adapter{session, engine.random(), noOtherReports, context(melnorme)};
     auto rescue = dialogue::Conversation::load(melnorme, adapter);
     rescue->advance(); settle(*rescue);
     choose(*rescue,"yes_help"); choose(*rescue,"take_it");
@@ -373,7 +373,7 @@ BOOST_FIXTURE_TEST_CASE(device_reports_keep_device_order_and_restore_the_command
     player.story().setNamed("ARTIFACT_2_ON_SHIP", 1);
     player.story().setNamed("VUX_BEAST_ON_SHIP", 1);
     player.story().setNamed("DESTRUCT_CODE_ON_SHIP", 1);
-    StarbaseReports reports{player, session.clock(), starbase.at("phrases"), true};
+    StarbaseReports reports{session, engine.random(), starbase.at("phrases"), true};
     const auto plan = reports.prepare("hayes.devices", Json::object());
     const auto &speech = plan.values.at("speech");
     BOOST_CHECK(speech.at(1) == "ABOUT_PORTAL");
@@ -383,4 +383,53 @@ BOOST_FIXTURE_TEST_CASE(device_reports_keep_device_order_and_restore_the_command
     BOOST_REQUIRE(scientist != speech.end());
     BOOST_CHECK((scientist + 1)->at("on_start") == "starbase.commander");
     BOOST_CHECK(speech.at(speech.size() - 2) == "ABOUT_ARTIFACT_2");
+}
+
+BOOST_FIXTURE_TEST_CASE(dialogue_trade_queries_and_randomness_ignore_an_unrelated_active_session, CommerceFixture)
+{
+    GameSession other{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Other"}), SinglePlayerId};
+    SimulationEngine unrelatedEngine{8, 777};
+    RandomStream explicitRandom{123}, expected{123};
+    CampaignDialogueState adapter{session, explicitRandom, noOtherReports, context(druuge)};
+    const auto otherRandom = unrelatedEngine.random().state();
+    {
+        SessionActivation unrelated{other};
+        SimulationBinding another{unrelatedEngine};
+        BOOST_TEST(adapter.randomBelow(101) == expected() % 101);
+        BOOST_TEST(unrelatedEngine.random().state() == otherRandom);
+        BOOST_TEST(adapter.availableSlots("druuge") == MAX_BUILT_SHIPS);
+        BOOST_TEST(adapter.shipCount("druuge") == 0);
+        const auto result = adapter.purchase("druuge", "ship", 1);
+        BOOST_TEST(result.code == "ok");
+        BOOST_TEST(adapter.shipCount("druuge") == 1);
+        BOOST_TEST(other.player().fleet().size() == 0u);
+        BOOST_TEST(unrelatedEngine.random().state() == otherRandom);
+        adapter.setOutcome("hostile");
+        BOOST_TEST(player.story().read(uqm::StoryFlag::BattleSegue));
+        BOOST_TEST(!other.player().story().read(uqm::StoryFlag::BattleSegue));
+        BOOST_TEST(&gameSession() == &other);
+        BOOST_TEST(&simulationEngine() == &unrelatedEngine);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(dialogue_failed_trade_restores_its_own_reservations_and_random_stream, CommerceFixture)
+{
+    GameSession other{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Other"}), SinglePlayerId};
+    SimulationEngine unrelatedEngine{8, 777};
+    RandomStream ownRandom{321};
+    auto &minerals = sis.ElementAmounts[0];
+    minerals = player.inventory().capacity("minerals.common") + 1;
+    sis.TotalElementMass = minerals;
+    const auto ownBefore = ownRandom.state(), otherBefore = unrelatedEngine.random().state();
+    ConversationCommerce merchant{session, ownRandom, druuge.at("markets")};
+    {
+        SessionActivation unrelated{other};
+        SimulationBinding another{unrelatedEngine};
+        BOOST_TEST(merchant.purchase("druuge", "ship", 1).code == "no_room");
+        BOOST_TEST(player.fleet().size() == 0u);
+        BOOST_TEST(player.sis().crew() == 150u);
+        BOOST_TEST(ownRandom.state() == ownBefore);
+        BOOST_TEST(unrelatedEngine.random().state() == otherBefore);
+        BOOST_TEST(other.player().fleet().size() == 0u);
+    }
 }
