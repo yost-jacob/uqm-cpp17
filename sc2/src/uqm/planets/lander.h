@@ -35,11 +35,9 @@ extern "C" {
 
 #define NUM_TEXT_FRAMES 32
 
-extern MUSIC_REF LanderMusic;
 
 // Report text and presentation handles are borrowed for this synchronous call.
 extern void ShowDiscoveryReport (SOUND ReadOutSounds, FONT font, FRAME fontEffect, STRING text);
-extern void SetPlanetMusic (BYTE planet_type);
 extern void LoadLanderData (void);
 extern void FreeLanderData (void);
 

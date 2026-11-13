@@ -27,7 +27,7 @@ struct SystemViewState {
 struct SurfaceScanState {
     POINT location{}, previousFlashLocation{};
     RECT cursorRect{};
-    FRAME eraseFrame = nullptr; // Owned by the active scan visit's cleanup scope.
+    SystemFrame eraseFrame; // Owned by the orbital runtime; reset after each scan.
     BYTE flashColor = 0;
     int flashStep = -2;
     TimeCount nextFlash = 0;
@@ -42,7 +42,6 @@ struct UQM_SYSTEM_RUNTIME {
     std::unique_ptr<uqm::SolarSystem> system;
     uqm::GameSession *session = nullptr;
     uqm::ExplorationView view = uqm::ExplorationView::Flight;
-    uqm::SurfaceScanState scan{};
     SOLARSYS_STATE engine{}; // Owned descriptor backing the C engine, never serialized.
     uqm::SystemFlightState flight{};
     uqm::SystemViewState viewState{};
@@ -130,7 +129,6 @@ void publishPlanetProgress(SOLARSYS_STATE &system);
 WorldVisit &systemVisit(const SOLARSYS_STATE &system);
 // Prepare presentation using the explicit selected world and borrowed graphics.
 void loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME definition);
-void runPlanetOrbit(SOLARSYS_STATE &system);
 void runScan(SOLARSYS_STATE &system);
 void generatePlanetSide(SOLARSYS_STATE &system);
 void redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLocation);

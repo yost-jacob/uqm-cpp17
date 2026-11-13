@@ -102,11 +102,3 @@ load_life_form (BYTE selector)
 	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
 	return CaptureDrawable (LoadGraphic (buffer));
 }
-
-MUSIC_REF
-load_orbit_theme (BYTE selector)
-{
-	snprintf (buffer, 79, "music.orbit%d", selector + 1);
-	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */	
-	return LoadMusic (buffer);
-}

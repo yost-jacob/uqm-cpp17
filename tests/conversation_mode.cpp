@@ -5,6 +5,7 @@
 #include "uqm/setup.h"
 #include "libs/threadlib.h"
 #include "libs/inplib.h"
+#include "libs/graphics/context.h"
 #include "libs/sndlib.h"
 #include <boost/test/unit_test.hpp>
 #include <functional>
@@ -48,7 +49,7 @@ void uqm::ConversationRuntime::ClearSubtitles() {}
 extern "C" {
 volatile int QuitPosted = 0;
 BOOLEAN DestroyFont(FONT font) { ++fontsFreed; delete reinterpret_cast<char *>(font); return TRUE; }
-BOOLEAN DestroyContext(CONTEXT context) { ++contextsFreed; delete reinterpret_cast<char *>(context); return TRUE; }
+BOOLEAN DestroyContext(CONTEXT context) { ++contextsFreed; delete context; return TRUE; }
 void GetMenuSounds(MENU_SOUND_FLAGS *first, MENU_SOUND_FLAGS *second) { *first = arrows; *second = menuSelect; }
 void SetMenuSounds(MENU_SOUND_FLAGS first, MENU_SOUND_FLAGS second) { arrows = first; menuSelect = second; }
 StatMsgMode SetStatusMessageMode(StatMsgMode mode) { static auto current = SMM_DATE; const auto old = current; current = mode; return old; }
@@ -97,7 +98,7 @@ BOOST_AUTO_TEST_CASE(conversation_resources_release_partial_initialization_durin
     try {
         uqm::ConversationResources owned{configuration()};
         owned.script.data.AlienFont = reinterpret_cast<FONT>(new char);
-        owned.textCache = reinterpret_cast<CONTEXT>(new char);
+        owned.textCache = CreateContext("test.conversation");
         throw std::runtime_error("remaining asset failed");
     } catch (const std::runtime_error &) {}
     BOOST_TEST(fontsFreed == fonts + 1);

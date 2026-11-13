@@ -24,8 +24,8 @@ independent or need the same simulation type.
 | Checkpoint | `SolarSystemMode` (ExploreSpace) | `SolarSystemExploration`, native `SolarSystem`/`World` tree, `SystemFlightState`; eight-step ownership migration complete. Remaining drawing/collision projections and C service interfaces are documented separately. |
 | 1 | `HyperSpaceMode` | Owns `SpaceNavigation`; borrows player, story, clock and mode engine. Run-scoped presentation retains cached graphics and owns its colour map; native entity callbacks borrow navigation directly; encounter screen associations are visit-owned and generation-checked; campaign queues and transition flags still use legacy interfaces. **Ownership checkpoint complete.** |
 | 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms with Hyperspace; portal destinations and fuel/encounter rules differ. **Ownership checkpoint complete.** |
-| 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime`; audit fleet participants, result propagation, encounter selection, starbase/bomb branches and suspended caller borrows. |
-| 4 | `OrbitMode` | Owns orbital engine and borrows the enclosing `WorldVisit`; world assets and report services already have owners. Audit remaining menu/input scopes and explicit completion versus cancellation. |
+| 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime` with explicit campaign references and session-owned group archive; scoped arena resources. Menus/tally services remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
+| 4 | `OrbitMode` | Owns `OrbitRuntime`, scan cursor and orbital engine; borrows the enclosing `WorldVisit`. Visit-owned contexts/music and planet-owned generated assets have scoped handoffs. Menus remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
 | 5 | `LanderMode` | Owns a child engine; audit surface entities, expedition state, collection/loss publication and landing/return presentation. Keep durable retrieval and inventory state in their existing owners. |
 | 6 | `ConversationMode` | Owns `ConversationRuntime`; audit graph/script state, presentation/audio/input bindings and transaction completion. Reuse the existing graph engine, not another dialogue rewrite. |
 | 7 | `CombatMode` | Shared campaign/arcade combat mode; audit roster/ship/entity lifetimes, projectile source references, round completion, survivor reconciliation and cancellation. |
@@ -262,3 +262,55 @@ builds and all five CTest suites pass, along with the legacy build. Focused live
 checks cover explicitly selected roaming fleet handoff, planet artwork release
 on cancellation, and native flagship/NPC flight in Sol. These do not constitute
 a complete campaign playthrough or a menu/tally redesign.
+
+
+## Completed orbital ownership map
+
+| Responsibility | Owner / borrow |
+| --- | --- |
+| Generated terrain, globe, lighting/projection buffers, body-specific sprites | Native World::PlanetRenderResources; a visit borrows its graphics record. Assets survive the visit and regenerate on a later visit |
+| Orbital scene and lander handoff | OrbitMode's SimulationEngine; RAII transfers the prepared exploration scene into orbit and into synchronous lander children, then returns it |
+| Scan cursor position, flashing deadlines and saved background image | OrbitMode::OrbitRuntime; saved image uses SystemFrame and also resets after each scan |
+| Campaign activity, NPC groups/ships, SIS fuel/crew/lander availability and next/last activity | Explicit session/player references passed through OrbitRuntime and WorldVisit |
+| Planet and lazily created scan drawing contexts | WorldVisit::OrbitPresentation, with unique ownership and backend context restoration on failed construction |
+| Selected orbital music | Visit-retained MusicAsset from the session cache; only the selected theme is loaded, playback stops before lease release |
+| Orbital focus, generated-data view and presentation borrow | WorldVisit resources; teardown detaches views and leaves no runtime pointer in the parent visit |
+| Permanent retrieval masks and inventory changes | Existing world/story/inventory owners; publication remains explicit, never a presentation destructor effect |
+
+OrbitRuntime is a concrete ownership boundary, not the future generic runtime
+framework. It is bound only while its mode runs. Scan and lander callbacks
+resolve it from the explicitly supplied WorldVisit, rather than a process-wide
+selected campaign or engine. Lander handoff uses that runtime's engine, and
+Fwiffo preparation uses its owner's group archive, race template and NPC queue.
+WorldVisit uses the enclosing exploration engine explicitly for orbit entry.
+
+### Remaining orbital compatibility boundaries
+
+- PlanetContext is a borrowed C drawing projection for the existing sphere and
+  lander helpers. OrbitPresentation restores the previous projection before
+  destroying its contexts. It is no longer a context owner.
+- The legacy input-frame callback cannot carry userdata. Its scoped graphics
+  borrow and callback registration restore their previous values on exit.
+- C reports borrow the visit's scan context or own an independent temporary
+  context outside orbit. There is no globally retained spare ScanContext.
+- Shared drawing, audio/input services, fonts/strings, scan node rendering and
+  the existing menu scripts remain service boundaries. No UI/Menu framework
+  or second AV compositor is introduced.
+- Lander-specific simulation, resources and inventory publication are the next
+  mode's audit, not claimed as completed by this orbital cutover.
+
+Deleted the exploration-owned scan cursor, globally owned drawing contexts,
+selected LanderMusic/OrbitMusic array, SetPlanetMusic and unused orbit-theme
+loader. PlanetContext remains only as the C borrow described above. Regression
+coverage uses real presentation/context owners with a fake device backend; it
+checks child handback, cancellation/failure cleanup, unrelated active-session
+routing, retry after context creation failure, independent report contexts and
+selected-theme cache lifetime.
+
+Debug and Release CMake/Ninja builds and all five CTest suites pass for this
+cutover, as does the preserved legacy build. A focused live Sol/Luna check
+reaches the native orbital runtime with real terrain/globe resources and
+advances sphere rotation. A second saves in orbit, requests a load, verifies
+that the previous presentation has retired and PlanetContext is detached
+before reconstruction, then reaches the replacement orbit with loaded terrain.
+No full campaign playthrough or UI/Menu redesign is claimed.

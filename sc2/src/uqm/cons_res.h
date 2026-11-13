@@ -29,7 +29,6 @@ void free_gravity_well (void);
 
 FRAME load_life_form (BYTE selector);
 
-MUSIC_REF load_orbit_theme (BYTE selector);
 
 #if defined(__cplusplus)
 }

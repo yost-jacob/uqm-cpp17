@@ -1,5 +1,7 @@
 #include "uqm/world_visit.hpp"
 #include "uqm/orbit_presentation.hpp"
+#include "uqm/orbit_runtime.hpp"
+#include "uqm/planet_sphere.hpp"
 #include "libs/strings/strintrn.h"
 #include "uqm/world.hpp"
 #include "uqm/system_runtime.hpp"
@@ -32,9 +34,8 @@ WorldDefinition definition(UniverseId universe, BYTE special, unsigned planet, i
 }
 extern "C" void BatchGraphics() { ++batchDepth; }
 extern "C" void UnbatchGraphics() { --batchDepth; }
-void uqm::runPlanetOrbit(SOLARSYS_STATE &) { if (orbitMenu) orbitMenu(); }
-uqm::OrbitPresentation::OrbitPresentation(SOLARSYS_STATE &system) : system_(system) {}
-uqm::OrbitPresentation::~OrbitPresentation() { ++orbitFinishes; }
+void uqm::OrbitRuntime::run() { if (orbitMenu) orbitMenu(); }
+void uqm::UninitSphereRotation(PLANET_ORBIT &) { ++orbitFinishes; }
 void uqm::loadPlanetSurface(SOLARSYS_STATE &, World &, FRAME) { if (surfaceLoader) surfaceLoader(); }
 BOOST_AUTO_TEST_CASE(world_construction_selects_only_applicable_orbit_events)
 {
@@ -100,6 +101,18 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                     BOOST_TEST(source->size() == 0u);
                     BOOST_CHECK(runtime.view == ExplorationView::Orbit);
                     BOOST_TEST(runtime.visit != nullptr);
+                    BOOST_TEST(&orbitRuntime(system).session() == &session);
+                    BOOST_TEST(&orbitRuntime(system).engine() == &simulationEngine());
+                    {
+                        GameSession other{std::make_shared<GameState>(UserProfile{SinglePlayerId, "Other"}), SinglePlayerId};
+                        SessionActivation unrelated{other};
+                        BOOST_TEST(&orbitRuntime(system).session() == &session);
+                        BOOST_TEST(&orbitRuntime(system).campaign().activity != &GLOBAL(CurrentActivity));
+                        BOOST_TEST(orbitRuntime(system).campaign().activity == IN_INTERPLANETARY);
+                    }
+                    BOOST_TEST(orbitRuntime(system).scan().location.x == 0);
+                    orbitRuntime(system).scan().location = {17, 23};
+                    orbitRuntime(system).scan().eraseFrame.reset(CaptureDrawable(static_cast<DRAWABLE>(LoadGraphicInstance("test.cursor"))));
                     BOOST_TEST(&systemVisit(system) == runtime.visit);
                     if (action == 0) {
                         struct SurfaceChild final : GameMode {
@@ -118,19 +131,23 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                         BOOST_TEST(!session.swapGameMode(std::make_unique<SurfaceChild>(session, orbitalEngine)));
                         BOOST_TEST(&simulationEngine() == &orbitalEngine);
                         BOOST_TEST(orbitalEngine.size() == 1u);
+                        BOOST_TEST(orbitRuntime(system).scan().location.x == 17);
                     }
                     if (action == 1) session.requestLoad(2);
                     if (action == 2) throw std::runtime_error("orbit menu failure");
                 };
                 const auto finished = orbitFinishes;
+                const auto initialFrames = liveTestDrawables();
                 try {
                     { WorldVisit visit{session, system, runtime.system->world(0)}; BOOST_TEST(visit.run() == (action == 0)); }
                 } catch (...) {
                     BOOST_TEST(system.graphics == nullptr);
                     BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
                     BOOST_TEST(runtime.visit == nullptr);
+                    BOOST_CHECK_THROW(orbitRuntime(system), std::logic_error);
                     BOOST_TEST(engine().size() == 1u);
                     BOOST_TEST(orbitFinishes == finished + 1);
+                    BOOST_TEST(liveTestDrawables() == initialFrames + (action == 3 ? 0u : 1u));
                     BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
                     throw;
                 }
@@ -140,6 +157,8 @@ BOOST_AUTO_TEST_CASE(ordinary_orbit_child_returns_its_scene_and_unwinds_visits_o
                 BOOST_TEST(system.SysInfo.PlanetInfo.data == nullptr);
                 BOOST_TEST(runtime.visit == nullptr);
                 BOOST_TEST(orbitFinishes == finished + 1);
+                BOOST_TEST(liveTestDrawables() == initialFrames + 1u);
+                BOOST_CHECK_THROW(systemVisit(system), std::logic_error);
                 BOOST_TEST(!std::get<SolarSystemLocation>(session.player().location()).orbit);
                 BOOST_TEST(resumes == (action == 0 ? 1u : 0u));
                 testOrbitGeneration = {}; orbitMenu = {};

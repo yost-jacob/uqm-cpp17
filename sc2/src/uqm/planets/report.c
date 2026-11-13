@@ -259,9 +259,8 @@ ShowDiscoveryReport (SOUND ReadOutSounds, FONT font, FRAME fontEffect, STRING te
 	// Restore previous screen
 	DrawStamp (&saveStamp);
 	SetContext (OldContext);
-	// TODO: Make CONTEXT ref-counted
 	if (ownContext)
-		DestroyScanContext ();
+		DestroyContext (context);
 
 	DestroyDrawable (ReleaseDrawable (saveStamp.frame));
 

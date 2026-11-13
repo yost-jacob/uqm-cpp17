@@ -54,8 +54,9 @@ extern COUNT callGenerateForScanType (const SOLARSYS_STATE *,
 extern bool callPickupForScanType (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world, COUNT node, BYTE scanType);
 
+// Borrow the orbital presentation, or return a caller-owned context for a
+// report outside orbit (owner must be non-null). Destroy owned handles directly.
 extern CONTEXT GetScanContext (BOOLEAN *owner);
-extern void DestroyScanContext (void);
 
 bool isNodeRetrieved (const PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
 COUNT countNodesRetrieved (const PLANET_INFO *planetInfo, BYTE scanType);

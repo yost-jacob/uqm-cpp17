@@ -1,4 +1,5 @@
 #include "world_visit.hpp"
+#include "orbit_runtime.hpp"
 #include "orbit_presentation.hpp"
 #include "orbit_events.hpp"
 #include "world.hpp"
@@ -68,10 +69,10 @@ private:
 class OrbitMode final : public GameMode {
 public:
     OrbitMode(GameSession &session, SOLARSYS_STATE &system, SimulationEngine &source)
-        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), system_(system), source_(source) {}
+        : GameMode(session.dispatcher(), session.nextModeSeed()), session_(session), system_(system), source_(source), runtime_(systemVisit(system), engine()) {}
     ModeResult run() override {
         ExplorationViewScope view{*system_.worlds, ExplorationView::Orbit};
-        runPlanetOrbit(system_);
+        systemVisit(system_).runOrbit(runtime_);
         if (auto exit = session_.menuExit()) return *exit;
         if (QuitPosted) return SessionExit::shutdown();
         return ModeCompleted{};
@@ -79,11 +80,11 @@ public:
 protected:
     void initialize() override { scene_.emplace(source_, engine()); }
     std::unique_ptr<ModeSuspension> suspend() override {
-        return suspendExplorationRendering(system_.worlds->view);
+        return suspendExplorationRendering(system_.worlds->view, &systemVisit(system_).presentation());
     }
     void resume() override {
         if (session_.menuExit() || dispatcher().exitRequest()
-                || (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER))) return;
+                || (detail::encounterLegacy(session_.player()).activity & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER))) return;
         redrawExploration(system_, system_.worlds->view);
     }
 private:
@@ -91,15 +92,17 @@ private:
     SOLARSYS_STATE &system_;
     SimulationEngine &source_;
     std::optional<SimulationSceneTransfer> scene_;
+    OrbitRuntime runtime_;
 };
 }
 class WorldVisit::Resources {
 public:
     Resources(SOLARSYS_STATE &system, World &world)
         : location_(systemLocation(system), world.id()), data_(system.SysInfo, world), rendering_(system, world) {}
-    void beginPresentation(SOLARSYS_STATE &system) {
-        if (!presentation_) presentation_.emplace(system);
+    void beginPresentation(GameSession &session, SOLARSYS_STATE &system) {
+        if (!presentation_) presentation_.emplace(session, system);
     }
+    OrbitPresentation &presentation() { return presentation_.value(); }
 private:
     VisitOrbitLocation location_;
     detail::WorldDataBorrow data_;
@@ -117,6 +120,22 @@ WorldVisit::WorldVisit(GameSession &session, SOLARSYS_STATE &system, World &worl
     previousVisit_ = std::exchange(system.worlds->visit, this);
 }
 WorldVisit::~WorldVisit() { system_.worlds->visit = previousVisit_; }
+OrbitPresentation &WorldVisit::presentation() const {
+    if (!resources_) throw std::logic_error("world inspection has no presentation");
+    return resources_->presentation();
+}
+OrbitRuntime &WorldVisit::orbit() const {
+    if (!orbit_) throw std::logic_error("operation requires an active orbital runtime");
+    return *orbit_;
+}
+void WorldVisit::runOrbit(OrbitRuntime &runtime) {
+    struct Restore {
+        OrbitRuntime *&slot;
+        OrbitRuntime *previous;
+        ~Restore() { slot = previous; }
+    } restore{orbit_, std::exchange(orbit_, &runtime)};
+    runtime.run();
+}
 WorldVisit &systemVisit(const SOLARSYS_STATE &system) {
     if (!system.worlds || !system.worlds->visit) throw std::logic_error("operation requires an active orbital visit");
     return *system.worlds->visit;
@@ -124,7 +143,7 @@ WorldVisit &systemVisit(const SOLARSYS_STATE &system) {
 bool WorldVisit::canContinue() const {
     if (inspection_) return true;
     return !session_.menuExit() && !session_.dispatcher().exitRequest() && !QuitPosted
-        && !(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER))
+        && !(detail::encounterLegacy(session_.player()).activity & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER))
         && session_.player().crew() != static_cast<COUNT>(~0u)
         && session_.player().story().read(StoryCounter::BombProgress) != 2;
 }
@@ -154,11 +173,11 @@ void WorldVisit::prepareOrbit() {
     loadSurface(nullptr);
 }
 void WorldVisit::loadSurface(FRAME definition) {
+    SystemFrame source{definition};
     if (canInteract()) {
-        resources_->beginPresentation(system_);
-        loadPlanetSurface(system_, world_, definition);
+        resources_->beginPresentation(session_, system_);
+        loadPlanetSurface(system_, world_, source.release());
     }
-    else if (definition) DestroyDrawable(ReleaseDrawable(definition));
 }
 bool WorldVisit::canInteract() const { return !inspection_ && canContinue(); }
 void WorldVisit::reportDiscovery() { if (canInteract()) report_.show(MenuSounds); }
@@ -169,12 +188,12 @@ void WorldVisit::enterOrbit() {
 }
 void WorldVisit::enterPreparedOrbit() {
     if (inspection_) return;
-    LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
+    session_.activities().last &= ~(CHECK_LOAD | CHECK_RESTART);
     if (!canContinue() || !world_.renderResources().hasSurface()) return;
     // Surface nodes are prepared in the caller's engine. The orbital child owns
     // them while active and passes that same scene to a lander child as needed.
-    if (auto exit = session_.swapGameMode(std::make_unique<OrbitMode>(session_, system_, simulationEngine())))
-        GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+    if (auto exit = session_.swapGameMode(std::make_unique<OrbitMode>(session_, system_, system_.worlds->simulation)))
+        detail::encounterLegacy(session_.player()).activity |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
 }
 }
 
