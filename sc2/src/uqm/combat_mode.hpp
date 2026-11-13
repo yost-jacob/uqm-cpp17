@@ -4,6 +4,7 @@
 namespace uqm {
 class StoryState;
 class GameSession;
+class Session;
 // Session-specific resource/state preparation for the same CombatMode. Resources
 // acquired by prepare must be released by the derived destructor, including errors.
 // prepare receives the child's owned engine with its compatibility binding selected;
@@ -15,12 +16,12 @@ public:
     virtual bool prepare(SimulationEngine &engine) = 0;
     virtual void complete() {}
 };
-// host/source and any state borrowed by preparation must outlive this child.
+// session/source and any state borrowed by preparation must outlive this child.
 // Participant pool addresses stay stable; results return before parent resume.
-std::unique_ptr<GameMode> createCombatMode(ModeDispatcher &host, RuntimeShipRoster &source,
+std::unique_ptr<GameMode> createCombatMode(Session &session, RuntimeShipRoster &source,
     std::uint32_t seed, std::unique_ptr<CombatPreparation> preparation);
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, RuntimeShipRoster &source);
 std::unique_ptr<GameMode> createCampaignCombatMode(GameSession &session, RuntimeShipRoster &source, std::uint32_t seed);
-std::unique_ptr<CombatPreparation> createCampaignCombatPreparation(StoryState &story);
+std::unique_ptr<CombatPreparation> createCampaignCombatPreparation(GameSession &session);
 }
 #endif

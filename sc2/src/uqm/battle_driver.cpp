@@ -40,14 +40,7 @@
 #include "supermelee/netplay/checksum.h"
 #endif
 #endif
-#include <utility>
 
-// Compatibility results/counters still used by ship retirement, the fleet
-// picker and encounter aftermath. They are not another simulation queue owner.
-BOOLEAN instantVictory = FALSE;
-#ifdef NETPLAY
-BattleFrameCounter battleFrameCount = 0;
-#endif
 namespace uqm {
 namespace {
 // Buffers and connection presence exist for one run, including selection or
@@ -64,13 +57,13 @@ public:
 #endif
         StopDitty(); StopMusic(); StopSound();
     }
-    void initialize() {
+    void initialize(SimulationEngine &engine) {
 #ifdef NETPLAY
         inputs_ = true; initBattleInputBuffers();
 #ifdef NETPLAY_CHECKSUM
         checksums_ = true; initChecksumBuffers();
 #endif
-        battleFrameCount = 0;
+        engine.resetBattleFrame();
         ResetWinnerStarShip();
         connected_ = true; setBattleActiveConnections(true);
 #endif
@@ -108,55 +101,62 @@ bool selectCombatShips() {
 #endif
     return GetInitialStarShips() != FALSE;
 }
-void finishRound() {
-    if (LOBYTE(GLOBAL(CurrentActivity)) != SUPER_MELEE) return;
-    if (GLOBAL(CurrentActivity) & CHECK_ABORT) {
+void finishRound(ACTIVITY &activity) {
+    if (LOBYTE(activity) != SUPER_MELEE) return;
+    if (activity & CHECK_ABORT) {
 #ifdef NETPLAY
         waitResetConnections(NetState_inSetup);
 #endif
-        GLOBAL(CurrentActivity) &= ~CHECK_ABORT; // Return to fleet setup.
+        activity &= ~CHECK_ABORT; // Return to fleet setup.
     } else MeleeGameOver(); // Explicit normal result UI, never destructor work.
 }
-void initializeRound(SimulationEngine &engine) {
-    GLOBAL(CurrentActivity) |= IN_BATTLE;
+void initializeRound(SimulationEngine &engine, ACTIVITY &activity) {
+    activity |= IN_BATTLE;
     engine.shipRoster().beginBattle();
     if (optMeleeScale != TFB_SCALE_STEP) SetGraphicScaleMode(optMeleeScale);
 }
 }
-void CombatDriver::run() {
+bool CombatDriver::run(bool instantVictory, std::function<bool()> cancelled) {
+    auto &activity = activity_;
+    if (cancelled && cancelled()) return false;
     journalSeed();
-    detail::BattleScene scene(engine_);
+    detail::BattleScene scene(engine_, activity);
     scene.initialize();
-    if (std::exchange(instantVictory, FALSE)) {
+    if (instantVictory) {
         engine_.shipRoster().setRemaining(RosterSide::First, 1);
         engine_.shipRoster().setRemaining(RosterSide::Second, 0);
     } else {
-        initializeRound(engine_);
+        initializeRound(engine_, activity);
         BattleRound round;
-        round.initialize();
-        if (!selectCombatShips()) GLOBAL(CurrentActivity) |= CHECK_ABORT;
+        round.initialize(engine_);
+        if (!selectCombatShips()) activity |= CHECK_ABORT;
         else {
             scene.playMusic();
-            if (!round.ready()) GLOBAL(CurrentActivity) |= CHECK_ABORT;
+            if (!round.ready()) activity |= CHECK_ABORT;
             else { SimulationLoop loop(engine_); loop.run(); }
         }
-        finishRound();
+        if (cancelled && cancelled()) return false;
+        if (activity & CHECK_LOAD) return false;
+        finishRound(activity);
     }
+    if ((cancelled && cancelled()) || (activity & CHECK_LOAD)) return false;
     scene.complete();
+    return true;
 }
 void runSpaceNavigation(SpaceNavigation &navigation, std::function<void()> beforeSimulation) {
     auto &engine = navigation.engine();
+    auto &activity = navigation.activity();
     journalSeed();
-    detail::BattleScene scene(engine, navigation);
+    detail::BattleScene scene(engine, activity, navigation);
     scene.initialize();
-    initializeRound(engine);
+    initializeRound(engine, activity);
     {
         BattleRound round;
-        round.initialize();
-        if (!GetNextStarShip(nullptr, 0)) GLOBAL(CurrentActivity) |= CHECK_ABORT;
+        round.initialize(engine);
+        if (!GetNextStarShip(nullptr, 0)) activity |= CHECK_ABORT;
         else {
             scene.playMusic();
-            if (!round.ready()) GLOBAL(CurrentActivity) |= CHECK_ABORT;
+            if (!round.ready()) activity |= CHECK_ABORT;
             else {
                 SimulationLoop loop(engine, std::move(beforeSimulation), FrameTransition::EnterSpace);
                 loop.run();

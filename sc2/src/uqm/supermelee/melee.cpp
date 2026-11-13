@@ -1494,7 +1494,7 @@ std::unique_ptr<uqm::GameMode> createMeleeCombat(MELEE_STATE &menu) {
     assert(menu.session && menu.engine);
     // Preserve the negotiated/local seed delivered to the setup mode. Arena
     // selection and combat advance only the child's independent stream.
-    return uqm::createCombatMode(menu.session->dispatcher(), menu.engine->shipRoster(),
+    return uqm::createCombatMode(*menu.session, menu.engine->shipRoster(),
         menu.engine->random().state(), std::make_unique<ArcadeCombatPreparation>(menu));
 }
 }

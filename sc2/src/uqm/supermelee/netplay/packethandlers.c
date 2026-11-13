@@ -589,11 +589,11 @@ PacketHandler_Checksum(NetConnection *conn, const Packet_Checksum *packet) {
 	// the remote side has got enough input to progress delay + 1 frames from
 	// frame n. The next frame is then n + delay + 1, for which we can
 	// receive a checksum.
-	if (frameNr > battleFrameCount + delay + 1) {
+	if (frameNr > GetBattleFrameCount() + delay + 1) {
 		log_add(log_Warning, "NETPLAY: [%d] <== Received checksum "
 				"for a frame too far in the future (frame %u, current "
 				"is %u, input delay is %u) -- discarding.", conn->player,
-				(unsigned int) frameNr, (unsigned int) battleFrameCount, (unsigned int) delay);
+				(unsigned int) frameNr, (unsigned int) GetBattleFrameCount(), (unsigned int) delay);
 		return 0;
 				// No need to close the connection; checksums are not
 				// essential.
@@ -604,13 +604,13 @@ PacketHandler_Checksum(NetConnection *conn, const Packet_Checksum *packet) {
 	// n through n + delay - 1. While we are waiting for the next input,
 	// in frame n + delay,  we will first receive the checksum that the
 	// remote side sent at the start of frame n + 1.
-	// In this situation frameNr is n + 1, and battleFrameCount is
+	// In this situation frameNr is n + 1, and GetBattleFrameCount() is
 	// n + delay.
-	if (frameNr + delay < battleFrameCount) {
+	if (frameNr + delay < GetBattleFrameCount()) {
 		log_add(log_Warning, "NETPLAY: [%d] <== Received checksum "
 				"for a frame too far in the past (frame %u, current "
 				"is %u, input delay is %u) -- discarding.", conn->player,
-				(unsigned int) frameNr, (unsigned int) battleFrameCount, (unsigned int) delay);
+				(unsigned int) frameNr, (unsigned int) GetBattleFrameCount(), (unsigned int) delay);
 		return 0;
 				// No need to close the connection; checksums are not
 				// essential.

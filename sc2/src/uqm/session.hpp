@@ -45,6 +45,9 @@ public:
     // Immutable catalogs; absent for title/intro sessions. Borrows expire with this session.
     const GameDefinitions &definitions() const;
     const NavigationRules &navigationRules() const noexcept { return navigationRules_; }
+    // Borrowed session protocol state; the session outlives every hosted mode.
+    ACTIVITY &activity() noexcept { return legacyRuntime().data.Game_state.CurrentActivity; }
+    bool &instantVictory() noexcept { return instantVictory_; }
     AssetCache &assets() noexcept { return assets_; }
     std::uint32_t nextModeSeed() noexcept { return random_(); }
     ModeDispatcher &dispatcher() noexcept { return dispatcher_; }
@@ -77,6 +80,7 @@ private:
     RandomStream random_;
     ModeDispatcher dispatcher_;
     UQM_SESSION_ACTIVITY activities_{};
+    bool instantVictory_ = false;
     struct FrontendStorage;
     std::unique_ptr<FrontendStorage> frontend_;
     std::unique_ptr<Session> parent_;

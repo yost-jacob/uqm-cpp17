@@ -2,6 +2,8 @@
 #include "uqm/arcade_session.hpp"
 #include "uqm/runtime_ship_roster_legacy.hpp"
 #include "uqm/game_state.hpp"
+#include "uqm/encounter_legacy.hpp"
+#include "uqm/sis_legacy.hpp"
 #include "uqm/globdata.h"
 #include "uqm/battle.h"
 #include "uqm/simulation_loop.hpp"
@@ -14,6 +16,7 @@
 #include <vector>
 
 extern "C" UWORD nth_frame;
+extern bool allowTestCombatSound;
 
 namespace {
 std::function<void()> combatDriver;
@@ -28,6 +31,7 @@ struct CombatFixture {
     UWORD frame = nth_frame;
     SOUND sounds = GameSounds;
     CombatFixture() {
+        allowTestCombatSound = true;
         GLOBAL(CurrentActivity) = IN_INTERPLANETARY;
         GLOBAL(glob_flags) = CYBORG_ENABLED;
         PlayerInput[0] = &originalInput;
@@ -36,7 +40,12 @@ struct CombatFixture {
         GameSounds = reinterpret_cast<SOUND>(&originalInput);
         inputsCleared = 0;
     }
+    void configure(uqm::GameSession &session) {
+        session.activity() = GLOBAL(CurrentActivity);
+        uqm::detail::encounterLegacy(session.player()).flags = GLOBAL(glob_flags);
+    }
     ~CombatFixture() {
+        allowTestCombatSound = false;
         GLOBAL(CurrentActivity) = activity;
         GLOBAL(glob_flags) = flags;
         GLOBAL_SIS(CrewEnlisted) = crew;
@@ -72,6 +81,7 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
 {
     for (const unsigned action : {0u, 1u, 2u}) {
         uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+        configure(session);
         std::vector<int> events;
         STARSHIP *participant = nullptr;
         uqm::RuntimeShipRoster *encounterRoster = nullptr;
@@ -135,6 +145,7 @@ BOOST_FIXTURE_TEST_CASE(campaign_combat_child_restores_bindings_before_parent_re
 BOOST_FIXTURE_TEST_CASE(campaign_combat_backend_unwind_restores_temporary_input_and_activity, CombatFixture)
 {
     uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+        configure(session);
     uqm::RuntimeShipRoster source;
     combatDriver = [] { throw std::runtime_error("combat backend failure"); };
     const auto exit = session.run(uqm::createCampaignCombatMode(session, source));
@@ -151,10 +162,11 @@ BOOST_FIXTURE_TEST_CASE(campaign_human_combat_keeps_input_and_preserves_legacy_d
 {
     GLOBAL(glob_flags) = 0;
     uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+        configure(session);
     uqm::RuntimeShipRoster source;
     combatDriver = [] { GLOBAL(CurrentActivity) |= CHECK_ABORT; };
     session.run(uqm::createCampaignCombatMode(session, source));
-    BOOST_TEST(GLOBAL_SIS(CrewEnlisted) == static_cast<COUNT>(~0u));
+    BOOST_TEST(session.player().crew() == static_cast<COUNT>(~0u));
     BOOST_TEST(PlayerInput[0] == &originalInput);
     BOOST_TEST(nth_frame == 37u);
     BOOST_TEST(GLOBAL(CurrentActivity) == IN_INTERPLANETARY);
@@ -198,7 +210,7 @@ BOOST_FIXTURE_TEST_CASE(arcade_dispatcher_runs_shared_combat_and_returns_prepare
                     TFB_Random();
                 };
                 const auto before = TFB_GetRandomSeed();
-                auto exit = session.swapGameMode(uqm::createCombatMode(session.dispatcher(),
+                auto exit = session.swapGameMode(uqm::createCombatMode(session,
                     engine().shipRoster(), 79, std::make_unique<Preparation>(ready, *ship, events)));
                 combatDriver = {};
                 BOOST_TEST(!exit);
@@ -214,4 +226,57 @@ BOOST_FIXTURE_TEST_CASE(arcade_dispatcher_runs_shared_combat_and_returns_prepare
         const std::vector<int> expected = ready ? std::vector<int>{1, 2, 3, 4, 5} : std::vector<int>{1, 4, 5};
         BOOST_TEST(events == expected, boost::test_tools::per_element());
     }
+}
+
+BOOST_FIXTURE_TEST_CASE(combat_load_skips_preparation_completion_and_restores_unrelated_campaign, CombatFixture)
+{
+    uqm::GameSession owner{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Owner"}), uqm::SinglePlayerId};
+    uqm::GameSession other{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Other"}), uqm::SinglePlayerId};
+    owner.activity() = IN_INTERPLANETARY;
+    other.activity() = IN_HYPERSPACE;
+    uqm::SessionActivation unrelated{other};
+    auto *otherData = GetLegacyGlobData();
+    uqm::RuntimeShipRoster source;
+    unsigned completed = 0, released = 0;
+    struct Preparation final : uqm::CombatPreparation {
+        uqm::GameSession &owner;
+        unsigned &completed, &released;
+        Preparation(uqm::GameSession &owner, unsigned &completed, unsigned &released)
+            : owner(owner), completed(completed), released(released) {}
+        bool prepare(uqm::SimulationEngine &) override {
+            BOOST_TEST(&uqm::gameSession() == &owner);
+            return true;
+        }
+        void complete() override { ++completed; }
+        ~Preparation() override { BOOST_TEST(&uqm::gameSession() == &owner); ++released; }
+    };
+    combatDriver = [&] {
+        BOOST_TEST(&uqm::gameSession() == &owner);
+        owner.requestLoad(3);
+    };
+    const auto exit = owner.run(uqm::createCombatMode(owner, source, 12,
+        std::make_unique<Preparation>(owner, completed, released)));
+    BOOST_CHECK(exit.kind == uqm::SessionExitKind::LoadGame);
+    BOOST_TEST(completed == 0u);
+    BOOST_TEST(released == 1u);
+    BOOST_TEST(GetLegacyGlobData() == otherData);
+    BOOST_TEST(other.activity() == IN_HYPERSPACE);
+}
+
+BOOST_FIXTURE_TEST_CASE(combat_sound_load_failure_restores_the_parent_without_running_frames, CombatFixture)
+{
+    uqm::GameSession session{std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Pilot"}), uqm::SinglePlayerId};
+    configure(session);
+    allowTestCombatSound = false;
+    uqm::RuntimeShipRoster source;
+    bool ran = false;
+    combatDriver = [&] { ran = true; };
+    const auto exit = session.run(uqm::createCampaignCombatMode(session, source));
+    BOOST_CHECK(exit.kind == uqm::SessionExitKind::Failed);
+    BOOST_TEST(!ran);
+    BOOST_TEST(PlayerInput[0] == &originalInput);
+    BOOST_TEST(PlayerControl[0] == (HUMAN_CONTROL | GOOD_RATING));
+    BOOST_TEST(GameSounds == reinterpret_cast<SOUND>(&originalInput));
+    BOOST_TEST(session.activity() == IN_INTERPLANETARY);
+    BOOST_TEST(inputsCleared == 1u);
 }

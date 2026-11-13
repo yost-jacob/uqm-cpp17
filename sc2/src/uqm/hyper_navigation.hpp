@@ -24,6 +24,7 @@ public:
     // by the owning campaign before navigation starts.
     SpaceNavigation(GameSession &session, SimulationEngine &engine, NavigationRealm realm);
     // Borrowed mode-owned engine; must be selected for the synchronous scene.
+    ACTIVITY &activity() noexcept { return legacy_.activity; }
     SimulationEngine &engine() noexcept { return engine_; }
     std::optional<NavigationTransition> run();
     std::optional<NavigationTransition> transition() const noexcept { return transition_; }

@@ -19,7 +19,7 @@
 #include "commglue.h"
 
 #include "battle.h"
-		// For instantVictory
+		// For scripted battle requests
 #include "races.h"
 
 #include <stdarg.h>
@@ -324,7 +324,7 @@ setSegue (Segue segue)
 			SET_GAME_STATE (BATTLE_SEGUE, 1);
 			break;
 		case Segue_victory:
-			instantVictory = TRUE;
+			SetInstantVictory(TRUE);
 			SET_GAME_STATE (BATTLE_SEGUE, 1);
 			break;
 		case Segue_defeat:
@@ -346,7 +346,7 @@ getSegue (void)
 			return Segue_peace;
 		}
 	} else /* GET_GAME_STATE(BATTLE_SEGUE) == 1) */ {
-		if (instantVictory) {
+		if (GetInstantVictory()) {
 			return Segue_victory;
 		} else {
 			return Segue_hostile;

@@ -17,6 +17,7 @@
  */
 
 #include "battle_scene.hpp"
+#include "mode_rendering.hpp"
 #include "combat_planet.hpp"
 #include "simulation_engine.hpp"
 #include "battle.h"
@@ -56,6 +57,7 @@ COUNT floatingCrew() {
 }
 void uqm::detail::BattleScene::initialize() {
     if (&simulationEngine() != &engine_) throw std::logic_error("scene engine is not selected");
+    drawing_ = suspendDrawingBindings({ScreenContext, SpaceContext, StatusContext, OffScreenContext});
     previous_ = activeScene; activeScene = this; bound_ = true;
     loadMusic();
     spaceAcquired_ = true; // InitSpace acquires its reference before loading assets.
@@ -78,7 +80,7 @@ void uqm::detail::BattleScene::initialize() {
     SetContextBackGroundColor(BLACK_COLOR);
     ClearDrawable();
     SetContext(previous);
-    if (LOBYTE(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE) free_gravity_well();
+    if (LOBYTE(activity_) == IN_LAST_BATTLE) free_gravity_well();
     else {
         constexpr unsigned AsteroidCount = 5;
         for (unsigned i = 0; i < AsteroidCount; ++i) spawn_asteroid(nullptr);
@@ -108,13 +110,13 @@ void uqm::detail::BattleScene::complete() {
         UnlockElement(handle);
         handle = next;
     }
-    GLOBAL(CurrentActivity) &= ~IN_BATTLE;
-    if (LOBYTE(GLOBAL(CurrentActivity)) == IN_ENCOUNTER && !(GLOBAL(CurrentActivity) & CHECK_ABORT)) {
+    activity_ &= ~IN_BATTLE;
+    if (LOBYTE(activity_) == IN_ENCOUNTER && !(activity_ & CHECK_ABORT)) {
         // Persistent fleet results retain the established reverse-side order.
         for (int side = NUM_PLAYERS - 1; side >= 0; --side)
             if (survivors[side] && !FleetIsInfinite(side)) UpdateShipFragCrew(survivors[side]);
     }
-    if (LOBYTE(GLOBAL(CurrentActivity)) != IN_ENCOUNTER) engine_.shipRoster().clear();
+    if (LOBYTE(activity_) != IN_ENCOUNTER) engine_.shipRoster().clear();
     completed_ = true;
 }
 uqm::detail::BattleScene::~BattleScene() {
@@ -123,7 +125,7 @@ uqm::detail::BattleScene::~BattleScene() {
     // reconciliation; completed encounter participants remain for parent aftermath.
     engine_.reset();
     if (!completed_) engine_.shipRoster().clear();
-    GLOBAL(CurrentActivity) &= ~IN_BATTLE;
+    activity_ &= ~IN_BATTLE;
     if (navigation_ != nullptr) navigation_->FreeHyperspace();
     if (spaceAcquired_) UninitSpace();
     DestroyMusic(music_);
@@ -131,7 +133,7 @@ uqm::detail::BattleScene::~BattleScene() {
 }
 void uqm::detail::BattleScene::loadMusic() {
     if (music_) return;
-    music_ = LoadMusic(inHyperSpace() ? HYPERSPACE_MUSIC : inQuasiSpace() ? QUASISPACE_MUSIC : BATTLE_MUSIC);
+    music_ = LoadMusic(navigation_ ? (navigation_->isQuasiSpace() ? QUASISPACE_MUSIC : HYPERSPACE_MUSIC) : BATTLE_MUSIC);
 }
 void uqm::detail::BattleScene::playMusic() { loadMusic(); PlayMusic(music_, TRUE, 1); }
 extern "C" void BattleSong(BOOLEAN play) {
