@@ -2,7 +2,8 @@
 #include "game_state.hpp"
 namespace uqm {
 EncounterRuntime::EncounterRuntime(GameSession &session, const STAR_DESC *star, SimulationEngine &engine) noexcept
-    : story_(session.player().story()), star_(star), engine_(engine), session_(&session) {}
+    : story_(session.player().story()), star_(star), engine_(engine), session_(session),
+      campaign_(detail::encounterLegacy(session.player())) {}
 CONVERSATION conversationForRestoredEncounter(const StoryState &story) {
     if (story.read(StoryCounter::FoundPlutoSpathi) == 1)
         return SPATHI_CONVERSATION;

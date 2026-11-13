@@ -127,6 +127,7 @@ inline void burvixese(WorldVisit &visit)
 // Chmmr contact, Ilwrath interception, shielded orbit and the deserted base.
 inline void chmmr(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -140,7 +141,7 @@ inline void chmmr(WorldVisit &visit)
 
 			if (story.read(StoryCounter::BombProgress) == 2)
 			{
-				GLOBAL (CurrentActivity) |= END_INTERPLANETARY;
+				campaign.activity |= END_INTERPLANETARY;
 			}
 
 			return visit.enterPreparedOrbit();
@@ -149,18 +150,19 @@ inline void chmmr(WorldVisit &visit)
 				&& !story.read(StoryFlag::IlwrathDeceived)
 				&& StartSphereTracking (ILWRATH_SHIP))
 		{
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (ILWRATH_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragmentFromTemplate(ILWRATH_SHIP,
+                    &visit.session().raceFleets().at(ILWRATH_SHIP),
+					&campaign.ships, INFINITE_FLEET);
 
 			story.set(StoryCounter::EncounterContext, 1u << 6);
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			visit.converse(ILWRATH_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 
@@ -215,6 +217,7 @@ inline void colony(WorldVisit &visit)
 // Druuge contact or ruins, including the already-purchased artifact report.
 inline void druuge(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -226,17 +229,18 @@ inline void druuge(WorldVisit &visit)
 		if (StartSphereTracking (DRUUGE_SHIP))
 		{
 			NotifyOthers (DRUUGE_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (DRUUGE_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragmentFromTemplate(DRUUGE_SHIP,
+                    &visit.session().raceFleets().at(DRUUGE_SHIP),
+					&campaign.ships, INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			visit.converse(DRUUGE_CONVERSATION);
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 			return visit.enterPreparedOrbit();
@@ -261,6 +265,7 @@ inline void druuge(WorldVisit &visit)
 // Ilwrath homeworld encounter or ruins and environmental overrides.
 inline void ilwrath(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -272,18 +277,19 @@ inline void ilwrath(WorldVisit &visit)
 		if (StartSphereTracking (ILWRATH_SHIP))
 		{
 			NotifyOthers (ILWRATH_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (ILWRATH_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragmentFromTemplate(ILWRATH_SHIP,
+                    &visit.session().raceFleets().at(ILWRATH_SHIP),
+					&campaign.ships, INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			visit.converse(ILWRATH_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 			return visit.enterPreparedOrbit();
@@ -311,6 +317,7 @@ inline void ilwrath(WorldVisit &visit)
 // Mycon guards, the Sun Device, shattered worlds and their artifact reports.
 inline void mycon(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -333,24 +340,26 @@ inline void mycon(WorldVisit &visit)
 					|| !story.read(StoryFlag::SunDeviceUnguarded))
 			{
 				NotifyOthers (MYCON_SHIP, IPNL_ALL_CLEAR);
-				uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+				uqm::OrbitalEncounter encounter{visit.session()};
 
 				if (visit.star().Index == MYCON_DEFINED
 						|| !story.read(StoryFlag::MyconFellForAmbush))
 				{
-					CloneShipFragment (MYCON_SHIP,
-							&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+					CloneShipFragmentFromTemplate(MYCON_SHIP,
+                    &visit.session().raceFleets().at(MYCON_SHIP),
+							&campaign.ships, INFINITE_FLEET);
 				}
 				else
 				{
 					COUNT i;
 
 					for (i = 0; i < 5; ++i)
-						CloneShipFragment (MYCON_SHIP,
-								&GLOBAL (npc_built_ship_q), 0);
+						CloneShipFragmentFromTemplate(MYCON_SHIP,
+                    &visit.session().raceFleets().at(MYCON_SHIP),
+								&campaign.ships, 0);
 				}
 
-				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+				campaign.activity |= START_INTERPLANETARY;
 				if (visit.star().Index == MYCON_DEFINED)
 				{
 					story.set(StoryCounter::EncounterContext, 1 << 7);
@@ -361,16 +370,16 @@ inline void mycon(WorldVisit &visit)
 				}
 				visit.converse(MYCON_CONVERSATION);
 
-				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				if (campaign.activity & (CHECK_ABORT | CHECK_LOAD))
 					return visit.enterPreparedOrbit();
 
 				{
 					bool MyconSurvivors;
 
 					MyconSurvivors =
-							GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
+							GetHeadLink (&campaign.ships) != 0;
 
-					GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+					campaign.activity &= ~START_INTERPLANETARY;
 					encounter.restore();
 
 					if (MyconSurvivors)
@@ -439,6 +448,7 @@ inline void myconTrap(WorldVisit &visit)
 // Orz contact and the Taalo protector moon encounter/artifact.
 inline void orz(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -458,37 +468,39 @@ inline void orz(WorldVisit &visit)
 				&& StartSphereTracking (ORZ_SHIP))
 		{
 			NotifyOthers (ORZ_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
 			if (visit.star().Index == ORZ_DEFINED)
 			{
-				CloneShipFragment (ORZ_SHIP,
-						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+				CloneShipFragmentFromTemplate(ORZ_SHIP,
+                    &visit.session().raceFleets().at(ORZ_SHIP),
+						&campaign.ships, INFINITE_FLEET);
 				story.set(StoryCounter::EncounterContext, 1 << 7);
 			}
 			else
 			{
 				for (i = 0; i < 14; ++i)
 				{
-					CloneShipFragment (ORZ_SHIP,
-							&GLOBAL (npc_built_ship_q), 0);
+					CloneShipFragmentFromTemplate(ORZ_SHIP,
+                    &visit.session().raceFleets().at(ORZ_SHIP),
+							&campaign.ships, 0);
 				}
 				story.set(StoryCounter::EncounterContext, 1 << 6);
 			}
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			visit.converse(ORZ_CONVERSATION);
 
-			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			if (campaign.activity & (CHECK_ABORT | CHECK_LOAD))
 				return visit.enterPreparedOrbit();
 
 			{
 				bool OrzSurvivors;
 
-				OrzSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q))
+				OrzSurvivors = GetHeadLink (&campaign.ships)
 						&& (visit.star().Index == ORZ_DEFINED
 						|| !story.read(StoryFlag::TaaloUnprotected));
 
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 
 				if (OrzSurvivors)
@@ -522,6 +534,7 @@ inline void orz(WorldVisit &visit)
 // Pkunk homeworld contact or the appropriate ruins report.
 inline void pkunk(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -533,18 +546,19 @@ inline void pkunk(WorldVisit &visit)
 		if (StartSphereTracking (PKUNK_SHIP))
 		{
 			NotifyOthers (PKUNK_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (PKUNK_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragmentFromTemplate(PKUNK_SHIP,
+                    &visit.session().raceFleets().at(PKUNK_SHIP),
+					&campaign.ships, INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			visit.converse(PKUNK_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 			return visit.enterPreparedOrbit();
@@ -604,6 +618,7 @@ inline void rainbowWorld(WorldVisit &visit)
 // Sa-Matra defenders and the final-battle handoff after their defeat.
 inline void saMatra(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -613,13 +628,13 @@ inline void saMatra(WorldVisit &visit)
 	/* Samatra */
 	if (matchWorld (solarSys, world, 4, 0))
 	{
-		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+		uqm::OrbitalEncounter encounter{visit.session()};
 
 		if (!story.read(StoryFlag::UrquanMessedUp))
 		{
 			CloneShipFragment (!story.read(StoryFlag::KohrAhFrenzy) ?
 					URQUAN_SHIP : BLACK_URQUAN_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+					&campaign.ships, INFINITE_FLEET);
 		}
 		else
 		{
@@ -628,25 +643,27 @@ inline void saMatra(WorldVisit &visit)
 
 			for (i = 0; i < UrquanRemnants; ++i)
 			{
-				CloneShipFragment (URQUAN_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
-				CloneShipFragment (BLACK_URQUAN_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
+				CloneShipFragmentFromTemplate(URQUAN_SHIP,
+                    &visit.session().raceFleets().at(URQUAN_SHIP),
+						&campaign.ships, 0);
+				CloneShipFragmentFromTemplate(BLACK_URQUAN_SHIP,
+                    &visit.session().raceFleets().at(BLACK_URQUAN_SHIP),
+						&campaign.ships, 0);
 			}
 		}
 
-		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+		campaign.activity |= START_INTERPLANETARY;
 		story.set(StoryCounter::EncounterContext, 1 << 7);
 		story.set(StoryFlag::UrquanProtectingSamatra, (1) != 0);
 		visit.converse(URQUAN_CONVERSATION);
 
-		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+		if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 		{
 			bool UrquanSurvivors;
 
-			UrquanSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
+			UrquanSurvivors = GetHeadLink (&campaign.ships) != 0;
 
-			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+			campaign.activity &= ~START_INTERPLANETARY;
 			encounter.restore();
 			if (UrquanSurvivors)
 			{
@@ -656,7 +673,7 @@ inline void saMatra(WorldVisit &visit)
 			{
 				EncounterGroup = 0;
 				EncounterRace = -1;
-				GLOBAL (CurrentActivity) = IN_LAST_BATTLE | START_ENCOUNTER;
+				campaign.activity = IN_LAST_BATTLE | START_ENCOUNTER;
 				if (story.read(StoryFlag::YehatCivilWar)
 						&& StartSphereTracking (YEHAT_SHIP)
 						&& EscortFeasibilityStudy (YEHAT_REBEL_SHIP))
@@ -719,6 +736,7 @@ inline void slylandro(WorldVisit &visit)
 // Sol-specific physical properties, scan seeds, discoveries and Earth starbase.
 inline void sol(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -731,12 +749,12 @@ inline void sol(WorldVisit &visit)
 	if (matchWorld (solarSys, world, 2, 0))
 	{
 		/* Starbase */
-		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+		visit.session().groupArchive().save(GROUPS_RANDOM, GROUP_SAVE_IP);
+		ReinitQueue (&campaign.groups);
+		assert (CountLinks (&campaign.ships) == 0);
 
 		EncounterGroup = 0;
-		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+		campaign.activity |= START_ENCOUNTER;
 		story.set(StoryCounter::EncounterContext, (BYTE)~0);
 		return visit.enterPreparedOrbit();
 	}
@@ -981,6 +999,7 @@ inline void sol(WorldVisit &visit)
 // Spathi moon contact, shielded homeworld and current-state surface reports.
 inline void spathi(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -996,18 +1015,19 @@ inline void spathi(WorldVisit &visit)
 				&& StartSphereTracking (SPATHI_SHIP))
 		{
 			NotifyOthers (SPATHI_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (SPATHI_SHIP, &GLOBAL (npc_built_ship_q),
+			CloneShipFragmentFromTemplate(SPATHI_SHIP,
+                    &visit.session().raceFleets().at(SPATHI_SHIP), &campaign.ships,
 					INFINITE_FLEET);
 
 			story.set(StoryCounter::EncounterContext, 1 << 7);
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			visit.converse(SPATHI_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 			return visit.enterPreparedOrbit();
@@ -1074,6 +1094,7 @@ inline void spathi(WorldVisit &visit)
 // Supox homeworld contact or the appropriate ruins report.
 inline void supox(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1085,18 +1106,19 @@ inline void supox(WorldVisit &visit)
 		if (StartSphereTracking (SUPOX_SHIP))
 		{
 			NotifyOthers (SUPOX_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (SUPOX_SHIP, &GLOBAL (npc_built_ship_q),
+			CloneShipFragmentFromTemplate(SUPOX_SHIP,
+                    &visit.session().raceFleets().at(SUPOX_SHIP), &campaign.ships,
 					INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			visit.converse(SUPOX_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 			return visit.enterPreparedOrbit();
@@ -1155,14 +1177,14 @@ namespace detail {
 // Talking Pet abduction: schedule the forced encounter and travel/time cost.
 inline void abductToUrquan(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     if (!visit.canInteract()) return;
     auto &entries = visit.encounters();
     auto entry = entries.insert();
     if (entry == entries.end()) entry = entries.begin(); // Preserve the full-capacity fallback.
     if (entry != entries.end()) {
         SIZE dx, dy;
-        HFLEETINFO hStarShip;
-        FLEET_INFO *TemplatePtr;
+        const FLEET_INFO *TemplatePtr;
         BRIEF_SHIP_INFO *BSIPtr;
         const auto id = entry->runtime_id;
         *entry = {};
@@ -1170,8 +1192,7 @@ inline void abductToUrquan(WorldVisit &visit)
         entries.select(entry);
         auto *EncounterPtr = &*entry;
 
-		hStarShip = GetStarShipFromIndex (&GLOBAL (avail_race_q), URQUAN_SHIP);
-		TemplatePtr = LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
+        TemplatePtr = &visit.session().raceFleets().at(URQUAN_SHIP);
 		EncounterPtr->origin = TemplatePtr->loc;
 		EncounterPtr->radius = TemplatePtr->actual_strength;
 		EncounterPtr->race_id = URQUAN_SHIP;
@@ -1186,17 +1207,16 @@ inline void abductToUrquan(WorldVisit &visit)
 		EncounterPtr->loc_pt.y = 4892;
 		EncounterPtr->log_x = UNIVERSE_TO_LOGX (EncounterPtr->loc_pt.x);
 		EncounterPtr->log_y = UNIVERSE_TO_LOGY (EncounterPtr->loc_pt.y);
-		GetPlayerTravelPosition()->position.x = EncounterPtr->log_x;
-		GetPlayerTravelPosition()->position.y = EncounterPtr->log_y;
-		UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
+		visit.session().player().travel().position.x = EncounterPtr->log_x;
+		visit.session().player().travel().position.y = EncounterPtr->log_y;
 
 		{
             constexpr int LostDays = 15;
 			SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND * 2));
-			MoveGameClockDays (LostDays);
+			visit.session().clock().advance(LostDays);
 		}
 
-		GLOBAL (CurrentActivity) = MAKE_WORD (IN_HYPERSPACE, 0) | START_ENCOUNTER;
+		campaign.activity = MAKE_WORD (IN_HYPERSPACE, 0) | START_ENCOUNTER;
 
 		dx = visit.star().star_pt.x - EncounterPtr->loc_pt.x;
 		dy = visit.star().star_pt.y - EncounterPtr->loc_pt.y;
@@ -1204,10 +1224,10 @@ inline void abductToUrquan(WorldVisit &visit)
 				+ (FUEL_TANK_SCALE >> 1);
 
 		DeltaSISGauges (0, -dx, 0);
-		if (GLOBAL_SIS (FuelOnBoard) < 5 * FUEL_TANK_SCALE)
+		if (visit.session().player().sis().fuel() < 5 * FUEL_TANK_SCALE)
 		{
 			dx = ((5 + ((COUNT)TFB_Random () % 5)) * FUEL_TANK_SCALE)
-					- (SIZE)GLOBAL_SIS (FuelOnBoard);
+					- (SIZE)visit.session().player().sis().fuel();
 			DeltaSISGauges (0, dx, 0);
 		}
 		DrawSISMessage (NULL);
@@ -1220,6 +1240,7 @@ inline void abductToUrquan(WorldVisit &visit)
 // Umgah/Talking Pet encounters, abduction and subsequent ruins reports.
 inline void talkingPet(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1232,16 +1253,17 @@ inline void talkingPet(WorldVisit &visit)
 			|| StartSphereTracking (UMGAH_SHIP)))
 	{
 		NotifyOthers (UMGAH_SHIP, IPNL_ALL_CLEAR);
-		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+		uqm::OrbitalEncounter encounter{visit.session()};
 
 		if (StartSphereTracking (UMGAH_SHIP))
 		{
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			if (!story.read(StoryFlag::UmgahZombieBlobbies))
 			{
-				CloneShipFragment (UMGAH_SHIP,
-						&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+				CloneShipFragmentFromTemplate(UMGAH_SHIP,
+                    &visit.session().raceFleets().at(UMGAH_SHIP),
+						&campaign.ships, INFINITE_FLEET);
 				visit.converse(UMGAH_CONVERSATION);
 			}
 			else
@@ -1250,20 +1272,21 @@ inline void talkingPet(WorldVisit &visit)
 
 				for (i = 0; i < 10; ++i)
 				{
-					CloneShipFragment (UMGAH_SHIP,
-							&GLOBAL (npc_built_ship_q), 0);
+					CloneShipFragmentFromTemplate(UMGAH_SHIP,
+                    &visit.session().raceFleets().at(UMGAH_SHIP),
+							&campaign.ships, 0);
 				}
 				visit.converse(TALKING_PET_CONVERSATION);
 			}
 		}
 
-		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+		if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 		{
 			bool UmgahSurvivors;
 
 			UmgahSurvivors = GetHeadLink (
-					&GLOBAL (npc_built_ship_q)) != 0;
-			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+					&campaign.ships) != 0;
+			campaign.activity &= ~START_INTERPLANETARY;
 
 			if (story.read(StoryFlag::PlayerHypnotized))
 				detail::abductToUrquan(visit);
@@ -1304,6 +1327,7 @@ inline void talkingPet(WorldVisit &visit)
 // Thraddash guards, the Aqua Helix and current-state surface reports.
 inline void thraddash(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1318,12 +1342,13 @@ inline void thraddash(WorldVisit &visit)
 				&& (BYTE)(story.read(StoryCounter::ThraddMission) - 1) >= 3)))
 		{
 			NotifyOthers (THRADDASH_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (THRADDASH_SHIP, &GLOBAL (npc_built_ship_q),
+			CloneShipFragmentFromTemplate(THRADDASH_SHIP,
+                    &visit.session().raceFleets().at(THRADDASH_SHIP), &campaign.ships,
 					INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			if (visit.star().Index == THRADD_DEFINED)
 			{
 				story.set(StoryCounter::EncounterContext, 1 << 7);
@@ -1334,10 +1359,10 @@ inline void thraddash(WorldVisit &visit)
 			}
 			visit.converse(THRADD_CONVERSATION);
 
-			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			if (campaign.activity & (CHECK_ABORT | CHECK_LOAD))
 				return visit.enterPreparedOrbit();
 
-			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+			campaign.activity &= ~START_INTERPLANETARY;
 			encounter.restore();
 
 			if (visit.star().Index == THRADD_DEFINED
@@ -1394,6 +1419,7 @@ inline void urquanWreck(WorldVisit &visit)
 // Utwig homeworld and bomb-moon guards, artifact reports and aftermath.
 inline void utwig(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1411,12 +1437,13 @@ inline void utwig(WorldVisit &visit)
 				&& StartSphereTracking (UTWIG_SHIP))
 		{
 			NotifyOthers (UTWIG_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (UTWIG_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragmentFromTemplate(UTWIG_SHIP,
+                    &visit.session().raceFleets().at(UTWIG_SHIP),
+					&campaign.ships, INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			if (visit.star().Index == UTWIG_DEFINED)
 			{
 				story.set(StoryCounter::EncounterContext, 1 << 7);
@@ -1427,9 +1454,9 @@ inline void utwig(WorldVisit &visit)
 			}
 			visit.converse(UTWIG_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 			return visit.enterPreparedOrbit();
@@ -1441,27 +1468,28 @@ inline void utwig(WorldVisit &visit)
 		{
 			COUNT i;
 
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
 			for (i = 0; i < 5; ++i)
 			{
-				CloneShipFragment (DRUUGE_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
+				CloneShipFragmentFromTemplate(DRUUGE_SHIP,
+                    &visit.session().raceFleets().at(DRUUGE_SHIP),
+						&campaign.ships, 0);
 			}
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 6);
 			visit.converse(DRUUGE_CONVERSATION);
 
-			if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			if (campaign.activity & (CHECK_ABORT | CHECK_LOAD))
 				return visit.enterPreparedOrbit();
 
 			{
 				bool DruugeSurvivors;
 
 				DruugeSurvivors =
-						GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
+						GetHeadLink (&campaign.ships) != 0;
 
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 
 				if (DruugeSurvivors)
@@ -1501,6 +1529,7 @@ inline void utwig(WorldVisit &visit)
 // VUX/ZEX encounters, Shofixti maidens, the beast and surface conditions.
 inline void vux(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1514,10 +1543,11 @@ inline void vux(WorldVisit &visit)
 			&& StartSphereTracking (VUX_SHIP))
 	{
 		NotifyOthers (VUX_SHIP, IPNL_ALL_CLEAR);
-		uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+		uqm::OrbitalEncounter encounter{visit.session()};
 
-		CloneShipFragment (VUX_SHIP,
-				&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+		CloneShipFragmentFromTemplate(VUX_SHIP,
+                    &visit.session().raceFleets().at(VUX_SHIP),
+				&campaign.ships, INFINITE_FLEET);
 		if (visit.star().Index == VUX_DEFINED)
 		{
 			story.set(StoryCounter::EncounterContext, 1 << 7);
@@ -1527,14 +1557,14 @@ inline void vux(WorldVisit &visit)
 			story.set(StoryCounter::EncounterContext, 1 << 6);
 		}
 
-		GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+		campaign.activity |= START_INTERPLANETARY;
 		visit.converse(VUX_CONVERSATION);
 
-		if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+		if (campaign.activity & (CHECK_ABORT | CHECK_LOAD))
 			return visit.enterPreparedOrbit();
 
 		{
-			GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+			campaign.activity &= ~START_INTERPLANETARY;
 			encounter.restore();
 
 			if (visit.star().Index == VUX_DEFINED
@@ -1586,6 +1616,7 @@ inline void vux(WorldVisit &visit)
 // Yehat homeworld contact or ruins.
 inline void yehat(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1597,18 +1628,19 @@ inline void yehat(WorldVisit &visit)
 		if (StartSphereTracking (YEHAT_SHIP))
 		{
 			NotifyOthers (YEHAT_SHIP, IPNL_ALL_CLEAR);
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
-			CloneShipFragment (YEHAT_SHIP, &GLOBAL (npc_built_ship_q),
+			CloneShipFragmentFromTemplate(YEHAT_SHIP,
+                    &visit.session().raceFleets().at(YEHAT_SHIP), &campaign.ships,
 					INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			visit.converse(YEHAT_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 
@@ -1627,6 +1659,7 @@ inline void yehat(WorldVisit &visit)
 // Resolve the Zoq-Fot-Pik distress encounter before homeworld contact.
 inline void zoqFotPik(WorldVisit &visit)
 {
+    auto campaign = uqm::detail::encounterLegacy(visit.session().player());
     auto &system = visit.legacySystem();
     auto &body = visit.legacyDescriptor();
     auto &story = visit.story();
@@ -1637,38 +1670,40 @@ inline void zoqFotPik(WorldVisit &visit)
 	{
 		if (StartSphereTracking (ZOQFOTPIK_SHIP))
 		{
-			uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
+			uqm::OrbitalEncounter encounter{visit.session()};
 
 			if (story.read(StoryCounter::ZoqfotDistress))
 			{
-				CloneShipFragment (BLACK_URQUAN_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
+				CloneShipFragmentFromTemplate(BLACK_URQUAN_SHIP,
+                    &visit.session().raceFleets().at(BLACK_URQUAN_SHIP),
+						&campaign.ships, 0);
 
-				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+				campaign.activity |= START_INTERPLANETARY;
 				story.set(StoryCounter::EncounterContext, 1 << 7);
 				visit.converse(BLACKURQ_CONVERSATION);
 
-				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				if (campaign.activity & (CHECK_ABORT | CHECK_LOAD))
 					return visit.enterPreparedOrbit();
 
-				if (GetHeadLink (&GLOBAL (npc_built_ship_q)))
+				if (GetHeadLink (&campaign.ships))
 				{
-					GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+					campaign.activity &= ~START_INTERPLANETARY;
 					encounter.restore();
 					return visit.enterPreparedOrbit();
 				}
 			}
 
-			CloneShipFragment (ZOQFOTPIK_SHIP, &GLOBAL (npc_built_ship_q),
+			CloneShipFragmentFromTemplate(ZOQFOTPIK_SHIP,
+                    &visit.session().raceFleets().at(ZOQFOTPIK_SHIP), &campaign.ships,
 					INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			campaign.activity |= START_INTERPLANETARY;
 			story.set(StoryCounter::EncounterContext, 1 << 7);
 			visit.converse(ZOQFOTPIK_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(campaign.activity & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
+				campaign.activity &= ~START_INTERPLANETARY;
 				encounter.restore();
 			}
 

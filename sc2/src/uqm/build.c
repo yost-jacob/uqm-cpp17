@@ -436,47 +436,12 @@ NameCaptain (QUEUE *pQueue, SPECIES_ID SpeciesID)
 HSHIPFRAG
 CloneShipFragment (COUNT shipIndex, QUEUE *pDstQueue, COUNT crew_level)
 {
-	HFLEETINFO hFleet;
-	HSHIPFRAG hBuiltShip;
-	FLEET_INFO *TemplatePtr;
-	BYTE captains_name_index;
-
-	assert (GetLinkSize (pDstQueue) == sizeof (SHIP_FRAGMENT));
-
-	hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q), shipIndex);
-	if (!hFleet)
-		return 0;
-
-	TemplatePtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
-	if (shipIndex == SAMATRA_SHIP)
-		captains_name_index = 0;
-	else
-		captains_name_index = NameCaptain (pDstQueue,
-				TemplatePtr->SpeciesID);
-	hBuiltShip = CreateFleetFragment (pDstQueue, TemplatePtr->SpeciesID);
-	if (hBuiltShip)
-	{
-		SHIP_FRAGMENT *ShipFragPtr;
-
-		ShipFragPtr = LockShipFrag (pDstQueue, hBuiltShip);
-		ShipFragPtr->captains_name_index = captains_name_index;
-		ShipFragPtr->race_strings = TemplatePtr->race_strings;
-		ShipFragPtr->icons = TemplatePtr->icons;
-		ShipFragPtr->melee_icon = TemplatePtr->melee_icon;
-		if (crew_level)
-			ShipFragPtr->crew_level = crew_level;
-		else
-			ShipFragPtr->crew_level = TemplatePtr->crew_level;
-		ShipFragPtr->max_crew = TemplatePtr->max_crew;
-		ShipFragPtr->energy_level = 0;
-		ShipFragPtr->max_energy = TemplatePtr->max_energy;
-		ShipFragPtr->race_id = (BYTE)shipIndex;
-		ShipFragPtr->index = 0;
-		UnlockShipFrag (pDstQueue, hBuiltShip);
-	}
-	UnlockFleetInfo (&GLOBAL (avail_race_q), hFleet);
-
-	return hBuiltShip;
+    HFLEETINFO hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), shipIndex);
+    if (!hFleet) return 0;
+    const FLEET_INFO *definition = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
+    HSHIPFRAG result = CloneShipFragmentFromTemplate(shipIndex, definition, pDstQueue, crew_level);
+    UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
+    return result;
 }
 
 /* Set the crew and captain's name on the first fully-crewed escort

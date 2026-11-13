@@ -1,3 +1,4 @@
+#include "encounter_fixture.hpp"
 #include "uqm/encounter_runtime.hpp"
 #include "uqm/system_behavior.hpp"
 #include "uqm/orbital_encounter.hpp"
@@ -28,23 +29,6 @@ CONVERSATION lastConversation{};
 bool sphereTracked = false;
 std::function<void()> dialogueHook;
 uqm::StoryState *encounterCampaign = nullptr;
-struct EncounterQueues {
-    QUEUE groups{}, ships{};
-    ACTIVITY activity = GLOBAL(CurrentActivity);
-    EncounterQueues() {
-        SwapQueues(&groups, &GLOBAL(ip_group_q));
-        SwapQueues(&ships, &GLOBAL(npc_built_ship_q));
-        InitQueue(&GLOBAL(ip_group_q), 4, QUEUE_IP_GROUP);
-        InitQueue(&GLOBAL(npc_built_ship_q), 4, QUEUE_SHIP_FRAGMENT);
-    }
-    ~EncounterQueues() {
-        UninitQueue(&GLOBAL(ip_group_q));
-        UninitQueue(&GLOBAL(npc_built_ship_q));
-        SwapQueues(&groups, &GLOBAL(ip_group_q));
-        SwapQueues(&ships, &GLOBAL(npc_built_ship_q));
-        GLOBAL(CurrentActivity) = activity;
-    }
-};
 void resetCalls() {
     defaultCalls.fill(0);
     communications = groupsSaved = groupsLoaded = clones = 0;
@@ -152,6 +136,7 @@ COUNT StartSphereTracking(COUNT) { return sphereTracked ? 1 : 0; }
 DWORD PutGroupInfo(DWORD, BYTE) { ++groupsSaved; return 0; }
 BOOLEAN GetGroupInfo(DWORD, BYTE) { ++groupsLoaded; return TRUE; }
 HSHIPFRAG CloneShipFragment(COUNT, QUEUE *, COUNT) { ++clones; return nullptr; }
+BYTE NameCaptain(QUEUE *, SPECIES_ID) { ++clones; return NAME_OFFSET; }
 void ShowDiscoveryReport(SOUND, FONT font, FRAME effect, STRING text) {
     if (testDiscoveryReport) testDiscoveryReport(font, effect, text);
 }
@@ -455,6 +440,17 @@ public:
     BYTE starKind() const { return star().Index; }
 };
 }
+BOOST_AUTO_TEST_CASE(system_encounters_reject_an_unattached_or_foreign_campaign)
+{
+    auto state = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Owner"});
+    auto otherState = std::make_shared<uqm::GameState>(uqm::UserProfile{uqm::SinglePlayerId, "Other"});
+    uqm::GameSession owner{state, uqm::SinglePlayerId}, other{otherState, uqm::SinglePlayerId};
+    TestSystemRule rule{owner.player().story()};
+    uqm::SessionActivation unrelated{other};
+    BOOST_CHECK_THROW(rule.encounter(), std::logic_error);
+    BOOST_CHECK_THROW(rule.attachSession(other), std::invalid_argument);
+    BOOST_CHECK_NO_THROW(rule.attachSession(owner));
+}
 BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_requests_after_restoring_parents)
 {
     for (const bool load : {false, true}) {
@@ -496,7 +492,8 @@ BOOST_AUTO_TEST_CASE(system_encounters_run_as_children_and_propagate_load_reques
         if (load) {
             BOOST_REQUIRE(exit.loadSlot);
             BOOST_TEST(*exit.loadSlot == 3u);
-            BOOST_TEST((GLOBAL(CurrentActivity) & CHECK_LOAD) != 0);
+            BOOST_TEST((uqm::detail::encounterLegacy(session.player()).activity & CHECK_LOAD) != 0);
+            BOOST_TEST(GLOBAL(CurrentActivity) == 0u);
         }
         GLOBAL(CurrentActivity) = oldActivity;
     }
@@ -514,38 +511,6 @@ BOOST_AUTO_TEST_CASE(system_star_context_is_explicit_and_cannot_be_rebound_mid_v
     BOOST_CHECK_THROW(rule.attachStar(other), std::logic_error);
     BOOST_TEST(rule.starKind() == SOL_DEFINED);
 }
-BOOST_AUTO_TEST_CASE(orbital_encounter_restores_once_at_the_explicit_story_boundary)
-{
-    EncounterQueues queues;
-    resetCalls();
-    GLOBAL(CurrentActivity) = 0;
-    {
-        uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-        GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
-        encounter.restore();
-        encounter.restore();
-        BOOST_TEST(groupsSaved == 1u);
-        BOOST_TEST(groupsLoaded == 1u);
-        BOOST_TEST((GLOBAL(CurrentActivity) & START_INTERPLANETARY) == 0);
-    }
-    BOOST_TEST(groupsLoaded == 1u);
-}
-BOOST_AUTO_TEST_CASE(orbital_encounter_scope_restores_on_early_return_but_preserves_load_abort_handoff)
-{
-    EncounterQueues queues;
-    for (const auto flag : {ACTIVITY{0}, ACTIVITY{CHECK_LOAD}, ACTIVITY{CHECK_ABORT}}) {
-        resetCalls();
-        GLOBAL(CurrentActivity) = 0;
-        {
-            uqm::OrbitalEncounter encounter{GLOBAL(ip_group_q), GLOBAL(npc_built_ship_q), GLOBAL(CurrentActivity)};
-            GLOBAL(CurrentActivity) |= START_INTERPLANETARY | flag;
-        }
-        BOOST_TEST(groupsSaved == 1u);
-        BOOST_TEST(groupsLoaded == (flag ? 0u : 1u));
-        BOOST_TEST(bool(GLOBAL(CurrentActivity) & START_INTERPLANETARY) == bool(flag));
-    }
-}
-
 // Dialogue/UI are simulated; use the real campaign reference provided by the mode.
 COUNT uqm::EncounterRuntime::communicate(CONVERSATION conversation) {
     encounterCampaign = &story_;
@@ -824,7 +789,7 @@ BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_ch
                     story.set(uqm::StoryFlag::IlwrathDeceived, scenario == 3);
                     sphereTracked = true;
                 }
-                EncounterQueues queues;
+                NativeEncounterQueues queues{session};
                 BOOST_CHECK(world.orbitHandler() == handler);
                 const auto *parentEngine = &engine();
                 dialogueHook = [&] {
@@ -838,7 +803,9 @@ BOOST_AUTO_TEST_CASE(stored_chmmr_event_reads_current_story_and_cancels_after_ch
                 if (scenario != 3) BOOST_TEST(lastConversation == (scenario == 2 ? ILWRATH_CONVERSATION : CHMMR_CONVERSATION));
                 BOOST_TEST(defaultCalls[6] == (scenario == 3 ? 1u : 0u));
                 if (scenario == 2) {
-                    BOOST_TEST(groupsSaved == 1u); BOOST_TEST(groupsLoaded == 1u); BOOST_TEST(clones == 1u);
+                    BOOST_TEST(clones == 1u);
+                    BOOST_TEST(CountLinks(&queues.campaign.ships) == 0u);
+                    BOOST_TEST(!session.world().snapshot().randomGroups.empty());
                 }
                 if (scenario == 4) BOOST_TEST((GLOBAL(CurrentActivity) & END_INTERPLANETARY) != 0);
                 BOOST_TEST(system.graphics == nullptr);

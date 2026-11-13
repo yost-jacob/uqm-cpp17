@@ -29,6 +29,7 @@
 #include "sis.h"
 #include "save.h"
 #include "setup.h"
+#include "sis_legacy.hpp"
 #include "uqmdebug.h"
 #include "libs/log.h"
 #include <stdexcept>
@@ -45,9 +46,7 @@ const STAR_DESC &uqm::EncounterRuntime::star() const {
 COUNT
 uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 {
-    auto &session = session_ ? *session_ : gameSession();
-    if (&session.player().story() != &story_)
-        throw std::logic_error("conversation requires its story state's active session");
+    auto &session = session_;
     if (!session.isRunning()) return runLegacyEncounter(session, star_, which_comm);
 	COUNT status;
 	LOCDATA *LocDataPtr;
@@ -58,12 +57,12 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 #endif
 
 
-	if (LastActivity & CHECK_LOAD)
+	if (session_.activities().last & CHECK_LOAD)
 	{
-		LastActivity &= ~CHECK_LOAD;
+		session_.activities().last &= ~CHECK_LOAD;
 		if (which_comm != COMMANDER_CONVERSATION)
 		{
-			if (LOBYTE (LastActivity) == 0)
+			if (LOBYTE (session_.activities().last) == 0)
 			{
 				DrawSISFrame ();
 			}
@@ -73,12 +72,12 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 				RepairSISBorder ();
 			}
 			DrawSISMessage (NULL);
-			if (inHQSpace ())
-				DrawHyperCoords (GLOBAL (ShipStamp.origin));
-			else if (GetPlayerTravelPosition()->flight.planet == 0)
+			if ((LOBYTE(campaign_.activity) == IN_HYPERSPACE))
+				DrawHyperCoords (campaign_.shipStamp.origin);
+			else if (session_.player().travel().flight.planet == 0)
 				DrawHyperCoords (star().star_pt);
 			else
-				DrawSISTitle (GLOBAL_SIS (PlanetName));
+				DrawSISTitle (detail::SISAccess::record(session_.player().sis()).PlanetName);
 		}
 	}
 
@@ -111,7 +110,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
 		if (which_comm == ORZ_CONVERSATION
 				|| (which_comm == TALKING_PET_CONVERSATION
 				&& (!story_.read(uqm::StoryFlag::TalkingPetOnShip)
-				|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE))
+				|| LOBYTE (campaign_.activity) == IN_LAST_BATTLE))
 				|| (which_comm != CHMMR_CONVERSATION
 				&& which_comm != SYREEN_CONVERSATION
 				))//&& CheckAlliance (status) == BAD_GUY))
@@ -143,7 +142,7 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
         auto conversation = std::make_unique<ConversationRuntime>(session, *LocDataPtr);
         if (status == HAIL) {
             if (auto exit = session.swapGameMode(createConversationMode(session, std::move(conversation))))
-                GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+                campaign_.activity |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
         } else {
             // An attack still runs the race's existing post/uninit hooks.
             conversation->finishWithoutDialogue();
@@ -151,25 +150,25 @@ uqm::EncounterRuntime::communicate(CONVERSATION which_comm)
     }
 
 	status = 0;
-	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+	if (!(campaign_.activity & (CHECK_ABORT | CHECK_LOAD)))
 	{
 		// The Sa-Matra battle is skipped when Cyborg is enabled.
 		// Most likely because the Cyborg is too dumb to know what
 		// to do in this battle.
-		if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
-				&& (GLOBAL (glob_flags) & CYBORG_ENABLED))
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
+		if (LOBYTE (campaign_.activity) == IN_LAST_BATTLE
+				&& (campaign_.flags & CYBORG_ENABLED))
+			ReinitQueue (&campaign_.ships);
 
 		// Clear the location flags
 		story_.set(uqm::StoryCounter::EncounterContext, 0);
 		status = (story_.read(uqm::StoryFlag::BattleSegue)
-				&& GetHeadLink (&GLOBAL (npc_built_ship_q)));
+				&& GetHeadLink (&campaign_.ships));
 		if (status)
 		{
 			// Start combat
 			buildBattle(RosterSide::First);
             if (auto exit = session.swapGameMode(createCampaignCombatMode(session, engine_.shipRoster())))
-                GLOBAL(CurrentActivity) |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+                campaign_.activity |= exit->kind == SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
 		}
 		else
 		{
@@ -194,40 +193,40 @@ uqm::EncounterRuntime::run()
 		RACE_COMMUNICATION
 	};
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	if (LOBYTE (campaign_.activity) == IN_LAST_BATTLE)
 	{
 		/* Going into talking pet conversation */
-		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		CloneShipFragment (SAMATRA_SHIP, &GLOBAL (npc_built_ship_q), 0);
+		ReinitQueue (&campaign_.ships);
+		CloneShipFragmentFromTemplate(SAMATRA_SHIP, &session_.raceFleets().at(SAMATRA_SHIP), &campaign_.ships, 0);
 		communicate(TALKING_PET_CONVERSATION);
-		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-				&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
+		if (!(campaign_.activity & (CHECK_ABORT | CHECK_LOAD))
+				&& session_.player().sis().crew() != (COUNT)~0)
 		{
-			GLOBAL (CurrentActivity) = WON_LAST_BATTLE;
+			campaign_.activity = WON_LAST_BATTLE;
 		}
 		return;
 	}
-	else if (NextActivity & CHECK_LOAD)
+	else if (session_.activities().next & CHECK_LOAD)
 	{
 		BYTE ec;
 
 		ec = story_.read(uqm::StoryCounter::EscapeCounter);
 
 		communicate(conversationForRestoredEncounter(story_));
-		if (GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
+		if (session_.player().sis().crew() != (COUNT)~0)
 		{
-			NextActivity = GLOBAL (CurrentActivity) & ~START_ENCOUNTER;
-			if (LOBYTE (NextActivity) == IN_INTERPLANETARY)
-				NextActivity |= START_INTERPLANETARY;
-			GLOBAL (CurrentActivity) |= CHECK_LOAD; /* fake a load game */
+			session_.activities().next = campaign_.activity & ~START_ENCOUNTER;
+			if (LOBYTE (session_.activities().next) == IN_INTERPLANETARY)
+				session_.activities().next |= START_INTERPLANETARY;
+			campaign_.activity |= CHECK_LOAD; /* fake a load game */
 		}
 
 		story_.set(uqm::StoryCounter::EscapeCounter, ec);
 		return;
 	}
-	else if (inHQSpace ())
+	else if ((LOBYTE(campaign_.activity) == IN_HYPERSPACE))
 	{
-		ReinitQueue (&GLOBAL (npc_built_ship_q));
+		ReinitQueue (&campaign_.ships);
 		if (story_.read(uqm::StoryCounter::ArilouSpaceSide) >= 2)
 		{
 			communicate(ARILOU_CONVERSATION);
@@ -238,15 +237,15 @@ uqm::EncounterRuntime::run()
 			/* Encounter with a black globe in HS, prepare enemy ship list */
 			ENCOUNTER *EncounterPtr;
 
-            if (!session_) throw std::logic_error("roaming encounter requires its campaign session");
-            auto &entries = session_->encounters();
+            auto &entries = session_.encounters();
             if (entries.current() == entries.end()) throw std::logic_error("no selected campaign encounter");
             EncounterPtr = selectedEncounter = &*entries.current();
 
 			for (i = 0; i < EncounterPtr->num_ships; ++i)
 			{
-				CloneShipFragment (EncounterPtr->race_id,
-						&GLOBAL (npc_built_ship_q),
+				CloneShipFragmentFromTemplate(EncounterPtr->race_id,
+                        &session_.raceFleets().at(EncounterPtr->race_id),
+						&campaign_.ships,
 						EncounterPtr->ShipList[i].crew_level);
 			}
 
@@ -255,24 +254,24 @@ uqm::EncounterRuntime::run()
 
 	// First ship in the npc queue defines which alien race
 	// the player will be talking to
-	hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q));
-	FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+	hStarShip = GetHeadLink (&campaign_.ships);
+	FragPtr = LockShipFrag (&campaign_.ships, hStarShip);
 	i = FragPtr->race_id;
-	UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+	UnlockShipFrag (&campaign_.ships, hStarShip);
 
 	status = communicate(RaceComm[i]);
 
-	if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+	if (campaign_.activity & (CHECK_ABORT | CHECK_LOAD))
 		return;
 
 	if (i == CHMMR_SHIP)
-		ReinitQueue (&GLOBAL (npc_built_ship_q));
+		ReinitQueue (&campaign_.ships);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
+	if (LOBYTE (campaign_.activity) == IN_INTERPLANETARY)
 	{
 		/* if used destruct code in interplanetary */
 		if (i == SLYLANDRO_SHIP && status == 0)
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
+			ReinitQueue (&campaign_.ships);
 	}
 	else if (selectedEncounter)
 	{
@@ -282,7 +281,7 @@ uqm::EncounterRuntime::run()
 
 		EncounterPtr = selectedEncounter;
 
-		NumShips = CountLinks (&GLOBAL (npc_built_ship_q));
+		NumShips = CountLinks (&campaign_.ships);
 		EncounterPtr->num_ships = NumShips;
 		EncounterPtr->flags |= ENCOUNTER_REFORMING;
 		if (status == 0)
@@ -294,17 +293,17 @@ uqm::EncounterRuntime::run()
 			SHIP_FRAGMENT *FragPtr;
 			BRIEF_SHIP_INFO *BSIPtr;
 
-			hStarShip = GetStarShipFromIndex (&GLOBAL (npc_built_ship_q), i);
-			FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+			hStarShip = GetStarShipFromIndex (&campaign_.ships, i);
+			FragPtr = LockShipFrag (&campaign_.ships, hStarShip);
 			BSIPtr = &EncounterPtr->ShipList[i];
 			BSIPtr->race_id = FragPtr->race_id;
 			BSIPtr->crew_level = FragPtr->crew_level;
 			BSIPtr->max_crew = FragPtr->max_crew;
 			BSIPtr->max_energy = FragPtr->max_energy;
-			UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+			UnlockShipFrag (&campaign_.ships, hStarShip);
 		}
 
-		ReinitQueue (&GLOBAL (npc_built_ship_q));
+		ReinitQueue (&campaign_.ships);
 	}
 }
 
@@ -333,8 +332,8 @@ private:
 COUNT runLegacyEncounter(uqm::GameSession &session, const STAR_DESC *star, CONVERSATION conversation) {
     COUNT result = 0;
     const auto exit = session.run(std::make_unique<LegacyEncounterHost>(session, star, conversation, result));
-    if (exit.kind == uqm::SessionExitKind::LoadGame) GLOBAL(CurrentActivity) |= CHECK_LOAD;
-    else if (exit.kind != uqm::SessionExitKind::ReturnToTitle) GLOBAL(CurrentActivity) |= CHECK_ABORT;
+    if (exit.kind == uqm::SessionExitKind::LoadGame) uqm::detail::encounterLegacy(session.player()).activity |= CHECK_LOAD;
+    else if (exit.kind != uqm::SessionExitKind::ReturnToTitle) uqm::detail::encounterLegacy(session.player()).activity |= CHECK_ABORT;
     return result;
 }
 }

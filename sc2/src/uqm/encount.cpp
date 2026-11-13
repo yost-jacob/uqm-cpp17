@@ -23,6 +23,7 @@
 #include "encounter_runtime.hpp"
 #include "fleet_legacy.hpp"
 #include "game_state.hpp"
+#include "sis_legacy.hpp"
 #include <iterator>
 
 #include "battle.h"
@@ -110,7 +111,7 @@ GetShipFragQueueForPlayer (COUNT playerNr)
 void uqm::EncounterRuntime::buildBattle(RosterSide side)
 {
     EncounterRace = -1;
-    if (!GetHeadLink(&GLOBAL(npc_built_ship_q))) {
+    if (!GetHeadLink(&campaign_.ships)) {
         story_.set(StoryFlag::BattleSegue, false);
         return;
     }
@@ -118,7 +119,7 @@ void uqm::EncounterRuntime::buildBattle(RosterSide side)
     if (side == RosterSide::Second) {
         // The NPC side is prepared first, before conversation and combat. Its
         // arena belongs to the encounter, including exceptional exits.
-        switch (LOBYTE(GLOBAL(CurrentActivity))) {
+        switch (LOBYTE(campaign_.activity)) {
             case IN_LAST_BATTLE:
                 arena_.load(NUMBER_OF_PLANET_TYPES);
                 break;
@@ -133,9 +134,8 @@ void uqm::EncounterRuntime::buildBattle(RosterSide side)
         }
     }
 
-    auto &source = side == RosterSide::First && session_
-        ? detail::FleetAccess::queue(session_->player().fleet())
-        : *GetShipFragQueueForPlayer(static_cast<COUNT>(side));
+    auto &source = side == RosterSide::First
+        ? detail::FleetAccess::queue(session_.player().fleet()) : campaign_.ships;
     auto &roster = engine_.shipRoster();
     roster.clear(side);
     for (auto handle = GetHeadLink(&source); handle;) {
@@ -233,7 +233,7 @@ uqm::EncounterRuntime::selectAction()
 	SetContextFont (MicroFont);
 	SetContextForeGroundColor (
 			BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01));
-	if (inHQSpace ())
+	if ((LOBYTE(campaign_.activity) == IN_HYPERSPACE))
 	{
 		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 0);
 				// "ENCOUNTER IN"
@@ -259,7 +259,7 @@ uqm::EncounterRuntime::selectAction()
 		t.CharCount = (COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += 12;
-		t.pStr = GLOBAL_SIS (PlanetName);
+		t.pStr = detail::SISAccess::record(session_.player().sis()).PlanetName;
 		t.CharCount = (COUNT)~0;
 		font_DrawText (&t);
 	}
@@ -270,7 +270,7 @@ uqm::EncounterRuntime::selectAction()
 	s.frame = planet[0];
 	DrawStamp (&s);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
+	if (LOBYTE (campaign_.activity) != IN_LAST_BATTLE)
 	{
 		HSHIPFRAG hStarShip, hNextShip;
 		static constexpr POINT display_pt[] =
@@ -288,13 +288,13 @@ uqm::EncounterRuntime::selectAction()
 		};
         constexpr auto NUM_DISPLAY_PTS = std::size(display_pt);
 
-		for (hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q)), i = 0;
+		for (hStarShip = GetHeadLink (&campaign_.ships), i = 0;
 				hStarShip && i < 60; hStarShip = hNextShip, ++i)
 		{
 			RECT r;
 			SHIP_FRAGMENT *FragPtr;
 
-			FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+			FragPtr = LockShipFrag (&campaign_.ships, hStarShip);
 			if (FragPtr->crew_level != INFINITE_FLEET)
 				hNextShip = _GetSuccLink (FragPtr);
 			else /* if infinite ships */
@@ -319,7 +319,7 @@ uqm::EncounterRuntime::selectAction()
 			s.origin.y += (SIS_SCREEN_HEIGHT >> 1) - (r.extent.height >> 1);
 			DrawStamp (&s);
 
-			UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+			UnlockShipFrag (&campaign_.ships, hStarShip);
 		}
 	}
 
@@ -418,10 +418,10 @@ uqm::EncounterRuntime::finish()
 
     arena_.reset(); // Release presentation before tallying; never apply rewards in a destructor.
 
-	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
-			|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if ((campaign_.activity & (CHECK_ABORT | CHECK_LOAD))
+			|| session_.player().sis().crew() == (COUNT)~0
+			|| LOBYTE (campaign_.activity) == IN_LAST_BATTLE
+			|| LOBYTE (campaign_.activity) == WON_LAST_BATTLE)
 		goto ExitUninitEncounter;
 
 	if (story_.read(uqm::StoryFlag::BattleSegue) == 0)
@@ -470,16 +470,16 @@ uqm::EncounterRuntime::finish()
 				|| story_.read(uqm::StoryFlag::UrquanProtectingSamatra)
 				) ? 0 : 1;
 
-		hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q));
-		FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		hStarShip = GetHeadLink (&campaign_.ships);
+		FragPtr = LockShipFrag (&campaign_.ships, hStarShip);
 		EncounterRace = FragPtr->race_id;
-		if (GetStarShipFromIndex (&GLOBAL (avail_race_q), EncounterRace) == 0)
+		if (static_cast<std::size_t>(EncounterRace) >= session_.raceFleets().size())
 		{
 			/* Suppress the final tally and salvage info */
 			VictoryState = -1;
 			InitSISContexts ();
 		}
-		UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		UnlockShipFrag (&campaign_.ships, hStarShip);
 
 		prevMsgMode = SetStatusMessageMode (SMM_RES_UNITS);
 		ship_s.origin.x = 0;
@@ -491,7 +491,7 @@ uqm::EncounterRuntime::finish()
 			HSHIPFRAG hNextShip;
 
 			if (i == 0)
-				pQueue = GetPlayerFleetQueue();
+				pQueue = (&detail::FleetAccess::queue(session_.player().fleet()));
 			else
 			{
 				if (VictoryState < 0)
@@ -500,18 +500,18 @@ uqm::EncounterRuntime::finish()
 				{
 					DrawSISFrame ();
 					DrawSISMessage (NULL);
-					if (inHQSpace ())
-						DrawHyperCoords (GLOBAL (ShipStamp.origin));
-					else if (GetPlayerTravelPosition()->flight.planet == 0)
+					if ((LOBYTE(campaign_.activity) == IN_HYPERSPACE))
+						DrawHyperCoords (campaign_.shipStamp.origin);
+					else if (session_.player().travel().flight.planet == 0)
 						DrawHyperCoords (star().star_pt);
 					else
-						DrawSISTitle(GLOBAL_SIS (PlanetName));
+						DrawSISTitle(detail::SISAccess::record(session_.player().sis()).PlanetName);
 
 					SetContext (SpaceContext);
 					if (VictoryState)
 						DrawArmadaPickShip (TRUE, &scavenge_r);
 				}
-				pQueue = &GLOBAL (npc_built_ship_q);
+				pQueue = &campaign_.ships;
 			}
 				
 			engine_.shipRoster().clear(static_cast<RosterSide>((NUM_SIDES - 1) - i));
@@ -622,7 +622,7 @@ uqm::EncounterRuntime::finish()
 								for (j = 0; j < NUM_SHIP_FADES; ++j)
 								{
 									Sleepy = !AnyButtonPress (TRUE) &&
-											!(GLOBAL (CurrentActivity) & CHECK_ABORT) ? TRUE : FALSE;
+											!(campaign_.activity & CHECK_ABORT) ? TRUE : FALSE;
 									if (!Sleepy)
 										break;
 
@@ -639,8 +639,8 @@ uqm::EncounterRuntime::finish()
 
                     const uqm::ShipId vessel{FragPtr->ship_id};
 					UnlockShipFrag (pQueue, hStarShip);
-                    if (pQueue == GetPlayerFleetQueue()) {
-                        auto &player = session_ ? session_->player() : uqm::gameSession().player();
+                    if (pQueue == (&detail::FleetAccess::queue(session_.player().fleet()))) {
+                        auto &player = session_.player();
                         player.fleet().erase(vessel);
                     } else {
 					    RemoveQueue (pQueue, hStarShip);

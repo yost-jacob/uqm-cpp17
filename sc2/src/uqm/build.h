@@ -37,6 +37,9 @@ extern "C" {
 // C fleet/NPC buffer boundary. pQueue must contain SHIP_FRAGMENT slots.
 // Returns zero at capacity; native combat participants use RuntimeShipRoster.
 extern HSHIPFRAG CreateFleetFragment (QUEUE *pQueue, SPECIES_ID SpeciesID);
+// Explicit-template adapter shared with native encounter/archive callers.
+extern HSHIPFRAG CloneShipFragmentFromTemplate(COUNT race, const FLEET_INFO *definition,
+        QUEUE *ships, COUNT crew);
 extern HSHIPFRAG CloneShipFragment (COUNT shipIndex, QUEUE *pDstQueue,
 		COUNT crew_level);
 extern HLINK GetStarShipFromIndex (QUEUE *pShipQ, COUNT Index);

@@ -56,8 +56,8 @@ void WriteShipFragment (GAME_STATE_FILE *fp, const SHIP_FRAGMENT *FragPtr);
 void ReadIpGroup (GAME_STATE_FILE *fp, IP_GROUP *GroupPtr);
 void WriteIpGroup (GAME_STATE_FILE *fp, const IP_GROUP *GroupPtr);
 
-#endif
-
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* UQM_GRPINTRN_H */

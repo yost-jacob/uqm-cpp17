@@ -52,6 +52,8 @@ public:
     bool isRunning() const noexcept { return dispatcher_.isRunning(); }
     void requestMenuExit(SessionExit exit) { dispatcher_.requestExit(std::move(exit)); }
     MenuResult menuExit() const { return dispatcher_.exitRequest(); }
+    // Shared with the remaining C mode/save protocol; this session owns both fields.
+    UQM_SESSION_ACTIVITY &activities() noexcept { return activities_; }
 protected:
     enum class RuntimeKind { Frontend, Campaign, Arcade };
     explicit Session(RuntimeKind kind, std::uint32_t seed);
