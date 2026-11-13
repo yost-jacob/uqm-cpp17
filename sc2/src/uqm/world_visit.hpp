@@ -12,6 +12,8 @@ namespace uqm {
 class GameSession;
 class StoryState;
 class World;
+class OrbitRuntime;
+class OrbitPresentation;
 // Synchronous visit controller. Session, system and selected world outlive this
 // object and all its children. Owns report assets and the orbit location,
 // graphics and presentation scopes. Teardown never publishes gameplay state.
@@ -32,6 +34,11 @@ public:
     // Script operations borrow current session state and perform synchronous
     // child-mode handoff. Pending exits prevent further preparation/presentation.
     GameSession &session() const noexcept { return session_; }
+    // Presentation is established before surface preparation; orbital runtime
+    // exists only during the synchronous child mode (including lander children).
+    OrbitPresentation &presentation() const;
+    OrbitRuntime &orbit() const;
+    void runOrbit(OrbitRuntime &runtime);
     StoryState &story() const noexcept;
     CampaignEncounters &encounters() const noexcept;
     PlanetGeneratedData &data() noexcept;
@@ -60,6 +67,7 @@ private:
     PlanetReport report_;
     WorldVisit *previousVisit_ = nullptr; // Restored before this visit releases its resources.
     std::unique_ptr<Resources> resources_;
+    OrbitRuntime *orbit_ = nullptr;
 };
 }
 #endif

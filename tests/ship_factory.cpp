@@ -159,8 +159,11 @@ extern "C" BOOLEAN DestroyDrawable(DRAWABLE drawable) {
     delete image;
     return TRUE;
 }
-extern "C" MUSIC_REF LoadMusicInstance(RESOURCE) {
-    if (!battleSuccess) return nullptr; // Required late-stage failure fixture.
+namespace { std::string lastMusicResource; }
+std::string lastLoadedTestMusicResource() { return lastMusicResource; }
+extern "C" MUSIC_REF LoadMusicInstance(RESOURCE resource) {
+    lastMusicResource = resource;
+    if (!battleSuccess && lastMusicResource.rfind("music.orbit", 0) != 0) return nullptr; // Required late-stage failure fixture.
     auto handle = reinterpret_cast<MUSIC_REF>(new FakeImage);
     musicHandles.insert(handle);
     return handle;

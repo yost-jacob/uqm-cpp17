@@ -71,9 +71,6 @@ struct LanderInputState {
 
 FRAME LanderFrame[8];
 static SOUND LanderSounds;
-MUSIC_REF LanderMusic;
-#define NUM_ORBIT_THEMES 5
-static MUSIC_REF OrbitMusic[NUM_ORBIT_THEMES];
 
 const LIFEFORM_DESC CreatureData[] =
 {
@@ -1677,11 +1674,6 @@ FreeLanderData (void)
 	if (LanderFrame[0] == NULL)
 		return;
 
-	for (i = 0; i < NUM_ORBIT_THEMES; ++i)
-	{
-		DestroyMusic (OrbitMusic[i]);
-		OrbitMusic[i] = 0;
-	}
 
 	DestroySound (ReleaseSound (LanderSounds));
 	LanderSounds = 0;
@@ -1719,18 +1711,6 @@ LoadLanderData (void)
 	
 	LanderSounds = CaptureSound (LoadSound (LANDER_SOUNDS));
 
-	{
-		COUNT i;
-
-		for (i = 0; i < NUM_ORBIT_THEMES; ++i)
-			OrbitMusic[i] = load_orbit_theme (i);
-	}
-}
-
-void
-SetPlanetMusic (BYTE planet_type)
-{
-	LanderMusic = OrbitMusic[planet_type % NUM_ORBIT_THEMES];
 }
 
 static void

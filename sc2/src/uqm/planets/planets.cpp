@@ -18,6 +18,9 @@
 
 #include "planets.h"
 #include "../system_runtime.hpp"
+#include "../world_visit.hpp"
+#include "../orbit_runtime.hpp"
+#include "../sis_legacy.hpp"
 #include "../world_legacy.hpp"
 #include "../planet_render.hpp"
 #include "../planet_sphere.hpp"
@@ -69,40 +72,6 @@ enum PlanetMenuItems
 	GAME_MENU,
 	NAVIGATION,
 };
-
-CONTEXT PlanetContext;
-		// Context for rotating planet view and lander surface view
-
-static void
-CreatePlanetContext (void)
-{
-	CONTEXT oldContext;
-	RECT r;
-
-	assert (PlanetContext == NULL);
-
-	// PlanetContext rect is relative to SpaceContext
-	oldContext = SetContext (SpaceContext);
-	GetContextClipRect (&r);
-
-	PlanetContext = CreateContext ("PlanetContext");
-	SetContext (PlanetContext);
-	SetContextFGFrame (Screen);
-	r.extent.height -= MAP_HEIGHT + MAP_BORDER_HEIGHT;
-	SetContextClipRect (&r);
-
-	SetContext (oldContext);
-}
-
-static void
-DestroyPlanetContext (void)
-{
-	if (PlanetContext)
-	{
-		DestroyContext (PlanetContext);
-		PlanetContext = NULL;
-	}
-}
 
 void
 DrawScannedObjects (BOOLEAN Reversed)
@@ -220,7 +189,7 @@ DrawOrbitalDisplay (SOLARSYS_STATE &system, DRAW_ORBITAL_MODE Mode)
 
 		DrawSISFrame ();
 		DrawSISMessage (NULL);
-		DrawSISTitle (GLOBAL_SIS (PlanetName));
+		DrawSISTitle (uqm::detail::SISAccess::record(uqm::systemVisit(system).session().player().sis()).PlanetName);
 		uqm::drawStarBackground(system);
 		DrawPlanetSurfaceBorder ();
 	}
@@ -229,7 +198,7 @@ DrawOrbitalDisplay (SOLARSYS_STATE &system, DRAW_ORBITAL_MODE Mode)
 	{
 		STAMP s;
 
-		SetContext (GetScanContext (NULL));
+		SetContext (uqm::systemVisit(system).presentation().scanContext());
 		s.frame = CaptureDrawable (LoadGraphic (ORBENTER_PMAP_ANIM));
 		s.origin.x = -SAFE_X;
 		s.origin.y = 0;
@@ -243,7 +212,7 @@ DrawOrbitalDisplay (SOLARSYS_STATE &system, DRAW_ORBITAL_MODE Mode)
 
 	if (Mode != DRAW_ORBITAL_WAIT)
 	{
-		SetContext (GetScanContext (NULL));
+		SetContext (uqm::systemVisit(system).presentation().scanContext());
 		uqm::DrawPlanet (*system.graphics, 0, BLACK_COLOR);
 	}
 
@@ -268,7 +237,8 @@ DrawOrbitalDisplay (SOLARSYS_STATE &system, DRAW_ORBITAL_MODE Mode)
 void
 uqm::loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME SurfDefFrame)
 {
-	bool WaitMode = !(LastActivity & CHECK_LOAD);
+    SystemFrame source{SurfDefFrame};
+	bool WaitMode = !(uqm::systemVisit(system).session().activities().last & CHECK_LOAD);
 	auto &body = uqm::detail::worldDescriptor(system, world);
 
 	assert (systemLocation(system).orbit && !system.graphics->TopoFrame);
@@ -280,12 +250,10 @@ uqm::loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME SurfDefFrame)
 
 	StopMusic ();
 
-	world.renderResources().createSurface(system, body, SurfDefFrame);
-	SetPlanetMusic (body.data_index & ~PLANET_SHIELDED);
+	world.renderResources().createSurface(system, body, source.release());
 	uqm::generatePlanetSide(system);
 
-	if (!PLRPlaying ((MUSIC_REF)~0))
-		PlayMusic (LanderMusic, TRUE, 1);
+    uqm::systemVisit(system).presentation().playMusic(body.data_index & ~PLANET_SHIELDED);
 
 	if (WaitMode)
 	{
@@ -298,31 +266,17 @@ uqm::loadPlanetSurface(SOLARSYS_STATE &system, World &world, FRAME SurfDefFrame)
 	}
 }
 
-uqm::OrbitPresentation::OrbitPresentation(SOLARSYS_STATE &system) : system_(system) {
-    CreatePlanetContext();
-}
-uqm::OrbitPresentation::~OrbitPresentation()
-{
-    uqm::UninitSphereRotation(system_.graphics->Orbit);
-    StopMusic();
-
-	// Need to make sure our own CONTEXTs are not active because
-	// we will destroy them now
-	SetContext (SpaceContext);
-	DestroyPlanetContext ();
-	DestroyScanContext ();
-
-}
-
 static BOOLEAN
 DoPlanetOrbit (MENU_STATE *pMS)
 {
-    auto &system = *static_cast<SOLARSYS_STATE *>(pMS->privData);
+    auto &runtime = *static_cast<uqm::OrbitRuntime *>(pMS->privData);
+    auto &system = runtime.system();
+    auto &activity = runtime.campaign().activity;
 	bool select = PulsedInputState.menu[KEY_MENU_SELECT] != 0;
 	BOOLEAN handled;
 
-	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
+	if ((activity & (CHECK_ABORT | CHECK_LOAD))
+			|| runtime.session().player().sis().crew() == (COUNT)~0)
 		return FALSE;
 
 	// The menu callback borrows the active orbital menu state.
@@ -339,14 +293,14 @@ DoPlanetOrbit (MENU_STATE *pMS)
 	{
 		case SCAN:
 			uqm::runScan(system);
-			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
+			if (activity & START_ENCOUNTER)
 			{	// Found Fwiffo on Pluto
 				return FALSE;
 			}
 			break;
 		case EQUIP_DEVICE:
 			select = uqm::DeviceMenu{uqm::systemStory(system), system}.run();
-			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
+			if (activity & START_ENCOUNTER)
 			{	// Invoked Talking Pet, a Caster or Sun Device over Chmmr,
 				// or a Caster for Ilwrath
 				// Going into conversation
@@ -370,7 +324,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
                 InputCallbackScope pauseRotation{nullptr};
                 RepairSISBorder();
                 AutoPilotSet = StarMap();
-                if (GLOBAL(CurrentActivity) & CHECK_ABORT) return FALSE;
+                if (activity & CHECK_ABORT) return FALSE;
             } // Restore rotation before redrawing the orbital view.
 
 			if (!AutoPilotSet)
@@ -384,7 +338,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
 			return FALSE;
 	}
 
-	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	if (!(activity & CHECK_ABORT))
 	{
 		if (select)
 		{	// 3DO menu jumps to NAVIGATE after a successful submenu run
@@ -407,8 +361,9 @@ on_input_frame (void)
 }
 
 void
-uqm::runPlanetOrbit (SOLARSYS_STATE &system)
+uqm::OrbitRuntime::run()
 {
+    auto &system = system_;
 	MENU_STATE MenuState;
 
 	memset (&MenuState, 0, sizeof MenuState);
@@ -416,7 +371,7 @@ uqm::runPlanetOrbit (SOLARSYS_STATE &system)
 	DrawMenuStateStrings (PM_SCAN, SCAN);
 	SetFlashRect (SFR_MENU_3DO);
 
-    MenuState.privData = &system;
+    MenuState.privData = this;
 	MenuState.CurState = SCAN;
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
     struct GraphicsBorrow {

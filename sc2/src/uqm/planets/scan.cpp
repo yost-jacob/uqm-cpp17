@@ -20,6 +20,9 @@
 #include "libs/threadlib.h"
 #include "../system_runtime.hpp"
 #include "../world_legacy.hpp"
+#include "../world_visit.hpp"
+#include "../orbit_presentation.hpp"
+#include "../orbit_runtime.hpp"
 #include <stdexcept>
 #include "../system_behavior.hpp"
 #include "lander.h"
@@ -58,7 +61,6 @@ extern FRAME SpaceJunkFrame;
 
 #define FLASH_INDEX 105
 
-static CONTEXT ScanContext;
 
 
 // Surface scan menu items
@@ -89,7 +91,7 @@ RepairBackRect (RECT *pRect)
 static void
 EraseCoarseScan(SOLARSYS_STATE &system)
 {
-	SetContext (PlanetContext);
+	SetContext (uqm::systemVisit(system).presentation().planetContext());
 	
 	BatchGraphics ();
 	uqm::drawStarBackground(system);
@@ -161,7 +163,7 @@ PrintCoarseScanPC(const SOLARSYS_STATE &system)
 
 	GetPlanetTitle(system, buf, sizeof (buf));
 
-	SetContext (PlanetContext);
+	SetContext (uqm::systemVisit(system).presentation().planetContext());
 
 	t.align = ALIGN_CENTER;
 	t.baseline.x = SIS_SCREEN_WIDTH >> 1;
@@ -324,7 +326,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 
 	GetPlanetTitle(system, buf, sizeof (buf));
 
-	SetContext (PlanetContext);
+	SetContext (uqm::systemVisit(system).presentation().planetContext());
 
 	t.align = ALIGN_CENTER;
 	t.baseline.x = SIS_SCREEN_WIDTH >> 1;
@@ -446,7 +448,7 @@ PrintCoarseScan3DO(const SOLARSYS_STATE &system)
 static void
 initPlanetLocationImage(SOLARSYS_STATE &system)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	FRAME cursorFrame;
 
 	// Get the cursor image
@@ -457,35 +459,35 @@ initPlanetLocationImage(SOLARSYS_STATE &system)
 static void
 savePlanetLocationImage(SOLARSYS_STATE &system)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	RECT r;
 	FRAME cursorFrame = SetAbsFrameIndex (MiscDataFrame, FLASH_INDEX);
 	HOT_SPOT hs = GetFrameHot (cursorFrame);
 
-	DestroyDrawable (ReleaseDrawable (cursor.eraseFrame));
+	cursor.eraseFrame.reset();
 
 	r = cursor.cursorRect;
 	r.corner.x -= hs.x;
 	r.corner.y -= hs.y;
-	cursor.eraseFrame = CaptureDrawable (CopyContextRect (&r));
-	SetFrameHot (cursor.eraseFrame, hs);
+	cursor.eraseFrame.reset(CaptureDrawable(CopyContextRect(&r)));
+	SetFrameHot (cursor.eraseFrame.get(), hs);
 }
 
 static void
 restorePlanetLocationImage(const SOLARSYS_STATE &system)
 {
-    const auto &cursor = system.worlds->scan;
+    const auto &cursor = uqm::orbitRuntime(system).scan();
 	STAMP s;
 
 	s.origin = cursor.cursorRect.corner;
-	s.frame = cursor.eraseFrame; // saved image
+	s.frame = cursor.eraseFrame.get(); // saved image
 	DrawStamp (&s);
 }
 
 static void
 drawPlanetCursor(const SOLARSYS_STATE &system, BOOLEAN filled)
 {
-    const auto &cursor = system.worlds->scan;
+    const auto &cursor = uqm::orbitRuntime(system).scan();
 	STAMP s;
 
 	s.origin = cursor.cursorRect.corner;
@@ -499,7 +501,7 @@ drawPlanetCursor(const SOLARSYS_STATE &system, BOOLEAN filled)
 static void
 setPlanetCursorLoc(SOLARSYS_STATE &system, POINT new_pt)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	new_pt.x >>= MAG_SHIFT;
 	new_pt.y >>= MAG_SHIFT;
 	cursor.cursorRect.corner = new_pt;
@@ -508,10 +510,10 @@ setPlanetCursorLoc(SOLARSYS_STATE &system, POINT new_pt)
 static void
 setPlanetLoc(SOLARSYS_STATE &system, POINT new_pt, BOOLEAN restoreOld)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	cursor.location = new_pt;
 
-	SetContext (ScanContext);
+	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	if (restoreOld)
 		restorePlanetLocationImage(system);
 	setPlanetCursorLoc(system, new_pt);
@@ -521,7 +523,7 @@ setPlanetLoc(SOLARSYS_STATE &system, POINT new_pt, BOOLEAN restoreOld)
 static void
 flashPlanetLocation(SOLARSYS_STATE &system)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 #define FLASH_FRAME_DELAY  (ONE_SECOND / 16)
 	auto &c = cursor.flashColor;
 	auto &val = cursor.flashStep;
@@ -556,7 +558,7 @@ flashPlanetLocation(SOLARSYS_STATE &system)
 			NextTime += FLASH_FRAME_DELAY; // stable frame rate
 	}
 
-	SetContext (ScanContext);
+	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	SetContextForeGroundColor (BUILD_COLOR (MAKE_RGB15 (c, c, c), c));
 	drawPlanetCursor(system, TRUE);
 }
@@ -566,7 +568,7 @@ uqm::redrawSurfaceScan(SOLARSYS_STATE &system, const POINT *newLoc)
 {
 	CONTEXT OldContext;
 
-	OldContext = SetContext (ScanContext);
+	OldContext = SetContext (uqm::systemVisit(system).presentation().scanContext());
 
 	BatchGraphics ();
 	uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
@@ -594,27 +596,27 @@ getLandingFuelNeeded(const SOLARSYS_STATE &system)
 }
 
 static void
-spawnFwiffo (void)
+spawnFwiffo(uqm::OrbitRuntime &runtime)
 {
 	HSHIPFRAG hStarShip;
 
 	EncounterGroup = 0;
-	PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-	ReinitQueue (&GLOBAL (ip_group_q));
-	assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+	runtime.session().groupArchive().save(GROUPS_RANDOM, GROUP_SAVE_IP);
+	ReinitQueue (&runtime.campaign().groups);
+	assert (CountLinks (&runtime.campaign().ships) == 0);
 
-	hStarShip = CloneShipFragment (SPATHI_SHIP,
-			&GLOBAL (npc_built_ship_q), 1);
+	hStarShip = CloneShipFragmentFromTemplate(SPATHI_SHIP, &runtime.session().raceFleets().at(SPATHI_SHIP),
+			&runtime.campaign().ships, 1);
 	if (hStarShip)
 	{
 		SHIP_FRAGMENT *StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (npc_built_ship_q),
+		StarShipPtr = LockShipFrag (&runtime.campaign().ships,
 				hStarShip);
 		// Name Fwiffo
 		StarShipPtr->captains_name_index = NAME_OFFSET +
 				NUM_CAPTAINS_NAMES;
-		UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		UnlockShipFrag (&runtime.campaign().ships, hStarShip);
 	}
 }
 
@@ -622,32 +624,32 @@ spawnFwiffo (void)
 static BOOLEAN
 DispatchLander(SOLARSYS_STATE &system)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	SIZE landingFuel = getLandingFuelNeeded(system);
 
 	EraseCoarseScan(system);
 
 
 	DeltaSISGauges (0, -landingFuel, 0);
-	SetContext (ScanContext);
+	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	drawPlanetCursor(system, FALSE);
 
-    if (!system.worlds->session) throw std::logic_error("lander requires its owning session");
-    auto &session = *system.worlds->session;
-    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, system, uqm::simulationEngine(), cursor.location))) {
-        GLOBAL(CurrentActivity) |= exit->kind == uqm::SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
+    auto &runtime = uqm::orbitRuntime(system);
+    auto &session = runtime.session();
+    if (auto exit = session.swapGameMode(uqm::createLanderMode(session, system, runtime.engine(), cursor.location))) {
+        uqm::orbitRuntime(system).campaign().activity |= exit->kind == uqm::SessionExitKind::LoadGame ? CHECK_LOAD : CHECK_ABORT;
         return FALSE;
     }
-	if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+	if (uqm::orbitRuntime(system).campaign().activity & (CHECK_ABORT | CHECK_LOAD))
 		return FALSE;
 
 	if (uqm::systemStory(system).read(uqm::StoryCounter::FoundPlutoSpathi) == 1)
 	{
 		/* Create Fwiffo group and go into comm with it */
-		spawnFwiffo ();
+		spawnFwiffo(uqm::orbitRuntime(system));
 
-		NextActivity |= CHECK_LOAD; /* fake a load game */
-		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+		uqm::orbitRuntime(system).session().activities().next |= CHECK_LOAD; /* fake a load game */
+		uqm::orbitRuntime(system).campaign().activity |= START_ENCOUNTER;
 		uqm::saveSolarSystemLocation(system);
 
 		return FALSE;
@@ -669,14 +671,14 @@ DoPickPlanetSide(MENU_STATE *pMS)
 {
 	auto *pickState = static_cast<LandingSiteSelection *>(pMS->privData);
 	auto &system = pickState->system;
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	DWORD TimeIn = GetTimeCounter ();
 	bool select, cancel;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 	
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (uqm::orbitRuntime(system).campaign().activity & CHECK_ABORT)
 	{
 		pickState->success = false;
 		return FALSE;
@@ -763,7 +765,7 @@ eraseLandingFuelUsage (void)
 static BOOLEAN
 PickPlanetSide(SOLARSYS_STATE &system)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
 	MENU_STATE MenuState;
 	LandingSiteSelection PickState{system, false};
 	COUNT fuel = getLandingFuelNeeded(system);
@@ -773,7 +775,7 @@ PickPlanetSide(SOLARSYS_STATE &system)
 	MenuState.privData = &PickState;
 
 	ClearSISRect (CLEAR_SIS_RADAR);
-	SetContext (ScanContext);
+	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	BatchGraphics ();
 	uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 	DrawScannedObjects (FALSE);
@@ -973,7 +975,7 @@ ScanPlanet (SOLARSYS_STATE &system, COUNT scanType)
 
 		t.pStr = GAME_STRING (SCAN_STRING_BASE + scan);
 
-		SetContext (PlanetContext);
+		SetContext (uqm::systemVisit(system).presentation().planetContext());
 		r.corner.x = 0;
 		r.corner.y = t.baseline.y - 10;
 		r.extent.width = SIS_SCREEN_WIDTH;
@@ -986,7 +988,7 @@ ScanPlanet (SOLARSYS_STATE &system, COUNT scanType)
 		SetContextForeGroundColor (textColors[scan]);
 		font_DrawText (&t);
 
-		SetContext (ScanContext);
+		SetContext (uqm::systemVisit(system).presentation().scanContext());
 
 		// Draw a virgin surface
 		BatchGraphics ();
@@ -1021,10 +1023,10 @@ ScanPlanet (SOLARSYS_STATE &system, COUNT scanType)
 		}
 	}
 
-	SetContext (PlanetContext);
+	SetContext (uqm::systemVisit(system).presentation().planetContext());
 	RepairBackRect (&r);
 
-	SetContext (ScanContext);
+	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	if (scanType == AUTO_SCAN)
 	{	// clear the last scan
 		uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
@@ -1043,7 +1045,7 @@ DoScan(MENU_STATE *pMS)
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 	
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (uqm::orbitRuntime(system).campaign().activity & CHECK_ABORT)
 		return FALSE;
 
 	if (cancel || (select && pMS->CurState == EXIT_SCAN))
@@ -1065,9 +1067,9 @@ DoScan(MENU_STATE *pMS)
 			}
 
 			fuel_required = getLandingFuelNeeded(system);
-			if (GLOBAL_SIS (FuelOnBoard) < fuel_required
-					|| GLOBAL_SIS (NumLanders) == 0
-					|| GLOBAL_SIS (CrewEnlisted) == 0)
+			if (uqm::orbitRuntime(system).session().player().sis().fuel() < fuel_required
+					|| uqm::orbitRuntime(system).session().player().sis().landers() == 0
+					|| uqm::orbitRuntime(system).session().player().sis().crew() == 0)
 			{
 				PlayMenuSound (MENU_SOUND_FAILURE);
 				return TRUE;
@@ -1109,75 +1111,21 @@ DoScan(MENU_STATE *pMS)
 	return TRUE;
 }
 
-static CONTEXT
-CreateScanContext (void)
-{
-	CONTEXT oldContext;
-	CONTEXT context;
-	RECT r;
-
-	// ScanContext rect is relative to SpaceContext
-	oldContext = SetContext (SpaceContext);
-	GetContextClipRect (&r);
-
-	context = CreateContext ("ScanContext");
-	SetContext (context);
-	SetContextFGFrame (Screen);
-	r.corner.x += r.extent.width - MAP_WIDTH;
-	r.corner.y += r.extent.height - MAP_HEIGHT;
-	r.extent.width = MAP_WIDTH;
-	r.extent.height = MAP_HEIGHT;
-	SetContextClipRect (&r);
-
-	SetContext (oldContext);
-
-	return context;
-}
-
-CONTEXT
-GetScanContext (BOOLEAN *owner)
-{
-	// TODO: Make CONTEXT ref-counted
-	if (ScanContext)
-	{
-		if (owner)
-			*owner = FALSE;
-	}
-	else
-	{
-		if (owner)
-			*owner = TRUE;
-		ScanContext = CreateScanContext ();
-	}
-	return ScanContext;
-}
-
-void
-DestroyScanContext (void)
-{
-	if (ScanContext)
-	{
-		DestroyContext (ScanContext);
-		ScanContext = NULL;
-	}
-}
-
 void
 uqm::runScan(SOLARSYS_STATE &system)
 {
-    auto &cursor = system.worlds->scan;
+    auto &cursor = uqm::orbitRuntime(system).scan();
     uqm::ExplorationViewScope view{*system.worlds, uqm::ExplorationView::Scan};
 	struct CursorCleanup {
         uqm::SurfaceScanState &cursor;
         ~CursorCleanup() {
-            DestroyDrawable(ReleaseDrawable(cursor.eraseFrame));
-            cursor.eraseFrame = nullptr;
+            cursor.eraseFrame.reset();
         }
     } cleanup{cursor};
     MENU_STATE MenuState{};
     MenuState.privData = &system;
 
-	GetScanContext (NULL);
+	uqm::systemVisit(system).presentation().scanContext();
 
 	if (optWhichMenu == OPT_3DO &&
 			((uqm::detail::selectedDescriptor(system).data_index & PLANET_SHIELDED)
@@ -1193,7 +1141,7 @@ uqm::runScan(SOLARSYS_STATE &system)
 		cursor.location.y = (MAP_HEIGHT >> 1) << MAG_SHIFT;
 
 		initPlanetLocationImage(system);
-		SetContext (ScanContext);
+		SetContext (uqm::systemVisit(system).presentation().scanContext());
 		DrawScannedObjects (FALSE);
 	}
 
@@ -1214,7 +1162,7 @@ uqm::runScan(SOLARSYS_STATE &system)
 
 	// cleanup scan graphics
 	BatchGraphics ();
-	SetContext (ScanContext);
+	SetContext (uqm::systemVisit(system).presentation().scanContext());
 	uqm::DrawPlanet(*system.graphics, 0, BLACK_COLOR);
 	EraseCoarseScan(system);
 	UnbatchGraphics ();
@@ -1395,7 +1343,7 @@ void uqm::redrawExploration(SOLARSYS_STATE &system, ExplorationView view) {
     struct ContextRestore {
         CONTEXT previous;
         ~ContextRestore() { SetContext(previous); }
-    } restore{SetContext(PlanetContext)};
+    } restore{SetContext(uqm::systemVisit(system).presentation().planetContext())};
     BatchGraphics();
     uqm::drawStarBackground(system);
     uqm::DrawDefaultPlanetSphere(*system.graphics);
