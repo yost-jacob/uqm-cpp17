@@ -38,8 +38,6 @@ extern "C" {
 
 // Report text and presentation handles are borrowed for this synchronous call.
 extern void ShowDiscoveryReport (SOUND ReadOutSounds, FONT font, FRAME fontEffect, STRING text);
-extern void LoadLanderData (void);
-extern void FreeLanderData (void);
 
 extern void object_animation (ELEMENT *ElementPtr);
 

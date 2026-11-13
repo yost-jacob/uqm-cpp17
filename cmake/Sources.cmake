@@ -263,6 +263,8 @@ set(UQM_SOURCES
     sc2/src/uqm/world.cpp sc2/src/uqm/planet_render.cpp
     sc2/src/uqm/system_behavior.cpp
     sc2/src/uqm/world_visit.cpp
+    sc2/src/uqm/lander_context.cpp
+    sc2/src/uqm/lander_mode.cpp
     sc2/src/uqm/orbit_context.cpp
     sc2/src/uqm/orbit_presentation.cpp sc2/src/uqm/exploration_legacy.cpp
     sc2/src/uqm/system_encounter.cpp

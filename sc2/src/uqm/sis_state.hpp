@@ -24,6 +24,7 @@ public:
     void setLanders(BYTE value) noexcept { data_.NumLanders = value; }
     // Category is the native element-category index; reject indices outside storage.
     COUNT mineral(COUNT category) const;
+    COUNT mineralMass() const noexcept { return data_.TotalElementMass; }
     COUNT biomass() const noexcept { return data_.TotalBioMass; }
     void setBiomass(COUNT value) noexcept { data_.TotalBioMass = value; }
     COUNT crew() const noexcept { return data_.CrewEnlisted; }

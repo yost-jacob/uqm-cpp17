@@ -110,7 +110,7 @@ if(BUILD_TESTING)
         sc2/src/uqm/conversation_context.cpp sc2/src/uqm/conversation_resources.cpp sc2/src/uqm/conversation_lifetime.cpp
         tests/rendering_handoff.cpp sc2/src/uqm/exploration_rendering.cpp sc2/src/uqm/mode_rendering.cpp
         tests/navigation_context.cpp sc2/src/uqm/navigation_context.cpp sc2/src/uqm/campaign_encounters.cpp
-        tests/game_state_c.c tests/world_state.cpp tests/planet_render.cpp tests/world_visit.cpp sc2/src/uqm/orbit_context.cpp sc2/src/uqm/orbit_presentation.cpp tests/world_state_c.c
+        tests/game_state_c.c tests/world_state.cpp tests/planet_render.cpp tests/world_visit.cpp tests/lander_mode.cpp sc2/src/uqm/lander_context.cpp sc2/src/uqm/lander_mode.cpp sc2/src/uqm/orbit_context.cpp sc2/src/uqm/orbit_presentation.cpp tests/world_state_c.c
         tests/ship_behavior.cpp sc2/src/uqm/ship_behavior.cpp
         tests/ship_tuning.cpp sc2/src/uqm/ship_tuning.cpp
         tests/ship_factory.cpp sc2/src/uqm/ship_factory.cpp sc2/src/uqm/loadship.cpp

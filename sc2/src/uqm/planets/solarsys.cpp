@@ -1068,7 +1068,6 @@ InitSolarSys(SOLARSYS_STATE &system)
 	std::optional<std::reference_wrapper<uqm::World>> orbital;
 
 	LoadIPData ();
-	LoadLanderData ();
 
 	Reentry = (flight.facing != 0);
 	if (!Reentry)

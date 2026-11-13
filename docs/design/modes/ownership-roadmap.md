@@ -26,7 +26,7 @@ independent or need the same simulation type.
 | 2 | `QuasiSpaceMode` | Separate mode owning `SpaceNavigation` configured for Quasispace. Shares mechanisms with Hyperspace; portal destinations and fuel/encounter rules differ. **Ownership checkpoint complete.** |
 | 3 | `EncounterMode`, `SystemEncounterMode` | Own `EncounterRuntime` with explicit campaign references and session-owned group archive; scoped arena resources. Menus/tally services remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
 | 4 | `OrbitMode` | Owns `OrbitRuntime`, scan cursor and orbital engine; borrows the enclosing `WorldVisit`. Visit-owned contexts/music and planet-owned generated assets have scoped handoffs. Menus remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
-| 5 | `LanderMode` | Owns a child engine; audit surface entities, expedition state, collection/loss publication and landing/return presentation. Keep durable retrieval and inventory state in their existing owners. |
+| 5 | `LanderMode` | Owns a child engine and launch-local `LanderVisit`, artwork/sound leases and motion. Explicit transactions settle crew/cargo or a lost lander; finite effects are removed before scene handback. **Ownership checkpoint complete at the agreed boundary.** |
 | 6 | `ConversationMode` | Owns `ConversationRuntime`; audit graph/script state, presentation/audio/input bindings and transaction completion. Reuse the existing graph engine, not another dialogue rewrite. |
 | 7 | `CombatMode` | Shared campaign/arcade combat mode; audit roster/ship/entity lifetimes, projectile source references, round completion, survivor reconciliation and cancellation. |
 | 8 | `FleetSelectionMode` | Owned by the separate `ArcadeSession`; audit frontend/network/selection resources and handoff to the same combat mode. |
@@ -314,3 +314,65 @@ advances sphere rotation. A second saves in orbit, requests a load, verifies
 that the previous presentation has retired and PlanetContext is detached
 before reconstruction, then reaches the replacement orbit with loaded terrain.
 No full campaign playthrough or UI/Menu redesign is claimed.
+
+
+## Completed lander ownership map
+
+| Responsibility | Owner / borrow |
+| --- | --- |
+| Prepared surface nodes | Scene transferred from the explicit orbital engine to LanderMode, then returned with its updated persistent nodes |
+| Hazards, projectiles and death effects | LanderMode's engine; finite-life effects removed without gameplay callbacks before visit assets expire and before orbital handback |
+| Movement, crew aboard, collected hold, damage/weapon/animation counters | Launch-local LanderVisit; movement no longer overwrites campaign flagship velocity |
+| Surface position | Player SolarSystemLocation, borrowed through a launch-only scope that preserves orbit/flight and detaches on every exit |
+| Lander and hazard artwork, launch/return frames and sound pack | LanderVisit::LanderAssets leases from the session cache; mutable facing/frame selections are expedition-local |
+| Story, inventory and activity | Explicit owning GameSession/PlayerEntity references; RNG comes from the lander's supplied engine |
+| Launch fuel | Orbital dispatcher charges native fuel units through the owning inventory before child handoff; the gauge only redraws |
+| Boarding | Explicit one-crew inventory transaction before each boarding animation; gauge redraw no longer performs the state mutation |
+| Return or loss | Explicit, at-most-once inventory transaction: recover surviving crew and the mineral/biology package, or consume one lander and discard its hold |
+| Accepted permanent node retrieval | Existing explicit publishPlanetProgress calls, at pickup time; cargo loss does not undo permanent retrieval, as before |
+
+Constructing a child mode does not change player location or load assets.
+Initialization transfers the scene and constructs the expedition. Failed asset
+loading unwinds partial leases and surface focus before returning the scene.
+Mode destruction removes transient effects while their resources are still
+alive. Neither destruction nor cancellation awards inventory or charges a
+lander loss. Crew already boarded remains removed until an explicit return;
+load/abort follows the existing campaign teardown policy.
+
+The complete return package is validated and committed through Inventory::transact.
+A failed transaction leaves live inventory unchanged. Inventory::mineralKey
+provides the canonical category vocabulary, avoiding a second mineral-name table.
+Normal gameplay's original hold limits, crew capacity, hazard chances and pickup
+publication remain in the existing kernel. The kernel's input callback now also
+exits for a pending load, shutdown or session exit.
+
+### Remaining lander compatibility boundaries
+
+- The existing element callbacks have no visit argument. A synchronous scoped
+  planetSideDesc borrow routes them to the mode-owned expedition; it is not an
+  owner and is restored before that visit dies.
+- Legacy input, drawing, primitive buffers, gauges, reports and sound playback
+  remain device/UI service boundaries. State mutation is native; gauge calls
+  used during boarding/recovery only redraw the already committed values.
+- InitLander is still a C UI entry: it resolves the selected session once and
+  borrows only its base graphic for the status panel. It owns no global assets.
+- CreatureData remains an immutable compatibility table shared with generation;
+  this change does not introduce a new simulation framework or menu system.
+
+Deleted LanderFrame/LanderSounds globals, manual LoadLanderData/FreeLanderData
+setup/cleanup and the unused orbit-view graphic load. Crew-grid dimensions use
+typed constants. The animation and collision algorithms remain procedural, with
+explicit visit-owned state. Regression tests exercise the actual mode and
+transaction/resource owners while substituting the input/animation kernel.
+They cover return, loss, abort/load, failure during asset loading or execution,
+atomic failed recovery, scene handback and cleanup with another engine selected.
+
+Debug and Release CMake/Ninja builds and all five CTest suites pass, along with
+the preserved legacy build. A focused live lunar expedition boards 12 crew,
+lands and advances surface ticks, then returns all surviving crew to orbit
+without consuming a lander. A second requests a load on the surface, verifies
+that the cancelled expedition did not settle its crew/cargo or charge a loss,
+and reconstructs the saved orbital state with the original crew/lander counts.
+These are targeted ownership checks, not a full campaign playthrough.
+The final live return check also verifies the exact launch-fuel debit through
+the owning inventory, with no second charge during landing or recovery.

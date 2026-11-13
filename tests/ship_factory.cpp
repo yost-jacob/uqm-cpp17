@@ -11,6 +11,8 @@
 #include <set>
 #include <cstddef>
 
+bool allowTestLanderSound = false;
+std::string failedTestGraphic;
 // Replace concrete behavior construction, not the factory under test. Each
 // builder marks its own identity so a crossed/missing switch arm is observable.
 namespace {
@@ -140,6 +142,7 @@ struct AssetFixture {
 // Minimal resource backend for the loader ownership tests. Opaque graphics are
 // never dereferenced; string-table functions use the real existing test linkage.
 extern "C" void *LoadGraphicInstance(RESOURCE resource) {
+    if (!failedTestGraphic.empty() && failedTestGraphic == resource) return nullptr;
     if (std::string(resource) == "font.lander") return new char;
     if (failAnimation && std::string(resource) == "test.ship.medium") return nullptr;
     ++graphicLoads[resource];
@@ -168,7 +171,7 @@ extern "C" MUSIC_REF LoadMusicInstance(RESOURCE resource) {
     musicHandles.insert(handle);
     return handle;
 }
-extern "C" SOUND_REF LoadSoundInstance(RESOURCE) { if (!battleSuccess) return nullptr; ++soundHandles; return AllocStringTable(1); }
+extern "C" SOUND_REF LoadSoundInstance(RESOURCE resource) { if (!battleSuccess && !(allowTestLanderSound && std::string(resource) == "sounds.lander")) return nullptr; ++soundHandles; return AllocStringTable(1); }
 extern "C" BOOLEAN DestroyMusic(MUSIC_REF music) { if (music) { BOOST_TEST(musicHandles.erase(music) == 1u); delete reinterpret_cast<FakeImage *>(music); } return TRUE; }
 extern "C" BOOLEAN DestroySound(SOUND_REF sound) { if (sound) { --soundHandles; DestroyStringTable(sound); } return TRUE; }
 
