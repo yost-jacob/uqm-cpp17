@@ -21,6 +21,7 @@ void SimulationEngine::shutdown() noexcept {
     if (entities_.storage) UninitQueue(&entities_);
     ships_.clear(); // Resource cleanup only; combat completion is explicit.
     ticks_ = 0;
+    battleFrame_ = 0;
 }
 void SimulationEngine::initialize(COUNT capacity) {
     if (entities_.storage) throw std::logic_error("simulation engine is already initialized");
@@ -31,6 +32,7 @@ void SimulationEngine::initialize(COUNT capacity) {
 void SimulationEngine::reset() {
     if (entities_.storage) ReinitQueue(&entities_);
     ticks_ = 0;
+    battleFrame_ = 0;
     for (COUNT i = 0; i < MAX_DISPLAY_PRIMS; ++i)
         SetPrimLinks(&primitives_[i], END_OF_LIST, i + 1);
     SetPrimLinks(&primitives_.back(), END_OF_LIST, END_OF_LIST);
@@ -91,6 +93,7 @@ void SimulationEngine::swapScene(SimulationEngine &other) noexcept {
     std::swap(freePrimitive_, other.freePrimitive_);
     std::swap(primitiveLinks_, other.primitiveLinks_);
     std::swap(ticks_, other.ticks_);
+    std::swap(battleFrame_, other.battleFrame_);
     if (&active == this || &active == &other) detail::SimulationAccess::bindProjection(active);
 }
 }
@@ -115,3 +118,5 @@ extern "C" void ClearRuntimeShipRoster(COUNT side) {
 extern "C" BYTE *GetBattleCounters(void) {
     return uqm::detail::RuntimeRosterAccess::remaining(uqm::simulationEngine().shipRoster());
 }
+
+extern "C" DWORD GetBattleFrameCount(void) { return uqm::simulationEngine().battleFrame(); }

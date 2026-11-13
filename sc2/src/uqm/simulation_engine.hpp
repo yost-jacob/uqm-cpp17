@@ -37,6 +37,9 @@ public:
     const RuntimeShipRoster &shipRoster() const noexcept { return ships_; }
     RandomStream &random() noexcept { return random_; }
     const RandomStream &random() const noexcept { return random_; }
+    std::uint32_t battleFrame() const noexcept { return battleFrame_; }
+    void resetBattleFrame() noexcept { battleFrame_ = 0; }
+    void advanceBattleFrame() noexcept { ++battleFrame_; }
     std::uint64_t ticks() const noexcept { return ticks_; }
     // Exactly one existing simulation pass. The legacy scene adapter must have
     // prepared its collision sprites/status context. This does not draw a frame.
@@ -63,6 +66,7 @@ private:
     COUNT freePrimitive_ = 0;
     PRIM_LINKS primitiveLinks_{};
     std::uint64_t ticks_ = 0;
+    std::uint32_t battleFrame_ = 0;
 };
 // Synchronous compatibility binding, not cross-thread shared state. Native
 // mode execution binds its engine; C callbacks borrow it until scope exit.

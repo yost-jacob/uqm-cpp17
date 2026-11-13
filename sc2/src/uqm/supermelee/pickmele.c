@@ -66,7 +66,7 @@ static void reportShipSelected (GETMELEE_STATE *gms, COUNT index);
 #endif
 
 
-FRAME PickMeleeFrame;
+
 
 
 static FleetShipIndex
@@ -411,7 +411,7 @@ GetRaceQueueValue (const QUEUE *queue) {
 }
 
 // Cross out the icon for the dead ship.
-// 'frame' is the PickMeleeFrame for the player.
+// 'frame' is the GetMeleeState()->pickFrame for the player.
 // 'shipI' is the index in the ship list.
 // Pre: caller holds the graphics lock.
 static void
@@ -435,7 +435,7 @@ CrossOutShip (FRAME frame, COUNT shipNr)
 	SetContext (OldContext);
 }
 
-// Draw the value of the fleet in the top right of the PickMeleeFrame.
+// Draw the value of the fleet in the top right of the GetMeleeState()->pickFrame.
 // Pre: caller holds the graphics lock.
 static void
 UpdatePickMeleeFleetValue (FRAME frame, COUNT which_player)
@@ -483,20 +483,20 @@ BuildPickMeleeFrame (void)
 	STAMP s;
 	CONTEXT	OldContext = SetContext (OffScreenContext);
 
-	if (PickMeleeFrame)
-		DestroyDrawable (ReleaseDrawable (PickMeleeFrame));
+	if (GetMeleeState()->pickFrame)
+		DestroyDrawable (ReleaseDrawable (GetMeleeState()->pickFrame));
 
-	PickMeleeFrame = CaptureDrawable (CreateDrawable (
+	GetMeleeState()->pickFrame = CaptureDrawable (CreateDrawable (
 			WANT_PIXMAP, MELEE_WIDTH, MELEE_HEIGHT, 2));
 	s.origin.x = 0;
 	s.origin.y = 0;
 
 	s.frame = CaptureDrawable (LoadGraphic (MELEE_PICK_MASK_PMAP_ANIM));
-	SetContextFGFrame (PickMeleeFrame);
+	SetContextFGFrame (GetMeleeState()->pickFrame);
 	DrawStamp (&s);
 
 	s.frame = IncFrameIndex (s.frame);
-	SetContextFGFrame (IncFrameIndex (PickMeleeFrame));
+	SetContextFGFrame (IncFrameIndex (GetMeleeState()->pickFrame));
 	DrawStamp (&s);
 
 	DestroyDrawable (ReleaseDrawable (s.frame));
@@ -504,7 +504,7 @@ BuildPickMeleeFrame (void)
 	SetContext (OldContext);
 }
 
-// Put the ship icons in the PickMeleeFrame, and create a queue
+// Put the ship icons in the GetMeleeState()->pickFrame, and create a queue
 // for each player.
 // XXX TODO: split off creating the queue into a separate function.
 void
@@ -528,7 +528,7 @@ FillPickMeleeFrame (MeleeSetup *setup)
 		sideI = GetPlayerOrder (i);
 		side = !sideI;
 
-		s.frame = SetAbsFrameIndex (PickMeleeFrame, side);
+		s.frame = SetAbsFrameIndex (GetMeleeState()->pickFrame, side);
 		SetContextFGFrame (s.frame);
 
 		GetFrameRect (s.frame, &r);
@@ -589,8 +589,8 @@ FillPickMeleeFrame (MeleeSetup *setup)
 void
 DestroyPickMeleeFrame (void)
 {
-	DestroyDrawable (ReleaseDrawable (PickMeleeFrame));
-	PickMeleeFrame = 0;
+	DestroyDrawable (ReleaseDrawable (GetMeleeState()->pickFrame));
+	GetMeleeState()->pickFrame = 0;
 }
 
 // Pre: caller holds the graphics lock.
@@ -601,7 +601,7 @@ DrawPickMeleeFrame (COUNT which_player)
 	STAMP s;
 
 	oldContext = SetContext (SpaceContext);
-	s.frame = SetAbsFrameIndex (PickMeleeFrame, which_player);
+	s.frame = SetAbsFrameIndex (GetMeleeState()->pickFrame, which_player);
 	s.origin.x = PICK_X_OFFS - 3;
 	s.origin.y = PICK_Y_OFFS - 9 + ((1 - which_player) * PICK_SIDE_OFFS);
 	DrawStamp (&s);
@@ -658,7 +658,7 @@ MeleeShipDeath (STARSHIP *ship)
 	// Deactivate fleet position.
 	ship->SpeciesID = NO_ID;
 
-	frame = SetAbsFrameIndex (PickMeleeFrame, ship->playerNr);
+	frame = SetAbsFrameIndex (GetMeleeState()->pickFrame, ship->playerNr);
 	CrossOutShip (frame, ship->index);
 	UpdatePickMeleeFleetValue (frame, ship->playerNr);
 }
@@ -831,7 +831,7 @@ GetInitialMeleeStarShips (HSTARSHIP *result)
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		FRAME frame;
-		frame = SetAbsFrameIndex (PickMeleeFrame, playerI);
+		frame = SetAbsFrameIndex (GetMeleeState()->pickFrame, playerI);
 		UpdatePickMeleeFleetValue (frame, playerI);
 		DrawPickMeleeFrame (playerI);
 	}

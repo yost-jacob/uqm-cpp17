@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(combat_driver_keeps_completion_explicit_and_releases_networ
         GLOBAL(CurrentActivity) = SUPER_MELEE;
         selectOK = selected; readyOK = ready; events.clear();
         uqm::SimulationEngine engine(2); uqm::SimulationBinding binding(engine);
-        uqm::CombatDriver driver(engine); driver.run();
+        uqm::CombatDriver driver(engine, GLOBAL(CurrentActivity)); driver.run();
         BOOST_TEST((GLOBAL(CurrentActivity) & CHECK_ABORT) == 0u);
         BOOST_TEST(events.front() == 1);
         BOOST_TEST(events[events.size() - 2] == 8);
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(combat_driver_asset_failure_cancels_without_publishing_resu
 {
     events.clear(); failScene = true;
     uqm::SimulationEngine engine(2); uqm::SimulationBinding binding(engine);
-    uqm::CombatDriver driver(engine);
+    uqm::CombatDriver driver(engine, GLOBAL(CurrentActivity));
     BOOST_CHECK_THROW(driver.run(), std::runtime_error);
     failScene = false;
     const std::vector<int> expected{1, 10};
@@ -82,16 +82,14 @@ BOOST_AUTO_TEST_CASE(combat_driver_asset_failure_cancels_without_publishing_resu
 BOOST_AUTO_TEST_CASE(scripted_instant_victory_skips_selection_and_frames_but_completes_the_scene)
 {
     const auto activity = GLOBAL(CurrentActivity);
-    const auto instant = instantVictory;
     GLOBAL(CurrentActivity) = IN_ENCOUNTER;
-    events.clear(); instantVictory = TRUE;
+    events.clear();
     uqm::SimulationEngine engine(2); uqm::SimulationBinding binding(engine);
-    uqm::CombatDriver driver(engine); driver.run();
+    uqm::CombatDriver driver(engine, GLOBAL(CurrentActivity)); driver.run(true);
     const std::vector<int> expected{1, 8, 9};
     BOOST_TEST(events == expected, boost::test_tools::per_element());
-    BOOST_TEST(instantVictory == FALSE);
     BOOST_TEST(GetBattleCounters()[0] == 1u); BOOST_TEST(GetBattleCounters()[1] == 0u);
-    GLOBAL(CurrentActivity) = activity; instantVictory = instant;
+    GLOBAL(CurrentActivity) = activity;
 }
 BOOST_AUTO_TEST_CASE(navigation_runs_its_typed_hook_without_combat_result_ui)
 {
@@ -108,4 +106,19 @@ BOOST_AUTO_TEST_CASE(navigation_runs_its_typed_hook_without_combat_result_ui)
     BOOST_TEST(std::count(events.begin(), events.end(), 5) == 0);
     BOOST_TEST(events[events.size() - 2] == 8); BOOST_TEST(events.back() == 9);
     GLOBAL(CurrentActivity) = activity;
+}
+
+BOOST_AUTO_TEST_CASE(combat_driver_cancellation_releases_round_without_survivor_completion)
+{
+    auto activity = static_cast<ACTIVITY>(IN_ENCOUNTER);
+    uqm::SimulationEngine engine(2);
+    uqm::SimulationBinding binding(engine);
+    events.clear();
+    unsigned checks = 0;
+    uqm::CombatDriver driver(engine, activity);
+    BOOST_TEST(!driver.run(false, [&] { return ++checks > 1; }));
+    BOOST_TEST(std::count(events.begin(), events.end(), 8) == 0);
+    BOOST_TEST(std::count(events.begin(), events.end(), 6) == 1);
+    BOOST_TEST(std::count(events.begin(), events.end(), 7) == 1);
+    BOOST_TEST(events.back() == 10); // Resource-only scene cancellation.
 }

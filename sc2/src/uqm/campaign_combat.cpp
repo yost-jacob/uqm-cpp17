@@ -18,6 +18,8 @@
 
 #include "combat_mode.hpp"
 #include "game_state.hpp"
+#include "encounter_legacy.hpp"
+#include "sis_legacy.hpp"
 #include "battle.h"
 #include "battlecontrols.h"
 #include "intel.h"
@@ -37,15 +39,17 @@ namespace uqm {
 namespace {
 class CampaignCombatPreparation final : public CombatPreparation {
 public:
-    explicit CampaignCombatPreparation(StoryState &story) : story_(story) {}
+    explicit CampaignCombatPreparation(GameSession &session) : session_(session), story_(session.player().story()) {}
     bool prepare(SimulationEngine &) override;
     void complete() override {
-        if (GLOBAL(CurrentActivity) & CHECK_ABORT)
-            GLOBAL_SIS(CrewEnlisted) = static_cast<COUNT>(~0u);
+        if (session_.activity() & CHECK_ABORT)
+            detail::SISAccess::record(session_.player().sis()).CrewEnlisted = static_cast<COUNT>(~0u);
     }
 private:
     struct BattleCleanup {
-        ACTIVITY activity = GLOBAL(CurrentActivity);
+        explicit BattleCleanup(ACTIVITY &owner) : owner(owner), activity(owner) {}
+        ACTIVITY &owner;
+        ACTIVITY activity;
         SOUND savedSounds = GameSounds;
         UWORD savedFrame = nth_frame;
         BYTE savedControl = PlayerControl[0];
@@ -63,20 +67,21 @@ private:
                 ClearPlayerInput(0);
                 PlayerInput[0] = savedPlayerInput;
             }
-            GLOBAL(CurrentActivity) = activity;
+            owner = activity;
         }
     };
+    GameSession &session_;
     StoryState &story_;
     std::optional<BattleCleanup> bindings_;
 };
 bool CampaignCombatPreparation::prepare(SimulationEngine &) {
-    auto &cleanup = bindings_.emplace();
+    auto &cleanup = bindings_.emplace(session_.activity());
     story_.set(StoryFlag::BattleSegue, true);
-    GLOBAL(CurrentActivity) = MAKE_WORD(
+    session_.activity() = MAKE_WORD(
         LOBYTE(cleanup.activity) == IN_LAST_BATTLE ? IN_LAST_BATTLE : IN_ENCOUNTER, 0);
     WaitForSoundEnd(TFBSOUND_WAIT_ALL);
-    if (GLOBAL(glob_flags) & CYBORG_ENABLED) {
-        auto speed = static_cast<BYTE>((GLOBAL(glob_flags) & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT);
+    if (detail::encounterLegacy(session_.player()).flags & CYBORG_ENABLED) {
+        auto speed = static_cast<BYTE>((detail::encounterLegacy(session_.player()).flags & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT);
         if (speed == 1) speed = 0; // Normal speed.
         else if (speed == 2) ++speed; // Four times speed: skip three of four frames.
         else speed = static_cast<BYTE>(~0u); // Maximum speed without rendering.
@@ -86,16 +91,16 @@ bool CampaignCombatPreparation::prepare(SimulationEngine &) {
         cleanup.cyborgInput = true;
         PlayerInput[0] = nullptr;
         if (!SetPlayerInput(0)) {
-            log_add(log_Fatal, "Could not set cyborg player input.");
-            explode(); // Preserve the existing fatal initialization policy.
+            throw std::runtime_error("could not initialize cyborg input");
         }
     }
     GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
     cleanup.soundLoaded = true;
+    if (!GameSounds) throw std::runtime_error("could not load combat sounds");
     return true;
 }
 }
-std::unique_ptr<CombatPreparation> createCampaignCombatPreparation(StoryState &story) {
-    return std::make_unique<CampaignCombatPreparation>(story);
+std::unique_ptr<CombatPreparation> createCampaignCombatPreparation(GameSession &session) {
+    return std::make_unique<CampaignCombatPreparation>(session);
 }
 }

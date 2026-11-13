@@ -1,4 +1,5 @@
 #include "session.hpp"
+#include "battle.h"
 #include "fleet_legacy.hpp"
 #include "game_state.hpp"
 #include <stdexcept>
@@ -36,6 +37,7 @@ detail::LegacyRuntimeView Session::legacyRuntime() noexcept {
 detail::LegacyRuntimeView Session::bindingView() noexcept {
     auto view = legacyRuntime();
     view.activities = &activities_;
+    view.owner = this;
     view.definitions = definitions_.get();
     view.currentStar = view.campaign ? &view.campaign->player().navigationState().currentStar : &selectedStar_;
     return view;
@@ -51,3 +53,12 @@ int ApplicationExit::priority() const {
     throw std::invalid_argument("unknown application exit kind");
 }
 }
+
+namespace {
+uqm::Session &combatSession() {
+    if (auto *view = uqm::detail::boundRuntime(); view && view->owner) return *view->owner;
+    return uqm::gameSession(); // Standalone C compatibility entry.
+}
+}
+extern "C" BOOLEAN GetInstantVictory(void) { return combatSession().instantVictory() ? TRUE : FALSE; }
+extern "C" void SetInstantVictory(BOOLEAN value) { combatSession().instantVictory() = value != FALSE; }

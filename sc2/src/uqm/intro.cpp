@@ -35,11 +35,23 @@
 #include "libs/vidlib.h"
 #include "libs/log.h"
 
-#include <ctype.h>
+#include <cctype>
+#include "mode_rendering.hpp"
+#include "libs/inplib.h"
+#include "game_state.hpp"
+#include <memory>
+#include <utility>
 
+namespace {
+bool presentationCancelled() {
+    const auto *view = uqm::detail::boundRuntime();
+    return QuitPosted || (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+        || (view && view->owner && view->owner->menuExit().has_value());
+}
+}
 static BOOLEAN ShowSlidePresentation (STRING PresStr);
 
-typedef struct
+struct PRESENTATION_INPUT_STATE
 {
 	/* standard state required by DoInput */
 	BOOLEAN (*InputFunc) (void *pInputState);
@@ -75,7 +87,19 @@ typedef struct
 	int MovieEndFrame;
 	int InterframeDelay;
 
-} PRESENTATION_INPUT_STATE;
+    // DoInput borrows this state synchronously. Release every partial load,
+    // including generated SIS artwork, on normal return and exception unwind.
+    ~PRESENTATION_INPUT_STATE() {
+        if (Batched) UnbatchGraphics();
+        StopMusic();
+        DestroyMusic(MusicRef);
+        DestroyDrawable(ReleaseDrawable(RotatedFrame));
+        DestroyDrawable(ReleaseDrawable(SisFrame));
+        DestroyDrawable(ReleaseDrawable(Frame));
+        for (auto font : Fonts) DestroyFont(font);
+        FadeMusic(NORMAL_VOLUME, 0);
+    }
+};
 
 typedef struct {
 	/* standard state required by DoInput */
@@ -111,7 +135,7 @@ ParseColorString (const char *Src, Color* pColor)
 }
 
 static BOOLEAN
-DoFadeScreen (PRESENTATION_INPUT_STATE* pPIS, const char *Src, BYTE FadeType)
+DoFadeScreen (PRESENTATION_INPUT_STATE* pPIS, const char *Src, ScreenFadeType FadeType)
 {
 	int msecs;
 	if (1 == sscanf (Src, "%d", &msecs))
@@ -196,15 +220,20 @@ Present_GenerateSIS (PRESENTATION_INPUT_STATE* pPIS)
 	COUNT piece;
 	Color SisBack;
 
+    auto drawing = uqm::suspendDrawingBindings({OffScreenContext});
 	OldContext = SetContext (OffScreenContext);
 
+    struct DrawableOwner { FRAME value; ~DrawableOwner() { DestroyDrawable(ReleaseDrawable(value)); } };
 	SkelFrame = CaptureDrawable (LoadGraphic (SISSKEL_MASK_PMAP_ANIM));
+    DrawableOwner skeleton{SkelFrame};
 	ModuleFrame = CaptureDrawable (LoadGraphic (SISMODS_MASK_PMAP_ANIM));
+    DrawableOwner modules{ModuleFrame};
 
 	GetFrameRect (SkelFrame, &r);
 	SisFrame = CaptureDrawable (CreateDrawable (
 			WANT_PIXMAP, r.extent.width, r.extent.height, 1
 			));
+    pPIS->SisFrame = SisFrame; // Publish ownership before any drawing callback.
 	SetContextFGFrame (SisFrame);
 	SetContextClipRect (NULL);
 	SisBack = BUILD_COLOR (MAKE_RGB15 (0x01, 0x01, 0x01), 0x07);
@@ -254,8 +283,6 @@ Present_GenerateSIS (PRESENTATION_INPUT_STATE* pPIS)
 		}
 	}
 
-	DestroyDrawable (ReleaseDrawable (SkelFrame));
-	DestroyDrawable (ReleaseDrawable (ModuleFrame));
 
 	hs.x = r.extent.width / 2;
 	hs.y = r.extent.height / 2;
@@ -282,8 +309,8 @@ static BOOLEAN
 ShowPresentationFile (const char *name)
 {
 	STRING pres = CaptureStringTable (LoadStringTableFile (contentDir, name));
+    struct TableOwner { STRING value; ~TableOwner() { DestroyStringTable(ReleaseStringTable(value)); } } table{pres};
 	BOOLEAN result = ShowSlidePresentation (pres);
-	DestroyStringTable (ReleaseStringTable (pres));
 	return result;
 }
 
@@ -293,7 +320,7 @@ DoPresentation (void *pIS)
 	PRESENTATION_INPUT_STATE* pPIS = (PRESENTATION_INPUT_STATE*) pIS;
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL]
-			|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
+			|| presentationCancelled())
 		return FALSE; /* abort requested - we are done */
 
 	if (pPIS->TimeOut)
@@ -380,7 +407,7 @@ DoPresentation (void *pIS)
 			if (pPIS->Buffer[0])
 			{	/* asked to load a font */
 				if (*pFont)
-					DestroyFont (*pFont);
+					DestroyFont (std::exchange(*pFont, nullptr));
 				*pFont = LoadFontFile (pPIS->Buffer);
 			}
 
@@ -390,7 +417,7 @@ DoPresentation (void *pIS)
 		{	/* set ani */
 			utf8StringCopy (pPIS->Buffer, sizeof (pPIS->Buffer), pStr);
 			if (pPIS->Frame)
-				DestroyDrawable (ReleaseDrawable (pPIS->Frame));
+				DestroyDrawable (ReleaseDrawable (std::exchange(pPIS->Frame, nullptr)));
 			pPIS->Frame = CaptureDrawable (LoadGraphicFile (pPIS->Buffer));
 		}
 		else if (strcmp (Opcode, "MUSIC") == 0)
@@ -399,7 +426,7 @@ DoPresentation (void *pIS)
 			if (pPIS->MusicRef)
 			{
 				StopMusic ();
-				DestroyMusic (pPIS->MusicRef);
+				DestroyMusic (std::exchange(pPIS->MusicRef, nullptr));
 			}
 			pPIS->MusicRef = LoadMusicFile (pPIS->Buffer);
 			PlayMusic (pPIS->MusicRef, FALSE, 1);
@@ -622,7 +649,7 @@ DoPresentation (void *pIS)
 				if (angle != pPIS->LastAngle
 						|| draw_what != pPIS->LastDrawKind)
 				{
-					DestroyDrawable (ReleaseDrawable (pPIS->RotatedFrame));
+					DestroyDrawable (ReleaseDrawable (std::exchange(pPIS->RotatedFrame, nullptr)));
 					pPIS->RotatedFrame = CaptureDrawable (
 							RotateFrame (s.frame, -angle));
 					pPIS->LastAngle = angle;
@@ -728,22 +755,15 @@ DoPresentation (void *pIS)
 static BOOLEAN
 ShowSlidePresentation (STRING PresStr)
 {
-	CONTEXT OldContext;
-	FONT OldFont;
-	RECT OldRect;
-	PRESENTATION_INPUT_STATE pis;
-	int i;
-
-	memset (&pis, 0, sizeof(pis));
+    if (!PresStr) return FALSE;
+	auto drawing = uqm::suspendDrawingBindings({ScreenContext, OffScreenContext});
+	PRESENTATION_INPUT_STATE pis{};
 	pis.SlideShow = PresStr;
-	if (!pis.SlideShow)
-		return FALSE;
 	pis.SlideShow = SetAbsStringTableIndex (pis.SlideShow, 0);
 	pis.OperIndex = 0;
 
-	OldContext = SetContext (ScreenContext);
-	GetContextClipRect (&OldRect);
-	OldFont = SetContextFont (NULL);
+	SetContext (ScreenContext);
+	SetContextFont (NULL);
 	SetContextBackGroundColor (BLACK_COLOR);
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
@@ -759,15 +779,6 @@ ShowSlidePresentation (STRING PresStr)
 	StopMusic ();
 	FadeMusic (NORMAL_VOLUME, 0);
 
-	DestroyMusic (pis.MusicRef);
-	DestroyDrawable (ReleaseDrawable (pis.RotatedFrame));
-	DestroyDrawable (ReleaseDrawable (pis.Frame));
-	for (i = 0; i < MAX_FONTS; ++i)
-		DestroyFont (pis.Fonts[i]);
-
-	SetContextFont (OldFont);
-	SetContextClipRect (&OldRect);
-	SetContext (OldContext);
 
 	return TRUE;
 }
@@ -785,7 +796,7 @@ DoVideoInput (void *pIS)
 	if (PulsedInputState.menu[KEY_MENU_SELECT]
 			|| PulsedInputState.menu[KEY_MENU_CANCEL]
 			|| PulsedInputState.menu[KEY_MENU_SPECIAL]
-			|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
+			|| presentationCancelled())
 	{	// abort movie
 		return FALSE;
 	}
@@ -838,12 +849,17 @@ ShowLegacyVideo (LEGACY_VIDEO vid)
 	if (!ref)
 		return FALSE;
 
+    {
+    struct Playback {
+        LEGACY_VIDEO_REF ref;
+        ~Playback() { StopLegacyVideo(ref); }
+    } playback{ref};
 	vis.InputFunc = DoVideoInput;
 	vis.CurVideo = ref;
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	DoInput (&vis, TRUE);
+    } // Stop the decoder before clearing its output surface.
 
-	StopLegacyVideo (ref);
 	FadeClearScreen ();
 
 	return TRUE;
@@ -860,15 +876,15 @@ ShowPresentation (RESOURCE res)
 	if (!strcmp (resType, "STRTAB"))
 	{
 		STRING pres = CaptureStringTable (LoadStringTable (res));
+        struct TableOwner { STRING value; ~TableOwner() { DestroyStringTable(ReleaseStringTable(value)); } } table{pres};
 		BOOLEAN result = ShowSlidePresentation (pres);
-		DestroyStringTable (ReleaseStringTable (pres));
 		return result;
 	}
 	else if (!strcmp (resType, "3DOVID"))
 	{
 		LEGACY_VIDEO vid = LoadLegacyVideoInstance (res);
+        struct VideoOwner { LEGACY_VIDEO value; ~VideoOwner() { DestroyLegacyVideo(value); } } video{vid};
 		BOOLEAN result = ShowLegacyVideo (vid);
-		DestroyLegacyVideo (vid);
 		return result;
 	}
 	

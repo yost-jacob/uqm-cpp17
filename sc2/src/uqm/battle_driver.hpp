@@ -1,5 +1,6 @@
 #ifndef UQM_BATTLE_DRIVER_HPP_
 #define UQM_BATTLE_DRIVER_HPP_
+#include "globdata.h"
 #include <functional>
 namespace uqm {
 class SimulationEngine;
@@ -9,10 +10,12 @@ class SpaceNavigation;
 // roster, seed and service bindings; the driver never reseeds from the clock.
 class CombatDriver {
 public:
-    explicit CombatDriver(SimulationEngine &engine) noexcept : engine_(engine) {}
-    void run();
+    CombatDriver(SimulationEngine &engine, ACTIVITY &activity) noexcept : engine_(engine), activity_(activity) {}
+    // false means load/shutdown cancellation: do not publish survivor results.
+    bool run(bool instantVictory = false, std::function<bool()> cancelled = {});
 private:
     SimulationEngine &engine_;
+    ACTIVITY &activity_;
 };
 // Navigation has its own entry/exit path but uses the same frame loop. The hook
 // and navigation must remain alive until this synchronous call returns. Its

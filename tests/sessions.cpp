@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include "uqm/session.hpp"
+#include "uqm/battle.h"
 #include "uqm/game_state.hpp"
 #include "uqm/sis_state.hpp"
 #include "uqm/arcade_session.hpp"
@@ -143,4 +144,41 @@ BOOST_AUTO_TEST_CASE(context_owns_stable_configuration_across_session_transition
     BOOST_TEST(GetGameConfiguration() == startup);
     BOOST_TEST(startup->musicScale == 0.35f); // Backend shutdown still sees the same record.
     BOOST_TEST(startup->subtitles == TRUE);
+}
+
+BOOST_AUTO_TEST_CASE(scripted_combat_requests_belong_to_the_selected_session)
+{
+    uqm::ArcadeSession first{11}, second{12};
+    {
+        uqm::SessionActivation selected{first};
+        SetInstantVictory(TRUE);
+        BOOST_TEST(GetInstantVictory() == TRUE);
+        {
+            uqm::SessionActivation other{second};
+            BOOST_TEST(GetInstantVictory() == FALSE);
+            SetInstantVictory(TRUE);
+            SetInstantVictory(FALSE);
+        }
+        BOOST_TEST(GetInstantVictory() == TRUE);
+    }
+    BOOST_TEST(first.instantVictory());
+    BOOST_TEST(!second.instantVictory());
+}
+
+BOOST_AUTO_TEST_CASE(network_round_counters_follow_the_selected_mode_engine)
+{
+    uqm::SimulationEngine first{4}, second{4};
+    uqm::SimulationBinding selected{first};
+    first.advanceBattleFrame(); first.advanceBattleFrame();
+    BOOST_TEST(GetBattleFrameCount() == 2u);
+    {
+        uqm::SimulationBinding child{second};
+        BOOST_TEST(GetBattleFrameCount() == 0u);
+        second.advanceBattleFrame();
+        BOOST_TEST(GetBattleFrameCount() == 1u);
+    }
+    BOOST_TEST(GetBattleFrameCount() == 2u);
+    first.reset();
+    BOOST_TEST(GetBattleFrameCount() == 0u);
+    BOOST_TEST(second.battleFrame() == 1u);
 }

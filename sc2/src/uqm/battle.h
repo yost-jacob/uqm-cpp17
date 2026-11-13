@@ -33,9 +33,11 @@ extern "C" {
 
 // Compatibility borrow of the selected roster's availability/result counters.
 BYTE *GetBattleCounters(void);
-extern BOOLEAN instantVictory;
+// C adapters for the selected session's one-shot scripted battle request.
+BOOLEAN GetInstantVictory(void);
+void SetInstantVictory(BOOLEAN value);
 #if defined (NETPLAY)
-extern BattleFrameCounter battleFrameCount;
+BattleFrameCounter GetBattleFrameCount(void);
 #endif
 #ifdef NETPLAY
 COUNT GetPlayerOrder (COUNT i);

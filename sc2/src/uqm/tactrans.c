@@ -129,9 +129,9 @@ readyToEndCallback (NetConnection *conn, void *arg)
 			"end-of-battle synchronisation.\n");
 #endif
 	NetConnection_setState (conn, NetState_endingBattle);
-	if (battleFrameCount + 1 > battleStateData->endFrameCount)
-		battleStateData->endFrameCount = battleFrameCount + 1;
-	Netplay_Notify_frameCount (conn, battleFrameCount + 1);
+	if (GetBattleFrameCount() + 1 > battleStateData->endFrameCount)
+		battleStateData->endFrameCount = GetBattleFrameCount() + 1;
+	Netplay_Notify_frameCount (conn, GetBattleFrameCount() + 1);
 			// The +1 is to ensure that after the remote side receives the
 			// frame count it will still receive one more frame data packet,
 			// so it will know in advance when the last frame data packet
@@ -143,7 +143,7 @@ readyToEndCallback (NetConnection *conn, void *arg)
 	flushPacketQueue (conn);
 #ifdef NETPLAY_DEBUG
     fprintf (stderr, "NETPLAY: [%d] ==> Sent battleFrameCount %d.\n",
-			NetConnection_getPlayerNr(conn), battleFrameCount + 1);
+			NetConnection_getPlayerNr(conn), GetBattleFrameCount() + 1);
 #endif
 	Netplay_localReady(conn, readyToEnd2Callback, NULL, false);
 	(void) arg;
@@ -204,7 +204,7 @@ readyForBattleEndPlayer (NetConnection *conn)
 	// hasn't been reached yet. Note that if the connection state is
 	// NetState_endingBattle, then we haven't yet received the
 	// remote frame count, so the target frame count may still rise.
-	if (battleFrameCount < battleStateData->endFrameCount)
+	if (GetBattleFrameCount() < battleStateData->endFrameCount)
 		return false;
 
 	if (NetConnection_getState (conn) == NetState_endingBattle)
@@ -216,8 +216,8 @@ readyForBattleEndPlayer (NetConnection *conn)
 		// TODO: check whether all connections are still connected.
 		assert (NetConnection_getState (conn) == NetState_endingBattle2);
 
-		// Continue the simulation if the battleFrameCount has gone up.
-		if (battleFrameCount < battleStateData->endFrameCount)
+		// Continue the simulation if the GetBattleFrameCount() has gone up.
+		if (GetBattleFrameCount() < battleStateData->endFrameCount)
 			return false;
 	}
 

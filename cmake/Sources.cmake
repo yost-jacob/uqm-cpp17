@@ -210,7 +210,7 @@ set(UQM_SOURCES
     sc2/src/uqm/commglue.c
     sc2/src/uqm/confirm.c
     sc2/src/uqm/cons_res.c
-    sc2/src/uqm/credits.c
+    sc2/src/uqm/credits.cpp
     sc2/src/uqm/cyborg.cpp
     sc2/src/uqm/demo.c
     sc2/src/uqm/displist.cpp
@@ -237,11 +237,11 @@ set(UQM_SOURCES
     sc2/src/uqm/encounter_runtime.cpp
     sc2/src/uqm/encounter_context.cpp
     sc2/src/uqm/flash.c
-    sc2/src/uqm/fmv.c
+    sc2/src/uqm/fmv.cpp
     sc2/src/uqm/galaxy.c
     sc2/src/uqm/gameev.c
     sc2/src/uqm/gameinp.c
-    sc2/src/uqm/gameopt.c
+    sc2/src/uqm/gameopt.cpp
     sc2/src/uqm/getchar.c
     sc2/src/uqm/globdata.c
     sc2/src/uqm/arcade_session.cpp
@@ -291,7 +291,7 @@ set(UQM_SOURCES
     sc2/src/uqm/navigation_context.cpp
     sc2/src/uqm/init.c
     sc2/src/uqm/intel.c
-    sc2/src/uqm/intro.c
+    sc2/src/uqm/intro.cpp
     sc2/src/uqm/ipdisp.cpp
     sc2/src/uqm/load.c
     sc2/src/uqm/load_legacy.c
@@ -350,7 +350,7 @@ set(UQM_SOURCES
     sc2/src/uqm/planets/solarsys.cpp
     sc2/src/uqm/planets/surface.c
     sc2/src/uqm/process.cpp
-    sc2/src/uqm/restart.c
+    sc2/src/uqm/restart.cpp
     sc2/src/uqm/save.c
     sc2/src/uqm/settings.c
     sc2/src/uqm/setup.c

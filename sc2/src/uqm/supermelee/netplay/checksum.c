@@ -180,7 +180,7 @@ void
 crc_processState(crc_State *state) {
 #ifdef DUMP_CRC_OPS
 	crc_log("--------------------\n"
-			"START crc_processState() (frame %u).", battleFrameCount);
+			"START crc_processState() (frame %u).", GetBattleFrameCount());
 #endif
 
 	crc_processRNG(state);
@@ -188,7 +188,7 @@ crc_processState(crc_State *state) {
 
 #ifdef DUMP_CRC_OPS
 	crc_log("END   crc_processState() (frame %u).",
-			battleFrameCount);
+			GetBattleFrameCount());
 #endif
 }
 
@@ -238,7 +238,7 @@ uninitChecksumBuffers(void)
 
 void
 addLocalChecksum(BattleFrameCounter frameNr, Checksum checksum) {
-	assert(frameNr == battleFrameCount);
+	assert(frameNr == GetBattleFrameCount());
 
 	ChecksumBuffer_addChecksum(&localChecksumBuffer, frameNr, checksum);
 }
@@ -248,8 +248,8 @@ addRemoteChecksum(NetConnection *conn, BattleFrameCounter frameNr,
 		Checksum checksum) {
 	ChecksumBuffer *cb;
 	
-	assert(frameNr <= battleFrameCount + getBattleInputDelay() + 1);
-	assert(frameNr + getBattleInputDelay() >= battleFrameCount);
+	assert(frameNr <= GetBattleFrameCount() + getBattleInputDelay() + 1);
+	assert(frameNr + getBattleInputDelay() >= GetBattleFrameCount());
 
 	cb = NetConnection_getChecksumBuffer(conn);
 	ChecksumBuffer_addChecksum(cb, frameNr, checksum);

@@ -30,34 +30,69 @@
 #include "sounds.h"
 #include "setup.h"
 #include "libs/graphics/drawable.h"
-#include <math.h>
+#include <cmath>
+#include "game_state.hpp"
+#include "mode_rendering.hpp"
+#include "libs/inplib.h"
+#include <stdexcept>
 
+namespace {
+class CreditsRuntime;
+thread_local CreditsRuntime *activeCredits = nullptr;
+class CreditsRuntime {
+public:
+    explicit CreditsRuntime(uqm::Session &session)
+        : session_(session), drawing_(uqm::suspendDrawingBindings({ScreenContext})), previous_(activeCredits) {
+        activeCredits = this;
+    }
+    ~CreditsRuntime() {
+        SetInputCallback(nullptr); // Callback cannot observe released frames.
+        SetContext(ScreenContext);
+        StopMusic();
+        DestroyMusic(music_);
+        UninitCredits();
+        FreeCredits();
+        FadeMusic(NORMAL_VOLUME, 0);
+        activeCredits = previous_;
+    }
+    CreditsRuntime(const CreditsRuntime &) = delete;
+    CreditsRuntime &operator=(const CreditsRuntime &) = delete;
+private:
+    uqm::Session &session_;
+    std::unique_ptr<uqm::ModeSuspension> drawing_;
+    CreditsRuntime *previous_;
+    MUSIC_REF music_ = nullptr;
+    TimeCount NextTime = 0;
+    RECT window_{};
+    bool cancelled() const {
+        return QuitPosted || session_.menuExit().has_value() || (session_.activity() & (CHECK_ABORT | CHECK_LOAD));
+    }
 // Rates in pixel lines per second
-#define CREDITS_BASE_RATE   9
-#define CREDITS_MAX_RATE    130
+static constexpr int CREDITS_BASE_RATE = 9;
+static constexpr int CREDITS_MAX_RATE = 130;
 // Maximum frame rate
-#define CREDITS_FRAME_RATE  36
+static constexpr int CREDITS_FRAME_RATE = 36;
 
-#define CREDITS_TIMEOUT   (ONE_SECOND * 5)
+static constexpr TimeCount CREDITS_TIMEOUT = ONE_SECOND * 5;
 
-#define TRANS_COLOR   BRIGHT_BLUE_COLOR
+inline static constexpr Color TRANS_COLOR = BRIGHT_BLUE_COLOR;
 
 // Positive or negative scroll rate in pixel lines per second
-static int CreditsRate;
+int CreditsRate{};
 
-static BOOLEAN OutTakesRunning;
-static BOOLEAN CreditsRunning;
-static STRING CreditsTab;
-static FRAME CreditsBack;
+BOOLEAN OutTakesRunning{};
+bool CreditsRunning{};
+STRING CreditsTab{};
+FRAME CreditsBack{};
 
 // Context used for drawing to the screen
-static CONTEXT DrawContext;
+CONTEXT DrawContext{};
 // Context used for pre-rendering a credits frame
-static CONTEXT LocalContext;
+CONTEXT LocalContext{};
 // Pre-rendered frame, possibly with a cutout
-static FRAME CreditsFrame;
+FRAME CreditsFrame{};
 // Size of the credits "window" (normally screen size)
-static EXTENT CreditsExtent;
+EXTENT CreditsExtent{};
 
 typedef struct
 {
@@ -65,20 +100,20 @@ typedef struct
 	int strIndex;
 } CreditTextFrame;
 
-#define MAX_CREDIT_FRAMES 32
+static constexpr int MAX_CREDIT_FRAMES = 32;
 // Circular text frame buffer for scrolling
 // Text frames are generated as needed, and when a text frame scrolls
 // of the screen, it is destroyed
-static CreditTextFrame textFrames[MAX_CREDIT_FRAMES];
+CreditTextFrame textFrames[MAX_CREDIT_FRAMES]{};
 // Index of first active frame in the circular buffer (the first frame
 // is the one on top)
-static int firstFrame;
+int firstFrame{};
 // Index of last active frame in the circular buffer + 1
-static int lastFrame;
+int lastFrame{};
 // Total height of all active frames in the circular buffer
-static int totalHeight;
+int totalHeight{};
 // Current vertical offset into the first text frame
-static int curFrameOfs;
+int curFrameOfs{};
 
 typedef struct
 {
@@ -87,7 +122,7 @@ typedef struct
 	FONT font;
 } FONT_SIZE_DEF;
 
-static FONT_SIZE_DEF CreditsFont[] =
+FONT_SIZE_DEF CreditsFont[4] =
 {
 	{ 13, PT13AA_FONT, 0 },
 	{ 17, PT17AA_FONT, 0 },
@@ -96,13 +131,14 @@ static FONT_SIZE_DEF CreditsFont[] =
 };
 
 
-static FRAME
+FRAME
 Credits_MakeTransFrame (int w, int h, Color TransColor)
 {
 	FRAME OldFrame;
 	FRAME f;
 
 	f = CaptureDrawable (CreateDrawable (WANT_PIXMAP, w, h, 1));
+    if (!f) throw std::runtime_error("could not create credits frame");
 	SetFrameTransparentColor (f, TransColor);
 
 	OldFrame = SetContextFGFrame (f);
@@ -113,7 +149,7 @@ Credits_MakeTransFrame (int w, int h, Color TransColor)
 	return f;
 }
 
-static int
+int
 ParseTextLines (TEXT *Lines, int MaxLines, char *Buffer)
 {
 	int i;
@@ -132,10 +168,10 @@ ParseTextLines (TEXT *Lines, int MaxLines, char *Buffer)
 	return i;
 }
 
-#define MAX_TEXT_LINES 50
-#define MAX_TEXT_COLS  5
+static constexpr int MAX_TEXT_LINES = 50;
+static constexpr int MAX_TEXT_COLS = 5;
 
-static FRAME
+FRAME
 Credits_RenderTextFrame (CONTEXT TempContext, int *istr, int dir,
 		Color BackColor, Color ForeColor)
 {
@@ -204,7 +240,7 @@ Credits_RenderTextFrame (CONTEXT TempContext, int *istr, int dir,
 		TextLines[i].baseline.x = 0;
 		TextLines[i].baseline.y = i + 1;
 
-		for (icol = 1, nextcol = strchr (TextLines[i].pStr, '\t');
+		for (icol = 1, nextcol = strchr (buf + (TextLines[i].pStr - buf), '\t');
 				icol < MAX_TEXT_COLS && nextcol;
 				++icol, nextcol = strchr (nextcol, '\t'))
 		{
@@ -316,14 +352,14 @@ Credits_RenderTextFrame (CONTEXT TempContext, int *istr, int dir,
 	return f;
 }
 
-static inline int
+inline int
 frameIndex (int index)
 {
 	// Make sure index is positive before %
 	return (index + MAX_CREDIT_FRAMES) % MAX_CREDIT_FRAMES;
 }
 
-static void
+void
 RenderCreditsScreen (CONTEXT targetContext)
 {
 	CONTEXT oldContext;
@@ -352,13 +388,13 @@ RenderCreditsScreen (CONTEXT targetContext)
 	if (OutTakesRunning)
 	{	// Cut out the Outtakes rect
 		SetContextForeGroundColor (TRANS_COLOR);
-		DrawFilledRectangle (GetConversationWindow());
+		DrawFilledRectangle (&window_);
 	}
 	
 	SetContext (oldContext);
 }
 
-static void
+void
 InitCredits (void)
 {
 	RECT ctxRect;
@@ -369,6 +405,7 @@ InitCredits (void)
 
 	LocalContext = CreateContext ("Credits.LocalContext");
 	DrawContext = CreateContext ("Credits.DrawContext");
+    if (!LocalContext || !DrawContext) throw std::runtime_error("could not create credits contexts");
 
 	targetFrame = GetContextFGFrame ();
 	GetContextClipRect (&ctxRect);
@@ -406,14 +443,14 @@ InitCredits (void)
 	CreditsRunning = TRUE;
 }
 
-static void
+void
 freeCreditTextFrame (CreditTextFrame *tf)
 {
 	DestroyDrawable (ReleaseDrawable (tf->frame));
 	tf->frame = NULL;
 }
 
-static void
+void
 UninitCredits (void)
 {
 	DestroyContext (DrawContext);
@@ -428,7 +465,7 @@ UninitCredits (void)
 		freeCreditTextFrame (&textFrames[firstFrame]);
 }
 
-static int
+int
 calcDeficitHeight (void)
 {
 	int i;
@@ -446,10 +483,10 @@ calcDeficitHeight (void)
 	return CreditsExtent.height - maxPos;
 }
 
-static void
+void
 processCreditsFrame (void)
 {
-	static TimeCount NextTime;
+	// NextTime is visit-local, including repeated credit playback.
 	TimeCount Now = GetTimeCounter ();
 
 	if (Now >= NextTime)
@@ -602,7 +639,7 @@ processCreditsFrame (void)
 	}
 }
 
-static BOOLEAN
+BOOLEAN
 LoadCredits (void)
 {
 	FONT_SIZE_DEF *fdef;
@@ -611,14 +648,17 @@ LoadCredits (void)
 	if (!CreditsTab)
 		return FALSE;
 	CreditsBack = CaptureDrawable (LoadGraphic (CREDITS_BACK_ANIM));
+    if (!CreditsBack) throw std::runtime_error("could not load credits background");
 	// load fonts
-	for (fdef = CreditsFont; fdef->size; ++fdef)
+	for (fdef = CreditsFont; fdef->size; ++fdef) {
 		fdef->font = LoadFont (fdef->res);
+        if (!fdef->font) throw std::runtime_error("could not load credits font");
+    }
 
 	return TRUE;
 }
 
-static void
+void
 FreeCredits (void)
 {
 	FONT_SIZE_DEF *fdef;
@@ -637,11 +677,11 @@ FreeCredits (void)
 	}
 }
 
-static void
+void
 OutTakes (void)
 {
-#define NUM_OUTTAKES 15
-	static CONVERSATION outtake_list[NUM_OUTTAKES] =
+static constexpr int NUM_OUTTAKES = 15;
+	static constexpr CONVERSATION outtake_list[NUM_OUTTAKES] =
 	{
 		ZOQFOTPIK_CONVERSATION,
 		TALKING_PET_CONVERSATION,
@@ -660,7 +700,10 @@ OutTakes (void)
 		ARILOU_CONVERSATION
 	};
 
-	BOOLEAN oldsubtitles = optSubtitles;
+    struct OuttakeOptions {
+        BOOLEAN subtitles = optSubtitles, slider = sliderDisabled, oscill = oscillDisabled;
+        ~OuttakeOptions() { optSubtitles = subtitles; sliderDisabled = slider; oscillDisabled = oscill; }
+    } options;
 	int i = 0;
 
 	// Outtakes have no voice tracks, so the subtitles are always on
@@ -669,15 +712,13 @@ OutTakes (void)
 	oscillDisabled = TRUE;
 
 	for (i = 0; (i < NUM_OUTTAKES) &&
-			!(GLOBAL (CurrentActivity) & CHECK_ABORT); i++)
+			!cancelled(); i++)
 	{
 		SetCommIntroMode (CIM_CROSSFADE_WINDOW, 0);
 		InitCommunication (outtake_list[i]);
 	}
 
-	optSubtitles = oldsubtitles;
-	sliderDisabled = FALSE;
-	oscillDisabled = FALSE;
+
 }
 
 typedef struct
@@ -685,14 +726,15 @@ typedef struct
 	// standard state required by DoInput
 	BOOLEAN (*InputFunc) (void *pInputState);
 
-	BOOLEAN AllowCancel;
+	CreditsRuntime *owner;
+	bool AllowCancel;
 	BOOLEAN AllowSpeedChange;
-	BOOLEAN CloseWhenDone;
+	bool CloseWhenDone;
 	DWORD CloseTimeOut;
 
 } CREDITS_INPUT_STATE;
 
-static BOOLEAN
+BOOLEAN
 DoCreditsInput (void *pIS)
 {
 	CREDITS_INPUT_STATE *pCIS = (CREDITS_INPUT_STATE *) pIS;
@@ -702,7 +744,7 @@ DoCreditsInput (void *pIS)
 		pCIS->CloseTimeOut = 0;
 	}
 
-	if ((GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (cancelled()
 			|| (pCIS->AllowCancel &&
 				(PulsedInputState.menu[KEY_MENU_SELECT] ||
 				PulsedInputState.menu[KEY_MENU_CANCEL]))
@@ -762,18 +804,18 @@ DoCreditsInput (void *pIS)
 static void
 on_input_frame (void)
 {
-	processCreditsFrame ();
+	activeCredits->processCreditsFrame ();
 }
 
+public:
 void
-Credits (BOOLEAN WithOuttakes)
+run (BOOLEAN WithOuttakes)
 {
-	MUSIC_REF hMusic;
-	CREDITS_INPUT_STATE cis;
+	CREDITS_INPUT_STATE cis{};
 	RECT screenRect;
 	STAMP s;
 
-	hMusic = LoadMusic (CREDITS_MUSIC);
+	music_ = LoadMusic (CREDITS_MUSIC);
 
 	SetContext (ScreenContext);
 	SetContextClipRect (NULL);
@@ -792,9 +834,18 @@ Credits (BOOLEAN WithOuttakes)
 	FadeScreen (FadeAllToColor, ONE_SECOND / 2);
 
 	// set the position of outtakes comm
-	GetConversationWindow()->corner.x = (screenRect.extent.width - GetConversationWindow()->extent.width)
-			/ 2;
-	GetConversationWindow()->corner.y = 5;
+    struct WindowRestore {
+        RECT *window = nullptr;
+        RECT saved{};
+        ~WindowRestore() { if (window) *window = saved; }
+    } restore;
+    if (WithOuttakes) {
+        restore.window = GetConversationWindow();
+        restore.saved = *restore.window;
+        restore.window->corner.x = (screenRect.extent.width - restore.window->extent.width) / 2;
+        restore.window->corner.y = 5;
+        window_ = *restore.window;
+    }
 	
 	InitCredits ();
 	SetInputCallback (on_input_frame);
@@ -806,14 +857,18 @@ Credits (BOOLEAN WithOuttakes)
 		OutTakesRunning = FALSE;
 	}
 	
-	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	if (!cancelled())
 	{
-		if (hMusic)
-			PlayMusic (hMusic, TRUE, 1);
+		if (music_)
+			PlayMusic (music_, TRUE, 1);
 
 		// nothing to do now but wait until credits
 		//  are done or canceled by user
-		cis.InputFunc = DoCreditsInput;
+		cis.owner = this;
+        cis.InputFunc = [](void *input) -> BOOLEAN {
+            auto &state = *static_cast<CREDITS_INPUT_STATE *>(input);
+            return state.owner->DoCreditsInput(input);
+        };
 		cis.AllowCancel = !WithOuttakes;
 		cis.CloseWhenDone = !WithOuttakes;
 		cis.AllowSpeedChange = TRUE;
@@ -823,18 +878,19 @@ Credits (BOOLEAN WithOuttakes)
 
 	SetInputCallback (NULL);
 	FadeMusic (0, ONE_SECOND / 2);
-	UninitCredits ();
+
 
 	SetContext (ScreenContext);
 	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
 	FlushColorXForms ();
 
-	if (hMusic)
-	{
-		StopMusic ();
-		DestroyMusic (hMusic);
-	}
-	FadeMusic (NORMAL_VOLUME, 0);
+}
+};
+} // namespace
 
-	FreeCredits ();
+extern "C" void Credits(BOOLEAN withOuttakes) {
+    auto *view = uqm::detail::boundRuntime();
+    auto &session = view && view->owner ? *view->owner : uqm::gameSession();
+    CreditsRuntime runtime{session};
+    runtime.run(withOuttakes);
 }

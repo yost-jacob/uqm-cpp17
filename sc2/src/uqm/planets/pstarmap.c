@@ -1261,7 +1261,7 @@ DoMoveCursor (MENU_STATE *pMS)
 				GLOBAL (CurrentActivity) |= END_INTERPLANETARY;
 			
 				// Set a hook to move to the new location:
-				debugHook = doInstantMove;
+				QueueDebugHook(doInstantMove);
 			}
 
 			return FALSE;

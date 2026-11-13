@@ -171,7 +171,8 @@ extern "C" MUSIC_REF LoadMusicInstance(RESOURCE resource) {
     musicHandles.insert(handle);
     return handle;
 }
-extern "C" SOUND_REF LoadSoundInstance(RESOURCE resource) { if (!battleSuccess && !(allowTestLanderSound && std::string(resource) == "sounds.lander")) return nullptr; ++soundHandles; return AllocStringTable(1); }
+bool allowTestCombatSound = false;
+extern "C" SOUND_REF LoadSoundInstance(RESOURCE resource) { if (!battleSuccess && !(allowTestCombatSound && std::string(resource) == "sounds.battle") && !(allowTestLanderSound && std::string(resource) == "sounds.lander")) return nullptr; ++soundHandles; return AllocStringTable(1); }
 extern "C" BOOLEAN DestroyMusic(MUSIC_REF music) { if (music) { BOOST_TEST(musicHandles.erase(music) == 1u); delete reinterpret_cast<FakeImage *>(music); } return TRUE; }
 extern "C" BOOLEAN DestroySound(SOUND_REF sound) { if (sound) { --soundHandles; DestroyStringTable(sound); } return TRUE; }
 

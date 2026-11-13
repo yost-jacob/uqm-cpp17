@@ -162,7 +162,7 @@ uqm::SimulationLoop::tick()
 
 #if defined (NETPLAY) && defined (NETPLAY_CHECKSUM)
 	if (getNumNetConnections() > 0 &&
-			battleFrameCount % NETPLAY_CHECKSUM_INTERVAL == 0)
+			GetBattleFrameCount() % NETPLAY_CHECKSUM_INTERVAL == 0)
 	{
 		crc_State state;
 		Checksum checksum;
@@ -171,10 +171,10 @@ uqm::SimulationLoop::tick()
 		crc_processState (&state);
 		checksum = (Checksum) crc_finish (&state);
 
-		Netplay_NotifyAll_checksum ((uint32) battleFrameCount,
+		Netplay_NotifyAll_checksum ((uint32) GetBattleFrameCount(),
 				(uint32) checksum);
 		flushPacketQueues ();
-		addLocalChecksum (battleFrameCount, checksum);
+		addLocalChecksum (GetBattleFrameCount(), checksum);
 	}
 #endif
 	processInput();
@@ -184,12 +184,12 @@ uqm::SimulationLoop::tick()
 	{
 		size_t delay = getBattleInputDelay();
 
-		if (battleFrameCount >= delay
-				&& (battleFrameCount - delay) % NETPLAY_CHECKSUM_INTERVAL == 0)
+		if (GetBattleFrameCount() >= delay
+				&& (GetBattleFrameCount() - delay) % NETPLAY_CHECKSUM_INTERVAL == 0)
 		{
 			if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
 			{
-				if (!verifyChecksums (battleFrameCount - delay)) {
+				if (!verifyChecksums (GetBattleFrameCount() - delay)) {
 					GLOBAL(CurrentActivity) |= CHECK_ABORT;
 					resetConnections (ResetReason_syncLoss);
 				}
@@ -240,7 +240,7 @@ uqm::SimulationLoop::tick()
 		return false;
 
 #ifdef NETPLAY
-	battleFrameCount++;
+	engine_.advanceBattleFrame();
 #endif
 	return true;
 }

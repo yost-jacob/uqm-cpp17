@@ -28,11 +28,11 @@ independent or need the same simulation type.
 | 4 | `OrbitMode` | Owns `OrbitRuntime`, scan cursor and orbital engine; borrows the enclosing `WorldVisit`. Visit-owned contexts/music and planet-owned generated assets have scoped handoffs. Menus remain deferred. **Ownership checkpoint complete at the agreed boundary.** |
 | 5 | `LanderMode` | Owns a child engine and launch-local `LanderVisit`, artwork/sound leases and motion. Explicit transactions settle crew/cargo or a lost lander; finite effects are removed before scene handback. **Ownership checkpoint complete at the agreed boundary.** |
 | 6 | `ConversationMode` | Complete at the agreed boundary: visit-owned graph, presentation resources and RNG; explicit session queries/actions; scoped legacy service bindings. UI/Menu and device services remain deferred. |
-| 7 | `CombatMode` | Shared campaign/arcade combat mode; audit roster/ship/entity lifetimes, projectile source references, round completion, survivor reconciliation and cancellation. |
-| 8 | `FleetSelectionMode` | Owned by the separate `ArcadeSession`; audit frontend/network/selection resources and handoff to the same combat mode. |
-| 9 | `LoadMenuMode`, `TitleMenuMode` | Audit UI state and borrowed result storage; saves/loads remain a session responsibility. Ordinary cargo/roster/starmap/options menus are currently functions, not independent modes. |
-| 10 | `CutsceneMode` | One concrete mode currently selects startup, attract, credits, introduction or ending. Audit playback ownership/completion before deciding whether separate derived scene types add value. |
-| Tooling | `DebugMode` | Debug-only hook runner; explicit inspection context and exception-safe bindings must remain intact. Not a gameplay simulation. |
+| 7 | `CombatMode` | Shared campaign/arcade combat mode; explicit session preparation, scene/network scopes, transferred participant ownership and cancellation-safe completion. **Ownership checkpoint complete at the agreed boundary.** |
+| 8 | `FleetSelectionMode` | Separate ArcadeSession owns the visit; mode-owned menu/setup/artwork and scoped network/input services survive the combat child and retire before title. **Ownership checkpoint complete at the agreed boundary.** |
+| 9 | `LoadMenuMode`, `TitleMenuMode` | Scoped UI resources and result borrows; session-owned load requests, captured-frame and preview-state restoration. Existing menu algorithms remain for the UI redesign. **Ownership checkpoint complete at the agreed boundary.** |
+| 10 | `CutsceneMode` | One concrete mode selects startup, attract, credits, introduction or ending. Slides/video/credits have scoped resource owners and cancellation; the graph-driven frontend remains deferred. **Ownership checkpoint complete at the agreed boundary.** |
+| Tooling | `DebugMode` | One-shot atomic diagnostic inbox, explicit session/engine activation and scoped drawing/inspection bindings. **Ownership checkpoint complete.** Not a gameplay simulation. |
 
 Outfitting and starbase activities are still legacy entry paths, not existing
 independent modes. Their eventual boundaries belong in the UI/state audit; do
@@ -415,3 +415,102 @@ A second live check requests a saved-game load during probe speech, verifies
 that the conversation runtime retires, and reaches restored navigation only
 after that retirement. These are focused lifecycle checks, not a full campaign
 playthrough.
+
+
+## Completed combat and arcade ownership map
+
+| Responsibility | Owner / borrow |
+| --- | --- |
+| Durable campaign fleet / story / flagship | Explicit GameSession; campaign preparation borrows that owner |
+| Arcade teams and selection state | FleetSelectionMode's MeleeFrontend; MeleeSetup has a unique owner |
+| Combat participants | RuntimeRosterTransfer moves stable participant pools into the child engine and back before parent resume |
+| Entities, ship incarnations and projectile source handles | CombatMode's engine; entity reset precedes preparation asset release and participant handback |
+| Scripted instant victory | One-shot Session request, consumed by its combat child; no process-global flag |
+| Network round frame count | SimulationEngine; C network/checksum readers borrow the selected engine's counter |
+| Scene graphics, music and drawing bindings | Scoped BattleScene, with explicit activity and navigation realm; entity teardown precedes scene resource release |
+| Round input/checksum buffers and connection presence | Scoped BattleRound; released on selection/readiness failure, cancellation and exceptions |
+| Temporary cyborg input, controls, speed and game sounds | CampaignCombatPreparation; restores caller services during teardown, including partial initialization |
+| Fleet-selection background, picker and ship-grid frames | Mode-owned MELEE_STATE handles; GetMeleeState is only a synchronous C callback borrow |
+| Arcade connections and team-loading resources | MeleeFrontend closes connections before menu/setup state expires, resets input delay and releases partial acquisitions |
+
+The shared CombatMode takes Session& rather than an unrelated dispatcher. Its
+preparation, driver and teardown explicitly select that session and the child's
+RNG. Readiness failure or legacy battle abort keeps the established result policy;
+a pending load, shutdown or session exit skips survivor/crew completion and result
+UI. Destructors only release resources. Failed cyborg input or sound loading
+throws into the dispatcher so the normal RAII unwind restores the parent.
+
+The existing native ship/entity ownership and generation-checked projectile
+source handles remain the combat model. Retirement, Pkunk reincarnation, ditty
+length, projectile cleanup policy, collisions and damage algorithms are unchanged.
+This checkpoint does not replace those algorithms or introduce another battle
+simulation. Backend network connections remain a single-active-match service;
+this change does not make simultaneous rendered/network matches supported.
+
+Removed instantVictory and battleFrameCount globals, the three arcade artwork
+globals, and paired LoadMeleeInfo/FreeMeleeInfo orchestration. Setup drawing
+bindings survive the child handoff, with the same menu and artwork restored.
+Configuration writing remains explicit normal menu completion, never destructor
+work or an exceptional exit.
+
+## Completed frontend, load-menu and diagnostic ownership map
+
+| Responsibility | Owner / borrow |
+| --- | --- |
+| Title selection | Optional result on the TitleMenuSession stack; synchronous child is destroyed before the session reads it; failed runs publish no selection |
+| Title artwork, music and flash overlay | Run-scoped menu resource owner, released on cancellation and exceptions |
+| Load/options menu state | Synchronous stack payload with explicit GameSession activation and drawing/flash cleanup |
+| Save/load summary data | Stack-owned PICK_GAME_STATE; requesting a load never decodes over the live mode stack |
+| Save/load dialog and saving-message screenshots | Scoped captured-frame owners |
+| Saved-game preview projection | Scoped SIS/fleet restoration; temporary preview fleet is released before the live pool is restored, including failure |
+| Save-name slot callback argument | Stack borrow for synchronous text entry; removed its redundant heap allocation |
+| Slideshow script table, fonts, artwork and music | Run-scoped script/table owner and presentation state; partial loads unwind automatically |
+| Generated/rotated flagship slide artwork | Presentation state, including the formerly unreleased generated SIS frame |
+| Legacy video and decoder playback | Separate nested owners; playback stops before clearing output and destroying video data |
+| Credit scroll frames, fonts, timing, contexts and soundtrack | CreditsRuntime per visit; scoped callback borrow detached before release |
+| Credit outtake options and conversation window | Scoped restoration after normal return, cancellation or exceptions |
+| Startup preparation callback | SplashBinding borrows UQM_Context only for the synchronous splash call |
+| Debug command inbox | Atomic process-level input service containing only a static function pointer; consumed once on the gameplay thread |
+| Debug inspection state | Explicit session/engine activation and scoped drawing; existing inspection guards restore activity and interactivity |
+
+Converted restart, gameopt, intro, fmv and credits translation units to C++ while
+keeping their public C entry points and both build descriptions. CutsceneMode
+and TitleMenuMode explicitly activate their owning session. Credits no longer
+retains file-static mutable state or a static next-frame deadline across visits.
+Slide and credit input loops observe pending session exits as well as legacy
+load/abort flags; cleanup does not advance story or choose a successor.
+
+### Boundary after all mode ownership checkpoints
+
+All existing modes have reached the agreed ownership boundary. The following
+work remains intentionally separate:
+
+- Build the common runtime composition: mode-specific simulation and UI with a
+  shared AV compositor/presenter, supplied through the application context.
+- Extract the conversation graph execution machinery for menu/cutscene use.
+  The planned frontend can become one TitleSession and one graph-driven mode
+  covering opening slides, music, title layout and choices. This checkpoint
+  preserves the current dispatch structure rather than implementing that design.
+- Replace legacy menu widgets, callback protocols and UI-only preferences such
+  as the last save slot. The save preview still projects into legacy SIS/fleet
+  drawing services, now within a restoration scope; a future presenter should
+  draw the summary directly without borrowing live campaign buffers.
+- Encapsulate rendering, audio, input and network backend state. Their scoped
+  C adapters are compatibility service boundaries, not new gameplay owners.
+- Outfitting/starbase and ordinary cargo/roster/starmap/options screens still
+  need the UI/state architecture audit; they are not independent modes yet.
+
+### Validation
+
+Debug and Release CMake/Ninja builds and all five CTest suites pass. Regression
+coverage includes session-isolated victory requests and network counters,
+combat cancellation without completion, partial sound-load failure, temporary
+input/activity restoration and participant handback. The preserved legacy build
+also links with the converted C++ files.
+
+Focused live checks exercise title/load-menu cancellation/title/quit,
+startup/title/attract credits/title/quit, a populated save preview restoring its
+live SIS and fleet pool, and SuperMelee fleet selection/combat
+(twenty simulation ticks)/return to the same selection state/title/quit. These
+verify real backend resource handoffs; they do not cover a full campaign ending,
+a two-machine network match, or every legacy UI failure path.

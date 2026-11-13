@@ -35,7 +35,12 @@ extern BOOLEAN disableInteractivity;
 
 // If a function is assigned to this, it will be called from the
 // Starcon2Main thread, in the main game loop.
-extern void (* volatile debugHook) (void);
+// Thread-safe input-to-gameplay diagnostic inbox. Hooks are non-owning static
+// functions; Take consumes once on the gameplay thread before invocation.
+typedef void (*DebugHook)(void);
+void QueueDebugHook(DebugHook hook);
+BOOLEAN HasDebugHook(void);
+DebugHook TakeDebugHook(void);
 
 // Called on the main() thread when the debug key (symbol 'Debug' in the
 // keys.cfg) is pressed

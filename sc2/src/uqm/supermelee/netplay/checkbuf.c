@@ -24,7 +24,7 @@
 #include "libs/log.h"
 
 #include "../../battle.h"
-		// for battleFrameCount
+		// for GetBattleFrameCount()
 
 
 #include <errno.h>
@@ -34,7 +34,7 @@
 
 static inline BattleFrameCounter
 ChecksumBuffer_getCurrentFrameNr(void) {
-	return battleFrameCount;
+	return GetBattleFrameCount();
 }
 
 void
